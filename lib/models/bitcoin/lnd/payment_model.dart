@@ -49,7 +49,8 @@ class LightningPayment {
       creationTimeNs: int.parse(json['creation_time_ns'].toString()),
       htlcs: List<Htlc>.from(json['htlcs'].map((x) => Htlc.fromJson(x))),
       paymentIndex: json['payment_index'],
-      failureReason: json['failure_reason'] ?? '', // Assuming failureReason can be null
+      failureReason:
+          json['failure_reason'] ?? '', // Assuming failureReason can be null
     );
   }
 }
@@ -168,7 +169,8 @@ class LightningPaymentsList {
 
   factory LightningPaymentsList.fromJson(Map<String, dynamic> json) {
     return LightningPaymentsList(
-      payments: List<LightningPayment>.from(json['payments'].map((x) => LightningPayment.fromJson(x))),
+      payments: List<LightningPayment>.from(
+          json['payments'].map((x) => LightningPayment.fromJson(x))),
       firstIndexOffset: int.parse(json['first_index_offset'].toString()),
       lastIndexOffset: int.parse(json['last_index_offset'].toString()),
       totalNumPayments: int.parse(json['total_num_payments'].toString()),
@@ -177,7 +179,8 @@ class LightningPaymentsList {
 
   factory LightningPaymentsList.fromList(List<Map<String, dynamic>> json) {
     return LightningPaymentsList(
-      payments: List<LightningPayment>.from(json.map((x) => LightningPayment.fromJson(x))),
+      payments: List<LightningPayment>.from(
+          json.map((x) => LightningPayment.fromJson(x))),
       firstIndexOffset: -1,
       lastIndexOffset: -1,
       totalNumPayments: -1,

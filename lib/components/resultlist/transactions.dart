@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bitnet/backbone/auth/auth.dart';
@@ -5,6 +6,8 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -15,6 +18,7 @@ import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/loop/swaps.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
@@ -35,6 +39,7 @@ class Transactions extends StatefulWidget {
   final List<String>? filters;
   final List<TransactionItem>? customTransactions;
   final ScrollController scrollController;
+  final List<dynamic>? newData;
   const Transactions(
       {Key? key,
       this.fullList = false,
@@ -42,14 +47,16 @@ class Transactions extends StatefulWidget {
       this.hideLightning = false,
       this.filters,
       this.customTransactions,
-      required this.scrollController})
+      required this.scrollController,
+      this.newData})
       : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
 }
 
-class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClientMixin {
+class _TransactionsState extends State<Transactions>
+    with AutomaticKeepAliveClientMixin {
   late final WalletFilterController controller;
   final walletController = Get.find<WalletsController>();
   bool transactionsLoaded = false;
@@ -63,17 +70,22 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   List<Widget> orderedTransactions = List.empty(growable: true);
   int loadedTransactionGroups = 6;
   bool isLoadingTransactionGroups = false;
+  StreamSubscription<RestResponse>? transactionStream;
+  StreamSubscription<RestResponse>? lightningStream;
+  StreamSubscription<dynamic>? sendStream;
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
     try {
       logger.i("Getting onchain transactions");
       Map<String, dynamic> data = walletController.onchainTransactions;
       onchainTransactions = await Future.microtask(() {
-        BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
+        BitcoinTransactionsList bitcoinTransactions =
+            BitcoinTransactionsList.fromJson(data);
 
         return bitcoinTransactions.transactions;
       });
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(data['transactions'] as List);
+      List<Map<String, dynamic>> mapList =
+          List<Map<String, dynamic>>.from(data['transactions'] as List);
       sendPaymentDataReceivedOnchainBatch(mapList);
     } on Error catch (_) {
       return false;
@@ -90,7 +102,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
       Map<String, dynamic> data = walletController.loopOperations;
       this.loopOperations = SwapList.fromJson(data).swaps;
-      logger.i('This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
+      logger.i(
+          'This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
 
       // compute((d) {
       //   SwapList swapList = SwapList.fromJson(d);
@@ -101,7 +114,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       //   logger.i('This is the lenght og the loop operation list lenght ${d.swaps.length}=======}');
       // });
     } on Error catch (_, s) {
-      logger.i('=========This is the error coming from the swap response method ${_} and this is the stacktrace ${s}');
+      logger.i(
+          '=========This is the error coming from the swap response method ${_} and this is the stacktrace ${s}');
       return false;
     } catch (e) {
       return false;
@@ -117,7 +131,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       Map<String, dynamic> data = walletController.lightningPayments;
       this.lightningPayments = await compute(
         (d) {
-          LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(d);
+          LightningPaymentsList lightningPayments =
+              LightningPaymentsList.fromJson(d);
           return lightningPayments.payments;
         },
         data,
@@ -137,12 +152,16 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     try {
       Map<String, dynamic> data = walletController.lightningInvoices;
       this.lightningInvoices = await compute((d) {
-        ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson(d);
-        List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+        ReceivedInvoicesList lightningInvoices =
+            ReceivedInvoicesList.fromJson(d);
+        List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices
+            .where((invoice) => invoice.settled)
+            .toList();
 
         return settledInvoices;
       }, data);
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(data['invoices'] as List);
+      List<Map<String, dynamic>> mapList =
+          List<Map<String, dynamic>>.from(data['invoices'] as List);
       sendPaymentDataReceivedInvoiceBatch(mapList);
     } on Error catch (_) {
       return false;
@@ -192,17 +211,78 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     super.didChangeDependencies();
     if (!firstInit) {
       firstInit = true;
-      if (walletController.allTransactions.isNotEmpty && widget.customTransactions == null) {
+      if (walletController.allTransactions.isNotEmpty &&
+          widget.customTransactions == null) {
         Future.microtask(() {
-          List<TransactionItem> transactions =
-              walletController.allTransactions.map((item) => TransactionItem(data: item, context: context)).toList();
+          List<TransactionItem> transactions = walletController.allTransactions
+              .map((item) => TransactionItem(data: item, context: context))
+              .toList();
           orderedTransactions = arrangeTransactions(transactions);
           transactionsLoaded = true;
           transactionsOrdered = true;
           setState(() {});
         });
       }
+
+      //async updates
+      LoggerService logger = Get.find<LoggerService>();
+      transactionStream = subscribeTransactionsStream().listen((restResponse) {
+        logger.i("subscribeTransactionsStream got data: $restResponse");
+        BitcoinTransaction bitcoinTransaction =
+            BitcoinTransaction.fromJson(restResponse.data);
+
+        onchainTransactions.add(bitcoinTransaction);
+
+        heavyFiltering(sticky: true);
+        //});
+      }, onError: (error) {
+        logger.e("Received error for Transactions-stream: $error");
+      });
+      //LIGHTNING
+      //Lightning payments
+      lightningStream = subscribeInvoicesStream().listen((restResponse) {
+        logger.i("Received data from Invoice-stream: $restResponse");
+        final result = restResponse.data["result"];
+        logger.i("Result: $result");
+        ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(result);
+        if (receivedInvoice.settled == true) {
+          lightningInvoices.add(receivedInvoice);
+          heavyFiltering(sticky: true);
+        } else {
+          logger.i(
+              "Invoice received but not settled yet: ${receivedInvoice.settled}");
+        }
+      }, onError: (error) {
+        logger.e("Received error for Invoice-stream: $error");
+      });
+      Get.find<LoggerService>().i("send stream has been subscribed to.");
+
+      if (sendStream == null) {
+        sendStream = Get.find<WalletsController>()
+            .sendTransactionsStream
+            .stream
+            .listen((d) {
+          Get.find<LoggerService>().i("send stream has been listened to.");
+          if (d is LightningPayment) {
+            lightningPayments.add(d);
+            heavyFiltering(sticky: true);
+          } else if (d is BitcoinTransaction) {
+            onchainTransactions.add(d);
+            heavyFiltering(sticky: true);
+          }
+        });
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    lightningStream?.cancel();
+    transactionStream?.cancel();
+    Get.find<LoggerService>().i("send stream sub has been canceled.");
+
+    sendStream?.cancel();
   }
 
   void loadTransactions() {
@@ -220,6 +300,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       }
 
       if (futuresCompleted == 4) {
+        updateDataWithNew();
+
         if (mounted) {
           setState(() {
             transactionsLoaded = true;
@@ -238,6 +320,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       }
 
       if (futuresCompleted == 4) {
+        updateDataWithNew();
+
         if (mounted) {
           setState(() {
             transactionsLoaded = true;
@@ -256,6 +340,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       }
 
       if (futuresCompleted == 4) {
+        updateDataWithNew();
+
         if (mounted) {
           setState(() {
             transactionsLoaded = true;
@@ -273,6 +359,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       }
 
       if (futuresCompleted == 4) {
+        updateDataWithNew();
+
         setState(() {
           transactionsLoaded = true;
           heavyFiltering(sticky: true);
@@ -282,11 +370,13 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     });
   }
 
-  void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {
+  void handlePageLoadErrors(
+      int errorCount, String errorMessage, BuildContext context) {
     if (errorCount == 1) {
       showOverlay(context, errorMessage, color: AppTheme.errorColor);
     } else if (errorCount > 1) {
-      showOverlay(context, L10n.of(context)!.failedToLoadCertainData, color: AppTheme.errorColor);
+      showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
+          color: AppTheme.errorColor);
     }
   }
 
@@ -312,18 +402,27 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   //   return finalList;
   // }
 
-  List<TransactionItem> filterItems(List<TransactionItem> combinedTransactions) {
+  List<TransactionItem> filterItems(
+      List<TransactionItem> combinedTransactions) {
     List<TransactionItem> finalList = List.empty(growable: true);
     for (int index = 0; index < combinedTransactions.length; index++) {
-      if (combinedTransactions[index].data.timestamp >= controller.start && combinedTransactions[index].data.timestamp <= controller.end) {
-        if (combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())) {
-          if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
+      if (combinedTransactions[index].data.timestamp >= controller.start &&
+          combinedTransactions[index].data.timestamp <= controller.end) {
+        if (combinedTransactions[index]
+            .data
+            .receiver
+            .contains(searchCtrl.text.toLowerCase())) {
+          if (controller.selectedFilters.contains('Sent') &&
+              controller.selectedFilters.contains('Received')) {
             finalList.add(combinedTransactions[index]);
-          } else if (controller.selectedFilters.contains('Sent') && combinedTransactions[index].data.amount.contains('-')) {
+          } else if (controller.selectedFilters.contains('Sent') &&
+              combinedTransactions[index].data.amount.contains('-')) {
             finalList.add(combinedTransactions[index]);
-          } else if (controller.selectedFilters.contains('Received') && combinedTransactions[index].data.amount.contains('+')) {
+          } else if (controller.selectedFilters.contains('Received') &&
+              combinedTransactions[index].data.amount.contains('+')) {
             finalList.add(combinedTransactions[index]);
-          } else if (!controller.selectedFilters.contains('Sent') && !controller.selectedFilters.contains('Sent')) {
+          } else if (!controller.selectedFilters.contains('Sent') &&
+              !controller.selectedFilters.contains('Sent')) {
             finalList.add(combinedTransactions[index]);
           }
         }
@@ -355,7 +454,9 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                       txHash: transaction.value.toString(),
                       amount: "+" + transaction.amtPaid.toString(),
                       fee: 0,
-                      status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
+                      status: transaction.settled
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.failed,
                     ),
                   ),
                 ),
@@ -386,15 +487,21 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                         context: context,
                         data: TransactionItemData(
                           timestamp: transaction.timeStamp,
-                          status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
+                          status: transaction.numConfirmations > 0
+                              ? TransactionStatus.confirmed
+                              : TransactionStatus.pending,
                           type: TransactionType.onChain,
-                          direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
+                          direction: transaction.amount!.contains("-")
+                              ? TransactionDirection.sent
+                              : TransactionDirection.received,
                           receiver: transaction.amount!.contains("-")
                               ? transaction.destAddresses.last.toString()
                               : transaction.destAddresses.first.toString(),
                           txHash: transaction.txHash.toString(),
                           fee: 0,
-                          amount: transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
+                          amount: transaction.amount!.contains("-")
+                              ? transaction.amount.toString()
+                              : "+" + transaction.amount.toString(),
                         ),
                       ),
                     ),
@@ -404,17 +511,25 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                         ...loopOperations.map((swap) => TransactionItem(
                               context: context,
                               data: TransactionItemData(
-                                timestamp: int.parse(swap.initiationTime) ~/ 1000000000,
+                                timestamp: int.parse(swap.initiationTime) ~/
+                                    1000000000,
                                 status: swap.state == "SUCCEEDED"
                                     ? TransactionStatus.confirmed
                                     : swap.state == "FAILED"
                                         ? TransactionStatus.failed
                                         : TransactionStatus.pending,
-                                type: swap.type == "LOOP_OUT" ? TransactionType.loopOut : TransactionType.loopIn,
-                                direction: swap.type == "LOOP_OUT" ? TransactionDirection.sent : TransactionDirection.received,
-                                receiver: swap.htlcAddressP2tr.toString(), // Use htlc_address_p2tr as receiver
-                                txHash: swap.htlcAddress.toString(), // Use htlc_address as txHash
-                                fee: int.parse(swap.costServer), // Assuming cost_server is the fee
+                                type: swap.type == "LOOP_OUT"
+                                    ? TransactionType.loopOut
+                                    : TransactionType.loopIn,
+                                direction: swap.type == "LOOP_OUT"
+                                    ? TransactionDirection.sent
+                                    : TransactionDirection.received,
+                                receiver: swap.htlcAddressP2tr
+                                    .toString(), // Use htlc_address_p2tr as receiver
+                                txHash: swap.htlcAddress
+                                    .toString(), // Use htlc_address as txHash
+                                fee: int.parse(swap
+                                    .costServer), // Assuming cost_server is the fee
                                 amount: swap.amt.toString(),
                               ),
                             ))
@@ -431,7 +546,9 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                               txHash: transaction.value.toString(),
                               amount: "+" + transaction.amtPaid.toString(),
                               fee: 0,
-                              status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
+                              status: transaction.settled
+                                  ? TransactionStatus.confirmed
+                                  : TransactionStatus.failed,
                             ),
                           ),
                         ),
@@ -459,33 +576,46 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                             context: context,
                             data: TransactionItemData(
                               timestamp: transaction.timeStamp,
-                              status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
+                              status: transaction.numConfirmations > 0
+                                  ? TransactionStatus.confirmed
+                                  : TransactionStatus.pending,
                               type: TransactionType.onChain,
-                              direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
+                              direction: transaction.amount!.contains("-")
+                                  ? TransactionDirection.sent
+                                  : TransactionDirection.received,
                               receiver: transaction.amount!.contains("-")
                                   ? transaction.destAddresses.last.toString()
                                   : transaction.destAddresses.first.toString(),
                               txHash: transaction.txHash.toString(),
                               fee: 0,
-                              amount:
-                                  transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
+                              amount: transaction.amount!.contains("-")
+                                  ? transaction.amount.toString()
+                                  : "+" + transaction.amount.toString(),
                             ),
                           ),
                         ),
                         ...loopOperations.map((swap) => TransactionItem(
                               context: context,
                               data: TransactionItemData(
-                                timestamp: int.parse(swap.initiationTime) ~/ 1000000000,
+                                timestamp: int.parse(swap.initiationTime) ~/
+                                    1000000000,
                                 status: swap.state == "SUCCEEDED"
                                     ? TransactionStatus.confirmed
                                     : swap.state == "FAILED"
                                         ? TransactionStatus.failed
                                         : TransactionStatus.pending,
-                                type: swap.type == "LOOP_OUT" ? TransactionType.loopOut : TransactionType.loopIn,
-                                direction: swap.type == "LOOP_OUT" ? TransactionDirection.sent : TransactionDirection.received,
-                                receiver: swap.htlcAddressP2tr.toString(), // Use htlc_address_p2tr as receiver
-                                txHash: swap.htlcAddress.toString(), // Use htlc_address as txHash
-                                fee: int.parse(swap.costServer), // Assuming cost_server is the fee
+                                type: swap.type == "LOOP_OUT"
+                                    ? TransactionType.loopOut
+                                    : TransactionType.loopIn,
+                                direction: swap.type == "LOOP_OUT"
+                                    ? TransactionDirection.sent
+                                    : TransactionDirection.received,
+                                receiver: swap.htlcAddressP2tr
+                                    .toString(), // Use htlc_address_p2tr as receiver
+                                txHash: swap.htlcAddress
+                                    .toString(), // Use htlc_address as txHash
+                                fee: int.parse(swap
+                                    .costServer), // Assuming cost_server is the fee
                                 amount: swap.amt.toString(),
                               ),
                             ))
@@ -515,7 +645,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
         walletController.allTransactions.value = data;
       }
       combinedTransactions = filterItems(combinedTransactions);
-      List<Widget> orderedTransactions = arrangeTransactions(combinedTransactions);
+      List<Widget> orderedTransactions =
+          arrangeTransactions(combinedTransactions);
 
       return orderedTransactions;
     }).then((val) {
@@ -552,7 +683,9 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                       suffixIcon: IconButton(
                         icon: Icon(
                           FontAwesomeIcons.filter,
-                          color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.white60
+                              : AppTheme.black60,
                           size: AppTheme.cardPadding * 0.75,
                         ),
                         onPressed: () async {
@@ -571,7 +704,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                     ),
                   );
                 } else {
-                  if (isLoadingTransactionGroups && index == (loadedTransactionGroups - 1)) {
+                  if (isLoadingTransactionGroups &&
+                      index == (loadedTransactionGroups - 1)) {
                     return Center(
                         child: Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
@@ -583,7 +717,9 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                 }
               },
                     childCount:
-                        loadedTransactionGroups < orderedTransactions.length + 1 ? loadedTransactionGroups : orderedTransactions.length + 1)
+                        loadedTransactionGroups < orderedTransactions.length + 1
+                            ? loadedTransactionGroups
+                            : orderedTransactions.length + 1)
                 // delegate: SliverChildBuilderDelegate((ctx, index) {
                 //   if (index == 0) {
                 //     return Container(
@@ -627,12 +763,16 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
                 )
         : SliverToBoxAdapter(
-            child: Container(height: AppTheme.cardPadding * 10.h, child: dotProgress(context)),
+            child: Container(
+                height: AppTheme.cardPadding * 10.h,
+                child: dotProgress(context)),
           );
   }
 
   void _onScroll() {
-    if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && !isLoadingTransactionGroups) {
+    if (widget.scrollController.position.pixels ==
+            widget.scrollController.position.maxScrollExtent &&
+        !isLoadingTransactionGroups) {
       _loadMoreTransactionGroups();
     }
   }
@@ -654,13 +794,32 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     });
   }
 
-  Future<void> sendPaymentDataReceivedOnchainBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  void updateDataWithNew() {
+    if (widget.newData != null) {
+      for (dynamic data in widget.newData!) {
+        if (data is LightningPayment) {
+          lightningPayments.add(data);
+        } else if (data is BitcoinTransaction) {
+          onchainTransactions.add(data);
+        }
+      }
+    }
+  }
+
+  Future<void> sendPaymentDataReceivedOnchainBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('onchain')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      BitcoinTransactionsList btcFinalList = BitcoinTransactionsList.fromList(allData);
+      BitcoinTransactionsList btcFinalList =
+          BitcoinTransactionsList.fromList(allData);
       List<BitcoinTransaction> transactions = btcFinalList.transactions;
-      List<BitcoinTransaction> newTransactions = BitcoinTransactionsList.fromList(data).transactions;
+      List<BitcoinTransaction> newTransactions =
+          BitcoinTransactionsList.fromList(data).transactions;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         BitcoinTransaction item1 = newTransactions[i];
@@ -669,30 +828,45 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
         }
         for (int j = 0; j < transactions.length; j++) {
           BitcoinTransaction item2 = transactions[j];
-          if ((item1.txHash == item2.txHash && item1.txHash != null && item2.txHash != null)) {
+          if ((item1.txHash == item2.txHash &&
+              item1.txHash != null &&
+              item2.txHash != null)) {
             duplicateHashes.add(item1.txHash!);
           }
         }
       }
-      newTransactions.removeWhere((test) => test.txHash != null && duplicateHashes.contains(test.txHash!));
+      newTransactions.removeWhere((test) =>
+          test.txHash != null && duplicateHashes.contains(test.txHash!));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').doc(), data[i].toJson());
+        batch.set(
+            btcReceiveRef
+                .doc(Auth().currentUser!.uid)
+                .collection('onchain')
+                .doc(),
+            data[i].toJson());
       }
       batch.commit();
     });
   }
 
-  Future<void> sendPaymentDataReceivedLightningBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedLightningBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnurl')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      LightningPaymentsList btcFinalList = LightningPaymentsList.fromList(allData);
+      LightningPaymentsList btcFinalList =
+          LightningPaymentsList.fromList(allData);
       List<LightningPayment> transactions = btcFinalList.payments;
-      List<LightningPayment> newTransactions = LightningPaymentsList.fromList(data).payments;
+      List<LightningPayment> newTransactions =
+          LightningPaymentsList.fromList(data).payments;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         LightningPayment item1 = newTransactions[i];
@@ -703,25 +877,38 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
           }
         }
       }
-      newTransactions.removeWhere((test) => duplicateHashes.contains(test.paymentHash));
+      newTransactions
+          .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').doc(), data[i]);
+        batch.set(
+            btcReceiveRef
+                .doc(Auth().currentUser!.uid)
+                .collection('lnurl')
+                .doc(),
+            data[i]);
       }
       batch.commit();
     });
   }
 
-  Future<void> sendPaymentDataReceivedInvoiceBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedInvoiceBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnbc')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      ReceivedInvoicesList btcFinalList = ReceivedInvoicesList.fromList(allData);
+      ReceivedInvoicesList btcFinalList =
+          ReceivedInvoicesList.fromList(allData);
       List<ReceivedInvoice> transactions = btcFinalList.invoices;
-      List<ReceivedInvoice> newTransactions = ReceivedInvoicesList.fromList(data).invoices;
+      List<ReceivedInvoice> newTransactions =
+          ReceivedInvoicesList.fromList(data).invoices;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         ReceivedInvoice item1 = newTransactions[i];
@@ -732,13 +919,16 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
           }
         }
       }
-      newTransactions.removeWhere((test) => duplicateHashes.contains(test.rHash));
+      newTransactions
+          .removeWhere((test) => duplicateHashes.contains(test.rHash));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(), data[i].toJson());
+        batch.set(
+            btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(),
+            data[i].toJson());
       }
       batch.commit();
     });
@@ -755,11 +945,13 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
     DateTime now = DateTime.now();
     DateTime startOfThisWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime startOfLastWeek = startOfThisWeek.subtract(const Duration(days: 7));
+    DateTime startOfLastWeek =
+        startOfThisWeek.subtract(const Duration(days: 7));
     DateTime startOfThisMonth = DateTime(now.year, now.month, 1);
 
     for (TransactionItem item in combinedTransactions) {
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
+      DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
 
       if (date.isAfter(startOfThisMonth)) {
         String timeTag = displayTimeAgoFromInt(item.data.timestamp);
@@ -780,7 +972,9 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       finalTransactions.add(
         Builder(builder: (context) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding,
+                vertical: AppTheme.elementSpacing),
             child: Text(
               category,
               style: Theme.of(context).textTheme.titleMedium,

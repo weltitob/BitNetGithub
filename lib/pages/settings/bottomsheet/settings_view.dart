@@ -32,7 +32,8 @@ class SettingsView extends StatelessWidget {
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onSurface,
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
+          margin: const EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.25),
           child: ListView(
             key: const Key('SettingsListViewContent'),
             children: [
@@ -92,17 +93,6 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.people),
-                text: L10n.of(context)!.socialRecovery,
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: AppTheme.iconSize * 0.75,
-                ),
-                onTap: () async {
-                  controller.switchTab('social_recovery');
-                },
-              ),
-              BitNetListTile(
                 leading: const Icon(Icons.info),
                 text: L10n.of(context)!.agbsImpress,
                 trailing: const Icon(
@@ -127,16 +117,20 @@ class SettingsView extends StatelessWidget {
                   });
 
                   // Clear shared preferences if used
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
 
                   await prefs.remove('theme_mode');
                   await prefs.remove('primary_color');
 
                   final profile_controller = Get.put(ProfileController());
-                  final registrationController = Get.find<RegistrationController>();
-                  String username = '${profile_controller.userData.value.username}';
+                  final registrationController =
+                      Get.find<RegistrationController>();
+                  String username =
+                      '${profile_controller.userData.value.username}';
 
-                  dynamic stopecs_response = await registrationController.logoutAndStopEcs('${username}_uid');
+                  dynamic stopecs_response = await registrationController
+                      .logoutAndStopEcs('${username}_uid');
                   print('Stop ecs response: $stopecs_response');
 
                   Get.delete<ProfileController>();

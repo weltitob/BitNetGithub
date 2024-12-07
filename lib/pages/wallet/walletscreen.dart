@@ -1,4 +1,3 @@
-
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
@@ -41,7 +40,6 @@ import 'package:provider/provider.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 
-
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
   @override
@@ -60,14 +58,18 @@ class WalletScreen extends GetWidget<WalletsController> {
     }
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent =
-        bitcoinPrice != null ? (controller.totalBalanceSAT.value / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-    final BitcoinUnitModel unitModel =
-        CurrencyConverter.convertToBitcoinUnit(double.parse(controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
+    final currencyEquivalent = bitcoinPrice != null
+        ? (controller.totalBalanceSAT.value / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(controller.onchainBalance.value.confirmedBalance),
+        BitcoinUnits.SAT);
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     final currency = Provider.of<CurrencyChangeProvider>(context, listen: true);
     controller.coin.value = coin.coin ?? controller.coin.value;
-    controller.selectedCurrency?.value = currency.selectedCurrency ?? controller.selectedCurrency!.value;
+    controller.selectedCurrency?.value =
+        currency.selectedCurrency ?? controller.selectedCurrency!.value;
     List<Widget> cards = [
       GestureDetector(
         onTap: () {
@@ -108,7 +110,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                   children: [
                     const SizedBox(height: AppTheme.cardPadding * 1.5),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding * 1),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -116,9 +119,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Avatar(
                                   size: AppTheme.cardPadding * 2.5.h,
-                                  mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
+                                  mxContent: Uri.parse(profilecontroller
+                                      .userData.value.profileImageUrl),
                                   type: profilePictureType.lightning,
-                                  isNft: profilecontroller.userData.value.nft_profile_id.isNotEmpty),
+                                  isNft: profilecontroller.userData.value
+                                      .nft_profile_id.isNotEmpty),
                               SizedBox(
                                 width: AppTheme.elementSpacing * 1.25.w,
                               ),
@@ -127,37 +132,60 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 children: [
                                   Text(
                                     L10n.of(context)!.totalWalletBal,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  const SizedBox(height: AppTheme.elementSpacing * 0.25),
+                                  const SizedBox(
+                                      height: AppTheme.elementSpacing * 0.25),
                                   Obx(
                                     () => Row(
                                       children: [
                                         controller.hideBalance.value
                                             ? Text(
                                                 '*****',
-                                                style: Theme.of(context).textTheme.displaySmall,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall,
                                               )
                                             : Obx(() {
                                                 return GestureDetector(
                                                   onTap: () {
-                                                    controller.setCurrencyType(!controller.coin.value, updateDatabase: false);
-                                                    coin.setCurrencyType(controller.coin.value);
+                                                    controller.setCurrencyType(
+                                                        !controller.coin.value,
+                                                        updateDatabase: false);
+                                                    coin.setCurrencyType(
+                                                        controller.coin.value);
                                                   },
                                                   child: (controller.coin.value)
                                                       ? Row(
                                                           children: [
                                                             Text(
-                                                              controller.totalBalance.value.amount.toString(),
-                                                              overflow: TextOverflow.ellipsis,
-                                                              style: Theme.of(context).textTheme.displaySmall,
+                                                              controller
+                                                                  .totalBalance
+                                                                  .value
+                                                                  .amount
+                                                                  .toString(),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displaySmall,
                                                             ),
-                                                            Icon(getCurrencyIcon(controller.totalBalance.value.bitcoinUnitAsString)),
+                                                            Icon(getCurrencyIcon(
+                                                                controller
+                                                                    .totalBalance
+                                                                    .value
+                                                                    .bitcoinUnitAsString)),
                                                           ],
                                                         )
                                                       : Text(
                                                           "${currencyEquivalent}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
-                                                          style: Theme.of(context).textTheme.displaySmall,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .displaySmall,
                                                         ),
                                                 );
                                               }),
@@ -172,9 +200,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                             () => RoundedButtonWidget(
                               size: AppTheme.cardPadding * 1.25,
                               buttonType: ButtonType.transparent,
-                              iconData: controller.hideBalance.value == false ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+                              iconData: controller.hideBalance.value == false
+                                  ? FontAwesomeIcons.eyeSlash
+                                  : FontAwesomeIcons.eye,
                               onTap: () {
-                                controller.setHideBalance(hide: !controller.hideBalance.value);
+                                controller.setHideBalance(
+                                    hide: !controller.hideBalance.value);
                               },
                             ),
                           ),
@@ -189,18 +220,23 @@ class WalletScreen extends GetWidget<WalletsController> {
                       child: Stack(
                         children: [
                           CardSwiper(
-                            backCardOffset: const Offset(0, -AppTheme.elementSpacing * 1.25),
+                            backCardOffset: const Offset(
+                                0, -AppTheme.elementSpacing * 1.25),
                             numberOfCardsDisplayed: 3,
-                            padding:
-                                const EdgeInsets.only(left: AppTheme.cardPadding, right: AppTheme.cardPadding, top: AppTheme.cardPadding),
+                            padding: const EdgeInsets.only(
+                                left: AppTheme.cardPadding,
+                                right: AppTheme.cardPadding,
+                                top: AppTheme.cardPadding),
                             scale: 1.0,
-                            initialIndex: controller.selectedCard.value == 'onchain'
-                                ? 2
-                                : controller.selectedCard.value == 'fiat'
-                                    ? 1
-                                    : 0,
+                            initialIndex:
+                                controller.selectedCard.value == 'onchain'
+                                    ? 2
+                                    : controller.selectedCard.value == 'fiat'
+                                        ? 1
+                                        : 0,
                             cardsCount: cards.length,
-                            onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
+                            onSwipe: (int index, int? previousIndex,
+                                CardSwiperDirection direction) {
                               controller.setSelectedCard(previousIndex == 2
                                   ? 'onchain'
                                   : previousIndex == 1
@@ -208,7 +244,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       : 'lightning');
                               return true;
                             },
-                            cardBuilder: (context, index, percentThresholdX, percentThresholdY) => cards[index],
+                            cardBuilder: (context, index, percentThresholdX,
+                                    percentThresholdY) =>
+                                cards[index],
                           ),
                         ],
                       ),
@@ -222,12 +260,14 @@ class WalletScreen extends GetWidget<WalletsController> {
           // Section 2: Actions
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                  Text(L10n.of(context)!.actions, style: Theme.of(context).textTheme.titleLarge),
+                  Text(L10n.of(context)!.actions,
+                      style: Theme.of(context).textTheme.titleLarge),
                   SizedBox(height: AppTheme.cardPadding.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -245,7 +285,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       BitNetImageWithTextButton(
                         L10n.of(context)!.receive,
                         () {
-                          context.go('/wallet/receive/${controller.selectedCard.value}');
+                          context.go(
+                              '/wallet/receive/${controller.selectedCard.value}');
                         },
                         image: "assets/images/receive_image.png",
                         width: AppTheme.cardPadding * 3.5.w,
@@ -391,12 +432,14 @@ class WalletScreen extends GetWidget<WalletsController> {
           // Section 4: Buy/Sell Text and Item
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                  Text(L10n.of(context)!.buySell, style: Theme.of(context).textTheme.titleLarge),
+                  Text(L10n.of(context)!.buySell,
+                      style: Theme.of(context).textTheme.titleLarge),
                   SizedBox(height: AppTheme.cardPadding.h),
                   CryptoItem(
                     currency: Currency(
@@ -414,12 +457,14 @@ class WalletScreen extends GetWidget<WalletsController> {
           SliverToBoxAdapter(
             child: StatefulBuilder(builder: (context, setState) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                    Text(L10n.of(context)!.activity,
+                        style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: AppTheme.elementSpacing.h),
                   ],
                 ),
@@ -427,6 +472,7 @@ class WalletScreen extends GetWidget<WalletsController> {
             }),
           ),
           Transactions(
+            newData: controller.newTransactionData,
             scrollController: controller.scrollController,
           )
         ],
