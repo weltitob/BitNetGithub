@@ -42,7 +42,9 @@ class Avatar extends StatelessWidget {
         fallbackLetters = name;
       }
     }
-    final noPic = mxContent == null || mxContent.toString().isEmpty || mxContent.toString() == 'null';
+    final noPic = mxContent == null ||
+        mxContent.toString().isEmpty ||
+        mxContent.toString() == 'null';
 
     final textWidget = Center(
       child: Icon(
@@ -55,7 +57,8 @@ class Avatar extends StatelessWidget {
     final borderRadius = BorderRadius.circular(size / 2.5);
 
     // Apply the orange gradient when profilePictureType is either onchain or lightning
-    final isSpecialType = type == profilePictureType.onchain || type == profilePictureType.lightning;
+    final isSpecialType = type == profilePictureType.onchain ||
+        type == profilePictureType.lightning;
     final borderPadding = isSpecialType ? size / 30 : 0.0;
 
     final container = Container(
@@ -68,7 +71,9 @@ class Avatar extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             isNft ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
-            isNft ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
+            isNft
+                ? AppTheme.colorPrimaryGradient
+                : Theme.of(context).primaryColor,
           ],
         ),
       ),
@@ -98,7 +103,10 @@ class Avatar extends StatelessWidget {
     return ClipRRect(
       child: Stack(children: [
         InkWell(
-          onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
+          onTap: onTap ??
+              (profileId != null
+                  ? () => context.go("/showprofile/:$profileId")
+                  : null),
           borderRadius: borderRadius,
           child: container,
         ),

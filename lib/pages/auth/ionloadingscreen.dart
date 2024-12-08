@@ -23,7 +23,6 @@ class AuthLoadingScreen extends StatefulWidget {
 class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
   late final Future<LottieComposition> comp;
 
-
   @override
   void initState() {
     super.initState();
@@ -33,8 +32,8 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false, // prevent the user from going back
+    return PopScope(
+      canPop: false, // prevent the user from going back
       child: bitnetScaffold(
         body: Stack(
           children: [
@@ -75,23 +74,28 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
                       },
                     ),
                   ),
-                  LongButtonWidget(title: "title", onTap: () async {
-                    print("Button pressed");
+                  LongButtonWidget(
+                      title: "title",
+                      onTap: () async {
+                        print("Button pressed");
 
-                    final registrationController = Get.find<RegistrationController>();
-                    final logger = Get.find<LoggerService>();
-                    print("Second message");
+                        final registrationController =
+                            Get.find<RegistrationController>();
+                        final logger = Get.find<LoggerService>();
+                        print("Second message");
 
-                    if (registrationController.isLoading.value == true.obs.value){
-                      logger.i("Loading is true");
-                    } else if (registrationController.isLoading.value == false.obs.value){
-                      logger.i("Loading is false the user is now deployed and ready to go");
-                      context.go(
-                        Uri(path: '/').toString(),
-                      );
-                    }
-                  }
-                  )
+                        if (registrationController.isLoading.value ==
+                            true.obs.value) {
+                          logger.i("Loading is true");
+                        } else if (registrationController.isLoading.value ==
+                            false.obs.value) {
+                          logger.i(
+                              "Loading is false the user is now deployed and ready to go");
+                          context.go(
+                            Uri(path: '/').toString(),
+                          );
+                        }
+                      })
                 ],
               ),
             ),
@@ -104,17 +108,18 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin:
-                      const EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      margin: const EdgeInsets.only(
+                          left: AppTheme.elementSpacing / 2),
                       height: AppTheme.cardPadding * 1.25,
                       child: Image.asset("assets/images/logoclean.png"),
                     ),
-                    SizedBox(width: AppTheme.elementSpacing,),
+                    SizedBox(
+                      width: AppTheme.elementSpacing,
+                    ),
                     Text(
                       "BitNet",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-
                   ],
                 ),
               ),

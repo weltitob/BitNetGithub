@@ -24,6 +24,7 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -72,7 +73,6 @@ class _TransactionsState extends State<Transactions>
   bool isLoadingTransactionGroups = false;
   StreamSubscription<RestResponse>? transactionStream;
   StreamSubscription<RestResponse>? lightningStream;
-  StreamSubscription<dynamic>? sendStream;
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
     try {
@@ -255,23 +255,6 @@ class _TransactionsState extends State<Transactions>
       }, onError: (error) {
         logger.e("Received error for Invoice-stream: $error");
       });
-      Get.find<LoggerService>().i("send stream has been subscribed to.");
-
-      if (sendStream == null) {
-        sendStream = Get.find<WalletsController>()
-            .sendTransactionsStream
-            .stream
-            .listen((d) {
-          Get.find<LoggerService>().i("send stream has been listened to.");
-          if (d is LightningPayment) {
-            lightningPayments.add(d);
-            heavyFiltering(sticky: true);
-          } else if (d is BitcoinTransaction) {
-            onchainTransactions.add(d);
-            heavyFiltering(sticky: true);
-          }
-        });
-      }
     }
   }
 
@@ -280,9 +263,6 @@ class _TransactionsState extends State<Transactions>
     super.dispose();
     lightningStream?.cancel();
     transactionStream?.cancel();
-    Get.find<LoggerService>().i("send stream sub has been canceled.");
-
-    sendStream?.cancel();
   }
 
   void loadTransactions() {
@@ -835,11 +815,14 @@ class _TransactionsState extends State<Transactions>
           }
         }
       }
+
       newTransactions.removeWhere((test) =>
           test.txHash != null && duplicateHashes.contains(test.txHash!));
       return newTransactions;
     }, allData)
         .then((data) {
+      btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
+
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
         batch.set(
@@ -877,11 +860,14 @@ class _TransactionsState extends State<Transactions>
           }
         }
       }
+
       newTransactions
           .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
       return newTransactions;
     }, allData)
         .then((data) {
+      btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
+
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
         batch.set(
@@ -919,11 +905,14 @@ class _TransactionsState extends State<Transactions>
           }
         }
       }
+
       newTransactions
           .removeWhere((test) => duplicateHashes.contains(test.rHash));
       return newTransactions;
     }, allData)
         .then((data) {
+      btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
+
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
         batch.set(

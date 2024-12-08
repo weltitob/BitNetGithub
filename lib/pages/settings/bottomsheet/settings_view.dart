@@ -2,11 +2,13 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +117,7 @@ class SettingsView extends StatelessWidget {
                     'theme_mode': 'system',
                     'primary_color': Colors.white.value,
                   });
+                  ThemeController.of(context).setPrimaryColor(Colors.white);
 
                   // Clear shared preferences if used
                   SharedPreferences prefs =
@@ -122,7 +125,6 @@ class SettingsView extends StatelessWidget {
 
                   await prefs.remove('theme_mode');
                   await prefs.remove('primary_color');
-
                   final profile_controller = Get.put(ProfileController());
                   final registrationController =
                       Get.find<RegistrationController>();
@@ -132,7 +134,6 @@ class SettingsView extends StatelessWidget {
                   dynamic stopecs_response = await registrationController
                       .logoutAndStopEcs('${username}_uid');
                   print('Stop ecs response: $stopecs_response');
-
                   Get.delete<ProfileController>();
                   Get.delete<WalletsController>();
                   Get.delete<SettingsController>();

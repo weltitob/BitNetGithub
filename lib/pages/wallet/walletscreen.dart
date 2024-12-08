@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
@@ -118,6 +119,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           Row(
                             children: [
                               Avatar(
+                                  onTap: () {},
                                   size: AppTheme.cardPadding * 2.5.h,
                                   mxContent: Uri.parse(profilecontroller
                                       .userData.value.profileImageUrl),
@@ -276,6 +278,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                         L10n.of(context)!.send,
                         () {
                           context.go('/wallet/send');
+                          if (Get.isRegistered<SendsController>()) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Get.find<SendsController>().getClipboardData();
+                            });
+                          }
                         },
                         image: "assets/images/send_image.png",
                         width: AppTheme.cardPadding * 3.5.w,

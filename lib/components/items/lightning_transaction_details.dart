@@ -33,14 +33,20 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
     final String time = convertIntoDateFormat(data.timestamp);
 
     final chartLine = Get.find<WalletsController>().chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     print('cooin ${coin.coin}');
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-    final currencyEquivalentFee = bitcoinPrice != null ? (data.fee.toDouble() / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(data.amount) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
+    final currencyEquivalentFee = bitcoinPrice != null
+        ? (data.fee.toDouble() / 100000000 * bitcoinPrice).toStringAsFixed(2)
+        : "0.00";
     return bitnetScaffold(
         context: context,
         extendBodyBehindAppBar: true,
@@ -78,7 +84,10 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                             children: [
                               Column(
                                 children: [
-                                  Avatar(size: AppTheme.cardPadding * 4, isNft: false, onTap: () {}),
+                                  Avatar(
+                                      size: AppTheme.cardPadding * 4,
+                                      isNft: false,
+                                      onTap: () {}),
                                   const SizedBox(
                                     height: AppTheme.elementSpacing * 0.5,
                                   ),
@@ -91,14 +100,20 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                               Icon(
                                 Icons.double_arrow_rounded,
                                 size: AppTheme.cardPadding * 2.5,
-                                color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white80 : AppTheme.black60,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? AppTheme.white80
+                                    : AppTheme.black60,
                               ),
                               const SizedBox(
                                 width: AppTheme.cardPadding * 0.75,
                               ),
                               Column(
                                 children: [
-                                  Avatar(size: AppTheme.cardPadding * 4, isNft: false, onTap: () {}),
+                                  Avatar(
+                                      size: AppTheme.cardPadding * 4,
+                                      isNft: false,
+                                      onTap: () {}),
                                   const SizedBox(
                                     height: AppTheme.elementSpacing * 0.5,
                                   ),
@@ -111,14 +126,17 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                           controller.hideBalance.value
                               ? Text(
                                   '*****',
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 )
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                        coin.setCurrencyType(coin.coin != null
+                                            ? !coin.coin!
+                                            : false);
                                       },
                                       child: Row(
                                         children: [
@@ -131,18 +149,30 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                                     ? "+${currencyEquivalent}"
                                                     : "$currencyEquivalent",
                                             overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                                                color: data.direction == TransactionDirection.received
-                                                    ? AppTheme.successColor
-                                                    : AppTheme.errorColor),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displayMedium!
+                                                .copyWith(
+                                                    color: data.direction ==
+                                                            TransactionDirection
+                                                                .received
+                                                        ? AppTheme.successColor
+                                                        : AppTheme.errorColor),
                                           ),
                                           if (!(coin.coin ?? true)) ...[
                                             Text(
                                               ' ${getCurrency(currency!)}',
-                                              style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                                                  color: data.direction == TransactionDirection.received
-                                                      ? AppTheme.successColor
-                                                      : AppTheme.errorColor),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .displayMedium!
+                                                  .copyWith(
+                                                      color: data.direction ==
+                                                              TransactionDirection
+                                                                  .received
+                                                          ? AppTheme
+                                                              .successColor
+                                                          : AppTheme
+                                                              .errorColor),
                                             )
                                           ]
                                         ],
@@ -151,7 +181,9 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                     coin.coin ?? true
                                         ? Icon(
                                             AppTheme.satoshiIcon,
-                                            color: data.direction == TransactionDirection.received
+                                            color: data.direction ==
+                                                    TransactionDirection
+                                                        .received
                                                 ? AppTheme.successColor
                                                 : AppTheme.errorColor,
                                           )
@@ -194,7 +226,8 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                         await Clipboard.setData(ClipboardData(
                           text: data.txHash,
                         ));
-                        showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                        showOverlay(
+                            context, L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(
                         children: [
@@ -230,7 +263,8 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                 scale: 1.1,
                                 child: GestureDetector(
                                   onTap: () {
-                                    controller.showInfo.value = !controller.showInfo.value;
+                                    controller.showInfo.value =
+                                        !controller.showInfo.value;
                                     BitNetBottomSheet(
                                       context: context,
                                       child: bitnetScaffold(
@@ -238,19 +272,23 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                         appBar: bitnetAppBar(
                                           context: context,
                                           text: 'Info',
+                                          hasBackButton: false,
                                         ),
                                         context: context,
                                         body: Padding(
                                           padding: const EdgeInsets.only(
-                                              top: AppTheme.cardPaddingBigger * 5,
+                                              top: AppTheme.cardPaddingBigger *
+                                                  5,
                                               left: AppTheme.cardPaddingBig,
                                               right: AppTheme.cardPaddingBig),
                                           child: Text(
                                             'When the lightning invoice wont get trough the payment will be canceled and the user will receive the funds back',
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
-                                            maxLines: 3,
-                                            style: Theme.of(context).textTheme.titleMedium!,
+                                            maxLines: 5,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!,
                                           ),
                                         ),
                                       ),
@@ -265,7 +303,9 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                     ),
                                     child: Center(
                                       child: Icon(
-                                        controller.showInfo.value ? Icons.info : Icons.info_outline,
+                                        controller.showInfo.value
+                                            ? Icons.info
+                                            : Icons.info_outline,
                                         color: AppTheme.white60,
                                       ),
                                     ),
@@ -279,7 +319,8 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       ),
                       Container(
                         height: AppTheme.cardPadding * 1.5,
-                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.elementSpacing),
                         decoration: BoxDecoration(
                           borderRadius: AppTheme.cardRadiusCircular,
                           color: data.status == TransactionStatus.confirmed
@@ -306,7 +347,9 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                   text: "Payment Network",
                   trailing: Row(
                     children: [
-                      Image.asset("assets/images/lightning.png", width: AppTheme.cardPadding * 1, height: AppTheme.cardPadding * 1),
+                      Image.asset("assets/images/lightning.png",
+                          width: AppTheme.cardPadding * 1,
+                          height: AppTheme.cardPadding * 1),
                       const SizedBox(
                         width: AppTheme.elementSpacing / 2,
                       ),
@@ -332,15 +375,20 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                            coin.setCurrencyType(
+                                coin.coin != null ? !coin.coin! : false);
                           },
                           child: Text(
-                            coin.coin ?? true ? '${data.fee}' : "$currencyEquivalentFee ${getCurrency(currency!)}",
+                            coin.coin ?? true
+                                ? '${data.fee}'
+                                : "$currencyEquivalentFee ${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
-                        coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : const SizedBox.shrink(),
+                        coin.coin ?? true
+                            ? Icon(AppTheme.satoshiIcon)
+                            : const SizedBox.shrink(),
                       ],
                     )),
               ],

@@ -105,7 +105,15 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       body: isVerified
-          ? pages[currentview].widget
+          ? PopScope(
+              canPop: currentview == 0,
+              onPopInvokedWithResult: (b, d) {
+                if (currentview != 0) {
+                  currentview = 0;
+                  setState(() {});
+                }
+              },
+              child: pages[currentview].widget)
           : Container(
               child: const Expanded(
                 child: Center(

@@ -56,7 +56,8 @@ class SendsController extends BaseController {
   late FocusNode myFocusNodeAdressSearch;
   late TextEditingController bitcoinReceiverAdressController;
   late ScrollController sendScrollerController;
-
+  Rx<String> usersQuery = ''.obs;
+  List<ReSendUser> queriedUsers = List.empty(growable: true);
   void handleSearch(String value) {
     onQRCodeScanned(value, context);
   }
@@ -240,9 +241,7 @@ class SendsController extends BaseController {
       scrollToSearchFunc(sendScrollerController, myFocusNodeAdressSearch);
     });
     myFocusNodeAdressSearch = FocusNode();
-    if (getClipOnInit) {
-      getClipboardData();
-    }
+
     getSendUsers();
   }
 
@@ -364,8 +363,6 @@ class SendsController extends BaseController {
         sendPaymentDataLnUrl(response.data['result'], lnUrl, lnUrlname);
         payment = LightningPayment.fromJson(response.data['result']);
         if (!transactionsUpdated) {
-          Get.find<LoggerService>().i("send stream data pushed for lnurl.");
-
           Get.find<WalletsController>().newTransactionData.add(payment);
           transactionsUpdated = true;
         }
@@ -374,16 +371,22 @@ class SendsController extends BaseController {
         Get.find<WalletsController>().fetchLightingWalletBalance();
         sub!.cancel();
 
-        showOverlay(context, "Payment successful!");
-        GoRouter.of(context).go("/feed");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showOverlay(this.context, "Payment successful!");
+          GoRouter.of(this.context).go("/feed");
+        });
       } else {
-        showOverlay(context, "Payment failed: ${response.message}");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showOverlay(this.context, "Payment failed: ${response.message}");
+        });
         isFinished.value = false;
         sub!.cancel();
       }
     }, onError: (error) {
       isFinished.value = false;
-      showOverlay(context, "An error occurred: $error");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showOverlay(this.context, "An error occurred: $error");
+      });
     }, onDone: () {}, cancelOnError: true);
     print(response.body);
     resetValues();
@@ -442,6 +445,7 @@ class SendsController extends BaseController {
 
           Stream<RestResponse> paymentStream = sendPaymentV2Stream(
               invoiceStrings, int.parse(satController.text));
+          bool shownOverlay = false;
           paymentStream.listen((RestResponse response) {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
@@ -450,8 +454,6 @@ class SendsController extends BaseController {
               //connect this with transactions view
               LightningPayment invoice =
                   LightningPayment.fromJson(response.data["result"]);
-              Get.find<LoggerService>()
-                  .i("send stream data pushed for invoice.");
 
               Get.find<WalletsController>().newTransactionData.add(invoice);
               Get.find<WalletsController>().fetchLightingWalletBalance();
@@ -460,13 +462,25 @@ class SendsController extends BaseController {
                 sendPaymentDataInvoice(response.data['result']);
               }
               logger.i("Payment successful!");
-              showOverlay(context, "Payment successful!");
-              GoRouter.of(context).go("/feed");
+              if (!shownOverlay) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showOverlay(this.context, "Payment successful!");
+                  GoRouter.of(this.context).go("/feed");
+                });
+                shownOverlay = true;
+              }
             }
             if (response.data['result']['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
-              showOverlay(context, "Payment failed: ${response.message}");
+              if (!shownOverlay) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showOverlay(
+                      this.context, "Payment failed: ${response.message}");
+                });
+                shownOverlay = true;
+              }
+
               isFinished.value =
                   false; // Keep the user on the same page to possibly retry or show error
             } else {
@@ -476,7 +490,9 @@ class SendsController extends BaseController {
             }
           }, onError: (error) {
             isFinished.value = false;
-            showOverlay(context, "An error occurred: $error");
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showOverlay(this.context, "An error occurred: $error");
+            });
           }, onDone: () {
             // Handle stream completion if necessary
           }, cancelOnError: true // Cancel the subscription upon first error
@@ -544,11 +560,14 @@ class SendsController extends BaseController {
             });
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
-            context.go("/feed");
-            // Display a success message and navigate to the bottom navigation bar
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showOverlay(this.context, "Payment successful!");
+              GoRouter.of(this.context).go("/feed");
+            });
           } else {
-            context.go("/feed");
-            // Display an error message if the cloud function failed and set isFinished to false
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showOverlay(this.context, "Payment failed.");
+            });
             isFinished.value = false;
           }
         } else {
@@ -578,6 +597,7 @@ class SendsController extends BaseController {
 
   void sendPaymentDataLnUrl(
       Map<String, dynamic> data, String lnUrl, String name) {
+    btcSendsRef.doc(Auth().currentUser!.uid).set({"initialized": true});
     btcSendsRef.doc(Auth().currentUser!.uid).collection('lnurl').add({
       ...data,
       'lnurl': lnUrl,
@@ -633,10 +653,12 @@ class SendsController extends BaseController {
   }
 
   void sendPaymentDataInvoice(Map<String, dynamic> data) {
+    btcSendsRef.doc(Auth().currentUser!.uid).set({"initialized": true});
     btcSendsRef.doc(Auth().currentUser!.uid).collection('lnbc').add(data);
   }
 
   void sendPaymentDataOnchain(Map<String, dynamic> data) {
+    btcSendsRef.doc(Auth().currentUser!.uid).set({"initialized": true});
     btcSendsRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
     resendUsers.add(ReSendUser(
         address: data['address'],

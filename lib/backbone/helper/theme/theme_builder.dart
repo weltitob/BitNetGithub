@@ -64,7 +64,8 @@ class ThemeController extends State<ThemeBuilder> {
   void loadData(_) async {
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    if (allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
+    if (FirebaseAuth.instance.currentUser != null &&
+        allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
@@ -171,11 +172,10 @@ class ThemeController extends State<ThemeBuilder> {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
-    }
-    if (newPrimaryColor == null) {
+    } else if (newPrimaryColor == null) {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+          .update({widget.primaryColorSettingsKey: Colors.white.value});
     } else {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -194,6 +194,7 @@ class ThemeController extends State<ThemeBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    print('primaryColor is ${primaryColor}');
     return Provider(
       create: (_) => this,
       child: DynamicColorBuilder(
