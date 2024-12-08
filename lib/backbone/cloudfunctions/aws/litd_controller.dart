@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 class LitdController extends GetxController   { //BaseController
+  //the app either needs to store the information about the resepctive container or smth
+
   RxString litd_baseurl= '${AppTheme.baseUrlLightningTerminal}'.obs;
   // Define observable states
   var isLoading = false.obs;
