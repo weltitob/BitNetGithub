@@ -1,10 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:get/get.dart';
 
-Future<dynamic> generateSeed(String restHostIP) async {
-  String restHost = '$restHostIP:8443';
+Future<dynamic> generateSeed() async {
+
+  // final litdController = Get.find<LitdController>();
+  // final String restHost = litdController.litd_baseurl.value;
+
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
   String url = 'https://$restHost/v1/genseed?aezeed_passphrase=Test';
 
   // Example headers

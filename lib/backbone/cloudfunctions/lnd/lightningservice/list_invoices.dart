@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -11,7 +12,11 @@ import 'package:get/get.dart';
 
 Future<RestResponse> listInvoices({bool pending_only = false}) async {
   LoggerService logger = Get.find();
-  String restHost = AppTheme.baseUrlLightningTerminal;
+
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
+
+  // String restHost = AppTheme.baseUrlLightningTerminal;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/invoices?pending_only=$pending_only';
 

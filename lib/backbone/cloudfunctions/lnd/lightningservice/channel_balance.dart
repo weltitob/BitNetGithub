@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -10,19 +11,22 @@ import 'package:get/get.dart';
  
 Future<RestResponse> channelBalance() async {
     final DioClient dioClient = Get.find<DioClient>();
-  String restHost = AppTheme.baseUrlLightningTerminal; // Update the host as needed
-  // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
-  String url = 'https://$restHost/v1/balance/channels';
 
-  ByteData byteData = await loadMacaroonAsset();
-  List<int> bytes = byteData.buffer.asUint8List();
-  String macaroon = bytesToHex(bytes);
+    final litdController = Get.find<LitdController>();
+    final String restHost = litdController.litd_baseurl.value;
 
-  Map<String, String> headers = {
-    'Grpc-Metadata-macaroon': macaroon,
-  };
+    // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+    String url = 'https://$restHost/v1/balance/channels';
 
-  HttpOverrides.global = MyHttpOverrides();
+    ByteData byteData = await loadMacaroonAsset();
+    List<int> bytes = byteData.buffer.asUint8List();
+    String macaroon = bytesToHex(bytes);
+
+    Map<String, String> headers = {
+      'Grpc-Metadata-macaroon': macaroon,
+    };
+
+    HttpOverrides.global = MyHttpOverrides();
 
   try {
     var response = await dioClient.get(url: url, headers: headers);

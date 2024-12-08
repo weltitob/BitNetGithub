@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -79,15 +80,13 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
                       onTap: () async {
                         print("Button pressed");
 
-                        final registrationController =
-                            Get.find<RegistrationController>();
+                        final litdController = Get.find<LitdController>();
                         final logger = Get.find<LoggerService>();
                         print("Second message");
 
-                        if (registrationController.isLoading.value ==
-                            true.obs.value) {
+                        if (litdController.isLoading.value == true.obs.value) {
                           logger.i("Loading is true");
-                        } else if (registrationController.isLoading.value ==
+                        } else if (litdController.isLoading.value ==
                             false.obs.value) {
                           logger.i(
                               "Loading is false the user is now deployed and ready to go");

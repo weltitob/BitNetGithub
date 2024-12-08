@@ -9,7 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 abstract class AppTheme {
   static IconData satoshiIcon = const IconData(0x0021, fontFamily: 'SatoshiSymbol');
 
-  static String baseUrlLightningTerminal = 'mybitnet.com:8443';
+  static String baseUrlLightningTerminal = 'mybitnet.com';
+  static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
 
   static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
   static String applicationName = 'BitNet';

@@ -27,6 +27,8 @@ class LightningReceiveTab extends StatefulWidget {
 }
 
 class _LightningReceiveTabState extends State<LightningReceiveTab> with AutomaticKeepAliveClientMixin {
+
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -35,7 +37,8 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SingleChildScrollView(
-        child: Column(
+        child: controller.isUnlocked.value
+            ? Column(
           mainAxisSize: MainAxisSize.min,
           //mainAxisSize: MainAxisSize.min,
           // The contents of the screen are centered vertically
@@ -65,8 +68,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                             margin: const EdgeInsets.all(AppTheme.cardPadding),
                             decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
                             child: Padding(
-                              padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                              // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
+                              padding: EdgeInsets.all(AppTheme.cardPadding / 1.25),
                               child: Obx(() => PrettyQrView.data(
                                   data: "lightning: ${controller.qrCodeDataStringLightning}",
                                   decoration: const PrettyQrDecoration(
@@ -74,7 +76,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                                       roundFactor: 1,
                                     ),
                                     image: PrettyQrDecorationImage(
-                                      image: const AssetImage('assets/images/lightning.png'),
+                                      image: AssetImage('assets/images/lightning.png'),
                                     ),
                                   ))),
                             ),
@@ -167,11 +169,11 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                     controller.satController.text == "0" || controller.satController.text.isEmpty
                         ? const SizedBox()
                         : Icon(
-                            getCurrencyIcon(
-                              BitcoinUnits.SAT.name,
-                            ),
-                            color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
-                          )
+                      getCurrencyIcon(
+                        BitcoinUnits.SAT.name,
+                      ),
+                      color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
+                    )
                   ],
                 ),
               );
@@ -179,6 +181,49 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
             const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
+          ],
+        )
+            : Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: AppTheme.cardPadding * 2),
+            CustomPaint(
+              foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
+              child: Container(
+                margin: const EdgeInsets.all(AppTheme.cardPadding),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
+                child: Padding(
+                  padding: EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                  child: PrettyQrView.data(
+                      data: "ERROR",
+                      decoration: const PrettyQrDecoration(
+                        shape: PrettyQrSmoothSymbol(
+                          roundFactor: 1,
+                        ),
+                        image: PrettyQrDecorationImage(
+                          image: AssetImage('assets/images/key.png'),
+                        ),
+                      )),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 2),
+            Container(
+              padding: const EdgeInsets.all(AppTheme.cardPadding),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.black60,
+                borderRadius: AppTheme.cardRadiusBig,
+              ),
+              width: double.infinity,
+              child: Text(
+                "You need to unlock your lightning card before you can receive funds here...",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white90,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 2),
           ],
         ),
       ),

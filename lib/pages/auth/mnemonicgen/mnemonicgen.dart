@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -128,15 +129,15 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("Private data stored successfully.");
 
       // Begin user registration process
-      final registrationController = Get.find<RegistrationController>();
+      final litdController = Get.find<LitdController>();
       logger.i("AWS ECS: Registering and setting up user...");
 
-      registrationController.isLoading.value = true;
+      litdController.isLoading.value = true;
 
       final String shortDid = did.substring(0, 12);
-      final registrationResponse = await registrationController.registerAndSetupUser(shortDid, mnemonic);
+      final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonic);
 
-      registrationController.isLoading.value = false;
+      litdController.isLoading.value = false;
 
       // Update the state (if needed)
       setState(() {

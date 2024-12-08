@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transact
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
@@ -18,6 +19,7 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -91,6 +93,17 @@ class WalletsController extends BaseController {
 
   late StreamController<dynamic> sendTransactionsStream;
   RxInt futuresCompleted = 0.obs;
+
+  // A reactive variable to hold the fetched sub-server status
+  Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
+
+  // Call this method from your UI when you want to fetch the status
+  Future<void> updateSubServerStatus() async {
+    final result = await fetchSubServerStatus();
+    subServersStatus.value = result;
+  }
+
+
 
   void setHideBalance({bool? hide}) {
     print(hide);

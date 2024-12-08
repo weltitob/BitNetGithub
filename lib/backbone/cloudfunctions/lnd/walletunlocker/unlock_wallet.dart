@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:get/get.dart';
 
-Future<dynamic> unlockWallet(String restHostIP) async {
-  String restHost = '$restHostIP:8443';
+Future<dynamic> unlockWallet() async {
+
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
 
   // Encode the password to Base64
-  String password = "i__hate..passwords!!";
+  String password = "development_password_dj83zb"; //i__hate..passwords!!
   String encodedPassword = base64Encode(utf8.encode(password));
 
   // URL and data payload
