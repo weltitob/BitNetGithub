@@ -98,6 +98,7 @@ class WalletsController extends BaseController {
   }
 
 
+
   void setHideBalance({bool? hide}) {
     print(hide);
     if (hide != null) {
