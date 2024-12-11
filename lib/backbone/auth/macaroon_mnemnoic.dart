@@ -1,16 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/key_derivators/pbkdf2.dart';
 import 'package:pointycastle/macs/hmac.dart';
-import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:pointycastle/ecc/api.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
-import 'package:pointycastle/export.dart';
 import 'package:convert/convert.dart'; // For hex encoding/decoding
-
 
 Uint8List deriveSeedFromMnemonic(String mnemonic) {
   final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));

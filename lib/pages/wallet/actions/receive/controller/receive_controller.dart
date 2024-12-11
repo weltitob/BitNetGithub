@@ -21,9 +21,8 @@ enum ReceiveType {
 }
 
 class ReceiveController extends BaseController {
-  final BuildContext context;
 
-  ReceiveController(this.context);
+
   RxBool isUnlocked = true.obs; // Added here
 
   RxString qrCodeDataStringLightning = "".obs;

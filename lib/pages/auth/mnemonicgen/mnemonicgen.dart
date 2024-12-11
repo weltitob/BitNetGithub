@@ -1,14 +1,11 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -21,14 +18,12 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
-import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pointycastle/pointycastle.dart';
 import 'package:provider/provider.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
@@ -48,7 +43,6 @@ class MnemonicController extends State<MnemonicGen> {
   late String did;
 
   bool hasWrittenDown = false;
-
   bool isLoadingSignUp = false;
 
   late Mnemonic mnemonic;
@@ -81,39 +75,40 @@ class MnemonicController extends State<MnemonicGen> {
     logger.i("Generating mnemonic...");
 
     try {
+
       // Use the fixed mnemonic to mirror the Python code
       // Generate a 24-word mnemonic
       // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
-      String mnemonic = bip39.generateMnemonic(strength: 256);
+      // String mnemonic = bip39.generateMnemonic(strength: 256);
 
-      mnemonicString = mnemonic;
-      print('Generated 24-word mnemonic:\n$mnemonic\n');
+      var mnemonic = Mnemonic.generate(
+        Language.english,
+        passphrase: "test",
+        entropyLength: 256,
+      );
+
+      mnemonicString = mnemonic.sentence;
+
+      // Gene rate 256-bit entropy and create a mnemonic via api
+
+      // dynamic mnemonicString = await generateSeed();
+      logger.i("Resp from gen Seed: $mnemonicString");
 
       setState(() {
-        mnemonicTextController.text = mnemonic;
+        mnemonicTextController.text = mnemonicString;
       });
 
-      // Validate the mnemonic
-      bool isValid = bip39.validateMnemonic(mnemonic);
-      print('Mnemonic is valid: $isValid\n');
+      HDWallet hdWallet = hdWalletFromMnemonic(mnemonicString);
 
-      // Convert mnemonic to seed
-      String seed = bip39.mnemonicToSeedHex(mnemonic);
-      print('Seed derived from mnemonic:\n$seed\n');
-
-      Uint8List seedUnit = bip39.mnemonicToSeed(mnemonic);
-
-      HDWallet hdWallet = HDWallet.fromSeed(seedUnit,);
       // Master private key (WIF)
       String? masterPrivateKeyWIF = hdWallet.wif;
-      print('Master Private Key (WIF): $masterPrivateKeyWIF\n');
+      logger.i('Master Private Key (WIF): $masterPrivateKeyWIF\n');
 
       // Master public key (compressed)
       String? masterPublicKey = hdWallet.pubKey;
-      print('Master Public Key: $masterPublicKey\n');
-
+      logger.i('Master Public Key: $masterPublicKey\n');
       String? masterPrivateKey = hdWallet.privKey;
-      print('Master Private Key: $masterPrivateKey\n');
+      logger.i('Master Private Key: $masterPrivateKey\n');
 
       // Set the DID (Decentralized Identifier) as the public key hex
       did = masterPublicKey!;
@@ -133,9 +128,8 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("AWS ECS: Registering and setting up user...");
 
       litdController.isLoading.value = true;
-
       final String shortDid = did.substring(0, 12);
-      final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonic);
+      final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonicString);
 
       litdController.isLoading.value = false;
 
@@ -143,7 +137,6 @@ class MnemonicController extends State<MnemonicGen> {
       setState(() {
         // Placeholder for any UI updates
       });
-
       logger.i("User registration and setup completed.");
 
     } catch (e) {

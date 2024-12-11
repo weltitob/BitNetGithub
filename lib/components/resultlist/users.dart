@@ -108,8 +108,8 @@ class _UsersListState extends State<UsersList>
         } catch (e) {
           print("Error trying to fetch user with did $did from Firebase: $e");
           // If desired, handle removal of local user data here:
-          // await deleteUserFromStoredIONData(did);
-          // print("User with did $did removed from local storage");
+          await deleteUserFromStoredIONData(did);
+          print("User with did $did removed from local storage");
           throw Exception(
               "An error occured trying to fetch user with did $did from Firebase: $e");
         }

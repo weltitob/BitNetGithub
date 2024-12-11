@@ -5,18 +5,25 @@ import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/stateservice.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/serverstate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:get/get.dart';
 
+
 class LitdController extends GetxController {
+  // If runInReleaseMode is not explicitly set, it defaults to kReleaseMode
+  // This can be manually overridden at runtime by setting it before the controller initializes.
+  static bool runInReleaseMode = false; //kReleaseMode
+
   // Start with empty by default; will conditionally set in onInit
   RxString litd_baseurl = ''.obs;
   var isLoading = false.obs;
@@ -30,8 +37,8 @@ class LitdController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // In debug mode, force the litd_baseurl to the AppTheme debug value and never update it
-    if (!kReleaseMode) {
+    // If not running in release mode, force the litd_baseurl to the AppTheme debug value and never update it
+    if (!runInReleaseMode) {
       litd_baseurl.value = AppTheme.baseUrlLightningTerminalWithPort;
       publicIp.value = AppTheme.baseUrlLightningTerminal;
     }
@@ -70,56 +77,76 @@ class LitdController extends GetxController {
       logger.i("AWS ECS Register and setup user called");
 
       isLoading.value = true;
+      logger.i("Calling registerUserWithEcsTask for taskTag: $taskTag");
       int resultStatus = await registerUserWithEcsTask(taskTag);
 
+      logger.i("Result status: $resultStatus");
+
       if (resultStatus == 200) {
-        logger.i("User registered successfully");
+        logger.i("User registered successfully, starting ECS task...");
         EcsTaskStartResponse ecsResponse = await startEcsTask(taskTag);
 
-        // Only update these values if we are in release mode
-        if (kReleaseMode) {
+        if (runInReleaseMode) {
           publicIp.value = ecsResponse.details!.publicIp;
           logger.i("Public IP: ${publicIp.value}");
           litd_baseurl.value = "${ecsResponse.details!.publicIp}:8443";
         } else {
-          // In debug mode, we do not overwrite publicIp and litd_baseurl
-          logger.i("Debug mode detected. Not overwriting litd_baseurl or publicIp.");
+          logger.i("Non-release mode detected. Not overwriting litd_baseurl or publicIp.");
         }
 
+        // Convert mnemonic into seed
+        logger.i("Splitting mnemonic into list...");
         List<String> mnemonicSeedList = mnemonicString.split(' ');
-        String seed = bip39.mnemonicToSeedHex(mnemonicString);
-        logger.i('Seed derived from mnemonic:\n$seed\n');
-        dynamic macaroon_root_key = seed;
 
-        // Wait a bit for LND services to be ready
-        await Future.delayed(Duration(seconds: 10));
+        HDWallet hdWallet = hdWalletFromMnemonic(mnemonicString);
+        final String macaroon_root_key = hdWallet.privKey!;
 
-        dynamic initWalletResponse = await initWallet(mnemonicSeedList, macaroon_root_key);
-        logger.i("Wallet initialization response: $initWalletResponse");
+        logger.i("Requesting initial wallet state...");
+        WalletState initialState = await requestState();
+        logger.i("Initial Wallet State: ${initialState.description}, ${initialState}");
+
+        logger.i("Waiting for wallet to be ready...");
+        await waitForWalletReady();
+        logger.i("Wallet initialization complete and ready to use.");
+
+        logger.i("Initializing wallet now...");
+        try {
+          dynamic initWalletResponse = await initWallet(mnemonicSeedList, macaroon_root_key);
+          logger.i("Wallet initialization response: $initWalletResponse");
+        } catch (e, stacktrace) {
+          logger.e("Error during initWallet: $e");
+          logger.e("Stacktrace: $stacktrace");
+        }
+
+        // Optionally, you can request the state again
+        logger.i("Requesting wallet state after readiness...");
+        WalletState finalState = await requestState();
+        logger.i("Final Wallet State: ${finalState.description}, ${initialState}");
 
         registrationSuccess.value = true;
 
+        logger.i("Updating server state in Firestore...");
         await _updateServerStateInFirestore(
           isActive: true,
-          mnemonicSeed: mnemonicString,
-          macaroonRootKey: seed,
         );
+
+        logger.i("registerAndSetupUser completed successfully.");
       } else {
-        logger.e("Registration failed");
-        registrationSuccess.value = false;
+        logger.e("User registration did not return 200 status. Result was $resultStatus.");
+        // Handle non-200 status result here if needed.
       }
-    } catch (error) {
-      print("Error occurred: $error");
-      registrationSuccess.value = false;
+    } catch (e, stacktrace) {
+      final logger = Get.find<LoggerService>();
+      logger.e("An error occurred in registerAndSetupUser: $e");
+      logger.e("Stacktrace: $stacktrace");
     } finally {
       isLoading.value = false;
     }
   }
 
+
   Future<void> _updateServerStateInFirestore({
     bool? isActive,
-    String? mnemonicSeed,
-    String? macaroonRootKey,
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -144,8 +171,6 @@ class LitdController extends GetxController {
       isActive: activeStatus,
       lastUpdated: DateTime.now(),
       subServers: subServersMap,
-      mnemonicSeed: mnemonicSeed,
-      macaroonRootKey: macaroonRootKey,
     );
 
     await usersCollection
@@ -171,10 +196,15 @@ class LitdController extends GetxController {
       final docSnap = await docRef.get();
 
       if (docSnap.exists && docSnap.data() != null) {
+
         final data = docSnap.data()!;
         final stateModel = ServerStateModel.fromMap(data);
 
-        publicIp.value = stateModel.publicIp;
+        // Only update IP and baseurl in release mode
+        if (runInReleaseMode) {
+          publicIp.value = stateModel.publicIp;
+          litd_baseurl.value = "${stateModel.publicIp}:8443";
+        }
 
         if (stateModel.subServers != null) {
           final subServersData = {'sub_servers': stateModel.subServers!};
@@ -195,4 +225,5 @@ class LitdController extends GetxController {
   void dispose() {
     super.dispose();
   }
+
 }
