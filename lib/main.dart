@@ -15,6 +15,7 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/router.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -108,6 +109,7 @@ Future<void> main() async {
   Get.put(SettingsController());
   Get.put(TransactionController());
   Get.put(LitdController());
+  Get.put(ReceiveController(), permanent: true);
   // Run the app
   runApp(
     const MyApp(),
