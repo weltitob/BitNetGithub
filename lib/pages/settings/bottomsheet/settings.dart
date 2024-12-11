@@ -53,10 +53,6 @@ class Settings extends StatelessWidget {
                 const Expanded(
                   child: ChangeLanguage(),
                 ),
-              if (controller.currentTab.value == 'social_recovery')
-                Expanded(
-                  child: SocialRecoveryView(),
-                ),
               if (controller.currentTab.value == "agbs")
                 Expanded(
                   child: AgbsAndImpressumScreen(

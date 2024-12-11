@@ -12,6 +12,7 @@ import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,10 +23,12 @@ class BitcoinCardInformationScreen extends StatefulWidget {
   const BitcoinCardInformationScreen({super.key});
 
   @override
-  State<BitcoinCardInformationScreen> createState() => _BitcoinCardInformationScreenState();
+  State<BitcoinCardInformationScreen> createState() =>
+      _BitcoinCardInformationScreenState();
 }
 
-class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScreen> {
+class _BitcoinCardInformationScreenState
+    extends State<BitcoinCardInformationScreen> {
   bool isShowMore = false;
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
@@ -69,7 +72,8 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
                 padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                 child: Container(
                   height: AppTheme.cardPadding * 7.5,
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding),
                   child: const BalanceCardBtc(),
                 ),
               ),
@@ -77,7 +81,8 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
             SliverToBoxAdapter(
               child: Center(
                   child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
                 child: BitNetListTile(
                     text: "Addresses",
                     trailing: const Text("Show"),
@@ -92,12 +97,14 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                    Text(L10n.of(context)!.activity,
+                        style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: AppTheme.elementSpacing.h),
                   ],
                 ),
@@ -108,6 +115,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
               hideOnchain: true,
               filters: [L10n.of(context)!.onchain],
               scrollController: scrollController,
+              newData: Get.find<WalletsController>().newTransactionData,
             ),
           ],
         ),
@@ -148,7 +156,8 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       for (int i = 0; i < accounts.length; i++) {
         var addresses = accounts[i]['addresses'];
         for (int j = 0; j < addresses.length; j++) {
-          finalAddresses[addresses[j]['address']] = double.parse(addresses[j]['balance']);
+          finalAddresses[addresses[j]['address']] =
+              double.parse(addresses[j]['balance']);
         }
       }
       sortedAddresses = finalAddresses.entries.toList();
@@ -174,7 +183,8 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       ),
       body: isLoadingAddress
           ? Container(
-              margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+              margin: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding * 2),
               height: AppTheme.cardPadding * 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -197,7 +207,8 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                 children: [
                   const SizedBox(height: AppTheme.cardPadding * 3),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: SearchFieldWidget(
                       hintText: 'Search for specific address',
                       isSearchEnabled: true,
@@ -215,17 +226,20 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                       // shrinkWrap: true,
                       itemCount: sortedAddresses.length,
                       itemBuilder: (ctx, i) {
-                        if (!sortedAddresses[i].key.contains(searchPrompt) && searchPrompt.isNotEmpty) {
+                        if (!sortedAddresses[i].key.contains(searchPrompt) &&
+                            searchPrompt.isNotEmpty) {
                           return Container();
                         }
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.elementSpacing),
                           child: BitNetListTile(
                             leading: SizedBox(
                                 width: 0.4.sw,
                                 child: Text(
                                   sortedAddresses[i].key,
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                   overflow: TextOverflow.ellipsis,
                                 )),
                             trailing: SizedBox(
@@ -236,14 +250,19 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                                   children: [
                                     Text(
                                       textAlign: TextAlign.end,
-                                      sortedAddresses[i].value.toInt().toString(),
+                                      sortedAddresses[i]
+                                          .value
+                                          .toInt()
+                                          .toString(),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Icon(AppTheme.satoshiIcon)
                                   ],
                                 )),
                             onTap: () {
-                              context.go('/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}', extra: sortedAddresses[i].value);
+                              context.go(
+                                  '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
+                                  extra: sortedAddresses[i].value);
                             },
                           ),
                         );

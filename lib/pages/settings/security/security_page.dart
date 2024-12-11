@@ -4,12 +4,15 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
+import 'package:bitnet/pages/settings/social_recovery/social_recovery_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:popover/popover.dart';
 
 class SecuritySettingsPage extends StatefulWidget {
   const SecuritySettingsPage({Key? key}) : super(key: key);
@@ -46,11 +49,10 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         title: "Plain Key and DID",
       ),
       SettingsPageModel(
-        widget: const RecoverWithQRPage(),
-        goBack: true,
-        iconData: Icons.verified_user,
-        title: "Recover with QR Code"
-      ),
+          widget: const RecoverWithQRPage(),
+          goBack: true,
+          iconData: Icons.verified_user,
+          title: "Recover with QR Code"),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
@@ -58,10 +60,23 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         title: "Recovery phrases",
       ),
       SettingsPageModel(
-        widget: Container(),
+        widget: SocialRecoveryView(),
         goBack: true,
         iconData: Icons.live_help_rounded,
         title: "Social Recovery",
+        backHandler: () {
+          final controller = Get.find<SettingsController>();
+
+          if (controller.pageControllerSocialRecovery.page != null &&
+              controller.pageControllerSocialRecovery.page != 0) {
+            controller.pageControllerSocialRecovery.previousPage(
+                duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+          } else {
+            currentview = 0;
+            setState(() {});
+          }
+        },
+        actions: [SocialRecoveryInfoAction()],
       ),
       SettingsPageModel(
         widget: Container(),
@@ -90,14 +105,15 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       body: isVerified
-          ? Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: AppTheme.cardPadding * 1.5,
-                ),
-                pages[currentview].widget,
-              ],
-            )
+          ? PopScope(
+              canPop: currentview == 0,
+              onPopInvokedWithResult: (b, d) {
+                if (currentview != 0) {
+                  currentview = 0;
+                  setState(() {});
+                }
+              },
+              child: pages[currentview].widget)
           : Container(
               child: const Expanded(
                 child: Center(
@@ -119,12 +135,23 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             ),
       context: context,
       appBar: bitnetAppBar(
-          text: "Security",
+          text: currentview != 0 ? pages[currentview].title : "Security",
           context: context,
           buttonType: ButtonType.transparent,
+          actions: pages[currentview].actions,
           onTap: () {
-            final controller = Get.find<SettingsController>();
-            controller.switchTab('main');
+            if (pages[currentview].backHandler != null) {
+              pages[currentview].backHandler!();
+            } else {
+              final controller = Get.find<SettingsController>();
+              if (currentview != 0) {
+                setState(() {
+                  currentview = 0;
+                });
+              } else {
+                controller.switchTab('main');
+              }
+            }
           }),
     );
   }
@@ -138,6 +165,10 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           BitNetListTile(
             leading: const Icon(FontAwesomeIcons.buildingLock),
             text: "DID and private key",
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
             onTap: () {
               setState(() {
                 currentview = 2;
@@ -146,7 +177,11 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           BitNetListTile(
             leading: const Icon(FontAwesomeIcons.book),
-            text:"Word recovery",
+            text: "Word recovery",
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
             onTap: () {
               setState(() {
                 currentview = 3;
@@ -156,6 +191,10 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           BitNetListTile(
               leading: const Icon(FontAwesomeIcons.qrcode),
               text: "Recover with QR Code",
+              trailing: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 setState(() {
                   currentview = 1;
@@ -164,9 +203,13 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           BitNetListTile(
             leading: const Icon(FontAwesomeIcons.person),
             text: "Social recovery",
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
             onTap: () {
               setState(() {
-                currentview = 4;
+                currentview = 3;
               });
             },
           ),

@@ -30,17 +30,9 @@ if (flutterVersionName == null) {
 
 
 android {
-    compileSdkVersion 34
-    ndkVersion "25.1.8937393"
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+    namespace = "com.bitnet"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -74,7 +66,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.8.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.7.0'
     implementation 'com.google.android.gms:play-services-wallet:19.1.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'

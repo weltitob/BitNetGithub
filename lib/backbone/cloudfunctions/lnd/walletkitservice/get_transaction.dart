@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -10,12 +8,11 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> publishTransaction(String tx_hex, String label) async {
+Future<RestResponse> getTransaction(String tx_id) async {
   LoggerService logger = Get.find();
-  final litdController = Get.find<LitdController>();
-  final String restHost = litdController.litd_baseurl.value;
+  String restHost = AppTheme.baseUrlLightningTerminal;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
-  String url = 'https://$restHost/v2/wallet/tx';
+  String url = 'https://$restHost/v2/wallet/tx?txid=$tx_id';
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -24,28 +21,25 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
   };
-  final Map<String, dynamic> data = {
-    'tx_hex': tx_hex,
-    'label': label,
-  };
+  final Map<String, dynamic> data = {};
 
   HttpOverrides.global = MyHttpOverrides();
 
   try {
     final DioClient dioClient = Get.find<DioClient>();
 
-    var response = await dioClient.post(url: url, headers: headers, data: data);
+    var response = await dioClient.get(url: url, headers: headers, data: data);
     logger.i('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
       return RestResponse(
           statusCode: "${response.statusCode}",
-          message: "Successfully published transaction",
+          message: "Successfully got transaction",
           data: response.data);
     } else {
       logger.e(
-          'Failed to load data (publishtransaction.dart): ${response.statusCode}, ${response.data}');
+          'Failed to load data (get_transaction.dart): ${response.statusCode}, ${response.data}');
       return RestResponse(
           statusCode: "error",
           message:
@@ -53,7 +47,7 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
           data: {});
     }
   } catch (e) {
-    logger.e('Error trying to publish transaction: $e');
+    logger.e('Error trying to get transaction: $e');
     return RestResponse(
         statusCode: "error",
         message:

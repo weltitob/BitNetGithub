@@ -38,15 +38,15 @@ class WalletsController extends BaseController {
   late final Future<LottieComposition> compositionReceive;
   late final ScrollController scrollController;
   RxInt currentView = 0.obs;
-  late OnchainBalance onchainBalance = OnchainBalance(
+  Rx<OnchainBalance> onchainBalance = OnchainBalance(
     totalBalance: '0',
     confirmedBalance: '0',
     unconfirmedBalance: '0',
     lockedBalance: '0',
     reservedBalanceAnchorChan: '',
     accountBalance: '',
-  );
-  late LightningBalance lightningBalance = LightningBalance(
+  ).obs;
+  Rx<LightningBalance> lightningBalance = LightningBalance(
     balance: '0',
     pendingOpenBalance: '0',
     localBalance: '0',
@@ -55,7 +55,7 @@ class WalletsController extends BaseController {
     pendingOpenLocalBalance: '',
     unsettledRemoteBalance: '',
     pendingOpenRemoteBalance: '',
-  );
+  ).obs;
 
   RxString predictedLightningBalance = '0'.obs;
   RxString predictedBtcBalance = '0'.obs;
@@ -67,7 +67,8 @@ class WalletsController extends BaseController {
   Rx<ChartLine?> chartLines = Rx<ChartLine?>(null);
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
-  Rx<BitcoinUnitModel> totalBalance = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
+  Rx<BitcoinUnitModel> totalBalance =
+      BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
   String loadMessageError = "";
   int errorCount = 0;
   int loadedFutures = 0;
@@ -86,6 +87,11 @@ class WalletsController extends BaseController {
   RxMap<String, dynamic> lightningPayments = <String, dynamic>{}.obs;
   RxMap<String, dynamic> loopOperations = <String, dynamic>{}.obs;
   RxList<TransactionItemData> allTransactions = RxList.empty(growable: true);
+  List<dynamic> newTransactionData = List.empty(growable: true);
+
+  List<String> btcAddresses = List<String>.empty(growable: true);
+
+  late StreamController<dynamic> sendTransactionsStream;
   RxInt futuresCompleted = 0.obs;
 
   // A reactive variable to hold the fetched sub-server status
@@ -186,8 +192,10 @@ class WalletsController extends BaseController {
     // Get.put(() => SellSheetController());
     scrollController = ScrollController();
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
-    selectedCard.value = LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+    selectedCard.value =
+        LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
+        (value) {
       coin.value = value.data()?["showCoin"] ?? false;
       selectedCurrency = RxString("");
       selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
@@ -237,12 +245,17 @@ class WalletsController extends BaseController {
       lightningInvoices.addAll(val.data);
       futuresCompleted++;
     });
+
+    sendTransactionsStream = StreamController<dynamic>.broadcast();
   }
 
   void handleFuturesCompleted(BuildContext context) {
-    logger.i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
+    logger.i(
+        "Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
     if (errorCount > 1) {
-      showOverlay(context, "Failed to load certain services, please try again later.", color: AppTheme.errorColor);
+      showOverlay(
+          context, "Failed to load certain services, please try again later.",
+          color: AppTheme.errorColor);
     } else if (errorCount == 1) {
       showOverlay(context, loadMessageError, color: AppTheme.errorColor);
     }
@@ -252,8 +265,9 @@ class WalletsController extends BaseController {
     try {
       RestResponse onchainBalanceRest = await walletBalance();
       if (!onchainBalanceRest.data.isEmpty) {
-        OnchainBalance onchainBalance = OnchainBalance.fromJson(onchainBalanceRest.data);
-        this.onchainBalance = onchainBalance;
+        OnchainBalance onchainBalance =
+            OnchainBalance.fromJson(onchainBalanceRest.data);
+        this.onchainBalance.value = onchainBalance;
       }
       changeTotalBalanceStr();
     } on Error catch (_) {
@@ -268,9 +282,10 @@ class WalletsController extends BaseController {
     try {
       RestResponse lightningBalanceRest = await channelBalance();
 
-      LightningBalance lightningBalance = LightningBalance.fromJson(lightningBalanceRest.data);
+      LightningBalance lightningBalance =
+          LightningBalance.fromJson(lightningBalanceRest.data);
       if (!lightningBalanceRest.data.isEmpty) {
-        this.lightningBalance = lightningBalance;
+        this.lightningBalance.value = lightningBalance;
       }
       changeTotalBalanceStr();
     } on Error catch (_) {
@@ -283,15 +298,16 @@ class WalletsController extends BaseController {
 
   changeTotalBalanceStr() {
     // Assuming both values are strings and represent numerical values
-    String confirmedBalanceStr = onchainBalance.confirmedBalance;
-    String balanceStr = lightningBalance.balance;
+    String confirmedBalanceStr = onchainBalance.value.confirmedBalance;
+    String balanceStr = lightningBalance.value.balance;
 
     double confirmedBalanceSAT = double.parse(confirmedBalanceStr);
     double balanceSAT = double.parse(balanceStr);
 
     totalBalanceSAT.value = confirmedBalanceSAT + balanceSAT;
 
-    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(totalBalanceSAT.value, BitcoinUnits.SAT);
+    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
+        totalBalanceSAT.value, BitcoinUnits.SAT);
     final balance = bitcoinUnit.amount;
     final unit = bitcoinUnit.bitcoinUnitAsString;
 
@@ -303,6 +319,7 @@ class WalletsController extends BaseController {
   void dispose() {
     transactionsSubscription?.cancel();
     scrollController.dispose();
+    sendTransactionsStream.close();
     super.dispose();
   }
 

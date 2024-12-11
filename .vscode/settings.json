@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/home/izak/Documents/flutter-projects/client_projects/bitnet/linux"
+    "cmake.sourceDirectory": "/home/izak/Documents/flutter-projects/client_projects/bitnet/linux",
+    "cmake.ignoreCMakeListsMissing": true
 }

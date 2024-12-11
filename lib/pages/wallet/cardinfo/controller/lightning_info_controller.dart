@@ -61,6 +61,8 @@ class LightningInfoController extends GetxController {
       }
     }
     newTransactions.removeWhere((test) => duplicateHashes.contains(test.rHash));
+    btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
+
     WriteBatch batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < newTransactions.length; i++) {
       batch.set(

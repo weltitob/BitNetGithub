@@ -1,14 +1,20 @@
+import 'dart:isolate';
+
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +24,6 @@ import 'package:get/get.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class ThemeBuilder extends StatefulWidget {
   final Widget Function(
@@ -59,7 +64,8 @@ class ThemeController extends State<ThemeBuilder> {
   void loadData(_) async {
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    if (allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
+    if (FirebaseAuth.instance.currentUser != null &&
+        allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
@@ -88,6 +94,18 @@ class ThemeController extends State<ThemeBuilder> {
             _themeMode ?? ThemeMode.system;
         _primaryColor = rawColor == null ? Colors.white : Color(rawColor);
       });
+
+      getBTCAddresses().then((data) {
+        LocalStorage.instance.setStringList(
+            data, "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
+
+        Get.find<WalletsController>().btcAddresses = data;
+      }, onError: (err) {
+        Get.find<WalletsController>()
+            .btcAddresses = LocalStorage.instance.getStringList(
+                "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}") ??
+            [];
+      });
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",
@@ -99,6 +117,42 @@ class ThemeController extends State<ThemeBuilder> {
       };
       settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
     }
+  }
+
+  Future<List<String>> getBTCAddresses() async {
+    final receivePort = ReceivePort();
+    RestResponse response = await listBtcAddresses();
+    if (response.statusCode == "200") {
+      List<String> localAddresses = LocalStorage.instance.getStringList(
+              'btc_addresses:${FirebaseAuth.instance.currentUser!.uid}') ??
+          [];
+      await Isolate.spawn(
+          loadAddresses, [receivePort.sendPort, response.data, localAddresses]);
+
+      final data =
+          await receivePort.first as List<String>; // Wait for isolate result
+      return data;
+    }
+    return [];
+  }
+
+  static void loadAddresses(List<dynamic> args) async {
+    SendPort sendPort = args[0];
+    Map<String, dynamic> data = args[1];
+    List<String> localAddresses = args[2];
+    var accounts = data['account_with_addresses'] as List;
+    List<String> finalAddresses = List<String>.empty(growable: true);
+    for (int i = 0; i < accounts.length; i++) {
+      var addresses = accounts[i]['addresses'];
+      for (int j = 0; j < addresses.length; j++) {
+        finalAddresses.add(addresses[j]['address']);
+      }
+    }
+    List<String> mergedList = [
+      ...{...finalAddresses, ...localAddresses}
+    ];
+
+    sendPort.send(mergedList);
   }
 
   Future<void> setThemeMode(ThemeMode newThemeMode) async {
@@ -118,11 +172,10 @@ class ThemeController extends State<ThemeBuilder> {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
-    }
-    if (newPrimaryColor == null) {
+    } else if (newPrimaryColor == null) {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+          .update({widget.primaryColorSettingsKey: Colors.white.value});
     } else {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -141,6 +194,7 @@ class ThemeController extends State<ThemeBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    print('primaryColor is ${primaryColor}');
     return Provider(
       create: (_) => this,
       child: DynamicColorBuilder(

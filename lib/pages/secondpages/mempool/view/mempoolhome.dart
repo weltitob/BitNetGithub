@@ -60,25 +60,35 @@ class _MempoolHomeState extends State<MempoolHome> {
       await controller.getDataHeight(controller.blockHeight! + 15);
       await controller.getDataHeight(controller.blockHeight!);
       await controller.getDataHeight(controller.blockHeight! - 15);
-      controller.indexBlock.value = controller.bitcoinData.indexWhere((e) => e.height == controller.blockHeight);
-      controller.selectedIndex = controller.bitcoinData.indexWhere((e) => e.height == controller.blockHeight);
-      controller.txDetailsConfirmedF(controller.bitcoinData[controller.indexBlock.value].id!).then((_) async {
-        Map<String, dynamic> data = Get.find<WalletsController>().onchainTransactions;
+      controller.indexBlock.value = controller.bitcoinData
+          .indexWhere((e) => e.height == controller.blockHeight);
+      controller.selectedIndex = controller.bitcoinData
+          .indexWhere((e) => e.height == controller.blockHeight);
+      controller
+          .txDetailsConfirmedF(
+              controller.bitcoinData[controller.indexBlock.value].id!)
+          .then((_) async {
+        Map<String, dynamic> data =
+            Get.find<WalletsController>().onchainTransactions;
         if (data.isNotEmpty) {
           onchainTransactions = await Future.microtask(() {
-            BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
+            BitcoinTransactionsList bitcoinTransactions =
+                BitcoinTransactionsList.fromJson(data);
 
             return bitcoinTransactions.transactions
-                .where((tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
+                .where(
+                    (tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
                 .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
                 .toList();
           });
         }
       });
-      controller.txDetailsF(controller.bitcoinData[controller.indexBlock.value].id!, 0);
+      controller.txDetailsF(
+          controller.bitcoinData[controller.indexBlock.value].id!, 0);
       controller.isLoading.value = false;
       _controller.animateTo(
-        controller.scrollValue.value.w + (140.w * controller.indexBlock.value).w,
+        controller.scrollValue.value.w +
+            (140.w * controller.indexBlock.value).w,
         duration: const Duration(
           milliseconds: 500,
         ),
@@ -118,10 +128,12 @@ class _MempoolHomeState extends State<MempoolHome> {
           );
         },
       );
-    Map<String, dynamic> data = Get.find<WalletsController>().onchainTransactions;
+    Map<String, dynamic> data =
+        Get.find<WalletsController>().onchainTransactions;
     if (data.isNotEmpty) {
       Future.microtask(() {
-        BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
+        BitcoinTransactionsList bitcoinTransactions =
+            BitcoinTransactionsList.fromJson(data);
 
         return bitcoinTransactions.transactions;
       }).then((val) {
@@ -145,7 +157,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       },
       child: SafeArea(
         child: bitnetScaffold(
-          extendBodyBehindAppBar: true,
+          extendBodyBehindAppBar: false,
           context: context,
           appBar: widget.isFromHome == true
               ? const PreferredSize(
@@ -177,7 +189,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                       : Column(
                           children: [
                             SizedBox(
-                              height: AppTheme.cardPadding.h * 2.h,
+                              height: AppTheme.cardPadding.h * 0.1.h,
                             ),
                             // Container(
                             //   margin: EdgeInsets.only(
@@ -243,46 +255,88 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       'Something went wrong!',
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                        fontWeight: FontWeight.w700,
+                                                        fontWeight:
+                                                            FontWeight.w700,
                                                         fontSize: 22,
                                                       ),
                                                     )
                                                   : SizedBox(
-                                                      height: 255.h,
+                                                      height:
+                                                          AppTheme.cardPadding *
+                                                              7.w,
                                                       child: ListView.builder(
                                                         primary: false,
                                                         shrinkWrap: true,
                                                         reverse: true,
-                                                        physics: const NeverScrollableScrollPhysics(),
-                                                        scrollDirection: Axis.horizontal,
-                                                        itemCount: controller.mempoolBlocks.length,
-                                                        itemBuilder: (context, index) {
-                                                          var min = (index + 1) * (controller.da!.timeAvg! / 60000);
+                                                        physics:
+                                                            const NeverScrollableScrollPhysics(),
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemCount: controller
+                                                            .mempoolBlocks
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          var min = (index +
+                                                                  1) *
+                                                              (controller.da!
+                                                                      .timeAvg! /
+                                                                  60000);
                                                           return GestureDetector(
                                                             onTap: () {
-                                                              channel.sink.add('{"track-mempool-block":$index}');
+                                                              channel.sink.add(
+                                                                  '{"track-mempool-block":$index}');
                                                               setState(
                                                                 () {
-                                                                  controller.showNextBlock.value = true;
-                                                                  controller.showBlock.value = false;
-                                                                  controller.indexShowBlock.value = index;
-                                                                  controller.selectedIndexData = index;
-                                                                  controller.selectedIndex = -1;
+                                                                  controller
+                                                                      .showNextBlock
+                                                                      .value = true;
+                                                                  controller
+                                                                      .showBlock
+                                                                      .value = false;
+                                                                  controller
+                                                                      .indexShowBlock
+                                                                      .value = index;
+                                                                  controller
+                                                                          .selectedIndexData =
+                                                                      index;
+                                                                  controller
+                                                                      .selectedIndex = -1;
                                                                 },
                                                               );
                                                               // controller.getWebSocketData();
                                                             },
                                                             child: Flash(
                                                               infinite: true,
-                                                              delay: const Duration(seconds: 10),
-                                                              duration: const Duration(seconds: 5),
+                                                              delay:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          10),
+                                                              duration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          5),
                                                               child: DataWidget.notAccepted(
-                                                                  key: index == 0 ? controller.containerKey : GlobalKey(),
-                                                                  mempoolBlocks: controller.mempoolBlocks[index],
-                                                                  mins: min.toStringAsFixed(0),
-                                                                  index: controller.selectedIndexData == index ? 1 : 0,
-                                                                  singleTx: false,
-                                                                  hasUserTxs: false),
+                                                                  key: index == 0
+                                                                      ? controller
+                                                                          .containerKey
+                                                                      : GlobalKey(),
+                                                                  mempoolBlocks:
+                                                                      controller
+                                                                              .mempoolBlocks[
+                                                                          index],
+                                                                  mins: min
+                                                                      .toStringAsFixed(
+                                                                          0),
+                                                                  index: controller
+                                                                              .selectedIndexData ==
+                                                                          index
+                                                                      ? 1
+                                                                      : 0,
+                                                                  singleTx:
+                                                                      false,
+                                                                  hasUserTxs:
+                                                                      false),
                                                             ),
                                                           );
                                                         },
@@ -295,7 +349,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           horizontal: AppTheme.elementSpacing,
                                         ),
                                         decoration: BoxDecoration(
-                                          borderRadius: AppTheme.cardRadiusCircular,
+                                          borderRadius:
+                                              AppTheme.cardRadiusCircular,
                                           color: Colors.grey,
                                         ),
                                         height: AppTheme.cardPadding * 6,
@@ -310,11 +365,13 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       'Something went wrong!',
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                        fontWeight: FontWeight.w700,
+                                                        fontWeight:
+                                                            FontWeight.w700,
                                                         fontSize: 22,
                                                       ),
                                                     )
-                                                  : GetBuilder<HomeController>(builder: (controller) {
+                                                  : GetBuilder<HomeController>(
+                                                      builder: (controller) {
                                                       return SizedBox(
                                                         key: key1,
                                                         height: 255,
@@ -322,56 +379,110 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           shrinkWrap: true,
                                                           // itemScrollController:
                                                           //     itemScrollController,
-                                                          scrollDirection: Axis.horizontal,
-                                                          physics: const BouncingScrollPhysics(),
-                                                          itemCount: controller.bitcoinData.length,
-                                                          itemBuilder: (context, index) {
-                                                            double size = controller.bitcoinData[index].size! / 1000000;
-                                                            controller.isLoadingPage.isTrue ? dotProgress(context) : null;
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          physics:
+                                                              const BouncingScrollPhysics(),
+                                                          itemCount: controller
+                                                              .bitcoinData
+                                                              .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            double size = controller
+                                                                    .bitcoinData[
+                                                                        index]
+                                                                    .size! /
+                                                                1000000;
+                                                            controller
+                                                                    .isLoadingPage
+                                                                    .isTrue
+                                                                ? dotProgress(
+                                                                    context)
+                                                                : null;
 
                                                             return GestureDetector(
                                                               onTap: () {
                                                                 setState(
                                                                   () {
-                                                                    controller.showBlock.value = true;
-                                                                    controller.showNextBlock.value = false;
-                                                                    controller.indexBlock.value = index;
-                                                                    controller.selectedIndex = index;
-                                                                    controller.selectedIndexData = -1;
                                                                     controller
-                                                                        .txDetailsConfirmedF(controller.bitcoinData[index].id!)
-                                                                        .then((_) async {
-                                                                      Map<String, dynamic> data =
-                                                                          Get.find<WalletsController>().onchainTransactions;
-                                                                      if (data.isNotEmpty) {
-                                                                        onchainTransactions = await Future.microtask(() {
-                                                                          BitcoinTransactionsList bitcoinTransactions =
+                                                                        .showBlock
+                                                                        .value = true;
+                                                                    controller
+                                                                        .showNextBlock
+                                                                        .value = false;
+                                                                    controller
+                                                                        .indexBlock
+                                                                        .value = index;
+                                                                    controller
+                                                                            .selectedIndex =
+                                                                        index;
+                                                                    controller
+                                                                        .selectedIndexData = -1;
+                                                                    controller
+                                                                        .txDetailsConfirmedF(controller
+                                                                            .bitcoinData[
+                                                                                index]
+                                                                            .id!)
+                                                                        .then(
+                                                                            (_) async {
+                                                                      Map<String,
+                                                                              dynamic>
+                                                                          data =
+                                                                          Get.find<WalletsController>()
+                                                                              .onchainTransactions;
+                                                                      if (data
+                                                                          .isNotEmpty) {
+                                                                        onchainTransactions =
+                                                                            await Future.microtask(() {
+                                                                          BitcoinTransactionsList
+                                                                              bitcoinTransactions =
                                                                               BitcoinTransactionsList.fromJson(data);
 
-                                                                          return bitcoinTransactions.transactions
-                                                                              .where(
-                                                                                  (tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
+                                                                          return bitcoinTransactions
+                                                                              .transactions
+                                                                              .where((tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
                                                                               .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
                                                                               .toList();
                                                                         });
                                                                       }
                                                                     });
-                                                                    controller.txDetailsF(controller.bitcoinData[index].id!, 0);
+                                                                    controller.txDetailsF(
+                                                                        controller
+                                                                            .bitcoinData[index]
+                                                                            .id!,
+                                                                        0);
                                                                   },
                                                                 );
                                                               },
-                                                              child: DataWidget.accepted(
-                                                                  blockData: controller.bitcoinData[index],
-                                                                  txId: controller.bitcoinData[index].id,
-                                                                  size: size,
-                                                                  time: controller.formatTimeAgo(
-                                                                    DateTime.fromMillisecondsSinceEpoch(
-                                                                      (controller.bitcoinData[index].timestamp! * 1000),
-                                                                    ),
-                                                                  ),
-                                                                  index: controller.selectedIndex == index ? 1 : 0,
-                                                                  singleTx: false,
-                                                                  hasUserTxs: hasUserTxs(controller.bitcoinData[index].id!)),
+                                                              child: DataWidget
+                                                                  .accepted(
+                                                                      blockData: controller
+                                                                              .bitcoinData[
+                                                                          index],
+                                                                      txId: controller
+                                                                          .bitcoinData[
+                                                                              index]
+                                                                          .id,
+                                                                      size:
+                                                                          size,
+                                                                      time: controller
+                                                                          .formatTimeAgo(
+                                                                        DateTime
+                                                                            .fromMillisecondsSinceEpoch(
+                                                                          (controller.bitcoinData[index].timestamp! *
+                                                                              1000),
+                                                                        ),
+                                                                      ),
+                                                                      index: controller.selectedIndex ==
+                                                                              index
+                                                                          ? 1
+                                                                          : 0,
+                                                                      singleTx:
+                                                                          false,
+                                                                      hasUserTxs: hasUserTxs(controller
+                                                                          .bitcoinData[
+                                                                              index]
+                                                                          .id!)),
                                                             );
                                                           },
                                                         ),
@@ -391,30 +502,55 @@ class _MempoolHomeState extends State<MempoolHome> {
                                             await controller.getData();
                                             setState(
                                               () {
-                                                controller.showBlock.value = true;
-                                                controller.showNextBlock.value = false;
+                                                controller.showBlock.value =
+                                                    true;
+                                                controller.showNextBlock.value =
+                                                    false;
                                                 controller.indexBlock.value = 0;
                                                 controller.selectedIndex = 0;
-                                                controller.selectedIndexData = -1;
+                                                controller.selectedIndexData =
+                                                    -1;
                                               },
                                             );
-                                            await controller.txDetailsConfirmedF(controller.bitcoinData.first.id!).then((_) async {
-                                              Map<String, dynamic> data = Get.find<WalletsController>().onchainTransactions;
+                                            await controller
+                                                .txDetailsConfirmedF(controller
+                                                    .bitcoinData.first.id!)
+                                                .then((_) async {
+                                              Map<String, dynamic> data =
+                                                  Get.find<WalletsController>()
+                                                      .onchainTransactions;
                                               if (data.isNotEmpty) {
-                                                onchainTransactions = await Future.microtask(() {
-                                                  BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
+                                                onchainTransactions =
+                                                    await Future.microtask(() {
+                                                  BitcoinTransactionsList
+                                                      bitcoinTransactions =
+                                                      BitcoinTransactionsList
+                                                          .fromJson(data);
 
-                                                  return bitcoinTransactions.transactions
-                                                      .where((tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
-                                                      .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
+                                                  return bitcoinTransactions
+                                                      .transactions
+                                                      .where((tx) =>
+                                                          tx.blockHash ==
+                                                          controller
+                                                              .txDetailsConfirmed!
+                                                              .id)
+                                                      .sorted((tx, tx1) =>
+                                                          tx.timeStamp >
+                                                          tx1.timeStamp)
                                                       .toList();
                                                 });
                                               }
                                             });
                                             ;
-                                            await controller.txDetailsF(controller.bitcoinData.first.id!, 0);
-                                            _controller.animateTo(controller.scrollValue.value.w,
-                                                duration: const Duration(seconds: 2), curve: Curves.easeInOut);
+                                            await controller.txDetailsF(
+                                                controller
+                                                    .bitcoinData.first.id!,
+                                                0);
+                                            _controller.animateTo(
+                                                controller.scrollValue.value.w,
+                                                duration:
+                                                    const Duration(seconds: 2),
+                                                curve: Curves.easeInOut);
                                             controller.blockHeight == null;
                                           },
                                           child: Opacity(
@@ -445,35 +581,46 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       children: [
                                         Obx(
                                           () => Visibility(
-                                            visible: controller.showNextBlock.value,
+                                            visible:
+                                                controller.showNextBlock.value,
                                             child: Align(
                                               alignment: Alignment.topLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                   left: AppTheme.cardPadding,
-                                                  bottom: AppTheme.elementSpacing,
+                                                  bottom:
+                                                      AppTheme.elementSpacing,
                                                 ),
                                                 child: Row(
                                                   children: [
                                                     Text(
-                                                      controller.selectedIndexData == 0
-                                                          ? L10n.of(context)!.nextBlock
+                                                      controller.selectedIndexData ==
+                                                              0
+                                                          ? L10n.of(context)!
+                                                              .nextBlock
                                                           : '${L10n.of(context)!.mempoolBlock} ${controller.selectedIndexData + 1}',
                                                       textAlign: TextAlign.left,
-                                                      style: Theme.of(context).textTheme.titleLarge,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleLarge,
                                                     ),
                                                     const Spacer(),
                                                     IconButton(
                                                         onPressed: () {
                                                           setState(
                                                             () {
-                                                              controller.showNextBlock.value = false;
-                                                              controller.selectedIndex = -1;
-                                                              controller.selectedIndexData = -1;
+                                                              controller
+                                                                  .showNextBlock
+                                                                  .value = false;
+                                                              controller
+                                                                  .selectedIndex = -1;
+                                                              controller
+                                                                  .selectedIndexData = -1;
                                                             },
                                                           );
                                                         },
-                                                        icon: const Icon(Icons.cancel))
+                                                        icon: const Icon(
+                                                            Icons.cancel))
                                                   ],
                                                 ),
                                               ),
@@ -485,46 +632,66 @@ class _MempoolHomeState extends State<MempoolHome> {
 
                                         Obx(
                                           () => Visibility(
-                                            visible: controller.showNextBlock.value,
+                                            visible:
+                                                controller.showNextBlock.value,
                                             child: Container(
                                               child: Column(children: [
                                                 GestureDetector(
                                                   onTap: () {
-                                                    context.go("/wallet/unaccepted_block_transactions");
+                                                    context.go(
+                                                        "/wallet/unaccepted_block_transactions");
                                                     //${controller.txDetailsConfirmed!.id}
                                                   },
                                                   //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: AppTheme
+                                                            .cardPadding),
                                                     child: SearchFieldWidget(
                                                       isSearchEnabled: false,
-                                                      hintText: '${controller.blockTransactions.length} transactions',
-                                                      handleSearch: handleSearch,
+                                                      hintText:
+                                                          '${controller.blockTransactions.length} transactions',
+                                                      handleSearch:
+                                                          handleSearch,
                                                     ),
                                                   ),
                                                 ),
                                                 Container(
-                                                  margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: AppTheme
+                                                          .elementSpacing),
                                                   child: Column(
                                                     children: [
                                                       SizedBox(
-                                                        height: AppTheme.cardPadding.h,
+                                                        height: AppTheme
+                                                            .cardPadding.h,
                                                       ),
                                                       feeDistributionUnaccepted(),
                                                       const SizedBox(
-                                                        height: AppTheme.elementSpacing,
+                                                        height: AppTheme
+                                                            .elementSpacing,
                                                       ),
                                                       const SizedBox(
-                                                        height: AppTheme.elementSpacing,
+                                                        height: AppTheme
+                                                            .elementSpacing,
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
                                                         children: [
-                                                          controller.txDetailsConfirmed == null ? const SizedBox() : blockSizeUnaccepted()
+                                                          controller.txDetailsConfirmed ==
+                                                                  null
+                                                              ? const SizedBox()
+                                                              : blockSizeUnaccepted()
                                                         ],
                                                       ),
                                                       const SizedBox(
-                                                        height: AppTheme.cardPadding * 3,
+                                                        height: AppTheme
+                                                                .cardPadding *
+                                                            3,
                                                       ),
                                                     ],
                                                   ),
@@ -539,89 +706,135 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         Obx(
                                           () => Visibility(
                                             visible: controller.showBlock.value,
-                                            child: controller.bitcoinData.isNotEmpty
-                                                ? Align(
-                                                    alignment: Alignment.topLeft,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          left: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
-                                                      child: Row(
-                                                        children: [
-                                                          Row(
+                                            child:
+                                                controller
+                                                        .bitcoinData.isNotEmpty
+                                                    ? Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets
+                                                              .only(
+                                                              left: AppTheme
+                                                                  .cardPadding,
+                                                              bottom: AppTheme
+                                                                  .elementSpacing),
+                                                          child: Row(
                                                             children: [
-                                                              Text(
-                                                                L10n.of(context)!.block,
-                                                                textAlign: TextAlign.left,
-                                                                style: Theme.of(context).textTheme.titleLarge,
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    L10n.of(context)!
+                                                                        .block,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .titleLarge,
+                                                                  ),
+                                                                  Text(
+                                                                      ' ${controller.bitcoinData[controller.indexBlock.value].height}',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .titleLarge!
+                                                                          .copyWith(
+                                                                            color:
+                                                                                AppTheme.colorBitcoin,
+                                                                          ))
+                                                                ],
                                                               ),
-                                                              Text(' ${controller.bitcoinData[controller.indexBlock.value].height}',
-                                                                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                                                        color: AppTheme.colorBitcoin,
-                                                                      ))
-                                                            ],
-                                                          ),
-                                                          const Spacer(),
-                                                          Row(
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  Clipboard.setData(ClipboardData(text: controller.txDetailsConfirmed!.id));
-                                                                  showOverlay(context, L10n.of(context)!.copiedToClipboard);
-                                                                },
-                                                                child: Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons.copy,
-                                                                      color: Theme.of(context).brightness == Brightness.light
-                                                                          ? AppTheme.black60
-                                                                          : AppTheme.white60,
-                                                                      size: AppTheme.elementSpacing * 1.5,
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: AppTheme.elementSpacing / 2,
-                                                                    ),
-                                                                    Text(
-                                                                      controller.txDetailsConfirmed == null
-                                                                          ? ''
-                                                                          : '${controller.txDetailsConfirmed?.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed?.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
-                                                                      textAlign: TextAlign.center,
-                                                                      overflow: TextOverflow.ellipsis,
-                                                                      style: Theme.of(context).textTheme.labelMedium,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                width: AppTheme.elementSpacing / 2,
-                                                              ),
-                                                              IconButton(
-                                                                onPressed: () {
-                                                                  setState(
-                                                                    () {
-                                                                      controller.showBlock.value = false;
-                                                                      controller.selectedIndex = -1;
-                                                                      controller.selectedIndexData = -1;
+                                                              const Spacer(),
+                                                              Row(
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      Clipboard.setData(ClipboardData(
+                                                                          text: controller
+                                                                              .txDetailsConfirmed!
+                                                                              .id));
+                                                                      showOverlay(
+                                                                          context,
+                                                                          L10n.of(context)!
+                                                                              .copiedToClipboard);
                                                                     },
-                                                                  );
-                                                                },
-                                                                icon: const Icon(Icons.cancel),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .copy,
+                                                                          color: Theme.of(context).brightness == Brightness.light
+                                                                              ? AppTheme.black60
+                                                                              : AppTheme.white60,
+                                                                          size: AppTheme.elementSpacing *
+                                                                              1.5,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              AppTheme.elementSpacing / 2,
+                                                                        ),
+                                                                        Text(
+                                                                          controller.txDetailsConfirmed == null
+                                                                              ? ''
+                                                                              : '${controller.txDetailsConfirmed?.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed?.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .labelMedium,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: AppTheme
+                                                                            .elementSpacing /
+                                                                        2,
+                                                                  ),
+                                                                  IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      setState(
+                                                                        () {
+                                                                          controller
+                                                                              .showBlock
+                                                                              .value = false;
+                                                                          controller.selectedIndex =
+                                                                              -1;
+                                                                          controller.selectedIndexData =
+                                                                              -1;
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .cancel),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
                                           ),
                                         ),
                                         Obx(
                                           () => Visibility(
-                                              visible: controller.showBlock.value,
-                                              child: controller.mempoolBlocks.isNotEmpty
-                                                  ? controller.txDetailsConfirmed == null
+                                              visible:
+                                                  controller.showBlock.value,
+                                              child: controller
+                                                      .mempoolBlocks.isNotEmpty
+                                                  ? controller.txDetailsConfirmed ==
+                                                          null
                                                       ? const Center(
-                                                          child: CircularProgressIndicator.adaptive(),
+                                                          child:
+                                                              CircularProgressIndicator
+                                                                  .adaptive(),
                                                         )
                                                       : Column(
                                                           children: [
@@ -632,150 +845,192 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               },
                                                               //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
                                                               child: Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                                                                child: SearchFieldWidget(
-                                                                  isSearchEnabled: false,
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        AppTheme
+                                                                            .cardPadding),
+                                                                child:
+                                                                    SearchFieldWidget(
+                                                                  isSearchEnabled:
+                                                                      false,
                                                                   hintText:
                                                                       '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
-                                                                  handleSearch: handleSearch,
+                                                                  handleSearch:
+                                                                      handleSearch,
                                                                 ),
                                                               ),
                                                             ),
                                                             Container(
-                                                              margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                                                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                // SizedBox(
-                                                                //   height: AppTheme
-                                                                //       .cardPadding
-                                                                //       .h,
-                                                                // ),
-                                                                // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
-                                                                const SizedBox(
-                                                                  height: AppTheme.elementSpacing,
-                                                                ),
-                                                                ...onchainTransactions.map(
-                                                                  (transaction) => TransactionItem(
-                                                                    context: context,
-                                                                    data: TransactionItemData(
-                                                                      timestamp: transaction.timeStamp,
-                                                                      status: transaction.numConfirmations > 0
-                                                                          ? TransactionStatus.confirmed
-                                                                          : TransactionStatus.pending,
-                                                                      type: TransactionType.onChain,
-                                                                      direction: transaction.amount!.contains("-")
-                                                                          ? TransactionDirection.sent
-                                                                          : TransactionDirection.received,
-                                                                      receiver: transaction.amount!.contains("-")
-                                                                          ? transaction.destAddresses.last.toString()
-                                                                          : transaction.destAddresses.first.toString(),
-                                                                      txHash: transaction.txHash.toString(),
-                                                                      fee: 0,
-                                                                      amount: transaction.amount!.contains("-")
-                                                                          ? transaction.amount.toString()
-                                                                          : "+" + transaction.amount.toString(),
+                                                              margin: const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      AppTheme
+                                                                          .elementSpacing),
+                                                              child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    // SizedBox(
+                                                                    //   height: AppTheme
+                                                                    //       .cardPadding
+                                                                    //       .h,
+                                                                    // ),
+                                                                    // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
+                                                                    const SizedBox(
+                                                                      height: AppTheme
+                                                                          .elementSpacing,
                                                                     ),
-                                                                  ),
-                                                                ), // TransactionItem(
-                                                                //     context: context,
-                                                                //     data: TransactionItemData(
-                                                                //       type: TransactionType.onChain,
-                                                                //       amount: "500",
-                                                                //       timestamp: 38399,
-                                                                //       status: TransactionStatus.confirmed,
-                                                                //       direction: TransactionDirection.received,
-                                                                //       txHash: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                                                //       fee: 321,
-                                                                //       receiver: "dihsdisd",
-                                                                //     )),
-                                                                BitNetListTile(
-                                                                  leading: const Icon(Icons.timelapse),
-                                                                  text: L10n.of(context)!.minedAt,
-                                                                  trailing: Container(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Text(
-                                                                            DateFormat('yyyy-MM-dd hh:mm').format(
-                                                                              (DateTime.fromMillisecondsSinceEpoch(
-                                                                                  controller.txDetailsConfirmed!.timestamp * 1000)),
-                                                                            ),
-                                                                            style: Theme.of(context)
-                                                                                .textTheme
-                                                                                .bodyMedium!
-                                                                                .copyWith(fontWeight: FontWeight.bold)),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                BitNetListTile(
-                                                                  leading: const Icon(FontAwesomeIcons.truckPickup),
-                                                                  text: L10n.of(context)!.mined,
-                                                                  trailing: Container(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Container(
-                                                                          padding: const EdgeInsets.symmetric(
-                                                                              horizontal: AppTheme.elementSpacing / 2,
-                                                                              vertical: AppTheme.elementSpacing / 3),
-                                                                          decoration: BoxDecoration(
-                                                                              borderRadius: AppTheme.cardRadiusSmall,
-                                                                              color: AppTheme.colorBitcoin),
-                                                                          child: Text(
-                                                                            (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
-                                                                            style: const TextStyle(
-                                                                              color: Colors.white,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
+                                                                    ...onchainTransactions
+                                                                        .map(
+                                                                      (transaction) =>
+                                                                          TransactionItem(
+                                                                        context:
+                                                                            context,
+                                                                        data:
+                                                                            TransactionItemData(
+                                                                          timestamp:
+                                                                              transaction.timeStamp,
+                                                                          status: transaction.numConfirmations > 0
+                                                                              ? TransactionStatus.confirmed
+                                                                              : TransactionStatus.pending,
+                                                                          type:
+                                                                              TransactionType.onChain,
+                                                                          direction: transaction.amount!.contains("-")
+                                                                              ? TransactionDirection.sent
+                                                                              : TransactionDirection.received,
+                                                                          receiver: transaction.amount!.contains("-")
+                                                                              ? transaction.destAddresses.last.toString()
+                                                                              : transaction.destAddresses.first.toString(),
+                                                                          txHash: transaction
+                                                                              .txHash
+                                                                              .toString(),
+                                                                          fee:
+                                                                              0,
+                                                                          amount: transaction.amount!.contains("-")
+                                                                              ? transaction.amount.toString()
+                                                                              : "+" + transaction.amount.toString(),
                                                                         ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                BitNetListTile(
-                                                                  leading: const Icon(FontAwesomeIcons.bitcoin),
-                                                                  text: L10n.of(context)!.minerRewardAndFees,
-                                                                  trailing: Container(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Row(
+                                                                      ),
+                                                                    ), // TransactionItem(
+                                                                    //     context: context,
+                                                                    //     data: TransactionItemData(
+                                                                    //       type: TransactionType.onChain,
+                                                                    //       amount: "500",
+                                                                    //       timestamp: 38399,
+                                                                    //       status: TransactionStatus.confirmed,
+                                                                    //       direction: TransactionDirection.received,
+                                                                    //       txHash: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                                                    //       fee: 321,
+                                                                    //       receiver: "dihsdisd",
+                                                                    //     )),
+                                                                    BitNetListTile(
+                                                                      leading:
+                                                                          const Icon(
+                                                                              Icons.timelapse),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .minedAt,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
                                                                           children: [
-                                                                            // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-                                                                            // Transform.translate(
-                                                                            //   offset: const Offset(0, 2),
-                                                                            //   child: Text(
-                                                                            //     ' BTC  ',
-                                                                            //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
-                                                                            //   ),
-                                                                            // ),
                                                                             Text(
-                                                                              '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                                                                              style: const TextStyle(
-                                                                                color: AppTheme.successColor,
-                                                                                fontWeight: FontWeight.bold,
+                                                                                DateFormat('yyyy-MM-dd hh:mm').format(
+                                                                                  (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000)),
+                                                                                ),
+                                                                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    BitNetListTile(
+                                                                      leading: const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .truckPickup),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .mined,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Container(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 3),
+                                                                              decoration: BoxDecoration(borderRadius: AppTheme.cardRadiusSmall, color: AppTheme.colorBitcoin),
+                                                                              child: Text(
+                                                                                (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
+                                                                                style: const TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ],
                                                                         ),
+                                                                      ),
+                                                                    ),
+                                                                    BitNetListTile(
+                                                                      leading: const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .bitcoin),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .minerRewardAndFees,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Row(
+                                                                              children: [
+                                                                                // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                                                                                // Transform.translate(
+                                                                                //   offset: const Offset(0, 2),
+                                                                                //   child: Text(
+                                                                                //     ' BTC  ',
+                                                                                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
+                                                                                //   ),
+                                                                                // ),
+                                                                                Text(
+                                                                                  '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
+                                                                                  style: const TextStyle(
+                                                                                    color: AppTheme.successColor,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    feeDistributionAccepted(),
+                                                                    const SizedBox(
+                                                                      height: AppTheme
+                                                                          .elementSpacing,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            AppTheme.cardPadding),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceAround,
+                                                                      children: [
+                                                                        blockSizeAccepted(),
+                                                                        blockHealth(),
                                                                       ],
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                                feeDistributionAccepted(),
-                                                                const SizedBox(
-                                                                  height: AppTheme.elementSpacing,
-                                                                ),
-                                                                const SizedBox(height: AppTheme.cardPadding),
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                  children: [
-                                                                    blockSizeAccepted(),
-                                                                    blockHealth(),
-                                                                  ],
-                                                                ),
-                                                              ]),
+                                                                  ]),
                                                             ),
                                                             Container(
-                                                              height: AppTheme.cardPadding * 3,
+                                                              height: AppTheme
+                                                                      .cardPadding *
+                                                                  3,
                                                             )
                                                           ],
                                                         )
@@ -817,7 +1072,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                   height: AppTheme.cardPadding,
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding),
                   child: Obx(() {
                     return controller.transactionLoading.isTrue
                         ? Center(child: dotProgress(context))
@@ -833,10 +1089,15 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         borderRadius: AppTheme.cardRadiusSmall,
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.low,
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
                                       ),
                                     ),
                                   ),
@@ -848,8 +1109,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         ? ''
                                         : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                          color: lighten(getGradientColors((controller.fees!.hourFee!).toDouble(), false).first, 25),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: lighten(
+                                              getGradientColors(
+                                                      (controller
+                                                              .fees!.hourFee!)
+                                                          .toDouble(),
+                                                      false)
+                                                  .first,
+                                              25),
                                         ),
                                   ),
                                 ],
@@ -862,10 +1133,15 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         borderRadius: AppTheme.cardRadiusSmall,
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.medium,
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
                                       ),
                                     ),
                                   ),
@@ -877,8 +1153,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         ? ''
                                         : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                          color: lighten(getGradientColors((controller.fees!.halfHourFee!).toDouble(), false).first, 25),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: lighten(
+                                              getGradientColors(
+                                                      (controller.fees!
+                                                              .halfHourFee!)
+                                                          .toDouble(),
+                                                      false)
+                                                  .first,
+                                              25),
                                         ),
                                   ),
                                 ],
@@ -888,21 +1174,37 @@ class _MempoolHomeState extends State<MempoolHome> {
                                   GlassContainer(
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.high,
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
                                       ),
                                     ),
                                   ),
                                   const SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
-                                  Text('\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
+                                  Text(
+                                      '\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
                                             color: lighten(
-                                                getGradientColors(double.tryParse(controller.highPriority.value)!, false).first, 25),
+                                                getGradientColors(
+                                                        double.tryParse(
+                                                            controller
+                                                                .highPriority
+                                                                .value)!,
+                                                        false)
+                                                    .first,
+                                                25),
                                           )),
                                 ],
                               ),
@@ -947,7 +1249,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                 return controller.daLoading.isTrue
                     ? Center(child: dotProgress(context))
                     : Container(
-                        margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.cardPadding),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -959,12 +1262,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                                 FittedBox(
                                   child: Row(
                                     children: [
-                                      Text(DateFormat.MMMd()
-                                              .format(DateTime.fromMillisecondsSinceEpoch(controller.da!.estimatedRetargetDate!.toInt())) ??
+                                      Text(DateFormat.MMMd().format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  controller.da!
+                                                      .estimatedRetargetDate!
+                                                      .toInt())) ??
                                           ''),
                                       const Text(' at '),
-                                      Text(DateFormat.jm()
-                                              .format(DateTime.fromMillisecondsSinceEpoch(controller.da!.estimatedRetargetDate!.toInt())) ??
+                                      Text(DateFormat.jm().format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  controller.da!
+                                                      .estimatedRetargetDate!
+                                                      .toInt())) ??
                                           ''),
                                     ],
                                   ),
@@ -974,8 +1283,13 @@ class _MempoolHomeState extends State<MempoolHome> {
                             Row(
                               children: [
                                 Icon(
-                                    controller.da!.difficultyChange!.isNegative ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
-                                    color: controller.da!.difficultyChange!.isNegative ? AppTheme.errorColor : AppTheme.successColor,
+                                    controller.da!.difficultyChange!.isNegative
+                                        ? Icons.arrow_downward_rounded
+                                        : Icons.arrow_upward_rounded,
+                                    color: controller
+                                            .da!.difficultyChange!.isNegative
+                                        ? AppTheme.errorColor
+                                        : AppTheme.successColor,
                                     size: AppTheme.cardPadding * 1.25),
                                 const SizedBox(
                                   width: AppTheme.elementSpacing / 2,
@@ -984,8 +1298,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     controller.da!.difficultyChange!.isNegative
                                         ? '${controller.da!.difficultyChange!.abs().toStringAsFixed(2)} %'
                                         : '${controller.da!.difficultyChange!.toStringAsFixed(2)} %',
-                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                          color: controller.da!.difficultyChange!.isNegative ? AppTheme.errorColor : AppTheme.successColor,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: controller.da!
+                                                  .difficultyChange!.isNegative
+                                              ? AppTheme.errorColor
+                                              : AppTheme.successColor,
                                         )),
                               ],
                             ),
@@ -1023,7 +1343,8 @@ class _MempoolHomeState extends State<MempoolHome> {
           FontAwesomeIcons.faceSmile,
           color: controller.txDetailsConfirmed!.extras.matchRate >= 99
               ? AppTheme.successColor
-              : controller.txDetailsConfirmed!.extras.matchRate >= 75 && controller.txDetailsConfirmed!.extras.matchRate < 99
+              : controller.txDetailsConfirmed!.extras.matchRate >= 75 &&
+                      controller.txDetailsConfirmed!.extras.matchRate < 99
                   ? AppTheme.colorBitcoin
                   : AppTheme.errorColor,
           size: AppTheme.cardPadding * 2.5,
@@ -1053,7 +1374,8 @@ class _MempoolHomeState extends State<MempoolHome> {
     // Calculate the width based on the ratio
     double maxWidth = AppTheme.cardPadding * 3;
     double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+    double orangeContainerWidth =
+        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
     return Column(
       children: [
@@ -1104,7 +1426,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                   children: [
                     Text(
                       '${mbSize.toStringAsFixed(2)} MB',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppTheme.white90, shadows: [
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(color: AppTheme.white90, shadows: [
                         AppTheme.boxShadowBig,
                       ]),
                     ),
@@ -1138,13 +1463,16 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   Widget blockSizeUnaccepted() {
     // Assuming controller.mempoolBlocks[controller.indexShowBlock.value].blockSize and controller.txDetailsConfirmed!.weight are already in MB and MWU units respectively.
-    double mbSize = controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! / 1000000;
+    double mbSize =
+        controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! /
+            1000000;
     double mwu = (controller.txDetailsConfirmed?.weight)! / 1000000;
 
     // Calculate the width based on the ratio
     double maxWidth = AppTheme.cardPadding * 3;
     double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+    double orangeContainerWidth =
+        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
     return Column(
       children: [
@@ -1409,11 +1737,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                       end: Alignment.centerRight,
                       stops: [0.1, 0.9],
                       tileMode: TileMode.clamp)),
-              minimum: controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.first.toDouble(),
-              maximum: controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.last.toDouble(),
+              minimum: controller.mempoolBlocks[controller.indexShowBlock.value]
+                  .feeRange!.first
+                  .toDouble(),
+              maximum: controller
+                  .mempoolBlocks[controller.indexShowBlock.value].feeRange!.last
+                  .toDouble(),
               markerPointers: [
                 LinearWidgetPointer(
-                    value: controller.mempoolBlocks[controller.indexShowBlock.value].medianFee!.toDouble(),
+                    value: controller
+                        .mempoolBlocks[controller.indexShowBlock.value]
+                        .medianFee!
+                        .toDouble(),
                     child: Container(
                       height: AppTheme.cardPadding * 1.25,
                       width: AppTheme.elementSpacing * 0.75,
@@ -1449,6 +1784,8 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 
   bool hasUserTxs(String blockhash) {
-    return onchainTransactionsFull.firstWhereOrNull((tx) => tx.blockHash == blockhash) != null;
+    return onchainTransactionsFull
+            .firstWhereOrNull((tx) => tx.blockHash == blockhash) !=
+        null;
   }
 }

@@ -10,8 +10,7 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
-Future<RestResponse> listInvoices() async {
+Future<RestResponse> listInvoices({bool pending_only = false}) async {
   LoggerService logger = Get.find();
 
   final litdController = Get.find<LitdController>();
@@ -19,7 +18,7 @@ Future<RestResponse> listInvoices() async {
 
   // String restHost = AppTheme.baseUrlLightningTerminal;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
-  String url = 'https://$restHost/v1/invoices';
+  String url = 'https://$restHost/v1/invoices?pending_only=$pending_only';
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -34,11 +33,8 @@ Future<RestResponse> listInvoices() async {
   //data still needs to add the include_incomplete parameter
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
-    var response = await dioClient.get(
-      url: url,
-      headers: headers,
-    );
+    final DioClient dioClient = Get.find<DioClient>();
+    var response = await dioClient.get(url: url, headers: headers);
     // Print raw response for debugging
     logger.d('Raw Response Invoices: ${response.data}');
 

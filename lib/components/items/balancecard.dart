@@ -75,7 +75,8 @@ class FiatCard extends StatelessWidget {
   final Color? textColor;
   @override
   Widget build(BuildContext context) {
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     return Container(
@@ -89,7 +90,8 @@ class FiatCard extends StatelessWidget {
             balanceStr: "balanceStr",
             textColor: textColor,
             iconData: FontAwesomeIcons.eur,
-            balanceSAT: "5000", //balance ?? controller.lightningBalance.balance,
+            balanceSAT:
+                "5000", //balance ?? controller.lightningBalance.balance,
             walletAddress: "safdadasdas",
             cardname: 'Fiatcurrency Balance',
             iconDataUnit: getCurrencyIcon(BitcoinUnits.SAT.name),
@@ -110,7 +112,10 @@ class FiatCard extends StatelessWidget {
                 child: Text(
                   getCurrency(currency),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 40),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineLarge!
+                      .copyWith(fontSize: 40),
                 ),
               ),
             ),
@@ -158,8 +163,9 @@ class BalanceCardLightning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WalletsController controller = Get.find<WalletsController>();
-    final BitcoinUnitModel unitModel =
-        CurrencyConverter.convertToBitcoinUnit(double.parse(balance ?? controller.lightningBalance.balance), BitcoinUnits.SAT);
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(balance ?? controller.lightningBalance.value.balance),
+        BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
 
     return Container(
@@ -169,14 +175,16 @@ class BalanceCardLightning extends StatelessWidget {
       child: Stack(
         children: [
           const CardBackgroundLightning(),
-          BalanceTextWidget(
-            balanceStr: balanceStr,
-            textColor: textColor,
-            iconData: FontAwesomeIcons.wallet,
-            balanceSAT: balance ?? controller.lightningBalance.balance,
-            walletAddress: "safdadasdas",
-            cardname: 'Lightning Balance',
-            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+          Obx(
+            () => BalanceTextWidget(
+              balanceStr: balanceStr,
+              textColor: textColor,
+              iconData: FontAwesomeIcons.wallet,
+              balanceSAT: balance ?? controller.lightningBalance.value.balance,
+              walletAddress: "safdadasdas",
+              cardname: 'Lightning Balance',
+              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+            ),
           ),
 
           const PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
@@ -222,7 +230,9 @@ class BalanceCardLightning extends StatelessWidget {
                                 size: AppTheme.cardPadding * 4,
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: AppTheme.cardPadding,
+                                    vertical: AppTheme.cardPadding * 2),
                                 child: Text(
                                   "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
                                   textAlign: TextAlign.center,
@@ -238,7 +248,8 @@ class BalanceCardLightning extends StatelessWidget {
                               context.push('/wallet/bitcoinscreen');
                             },
                             onRightButtonTap: () {
-                              context.go('/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
+                              context.go(
+                                  '/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
                             })
                       ],
                     ),
@@ -257,16 +268,22 @@ class BalanceCardBtc extends StatelessWidget {
   final String? balance;
   final Color? textColor;
   final BitcoinUnits? defaultUnit;
-  const BalanceCardBtc({Key? key, this.balance, this.textColor, this.defaultUnit}) : super(key: key);
+  const BalanceCardBtc(
+      {Key? key, this.balance, this.textColor, this.defaultUnit})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<WalletsController>();
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(balance == null ? controller.onchainBalance.confirmedBalance : balance ?? '0'),
+        double.parse(balance == null
+            ? controller.onchainBalance.value.confirmedBalance
+            : balance ?? '0'),
         defaultUnit ?? (balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC));
     final BitcoinUnitModel unconfirmedUnitModel =
-        CurrencyConverter.convertToBitcoinUnit(double.parse(controller.onchainBalance.unconfirmedBalance), BitcoinUnits.SAT);
+        CurrencyConverter.convertToBitcoinUnit(
+            double.parse(controller.onchainBalance.value.unconfirmedBalance),
+            BitcoinUnits.SAT);
 
     final balanceStr = unitModel.amount.toString();
 
@@ -277,23 +294,27 @@ class BalanceCardBtc extends StatelessWidget {
       child: Stack(
         children: [
           const CardBackgroundOnchain(),
-          BalanceTextWidget(
-            balanceStr: balanceStr,
-            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
-            textColor: textColor,
-            iconData: FontAwesomeIcons.piggyBank,
-            balanceSAT: balance ?? controller.onchainBalance.confirmedBalance,
-            walletAddress: "safdadasdas",
-            cardname: 'On-Chain Balance',
+          Obx(
+            () => BalanceTextWidget(
+              balanceStr: balanceStr,
+              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+              textColor: textColor,
+              iconData: FontAwesomeIcons.piggyBank,
+              balanceSAT:
+                  balance ?? controller.onchainBalance.value.confirmedBalance,
+              walletAddress: "safdadasdas",
+              cardname: 'On-Chain Balance',
+            ),
           ),
           Positioned(
             bottom: -10,
             left: 0,
             child: UnconfirmedTextWidget(
               balanceStr: unconfirmedUnitModel.amount.toString(),
-              iconDataUnit: getCurrencyIcon(unconfirmedUnitModel.bitcoinUnitAsString),
+              iconDataUnit:
+                  getCurrencyIcon(unconfirmedUnitModel.bitcoinUnitAsString),
               iconData: FontAwesomeIcons.piggyBank,
-              balanceSAT: controller.onchainBalance.unconfirmedBalance,
+              balanceSAT: controller.onchainBalance.value.unconfirmedBalance,
               walletAddress: "safdadasdas",
               cardname: 'incoming Balance',
             ),
@@ -351,7 +372,8 @@ class CardBackgroundLightning extends StatelessWidget {
                     ? darken(Theme.of(context).colorScheme.primaryContainer, 10)
                     : Theme.of(context).colorScheme.primaryContainer,
                 Theme.of(context).brightness == Brightness.light
-                    ? darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
+                    ? darken(
+                        Theme.of(context).colorScheme.tertiaryContainer, 10)
                     : Theme.of(context).colorScheme.tertiaryContainer,
               ],
             ),
@@ -361,7 +383,8 @@ class CardBackgroundLightning extends StatelessWidget {
               TopLeftGradient(),
               BottomRightGradient(),
               CustomPaint(
-                size: const Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                size: const Size(double.infinity,
+                    double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
             ],
@@ -406,7 +429,8 @@ class CardBackgroundFiat extends StatelessWidget {
                 // Color.fromARGB(255, 169, 226, 224),
                 Theme.of(context).colorScheme.secondaryContainer,
                 Theme.of(context).brightness == Brightness.light
-                    ? lighten(Theme.of(context).colorScheme.onSecondaryContainer, 50)
+                    ? lighten(
+                        Theme.of(context).colorScheme.onSecondaryContainer, 50)
                     : Theme.of(context).colorScheme.onSecondaryContainer,
               ],
             ),
@@ -416,7 +440,8 @@ class CardBackgroundFiat extends StatelessWidget {
               TopLeftGradient(),
               BottomRightGradient(),
               CustomPaint(
-                size: const Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                size: const Size(double.infinity,
+                    double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
             ],
@@ -431,13 +456,17 @@ class WavyGleamPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05) // Mehr Opazität für bessere Sichtbarkeit
+      ..color = Colors.white
+          .withOpacity(0.05) // Mehr Opazität für bessere Sichtbarkeit
       ..style = PaintingStyle.fill;
 
     // Erste Welle breiter machen
     Path path1 = Path()
       ..moveTo(0, 0) // Startpunkt oben links
-      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..lineTo(
+          0,
+          size.height *
+              0.0) // Beginn der Welle ein Drittel des Weges nach unten
       ..cubicTo(
         size.width * 0.25,
         size.height * 0.0, // Erster Kontrollpunkt leicht rechts von Start
@@ -450,18 +479,24 @@ class WavyGleamPainter extends CustomPainter {
         size.width * 0.6,
         size.height * 0.9, // Dritter Kontrollpunkt für den Abstieg
         size.width * 0.8,
-        size.height * 0.7, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.height *
+            0.7, // Vierter Kontrollpunkt weiter rechts für die Rundung
         size.width,
-        size.height * 0.75, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+        size.height *
+            0.75, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
       )
-      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(size.width,
+          size.height) // Linie nach unten zum unteren rechten Eckpunkt
       ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
       ..close(); // Pfad schließen
 
     // Zweite Welle breiter machen, etwas unterhalb der ersten
     Path path2 = Path()
       ..moveTo(0, 0) // Startpunkt oben links
-      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..lineTo(
+          0,
+          size.height *
+              0.0) // Beginn der Welle ein Drittel des Weges nach unten
       ..cubicTo(
         size.width * 0.25,
         size.height * 0.1, // Erster Kontrollpunkt leicht rechts von Start
@@ -474,11 +509,14 @@ class WavyGleamPainter extends CustomPainter {
         size.width * 0.6,
         size.height * 1, // Dritter Kontrollpunkt für den Abstieg
         size.width * 0.8,
-        size.height * 0.8, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.height *
+            0.8, // Vierter Kontrollpunkt weiter rechts für die Rundung
         size.width,
-        size.height * 0.85, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+        size.height *
+            0.85, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
       )
-      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(size.width,
+          size.height) // Linie nach unten zum unteren rechten Eckpunkt
       ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
       ..close(); // Pfad schließen
 
@@ -532,7 +570,8 @@ class CardBackgroundOnchain extends StatelessWidget {
               TopLeftGradient(),
               BottomRightGradient(),
               CustomPaint(
-                size: const Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                size: const Size(double.infinity,
+                    double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
             ],
@@ -589,12 +628,16 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
   @override
   Widget build(BuildContext context) {
     final chartLine = Get.find<WalletsController>().chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
 
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
@@ -619,7 +662,9 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
                       Icon(
                         iconDataUnit,
                         size: AppTheme.elementSpacing * 1.25,
-                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black60
+                            : AppTheme.white60,
                       ),
                     ]
                   ],
@@ -668,12 +713,16 @@ class BalanceTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final chartLine = Get.find<WalletsController>().chartLines.value;
     final controller = Get.find<WalletsController>();
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
 
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
@@ -703,14 +752,18 @@ class BalanceTextWidget extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineLarge,
                       )
                     : GestureDetector(
-                        onTap: () => coin.setCurrencyType(coin.coin != null ? !coin.coin! : false),
+                        onTap: () => coin.setCurrencyType(
+                            coin.coin != null ? !coin.coin! : false),
                         child: Container(
                           width: 180.w,
                           child: Row(
                             children: [
                               Text(
                                 balanceStr,
-                                style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: textColor),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge!
+                                    .copyWith(color: textColor),
                               ),
                               // const SizedBox(
                               //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
@@ -730,13 +783,18 @@ class BalanceTextWidget extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineLarge,
                       )
                     : GestureDetector(
-                        onTap: () => coin.setCurrencyType(coin.coin != null ? !coin.coin! : false),
+                        onTap: () => coin.setCurrencyType(
+                            coin.coin != null ? !coin.coin! : false),
                         child: Container(
-                          width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
+                          width:
+                              160, // Replace with your AppTheme.cardPadding * 10 if needed
                           child: Text(
                             "$currencyEquivalent${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: textColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge!
+                                .copyWith(color: textColor),
                           ),
                         ),
                       ),

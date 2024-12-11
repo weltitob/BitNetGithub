@@ -26,7 +26,8 @@ class _SendState extends State<Send> {
   @override
   Widget build(BuildContext context) {
     if (!inited) {
-      sendController = Get.put(SendsController(context: context, getClipOnInit: false));
+      sendController =
+          Get.put(SendsController(context: context, getClipOnInit: false));
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         sendController.processParameters(
@@ -41,7 +42,9 @@ class _SendState extends State<Send> {
 
       inited = true;
     }
-
-    return Obx(() => sendController.hasReceiver.value ? const SendBTCScreen() : const SearchReceiver());
+    sendController.context = context;
+    return Obx(() => sendController.hasReceiver.value
+        ? const SendBTCScreen()
+        : const SearchReceiver());
   }
 }

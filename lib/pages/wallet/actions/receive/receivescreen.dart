@@ -33,7 +33,8 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateMixin {
+class _ReceiveScreenState extends State<ReceiveScreen>
+    with TickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
   late TabController _tabController;
   double oldOffset = 0.0;
@@ -70,16 +71,22 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
           tappedOffset = false;
         }
       } else if (tappedOffset) {
-      } else if (!_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset > 0.5) {
+      } else if (!_tabController.offset.isNegative &&
+          _tabController != 0.0 &&
+          _tabController.offset > 0.5) {
         controller.receiveType.value = ReceiveType.OnChain;
-      } else if (!_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset < 0.5) {
+      } else if (!_tabController.offset.isNegative &&
+          _tabController != 0.0 &&
+          _tabController.offset < 0.5) {
         controller.receiveType.value = ReceiveType.Lightning;
       } else if (_tabController.offset.isNegative &&
           _tabController != 0.0 &&
           _tabController.offset < -0.5 &&
           !(_tabController.offset < -1.5)) {
         controller.receiveType.value = ReceiveType.Lightning;
-      } else if (_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset > -0.5) {
+      } else if (_tabController.offset.isNegative &&
+          _tabController != 0.0 &&
+          _tabController.offset > -0.5) {
         controller.receiveType.value = ReceiveType.OnChain;
       }
     });
@@ -99,7 +106,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
     //im not sure if the timer should reset each time the page is open or if it is a bug. (assuming it is a bug for now.)
     if ((controller.duration.inSeconds <= 0)) {
       controller.duration = const Duration(minutes: 20);
-      controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
+      controller.timer =
+          Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
     }
     _animationController.forward();
     receiveTypeSub = controller.receiveType.listen((data) {
@@ -113,7 +121,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
     //Onchain checking for transactions
     subscribeTransactionsStream().listen((restResponse) {
       logger.i("subscribeTransactionsStream got data: $restResponse");
-      BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
+      BitcoinTransaction bitcoinTransaction =
+          BitcoinTransaction.fromJson(restResponse.data);
       sendPaymentDataOnchainReceived(restResponse.data);
 
       if (Get.overlayContext != null && Get.overlayContext!.mounted)
@@ -164,7 +173,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
         logger.i("Generating new empty invoice for user");
         if (Get.context != null && Get.context!.mounted) ReceiveController().getInvoice(0, "Empty invoice");
       } else {
-        logger.i("Invoice received but not settled yet: ${receivedInvoice.settled}");
+        logger.i(
+            "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");
@@ -218,28 +228,44 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                 SizeTransition(
                   sizeFactor: _animation,
                   axis: Axis.horizontal,
-                  axisAlignment: -1.0, // Adjust to control the direction of the animation
+                  axisAlignment:
+                      -1.0, // Adjust to control the direction of the animation
                   child: controller.receiveType.value == ReceiveType.Lightning
                       ? LongButtonWidget(
-                        customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
+                          customShadow:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? []
+                                  : null,
                           buttonType: ButtonType.transparent,
                           customHeight: AppTheme.cardPadding * 1.5,
                           customWidth: AppTheme.cardPadding * 4,
                           leadingIcon: controller.createdInvoice.value
                               ? Icon(
                                   FontAwesomeIcons.cancel,
-                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white80,
                                 )
                               : Icon(
                                   FontAwesomeIcons.refresh,
-                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white80,
                                 ),
-                          title: "${controller.min.value}:${controller.sec.value}",
+                          title:
+                              "${controller.min.value}:${controller.sec.value}",
                           onTap: () {
-                            controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
+                            controller.getInvoice(
+                                (double.parse(controller.satController.text))
+                                    .toInt(),
+                                "");
                             controller.timer.cancel();
                             controller.duration = const Duration(minutes: 20);
-                            controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
+                            controller.timer = Timer.periodic(
+                                const Duration(seconds: 1),
+                                controller.updateTimer);
                           },
                         )
                       : RoundedButtonWidget(
@@ -277,14 +303,21 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                 child: TabBar.secondary(
                   dividerColor: Colors.transparent,
                   indicatorColor: Colors.transparent,
-                  indicatorPadding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 2),
+                  indicatorPadding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing * 2),
                   indicatorSize: TabBarIndicatorSize.tab,
                   controller: _tabController,
                   tabs: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.bolt, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,),
+                        Icon(
+                          FontAwesomeIcons.bolt,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black80
+                                  : AppTheme.white80,
+                        ),
                         const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
@@ -297,7 +330,11 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.bitcoin, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80),
+                        Icon(FontAwesomeIcons.bitcoin,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? AppTheme.black80
+                                    : AppTheme.white80),
                         const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
@@ -311,7 +348,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                   labelStyle: Theme.of(context).textTheme.headlineSmall,
                   indicator: BoxDecoration(
                     borderRadius: AppTheme.cardRadiusMid,
-                    color: Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(1) :  Colors.white.withOpacity(0.1),
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white.withOpacity(1)
+                        : Colors.white.withOpacity(0.1),
                   ),
                   unselectedLabelColor: Colors.white,
                 ),
@@ -334,10 +373,13 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
   }
 
   void sendPaymentDataInvoiceReceived(Map<String, dynamic> data) {
+    btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
     btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').add(data);
   }
 
   void sendPaymentDataOnchainReceived(Map<String, dynamic> data) {
+    btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
+
     btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
   }
 }

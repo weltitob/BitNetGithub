@@ -27,7 +27,6 @@ class LoopScreen extends StatefulWidget {
 }
 
 class _LoopScreenState extends State<LoopScreen> {
-
   final loopGetController = Get.put(LoopGetxController());
 
   @override
@@ -43,16 +42,18 @@ class _LoopScreenState extends State<LoopScreen> {
     //loopGetController.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
     WalletsController walletController = Get.find<WalletsController>();
-    WidgetsBinding.instance.addPostFrameCallback((_){
-    walletController.predictedLightningBalance.value = walletController.lightningBalance.balance;
-    walletController.predictedBtcBalance.value = walletController.onchainBalance.confirmedBalance;
-    setState((){});
-    // Add listener to FocusNode
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      walletController.predictedLightningBalance.value =
+          walletController.lightningBalance.value.balance;
+      walletController.predictedBtcBalance.value =
+          walletController.onchainBalance.value.confirmedBalance;
+      setState(() {});
+      // Add listener to FocusNode
     });
     loopGetController.amtNode.addListener(() {
       if (loopGetController.amtNode.hasFocus) {
@@ -61,6 +62,7 @@ class _LoopScreenState extends State<LoopScreen> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     WalletsController walletController = Get.find<WalletsController>();
@@ -97,8 +99,27 @@ class _LoopScreenState extends State<LoopScreen> {
                           children: [
                             Container(
                                 height: AppTheme.cardPadding * 7.5,
-                                margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                                child: Obx(()=> BalanceCardBtc(balance: double.parse(walletController.predictedBtcBalance.value).toStringAsFixed(8),defaultUnit: BitcoinUnits.SAT, textColor: double.parse(walletController.onchainBalance.confirmedBalance) < double.parse(walletController.predictedBtcBalance.value) ? AppTheme.successColor :double.parse(walletController.onchainBalance.confirmedBalance) > double.parse(walletController.predictedBtcBalance.value) ? AppTheme.errorColor : null))),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.cardPadding),
+                                child: Obx(() => BalanceCardBtc(
+                                    balance:
+                                        double.parse(walletController.predictedBtcBalance.value)
+                                            .toStringAsFixed(8),
+                                    defaultUnit: BitcoinUnits.SAT,
+                                    textColor: double.parse(walletController
+                                                .onchainBalance
+                                                .value
+                                                .confirmedBalance) <
+                                            double.parse(walletController
+                                                .predictedBtcBalance.value)
+                                        ? AppTheme.successColor
+                                        : double.parse(walletController
+                                                    .onchainBalance
+                                                    .value
+                                                    .confirmedBalance) >
+                                                double.parse(walletController.predictedBtcBalance.value)
+                                            ? AppTheme.errorColor
+                                            : null))),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
@@ -107,41 +128,85 @@ class _LoopScreenState extends State<LoopScreen> {
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.cardPadding,
                                 ),
-                                child: Obx((){
-                                  return BalanceCardLightning(balance: double.parse(walletController.predictedLightningBalance.value).toStringAsFixed(8),textColor: double.parse(walletController.lightningBalance.balance) < double.parse(walletController.predictedLightningBalance.value) ? AppTheme.successColor :double.parse(walletController.lightningBalance.balance) > double.parse(walletController.predictedLightningBalance.value) ? AppTheme.errorColor : null);
+                                child: Obx(() {
+                                  return BalanceCardLightning(
+                                      balance: double.parse(walletController
+                                              .predictedLightningBalance.value)
+                                          .toStringAsFixed(8),
+                                      textColor: double.parse(walletController
+                                                  .lightningBalance
+                                                  .value
+                                                  .balance) <
+                                              double.parse(walletController
+                                                  .predictedLightningBalance
+                                                  .value)
+                                          ? AppTheme.successColor
+                                          : double.parse(walletController.lightningBalance.value.balance) >
+                                                  double.parse(
+                                                      walletController.predictedLightningBalance.value)
+                                              ? AppTheme.errorColor
+                                              : null);
                                 })),
                           ],
                         ),
                         Align(
                           alignment: Alignment.center,
                           child: Obx(() => AnimatedRotation(
-                            turns: loopGetController.animate.value ? 1 / 2 : 3 / 2,
-                            duration: const Duration(milliseconds: 400),
-                            child: RotatedBox(
-                              quarterTurns: loopGetController.animate.value ? 1 : 3,
-                              child: RoundedButtonWidget(
-                                  buttonType: ButtonType.transparent,
-                                  iconData: Icons.arrow_back,
-                                  onTap: () {
-                                    loopGetController.changeAnimate();
-                                    double lightningBalance = double.parse(walletController.predictedLightningBalance.value);
-                                    double normalLightningBalance = double.parse(walletController.lightningBalance.balance);
-                                    double difference = normalLightningBalance - lightningBalance;
-                                    walletController.predictedBtcBalance.value = (double.parse(walletController.onchainBalance.confirmedBalance) - difference).toString();
-                                    walletController.predictedLightningBalance.value = (double.parse(walletController.lightningBalance.balance) + difference).toString();
-                                    setState((){});
-                                  }),
-                            ),
-                          )),
+                                turns: loopGetController.animate.value
+                                    ? 1 / 2
+                                    : 3 / 2,
+                                duration: const Duration(milliseconds: 400),
+                                child: RotatedBox(
+                                  quarterTurns:
+                                      loopGetController.animate.value ? 1 : 3,
+                                  child: RoundedButtonWidget(
+                                      buttonType: ButtonType.transparent,
+                                      iconData: Icons.arrow_back,
+                                      onTap: () {
+                                        loopGetController.changeAnimate();
+                                        double lightningBalance = double.parse(
+                                            walletController
+                                                .predictedLightningBalance
+                                                .value);
+                                        double normalLightningBalance =
+                                            double.parse(walletController
+                                                .lightningBalance
+                                                .value
+                                                .balance);
+                                        double difference =
+                                            normalLightningBalance -
+                                                lightningBalance;
+                                        walletController
+                                                .predictedBtcBalance.value =
+                                            (double.parse(walletController
+                                                        .onchainBalance
+                                                        .value
+                                                        .confirmedBalance) -
+                                                    difference)
+                                                .toString();
+                                        walletController
+                                            .predictedLightningBalance
+                                            .value = (double.parse(
+                                                    walletController
+                                                        .lightningBalance
+                                                        .value
+                                                        .balance) +
+                                                difference)
+                                            .toString();
+                                        setState(() {});
+                                      }),
+                                ),
+                              )),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 1),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Obx(
-                          () => AmountWidget(
+                      () => AmountWidget(
                         enabled: () => true,
                         bitcoinUnit: BitcoinUnits.SAT,
                         btcController: loopGetController.btcController,
@@ -149,14 +214,16 @@ class _LoopScreenState extends State<LoopScreen> {
                         satController: loopGetController.satController,
                         lowerBound: 0,
                         upperBound: loopGetController.animate.value
-                            ? int.parse(walletController.onchainBalance.confirmedBalance)
-                            : int.parse(walletController.lightningBalance.balance),
+                            ? int.parse(walletController
+                                .onchainBalance.value.confirmedBalance)
+                            : int.parse(walletController
+                                .lightningBalance.value.balance),
                         boundType: BitcoinUnits.SAT,
                         focusNode: loopGetController.amtNode,
-
                         onAmountChange: (type, currency) {
                           // Handle amount change
-                          loopGetController.scrollToBottom(); // Scroll to bottom when amount changes
+                          loopGetController
+                              .scrollToBottom(); // Scroll to bottom when amount changes
                         },
                         context: context,
                         autoConvert: true,
@@ -169,7 +236,7 @@ class _LoopScreenState extends State<LoopScreen> {
               ),
             ),
             Obx(
-                  () => BottomCenterButton(
+              () => BottomCenterButton(
                 buttonTitle: loopGetController.animate.value
                     ? L10n.of(context)!.onChainLightning
                     : L10n.of(context)!.lightningOnChain,

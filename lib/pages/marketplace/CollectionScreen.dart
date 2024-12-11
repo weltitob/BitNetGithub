@@ -23,11 +23,11 @@ import 'package:popover/popover.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
   final BuildContext context;
-  const CollectionScreen({Key? key, required this.routerState, required this.context})
+  const CollectionScreen(
+      {Key? key, required this.routerState, required this.context})
       : super(key: key);
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
@@ -57,9 +57,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final Size size = MediaQuery.of(context).size;
     final name = widget.routerState!.pathParameters['collection_id'];
     return bitnetScaffold(
-       extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(context: context,
-      onTap: ()=>context.pop(),),
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        context: context,
+        onTap: () => context.pop(),
+      ),
       context: context,
       body: Stack(
         children: [
@@ -67,7 +69,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
             padding: EdgeInsets.only(bottom: 20.h),
             child: Column(
               children: [
-               
                 Container(
                   margin: EdgeInsets.only(bottom: 15.h),
                   child: Stack(
@@ -117,11 +118,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: Text(
                       name != null ? name : L10n.of(context)!.unknown,
                       textAlign: TextAlign.center,
-                      style:Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        decoration: TextDecoration.underline,
-                        fontSize: 26.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            decoration: TextDecoration.underline,
+                            fontSize: 26.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
                     ),
                   ),
                 ),
@@ -129,10 +130,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   margin: EdgeInsets.only(bottom: 20.h),
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Text(
-                    'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 14.sp)
-                  ),
+                      'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontSize: 14.sp)),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 20.h),
@@ -141,9 +144,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
                   ),
                 ),
                 Container(
@@ -167,7 +170,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           Navigator.pushNamed(
                               context, route.kActivityScreenRoute);
                         },
-                        child:   OwnerDataText(
+                        child: OwnerDataText(
                           ownerDataImg: activityIcon,
                           ownerDataTitle: L10n.of(context)!.activity,
                           hasImage: true,
@@ -465,30 +468,26 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             cryptoText: sortedGridList[index].cryptoText,
                             columnMargin: sortedGridList[index].columnMargin,
                             rank: sortedGridList[index].rank,
-                            onTap:(i){
-                              if(!selected_products.isEmpty) {
-                              handleProductClick(i, context);
+                            onTap: (i) {
+                              if (!selected_products.isEmpty) {
+                                handleProductClick(i, context);
                               } else {
-
-                                 context.goNamed(
-                                  '/asset_screen',
-                                  pathParameters: {
-                                    'nft_id': sortedGridList[index].nftName
-                                  }
-                                  );
+                                context.goNamed('/asset_screen',
+                                    pathParameters: {
+                                      'nft_id': sortedGridList[index].nftName
+                                    });
                               }
-                            } ,
+                            },
                             onLongTap: () {
-                              handleProductClick(sortedGridList[index].id, context);
-                              
-                             
+                              handleProductClick(
+                                  sortedGridList[index].id, context);
                             },
                             onTapBuy: () {
                               setState(() {
                                 this.item_buy = sortedGridList[index].id;
-                                _buildBuySlidingPanel(context).whenComplete((){
+                                _buildBuySlidingPanel(context).whenComplete(() {
                                   this.item_buy = -1;
-                                  setState((){});
+                                  setState(() {});
                                 });
                               });
                             },
@@ -506,7 +505,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
           if (showCartBottomSheet && item_buy == -1 && bottomSheet != null)
             bottomSheet!
-           
         ],
       ),
     );
@@ -593,49 +591,45 @@ class _CollectionScreenState extends State<CollectionScreen> {
       }
       if (selected_products.isEmpty) {
         showCartBottomSheet = false;
-        if(sheetCtrler != null) {
+        if (sheetCtrler != null) {
           sheetCtrler!.close();
         }
-        bottomSheet=null;
-        setState((){});
+        bottomSheet = null;
+        setState(() {});
       } else {
         showCartBottomSheet = true;
 
-        bottomSheet = 
-        SlidingUpPanel(
-          color: Colors.transparent,
-          boxShadow: [],
-          maxHeight: 600,
-          minHeight: 100,
-          // initialChildSize: 0.2,
-          // snapSizes: [0.2, 0.6],
-          // shouldCloseOnMinExtent:  false,
-          panel:Padding(
-            padding:EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width - AppTheme.columnWidth * 1.5)/2),
-            child: CartSheet(
-              selected_products: selected_products,
-              sortedGridList: sortedGridList,
-              onClear: (){
-            
-                                        setState(() {
-                                          selected_products.clear();
-                                          showCartBottomSheet = false;
-                                        });
-                                   
-              },
-              onDeleteItem: (i) {
-                setState(() {
-                Get.find<LoggerService>().i("about to delete item with id: ${sortedGridList[i].id}");
-                selected_products.remove(i);
-                if (selected_products.isEmpty) {
-                  showCartBottomSheet = false;
-                }
-              });
-              }
-            ),
-          )
-        );
-        setState((){});
+        bottomSheet = SlidingUpPanel(
+            color: Colors.transparent,
+            boxShadow: [],
+            maxHeight: 600,
+            minHeight: 100,
+            // initialChildSize: 0.2,
+            // snapSizes: [0.2, 0.6],
+            // shouldCloseOnMinExtent:  false,
+            panel: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: CartSheet(
+                  selected_products: selected_products,
+                  sortedGridList: sortedGridList,
+                  onClear: () {
+                    setState(() {
+                      selected_products.clear();
+                      showCartBottomSheet = false;
+                    });
+                  },
+                  onDeleteItem: (i) {
+                    setState(() {
+                      Get.find<LoggerService>().i(
+                          "about to delete item with id: ${sortedGridList[i].id}");
+                      selected_products.remove(i);
+                      if (selected_products.isEmpty) {
+                        showCartBottomSheet = false;
+                      }
+                    });
+                  }),
+            ));
+        setState(() {});
       }
     });
   }
@@ -657,10 +651,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
     return product;
   }
 
-  
-
- Future<T?> _buildBuySlidingPanel<T>(BuildContext ctx) {
-        return BitNetBottomSheet(
+  Future<T?> _buildBuySlidingPanel<T>(BuildContext ctx) {
+    return BitNetBottomSheet(
       context: ctx,
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
@@ -679,15 +671,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                   margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: AppTheme.elementSpacing/2,
+                          height: AppTheme.elementSpacing / 2,
                         ),
                         _buildHorizontalProductWithId(item_buy),
-                         const SizedBox(
-                          height: AppTheme.elementSpacing/2,
+                        const SizedBox(
+                          height: AppTheme.elementSpacing / 2,
                         ),
                         const BitNetListTile(
                           text: 'Subtotal',
@@ -701,7 +694,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           text: 'Market Fee',
                           trailing: Text('0.5'),
                         ),
-                          const BitNetListTile(
+                        const BitNetListTile(
                           text: 'Total Price',
                           trailing: Text('0.5'),
                         ),
@@ -709,27 +702,27 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: AppTheme.cardPadding),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       const SizedBox(height: AppTheme.cardPadding,),
+                        const SizedBox(
+                          height: AppTheme.cardPadding,
+                        ),
                         LongButtonWidget(
                           title: "Purchase",
-                          onTap: () {
-                        
-                          },
-              
+                          onTap: () {},
                         ),
-                        const SizedBox(height: AppTheme.elementSpacing,),
+                        const SizedBox(
+                          height: AppTheme.elementSpacing,
+                        ),
                         LongButtonWidget(
                           title: "Cancel",
                           onTap: () {
                             Navigator.pop(context);
-                            
                           },
                           buttonType: ButtonType.transparent,
-              
                         ),
                       ],
                     ),
@@ -1040,7 +1033,12 @@ class SortingCategoryPopup extends StatelessWidget {
 }
 
 class CartSheet extends StatefulWidget {
-  const CartSheet({super.key, this.onClear, this.onDeleteItem, required this.selected_products, required this.sortedGridList});
+  const CartSheet(
+      {super.key,
+      this.onClear,
+      this.onDeleteItem,
+      required this.selected_products,
+      required this.sortedGridList});
   final Function()? onClear;
   final Function(int)? onDeleteItem;
   final List<dynamic> selected_products;
@@ -1060,101 +1058,126 @@ class _CartSheetState extends State<CartSheet> {
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSurface,
-            borderRadius:
-                BorderRadius.circular(AppTheme.borderRadiusCircular),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
         const SizedBox(height: AppTheme.elementSpacing * 0.75),
         Expanded(
           child: ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(32), topRight: Radius.circular(32)),
             child: Container(
               height: 600,
               child: MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
                 child: bitnetScaffoldUnsafe(
-                              context: context,
-                              extendBodyBehindAppBar: true,
-                                appBar: bitnetAppBar(context: context, text: "${L10n.of(context)!.cart}(${widget.selected_products.length})", actions: [
-                                  TextButton(
-                                              child: Text(L10n.of(context)!.clearAll,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium!
-                                                      .copyWith(color: Colors.white)),
-                                              onPressed: widget.onClear,
-                                              
-                                           
-                                            ),],
-                                            hasBackButton: false,),
-                                body: Container(
-                                  // decoration: BoxDecoration(
-                                  //     color: AppTheme.colorBackground,
-                                  //     borderRadius: BorderRadius.only(
-                                  //         topLeft: Radius.circular(8),
-                                  //         topRight: Radius.circular(8)),
-                                  //     border:
-                                  //         Border.all(color: AppTheme.colorBitcoin, width: 2)),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 200.w,
-                                        child: ListView.builder(
-                                            itemCount: widget.selected_products.length,
-                                            itemBuilder: (ctx, i){
-                                              return Padding(
-
-                                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                                child: HorizontalProduct(item: widget.sortedGridList.firstWhere((test) => test.id == widget.selected_products[i]),onDelete: (){
-                                                  if(widget.onDeleteItem != null) {                                                  
-                                                    widget.onDeleteItem!(widget.selected_products[i]);
-                                                    setState((){});
-                                                  }
-                                                                                    
-                                                                                    
-                                                }),
-                                              );
-                                            }),
-                                      ),
-                                      const Spacer(),
-                                      Container(
-                                        width: AppTheme.cardPadding * 10,
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.subTotal), const Text("0.024")],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.networkFee), const Text("0.024")],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.marketFee), const Text("0.024")],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.totalPrice), const Text("0.024")],
-                                            ),
-                                            const SizedBox(height: 10),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                        child: LongButtonWidget(title: L10n.of(context)!.buyNow, onTap: () {}),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                  context: context,
+                  extendBodyBehindAppBar: true,
+                  appBar: bitnetAppBar(
+                    context: context,
+                    text:
+                        "${L10n.of(context)!.cart}(${widget.selected_products.length})",
+                    actions: [
+                      TextButton(
+                        child: Text(L10n.of(context)!.clearAll,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.white)),
+                        onPressed: widget.onClear,
+                      ),
+                    ],
+                    hasBackButton: false,
+                  ),
+                  body: Container(
+                    // decoration: BoxDecoration(
+                    //     color: AppTheme.colorBackground,
+                    //     borderRadius: BorderRadius.only(
+                    //         topLeft: Radius.circular(8),
+                    //         topRight: Radius.circular(8)),
+                    //     border:
+                    //         Border.all(color: AppTheme.colorBitcoin, width: 2)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 200.w,
+                          child: ListView.builder(
+                              itemCount: widget.selected_products.length,
+                              itemBuilder: (ctx, i) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
+                                  child: HorizontalProduct(
+                                      item: widget.sortedGridList.firstWhere(
+                                          (test) =>
+                                              test.id ==
+                                              widget.selected_products[i]),
+                                      onDelete: () {
+                                        if (widget.onDeleteItem != null) {
+                                          widget.onDeleteItem!(
+                                              widget.selected_products[i]);
+                                          setState(() {});
+                                        }
+                                      }),
+                                );
+                              }),
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: AppTheme.cardPadding * 10,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(L10n.of(context)!.subTotal),
+                                  const Text("0.024")
+                                ],
                               ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(L10n.of(context)!.networkFee),
+                                  const Text("0.024")
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(L10n.of(context)!.marketFee),
+                                  const Text("0.024")
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(L10n.of(context)!.totalPrice),
+                                  const Text("0.024")
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: LongButtonWidget(
+                              title: L10n.of(context)!.buyNow, onTap: () {}),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -1164,9 +1187,7 @@ class _CartSheetState extends State<CartSheet> {
   }
 }
 
-
-
-  class HorizontalProduct extends StatelessWidget {
+class HorizontalProduct extends StatelessWidget {
   const HorizontalProduct({super.key, required this.item, this.onDelete});
   final GridListModal item;
   final Function()? onDelete;
@@ -1175,24 +1196,24 @@ class _CartSheetState extends State<CartSheet> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: NftProductHorizontal(
-        cryptoImage: item.cryptoImage,
-        nftImage: item.nftImage,
-        nftMainName: item.nftMainName,
-        nftName: item.nftName,
-        cryptoText: item.cryptoText,
-        rank: item.rank,
-        columnMargin: item.columnMargin,
-        onDelete: onDelete
-        // () {
-          
+          cryptoImage: item.cryptoImage,
+          nftImage: item.nftImage,
+          nftMainName: item.nftMainName,
+          nftName: item.nftName,
+          cryptoText: item.cryptoText,
+          rank: item.rank,
+          columnMargin: item.columnMargin,
+          onDelete: onDelete
+          // () {
+
           // setState(() {
           //   selected_products.remove(id);
           //   if (selected_products.isEmpty) {
           //     showCartBottomSheet = false;
           //   }
           // });
-        // },
-      ),
+          // },
+          ),
     );
   }
 }

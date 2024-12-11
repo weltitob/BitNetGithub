@@ -4,11 +4,14 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,6 +84,10 @@ class ReceiveController extends BaseController {
     RestResponse callback = await nextAddr();
     print("Response" + callback.data.toString());
     BitcoinAddress address = BitcoinAddress.fromJson(callback.data);
+    Get.find<WalletsController>().btcAddresses.add(address.addr);
+    LocalStorage.instance.setStringList(
+        Get.find<WalletsController>().btcAddresses,
+        "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
     print("Bitcoin onchain Address" + address.addr.toString());
     qrCodeDataStringOnchain.value = address.addr.toString();
   }
@@ -99,9 +106,8 @@ class ReceiveController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    duration = const Duration(seconds:0);
+    duration = const Duration(seconds: 0);
     //ONCHAIN
-
   }
 
   @override

@@ -28,7 +28,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
-
 /*
 The class Auth manages user authentication and user wallet management using Firebase
 Authentication and Cloud Firestore.
@@ -48,7 +47,8 @@ class Auth {
   The userWalletStreamForAuthChanges getter returns a stream of the authenticated user's wallet data.
   The authStateChanges stream is used as the source stream, and the asyncMap operator is used to map the stream of User objects to UserWallet objects.
    */
-  Stream<UserData?> get userWalletStreamForAuthChanges => authStateChanges.asyncMap<UserData?>((firebaseUser) async {
+  Stream<UserData?> get userWalletStreamForAuthChanges =>
+      authStateChanges.asyncMap<UserData?>((firebaseUser) async {
         if (firebaseUser == null) {
           return null;
         }
@@ -66,7 +66,10 @@ class Auth {
   The snapshots() method is used to listen to changes in the document, and the map
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
-  Stream<UserData?> get userWalletStream => usersCollection.doc(_firebaseAuth.currentUser?.uid).snapshots().map<UserData?>((snapshot) {
+  Stream<UserData?> get userWalletStream => usersCollection
+          .doc(_firebaseAuth.currentUser?.uid)
+          .snapshots()
+          .map<UserData?>((snapshot) {
         if (_firebaseAuth.currentUser?.uid == null) {
           return null;
         }
@@ -93,24 +96,26 @@ class Auth {
   Future<fbAuth.UserCredential?> signInWithToken({
     required String customToken,
   }) async {
-    fbAuth.UserCredential user = await _firebaseAuth.signInWithCustomToken(customToken);
+    fbAuth.UserCredential user =
+        await _firebaseAuth.signInWithCustomToken(customToken);
     return user;
   }
 
   Future<UserData> createUser({
     required UserData user,
     required VerificationCode code,
-
   }) async {
     LoggerService logger = Get.find();
 
     await usersCollection.doc(user.did).set(user.toMap());
     logger.i('Successfully created wallet/user in database: ${user.toMap()}');
     // Call the function to generate and store verification codes
-    logger.i("Generating and storing verification codes for friends of the new user now...");
+    logger.i(
+        "Generating and storing verification codes for friends of the new user now...");
 
     logger.i("Generating challenge...");
-    UserChallengeResponse? userChallengeResponse = await create_challenge(user.did, ChallengeType.default_registration);
+    UserChallengeResponse? userChallengeResponse =
+        await create_challenge(user.did, ChallengeType.default_registration);
 
     logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
 
@@ -129,18 +134,18 @@ class Auth {
     final String privateKeyHex = privateData.privateKey;
     logger.d('Private Key Hex: $privateKeyHex');
 
-    String signatureHex = await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
+    String signatureHex =
+        await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
     logger.d('Generated signature hex: $signatureHex');
 
     // Verify the signature with the server
     dynamic customAuthToken = await verifyMessage(
-         publicKeyHex.toString(),
-         challengeId.toString(),
-         signatureHex.toString(),
+      publicKeyHex.toString(),
+      challengeId.toString(),
+      signatureHex.toString(),
     );
     //get the customtoken from the response
     print("Verify message response: ${customAuthToken.toString()}");
-
 
     final currentuser = await signInWithToken(customToken: customAuthToken);
 
@@ -148,7 +153,7 @@ class Auth {
     await settingsCollection.doc(currentuser?.user!.uid).set({
       "theme_mode": "system",
       "lang": "en",
-      "primary_color": 4283657726,
+      "primary_color": Colors.white.value,
       "selected_currency": "USD",
       "selected_card": "lightning",
       "hide_balance": false,
@@ -166,7 +171,7 @@ class Auth {
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
-       receiver: user.did,
+      receiver: user.did,
       codesCollection: codesCollection,
     );
     logger.i("Verification code marked as used.");
@@ -176,7 +181,6 @@ class Auth {
 
     return user;
   }
-
 
   // signMessageWithMnemonicAuth(String mnemonic, String challenge) async {
   //   try {
@@ -233,7 +237,8 @@ class Auth {
   // }
 
   String generateRandomString(int length) {
-    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(
@@ -243,7 +248,8 @@ class Auth {
     );
   }
 
-  Future<void> signIn(ChallengeType challengeType, PrivateData privateData, String signatureHex, BuildContext context) async {
+  Future<void> signIn(ChallengeType challengeType, PrivateData privateData,
+      String signatureHex, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
     LoggerService logger = Get.find();
@@ -253,7 +259,6 @@ class Auth {
     try {
       //showLoadingScreen
       //context.go('/ionloading');
-
 
       // final String customToken = await fakeLoginION(
       //   randomstring,
@@ -267,7 +272,8 @@ class Auth {
       //create challenge for
 
       logger.i("Generating challenge...");
-      UserChallengeResponse? userChallengeResponse = await create_challenge(did, challengeType);
+      UserChallengeResponse? userChallengeResponse =
+          await create_challenge(did, challengeType);
 
       String challengeId = userChallengeResponse!.challenge.challengeId;
 
@@ -286,7 +292,6 @@ class Auth {
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
-
         await storePrivateData(privateData);
 
         // Begin user registration process
@@ -300,13 +305,11 @@ class Auth {
         //
         // registrationController.isLoading.value = false;
 
-        WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+        WidgetsBinding.instance
+            .addPostFrameCallback(ThemeController.of(context).loadData);
         //if successfull push back to homescreen
         context.go("/");
       }
-
-
-
     } catch (e) {
       // Also pop the loading screen when an error occurs
       Navigator.pop(context);
@@ -317,7 +320,8 @@ class Auth {
   //-----------------------------FIREBASE HELPERS---------------------------
 
   Future<String> getUserDID(String username) async {
-    QuerySnapshot snapshot = await usersCollection.where('username', isEqualTo: username).get();
+    QuerySnapshot snapshot =
+        await usersCollection.where('username', isEqualTo: username).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -328,7 +332,8 @@ class Auth {
   }
 
   Future<String> getUserUsername(String did) async {
-    QuerySnapshot snapshot = await usersCollection.where('did', isEqualTo: did).get();
+    QuerySnapshot snapshot =
+        await usersCollection.where('did', isEqualTo: did).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -339,7 +344,8 @@ class Auth {
   }
 
   Future<bool> doesUsernameExist(String username) async {
-    final QuerySnapshot snapshot = await usersCollection.where('username', isEqualTo: username).get();
+    final QuerySnapshot snapshot =
+        await usersCollection.where('username', isEqualTo: username).get();
     return snapshot.docs.isNotEmpty;
   }
 
@@ -351,7 +357,8 @@ class Auth {
 }
 
 extension on String {
-  static final RegExp _phoneRegex = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+  static final RegExp _phoneRegex =
+      RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
   static final RegExp _emailRegex = RegExp(r'(.+)@(.+)\.(.+)');
   bool get isEmail => _emailRegex.hasMatch(this);
   bool get isPhoneNumber => _phoneRegex.hasMatch(this);
