@@ -107,12 +107,12 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       body: isVerified
           ? PopScope(
               canPop: currentview == 0,
-              onPopInvokedWithResult: (b, d) {
-                if (currentview != 0) {
-                  currentview = 0;
-                  setState(() {});
-                }
-              },
+              // on: (b, d) {
+              //   if (currentview != 0) {
+              //     currentview = 0;
+              //     setState(() {});
+              //   }
+              // },
               child: pages[currentview].widget)
           : Container(
               child: const Expanded(

@@ -105,9 +105,9 @@ class LitdController extends GetxController {
         WalletState initialState = await requestState();
         logger.i("Initial Wallet State: ${initialState.description}, ${initialState}");
 
-        logger.i("Waiting for wallet to be ready...");
-        await waitForWalletReady();
-        logger.i("Wallet initialization complete and ready to use.");
+        // logger.i("Waiting for wallet to be ready...");
+        // await waitForWalletReady();
+        // logger.i("Wallet initialization complete and ready to use.");
 
         logger.i("Initializing wallet now...");
         try {
