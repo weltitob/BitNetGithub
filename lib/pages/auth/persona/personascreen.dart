@@ -131,13 +131,13 @@ class _PersonaScreenState extends State<PersonaScreen> {
               LongButtonWidget(
                   title: "Begin Verification",
                   onTap: () {
-                    PersonaInquiry.init(configuration: _configuration);
-                    PersonaInquiry.start();
+                    // PersonaInquiry.init(configuration: _configuration);
+                    // PersonaInquiry.start();
 
-                    // context.go(
-                    //   Uri(path: '/authhome/pinverification/reg_loading')
-                    //       .toString(),
-                    // );
+                    context.go(
+                      Uri(path: '/authhome/pinverification/reg_loading')
+                          .toString(),
+                    );
 
                     // context.go(
                     //   Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
@@ -146,6 +146,7 @@ class _PersonaScreenState extends State<PersonaScreen> {
                     //     'username': username,
                     //   }).toString(),
                     // );
+
                   })
             ],
           ),

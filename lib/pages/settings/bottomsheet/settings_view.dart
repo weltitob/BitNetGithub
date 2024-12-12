@@ -131,9 +131,10 @@ class SettingsView extends StatelessWidget {
                   String username =
                       '${profile_controller.userData.value.username}';
 
-                  dynamic stopecs_response =
-                      await litdController.logoutAndStopEcs('${username}_uid');
-                  print('Stop ecs response: $stopecs_response');
+                  // dynamic stopecs_response =
+                  //     await litdController.logoutAndStopEcs('${username}_uid');
+                  // print('Stop ecs response: $stopecs_response');
+
                   Get.delete<ProfileController>();
                   Get.delete<WalletsController>();
                   Get.delete<SettingsController>();

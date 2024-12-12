@@ -95,9 +95,9 @@ class _DataWidgetState extends State<DataWidget> {
           Stack(
             children: [
               Container(
-                height: AppTheme.cardPadding * 6.w,
+                height: AppTheme.cardPadding * 5.75.w,
                 width: AppTheme.cardPadding *
-                    6.w, //MediaQuery.of(context).size.height * 0.2,
+                    5.75.w, //MediaQuery.of(context).size.height * 0.2,
                 margin: widget.isAccepted
                     ? EdgeInsets.only(left: AppTheme.cardPadding.w)
                     : EdgeInsets.only(

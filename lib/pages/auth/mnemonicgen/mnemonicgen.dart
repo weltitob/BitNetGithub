@@ -127,11 +127,11 @@ class MnemonicController extends State<MnemonicGen> {
       final litdController = Get.find<LitdController>();
       logger.i("AWS ECS: Registering and setting up user...");
 
-      litdController.isLoading.value = true;
-      final String shortDid = did.substring(0, 12);
-      final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonicString);
-
-      litdController.isLoading.value = false;
+      // litdController.isLoading.value = true;
+      // final String shortDid = did.substring(0, 12);
+      // final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonicString);
+      //
+      // litdController.isLoading.value = false;
 
       // Update the state (if needed)
       setState(() {

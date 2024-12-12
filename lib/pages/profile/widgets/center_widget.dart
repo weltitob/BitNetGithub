@@ -16,23 +16,23 @@ class CenterWidget extends StatelessWidget {
       bottom: 0,
       child: Container(
         height: AppTheme.cardPadding * 2,
-        width: AppTheme.cardPadding * 14,
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusBigger,
-          boxShadow: [AppTheme.boxShadowProfile],
-        ),
+        width: AppTheme.cardPadding * 13.5,
+        // decoration: BoxDecoration(
+        //   borderRadius: AppTheme.cardRadiusSuperSmall,
+        //   boxShadow: [AppTheme.boxShadowProfile],
+        // ),
         child: GlassContainer(
           borderThickness: 1.5, // remove border if not active
           blur: 50,
           opacity: 0.1,
           borderRadius: BorderRadius.only(
-            bottomLeft: AppTheme.cornerRadiusMid,
-            bottomRight: AppTheme.cornerRadiusMid,
-            topLeft: AppTheme.cornerRadiusMid,
-            topRight: AppTheme.cornerRadiusMid,
+            bottomLeft: AppTheme.cornerRadiusMid / 1.25,
+            bottomRight: AppTheme.cornerRadiusMid / 1.25,
+            topLeft: AppTheme.cornerRadiusMid / 1.25,
+            topRight: AppTheme.cornerRadiusMid / 1.25,
           ),
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5),
+            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
