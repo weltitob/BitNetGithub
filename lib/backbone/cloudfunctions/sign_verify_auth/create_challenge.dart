@@ -18,6 +18,7 @@ enum ChallengeType {
   qrcode_login,
   privkey_login,
   securestorage_login,
+  litd_account_creation,
 }
 
 

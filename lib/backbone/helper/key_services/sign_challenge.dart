@@ -24,7 +24,7 @@ Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublic
     print('Message Hash (Hex): ${hex.encode(messageHash)}');
 
     // Step 6: Prepare private key for signing
-    final BigInt privateKeyBigInt = BigInt.parse(masterPrivateKeyHex!, radix: 16);
+    final BigInt privateKeyBigInt = BigInt.parse(masterPrivateKeyHex, radix: 16);
     final domainParams = ECCurve_secp256k1();
     final n = domainParams.n;
 

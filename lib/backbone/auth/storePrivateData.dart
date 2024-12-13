@@ -9,6 +9,67 @@ import 'package:get/get.dart';
 
 final secureStorage = const FlutterSecureStorage();
 
+// Store userId, accountId and macaroon in secure storage
+Future<void> storeLitdAccountData(String userId, String accountId, String macaroon) async {
+  try {
+    print("Reading LITD accounts from secure storage...");
+    final accountsJson = await secureStorage.read(key: 'litdAccountsInSecureStorage');
+
+    // Decode existing data
+    List<Map<String, dynamic>> accountsStored = accountsJson != null
+        ? (jsonDecode(accountsJson) as List)
+        .map((json) => Map<String, dynamic>.from(json))
+        .toList()
+        : [];
+
+    // Check if user already stored
+    bool isUserStored = accountsStored.any((acc) => acc['userId'] == userId);
+
+    if (!isUserStored) {
+      // Add new user with account info
+      accountsStored.add({
+        'userId': userId,
+        'accountId': accountId,
+        'macaroon': macaroon,
+      });
+    } else {
+      // Update existing user account info
+      accountsStored = accountsStored.map((acc) {
+        if (acc['userId'] == userId) {
+          acc['accountId'] = accountId;
+          acc['macaroon'] = macaroon;
+        }
+        return acc;
+      }).toList();
+    }
+
+    print("Storing LITD accounts in secure storage now...");
+    await secureStorage.write(
+      key: 'litdAccountsInSecureStorage',
+      value: json.encode(accountsStored),
+    );
+  } catch (e) {
+    print("Error trying to write LITD account data to local device...");
+    throw Exception("An error occurred trying to write LITD account data to secure storage: $e");
+  }
+}
+
+// Retrieve list of all LITD accounts
+Future<List<Map<String, dynamic>>> getLitdAccountsData() async {
+  final accountsJson = await secureStorage.read(key: 'litdAccountsInSecureStorage');
+
+  if (accountsJson == null) {
+    print('No LITD accounts found in secure storage');
+    return [];
+  }
+
+  List<Map<String, dynamic>> accountsStored = (jsonDecode(accountsJson) as List)
+      .map((json) => Map<String, dynamic>.from(json))
+      .toList();
+
+  return accountsStored;
+}
+
 Future<void> storePrivateData(PrivateData privateData) async {
   try {
     print("Reading secure storage now...");

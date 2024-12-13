@@ -1,3 +1,6 @@
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
@@ -283,6 +286,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      LongButtonWidget(
+                        title: "Genlitdaccount",
+                        onTap: () async {
+                          await Auth().genLitdAccount();
+                        },
+                      ),
                       SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       LongButtonWidget(
                         title: "Show Server Status",

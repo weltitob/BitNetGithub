@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
@@ -145,7 +146,11 @@ class Auth {
       signatureHex.toString(),
     );
     //get the customtoken from the response
-    print("Verify message response: ${customAuthToken.toString()}");
+    logger.i("Verify message response: ${customAuthToken.toString()}");
+
+    //before signinwith token we need tog enLitdAccount (backend);
+    final genlitdresponse = await genLitdAccount();
+    print("GenLitdAccount Response: $genlitdresponse");
 
     final currentuser = await signInWithToken(customToken: customAuthToken);
 
@@ -235,6 +240,61 @@ class Auth {
   //     throw Exception("Error signing message: $e");
   //   }
   // }
+
+  dynamic genLitdAccount() async {
+    try {
+      print("Calling genlitdaccount");
+      final response = await callGenLitdAccount();
+
+      print("genlitdaccount Response: $response");
+
+      if (response == null) {
+        print("Response is null. Possibly an error occurred calling genLitdAccount.");
+        return;
+      }
+
+      // Check if the required fields exist
+      if (response.account == null) {
+        print("Response contains no account information.");
+        return;
+      }
+
+      if (response.macaroon == null || response.macaroon!.isEmpty) {
+        print("Response macaroon is null or empty.");
+        return;
+      }
+
+      final userId = Auth().currentUser?.uid;
+      final accountId = response.account!.id;
+      final macaroon = response.macaroon;
+
+      if (userId == null || userId.isEmpty) {
+        print("No user is currently logged in or userId is empty.");
+        return;
+      }
+
+      if (accountId == null || accountId.isEmpty) {
+        print("Account ID is null or empty.");
+        return;
+      }
+
+      if (macaroon == null || macaroon.isEmpty) {
+        print("Macaroon is null or empty.");
+        return;
+      }
+
+      try {
+        await storeLitdAccountData(userId, accountId, macaroon);
+        print("LITD account data stored securely.");
+      } catch (e) {
+        print("Error storing LITD account data: $e");
+      }
+
+    } catch (e, stackTrace) {
+      print("An exception occurred while generating LITD account: $e");
+      print("Stack trace: $stackTrace");
+    }
+  }
 
   String generateRandomString(int length) {
     const characters =
