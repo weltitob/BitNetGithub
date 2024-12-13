@@ -58,7 +58,10 @@ class SendsController extends BaseController {
   late ScrollController sendScrollerController;
   Rx<String> usersQuery = ''.obs;
   List<ReSendUser> queriedUsers = List.empty(growable: true);
+
+
   void handleSearch(String value) {
+    logger.i("handleSearch called with value: $value");
     onQRCodeScanned(value, context);
   }
 
@@ -125,24 +128,29 @@ class SendsController extends BaseController {
   String lnUrlname = '';
   String lnUrlLogo = '';
   RxList<ReSendUser> resendUsers = RxList<ReSendUser>();
+
   void processParameters(BuildContext context, String? address) {
     LoggerService logger = Get.find();
-    print('Process parameters for');
+    logger.i('Process parameters for $address');
     logger.i("Process parameters for sendscreen called");
 
     Map<String, String> queryParams =
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+
     String? invoice = queryParams['invoice'];
     String? walletAdress = queryParams['walletAdress'];
+
     if (address != null) {
       walletAdress = address;
     }
+
     if (invoice != null) {
       logger.i("Invoice: $invoice");
       giveValuesToInvoice(invoice);
 
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
+
       onQRCodeScanned(walletAdress, context);
       // logger.w("Walletadress: $walletAdress");
 
@@ -151,7 +159,7 @@ class SendsController extends BaseController {
     } else {
       logger.i("No parameters found");
     }
-    logger.i("Invoice: $invoice");
+    logger.e("Invoice: $invoice");
   }
 
   QRTyped determineQRType(dynamic encodedString) {
@@ -194,13 +202,16 @@ class SendsController extends BaseController {
 
     switch (type) {
       case QRTyped.LightningUrl:
+        logger.i("LightningUrl was detected");
         giveValuesToLnUrl(encodedString);
         break;
       case QRTyped.LightningMail:
+        logger.i("LightningMail was detected");
         // Handle LightningMail QR code
         giveValuesToLnUrl(encodedString, asAddress: true);
         break;
       case QRTyped.OnChain:
+        logger.i("OnChain was detected");
         // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
         // cxt.go("/wallet/send?walletAdress=$encodedString");
         giveValuesToOnchainSend(encodedString);
@@ -287,7 +298,7 @@ class SendsController extends BaseController {
     feesDouble = sat_per_vbyte;
     bitcoinUnit = BitcoinUnits.SAT;
 
-    print("Estimated fees: $feesDouble");
+    logger.i("Estimated fees: $feesDouble");
   }
 
   void giveValuesToLnUrl(String lnUrl, {bool asAddress = false}) async {
