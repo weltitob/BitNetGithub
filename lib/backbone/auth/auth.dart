@@ -248,24 +248,27 @@ class Auth {
 
   Future<bool> genLitdAccount(String userId) async {
     try {
-      print("Calling genLitdaccount");
-      final response = await callGenLitdAccount();
 
-      print("genlitdaccount Response: $response");
+      final logger = Get.find<LoggerService>();
+      logger.i("Calling genLitdaccount");
+
+      final response = await callGenLitdAccount(userId);
+
+      logger.i("genlitdaccount Response: $response");
 
       if (response == null) {
-        print("Response is null. Possibly an error occurred calling genLitdAccount.");
+        logger.e("Response is null. Possibly an error occurred calling genLitdAccount.");
         return false;
       }
 
       // Check if the required fields exist
       if (response.account == null) {
-        print("Response contains no account information.");
+        logger.i("Response contains no account information.");
         return false;
       }
 
       if (response.macaroon == null || response.macaroon!.isEmpty) {
-        print("Response macaroon is null or empty.");
+        logger.i("Response macaroon is null or empty.");
         return false;
       }
 
@@ -273,32 +276,31 @@ class Auth {
       final macaroon = response.macaroon;
 
       if (userId.isEmpty) {
-        print("No user is currently logged in or userId is empty.");
+        logger.i("No user is currently logged in or userId is empty.");
         return false;
       }
 
       if (accountId == null || accountId.isEmpty) {
-        print("Account ID is null or empty.");
+        logger.i("Account ID is null or empty.");
         return false;
       }
 
       if (macaroon == null || macaroon.isEmpty) {
-        print("Macaroon is null or empty.");
+        logger.i("Macaroon is null or empty.");
         return false;
       }
 
       try {
         await storeLitdAccountData(userId, accountId, macaroon);
-        print("LITD account data stored securely.");
+        logger.i("LITD account data stored securely.");
         return true;
       } catch (e) {
-        print("Error storing LITD account data: $e");
+        logger.e("Error storing LITD account data: $e");
         return false;
       }
 
-    } catch (e, stackTrace) {
+    } catch (e) {
       print("An exception occurred while generating LITD account: $e");
-      print("Stack trace: $stackTrace");
       return false;
     }
   }
@@ -354,8 +356,8 @@ class Auth {
 
       //now retrive the users lnd accountid and macaroon from firebase and save it into the secure storage
       try{
-        final userId = did.toString()
-        final docSnapshot = await usersCollection.doc(userId).get();
+        final userId = did.toString();
+        final docSnapshot = await FirebaseFirestore.instance.collection("users_lnd_node").doc(userId).get();
 
         if (docSnapshot.exists) {
           final data = docSnapshot.data();
@@ -393,7 +395,7 @@ class Auth {
       }
 
 
-      print("Verify message response: ${customAuthToken.toString()}");
+      logger.i("Verify message response: ${customAuthToken.toString()}");
       final currentuser = await signInWithToken(customToken: customAuthToken);
 
       if (currentuser == null) {

@@ -11,7 +11,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
 
-dynamic callGenLitdAccount() async {
+dynamic callGenLitdAccount(String userId) async {
   final logger = Get.put(LoggerService());
   try {
     // Attempt to retrieve App Check tokens for additional security.
@@ -24,23 +24,17 @@ dynamic callGenLitdAccount() async {
       logger.e("Fehler beim Abrufen des App Check Tokens: $e");
     }
 
-    // Create a challenge for the user
-    final user = Auth().currentUser;
-    if (user == null) {
-      logger.e("Kein aktiver User gefunden.");
-      return null;
-    }
 
     logger.i("Generating challenge...");
     UserChallengeResponse? userChallengeResponse =
-    await create_challenge(user.uid, ChallengeType.litd_account_creation);
+    await create_challenge(userId, ChallengeType.litd_account_creation);
 
     if (userChallengeResponse == null) {
       logger.e("Challenge konnte nicht erstellt werden.");
       return null;
     }
 
-    logger.d('Created challenge for user ${user.uid}: $userChallengeResponse');
+    logger.d('Created challenge for user ${userId}: $userChallengeResponse');
 
     String challengeId = userChallengeResponse.challenge.challengeId;
     logger.d('Challenge ID: $challengeId');
@@ -49,8 +43,8 @@ dynamic callGenLitdAccount() async {
     logger.d('Challenge Data: $challengeData');
 
     // Retrieve private data (DID, private key)
-    PrivateData privateData = await getPrivateData(user.uid);
-    logger.d('Retrieved private data for user ${user.uid}');
+    PrivateData privateData = await getPrivateData(userId);
+    logger.d('Retrieved private data for user ${userId}');
 
     final String publicKeyHex = privateData.did;
     logger.d('Public Key Hex: $publicKeyHex');
@@ -75,7 +69,7 @@ dynamic callGenLitdAccount() async {
 
     // Send request
     final dynamic response = await callable.call(<String, dynamic>{
-      'user_id': user.uid.toString(),
+      'user_id': userId.toString(),
       'challenge_data': challengeData.toString(),
       'signature': signatureHex.toString(),
     });
