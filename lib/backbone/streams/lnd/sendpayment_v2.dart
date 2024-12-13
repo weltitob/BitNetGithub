@@ -1,21 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-
-
 Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amount) async* {
-  String restHost = AppTheme.baseUrlLightningTerminal;
-
-
-
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
@@ -26,29 +25,28 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
 
   String url = 'https://$restHost/v2/router/send';
 
-
-
   HttpOverrides.global = MyHttpOverrides();
 
-  for (var invoiceString in invoiceStrings) {
+  final logger = Get.find<LoggerService>();
 
+  for (var invoiceString in invoiceStrings) {
     final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
     String amountInSatFromInvoice = invoiceDecoded.amount.toString();
-    print("amountInSatFromInvoice: $amountInSatFromInvoice");
-    print("amount: $amount");
+    logger.i("amountInSatFromInvoice: $amountInSatFromInvoice");
+    logger.i("Invoice sats amount: $amount");
 
     late Map<String, dynamic> data;
 
-    if(amountInSatFromInvoice == "0"){
-      print("amount is 0 so well use custom amount");
+    if (amountInSatFromInvoice == "0") {
+      logger.i("Invoice amount is 0 so we will use custom amount");
       data = {
         'amt': amount,
         'timeout_seconds': 60,
         'fee_limit_sat': 1000,
         'payment_request': invoiceString,
       };
-    } else{
-      print("amount is not 0 so well use the ln invoice amount");
+    } else {
+      logger.i("Invoice amount is not 0 so well use the ln invoice amount");
       data = {
         'timeout_seconds': 60,
         'fee_limit_sat': 1000,
@@ -62,84 +60,85 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
         ..body = json.encode(data);
 
       var streamedResponse = await request.send();
-      var accumulatedData = StringBuffer();  // Used to accumulate chunks
+      var accumulatedData = StringBuffer();
 
       await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-        accumulatedData.write(chunk);  // Accumulate each chunk
+        accumulatedData.write(chunk);
 
-        // Check if accumulated data forms a complete JSON object
+        // Debug: Print the accumulated data so we know what we've got.
+        logger.i("Accumulated Data: ${accumulatedData.toString()}");
+
         if (isCompleteJson(accumulatedData.toString())) {
           try {
-            var jsonResponse = json.decode(accumulatedData.toString());
-            // Clear accumulatedData for the next JSON object
+            var decoded;
+            try {
+              decoded = json.decode(accumulatedData.toString());
+            } catch (jsonError) {
+              logger.e("JSON Decode Error: $jsonError");
+              yield RestResponse(
+                statusCode: "error",
+                message: "Error decoding JSON: $jsonError",
+                data: {},
+              );
+              // Clear so we don't get stuck in a loop with bad data
+              accumulatedData.clear();
+              continue;
+            }
+
+            // Clear accumulatedData after successful decode
             accumulatedData.clear();
 
-            // Yield the successful response
-            yield RestResponse(statusCode: "success", message: "Payment processed", data: jsonResponse);
+            // Check if decoded is null or not a map
+            if (decoded == null || decoded is! Map<String, dynamic>) {
+              logger.e("Decoded JSON is null or not a Map. Decoded: $decoded");
+              yield RestResponse(
+                statusCode: "error",
+                message: "Unexpected JSON structure.",
+                data: {},
+              );
+              continue;
+            }
+
+            // Print the decoded JSON to verify structure
+            logger.i("Decoded JSON: $decoded");
+
+            // Now safely access fields - check if keys exist
+            // For example, if you expect a "status" field:
+            if (!decoded.containsKey("status")) {
+              logger.e("No 'status' key found in response!");
+              yield RestResponse(
+                statusCode: "error",
+                message: "No status key in JSON response",
+                data: decoded,
+              );
+              continue;
+            }
+
+            yield RestResponse(
+              statusCode: "success",
+              message: "Payment processed",
+              data: decoded,
+            );
           } catch (e) {
-            // Handle JSON decode error or other errors
-            yield RestResponse(statusCode: "error", message: "Error during JSON processing: $e", data: {});
+            logger.e("Error during JSON processing: $e");
+            yield RestResponse(
+              statusCode: "error",
+              message: "Error during JSON processing: $e",
+              data: {},
+            );
           }
         }
       }
     } catch (e) {
-      yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
+      logger.e("Network Error: $e");
+      yield RestResponse(
+        statusCode: "error",
+        message: "Error during network call: $e",
+        data: {},
+      );
     }
 
-    // Implement your logic for when to send the next payment
-    // For example, wait for some time before sending the next one
-    await Future.delayed(const Duration(seconds: 10));  // Adjust delay as needed
+    // Add a delay between sends if necessary
+    await Future.delayed(const Duration(seconds: 10));
   }
 }
-
-
-
-//
-// Future<RestResponse> sendPaymentV2(String invoice_string, dynamic amountInSat) async {
-//   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
-//   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
-//   // Make the GET request
-//   String url = 'https://$restHost/v2/router/send';
-//   // Read the macaroon file and convert it to a hexadecimal string
-//   ByteData byteData = await loadMacaroonAsset();
-//   List<int> bytes = byteData.buffer.asUint8List();
-//   String macaroon = bytesToHex(bytes);
-//
-//   // Calculate the fee limit as 2% of the amount and round it up
-//   int feeLimitSat = (amountInSat * 0.02).ceil();
-//
-//   Map<String, String> headers = {
-//     'Grpc-Metadata-macaroon': macaroon,
-//   };
-//
-//   final Map<String, dynamic> data = {
-//     'timeout_seconds': 60,
-//     'fee_limit_sat': feeLimitSat,
-//     'payment_request': invoice_string //invoice_string,
-//   };
-//
-//   HttpOverrides.global = MyHttpOverrides();
-//
-//   try {
-//     var request = http.Request('POST', Uri.parse(url))
-//       ..headers.addAll(headers)
-//       ..body = json.encode(data);
-//
-//     var streamedResponse = await request.send();
-//     var completeResponse = StringBuffer();
-//
-//     await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-//       completeResponse.write(chunk);
-//     }
-//
-//     // Here we have the complete response
-//     var jsonResponse = json.decode(completeResponse.toString());
-//     print(jsonResponse); // The combined JSON response
-//
-//     // Now create the CloudfunctionCallback from the combined JSON
-//     return RestResponse.fromJson(jsonResponse);
-//   } catch (e) {
-//     print('Error: $e');
-//     return RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
-//   }
-// }

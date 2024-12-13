@@ -149,8 +149,13 @@ class Auth {
     logger.i("Verify message response: ${customAuthToken.toString()}");
 
     //before signinwith token we need tog enLitdAccount (backend);
-    final genlitdresponse = await genLitdAccount();
-    print("GenLitdAccount Response: $genlitdresponse");
+    logger.i("Calling genLitdAccount...");
+    final bool genlitdresponse = await genLitdAccount(publicKeyHex.toString());
+    if(genlitdresponse == false){
+      logger.e("Error calling genLitdAccount");
+      throw Exception("Error calling genLitdAccount");
+    }
+    logger.i("GenLitdAccount Response: $genlitdresponse");
 
     final currentuser = await signInWithToken(customToken: customAuthToken);
 
@@ -241,60 +246,63 @@ class Auth {
   //   }
   // }
 
-  dynamic genLitdAccount() async {
+  Future<bool> genLitdAccount(String userId) async {
     try {
-      print("Calling genlitdaccount");
+      print("Calling genLitdaccount");
       final response = await callGenLitdAccount();
 
       print("genlitdaccount Response: $response");
 
       if (response == null) {
         print("Response is null. Possibly an error occurred calling genLitdAccount.");
-        return;
+        return false;
       }
 
       // Check if the required fields exist
       if (response.account == null) {
         print("Response contains no account information.");
-        return;
+        return false;
       }
 
       if (response.macaroon == null || response.macaroon!.isEmpty) {
         print("Response macaroon is null or empty.");
-        return;
+        return false;
       }
 
-      final userId = Auth().currentUser?.uid;
       final accountId = response.account!.id;
       final macaroon = response.macaroon;
 
-      if (userId == null || userId.isEmpty) {
+      if (userId.isEmpty) {
         print("No user is currently logged in or userId is empty.");
-        return;
+        return false;
       }
 
       if (accountId == null || accountId.isEmpty) {
         print("Account ID is null or empty.");
-        return;
+        return false;
       }
 
       if (macaroon == null || macaroon.isEmpty) {
         print("Macaroon is null or empty.");
-        return;
+        return false;
       }
 
       try {
         await storeLitdAccountData(userId, accountId, macaroon);
         print("LITD account data stored securely.");
+        return true;
       } catch (e) {
         print("Error storing LITD account data: $e");
+        return false;
       }
 
     } catch (e, stackTrace) {
       print("An exception occurred while generating LITD account: $e");
       print("Stack trace: $stackTrace");
+      return false;
     }
   }
+
 
   String generateRandomString(int length) {
     const characters =
@@ -343,6 +351,47 @@ class Auth {
         challengeId.toString(),
         signatureHex.toString(),
       );
+
+      //now retrive the users lnd accountid and macaroon from firebase and save it into the secure storage
+      try{
+        final userId = did.toString()
+        final docSnapshot = await usersCollection.doc(userId).get();
+
+        if (docSnapshot.exists) {
+          final data = docSnapshot.data();
+          if (data == null) {
+            logger.e("User document is empty");
+            throw Exception("User document is empty");
+          }
+
+          // Extract the lnd_account information
+          final lndAccount = data['lnd_account'];
+          if (lndAccount == null) {
+            logger.e("LITD account data not found in user document");
+            throw Exception("LITD account data not found");
+          }
+
+          final accountId = lndAccount['accountid'];
+          final macaroon = lndAccount['macaroon'];
+
+          if (accountId == null || macaroon == null) {
+            logger.e("Missing accountId or macaroon in LITD account data");
+            throw Exception("Incomplete LITD account data");
+          }
+
+          // Now that we have the data, call storeLitdAccountData
+          await storeLitdAccountData(userId, accountId, macaroon);
+          logger.i("Successfully retrieved and stored LITD account data.");
+        } else {
+          logger.e("User document does not exist");
+          throw Exception("User document does not exist");
+        }
+
+      } catch (e) {
+        logger.e("Error storing LITD account data: $e");
+        throw Exception("Error storing LITD account data: $e");
+      }
+
 
       print("Verify message response: ${customAuthToken.toString()}");
       final currentuser = await signInWithToken(customToken: customAuthToken);

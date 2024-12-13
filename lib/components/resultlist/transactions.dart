@@ -761,17 +761,22 @@ class _TransactionsState extends State<Transactions>
     if (!mounted) {
       return;
     }
-    setState(() {
-      isLoadingTransactionGroups = true;
-    });
+    if(mounted){
+      setState(() {
+        isLoadingTransactionGroups = true;
+      });
+    }
 
     // Simulate a delay to show the "Loading..." text
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
 
-    setState(() {
-      loadedTransactionGroups += 4;
-      isLoadingTransactionGroups = false;
-    });
+    if(mounted) {
+      setState(() {
+        loadedTransactionGroups += 4;
+        isLoadingTransactionGroups = false;
+      });
+    }
+
   }
 
   void updateDataWithNew() {

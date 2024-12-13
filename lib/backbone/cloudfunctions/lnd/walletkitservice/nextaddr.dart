@@ -12,6 +12,9 @@ import 'package:get/get.dart';
 
 
 Future<RestResponse> nextAddr() async {
+
+  //this obviously doesnt work because it's not for one user would be for all
+
   LoggerService logger = Get.find();
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;

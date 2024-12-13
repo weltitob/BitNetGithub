@@ -450,7 +450,7 @@ class SendsController extends BaseController {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
-              print(response.data);
+              logger.i("Success: ${response.data}");
               //connect this with transactions view
               LightningPayment invoice =
                   LightningPayment.fromJson(response.data["result"]);

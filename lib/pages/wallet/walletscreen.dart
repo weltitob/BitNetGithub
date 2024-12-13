@@ -290,7 +290,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       LongButtonWidget(
                         title: "Genlitdaccount",
                         onTap: () async {
-                          await Auth().genLitdAccount();
+                          String did = Auth().currentUser!.uid;
+                          await Auth().genLitdAccount(did);
                         },
                       ),
                       SizedBox(height: AppTheme.cardPadding.h * 1.75),
