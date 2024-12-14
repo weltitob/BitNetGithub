@@ -15,6 +15,8 @@ abstract class AppTheme {
   static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
   static String applicationName = 'BitNet';
 
+  static String baseUrlMemPoolSpaceApi = 'https://mempool.space/api/';
+
   static dynamic targetConf = 4;
 
   static Color? colorSchemeSeed = const Color(0xffffffff);

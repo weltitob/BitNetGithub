@@ -20,10 +20,28 @@ dynamic hdWalletFromMnemonic(String mnemonicString) {
   logger.i('Seed derived from mnemonic:\n$seed\n');
   Uint8List seedUnit = bip39.mnemonicToSeed(mnemonicString);
 
-  // // BIP49 Derivation Path: m/49'/0'/0'/0/0
-  // final String bip49Path = "m/49'/0'/0'/0/0";
-  // HDWallet hdWallet = HDWallet.fromSeed(seedUnit).derivePath(bip49Path);
+  // Create the HDWallet from the seed
   HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
-
   return hdWallet;
+}
+
+List<String> deriveTaprootAddresses(String mnemonic) {
+  LoggerService logger = Get.find<LoggerService>();
+
+  // Create the master HD wallet from the mnemonic
+  final hdWallet = hdWalletFromMnemonic(mnemonic) as HDWallet;
+
+  // Taproot derivation path for BIP86:
+  // m/86'/0'/0'/0/i for mainnet receiving addresses
+  const pathFormat = "m/86'/0'/0'/0/";
+
+  List<String> derivedAddresses = [];
+  for (int i = 0; i < 5; i++) {
+    final child = hdWallet.derivePath("$pathFormat$i");
+    final address = child.address; // Ensure this uses P2TR logic internally
+    derivedAddresses.add(address!);
+    logger.i("Taproot Address #$i: $address");
+  }
+
+  return derivedAddresses;
 }

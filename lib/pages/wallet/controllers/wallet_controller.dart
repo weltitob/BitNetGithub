@@ -9,8 +9,10 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverst
 import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -24,6 +26,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,23 +101,122 @@ class WalletsController extends BaseController {
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
 
-  //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
-
-  //Get the balance for users hdwallet
-
-
-  //get the balance for the end
-
-
-  //get the .....
-
-
-  //retrive all transactions for the wallet and it's keys
-
 
 
   //------------------------------------------------------------------------------------------
+  //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
+  //------------------------------------------------------------------------------------------
+  Future<num> getOnchainBalance() async {
+    String mnemonic = "your mnemonic here";
+    // 1. Derive all addresses
+    List<String> addresses = await deriveTaprootAddresses(mnemonic);
+    final DioClient dioClient = Get.find<DioClient>();
 
+
+
+    num totalBalance = 0;
+
+    // 2. For each address, fetch UTXOs and sum up the value
+    for (String addr in addresses) {
+      String url = '${AppTheme.baseUrlMemPoolSpaceApi}v1/address/$addr/utxo';
+      try {
+        final response = await dioClient.get(url: url,);
+        if (response.statusCode == 200) {
+          List utxos = response.data;
+          // Sum all UTXOs for this address
+          num addressBalance = utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
+          totalBalance += addressBalance;
+        }
+      } catch (e) {
+        // Handle errors gracefully
+        print('Error fetching UTXOs for $addr: $e');
+      }
+    }
+
+    return totalBalance; // in satoshis
+  }
+
+  // ----------------------
+  // GET ON-CHAIN TRANSACTIONS
+  // ----------------------
+  Future<List<dynamic>> getOnchainTransactions() async {
+    String mnemonic = "your mnemonic here";
+    // 1. Derive all addresses
+    List<String> addresses = await deriveTaprootAddresses(mnemonic);
+    final DioClient dioClient = Get.find<DioClient>();
+
+
+    List<dynamic> allTxs = [];
+
+    // 2. Fetch transactions for each address and aggregate
+    for (String addr in addresses) {
+
+      try {
+        String url = '${AppTheme.baseUrlMemPoolSpaceApi}v1/validate-address/$addr';
+        print(url);
+        await dioClient.get(url: url).then((value) async {
+          print(value.data);
+          ValidateAddressComponentModel validateAddressComponentModel = ValidateAddressComponentModel.fromJson(value.data);
+          print(validateAddressComponentModel.isvalid);
+          validateAddressComponentModel.isvalid
+              ? await dioClient.get(url: '${AppTheme.baseUrlMemPoolSpaceApi}/address/$addr/txs').then((value) async {
+            print(value.data);
+          })
+              : null;
+        });
+      } catch (e, tr) {
+        print(e);
+        print(tr);
+      }
+    }
+
+    // Optional: Deduplicate transactions if they appear in multiple addresses
+    // You can identify transactions by their txid and maintain a set.
+
+    // Return aggregated transaction list
+    return allTxs;
+  }
+
+  // ----------------------
+  // SUBSCRIBE TO ON-CHAIN BALANCE UPDATES
+  // ----------------------
+  dynamic subscribeToOnchainBalance() {
+    String mnemonic = "your mnemonic here";
+    // There's no direct "address subscription" endpoint.
+    // Instead, subscribe to mempool-wide events and filter on client side:
+    // You can reuse logic from TransactionController’s websocket setup.
+
+    // Steps:
+    // 1. Derive addresses.
+    // 2. Connect to mempool.space WebSocket.
+    // 3. Subscribe to mempool transactions using {"action": "want", "data": ["watch-mempool"]}.
+    // 4. On each incoming tx, check if it involves the derived addresses (vin/vout).
+    // 5. If it does, re-fetch the balances or update the cached balance incrementally.
+  }
+
+  // ----------------------
+  // SUBSCRIBE TO ON-CHAIN TRANSACTIONS
+  // ----------------------
+  dynamic subscribeToOnchainTransactions() {
+    String mnemonic = "your mnemonic here";
+    // Similar to subscribeToOnchainBalance:
+    // 1. Derive addresses.
+    // 2. Connect to WebSocket and subscribe to mempool updates.
+    // 3. Filter incoming transactions:
+    //    - Parse tx from websocket message
+    //    - If any input or output matches the derived addresses, trigger update in UI or internal state.
+    //
+    // The TransactionController code you have already shows how to connect and receive data:
+    // You'd move that logic to a dedicated method in the WalletController that:
+    // - Opens the WS connection
+    // - Sends the initial "want" message
+    // - On message, checks against known addresses.
+  }
+
+
+  //------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------
 
 
   // Call this method from your UI when you want to fetch the status

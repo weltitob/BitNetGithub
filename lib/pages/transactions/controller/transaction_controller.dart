@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:bitnet/backbone/cloudfunctions/check_addresses_ownership.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/mempool_utils.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
@@ -40,7 +41,7 @@ class TransactionController extends BaseController {
 
   var dataOutSpents;
   var dataOutSpents1;
-  String baseUrl = 'https://mempool.space/api/';
+  String baseUrl = AppTheme.baseUrlMemPoolSpaceApi;
   String? txID = '';
   String feeUsd = '', feeSat = '';
   RxDouble feeRate = 0.0.obs;

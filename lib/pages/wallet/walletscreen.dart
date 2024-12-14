@@ -310,89 +310,113 @@ class WalletScreen extends GetWidget<WalletsController> {
                 ),
               ),
               // Add our new button here
-              // SliverToBoxAdapter(
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(
-              //         horizontal: AppTheme.cardPadding),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         SizedBox(height: AppTheme.cardPadding.h * 1.75),
-              //         LongButtonWidget(
-              //           title: "Genlitdaccount",
-              //           onTap: () async {
-              //             String did = Auth().currentUser!.uid;
-              //             await Auth().genLitdAccount(did);
-              //           },
-              //         ),
-              //         SizedBox(height: AppTheme.cardPadding.h * 1.75),
-              //         LongButtonWidget(
-              //           title: "Show Server Status",
-              //           onTap: () async {
-              //             await controller.updateSubServerStatus();
-              //           },
-              //         ),
-              //
-              //         SizedBox(height: AppTheme.cardPadding.h),
-              //
-              //         // Observe the subServersStatus variable
-              //         Obx(() {
-              //           final status = controller.subServersStatus.value;
-              //           if (status == null) {
-              //             // If null, either not fetched yet or failed
-              //             return Text(
-              //                 "No status fetched yet or failed to load.",
-              //                 style: Theme.of(context).textTheme.bodyMedium);
-              //           }
-              //
-              //           // If we have status data, show the DataTable
-              //           return Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               Text("Service Status Overview:",
-              //                   style: Theme.of(context).textTheme.titleLarge),
-              //               SizedBox(height: AppTheme.cardPadding.h),
-              //               DataTable(
-              //                 columns: const [
-              //                   DataColumn(label: Text("Service")),
-              //                   DataColumn(label: Text("Disabled")),
-              //                   DataColumn(label: Text("Running")),
-              //                   DataColumn(label: Text("Error")),
-              //                 ],
-              //                 rows: status.subServers.entries.map((entry) {
-              //                   final serviceName = entry.key;
-              //                   final info = entry.value;
-              //
-              //                   Color disabledColor =
-              //                       info.disabled ? Colors.red : Colors.green;
-              //                   Color runningColor =
-              //                       info.running ? Colors.green : Colors.red;
-              //                   Color errorColor = info.error.isNotEmpty
-              //                       ? Colors.red
-              //                       : Colors.green;
-              //
-              //                   return DataRow(cells: [
-              //                     DataCell(Text(serviceName)),
-              //                     DataCell(Text(info.disabled.toString(),
-              //                         style: TextStyle(color: disabledColor))),
-              //                     DataCell(Text(info.running.toString(),
-              //                         style: TextStyle(color: runningColor))),
-              //                     DataCell(Text(
-              //                         info.error.isEmpty
-              //                             ? "No Error"
-              //                             : info.error,
-              //                         style: TextStyle(color: errorColor))),
-              //                   ]);
-              //                 }).toList(),
-              //               ),
-              //             ],
-              //           );
-              //         }),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // Section 2: Actions
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      
+                      LongButtonWidget(title: "fetchOnchain Balance", onTap: () async {
+                        await controller.getOnchainBalance();
+                      }),
+                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      LongButtonWidget(
+                        title: "getOnchainTransactions",
+                        onTap: () async {
+                          await controller.getOnchainTransactions();
+                        },
+                      ),
+                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      LongButtonWidget(
+                        title: "subscribeToOnchainBalance ",
+                        onTap: () async {
+                          await controller.subscribeToOnchainBalance();
+                        },
+                      ),
+                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      LongButtonWidget(
+                        title: "fetchBitcoin Balance",
+                        onTap: () async {
+                          await controller.subscribeToOnchainTransactions();
+                        },
+                      ),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "Genlitdaccount",
+                      //   onTap: () async {
+                      //     String did = Auth().currentUser!.uid;
+                      //     await Auth().genLitdAccount(did);
+                      //   },
+                      // ),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "Show Server Status",
+                      //   onTap: () async {
+                      //     await controller.updateSubServerStatus();
+                      //   },
+                      // ),
+                      //
+                      // SizedBox(height: AppTheme.cardPadding.h),
+                      //
+                      // // Observe the subServersStatus variable
+                      // Obx(() {
+                      //   final status = controller.subServersStatus.value;
+                      //   if (status == null) {
+                      //     // If null, either not fetched yet or failed
+                      //     return Text(
+                      //         "No status fetched yet or failed to load.",
+                      //         style: Theme.of(context).textTheme.bodyMedium);
+                      //   }
+                      //
+                      //   // If we have status data, show the DataTable
+                      //   return Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Text("Service Status Overview:",
+                      //           style: Theme.of(context).textTheme.titleLarge),
+                      //       SizedBox(height: AppTheme.cardPadding.h),
+                      //       DataTable(
+                      //         columns: const [
+                      //           DataColumn(label: Text("Service")),
+                      //           DataColumn(label: Text("Disabled")),
+                      //           DataColumn(label: Text("Running")),
+                      //           DataColumn(label: Text("Error")),
+                      //         ],
+                      //         rows: status.subServers.entries.map((entry) {
+                      //           final serviceName = entry.key;
+                      //           final info = entry.value;
+                      //
+                      //           Color disabledColor =
+                      //               info.disabled ? Colors.red : Colors.green;
+                      //           Color runningColor =
+                      //               info.running ? Colors.green : Colors.red;
+                      //           Color errorColor = info.error.isNotEmpty
+                      //               ? Colors.red
+                      //               : Colors.green;
+                      //
+                      //           return DataRow(cells: [
+                      //             DataCell(Text(serviceName)),
+                      //             DataCell(Text(info.disabled.toString(),
+                      //                 style: TextStyle(color: disabledColor))),
+                      //             DataCell(Text(info.running.toString(),
+                      //                 style: TextStyle(color: runningColor))),
+                      //             DataCell(Text(
+                      //                 info.error.isEmpty
+                      //                     ? "No Error"
+                      //                     : info.error,
+                      //                 style: TextStyle(color: errorColor))),
+                      //           ]);
+                      //         }).toList(),
+                      //       ),
+                      //     ],
+                      //   );
+                      // }),
+                    ],
+                  ),
+                ),
+              ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
