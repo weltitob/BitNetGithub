@@ -12,7 +12,7 @@ abstract class AppTheme {
   static String baseUrlLightningTerminal = 'mybitnet.com';
   static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
 
-  static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
+  static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
   static String applicationName = 'BitNet';
 
   static dynamic targetConf = 4;

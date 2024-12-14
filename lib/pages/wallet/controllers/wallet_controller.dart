@@ -98,6 +98,25 @@ class WalletsController extends BaseController {
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
 
+  //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
+
+  //Get the balance for users hdwallet
+
+
+  //get the balance for the end
+
+
+  //get the .....
+
+
+  //retrive all transactions for the wallet and it's keys
+
+
+
+  //------------------------------------------------------------------------------------------
+
+
+
   // Call this method from your UI when you want to fetch the status
   Future<void> updateSubServerStatus() async {
     final result = await fetchSubServerStatus();

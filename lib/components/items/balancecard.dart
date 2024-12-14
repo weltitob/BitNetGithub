@@ -126,6 +126,7 @@ class FiatCard extends StatelessWidget {
               left: AppTheme.cardPadding,
               bottom: AppTheme.cardPadding,
               child: LongButtonWidget(
+                buttonType: ButtonType.transparent,
                 leadingIcon: Icon(
                   FontAwesomeIcons.arrowDown,
                   size: AppTheme.cardPadding * 0.75,
@@ -133,13 +134,14 @@ class FiatCard extends StatelessWidget {
                 ),
                 title: 'Top Up',
                 customHeight: AppTheme.cardPadding * 1.25,
-                customWidth: AppTheme.cardPadding * 5,
+                customWidth: AppTheme.cardPadding * 4.5,
                 onTap: () {},
               )),
           Positioned(
-              left: AppTheme.cardPadding * 6.2,
+              left: AppTheme.cardPadding * 6,
               bottom: AppTheme.cardPadding,
               child: LongButtonWidget(
+                buttonType: ButtonType.transparent,
                 leadingIcon: Icon(
                   FontAwesomeIcons.arrowUp,
                   size: AppTheme.cardPadding * 0.75,
@@ -147,7 +149,7 @@ class FiatCard extends StatelessWidget {
                 ),
                 title: 'Pay Out',
                 customHeight: AppTheme.cardPadding * 1.25,
-                customWidth: AppTheme.cardPadding * 5,
+                customWidth: AppTheme.cardPadding * 4.5,
                 onTap: () {},
               ))
         ],
@@ -189,75 +191,75 @@ class BalanceCardLightning extends StatelessWidget {
 
           const PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
 
-          //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
-          Positioned(
-            left: AppTheme.cardPadding,
-            bottom: AppTheme.cardPadding,
-            child: LongButtonWidget(
-              leadingIcon: Icon(
-                FontAwesomeIcons.lock,
-                size: AppTheme.cardPadding * 0.75,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              title: 'Unlock',
-              customHeight: AppTheme.cardPadding * 1.25,
-              customWidth: AppTheme.cardPadding * 5,
-              onTap: () {
-                BitNetBottomSheet(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  context: context,
-                  child: bitnetScaffold(
-                    extendBodyBehindAppBar: true,
-                    context: context,
-                    appBar: bitnetAppBar(
-                      hasBackButton: false,
-                      context: context,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      text: 'Unlock Card',
-                    ),
-                    body: Stack(
-                      children: [
-                        Container(
-                          child: const Column(
-                            children: [
-                              SizedBox(
-                                height: AppTheme.cardPadding * 4,
-                              ),
-                              Icon(
-                                FontAwesomeIcons.lock,
-                                size: AppTheme.cardPadding * 4,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.cardPadding,
-                                    vertical: AppTheme.cardPadding * 2),
-                                child: Text(
-                                  "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        BottomButtons(
-                            leftButtonTitle: "Buy Bitcoin",
-                            rightButtonTitle: "Receive OnChain",
-                            onLeftButtonTap: () {
-                              context.push('/wallet/bitcoinscreen');
-                            },
-                            onRightButtonTap: () {
-                              context.go(
-                                  '/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
-                            })
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          )
+          // //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
+          // Positioned(
+          //   left: AppTheme.cardPadding,
+          //   bottom: AppTheme.cardPadding,
+          //   child: LongButtonWidget(
+          //     leadingIcon: Icon(
+          //       FontAwesomeIcons.lock,
+          //       size: AppTheme.cardPadding * 0.75,
+          //       color: Theme.of(context).colorScheme.onPrimary,
+          //     ),
+          //     title: 'Unlock',
+          //     customHeight: AppTheme.cardPadding * 1.25,
+          //     customWidth: AppTheme.cardPadding * 5,
+          //     onTap: () {
+          //       BitNetBottomSheet(
+          //         height: MediaQuery.of(context).size.height * 0.6,
+          //         context: context,
+          //         child: bitnetScaffold(
+          //           extendBodyBehindAppBar: true,
+          //           context: context,
+          //           appBar: bitnetAppBar(
+          //             hasBackButton: false,
+          //             context: context,
+          //             onTap: () {
+          //               Navigator.pop(context);
+          //             },
+          //             text: 'Unlock Card',
+          //           ),
+          //           body: Stack(
+          //             children: [
+          //               Container(
+          //                 child: const Column(
+          //                   children: [
+          //                     SizedBox(
+          //                       height: AppTheme.cardPadding * 4,
+          //                     ),
+          //                     Icon(
+          //                       FontAwesomeIcons.lock,
+          //                       size: AppTheme.cardPadding * 4,
+          //                     ),
+          //                     Padding(
+          //                       padding: EdgeInsets.symmetric(
+          //                           horizontal: AppTheme.cardPadding,
+          //                           vertical: AppTheme.cardPadding * 2),
+          //                       child: Text(
+          //                         "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
+          //                         textAlign: TextAlign.center,
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //               BottomButtons(
+          //                   leftButtonTitle: "Buy Bitcoin",
+          //                   rightButtonTitle: "Receive OnChain",
+          //                   onLeftButtonTap: () {
+          //                     context.push('/wallet/bitcoinscreen');
+          //                   },
+          //                   onRightButtonTap: () {
+          //                     context.go(
+          //                         '/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
+          //                   })
+          //             ],
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // )
         ],
       ),
     );
@@ -306,7 +308,7 @@ class BalanceCardBtc extends StatelessWidget {
               cardname: 'On-Chain Balance',
             ),
           ),
-          Positioned(
+          unconfirmedUnitModel.amount == 0 ? Container() : Positioned(
             bottom: -10,
             left: 0,
             child: UnconfirmedTextWidget(
