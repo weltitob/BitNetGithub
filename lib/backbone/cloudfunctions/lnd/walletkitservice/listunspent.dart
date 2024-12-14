@@ -18,7 +18,7 @@ Future<RestResponse> listUnspent() async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/utxos';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
@@ -29,7 +29,8 @@ Future<RestResponse> listUnspent() async {
     'min_confs': 4,
     'max_confs': 999999,
     'account': "default",
-    'unconfirmed_only': false, //false or true decides if only unconfirmed utxos are returned
+    'unconfirmed_only':
+        false, //false or true decides if only unconfirmed utxos are returned
   };
 
   HttpOverrides.global = MyHttpOverrides();
@@ -37,18 +38,30 @@ Future<RestResponse> listUnspent() async {
   try {
     final DioClient dioClient = Get.find<DioClient>();
 
-    var response = await dioClient.post(url: url, headers: headers, data: json.encode(data));
+    var response = await dioClient.post(
+        url: url, headers: headers, data: json.encode(data));
     logger.i('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully added invoice", data: response.data);
+      return RestResponse(
+          statusCode: "${response.statusCode}",
+          message: "Successfully added invoice",
+          data: response.data);
     } else {
       logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
+      return RestResponse(
+          statusCode: "error",
+          message:
+              "Failed to load data: ${response.statusCode}, ${response.data}",
+          data: {});
     }
   } catch (e) {
     logger.e('Error trying to publish transaction: $e');
-    return RestResponse(statusCode: "error", message: "Failed to load data: Could not get response from Lightning node!", data: {});
+    return RestResponse(
+        statusCode: "error",
+        message:
+            "Failed to load data: Could not get response from Lightning node!",
+        data: {});
   }
 }

@@ -34,7 +34,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WalletsController extends BaseController {
-
   RxBool hideBalance = false.obs;
   RxBool showInfo = false.obs;
 
@@ -101,8 +100,6 @@ class WalletsController extends BaseController {
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
 
-
-
   //------------------------------------------------------------------------------------------
   //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
   //------------------------------------------------------------------------------------------
@@ -112,19 +109,20 @@ class WalletsController extends BaseController {
     List<String> addresses = await deriveTaprootAddresses(mnemonic);
     final DioClient dioClient = Get.find<DioClient>();
 
-
-
     num totalBalance = 0;
 
     // 2. For each address, fetch UTXOs and sum up the value
     for (String addr in addresses) {
       String url = '${AppTheme.baseUrlMemPoolSpaceApi}v1/address/$addr/utxo';
       try {
-        final response = await dioClient.get(url: url,);
+        final response = await dioClient.get(
+          url: url,
+        );
         if (response.statusCode == 200) {
           List utxos = response.data;
           // Sum all UTXOs for this address
-          num addressBalance = utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
+          num addressBalance =
+              utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
           totalBalance += addressBalance;
         }
       } catch (e) {
@@ -145,23 +143,27 @@ class WalletsController extends BaseController {
     List<String> addresses = await deriveTaprootAddresses(mnemonic);
     final DioClient dioClient = Get.find<DioClient>();
 
-
     List<dynamic> allTxs = [];
 
     // 2. Fetch transactions for each address and aggregate
     for (String addr in addresses) {
-
       try {
-        String url = '${AppTheme.baseUrlMemPoolSpaceApi}v1/validate-address/$addr';
+        String url =
+            '${AppTheme.baseUrlMemPoolSpaceApi}v1/validate-address/$addr';
         print(url);
         await dioClient.get(url: url).then((value) async {
           print(value.data);
-          ValidateAddressComponentModel validateAddressComponentModel = ValidateAddressComponentModel.fromJson(value.data);
+          ValidateAddressComponentModel validateAddressComponentModel =
+              ValidateAddressComponentModel.fromJson(value.data);
           print(validateAddressComponentModel.isvalid);
           validateAddressComponentModel.isvalid
-              ? await dioClient.get(url: '${AppTheme.baseUrlMemPoolSpaceApi}/address/$addr/txs').then((value) async {
-            print(value.data);
-          })
+              ? await dioClient
+                  .get(
+                      url:
+                          '${AppTheme.baseUrlMemPoolSpaceApi}/address/$addr/txs')
+                  .then((value) async {
+                  print(value.data);
+                })
               : null;
         });
       } catch (e, tr) {
@@ -213,19 +215,15 @@ class WalletsController extends BaseController {
     // - On message, checks against known addresses.
   }
 
-
   //------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------
-
 
   // Call this method from your UI when you want to fetch the status
   Future<void> updateSubServerStatus() async {
     final result = await fetchSubServerStatus();
     subServersStatus.value = result;
   }
-
-
 
   void setHideBalance({bool? hide}) {
     print(hide);

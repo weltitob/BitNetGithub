@@ -12,7 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amount) async* {
+Stream<RestResponse> sendPaymentV2Stream(
+    List<String> invoiceStrings, int? amount) async* {
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
   ByteData byteData = await loadMacaroonAsset();
@@ -30,7 +31,6 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
   final logger = Get.find<LoggerService>();
 
   for (var invoiceString in invoiceStrings) {
-
     final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
     String amountInSatFromInvoice = invoiceDecoded.amount.toString();
 
@@ -51,7 +51,7 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
       logger.i("Invoice amount is not 0 so well use the ln invoice amount");
       data = {
         'timeout_seconds': 60,
-        'fee_limit_sat': 1000,
+        'fee_limit_sat': 100,
         'payment_request': invoiceString,
       };
     }
@@ -89,8 +89,10 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
           logger.i("Decoded JSON: $decoded");
 
           // Check structure: we expect 'result' key and inside it a 'status' key
-          if (decoded["result"] == null || decoded["result"] is! Map<String, dynamic>) {
-            logger.e("No 'result' key found in JSON response or it's not a map!");
+          if (decoded["result"] == null ||
+              decoded["result"] is! Map<String, dynamic>) {
+            logger
+                .e("No 'result' key found in JSON response or it's not a map!");
             yield RestResponse(
               statusCode: "error",
               message: "No result key in JSON response",

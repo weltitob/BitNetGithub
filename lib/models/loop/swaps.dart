@@ -1,4 +1,3 @@
-
 class Swap {
   final String amt;
   final String id;

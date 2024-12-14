@@ -164,105 +164,109 @@ class BalanceCardLightning extends StatelessWidget {
   final Color? textColor;
   @override
   Widget build(BuildContext context) {
-    WalletsController controller = Get.find<WalletsController>();
-    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(balance ?? controller.lightningBalance.value.balance),
-        BitcoinUnits.SAT);
-    final balanceStr = unitModel.amount.toString();
+    return Obx(() {
+      WalletsController controller = Get.find<WalletsController>();
+      final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+          double.parse(balance ?? controller.lightningBalance.value.balance),
+          BitcoinUnits.SAT);
+      final balanceStr = unitModel.amount.toString();
 
-    return Container(
-      decoration: BoxDecoration(boxShadow: [
-        AppTheme.boxShadowBig,
-      ]),
-      child: Stack(
-        children: [
-          const CardBackgroundLightning(),
-          Obx(
-            () => BalanceTextWidget(
-              balanceStr: balanceStr,
-              textColor: textColor,
-              iconData: FontAwesomeIcons.wallet,
-              balanceSAT: balance ?? controller.lightningBalance.value.balance,
-              walletAddress: "safdadasdas",
-              cardname: 'Lightning Balance',
-              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+      return Container(
+        decoration: BoxDecoration(boxShadow: [
+          AppTheme.boxShadowBig,
+        ]),
+        child: Stack(
+          children: [
+            const CardBackgroundLightning(),
+            Obx(
+              () => BalanceTextWidget(
+                balanceStr: balanceStr,
+                textColor: textColor,
+                iconData: FontAwesomeIcons.wallet,
+                balanceSAT:
+                    balance ?? controller.lightningBalance.value.balance,
+                walletAddress: "safdadasdas",
+                cardname: 'Lightning Balance',
+                iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+              ),
             ),
-          ),
 
-          const PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
+            const PaymentNetworkPicture(
+                imageUrl: "assets/images/lightning.png"),
 
-          // //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
-          // Positioned(
-          //   left: AppTheme.cardPadding,
-          //   bottom: AppTheme.cardPadding,
-          //   child: LongButtonWidget(
-          //     leadingIcon: Icon(
-          //       FontAwesomeIcons.lock,
-          //       size: AppTheme.cardPadding * 0.75,
-          //       color: Theme.of(context).colorScheme.onPrimary,
-          //     ),
-          //     title: 'Unlock',
-          //     customHeight: AppTheme.cardPadding * 1.25,
-          //     customWidth: AppTheme.cardPadding * 5,
-          //     onTap: () {
-          //       BitNetBottomSheet(
-          //         height: MediaQuery.of(context).size.height * 0.6,
-          //         context: context,
-          //         child: bitnetScaffold(
-          //           extendBodyBehindAppBar: true,
-          //           context: context,
-          //           appBar: bitnetAppBar(
-          //             hasBackButton: false,
-          //             context: context,
-          //             onTap: () {
-          //               Navigator.pop(context);
-          //             },
-          //             text: 'Unlock Card',
-          //           ),
-          //           body: Stack(
-          //             children: [
-          //               Container(
-          //                 child: const Column(
-          //                   children: [
-          //                     SizedBox(
-          //                       height: AppTheme.cardPadding * 4,
-          //                     ),
-          //                     Icon(
-          //                       FontAwesomeIcons.lock,
-          //                       size: AppTheme.cardPadding * 4,
-          //                     ),
-          //                     Padding(
-          //                       padding: EdgeInsets.symmetric(
-          //                           horizontal: AppTheme.cardPadding,
-          //                           vertical: AppTheme.cardPadding * 2),
-          //                       child: Text(
-          //                         "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
-          //                         textAlign: TextAlign.center,
-          //                       ),
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //               BottomButtons(
-          //                   leftButtonTitle: "Buy Bitcoin",
-          //                   rightButtonTitle: "Receive OnChain",
-          //                   onLeftButtonTap: () {
-          //                     context.push('/wallet/bitcoinscreen');
-          //                   },
-          //                   onRightButtonTap: () {
-          //                     context.go(
-          //                         '/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
-          //                   })
-          //             ],
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // )
-        ],
-      ),
-    );
+            // //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
+            // Positioned(
+            //   left: AppTheme.cardPadding,
+            //   bottom: AppTheme.cardPadding,
+            //   child: LongButtonWidget(
+            //     leadingIcon: Icon(
+            //       FontAwesomeIcons.lock,
+            //       size: AppTheme.cardPadding * 0.75,
+            //       color: Theme.of(context).colorScheme.onPrimary,
+            //     ),
+            //     title: 'Unlock',
+            //     customHeight: AppTheme.cardPadding * 1.25,
+            //     customWidth: AppTheme.cardPadding * 5,
+            //     onTap: () {
+            //       BitNetBottomSheet(
+            //         height: MediaQuery.of(context).size.height * 0.6,
+            //         context: context,
+            //         child: bitnetScaffold(
+            //           extendBodyBehindAppBar: true,
+            //           context: context,
+            //           appBar: bitnetAppBar(
+            //             hasBackButton: false,
+            //             context: context,
+            //             onTap: () {
+            //               Navigator.pop(context);
+            //             },
+            //             text: 'Unlock Card',
+            //           ),
+            //           body: Stack(
+            //             children: [
+            //               Container(
+            //                 child: const Column(
+            //                   children: [
+            //                     SizedBox(
+            //                       height: AppTheme.cardPadding * 4,
+            //                     ),
+            //                     Icon(
+            //                       FontAwesomeIcons.lock,
+            //                       size: AppTheme.cardPadding * 4,
+            //                     ),
+            //                     Padding(
+            //                       padding: EdgeInsets.symmetric(
+            //                           horizontal: AppTheme.cardPadding,
+            //                           vertical: AppTheme.cardPadding * 2),
+            //                       child: Text(
+            //                         "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
+            //                         textAlign: TextAlign.center,
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //               BottomButtons(
+            //                   leftButtonTitle: "Buy Bitcoin",
+            //                   rightButtonTitle: "Receive OnChain",
+            //                   onLeftButtonTap: () {
+            //                     context.push('/wallet/bitcoinscreen');
+            //                   },
+            //                   onRightButtonTap: () {
+            //                     context.go(
+            //                         '/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
+            //                   })
+            //             ],
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // )
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -308,19 +312,22 @@ class BalanceCardBtc extends StatelessWidget {
               cardname: 'On-Chain Balance',
             ),
           ),
-          unconfirmedUnitModel.amount == 0 ? Container() : Positioned(
-            bottom: -10,
-            left: 0,
-            child: UnconfirmedTextWidget(
-              balanceStr: unconfirmedUnitModel.amount.toString(),
-              iconDataUnit:
-                  getCurrencyIcon(unconfirmedUnitModel.bitcoinUnitAsString),
-              iconData: FontAwesomeIcons.piggyBank,
-              balanceSAT: controller.onchainBalance.value.unconfirmedBalance,
-              walletAddress: "safdadasdas",
-              cardname: 'incoming Balance',
-            ),
-          ),
+          unconfirmedUnitModel.amount == 0
+              ? Container()
+              : Positioned(
+                  bottom: -10,
+                  left: 0,
+                  child: UnconfirmedTextWidget(
+                    balanceStr: unconfirmedUnitModel.amount.toString(),
+                    iconDataUnit: getCurrencyIcon(
+                        unconfirmedUnitModel.bitcoinUnitAsString),
+                    iconData: FontAwesomeIcons.piggyBank,
+                    balanceSAT:
+                        controller.onchainBalance.value.unconfirmedBalance,
+                    walletAddress: "safdadasdas",
+                    cardname: 'incoming Balance',
+                  ),
+                ),
           // Positioned(
           //   top: 70.h,
           //

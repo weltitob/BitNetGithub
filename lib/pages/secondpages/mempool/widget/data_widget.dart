@@ -98,11 +98,7 @@ class _DataWidgetState extends State<DataWidget> {
                 height: AppTheme.cardPadding * 5.75.w,
                 width: AppTheme.cardPadding *
                     5.75.w, //MediaQuery.of(context).size.height * 0.2,
-                margin: widget.isAccepted
-                    ? EdgeInsets.only(left: AppTheme.cardPadding.w)
-                    : EdgeInsets.only(
-                        left: AppTheme.cardPadding / 2.5.w,
-                        right: AppTheme.cardPadding / 2.5.w),
+                margin: EdgeInsets.only(left: AppTheme.cardPadding.w),
                 padding: const EdgeInsets.all(AppTheme.elementSpacing),
                 decoration: getDecoration(
                   widget.isAccepted
@@ -141,8 +137,7 @@ class _DataWidgetState extends State<DataWidget> {
                             '${L10n.of(context)!.fee}: ~' +
                                 '\$' +
                                 '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
-                            style:
-                                TextStyle(fontSize: 14.sp, color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
 
                     // SizedBox(height: AppTheme.elementSpacing * 0.4.h),

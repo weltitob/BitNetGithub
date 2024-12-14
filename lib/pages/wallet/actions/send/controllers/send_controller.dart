@@ -59,7 +59,6 @@ class SendsController extends BaseController {
   Rx<String> usersQuery = ''.obs;
   List<ReSendUser> queriedUsers = List.empty(growable: true);
 
-
   void handleSearch(String value) {
     logger.i("handleSearch called with value: $value");
     onQRCodeScanned(value, context);
@@ -150,7 +149,6 @@ class SendsController extends BaseController {
 
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
-
       onQRCodeScanned(walletAdress, context);
       // logger.w("Walletadress: $walletAdress");
 
@@ -274,13 +272,11 @@ class SendsController extends BaseController {
     if (onchainQueryMatch != null &&
         onchainQueryMatch.group(2) != null &&
         double.tryParse(onchainQueryMatch.group(2)!) != null) {
-
       btcController.text = onchainQueryMatch.group(2)!;
 
       satController.text = CurrencyConverter.convertBitcoinToSats(
               double.parse(onchainQueryMatch.group(2)!))
           .toStringAsFixed(0);
-
     } else {
       btcController.text = '0.0';
       satController.text = '0';
@@ -378,7 +374,8 @@ class SendsController extends BaseController {
     List<String> invoiceStrings = [invoicePr];
 
     //ahhhh nur wenn quasie der text geändert wird passt aktuell aber wenn der nicht geändert wird kackts ab
-    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, amount);
+    Stream<RestResponse> paymentStream =
+        sendPaymentV2Stream(invoiceStrings, amount);
     StreamSubscription? sub;
     bool transactionsUpdated = false;
 
@@ -461,7 +458,8 @@ class SendsController extends BaseController {
         if (sendType == SendType.LightningUrl) {
           logger.i("Amount that is being sent: ${satController.text}");
           logger.i("Satcontroller text: ${satController.text}");
-          logger.i("Satcontroller text parsed: ${int.parse(satController.text)}");
+          logger
+              .i("Satcontroller text parsed: ${int.parse(satController.text)}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
@@ -472,7 +470,7 @@ class SendsController extends BaseController {
 
           Stream<RestResponse> paymentStream = sendPaymentV2Stream(
               invoiceStrings, int.parse(satController.text));
-          bool shownOverlay = false;
+          bool firstSuccess = false;
           paymentStream.listen((RestResponse response) {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
@@ -483,29 +481,30 @@ class SendsController extends BaseController {
                   LightningPayment.fromJson(response.data["result"]);
 
               Get.find<WalletsController>().newTransactionData.add(invoice);
-              Get.find<WalletsController>().fetchLightingWalletBalance();
               // Handle success
               if (response.data['result']['status'] != "FAILED") {
                 sendPaymentDataInvoice(response.data['result']);
               }
               logger.i("Payment successful!");
-              if (!shownOverlay) {
+              if (!firstSuccess) {
+                Get.find<WalletsController>().fetchLightingWalletBalance();
+
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   showOverlay(this.context, "Payment successful!");
                   GoRouter.of(this.context).go("/feed");
                 });
-                shownOverlay = true;
+                firstSuccess = true;
               }
             }
             if (response.data['result']['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
-              if (!shownOverlay) {
+              if (!firstSuccess) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   showOverlay(
                       this.context, "Payment failed: ${response.message}");
                 });
-                shownOverlay = true;
+                firstSuccess = true;
               }
 
               isFinished.value =
