@@ -100,6 +100,7 @@ class _UsersListState extends State<UsersList>
     try {
       for (String did in dids) {
         try {
+          print("Fetching user with did $did from Firebase...");
           // Fetch user document from Firestore using the did
           DocumentSnapshot doc = await usersCollection.doc(did).get();
 

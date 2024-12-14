@@ -83,7 +83,8 @@ class Avatar extends StatelessWidget {
           child: Container(
             width: size - borderPadding * 1.5,
             height: size - borderPadding * 1.5,
-            color: Theme.of(context).primaryColor, // Default color behind image
+            color: Theme.of(context).brightness == Brightness.dark ?
+            lighten(Theme.of(context).primaryColor, 5) : darken(Theme.of(context).primaryColor, 5), // Default color behind image
             child: noPic
                 ? textWidget
                 : MxcImage(

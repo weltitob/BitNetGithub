@@ -155,8 +155,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
 
         logger.i("showOverlay should be triggered now");
         if (Get.overlayContext != null && Get.overlayContext!.mounted)
-          showOverlayTransaction(
-            Get.overlayContext!,
+          OverlayTransactionWidget.showOverlayTransaction(
+            Get.context!,
             "Lightning invoice settled",
             TransactionItemData(
               amount: receivedInvoice.amtPaidSat.toString(),
@@ -166,7 +166,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
               status: TransactionStatus.confirmed,
               direction: TransactionDirection.received,
               receiver: receivedInvoice.paymentRequest ?? "Yourself",
-              txHash: receivedInvoice.rHash ?? "forwarded trough lightning",
+              txHash: receivedInvoice.rHash ?? "forwarded through lightning",
             ),
           );
         //generate a new invoice for the user with 0 amount
@@ -182,10 +182,10 @@ class _ReceiveScreenState extends State<ReceiveScreen>
   }
 
   void decodeNetwork() {
-    print("DECODE NETWORK");
+    final logger = Get.find<LoggerService>();
     final network = widget.routerState?.pathParameters['network'];
 
-    print('Current route: ${widget.routerState?.path}');
+    logger.i('Current route: ${widget.routerState?.path}');
     print('Network: $network');
     //wenn das netzwerk onchain oder lightning is je nachdem den jeweiligen initaltab festlegen
     if (network != null) {

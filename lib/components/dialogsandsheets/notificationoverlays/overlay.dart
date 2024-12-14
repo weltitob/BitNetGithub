@@ -6,6 +6,9 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:vibration/vibration.dart';
 
 void showOverlayInternet(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
   // Trigger a simple vibration
@@ -69,6 +72,141 @@ void showOverlayInternet(BuildContext context, String? message, {Color color = A
     }
   });
 }
+
+
+
+class OverlayTransactionWidget extends StatefulWidget {
+  final String? message;
+  final TransactionItemData itemData;
+
+  const OverlayTransactionWidget({
+    Key? key,
+    this.message,
+    required this.itemData,
+  }) : super(key: key);
+
+  @override
+  _OverlayTransactionWidgetState createState() => _OverlayTransactionWidgetState();
+
+  static Future<void> showOverlayTransaction(
+      BuildContext context,
+      String? message,
+      TransactionItemData itemData,
+      ) async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate();
+    }
+
+    if (!context.mounted) return;
+
+    // Create the overlay entry
+    final overlayEntry = OverlayEntry(
+      builder: (overlayContext) {
+        return OverlayTransactionWidget(
+          message: message,
+          itemData: itemData,
+        );
+      },
+    );
+
+    // Insert into the overlay
+    Overlay.of(context)?.insert(overlayEntry);
+
+    // Remove after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+}
+
+class _OverlayTransactionWidgetState extends State<OverlayTransactionWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    ));
+
+    // Start the animation after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: Material(
+          elevation: 10.0,
+          child: Container(
+            height: AppTheme.cardPadding * 8,
+            decoration: const BoxDecoration(
+              color: AppTheme.successColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
+                bottomRight: Radius.circular(AppTheme.borderRadiusBig),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: AppTheme.cardPadding),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: AppTheme.cardPadding * 1.25,
+                    ),
+                    const SizedBox(width: AppTheme.elementSpacing / 2),
+                    Text(
+                      widget.message ?? 'Transaction received!',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                TransactionItem(
+                  data: widget.itemData,
+                  context: context,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 void showOverlay(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
   // Trigger a simple vibration

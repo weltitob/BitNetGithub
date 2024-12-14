@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -16,10 +17,10 @@ import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 Stream<RestResponse> subscribeTransactionsStream() async* {
   LoggerService logger = Get.find();
   logger.i("Called subscribeTransactions Stream!");
-  String restHost = AppTheme.baseUrlLightningTerminal;
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

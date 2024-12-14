@@ -40,8 +40,9 @@ String getUserDidTemp() {
 
 Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<UserData> invitedUsers) async {
   //mnemonic, private_key, required_shares, total_shares, user_did
+  final logger = Get.find<LoggerService>();
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_keyshares');
-  print("Creating Keyshares..");
+  logger.i("Creating Keyshares..");
 
   try {
     String did = getUserDidTemp();
@@ -113,8 +114,9 @@ Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<U
 
 Future<String> retrieveMnemonic(List<String> shares, int required_shares, String prime_mod) async {
   //mnemonic, private_key, required_shares, total_shares, user_did
+  final logger = Get.find<LoggerService>();
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('retrieve_mnemonic');
-  print("Retrieving Mnemonic..");
+  logger.i("Retrieving Mnemonic..");
 
   try {
     final HttpsCallableResult<dynamic> response =
@@ -582,7 +584,7 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
                   for (int i = 0; i < users.length; i++) {
                     if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
                       String encryptedKey = users[i]['encrypted_key'];
-                      PrivateData data = await getPrivateData(getUserDidTemp());
+                      PrivateData data = await getPrivateData(Auth().currentUser!.uid);
                       // AESCipher cipher = AESCipher(data.mnemonic);
                       // String decryptedKey = cipher.decryptText(encryptedKey);
                       users[i]['encrypted_key'] = '';

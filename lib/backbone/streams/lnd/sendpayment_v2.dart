@@ -30,8 +30,10 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
   final logger = Get.find<LoggerService>();
 
   for (var invoiceString in invoiceStrings) {
+
     final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
     String amountInSatFromInvoice = invoiceDecoded.amount.toString();
+
     logger.i("amountInSatFromInvoice: $amountInSatFromInvoice");
     logger.i("Invoice sats amount: $amount");
 

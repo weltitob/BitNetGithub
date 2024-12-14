@@ -73,6 +73,7 @@ class _TransactionsState extends State<Transactions>
   bool isLoadingTransactionGroups = false;
   StreamSubscription<RestResponse>? transactionStream;
   StreamSubscription<RestResponse>? lightningStream;
+
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
     try {
@@ -175,11 +176,15 @@ class _TransactionsState extends State<Transactions>
 
   @override
   void initState() {
+    super.initState();
+
     LoggerService logger = Get.find();
     Get.delete<WalletFilterController>();
+
     controller = Get.put(
       WalletFilterController(),
     );
+
     if (widget.filters != null) {
       for (int i = 0; i < widget.filters!.length; i++) {
         controller.toggleFilter(widget.filters![i]);
@@ -187,7 +192,6 @@ class _TransactionsState extends State<Transactions>
     }
 
     logger.i("Initializing transactions");
-    super.initState();
     widget.scrollController.addListener(_onScroll);
     if (widget.customTransactions != null) {
       transactionsLoaded = true;
@@ -272,6 +276,7 @@ class _TransactionsState extends State<Transactions>
     int futuresCompleted = 0;
     int errorCount = 0;
     String errorMessage = "";
+
     getOnchainTransactions().then((value) {
       futuresCompleted++;
       if (!value) {
@@ -331,6 +336,7 @@ class _TransactionsState extends State<Transactions>
         }
       }
     });
+
     getLoopOperations().then((value) {
       futuresCompleted++;
       if (!value) {
@@ -868,7 +874,9 @@ class _TransactionsState extends State<Transactions>
 
       newTransactions
           .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
+
       return newTransactions;
+
     }, allData)
         .then((data) {
       btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});

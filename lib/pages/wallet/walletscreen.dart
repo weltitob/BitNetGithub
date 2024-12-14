@@ -1,10 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
-import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
@@ -13,15 +8,13 @@ import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
-import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
-import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 
@@ -196,19 +189,57 @@ class WalletScreen extends GetWidget<WalletsController> {
                                   ),
                                 ],
                               ),
-                              Obx(
-                                () => RoundedButtonWidget(
-                                  size: AppTheme.cardPadding * 1.25,
-                                  buttonType: ButtonType.transparent,
-                                  iconData:
-                                      controller.hideBalance.value == false
-                                          ? FontAwesomeIcons.eyeSlash
-                                          : FontAwesomeIcons.eye,
-                                  onTap: () {
-                                    controller.setHideBalance(
-                                        hide: !controller.hideBalance.value);
-                                  },
-                                ),
+                              Row(
+                                children: [
+                                  Obx(
+                                    () => RoundedButtonWidget(
+                                      size: AppTheme.cardPadding * 1.25,
+                                      buttonType: ButtonType.transparent,
+                                      iconData:
+                                          controller.hideBalance.value == false
+                                              ? FontAwesomeIcons.eyeSlash
+                                              : FontAwesomeIcons.eye,
+                                      onTap: () {
+                                        controller.setHideBalance(
+                                            hide: !controller.hideBalance.value);
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: AppTheme.elementSpacing * 0.75.w,
+                                  ),
+                                  RoundedButtonWidget(
+                                    size: AppTheme.cardPadding * 1.25,
+                                    buttonType: ButtonType.transparent,
+                                    iconData: Icons.settings,
+                                    onTap: () {
+                                      BitNetBottomSheet(
+                                        width: double.infinity,
+                                        //height: MediaQuery.of(context).size.height * 0.7,
+                                        context: context,
+                                        borderRadius: AppTheme.borderRadiusBig,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .canvasColor, // Add a background color here
+                                            borderRadius: new BorderRadius.only(
+                                              topLeft: AppTheme.cornerRadiusBig,
+                                              topRight: AppTheme.cornerRadiusBig,
+                                            ),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: new BorderRadius.only(
+                                              topLeft: AppTheme.cornerRadiusBig,
+                                              topRight: AppTheme.cornerRadiusBig,
+                                            ),
+                                            child: const Settings(),
+                                          ),
+                                        ),
+                                      );
+
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -279,88 +310,88 @@ class WalletScreen extends GetWidget<WalletsController> {
                 ),
               ),
               // Add our new button here
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.cardPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "Genlitdaccount",
-                        onTap: () async {
-                          String did = Auth().currentUser!.uid;
-                          await Auth().genLitdAccount(did);
-                        },
-                      ),
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "Show Server Status",
-                        onTap: () async {
-                          await controller.updateSubServerStatus();
-                        },
-                      ),
-
-                      SizedBox(height: AppTheme.cardPadding.h),
-
-                      // Observe the subServersStatus variable
-                      Obx(() {
-                        final status = controller.subServersStatus.value;
-                        if (status == null) {
-                          // If null, either not fetched yet or failed
-                          return Text(
-                              "No status fetched yet or failed to load.",
-                              style: Theme.of(context).textTheme.bodyMedium);
-                        }
-
-                        // If we have status data, show the DataTable
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Service Status Overview:",
-                                style: Theme.of(context).textTheme.titleLarge),
-                            SizedBox(height: AppTheme.cardPadding.h),
-                            DataTable(
-                              columns: const [
-                                DataColumn(label: Text("Service")),
-                                DataColumn(label: Text("Disabled")),
-                                DataColumn(label: Text("Running")),
-                                DataColumn(label: Text("Error")),
-                              ],
-                              rows: status.subServers.entries.map((entry) {
-                                final serviceName = entry.key;
-                                final info = entry.value;
-
-                                Color disabledColor =
-                                    info.disabled ? Colors.red : Colors.green;
-                                Color runningColor =
-                                    info.running ? Colors.green : Colors.red;
-                                Color errorColor = info.error.isNotEmpty
-                                    ? Colors.red
-                                    : Colors.green;
-
-                                return DataRow(cells: [
-                                  DataCell(Text(serviceName)),
-                                  DataCell(Text(info.disabled.toString(),
-                                      style: TextStyle(color: disabledColor))),
-                                  DataCell(Text(info.running.toString(),
-                                      style: TextStyle(color: runningColor))),
-                                  DataCell(Text(
-                                      info.error.isEmpty
-                                          ? "No Error"
-                                          : info.error,
-                                      style: TextStyle(color: errorColor))),
-                                ]);
-                              }).toList(),
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
+              // SliverToBoxAdapter(
+              //   child: Padding(
+              //     padding: const EdgeInsets.symmetric(
+              //         horizontal: AppTheme.cardPadding),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         SizedBox(height: AppTheme.cardPadding.h * 1.75),
+              //         LongButtonWidget(
+              //           title: "Genlitdaccount",
+              //           onTap: () async {
+              //             String did = Auth().currentUser!.uid;
+              //             await Auth().genLitdAccount(did);
+              //           },
+              //         ),
+              //         SizedBox(height: AppTheme.cardPadding.h * 1.75),
+              //         LongButtonWidget(
+              //           title: "Show Server Status",
+              //           onTap: () async {
+              //             await controller.updateSubServerStatus();
+              //           },
+              //         ),
+              //
+              //         SizedBox(height: AppTheme.cardPadding.h),
+              //
+              //         // Observe the subServersStatus variable
+              //         Obx(() {
+              //           final status = controller.subServersStatus.value;
+              //           if (status == null) {
+              //             // If null, either not fetched yet or failed
+              //             return Text(
+              //                 "No status fetched yet or failed to load.",
+              //                 style: Theme.of(context).textTheme.bodyMedium);
+              //           }
+              //
+              //           // If we have status data, show the DataTable
+              //           return Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               Text("Service Status Overview:",
+              //                   style: Theme.of(context).textTheme.titleLarge),
+              //               SizedBox(height: AppTheme.cardPadding.h),
+              //               DataTable(
+              //                 columns: const [
+              //                   DataColumn(label: Text("Service")),
+              //                   DataColumn(label: Text("Disabled")),
+              //                   DataColumn(label: Text("Running")),
+              //                   DataColumn(label: Text("Error")),
+              //                 ],
+              //                 rows: status.subServers.entries.map((entry) {
+              //                   final serviceName = entry.key;
+              //                   final info = entry.value;
+              //
+              //                   Color disabledColor =
+              //                       info.disabled ? Colors.red : Colors.green;
+              //                   Color runningColor =
+              //                       info.running ? Colors.green : Colors.red;
+              //                   Color errorColor = info.error.isNotEmpty
+              //                       ? Colors.red
+              //                       : Colors.green;
+              //
+              //                   return DataRow(cells: [
+              //                     DataCell(Text(serviceName)),
+              //                     DataCell(Text(info.disabled.toString(),
+              //                         style: TextStyle(color: disabledColor))),
+              //                     DataCell(Text(info.running.toString(),
+              //                         style: TextStyle(color: runningColor))),
+              //                     DataCell(Text(
+              //                         info.error.isEmpty
+              //                             ? "No Error"
+              //                             : info.error,
+              //                         style: TextStyle(color: errorColor))),
+              //                   ]);
+              //                 }).toList(),
+              //               ),
+              //             ],
+              //           );
+              //         }),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               // Section 2: Actions
               SliverToBoxAdapter(
                 child: Padding(

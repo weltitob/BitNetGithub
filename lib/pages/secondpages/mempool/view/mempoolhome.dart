@@ -827,16 +827,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           () => Visibility(
                                               visible:
                                                   controller.showBlock.value,
-                                              child: controller
-                                                      .mempoolBlocks.isNotEmpty
-                                                  ? controller.txDetailsConfirmed ==
-                                                          null
-                                                      ? const Center(
-                                                          child:
-                                                              CircularProgressIndicator
-                                                                  .adaptive(),
-                                                        )
-                                                      : Column(
+                                              child: Column(
                                                           children: [
                                                             GestureDetector(
                                                               onTap: () {
@@ -1034,7 +1025,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                             )
                                                           ],
                                                         )
-                                                  : const Text('')),
+                                                  ),
                                         ),
                                       ],
                                     ),

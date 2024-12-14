@@ -29,13 +29,12 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 
 class WalletsController extends BaseController {
+
   RxBool hideBalance = false.obs;
   RxBool showInfo = false.obs;
-  late final Future<LottieComposition> compositionSend;
-  late final Future<LottieComposition> compositionReceive;
+
   late final ScrollController scrollController;
   RxInt currentView = 0.obs;
   Rx<OnchainBalance> onchainBalance = OnchainBalance(
@@ -46,6 +45,7 @@ class WalletsController extends BaseController {
     reservedBalanceAnchorChan: '',
     accountBalance: '',
   ).obs;
+
   Rx<LightningBalance> lightningBalance = LightningBalance(
     balance: '0',
     pendingOpenBalance: '0',
@@ -64,6 +64,7 @@ class WalletsController extends BaseController {
 
   StreamSubscription<List<ReceivedInvoice>>? invoicesSubscription;
   StreamSubscription<List<BitcoinTransaction>>? transactionsSubscription;
+
   Rx<ChartLine?> chartLines = Rx<ChartLine?>(null);
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
@@ -183,7 +184,7 @@ class WalletsController extends BaseController {
 
   @override
   void onInit() {
-    LoggerService logger = Get.find();
+    final logger = Get.find<LoggerService>();
     super.onInit();
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
@@ -229,19 +230,24 @@ class WalletsController extends BaseController {
         queueErrorOvelay = true;
       }
     });
+
     getTransactions().then((val) {
+      logger.i("Fetching transactions in wallet_controller");
       onchainTransactions.addAll(val.data);
       futuresCompleted++;
     });
     listSwaps().then((val) {
+      logger.i("Fetching swaps in wallet_controller");
       loopOperations.addAll(val.data);
       futuresCompleted++;
     });
     listPayments().then((val) {
+      logger.i("Fetching payments in wallet_controller");
       lightningPayments.addAll(val.data);
       futuresCompleted++;
     });
     listInvoices().then((val) {
+      logger.i("Fetching invoices in wallet_controller");
       lightningInvoices.addAll(val.data);
       futuresCompleted++;
     });

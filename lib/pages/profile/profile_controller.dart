@@ -9,6 +9,7 @@ import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
@@ -94,34 +95,38 @@ class ProfileController extends BaseController {
   }
 
   Future<void> getUserId() async {
-    QuerySnapshot<Map<String, dynamic>> query = await usersCollection.where('did', isEqualTo: getUserDidTemp()).get();
+    final logger = Get.find<LoggerService>();
+    logger.i("Getting user id for profile page: ${Auth().currentUser!.uid}");
+    QuerySnapshot<Map<String, dynamic>> query = await usersCollection.where('did', isEqualTo: Auth().currentUser!.uid).get();
     if (query.docs.isEmpty) {
-      profileId = "GUsuvr19SPrGELGZtrAq";
+      profileId = "";
     } else {
       profileId = query.docs.first.id;
     }
   }
 
   void fetchTaprootAssets() async {
-    print('fetch taproot started ');
+    final logger = Get.find<LoggerService>();
+    logger.i('Fetching taproot started...');
     isLoading.value = true;
     assetsLoading.value = true;
     try {
       List<Asset> fetchedAssets = await listTaprootAssets();
       List<Asset> reversedAssets = fetchedAssets.reversed.toList();
       assets.value = reversedAssets;
-      print('above is the asset value ');
+      logger.i('Above is the asset value');
 
       await fetchNext20Metas(0, 10); // Load metadata for the first 20 assets
       assetsLazyLoading.value = assets.take(10).toList();
       isLoading.value = false;
     } catch (e) {
-      print('Error: $e');
+      logger.e('Error fetching taproot assets: $e');
     }
     assetsLoading.value = false;
   }
 
   fetchNext20Metas(int startIndex, int count) async {
+    logger.i('Fetching next 20 taproot assets...');
     Map<String, AssetMetaResponse> metas = {};
     for (int i = startIndex; i < startIndex + count && i < assets.length; i++) {
       String assetId = assets[i].assetGenesis?.assetId ?? '';
@@ -130,7 +135,7 @@ class ProfileController extends BaseController {
         metas[assetId] = meta;
       }
     }
-    print('above is the asset meta data done value ');
+    logger.i('above is the asset meta data done value ');
 
     assetMetaMap.addAll(metas);
   }
@@ -148,6 +153,8 @@ class ProfileController extends BaseController {
   }
 
   loadData() async {
+    final logger = Get.find<LoggerService>();
+    logger.i("Loading data for profile page");
     await getUserId();
     await getUser();
     socialRecoveryInit();
@@ -169,6 +176,7 @@ class ProfileController extends BaseController {
 
   getUser() async {
     try {
+      logger.i("Getting user data for $profileId from firebase");
       isUserLoading.value = true;
       DocumentSnapshot? doc = await usersCollection.doc(profileId).get();
       userData = UserData.fromDocument(doc).obs;
@@ -195,9 +203,8 @@ class ProfileController extends BaseController {
         changingBio.value = bioController.text;
       });
       isUserLoading.value = false;
-    } catch (e, tr) {
-      print(e);
-      print(tr);
+    } catch (e) {
+      logger.e("Error getting user data: $e");
     }
   }
 

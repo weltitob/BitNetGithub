@@ -274,14 +274,18 @@ class SendsController extends BaseController {
     if (onchainQueryMatch != null &&
         onchainQueryMatch.group(2) != null &&
         double.tryParse(onchainQueryMatch.group(2)!) != null) {
+
       btcController.text = onchainQueryMatch.group(2)!;
+
       satController.text = CurrencyConverter.convertBitcoinToSats(
               double.parse(onchainQueryMatch.group(2)!))
           .toStringAsFixed(0);
+
     } else {
       btcController.text = '0.0';
       satController.text = '0';
     }
+
     String finalAddress = onchainQueryMatch?.group(1) != null
         ? onchainQueryMatch!.group(1)!
         : onchainAdress;
@@ -291,6 +295,7 @@ class SendsController extends BaseController {
       bitcoinReceiverAdress = finalAddress;
       moneyTextFieldIsEnabled.value = true;
     }
+
     dynamic fundedPsbtResponse =
         await estimateFee(AppTheme.targetConf.toString());
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
@@ -302,6 +307,7 @@ class SendsController extends BaseController {
   }
 
   void giveValuesToLnUrl(String lnUrl, {bool asAddress = false}) async {
+    logger.i("LNURL detected: $lnUrl");
     String finalLnUrl = lnUrl;
     LNURLParseResult? lnResult = null;
     if (asAddress) {
@@ -343,7 +349,9 @@ class SendsController extends BaseController {
       hasReceiver.value = true;
       sendType = SendType.LightningUrl;
       bitcoinReceiverAdress = lnUrl;
+
       satController.text = lnResult.payParams!.minSendable.toString();
+      logger.i("Min sendable: ${lnResult.payParams!.minSendable}");
 
       bitcoinUnit = BitcoinUnits.SAT;
       moneyTextFieldIsEnabled.value = false;
@@ -356,18 +364,24 @@ class SendsController extends BaseController {
 
   Future<LightningPayment?> payLnUrl(
       String url, int amount, BuildContext context) async {
+    final logger = Get.find<LoggerService>();
+
+    logger.i("payLnUrl called with url: $url and amount: ${amount * 1000}");
+
     Uri finalUrl = Uri.parse(url + "?amount=${amount * 1000}");
     LightningPayment? payment;
     dynamic response = await http.get(finalUrl);
     dynamic body = jsonDecode(response.body);
     String invoicePr = body["pr"];
+
     String lnUrl = bitcoinReceiverAdress;
     List<String> invoiceStrings = [invoicePr];
 
-    Stream<RestResponse> paymentStream =
-        sendPaymentV2Stream(invoiceStrings, amount * 1000);
+    //ahhhh nur wenn quasie der text geändert wird passt aktuell aber wenn der nicht geändert wird kackts ab
+    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, amount);
     StreamSubscription? sub;
     bool transactionsUpdated = false;
+
     sub = paymentStream.listen((RestResponse response) {
       isFinished.value = true;
       if (response.statusCode == "success") {
@@ -446,6 +460,8 @@ class SendsController extends BaseController {
       try {
         if (sendType == SendType.LightningUrl) {
           logger.i("Amount that is being sent: ${satController.text}");
+          logger.i("Satcontroller text: ${satController.text}");
+          logger.i("Satcontroller text parsed: ${int.parse(satController.text)}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
