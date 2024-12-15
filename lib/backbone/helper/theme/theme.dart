@@ -12,7 +12,6 @@ abstract class AppTheme {
   static String baseUrlLightningTerminal = 'mybitnet.com';
   static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
 
-  static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
   static String applicationName = 'BitNet';
 
   static String baseUrlMemPoolSpaceApi = 'https://mempool.space/api/';
@@ -52,11 +51,7 @@ abstract class AppTheme {
   //onTap: () => launchUrlString(AppTheme.supportUrl),
   //Marketing startegie ist EXTREME CONTENT STRATEGIE
 
-  static String stripeTestKey =
-      "pk_test_51Ov55sRxZq4zmuaG9zp35ejVDONTsacEXYDDbGQ2gjo97XDMKnhsRivkXBEBiMMAaeRADwrIrqrtPWMgZbFYlO0C00xBfhtT6Z";
 
-  static String stripeLiveKey =
-      'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
   static String createStripeAccountUrl = "https://bitnet.ai/#/website/redirect";
 
@@ -79,7 +74,15 @@ abstract class AppTheme {
   static String ratesUrl = '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
 
   static String baseUrlCoinGecko = 'https://openexchangerates.org/api/';
+  static String baseUrlCoinGeckoApiPro = 'https://pro-api.coingecko.com/api/v3';
+  static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
   //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
+
+  static String stripeTestKey =
+      "pk_test_51Ov55sRxZq4zmuaG9zp35ejVDONTsacEXYDDbGQ2gjo97XDMKnhsRivkXBEBiMMAaeRADwrIrqrtPWMgZbFYlO0C00xBfhtT6Z";
+
+  static String stripeLiveKey =
+      'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
   //twitch
   //github

@@ -15,6 +15,7 @@ import 'package:bitnet/pages/auth/restore/social_recovery/info_social_recovery.d
 import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';
 import 'package:bitnet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart';
 import 'package:bitnet/pages/bottomnav.dart';
+import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/create/finalizescreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
@@ -136,6 +137,8 @@ class AppRoutes {
         ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
 
         GoRoute(path: "/agbs", redirect: webRedirect, builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)),
+
+        GoRoute(path: "/comingsoon", redirect: webRedirect, builder: (ctx, state) => ComingSoonPage(key: state.pageKey)),
 
         GoRoute(
           path: '/wallet',

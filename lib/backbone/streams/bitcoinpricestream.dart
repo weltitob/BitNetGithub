@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -91,7 +92,7 @@ If there is an error fetching the price, it is caught and printed to the console
 //   }
 // }
 class BitcoinPriceStream {
-  final String _url = 'https://api.coingecko.com/api/v3/simple/price';
+
   late StreamController<ChartLine> _priceController;
   Timer? _timer;
   final Duration _updateInterval = const Duration(seconds: 45);
@@ -136,12 +137,14 @@ class BitcoinPriceStream {
         'ids': 'bitcoin',
         'vs_currencies': localCurrency,
         'include_last_updated_at': 'true',
+        'x_cg_pro_api_key': AppTheme.coinGeckoApiKey,
       };
-        final DioClient dioClient = Get.find<DioClient>();
+      final DioClient dioClient = Get.find<DioClient>();
+      final String _url = "${AppTheme.baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin&vs_currencies=${localCurrency}&include_last_updated_at='true'&x_cg_pro_api_key=${AppTheme.coinGeckoApiKey}";
 
       final response = await dioClient.get(
-          url: _url +
-              "?ids=bitcoin&vs_currencies=$localCurrency&include_last_updated_at='true'");
+          url: _url );
+
       if (response.statusCode == 200) {
         final data = response.data;
         final double price =
@@ -150,6 +153,7 @@ class BitcoinPriceStream {
         final double time =
             double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
         logger.d("Price of bitcoin in $localCurrency: $price");
+
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);
       } else {
