@@ -11,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends GetWidget<SendsController> {
   const SendBTCScreen({
@@ -30,7 +29,10 @@ class SendBTCScreen extends GetWidget<SendsController> {
 
       appBar: bitnetAppBar(
         onTap: () {
+          controller.usersQuery.value = '';
+
           controller.resetValues();
+          controller.handleSearch('');
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,10 +63,13 @@ class SendBTCScreen extends GetWidget<SendsController> {
         child: Column(
           children: [
             Obx(
-              ()=> Expanded(
-                child: controller.initializedValues.value ? (controller.sendType == SendType.Invoice || controller.sendType == SendType.LightningUrl)
-                    ? const LightningSendTab()
-                    : const OnChainSendTab() : dotProgress(context),
+              () => Expanded(
+                child: controller.initializedValues.value
+                    ? (controller.sendType == SendType.Invoice ||
+                            controller.sendType == SendType.LightningUrl)
+                        ? const LightningSendTab()
+                        : const OnChainSendTab()
+                    : dotProgress(context),
               ),
             ),
           ],

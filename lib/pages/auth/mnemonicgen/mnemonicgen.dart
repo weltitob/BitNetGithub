@@ -27,9 +27,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
-
-
-
 // Removed unnecessary empty import
 
 class MnemonicGen extends StatefulWidget {
@@ -77,7 +74,6 @@ class MnemonicController extends State<MnemonicGen> {
     logger.i("Generating mnemonic...");
 
     try {
-
       // Use the fixed mnemonic to mirror the Python code
       // Generate a 24-word mnemonic
       // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
@@ -100,7 +96,7 @@ class MnemonicController extends State<MnemonicGen> {
         mnemonicTextController.text = mnemonicString;
       });
 
-      HDWallet hdWallet = hdWalletFromMnemonic(mnemonicString);
+      HDWallet hdWallet = createUserWallet(mnemonicString);
 
       // Master private key (WIF)
       String? masterPrivateKeyWIF = hdWallet.wif;
@@ -140,13 +136,11 @@ class MnemonicController extends State<MnemonicGen> {
         // Placeholder for any UI updates
       });
       logger.i("User registration and setup completed.");
-
     } catch (e) {
       logger.e("Error in generateMnemonic: $e");
       // Handle errors (e.g., show user-friendly error message)
     }
   }
-
 
   void confirmMnemonic(String typedMnemonic) {
     LoggerService logger = Get.find();
@@ -188,7 +182,6 @@ class MnemonicController extends State<MnemonicGen> {
         nft_profile_id: '',
         nft_background_id: '',
       );
-
       // Use the did for the verification codes
       VerificationCode verificationCode = VerificationCode(
         used: false,
@@ -197,11 +190,11 @@ class MnemonicController extends State<MnemonicGen> {
         receiver: userdata.did,
       );
 
-      final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+      final UserData? currentuserwallet =
+          await firebaseAuthentication(userdata, verificationCode);
 
       // Temporary bypass due to temporary auth system
-      LocalStorage.instance
-          .setString(userdata.did, Auth().currentUser!.uid);
+      LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
 
       LocalProvider localeProvider = Provider.of<LocalProvider>(
         context,
@@ -216,7 +209,7 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       CountryProvider countryProvider =
-      Provider.of<CountryProvider>(context, listen: false);
+          Provider.of<CountryProvider>(context, listen: false);
       countryProvider
           .setCountryInDatabase(countryProvider.getCountry() ?? "US");
 
@@ -224,8 +217,8 @@ class MnemonicController extends State<MnemonicGen> {
           .addPostFrameCallback(ThemeController.of(context).loadData);
 
       logger.i("Navigating to homescreen now...");
-      context.go(
-          Uri(path: '/authhome/pinverification/createaccount').toString());
+      context
+          .go(Uri(path: '/authhome/pinverification/createaccount').toString());
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       throw Exception(

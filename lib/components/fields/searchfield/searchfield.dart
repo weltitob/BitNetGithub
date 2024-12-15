@@ -8,7 +8,7 @@ class SearchFieldWidget extends StatefulWidget {
   final dynamic handleSearch;
   final dynamic onChanged; // Add an onChanged callback
   final dynamic suffixIcon;
-  final dynamic onSuffixTap;
+  final Function(TextEditingController)? onSuffixTap;
   final FocusNode? node;
 
   const SearchFieldWidget({
@@ -18,7 +18,8 @@ class SearchFieldWidget extends StatefulWidget {
     required this.handleSearch,
     this.suffixIcon,
     this.onSuffixTap,
-    this.onChanged, this.node, // Initialize it in the constructor
+    this.onChanged,
+    this.node, // Initialize it in the constructor
   }) : super(key: key);
 
   @override
@@ -32,15 +33,19 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: GlassContainer(
-        customColor: Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50) : null,
+        customColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.grey.withAlpha(50)
+            : null,
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
           height: AppTheme.cardPadding * 1.75,
           decoration: BoxDecoration(
             borderRadius: AppTheme.cardRadiusSmall,
-            boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [
-              AppTheme.boxShadowProfile,
-            ],
+            boxShadow: Theme.of(context).brightness == Brightness.light
+                ? []
+                : [
+                    AppTheme.boxShadowProfile,
+                  ],
           ),
           child: TextFormField(
             enabled: widget.isSearchEnabled,
@@ -55,7 +60,8 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
             },
             style: Theme.of(context).textTheme.bodyLarge,
             decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(AppTheme.cardPadding / 100),
+                contentPadding:
+                    const EdgeInsets.all(AppTheme.cardPadding / 100),
                 hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                 hintText: widget.hintText,
                 prefixIcon: Icon(
@@ -64,7 +70,8 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                       ? AppTheme.black60
                       : AppTheme.white70,
                 ),
-                suffixIcon: _textFieldController.text.isEmpty || _textFieldController.text == ''
+                suffixIcon: _textFieldController.text.isEmpty ||
+                        _textFieldController.text == ''
                     ? widget.suffixIcon != null
                         ? widget.suffixIcon
                         : const SizedBox.shrink()
@@ -78,14 +85,15 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                         ),
                         onPressed: () {
                           if (widget.onSuffixTap != null) {
-                            widget.onSuffixTap!();
+                            widget.onSuffixTap!(_textFieldController);
                           } else {
                             _textFieldController.clear();
                           }
                         },
                       ),
                 border: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+                    borderSide:
+                        const BorderSide(width: 0, style: BorderStyle.none),
                     borderRadius: AppTheme.cardRadiusMid)),
           ),
         ),
