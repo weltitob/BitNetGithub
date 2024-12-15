@@ -22,8 +22,10 @@ dynamic hdWalletFromMnemonic(String mnemonicString) {
   Uint8List seedUnit = bip39.mnemonicToSeed(mnemonicString);
 
   // Create the HDWallet from the seed
+
   HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
   return [hdWallet, seedUnit];
+
 }
 
 List<String> deriveTaprootAddresses(String mnemonic) {
@@ -37,7 +39,7 @@ List<String> deriveTaprootAddresses(String mnemonic) {
   const pathFormat = "m/86'/0'/0'/0/";
 
   List<String> derivedAddresses = [];
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 10; i++) {
     final child = hdWallet.derivePath("$pathFormat$i");
     final address = child.address; // Ensure this uses P2TR logic internally
     derivedAddresses.add(address!);

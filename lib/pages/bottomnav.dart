@@ -8,12 +8,14 @@ import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,11 +67,13 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 
   List<Map<String, dynamic>> getNavItems() {
     return [
-      {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
-      {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
+      {'icon': FontAwesomeIcons.fire, 'route': '/comingsoon'},
+      // {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
+      // {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
       // {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
-      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
+      // {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/comingsoon'},
     ];
   }
 
@@ -107,8 +111,10 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
     animationControllers.values.forEach((controller) => controller.dispose());
     super.dispose();
   }
+  //
+  // static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
-  static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
+  static List<Widget> navItems = <Widget>[ComingSoonPage(), const Wallet(), const ComingSoonPage()];
 
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {
@@ -150,6 +156,8 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
     //   });
     //   context.go(route);
     // }
+
+    // return WalletScreen();
 
     return Scaffold(
         resizeToAvoidBottomInset: false, // Add this line
