@@ -67,14 +67,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                               Row(
                                 children: [
                                   Avatar(
-                                      onTap: () async {
-                                        HDWallet hdWallet =
-                                            await createUserWallet(
-                                                (await getPrivateData(Auth()
-                                                        .currentUser!
-                                                        .uid))
-                                                    .mnemonic);
-                                      },
                                       size: AppTheme.cardPadding * 2.5.h,
                                       mxContent: Uri.parse(
                                           Get.find<ProfileController>()
