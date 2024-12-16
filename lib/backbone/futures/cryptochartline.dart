@@ -31,7 +31,7 @@ class CryptoChartLine {
     logger.d("Fetching chart data for $crypto... $days days, $currency currency");
     final currencyLower = currency.toLowerCase();
     var url =
-        "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currencyLower&days=$days&api_key=$apiKey";
+        "${AppTheme.baseUrlCoinGeckoApiPro}/coins/$crypto/market_chart?vs_currency=$currencyLower&days=$days&x_cg_pro_api_key=${apiKey}";
     http.Response res = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {

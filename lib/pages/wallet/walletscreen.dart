@@ -330,32 +330,30 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LongButtonWidget(
-                          title: "fetchOnchain Balance",
-                          onTap: () async {
-                            // await controller.getOnchainBalance();
-                          }),
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "getOnchainTransactions",
-                        onTap: () async {
-                          // await controller.getOnchainTransactions();
-                        },
-                      ),
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "subscribeToOnchainBalance ",
-                        onTap: () async {
-                          await controller.subscribeToOnchainBalance();
-                        },
-                      ),
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "fetchBitcoin Balance",
-                        onTap: () async {
-                          await controller.subscribeToOnchainTransactions();
-                        },
-                      ),
+                      // LongButtonWidget(title: "fetchOnchain Balance", onTap: () async {
+                      //   await controller.getOnchainBalance();
+                      // }),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "getOnchainTransactions",
+                      //   onTap: () async {
+                      //     await controller.getOnchainTransactions();
+                      //   },
+                      // ),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "subscribeToOnchainBalance ",
+                      //   onTap: () async {
+                      //     await controller.subscribeToOnchainBalance();
+                      //   },
+                      // ),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "fetchBitcoin Balance",
+                      //   onTap: () async {
+                      //     await controller.subscribeToOnchainTransactions();
+                      //   },
+                      // ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "Genlitdaccount",

@@ -1,7 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -16,18 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:ui';
-
-import 'package:bip39_mnemonic/bip39_mnemonic.dart';
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
@@ -55,9 +42,6 @@ class WordRecoveryScreen extends StatefulWidget {
 }
 
 class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
-  // PageController _pageController = PageController();
-
-  // bool onLastPage = false;
   bool _isLoading = false;
   String? username = '';
 
@@ -66,22 +50,16 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   @override
   void initState() {
     super.initState();
-    // getBIPWords();
+    // Initialize as needed
   }
 
   @override
   void dispose() {
-    // textControllers.forEach((controller) => controller.dispose());
-    // focusNodes.forEach((node) => node.dispose());
+    _usernameController.dispose();
     super.dispose();
   }
 
-  // getBIPWords() async {
-  //   bipwords = await rootBundle.loadString('assets/textfiles/bip_words.txt');
-  //   splittedbipwords = bipwords.split(" ");
-  // }
-
-  void onSignInPressesd(mCtrl, tCtrls) async {
+  void onSignInPressed(mCtrl, tCtrls) async {
     try {
       setState(() {
         _isLoading = true;
@@ -104,6 +82,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
       String challengeData = "Mnemonic Login Challenge";
 
+      // Sign the challenge data
       String signatureHex =
           await signChallengeData(privateKeyHex, did, challengeData);
 
@@ -111,51 +90,86 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
       PrivateData privateData = PrivateData(mnemonic: mnemonic);
 
+      // Perform sign-in
       await Auth().signIn(
-          ChallengeType.mnemonic_login, privateData, signatureHex, context);
+        ChallengeType.mnemonic_login,
+        privateData,
+        signatureHex,
+        context,
+      );
 
-      showOverlay(context, "Successfully Signed In.",
-          color: AppTheme.successColor);
+      // Show success overlay
+      showOverlay(
+        context,
+        "Successfully Signed In.",
+        color: AppTheme.successColor,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      showOverlay(context, "No User was found with the provided Mnemonic",
-          color: AppTheme.errorColor);
+      showOverlay(
+        context,
+        "No User was found with the provided Mnemonic",
+        color: AppTheme.errorColor,
+      );
 
-      throw Exception("Irgendeine error message lel: $e");
+      // Log the exception
+      final logger = Get.find<LoggerService>();
+      logger.e("Sign-in Error: $e");
+
+      // Optionally, you can handle specific exceptions here
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      return bitnetScaffold(
-        context: context,
-        margin: isSuperSmallScreen
-            ? const EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(
-                horizontal: (screenWidth / 2 - 250.w) < 0
-                    ? 0
-                    : screenWidth / 2 - 250.w),
-        extendBodyBehindAppBar: true,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        appBar: bitnetAppBar(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
+
+        return bitnetScaffold(
+          context: context,
+          margin: isSuperSmallScreen
+              ? const EdgeInsets.symmetric(horizontal: 0)
+              : EdgeInsets.symmetric(
+                  horizontal: (screenWidth / 2 - 250.w) < 0
+                      ? 0
+                      : screenWidth / 2 - 250.w,
+                ),
+          extendBodyBehindAppBar: true,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          appBar: bitnetAppBar(
             text: L10n.of(context)!.confirmMnemonic,
             context: context,
             onTap: () {
               context.go('/authhome/login');
             },
-            actions: [const PopUpLangPickerWidget()]),
-        body: MnemonicFieldWidget(
-          mnemonicController: null,
-          triggerMnemonicCheck: onSignInPressesd,
-        ),
-      );
-    });
+            actions: [const PopUpLangPickerWidget()],
+          ),
+          body: SingleChildScrollView(
+            // Make the body scrollable to prevent overflow
+            child: Column(
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 4,
+                ),
+                MnemonicFieldWidget(
+                  mnemonicController:
+                      null, // Ensure this is handled correctly inside MnemonicFieldWidget
+                  triggerMnemonicCheck: onSignInPressed,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

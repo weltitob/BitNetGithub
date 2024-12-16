@@ -27,6 +27,9 @@ class MnemonicGenScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
+        onTap: () {
+          Navigator.pop(context);
+        },
         text: L10n.of(context)!.yourPassowrdBackup,
         context: context,
         actions: [const PopUpLangPickerWidget()],

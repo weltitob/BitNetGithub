@@ -23,6 +23,7 @@ class _PersonaScreenState extends State<PersonaScreen> {
   late String issuer;
   late String username;
   late String mnemonicString;
+
   late InquiryConfiguration _configuration;
 
   late StreamSubscription<InquiryCanceled> _streamCanceled;
@@ -33,12 +34,16 @@ class _PersonaScreenState extends State<PersonaScreen> {
   void initState() {
     super.initState();
 
+
+    //E/com.bitnet(11760): Invalid resource ID 0x00000000.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+
+
       _configuration = TemplateIdConfiguration(
           templateId: "itmpl_5pSqWSacZ5pZNLDaFPetpWXNurr5",
           environment: InquiryEnvironment.sandbox,
-          environmentId: "env_wLzW9p11FDUsXUNNaoQBhKpnMrEg"
-          // locale: "pt-BR",
+          environmentId: "env_wLzW9p11FDUsXUNNaoQBhKpnMrEg",
+          // locale: "pt-DE",
           // Client theming is deprecated and will be removed in the future.
           // theme: InquiryTheme(
           //   source: InquiryThemeSource.client,
@@ -51,6 +56,8 @@ class _PersonaScreenState extends State<PersonaScreen> {
           // ),
           );
     });
+
+
 
     _streamCanceled = PersonaInquiry.onCanceled.listen(_onCanceled);
     _streamError = PersonaInquiry.onError.listen(_onError);
@@ -110,6 +117,9 @@ class _PersonaScreenState extends State<PersonaScreen> {
   @override
   Widget build(BuildContext context) {
     processParameters(context);
+
+
+
     return bitnetScaffold(
         body: Container(
           child: Column(
@@ -131,13 +141,18 @@ class _PersonaScreenState extends State<PersonaScreen> {
               LongButtonWidget(
                   title: "Begin Verification",
                   onTap: () {
-                    // PersonaInquiry.init(configuration: _configuration);
-                    // PersonaInquiry.start();
-
-                    context.go(
-                      Uri(path: '/authhome/pinverification/reg_loading')
-                          .toString(),
+                    InquiryIdConfiguration(
+                      inquiryId: "inq_5pSqWSacZ5pZNLDaFPetpWXNurr5",
+                      sessionToken: "sessionToken",
                     );
+
+                    PersonaInquiry.init(configuration: _configuration,);
+                    PersonaInquiry.start();
+
+                    // context.go(
+                    //   Uri(path: '/authhome/pinverification/reg_loading')
+                    //       .toString(),
+                    // );
 
                     // context.go(
                     //   Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
