@@ -25,7 +25,7 @@ class ComingSoonPage extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.cardPadding * 2), // Spacing between image and text
             Text(
-              'Coming Soon',
+              'Coming soon...',
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ],

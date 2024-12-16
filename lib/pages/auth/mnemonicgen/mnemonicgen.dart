@@ -79,7 +79,7 @@ class MnemonicController extends State<MnemonicGen> {
       // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
       // String mnemonic = bip39.generateMnemonic(strength: 256);
 
-      var mnemonic = Mnemonic.generate(
+      var mnemonic = await Mnemonic.generate(
         Language.english,
         passphrase: "test",
         entropyLength: 256,
