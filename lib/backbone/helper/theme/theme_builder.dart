@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:isolate';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
@@ -121,33 +122,25 @@ class ThemeController extends State<ThemeBuilder> {
 
   Future<List<String>> getBTCAddresses() async {
     final receivePort = ReceivePort();
-    RestResponse response = await listBtcAddresses();
-    if (response.statusCode == "200") {
-      List<String> localAddresses = LocalStorage.instance.getStringList(
-              'btc_addresses:${FirebaseAuth.instance.currentUser!.uid}') ??
-          [];
-      await Isolate.spawn(
-          loadAddresses, [receivePort.sendPort, response.data, localAddresses]);
+    LinkedHashMap<String, int> response = await listBtcAddresses();
 
-      final data =
-          await receivePort.first as List<String>; // Wait for isolate result
-      return data;
-    }
-    return [];
+    List<String> localAddresses = LocalStorage.instance.getStringList(
+            'btc_addresses:${FirebaseAuth.instance.currentUser!.uid}') ??
+        [];
+    await Isolate.spawn(
+        loadAddresses, [receivePort.sendPort, response, localAddresses]);
+
+    final data =
+        await receivePort.first as List<String>; // Wait for isolate result
+    return data;
   }
 
   static void loadAddresses(List<dynamic> args) async {
     SendPort sendPort = args[0];
     Map<String, dynamic> data = args[1];
     List<String> localAddresses = args[2];
-    var accounts = data['account_with_addresses'] as List;
-    List<String> finalAddresses = List<String>.empty(growable: true);
-    for (int i = 0; i < accounts.length; i++) {
-      var addresses = accounts[i]['addresses'];
-      for (int j = 0; j < addresses.length; j++) {
-        finalAddresses.add(addresses[j]['address']);
-      }
-    }
+    List<String> finalAddresses = data.keys.toList();
+
     List<String> mergedList = [
       ...{...finalAddresses, ...localAddresses}
     ];

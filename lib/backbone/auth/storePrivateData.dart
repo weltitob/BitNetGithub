@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,16 +11,18 @@ import 'package:get/get.dart';
 final secureStorage = const FlutterSecureStorage();
 
 // Store userId, accountId and macaroon in secure storage
-Future<void> storeLitdAccountData(String userId, String accountId, String macaroon) async {
+Future<void> storeLitdAccountData(
+    String userId, String accountId, String macaroon) async {
   try {
     print("Reading LITD accounts from secure storage...");
-    final accountsJson = await secureStorage.read(key: 'litdAccountsInSecureStorage');
+    final accountsJson =
+        await secureStorage.read(key: 'litdAccountsInSecureStorage');
 
     // Decode existing data
     List<Map<String, dynamic>> accountsStored = accountsJson != null
         ? (jsonDecode(accountsJson) as List)
-        .map((json) => Map<String, dynamic>.from(json))
-        .toList()
+            .map((json) => Map<String, dynamic>.from(json))
+            .toList()
         : [];
 
     // Check if user already stored
@@ -50,13 +53,15 @@ Future<void> storeLitdAccountData(String userId, String accountId, String macaro
     );
   } catch (e) {
     print("Error trying to write LITD account data to local device...");
-    throw Exception("An error occurred trying to write LITD account data to secure storage: $e");
+    throw Exception(
+        "An error occurred trying to write LITD account data to secure storage: $e");
   }
 }
 
 // Retrieve list of all LITD accounts
 Future<List<Map<String, dynamic>>> getLitdAccountsData() async {
-  final accountsJson = await secureStorage.read(key: 'litdAccountsInSecureStorage');
+  final accountsJson =
+      await secureStorage.read(key: 'litdAccountsInSecureStorage');
 
   if (accountsJson == null) {
     print('No LITD accounts found in secure storage');
@@ -73,14 +78,19 @@ Future<List<Map<String, dynamic>>> getLitdAccountsData() async {
 Future<void> storePrivateData(PrivateData privateData) async {
   try {
     print("Reading secure storage now...");
-    final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
+    final privateDataJson =
+        await secureStorage.read(key: 'usersInSecureStorage');
 
     // Decode the JSON data and map it to a list of IONData objects
-    List<PrivateData> usersStored =
-        privateDataJson != null ? (jsonDecode(privateDataJson) as List).map((json) => PrivateData.fromMap(json)).toList() : [];
+    List<PrivateData> usersStored = privateDataJson != null
+        ? (jsonDecode(privateDataJson) as List)
+            .map((json) => PrivateData.fromMap(json))
+            .toList()
+        : [];
 
     // Check if the user is already stored based on their DID
-    bool isUserStored = usersStored.any((user) => user.did == privateData.did);
+    bool isUserStored =
+        usersStored.any((user) => user.mnemonic == privateData.mnemonic);
 
     if (!isUserStored) {
       // Add the new user to the list
@@ -89,14 +99,16 @@ Future<void> storePrivateData(PrivateData privateData) async {
       print("Users getting stored in secure storage now...");
       await secureStorage.write(
         key: 'usersInSecureStorage',
-        value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList()),
+        value: json.encode(
+            usersStored.map((privateData) => privateData.toMap()).toList()),
       );
     } else {
       print("User with the same DID already exists in secure storage.");
     }
   } catch (e) {
     print("Error trying to write User to local device...");
-    throw Exception("An error occured trying to write to local secure storage: $e");
+    throw Exception(
+        "An error occured trying to write to local secure storage: $e");
   }
 }
 
@@ -132,7 +144,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
   if (privateDataJson == null) {
-    logger.e('No private data found in secure storage for key usersInSecureStorage');
+    logger.e(
+        'No private data found in secure storage for key usersInSecureStorage');
     throw Exception('Failed to retrieve private data from secure storage');
   }
 
@@ -151,7 +164,7 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   // Find the PrivateData object with the matching DID
   try {
     final matchingPrivateData = usersStored.firstWhere(
-          (user) => user.did == did,
+      (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
       orElse: () {
         logger.e('No matching private data found for DID $did');
         throw Exception('No private data found for DID $did');
@@ -175,7 +188,9 @@ Future<List<PrivateData>> getAllStoredIonData() async {
   }
 
   // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List).map((json) => PrivateData.fromMap(json)).toList();
+  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List)
+      .map((json) => PrivateData.fromMap(json))
+      .toList();
 
   return usersStored;
 }
@@ -189,12 +204,18 @@ Future<void> deleteUserFromStoredIONData(String did) async {
   }
 
   // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List).map((json) => PrivateData.fromMap(json)).toList();
+  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List)
+      .map((json) => PrivateData.fromMap(json))
+      .toList();
 
   // Filter out the user with the provided DID
-  usersStored = usersStored.where((user) => user.did != did).toList();
+  usersStored = usersStored
+      .where((user) => HDWallet.fromMnemonic(user.mnemonic).pubkey != did)
+      .toList();
 
   // Store the updated list back in the storage
   await secureStorage.write(
-      key: 'usersInSecureStorage', value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList()));
+      key: 'usersInSecureStorage',
+      value: json.encode(
+          usersStored.map((privateData) => privateData.toMap()).toList()));
 }

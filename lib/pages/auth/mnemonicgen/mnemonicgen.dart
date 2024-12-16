@@ -20,7 +20,6 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -96,27 +95,20 @@ class MnemonicController extends State<MnemonicGen> {
         mnemonicTextController.text = mnemonicString;
       });
 
-      HDWallet hdWallet = createUserWallet(mnemonicString);
-
-      // Master private key (WIF)
-      String? masterPrivateKeyWIF = hdWallet.wif;
-      logger.i('Master Private Key (WIF): $masterPrivateKeyWIF\n');
+      HDWallet hdWallet = await createUserWallet(mnemonicString);
 
       // Master public key (compressed)
-      String? masterPublicKey = hdWallet.pubKey;
+      String? masterPublicKey = hdWallet.pubkey;
       logger.i('Master Public Key: $masterPublicKey\n');
-      String? masterPrivateKey = hdWallet.privKey;
+      String? masterPrivateKey = hdWallet.privkey;
       logger.i('Master Private Key: $masterPrivateKey\n');
 
       // Set the DID (Decentralized Identifier) as the public key hex
-      did = masterPublicKey!;
+      did = masterPublicKey;
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
-      final privateData = PrivateData(
-        did: did,
-        privateKey: masterPrivateKey!,
-      );
+      final privateData = PrivateData(mnemonic: mnemonicString);
 
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");

@@ -21,8 +21,6 @@ enum ReceiveType {
 }
 
 class ReceiveController extends BaseController {
-
-
   RxBool isUnlocked = true.obs; // Added here
 
   RxString qrCodeDataStringLightning = "".obs;
@@ -81,9 +79,9 @@ class ReceiveController extends BaseController {
   }
 
   void getTaprootAddress() async {
-    RestResponse callback = await nextAddr();
-    print("Response" + callback.data.toString());
-    BitcoinAddress address = BitcoinAddress.fromJson(callback.data);
+    RestResponse addr = await nextAddr();
+    print("Response" + addr.toString());
+    BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
     Get.find<WalletsController>().btcAddresses.add(address.addr);
     LocalStorage.instance.setStringList(
         Get.find<WalletsController>().btcAddresses,

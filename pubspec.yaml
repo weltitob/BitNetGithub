@@ -27,7 +27,7 @@ dependencies:
   #marquee: ^2.2.3
   #flutter_layout_grid: ^2.0.5
   #another_flushbar: ^1.12.30
-  blockchain_utils: ^2.1.2
+  blockchain_utils: ^3.6.0
 
 
   asn1lib: ^1.1.0
@@ -68,7 +68,6 @@ dependencies:
   #handy_window: ^0.1.9
   #hive: ^2.2.3
   hive_flutter: ^1.1.0
-  flutter_bitcoin: ^1.0.1
   bip39: ^1.0.6
   cryptography: ^2.7.0
   #just_audio_mpv: ^0.1.6
@@ -213,6 +212,8 @@ dependencies:
   flutter_native_splash: ^2.3.7
   encrypt: ^5.0.3
   crypto: ^3.0.5
+  bip32: ^2.0.0
+  wallet: ^0.0.13
 dev_dependencies:
   flutter_test:
     sdk: flutter

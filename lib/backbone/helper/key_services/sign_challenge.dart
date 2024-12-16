@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:pointycastle/ecc/api.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:pointycastle/digests/sha256.dart';
@@ -9,7 +8,8 @@ import 'package:convert/convert.dart';
 import 'package:pointycastle/macs/hmac.dart';
 import 'package:pointycastle/pointycastle.dart';
 
-Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublicKeyHex, String challengeData) async {
+Future<String> signChallengeData(String masterPrivateKeyHex,
+    String masterPublicKeyHex, String challengeData) async {
   try {
     // Step 1: Use a fixed mnemonic for consistency
 
@@ -20,11 +20,12 @@ Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublic
     // Step 5: Define challenge data and hash it
     final SHA256Digest sha256 = SHA256Digest();
     final Uint8List messageHash =
-    sha256.process(Uint8List.fromList(utf8.encode(challengeData)));
+        sha256.process(Uint8List.fromList(utf8.encode(challengeData)));
     print('Message Hash (Hex): ${hex.encode(messageHash)}');
 
     // Step 6: Prepare private key for signing
-    final BigInt privateKeyBigInt = BigInt.parse(masterPrivateKeyHex, radix: 16);
+    final BigInt privateKeyBigInt =
+        BigInt.parse(masterPrivateKeyHex, radix: 16);
     final domainParams = ECCurve_secp256k1();
     final n = domainParams.n;
 
@@ -44,7 +45,8 @@ Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublic
 
     final e = bytesToBigInt(messageHash);
     BigInt s = ((k.modInverse(n)) * (e + (privateKeyBigInt * r))) % n;
-    print('s before normalization (Hex): ${s.toRadixString(16).padLeft(64, '0')}');
+    print(
+        's before normalization (Hex): ${s.toRadixString(16).padLeft(64, '0')}');
     if (s == BigInt.zero) {
       throw Exception("s is zero");
     }
@@ -63,7 +65,6 @@ Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublic
     print('Signature (Raw R || S, Hex): ${hex.encode(signatureRaw)}');
     print('Generated Signature (Hex): ${hex.encode(signatureRaw)}');
     return (hex.encode(signatureRaw)).toString();
-
   } catch (e) {
     print("Error in entireWorkflow: $e");
     return "Error in entireWorkflow: $e";

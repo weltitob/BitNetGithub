@@ -6,7 +6,6 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:get/get.dart';
 
-
 void generateMnemonic() async {
   LoggerService logger = Get.find<LoggerService>();
   logger.i("Generating mnemonic...");
@@ -45,14 +44,9 @@ void generateMnemonic() async {
 
     // Save the mnemonic and keys securely
     logger.i("Storing private data securely...");
-    final privateData = PrivateData(
-      did: did,
-      privateKey: wifPrivateKey,
-    );
+    final privateData = PrivateData(mnemonic: mnemonicString);
     await storePrivateData(privateData);
     logger.i("Private data stored successfully.");
-
-
   } catch (e) {
     logger.e("Error in generateMnemonic: $e");
     // Handle errors (e.g., show user-friendly error message)

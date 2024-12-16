@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
@@ -26,12 +27,17 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
+import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../backbone/auth/auth.dart';
 
 class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
@@ -103,17 +109,18 @@ class WalletsController extends BaseController {
   //------------------------------------------------------------------------------------------
   //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
   //------------------------------------------------------------------------------------------
-  Future<num> getOnchainBalance() async {
-    String mnemonic = "your mnemonic here";
-    // 1. Derive all addresses
-    List<String> addresses = await deriveTaprootAddresses(mnemonic);
-    final DioClient dioClient = Get.find<DioClient>();
 
-    num totalBalance = 0;
+  Future<OnchainBalance> getOnchainBalance() async {
+    // 1. Get all addresses
+    List<String> addresses = await getOnchainAddresses();
+    int totalBalance = 0;
+    int confirmedBalance = 0;
+    int unconfirmedBalance = 0;
+    final DioClient dioClient = Get.find<DioClient>();
 
     // 2. For each address, fetch UTXOs and sum up the value
     for (String addr in addresses) {
-      String url = '${AppTheme.baseUrlMemPoolSpaceApi}v1/address/$addr/utxo';
+      String url = '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/utxo';
       try {
         final response = await dioClient.get(
           url: url,
@@ -121,29 +128,83 @@ class WalletsController extends BaseController {
         if (response.statusCode == 200) {
           List utxos = response.data;
           // Sum all UTXOs for this address
-          num addressBalance =
-              utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
-          totalBalance += addressBalance;
+          for (int i = 0; i < utxos.length; i++) {
+            int balance = utxos[i]['value'];
+            bool confirmed = utxos[i]['status']['confirmed'];
+            totalBalance += balance;
+            if (confirmed) {
+              confirmedBalance += balance;
+            } else {
+              unconfirmedBalance += balance;
+            }
+          }
         }
       } catch (e) {
         // Handle errors gracefully
         print('Error fetching UTXOs for $addr: $e');
       }
     }
+    return OnchainBalance(
+        totalBalance: totalBalance.toString(),
+        confirmedBalance: confirmedBalance.toString(),
+        unconfirmedBalance: unconfirmedBalance.toString(),
+        lockedBalance: '0',
+        reservedBalanceAnchorChan: '0',
+        accountBalance: totalBalance.toString()); // in satoshis
+  }
 
-    return totalBalance; // in satoshis
+  Future<num> getOnchainAddressBalance(String addr) async {
+    String url = '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/utxo';
+    try {
+      final response = await dioClient.get(url: url);
+      if (response.statusCode == 200) {
+        List utxos = response.data;
+        num addressBalance =
+            utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
+        return addressBalance;
+      }
+      return 0;
+    } catch (e) {
+      print('Error fetching UTXOs for $addr: $e');
+      return 0;
+    }
+  }
+
+  // ----------------------
+  // GET ADDRESSES COUNT
+  // ----------------------
+  Future<int?> getAddressesCount() async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    if (doc.data() != null && doc.data()!.isNotEmpty) {
+      return doc.data()!['count'];
+    } else {
+      return null;
+    }
+  }
+
+  // ----------------------
+  // GET ON-CHAIN ADDRESSES
+  // ----------------------
+  Future<List<String>> getOnchainAddresses() async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    if (doc.data() != null && doc.data()!.isNotEmpty) {
+      return (doc.data()!['addresses'] as List).cast<String>();
+    } else {
+      return <String>[];
+    }
   }
 
   // ----------------------
   // GET ON-CHAIN TRANSACTIONS
   // ----------------------
   Future<List<dynamic>> getOnchainTransactions() async {
-    String mnemonic = "your mnemonic here";
-    // 1. Derive all addresses
-    List<String> addresses = await deriveTaprootAddresses(mnemonic);
+    // 1. Get all addresses
+    List<String> addresses = await getOnchainAddresses();
     final DioClient dioClient = Get.find<DioClient>();
 
-    List<dynamic> allTxs = [];
+    List<TransactionModel> allTxs = [];
 
     // 2. Fetch transactions for each address and aggregate
     for (String addr in addresses) {
@@ -160,8 +221,11 @@ class WalletsController extends BaseController {
               ? await dioClient
                   .get(
                       url:
-                          '${AppTheme.baseUrlMemPoolSpaceApi}/address/$addr/txs')
+                          '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/txs')
                   .then((value) async {
+                  for (int i = 0; i < value.data.length; i++) {
+                    allTxs.add(TransactionModel.fromJson(value.data[i]));
+                  }
                   print(value.data);
                 })
               : null;
@@ -176,6 +240,7 @@ class WalletsController extends BaseController {
     // You can identify transactions by their txid and maintain a set.
 
     // Return aggregated transaction list
+    allTxs = allTxs.toSet().toList();
     return allTxs;
   }
 
@@ -388,12 +453,8 @@ class WalletsController extends BaseController {
 
   Future<bool> fetchOnchainWalletBalance() async {
     try {
-      RestResponse onchainBalanceRest = await walletBalance();
-      if (!onchainBalanceRest.data.isEmpty) {
-        OnchainBalance onchainBalance =
-            OnchainBalance.fromJson(onchainBalanceRest.data);
-        this.onchainBalance.value = onchainBalance;
-      }
+      this.onchainBalance.value = await getOnchainBalance();
+
       changeTotalBalanceStr();
     } on Error catch (_) {
       return false;

@@ -1,5 +1,8 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/import_account.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
@@ -64,6 +67,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                               Row(
                                 children: [
                                   Avatar(
+                                      onTap: () async {
+                                        HDWallet hdWallet =
+                                            await createUserWallet(
+                                                (await getPrivateData(Auth()
+                                                        .currentUser!
+                                                        .uid))
+                                                    .mnemonic);
+                                      },
                                       size: AppTheme.cardPadding * 2.5.h,
                                       mxContent: Uri.parse(
                                           Get.find<ProfileController>()
@@ -201,7 +212,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               : FontAwesomeIcons.eye,
                                       onTap: () {
                                         controller.setHideBalance(
-                                            hide: !controller.hideBalance.value);
+                                            hide:
+                                                !controller.hideBalance.value);
                                       },
                                     ),
                                   ),
@@ -224,19 +236,20 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 .canvasColor, // Add a background color here
                                             borderRadius: new BorderRadius.only(
                                               topLeft: AppTheme.cornerRadiusBig,
-                                              topRight: AppTheme.cornerRadiusBig,
+                                              topRight:
+                                                  AppTheme.cornerRadiusBig,
                                             ),
                                           ),
                                           child: ClipRRect(
                                             borderRadius: new BorderRadius.only(
                                               topLeft: AppTheme.cornerRadiusBig,
-                                              topRight: AppTheme.cornerRadiusBig,
+                                              topRight:
+                                                  AppTheme.cornerRadiusBig,
                                             ),
                                             child: const Settings(),
                                           ),
                                         ),
                                       );
-
                                     },
                                   ),
                                 ],
@@ -317,15 +330,16 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
-                      LongButtonWidget(title: "fetchOnchain Balance", onTap: () async {
-                        await controller.getOnchainBalance();
-                      }),
+                      LongButtonWidget(
+                          title: "fetchOnchain Balance",
+                          onTap: () async {
+                            // await controller.getOnchainBalance();
+                          }),
                       SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       LongButtonWidget(
                         title: "getOnchainTransactions",
                         onTap: () async {
-                          await controller.getOnchainTransactions();
+                          // await controller.getOnchainTransactions();
                         },
                       ),
                       SizedBox(height: AppTheme.cardPadding.h * 1.75),

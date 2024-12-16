@@ -11,6 +11,7 @@ import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -128,11 +129,11 @@ class Auth {
 
     PrivateData privateData = await getPrivateData(user.did);
     logger.d('Retrieved private data for user ${user.did}');
-
-    final String publicKeyHex = privateData.did;
+    HDWallet wallet = HDWallet.fromMnemonic(privateData.mnemonic);
+    final String publicKeyHex = wallet.pubkey;
     logger.d('Public Key Hex: $publicKeyHex');
 
-    final String privateKeyHex = privateData.privateKey;
+    final String privateKeyHex = wallet.privkey;
     logger.d('Private Key Hex: $privateKeyHex');
 
     String signatureHex =
@@ -151,7 +152,7 @@ class Auth {
     //before signinwith token we need tog enLitdAccount (backend);
     logger.i("Calling genLitdAccount...");
     final bool genlitdresponse = await genLitdAccount(publicKeyHex.toString());
-    if(genlitdresponse == false){
+    if (genlitdresponse == false) {
       logger.e("Error calling genLitdAccount");
       throw Exception("Error calling genLitdAccount");
     }
@@ -248,7 +249,6 @@ class Auth {
 
   Future<bool> genLitdAccount(String userId) async {
     try {
-
       final logger = Get.find<LoggerService>();
       logger.i("Calling genLitdaccount");
 
@@ -257,7 +257,8 @@ class Auth {
       logger.i("genlitdaccount Response: $response");
 
       if (response == null) {
-        logger.e("Response is null. Possibly an error occurred calling genLitdAccount.");
+        logger.e(
+            "Response is null. Possibly an error occurred calling genLitdAccount.");
         return false;
       }
 
@@ -298,13 +299,11 @@ class Auth {
         logger.e("Error storing LITD account data: $e");
         return false;
       }
-
     } catch (e) {
       print("An exception occurred while generating LITD account: $e");
       return false;
     }
   }
-
 
   String generateRandomString(int length) {
     const characters =
@@ -324,7 +323,7 @@ class Auth {
     // You may need to create a Dart version of the signMessage function
     LoggerService logger = Get.find();
 
-    final String did = privateData.did;
+    final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
 
     try {
       //showLoadingScreen
@@ -355,9 +354,12 @@ class Auth {
       );
 
       //now retrive the users lnd accountid and macaroon from firebase and save it into the secure storage
-      try{
+      try {
         final userId = did.toString();
-        final docSnapshot = await FirebaseFirestore.instance.collection("users_lnd_node").doc(userId).get();
+        final docSnapshot = await FirebaseFirestore.instance
+            .collection("users_lnd_node")
+            .doc(userId)
+            .get();
 
         if (docSnapshot.exists) {
           final data = docSnapshot.data();
@@ -388,12 +390,10 @@ class Auth {
           logger.e("User document does not exist");
           throw Exception("User document does not exist");
         }
-
       } catch (e) {
         logger.e("Error storing LITD account data: $e");
         throw Exception("Error storing LITD account data: $e");
       }
-
 
       logger.i("Verify message response: ${customAuthToken.toString()}");
       final currentuser = await signInWithToken(customToken: customAuthToken);

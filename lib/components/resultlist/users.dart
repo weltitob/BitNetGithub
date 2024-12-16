@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
@@ -56,21 +57,21 @@ class _UsersListState extends State<UsersList>
 
   loginButtonPressed(PrivateData privateData) async {
     try {
-      print("Login for user ${privateData.did} pressed");
-      print("Privatekey: ${privateData.privateKey}");
+      HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+      print("Login for user ${hdWallet.pubkey} pressed");
+      print("Privatekey: ${hdWallet.privkey}");
 
       final logger = Get.find<LoggerService>();
 
       String challengeData = "Saved User SecureStorage Challenge";
 
       String signatureHex = await signChallengeData(
-          privateData.privateKey, privateData.did, challengeData);
+          hdWallet.privkey, hdWallet.pubkey, challengeData);
 
       logger.d('Generated signature hex: $signatureHex');
 
-      await Auth().signIn(
-          ChallengeType.securestorage_login, privateData, signatureHex, context);
-
+      await Auth().signIn(ChallengeType.securestorage_login, privateData,
+          signatureHex, context);
     } catch (e) {
       print("Second widgetloading should be called...");
       widget.showError();
@@ -143,8 +144,10 @@ class _UsersListState extends State<UsersList>
                       height: AppTheme.cardPadding * 4,
                       child: Center(child: dotProgress(context)));
                 }
-                List<String> dids =
-                ionSnapshot.data!.map((ionData) => ionData.did).toList();
+                List<String> dids = ionSnapshot.data!
+                    .map((ionData) =>
+                        HDWallet.fromMnemonic(ionData.mnemonic).pubkey)
+                    .toList();
 
                 return FutureBuilder<List<UserData>>(
                   future: getUserDatafromFirebase(dids),
@@ -156,7 +159,8 @@ class _UsersListState extends State<UsersList>
                     }
                     List<UserData> all_userresults = userDataSnapshot.data!;
                     if (all_userresults.isEmpty) {
-                      return searchForFilesAnimation(_searchforfilesComposition);
+                      return searchForFilesAnimation(
+                          _searchforfilesComposition);
                     }
 
                     // Check if we have more than 10 users
@@ -171,29 +175,32 @@ class _UsersListState extends State<UsersList>
                               Expanded(
                                 child: SingleChildScrollView(
                                   child: Column(
-                                    children: all_userresults
-                                        .map((userData) {
+                                    children: all_userresults.map((userData) {
                                       final privateData = ionSnapshot.data!
                                           .firstWhere((ionData) =>
-                                      ionData.did == userData.did);
+                                              HDWallet.fromMnemonic(
+                                                      ionData.mnemonic)
+                                                  .pubkey ==
+                                              userData.did);
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 4.0),
                                         child: UserResult(
                                           onTap: () async {
-                                            await loginButtonPressed(privateData);
+                                            await loginButtonPressed(
+                                                privateData);
                                           },
                                           userData: userData,
                                           onDelete: () async {
-                                            await deleteUserFromStoredIONData(userData.did);
+                                            await deleteUserFromStoredIONData(
+                                                userData.did);
                                             setState(() {
                                               all_userresults.remove(userData);
                                             });
                                           },
                                         ),
                                       );
-                                    })
-                                        .toList(),
+                                    }).toList(),
                                   ),
                                 ),
                               ),
@@ -217,21 +224,22 @@ class _UsersListState extends State<UsersList>
                                 },
                                 itemCount: all_userresults.length,
                                 itemBuilder: (context, index) {
-                                  final userData = all_userresults
-                                      .reversed
-                                      .toList()[index];
+                                  final userData =
+                                      all_userresults.reversed.toList()[index];
                                   var _scale =
-                                  _selectedindex == index ? 1.0 : 0.85;
+                                      _selectedindex == index ? 1.0 : 0.85;
 
                                   final privateData = ionSnapshot.data!
                                       .firstWhere((ionData) =>
-                                  ionData.did == userData.did);
+                                          HDWallet.fromMnemonic(
+                                                  ionData.mnemonic)
+                                              .pubkey ==
+                                          userData.did);
                                   return TweenAnimationBuilder<double>(
-                                    tween:
-                                    Tween<double>(begin: _scale, end: _scale),
+                                    tween: Tween<double>(
+                                        begin: _scale, end: _scale),
                                     curve: Curves.ease,
-                                    duration:
-                                    const Duration(milliseconds: 350),
+                                    duration: const Duration(milliseconds: 350),
                                     builder: (context, value, child) {
                                       return Transform.scale(
                                         scale: value,
@@ -315,7 +323,8 @@ class _UsersListState extends State<UsersList>
             height: AppTheme.elementSpacing,
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+            margin: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding * 2),
             child: Text(
               "It appears that you haven't added any users to your device yet.",
               textAlign: TextAlign.center,
