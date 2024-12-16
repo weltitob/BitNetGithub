@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
@@ -23,7 +24,7 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   // Convert ByteData to List<int>
   List<int> bytes = byteData.buffer.asUint8List();
   // Convert bytes to hex string
-  String macaroon = bytesToHex(bytes);
+  String macaroon = base64.encode(bytes);
 
   //String macaroon = bytesToHex(await File(macaroonPath).readAsBytes());
   // Prepare the headers
@@ -42,7 +43,7 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.post(url: url, headers: headers, data: data);
     // Print raw response for debugging
     print('Raw Response: ${response.data}');

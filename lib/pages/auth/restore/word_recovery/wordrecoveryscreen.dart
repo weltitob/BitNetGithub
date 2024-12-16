@@ -88,7 +88,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
       logger.d('Generated signature hex: $signatureHex');
 
-      PrivateData privateData = PrivateData(mnemonic: mnemonic);
+      PrivateData privateData = PrivateData(did: did, mnemonic: mnemonic);
 
       // Perform sign-in
       await Auth().signIn(

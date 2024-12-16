@@ -37,7 +37,7 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
   List<String> derivedAddresses = [];
 
   for (int i = 0; i < 5; i++) {
-    RestResponse addr = await nextAddr();
+    RestResponse addr = await nextAddr(publicKey);
     print("Response" + addr.toString());
     BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
     derivedAddresses.add(address.addr);
@@ -46,15 +46,23 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
   btcAddressesRef
       .doc(publicKey)
       .set({"addresses": derivedAddresses, "count": 5});
-  return HDWallet(pubkey: publicKey, xpubkey: xpubkey, privkey: privKeyString);
+  return HDWallet(
+      pubkey: publicKey,
+      xpubkey: xpubkey,
+      privkey: privKeyString,
+      fingerprint: masterFingerprint);
 }
 
 class HDWallet {
   final String pubkey;
   final String xpubkey;
   final String privkey;
+  final String fingerprint;
   HDWallet(
-      {required this.privkey, required this.pubkey, required this.xpubkey});
+      {required this.fingerprint,
+      required this.privkey,
+      required this.pubkey,
+      required this.xpubkey});
 
   factory HDWallet.fromSeed(Uint8List seed) {
     const taprootPath = "m/86'/0'/0'";
@@ -68,8 +76,13 @@ class HDWallet {
         hex.encode(wallet.bitcoinbech32.createPublicKey(privKey).value);
     String privKeyString = privKey.value.toRadixString(16);
     String xpubkey = root.publicKey.toString();
+    final masterFingerprint = base64.encode(root.fingerprint);
+
     return HDWallet(
-        privkey: publicKey, pubkey: privKeyString, xpubkey: xpubkey);
+        privkey: privKeyString,
+        pubkey: publicKey,
+        xpubkey: xpubkey,
+        fingerprint: masterFingerprint);
   }
 
   factory HDWallet.fromMnemonic(String mnemonic) {

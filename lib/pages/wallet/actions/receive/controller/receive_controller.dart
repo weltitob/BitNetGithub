@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
@@ -79,7 +80,7 @@ class ReceiveController extends BaseController {
   }
 
   void getTaprootAddress() async {
-    RestResponse addr = await nextAddr();
+    RestResponse addr = await nextAddr(Auth().currentUser!.uid);
     print("Response" + addr.toString());
     BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
     Get.find<WalletsController>().btcAddresses.add(address.addr);

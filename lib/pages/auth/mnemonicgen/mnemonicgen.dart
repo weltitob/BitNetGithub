@@ -108,7 +108,7 @@ class MnemonicController extends State<MnemonicGen> {
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
-      final privateData = PrivateData(mnemonic: mnemonicString);
+      final privateData = PrivateData(did: did, mnemonic: mnemonicString);
 
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");

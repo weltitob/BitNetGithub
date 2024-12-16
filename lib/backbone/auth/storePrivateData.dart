@@ -58,6 +58,21 @@ Future<void> storeLitdAccountData(
   }
 }
 
+Future<Map<String, dynamic>?> getLitdAccountData(String userId) async {
+  final accountsJson =
+      await secureStorage.read(key: 'litdAccountsInSecureStorage');
+
+  if (accountsJson == null) {
+    print('No LITD accounts found in secure storage');
+    return null;
+  }
+
+  Map<String, dynamic>? account = (jsonDecode(accountsJson) as List)
+      .map((json) => Map<String, dynamic>.from(json))
+      .firstWhere((json) => json['userId'] == userId);
+  return account;
+}
+
 // Retrieve list of all LITD accounts
 Future<List<Map<String, dynamic>>> getLitdAccountsData() async {
   final accountsJson =
@@ -89,8 +104,7 @@ Future<void> storePrivateData(PrivateData privateData) async {
         : [];
 
     // Check if the user is already stored based on their DID
-    bool isUserStored =
-        usersStored.any((user) => user.mnemonic == privateData.mnemonic);
+    bool isUserStored = usersStored.any((user) => user.did == privateData.did);
 
     if (!isUserStored) {
       // Add the new user to the list

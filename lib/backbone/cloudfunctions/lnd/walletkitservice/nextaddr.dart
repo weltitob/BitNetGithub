@@ -15,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> nextAddr() async {
+Future<RestResponse> nextAddr(String account) async {
   //this obviously doesnt work because it's not for one user would be for all
 
   LoggerService logger = Get.find();
@@ -32,8 +32,7 @@ Future<RestResponse> nextAddr() async {
     'Grpc-Metadata-macaroon': macaroon,
   };
   final Map<String, dynamic> data = {
-    'account':
-        Auth().currentUser!.uid, //If empty, the default wallet account is used.
+    'account': account, //If empty, the default wallet account is used.
     'type': 'TAPROOT_PUBKEY', //4 stands for taproot pubkey
     'change': true,
   };
