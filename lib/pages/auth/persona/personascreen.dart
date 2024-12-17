@@ -37,8 +37,6 @@ class _PersonaScreenState extends State<PersonaScreen> {
 
     //E/com.bitnet(11760): Invalid resource ID 0x00000000.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
-
       _configuration = TemplateIdConfiguration(
           templateId: "itmpl_5pSqWSacZ5pZNLDaFPetpWXNurr5",
           environment: InquiryEnvironment.sandbox,
