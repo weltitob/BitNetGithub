@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/import_account.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/import_account.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';

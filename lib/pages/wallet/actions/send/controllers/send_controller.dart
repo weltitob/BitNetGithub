@@ -374,16 +374,16 @@ class SendsController extends BaseController {
     List<String> invoiceStrings = [invoicePr];
 
     //ahhhh nur wenn quasie der text geändert wird passt aktuell aber wenn der nicht geändert wird kackts ab
-    Stream<RestResponse> paymentStream =
-        sendPaymentV2Stream(invoiceStrings, amount);
+    Stream<dynamic> paymentStream =
+        sendPaymentV2Stream(Auth().currentUser!.uid, invoiceStrings, amount);
     StreamSubscription? sub;
     bool transactionsUpdated = false;
 
-    sub = paymentStream.listen((RestResponse response) {
+    sub = paymentStream.listen((dynamic response) {
       isFinished.value = true;
-      if (response.statusCode == "success") {
-        sendPaymentDataLnUrl(response.data['result'], lnUrl, lnUrlname);
-        payment = LightningPayment.fromJson(response.data['result']);
+      if ((response as Map<String, dynamic>)['status'] == 'SUCCEEDED') {
+        sendPaymentDataLnUrl(response['result'], lnUrl, lnUrlname);
+        payment = LightningPayment.fromJson(response['result']);
         if (!transactionsUpdated) {
           Get.find<WalletsController>().newTransactionData.add(payment);
           transactionsUpdated = true;
@@ -397,9 +397,17 @@ class SendsController extends BaseController {
           showOverlay(this.context, "Payment successful!");
           GoRouter.of(this.context).go("/feed");
         });
+      } else if ((response)['status'] == 'FAILED') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showOverlay(
+              this.context, "Payment failed: ${response['failure_reason']}");
+        });
+        isFinished.value = false;
+        sub!.cancel();
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          showOverlay(this.context, "Payment failed: ${response.message}");
+          showOverlay(
+              this.context, "Payment failed: please try again later...");
         });
         isFinished.value = false;
         sub!.cancel();
@@ -468,13 +476,15 @@ class SendsController extends BaseController {
             bitcoinReceiverAdress
           ]; // Assuming you want to send a list containing a single invoice for now
 
-          Stream<RestResponse> paymentStream = sendPaymentV2Stream(
-              invoiceStrings, int.parse(satController.text));
+          Stream<dynamic> paymentStream = sendPaymentV2Stream(
+              Auth().currentUser!.uid,
+              invoiceStrings,
+              int.parse(satController.text));
           bool firstSuccess = false;
-          paymentStream.listen((RestResponse response) {
+          paymentStream.listen((dynamic response) {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
-            if (response.statusCode == "success") {
+            if (response['status'] == "SUCCEEDED") {
               logger.i("Success: ${response.data}");
               //connect this with transactions view
               LightningPayment invoice =
@@ -482,9 +492,8 @@ class SendsController extends BaseController {
 
               Get.find<WalletsController>().newTransactionData.add(invoice);
               // Handle success
-              if (response.data['result']['status'] != "FAILED") {
-                sendPaymentDataInvoice(response.data['result']);
-              }
+              sendPaymentDataInvoice(response.data['result']);
+
               logger.i("Payment successful!");
               if (!firstSuccess) {
                 Get.find<WalletsController>().fetchLightingWalletBalance();
@@ -496,7 +505,7 @@ class SendsController extends BaseController {
                 firstSuccess = true;
               }
             }
-            if (response.data['result']['status'] == "FAILED") {
+            if (response['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
               if (!firstSuccess) {

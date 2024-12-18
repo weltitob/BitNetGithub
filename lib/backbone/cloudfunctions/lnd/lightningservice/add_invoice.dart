@@ -6,10 +6,12 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:blockchain_utils/hex/hex.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> addInvoice(int amount, String? memo) async {
+Future<RestResponse> addInvoice(
+    int amount, String? memo, String fallbackAddr) async {
   // String restHost =
   //     AppTheme.baseUrlLightningTerminal; // Update the host as needed
 
@@ -20,22 +22,23 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   // Make the GET request
   String url = 'https://$restHost/v1/invoices';
   // Read the macaroon file and convert it to a hexadecimal string
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   // Convert ByteData to List<int>
   List<int> bytes = byteData.buffer.asUint8List();
   // Convert bytes to hex string
-  String macaroon = base64.encode(bytes);
+  String macaroon = bytesToHex(bytes);
 
   //String macaroon = bytesToHex(await File(macaroonPath).readAsBytes());
   // Prepare the headers
   Map<String, String> headers = {
+    'Content-Type': 'application/json',
     'Grpc-Metadata-macaroon': macaroon,
   };
   final Map<String, dynamic> data = {
     'memo': memo ?? "",
     'value': amount,
     'expiry': 1200,
-    'fallback_addr': 'bc1qtfmrfu3n5vx8jgep5vw2s7z68u0aq40c24e2ps',
+    'fallback_addr': fallbackAddr,
     'private': false,
     'is_keysend': true
   };

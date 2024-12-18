@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/import_account.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/import_account.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -17,7 +17,7 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
 
   final seed = wallet.mnemonicToSeed(mnemonic.split(' '));
 
-  const taprootPath = "m/86'/0'/0'";
+  const taprootPath = "m/84'/0'/0'";
   wallet.ExtendedPrivateKey master =
       wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
   // Step 2: Generate master key (BIP-32 Slip10 for secp256k1)
@@ -37,15 +37,16 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
   List<String> derivedAddresses = [];
 
   for (int i = 0; i < 5; i++) {
-    RestResponse addr = await nextAddr(publicKey);
-    print("Response" + addr.toString());
-    BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
+    String addr = await nextAddr(publicKey);
+    print("Response" + addr);
+    BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
     derivedAddresses.add(address.addr);
   }
 
-  btcAddressesRef
-      .doc(publicKey)
-      .set({"addresses": derivedAddresses, "count": 5});
+//have firebase function handle this, it's safer
+  // btcAddressesRef
+  //     .doc(publicKey)
+  //     .set({"addresses": derivedAddresses, "count": 5});
   return HDWallet(
       pubkey: publicKey,
       xpubkey: xpubkey,

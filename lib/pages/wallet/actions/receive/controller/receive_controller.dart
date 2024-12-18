@@ -12,6 +12,7 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -72,7 +73,9 @@ class ReceiveController extends BaseController {
         ? amount = amount
         : amount =
             CurrencyConverter.convertBitcoinToSats(amount.toDouble()).toInt();
-    RestResponse callback = await addInvoice(amount, memo ?? "");
+    List<String> addresses =
+        await Get.find<WalletsController>().getOnchainAddresses();
+    RestResponse callback = await addInvoice(amount, memo ?? "", addresses[0]);
     print("Response" + callback.data.toString());
     InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
     print("Invoice" + invoiceModel.payment_request.toString());
@@ -80,9 +83,9 @@ class ReceiveController extends BaseController {
   }
 
   void getTaprootAddress() async {
-    RestResponse addr = await nextAddr(Auth().currentUser!.uid);
-    print("Response" + addr.toString());
-    BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
+    String addr = await nextAddr(Auth().currentUser!.uid);
+    print("Response" + addr);
+    BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
     Get.find<WalletsController>().btcAddresses.add(address.addr);
     LocalStorage.instance.setStringList(
         Get.find<WalletsController>().btcAddresses,

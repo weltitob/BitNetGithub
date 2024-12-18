@@ -189,6 +189,8 @@ class WalletsController extends BaseController {
   Future<List<String>> getOnchainAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
         await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    String uid = Auth().currentUser!.uid;
+    Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
       return (doc.data()!['addresses'] as List).cast<String>();
     } else {
