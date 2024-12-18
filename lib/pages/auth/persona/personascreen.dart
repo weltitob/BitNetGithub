@@ -147,10 +147,10 @@ class _PersonaScreenState extends State<PersonaScreen> {
                     PersonaInquiry.init(configuration: _configuration,);
                     PersonaInquiry.start();
 
-                    // context.go(
-                    //   Uri(path: '/authhome/pinverification/reg_loading')
-                    //       .toString(),
-                    // );
+                    context.go(
+                      Uri(path: '/authhome/pinverification/reg_loading')
+                          .toString(),
+                    );
 
                     // context.go(
                     //   Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
