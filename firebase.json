@@ -19,8 +19,20 @@
     ],
     "rewrites": [
       {
+        "source": "/.well-known/acme-challenge/**",
+        "destination": "https://54.235.56.138/.well-known/acme-challenge/:splat"
+      },
+      {
         "source": "/.well-known/assetlinks.json",
         "destination": "/.well-known/assetlinks.json"
+      },
+      {
+        "source": "/lnurl/**",
+        "destination": "https://54.235.56.138/lnurl"
+      },
+      {
+        "source": "/well-known/lnurlp/**",
+        "destination": "https://54.235.56.138/well-known/lnurlp"
       },
       {
         "source": "**",

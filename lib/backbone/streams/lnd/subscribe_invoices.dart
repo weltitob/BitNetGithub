@@ -20,10 +20,12 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
 
   // Read the macaroon file and convert it to a hexadecimal string
   //this needs to be removed before relase
-  ByteData byteData = await loadAdminMacaroonAsset();
+  ByteData byteData = await loadMacaroonAsset();
+
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
+  logger.i("Macaroon: $macaroon used in subscribeInvoicesStream()");
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
