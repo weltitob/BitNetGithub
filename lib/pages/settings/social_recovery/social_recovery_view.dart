@@ -1,5 +1,7 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
@@ -203,24 +205,28 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                   }
                 },
                 onConfirm: () async {
-                  String did = getUserDidTemp();
-                  PrivateData privData = await getPrivateData(getUserDidTemp());
-                  if (controller.keyController.text == privData.privateKey) {
-                  } else {
-                    // showOverlay(context, 'Your private key was incorrect, try again.', color: AppTheme.errorColor);
-                  }
-                  List<UserData> invitedUsers = controller.selectedUsers
-                      .map((item) => UserData.fromMap(item))
-                      .toList();
-                  initiateSocialSecurity(privData.privateKey,
-                          controller.selectedUsers.length, invitedUsers)
-                      .then((val) {
-                    controller.initiateSocialRecovery.value = val ? 2 : 1;
-                  });
+                  String did = Auth().currentUser!.uid;
+                  PrivateData privData =
+                      await getPrivateData(Auth().currentUser!.uid);
+                  HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+                  if (controller.keyController.text == hdWallet.privkey) {
+                    List<UserData> invitedUsers = controller.selectedUsers
+                        .map((item) => UserData.fromMap(item))
+                        .toList();
+                    initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
+                            controller.selectedUsers.length, invitedUsers)
+                        .then((val) {
+                      controller.initiateSocialRecovery.value = val ? 2 : 1;
+                    });
 
-                  controller.pageControllerSocialRecovery.nextPage(
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.easeIn);
+                    controller.pageControllerSocialRecovery.nextPage(
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.easeIn);
+                  } else {
+                    showOverlay(
+                        context, 'Your private key was incorrect, try again.',
+                        color: AppTheme.errorColor);
+                  }
                 },
               ),
             ),
@@ -309,23 +315,21 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
 
     // Remove items that have duplicates
     list.removeWhere((item) =>
-        (didCount[item['did']]! > 1) || item['did'] == getUserDidTemp());
+        (didCount[item['did']]! > 1) || item['did'] == Auth().currentUser!.uid);
   }
 
   triggerMnemonicCheck(BuildContext context, MnemonicController? mCtrl,
       List<TextEditingController> tCtrls) async {
-    // final String mnemonic = tCtrls.map((controller) => controller.text).join(' ');
-    //  PrivateData privData = await getPrivateData(getUserDidTemp());
-    // if (privData.mnemonic == mnemonic) {
-    //   controller.pageControllerSocialRecovery.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-    //   Future.delayed(Duration(seconds: 10), () {
-    //     if (context.mounted) {
-    //       context.pop();
-    //     }
-    //   });
-    // } else {
-    //   showOverlay(context, 'Your Mnemonic was Incorrect, please try again', color: AppTheme.errorColor);
-    // }
+    final String mnemonic =
+        tCtrls.map((controller) => controller.text).join(' ');
+    PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+    if (privData.mnemonic == mnemonic) {
+      controller.pageControllerSocialRecovery.nextPage(
+          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    } else {
+      showOverlay(context, 'Your Mnemonic was Incorrect, please try again',
+          color: AppTheme.errorColor);
+    }
 
     controller.pageControllerSocialRecovery
         .nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);

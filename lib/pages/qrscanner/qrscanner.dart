@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:bip39/bip39.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -105,13 +107,18 @@ class QRScannerController extends State<QrScanner> {
 
   void onScannedForSignIn(dynamic encodedString) async {
     try {
-      Map<String, dynamic> data = jsonDecode(encodedString);
+      Map<String, dynamic> data = {};
+      if (validateMnemonic(encodedString)) {
+        data = {'mnemonic': encodedString};
+      } else {
+        data = jsonDecode(encodedString);
+      }
 
       final privateData = PrivateData.fromJson(data);
-
+      HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
       print("onScannedForSignIn: $privateData");
-      print("onScannedForSignIn: ${privateData.did}");
-      print("onScannedForSignIn: ${privateData.privateKey}");
+      print("onScannedForSignIn: ${hdWallet.pubkey}");
+      print("onScannedForSignIn: ${hdWallet.privkey}");
 
       //generate based on mnemonix the privatekeyhex the did and...#
 
@@ -124,7 +131,7 @@ class QRScannerController extends State<QrScanner> {
       String challengeData = "QRCode Login Challenge";
 
       String signatureHex = await signChallengeData(
-          privateData.privateKey, privateData.did, challengeData);
+          hdWallet.privkey, hdWallet.pubkey, challengeData);
 
       logger.d('Generated signature hex: $signatureHex');
 

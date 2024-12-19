@@ -24,7 +24,8 @@ class OnChainReceiveTab extends StatefulWidget {
   State<OnChainReceiveTab> createState() => _OnChainReceiveTabState();
 }
 
-class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKeepAliveClientMixin {
+class _OnChainReceiveTabState extends State<OnChainReceiveTab>
+    with AutomaticKeepAliveClientMixin {
   // Get the current user's wallet from a provider
   final GlobalKey globalKeyQR = GlobalKey();
   ValueNotifier<String> btcControllerNotifier = ValueNotifier('');
@@ -70,12 +71,15 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
               controller.qrCodeDataStringOnchain.value;
               return GestureDetector(
                 onTap: () async {
-                  double? invoiceAmount = double.tryParse(controller.btcController.text);
+                  double? invoiceAmount =
+                      double.tryParse(controller.btcController.text);
                   if (invoiceAmount != null && invoiceAmount > 0) {
-                    await Clipboard.setData(
-                        ClipboardData(text: 'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
+                    await Clipboard.setData(ClipboardData(
+                        text:
+                            'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
                   } else {
-                    await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringOnchain.value));
+                    await Clipboard.setData(ClipboardData(
+                        text: controller.qrCodeDataStringOnchain.value));
                   }
                   // Display a snackbar to indicate that the wallet address has been copied
                   showOverlay(context, L10n.of(context)!.walletAddressCopied);
@@ -91,17 +95,30 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                           children: [
                             // Custom border painted around the Qr code
                             CustomPaint(
-                              foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
+                              foregroundPainter: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? BorderPainterBlack()
+                                  : BorderPainter(),
                               child: Container(
-                                margin: const EdgeInsets.all(AppTheme.cardPadding),
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
+                                margin:
+                                    const EdgeInsets.all(AppTheme.cardPadding),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: AppTheme.cardRadiusBigger),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                                  padding: const EdgeInsets.all(
+                                      AppTheme.cardPadding / 1.25),
                                   // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
                                   child: PrettyQrView.data(
                                       data: "bitcoin:${controller.qrCodeDataStringOnchain}" +
-                                          ((double.tryParse(controller.btcController.text) != null &&
-                                                  double.tryParse(controller.btcController.text) != 0)
+                                          ((double.tryParse(controller
+                                                          .btcController
+                                                          .text) !=
+                                                      null &&
+                                                  double.tryParse(controller
+                                                          .btcController
+                                                          .text) !=
+                                                      0)
                                               ? '?amount=${double.parse(controller.btcController.text)}'
                                               : ''),
                                       decoration: const PrettyQrDecoration(
@@ -109,7 +126,8 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                                           roundFactor: 1,
                                         ),
                                         image: PrettyQrDecorationImage(
-                                          image: const AssetImage('assets/images/bitcoin.png'),
+                                          image: const AssetImage(
+                                              'assets/images/bitcoin.png'),
                                         ),
                                       ),
                                       errorCorrectLevel: QrErrorCorrectLevel.H),
@@ -123,8 +141,10 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                               leadingIcon: const Icon(Icons.share_rounded),
                               onTap: () {
                                 // Share the wallet address
-                                double? invoiceAmount = double.tryParse(controller.btcController.text);
-                                if (invoiceAmount != null && invoiceAmount > 0) {
+                                double? invoiceAmount = double.tryParse(
+                                    controller.btcController.text);
+                                if (invoiceAmount != null &&
+                                    invoiceAmount > 0) {
                                   Share.share(
                                       'https://${AppTheme.currentWebDomain}/#/wallet/send/bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}');
                                 } else {
@@ -148,12 +168,15 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
             ),
             BitNetListTile(
               onTap: () async {
-                double? invoiceAmount = double.tryParse(controller.btcController.text);
+                double? invoiceAmount =
+                    double.tryParse(controller.btcController.text);
                 if (invoiceAmount != null && invoiceAmount > 0) {
-                  await Clipboard.setData(
-                      ClipboardData(text: 'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
+                  await Clipboard.setData(ClipboardData(
+                      text:
+                          'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
                 } else {
-                  await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringOnchain.value));
+                  await Clipboard.setData(ClipboardData(
+                      text: controller.qrCodeDataStringOnchain.value));
                 }
 
                 // Display a snackbar to indicate that the wallet address has been copied
@@ -162,16 +185,25 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData = controller.qrCodeDataStringOnchain.value;
-                if (qrCodeData.isEmpty || qrCodeData == '' || qrCodeData == 'null') {
+                if (qrCodeData.isEmpty ||
+                    qrCodeData == '' ||
+                    qrCodeData == 'null') {
                   return Text('${L10n.of(context)!.loading}...');
                 } else {
-                  final start = qrCodeData.length >= 8 ? qrCodeData.substring(0, 8) : qrCodeData;
-                  final end = qrCodeData.length > 8 ? qrCodeData.substring(qrCodeData.length - 5) : '';
+                  final start = qrCodeData.length >= 8
+                      ? qrCodeData.substring(0, 8)
+                      : qrCodeData;
+                  final end = qrCodeData.length > 8
+                      ? qrCodeData.substring(qrCodeData.length - 5)
+                      : '';
                   return Row(
                     children: [
                       Icon(
                         Icons.copy_rounded,
-                        color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
+                        color: Theme.of(context).colorScheme.brightness ==
+                                Brightness.dark
+                            ? AppTheme.white60
+                            : AppTheme.black80,
                       ),
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(start),
@@ -213,21 +245,29 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                   children: [
                     Icon(
                       Icons.edit,
-                      color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
+                      color: Theme.of(context).colorScheme.brightness ==
+                              Brightness.dark
+                          ? AppTheme.white60
+                          : AppTheme.black80,
                     ),
                     const SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
-                      controller.satController.text == "0" || controller.satController.text.isEmpty
+                      controller.satController.text == "0" ||
+                              controller.satController.text.isEmpty
                           ? "Change Amount"
                           : controller.satController.text,
                     ),
-                    controller.satController.text == "0" || controller.satController.text.isEmpty
+                    controller.satController.text == "0" ||
+                            controller.satController.text.isEmpty
                         ? const SizedBox()
                         : Icon(
                             getCurrencyIcon(
                               BitcoinUnits.SAT.name,
                             ),
-                            color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? AppTheme.black70
+                                    : AppTheme.white90,
                           )
                   ],
                 ),

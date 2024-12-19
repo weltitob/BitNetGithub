@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -33,22 +34,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-String getUserDidTemp() {
-  Auth auth = Auth();
-  return LocalStorage.instance.getString(Auth().currentUser!.uid)!;
-}
-
-Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<UserData> invitedUsers) async {
+Future<bool> initiateSocialSecurity(String mnemonic, String private_key,
+    int total_shares, List<UserData> invitedUsers) async {
   //mnemonic, private_key, required_shares, total_shares, user_did
   final logger = Get.find<LoggerService>();
-  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_keyshares');
+  HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('create_keyshares');
   logger.i("Creating Keyshares..");
 
   try {
-    String did = getUserDidTemp();
-    final HttpsCallableResult<dynamic> response = await callable.call(<String, dynamic>{
+    String did = Auth().currentUser!.uid;
+    final HttpsCallableResult<dynamic> response =
+        await callable.call(<String, dynamic>{
       'user_did': did,
-      // 'mnemonic': mnemonic,
+      'mnemonic': mnemonic,
       'private_key': private_key,
       'required_shares': 3,
       'total_shares': total_shares
@@ -81,11 +80,14 @@ Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<U
             'request_invited': false
           });
         } catch (e) {
-          Get.find<LoggerService>().i('error while initiating social recovery for users at index: ${i} : ${e}');
+          Get.find<LoggerService>().i(
+              'error while initiating social recovery for users at index: ${i} : ${e}');
         }
       }
     }
-    socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).set({
+    socialRecoveryCollection
+        .doc(Get.find<ProfileController>().userData.value.username)
+        .set({
       'activated': false,
       'requested_recovery': false,
       'invited_users_amount': total_shares,
@@ -101,7 +103,9 @@ Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<U
       ProtocolModel protocol = ProtocolModel(
           protocolId: '',
           protocolType: 'social_recovery_invite_user',
-          protocolData: {'inviter_doc_id': Get.find<ProfileController>().profileId});
+          protocolData: {
+            'inviter_doc_id': Get.find<ProfileController>().profileId
+          });
 
       await protocol.sendProtocol(user.docId!);
     }
@@ -112,15 +116,21 @@ Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<U
   }
 }
 
-Future<String> retrieveMnemonic(List<String> shares, int required_shares, String prime_mod) async {
+Future<String> retrieveMnemonic(
+    List<String> shares, int required_shares, String prime_mod) async {
   //mnemonic, private_key, required_shares, total_shares, user_did
   final logger = Get.find<LoggerService>();
-  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('retrieve_mnemonic');
+  HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('retrieve_mnemonic');
   logger.i("Retrieving Mnemonic..");
 
   try {
-    final HttpsCallableResult<dynamic> response =
-        await callable.call(<String, dynamic>{'shares': shares, 'required_shares': required_shares, 'prime_mod': prime_mod});
+    final HttpsCallableResult<dynamic> response = await callable
+        .call(<String, dynamic>{
+      'shares': shares,
+      'required_shares': required_shares,
+      'prime_mod': prime_mod
+    });
 
     final Map<String, dynamic> messageData = response.data;
 
@@ -144,7 +154,8 @@ class AESCipher {
     final aesKey = encrypt.Key(Uint8List.fromList(keyBytes));
     final aesIV = encrypt.IV(Uint8List.fromList(iv));
 
-    final encrypter = encrypt.Encrypter(encrypt.AES(aesKey, mode: encrypt.AESMode.cbc));
+    final encrypter =
+        encrypt.Encrypter(encrypt.AES(aesKey, mode: encrypt.AESMode.cbc));
     final encrypted = encrypter.encrypt(plaintext, iv: aesIV);
 
     // Return Base64 encoded string
@@ -161,8 +172,10 @@ class AESCipher {
     final aesKey = encrypt.Key(Uint8List.fromList(keyBytes));
     final aesIV = encrypt.IV(iv);
 
-    final encrypter = encrypt.Encrypter(encrypt.AES(aesKey, mode: encrypt.AESMode.cbc));
-    final decrypted = encrypter.decryptBytes(encrypt.Encrypted(ciphertext), iv: aesIV);
+    final encrypter =
+        encrypt.Encrypter(encrypt.AES(aesKey, mode: encrypt.AESMode.cbc));
+    final decrypted =
+        encrypter.decryptBytes(encrypt.Encrypted(ciphertext), iv: aesIV);
 
     return utf8.decode(decrypted);
   }
@@ -192,7 +205,8 @@ class AcceptSocialInviteWidget extends StatefulWidget {
   final ProtocolModel model;
 
   @override
-  State<AcceptSocialInviteWidget> createState() => _AcceptSocialInviteWidgetState();
+  State<AcceptSocialInviteWidget> createState() =>
+      _AcceptSocialInviteWidgetState();
 }
 
 class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
@@ -206,7 +220,9 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
   }
 
   Future<void> loadInviterData() async {
-    DocumentSnapshot? doc = await usersCollection.doc(widget.model.protocolData['inviter_doc_id']).get();
+    DocumentSnapshot? doc = await usersCollection
+        .doc(widget.model.protocolData['inviter_doc_id'])
+        .get();
     inviterData = UserData.fromDocument(doc);
     inviterData = inviterData!.copyWith(docId: doc.id);
     setState(() {});
@@ -225,18 +241,24 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
               onPressed: () async {
                 isLoadingCancel = true;
                 setState(() {});
-                DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection.doc(inviterData!.username).get();
+                DocumentSnapshot<Map<String, dynamic>> doc =
+                    await socialRecoveryCollection
+                        .doc(inviterData!.username)
+                        .get();
                 List<dynamic> users = doc.data()!['users'];
                 int removeIndex = -1;
                 for (int i = 0; i < users.length; i++) {
-                  if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
+                  if (users[i]['username'] ==
+                      Get.find<ProfileController>().userData.value.username) {
                     removeIndex = i;
                   }
                 }
                 if (removeIndex != -1) {
                   users.removeAt(removeIndex);
                 }
-                socialRecoveryCollection.doc(inviterData!.username).update({'users': users});
+                socialRecoveryCollection
+                    .doc(inviterData!.username)
+                    .update({'users': users});
                 isLoadingCancel = false;
                 setState(() {});
                 context.pop(true);
@@ -251,7 +273,8 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                 SizedBox(height: AppTheme.cardPadding * 3),
                 dotProgress(context),
                 SizedBox(height: 16),
-                Text('Your assistance is needed in certain matters, please hold on...')
+                Text(
+                    'Your assistance is needed in certain matters, please hold on...')
               ],
             )
           : Stack(
@@ -262,40 +285,63 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Avatar(isNft: inviterData!.nft_profile_id.isNotEmpty, mxContent: Uri.parse(inviterData!.profileImageUrl), size: 96),
+                        Avatar(
+                            isNft: inviterData!.nft_profile_id.isNotEmpty,
+                            mxContent: Uri.parse(inviterData!.profileImageUrl),
+                            size: 96),
                         SizedBox(width: 50),
                         Avatar(
-                            isNft: Get.find<ProfileController>().userData.value.nft_profile_id.isNotEmpty,
-                            mxContent: Uri.parse(Get.find<ProfileController>().userData.value.profileImageUrl),
+                            isNft: Get.find<ProfileController>()
+                                .userData
+                                .value
+                                .nft_profile_id
+                                .isNotEmpty,
+                            mxContent: Uri.parse(Get.find<ProfileController>()
+                                .userData
+                                .value
+                                .profileImageUrl),
                             size: 96),
                       ],
                     ),
                     SizedBox(height: 25),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text('Your friend ${inviterData!.username} would like you to join his social recovery.',
-                          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineSmall),
+                      child: Text(
+                          'Your friend ${inviterData!.username} would like you to join his social recovery.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineSmall),
                     )
                   ],
                 ),
                 isLoadingButton
-                    ? Align(alignment: Alignment.bottomCenter, child: dotProgress(context))
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: dotProgress(context))
                     : BottomCenterButton(
                         buttonTitle: 'Join',
                         buttonState: ButtonState.idle,
                         onButtonTap: () async {
                           isLoadingButton = true;
                           setState(() {});
-                          DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection.doc(inviterData!.username).get();
+                          DocumentSnapshot<Map<String, dynamic>> doc =
+                              await socialRecoveryCollection
+                                  .doc(inviterData!.username)
+                                  .get();
                           List<dynamic> users = doc.data()!['users'];
                           for (int i = 0; i < users.length; i++) {
-                            if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
+                            if (users[i]['username'] ==
+                                Get.find<ProfileController>()
+                                    .userData
+                                    .value
+                                    .username) {
                               String openKey = users[i]['open_key'];
-                              PrivateData data = await getPrivateData(getUserDidTemp());
-                              // AESCipher cipher = AESCipher(data.mnemonic);
-                              // String encryptedText = cipher.encryptText(openKey);
+                              PrivateData data =
+                                  await getPrivateData(Auth().currentUser!.uid);
+                              AESCipher cipher = AESCipher(data.mnemonic);
+                              String encryptedText =
+                                  cipher.encryptText(openKey);
                               users[i]['open_key'] = '';
-                              // users[i]['encrypted_key'] = encryptedText;
+                              users[i]['encrypted_key'] = encryptedText;
                               users[i]['accepted_invite'] = true;
                             }
                           }
@@ -317,13 +363,22 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                             } else {
                               protocolData = {'satisfied_requirements': true};
                             }
-                            ProtocolModel protocol =
-                                ProtocolModel(protocolId: '', protocolType: 'social_recovery_set_up', protocolData: protocolData);
+                            ProtocolModel protocol = ProtocolModel(
+                                protocolId: '',
+                                protocolType: 'social_recovery_set_up',
+                                protocolData: protocolData);
 
-                            await protocolCollection.doc(inviterData!.docId!).set({'initialized': true});
-                            await protocolCollection.doc(inviterData!.docId!).collection('protocols').add(protocol.toFirestore());
+                            await protocolCollection
+                                .doc(inviterData!.docId!)
+                                .set({'initialized': true});
+                            await protocolCollection
+                                .doc(inviterData!.docId!)
+                                .collection('protocols')
+                                .add(protocol.toFirestore());
                           }
-                          socialRecoveryCollection.doc(inviterData!.username).update({'users': users});
+                          socialRecoveryCollection
+                              .doc(inviterData!.username)
+                              .update({'users': users});
                           isLoadingButton = false;
                           setState(() {});
                           context.pop(true);
@@ -344,10 +399,12 @@ class SettingUpSocialRecoveryWidget extends StatefulWidget {
   const SettingUpSocialRecoveryWidget({super.key, required this.model});
   final ProtocolModel model;
   @override
-  State<SettingUpSocialRecoveryWidget> createState() => _SettingUpSocialRecoveryWidgetState();
+  State<SettingUpSocialRecoveryWidget> createState() =>
+      _SettingUpSocialRecoveryWidgetState();
 }
 
-class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryWidget> {
+class _SettingUpSocialRecoveryWidgetState
+    extends State<SettingUpSocialRecoveryWidget> {
   @override
   void initState() {
     super.initState();
@@ -379,7 +436,8 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
             SizedBox(height: AppTheme.elementSpacing),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Text('please do not dismiss this sheet, it will dismiss on its own when it is done.'),
+              child: Text(
+                  'please do not dismiss this sheet, it will dismiss on its own when it is done.'),
             )
           ],
         ),
@@ -390,14 +448,18 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
     try {
       if (widget.model.protocolData['satisfied_requirements']) {
         DocumentSnapshot<Map<String, dynamic>> doc =
-            await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).get();
-        PrivateData privData = await getPrivateData(getUserDidTemp());
-        privData.privateKey;
-        AESCipher cipher = AESCipher(privData.privateKey);
-        int userIndex =
-            (doc.data()!['users'] as List).indexOf((test) => test['username'] == Get.find<ProfileController>().userData.value.username);
+            await socialRecoveryCollection
+                .doc(Get.find<ProfileController>().userData.value.username)
+                .get();
+        PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+        HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+        AESCipher cipher = AESCipher(hdWallet.privkey);
+        int userIndex = (doc.data()!['users'] as List).indexOf((test) =>
+            test['username'] ==
+            Get.find<ProfileController>().userData.value.username);
         for (int i = 0; i < doc.data()!['users'].length; i++) {
-          if (doc.data()!['users'][i]['username'] == Get.find<ProfileController>().userData.value.username) {
+          if (doc.data()!['users'][i]['username'] ==
+              Get.find<ProfileController>().userData.value.username) {
             userIndex = i;
           }
         }
@@ -406,14 +468,19 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
         List<dynamic> users = doc.data()!['users'];
         users[userIndex]['encrypted_key'] = '';
         users[userIndex]['open_key'] = decryptedKey;
-        await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).update({'users': users});
+        await socialRecoveryCollection
+            .doc(Get.find<ProfileController>().userData.value.username)
+            .update({'users': users});
 
         await Future.delayed(Duration(seconds: 5));
         if (mounted) context.pop(true);
       } else {
-        await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).delete();
+        await socialRecoveryCollection
+            .doc(Get.find<ProfileController>().userData.value.username)
+            .delete();
         Get.find<SettingsController>().initiateSocialRecovery.value = 0;
-        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
+        Get.find<SettingsController>().pageControllerSocialRecovery =
+            PageController(
           initialPage: 0,
         );
         await Future.delayed(Duration(seconds: 5));
@@ -439,10 +506,12 @@ class AccountAccessAttemptWidget extends StatefulWidget {
   final ProtocolModel model;
 
   @override
-  State<AccountAccessAttemptWidget> createState() => _AccountAccessAttemptWidgetState();
+  State<AccountAccessAttemptWidget> createState() =>
+      _AccountAccessAttemptWidgetState();
 }
 
-class _AccountAccessAttemptWidgetState extends State<AccountAccessAttemptWidget> {
+class _AccountAccessAttemptWidgetState
+    extends State<AccountAccessAttemptWidget> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -456,11 +525,14 @@ class _AccountAccessAttemptWidgetState extends State<AccountAccessAttemptWidget>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text('Someone is trying to access your account',
-                style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16.0),
-            child: Text('Someone is trying generate your mnemonic through the social recovery system.', textAlign: TextAlign.center),
+            child: Text(
+                'Someone is trying generate your mnemonic through the social recovery system.',
+                textAlign: TextAlign.center),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16),
@@ -468,9 +540,14 @@ class _AccountAccessAttemptWidgetState extends State<AccountAccessAttemptWidget>
                 customWidth: AppTheme.cardPadding * 13.w,
                 customHeight: AppTheme.cardPadding * 2.5,
                 onTap: () {
-                  socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).delete();
-                  Get.find<SettingsController>().initiateSocialRecovery.value = 0;
-                  Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
+                  socialRecoveryCollection
+                      .doc(
+                          Get.find<ProfileController>().userData.value.username)
+                      .delete();
+                  Get.find<SettingsController>().initiateSocialRecovery.value =
+                      0;
+                  Get.find<SettingsController>().pageControllerSocialRecovery =
+                      PageController(
                     initialPage: 0,
                   );
                   context.pop(true);
@@ -516,7 +593,10 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
   @override
   void initState() {
     super.initState();
-    usersCollection.doc(widget.model.protocolData['inviter_user_doc_id']).get().then((doc) {
+    usersCollection
+        .doc(widget.model.protocolData['inviter_user_doc_id'])
+        .get()
+        .then((doc) {
       Map<String, dynamic> data = doc.data()!;
       userData = UserData.fromMap(data);
       isLoading = false;
@@ -538,7 +618,8 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
             SizedBox(height: AppTheme.cardPadding * 3),
             dotProgress(context),
             SizedBox(height: 16),
-            Text('Your assistance is needed in certain matters, please hold on...')
+            Text(
+                'Your assistance is needed in certain matters, please hold on...')
           ],
           if (!isLoading) ...[
             Icon(Icons.key, size: 98),
@@ -552,8 +633,9 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
             SizedBox(height: AppTheme.elementSpacing),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child:
-                    Text('Your friend needs to access his account, will you help him?', style: Theme.of(context).textTheme.headlineSmall)),
+                child: Text(
+                    'Your friend needs to access his account, will you help him?',
+                    style: Theme.of(context).textTheme.headlineSmall)),
             SizedBox(height: AppTheme.elementSpacing * 2),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Flexible(
@@ -566,7 +648,10 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
                       .doc(Get.find<ProfileController>().profileId)
                       .collection('protocols')
                       .doc(widget.model.protocolId)
-                      .update({'activate_time': Timestamp.fromDate(DateTime.now().add(Duration(days: 1)))});
+                      .update({
+                    'activate_time': Timestamp.fromDate(
+                        DateTime.now().add(Duration(days: 1)))
+                  });
                   context.pop(false);
                 },
               )),
@@ -577,20 +662,27 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
                 customHeight: AppTheme.cardPadding * 2,
                 title: 'Allow Access',
                 onTap: () async {
-                  DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection.doc(userData.username).get();
+                  DocumentSnapshot<Map<String, dynamic>> doc =
+                      await socialRecoveryCollection
+                          .doc(userData.username)
+                          .get();
                   Map<String, dynamic> data = doc.data()!;
                   List<dynamic> users = data['users'];
 
                   for (int i = 0; i < users.length; i++) {
-                    if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
+                    if (users[i]['username'] ==
+                        Get.find<ProfileController>().userData.value.username) {
                       String encryptedKey = users[i]['encrypted_key'];
-                      PrivateData data = await getPrivateData(Auth().currentUser!.uid);
-                      // AESCipher cipher = AESCipher(data.mnemonic);
-                      // String decryptedKey = cipher.decryptText(encryptedKey);
+                      PrivateData data =
+                          await getPrivateData(Auth().currentUser!.uid);
+                      AESCipher cipher = AESCipher(data.mnemonic);
+                      String decryptedKey = cipher.decryptText(encryptedKey);
                       users[i]['encrypted_key'] = '';
-                      // users[i]['open_key'] = decryptedKey;
+                      users[i]['open_key'] = decryptedKey;
                       users[i]['request_state'] = 2;
-                      await socialRecoveryCollection.doc(userData.username).update({'users': users});
+                      await socialRecoveryCollection
+                          .doc(userData.username)
+                          .update({'users': users});
                       context.pop(true);
                     }
                   }
@@ -609,14 +701,23 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
                   child: LongButtonWidget(
                       title: 'Don\'t allow',
                       onTap: () async {
-                        DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection.doc(userData.username).get();
+                        DocumentSnapshot<Map<String, dynamic>> doc =
+                            await socialRecoveryCollection
+                                .doc(userData.username)
+                                .get();
                         Map<String, dynamic> data = doc.data()!;
                         List<dynamic> users = data['users'];
 
                         for (int i = 0; i < users.length; i++) {
-                          if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
+                          if (users[i]['username'] ==
+                              Get.find<ProfileController>()
+                                  .userData
+                                  .value
+                                  .username) {
                             users[i]['request_state'] = 1;
-                            await socialRecoveryCollection.doc(userData.username).update({'users': users});
+                            await socialRecoveryCollection
+                                .doc(userData.username)
+                                .update({'users': users});
                             context.pop(true);
                           }
                         }
@@ -714,8 +815,10 @@ class _PresentMnemonicWidgetState extends State<PresentMnemonicWidget> {
                         SizedBox(
                           height: AppTheme.cardPadding / 2.h,
                         ),
-                        Text('Success! Your mnemonic was retrieved successfully.',
-                            style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+                        Text(
+                            'Success! Your mnemonic was retrieved successfully.',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                            textAlign: TextAlign.center),
                         SizedBox(
                           height: AppTheme.cardPadding.h,
                         ),
@@ -724,7 +827,8 @@ class _PresentMnemonicWidgetState extends State<PresentMnemonicWidget> {
                           child: isLoadingMnemonic
                               ? dotProgress(context)
                               : FormTextField(
-                                  readOnly: true, // This makes the text field read-only
+                                  readOnly:
+                                      true, // This makes the text field read-only
                                   isMultiline: true,
                                   controller: textController,
                                   //height: AppTheme.cardPadding * 8,
@@ -746,21 +850,29 @@ class _PresentMnemonicWidgetState extends State<PresentMnemonicWidget> {
                     ),
                   ),
                   BottomCenterButton(
-                      buttonState: isLoadingMnemonic ? ButtonState.disabled : ButtonState.idle,
+                      buttonState: isLoadingMnemonic
+                          ? ButtonState.disabled
+                          : ButtonState.idle,
                       buttonTitle: 'Confirm',
                       onButtonTap: () {
-                        socialRecoveryCollection.doc(widget.model.protocolData['user_name']).delete();
+                        socialRecoveryCollection
+                            .doc(widget.model.protocolData['user_name'])
+                            .delete();
                         context.pop(true);
                       },
                       onButtonTapDisabled: () {
-                        showOverlay(context, 'Please wait till your mnemonic is loaded.', color: AppTheme.errorColor);
+                        showOverlay(context,
+                            'Please wait till your mnemonic is loaded.',
+                            color: AppTheme.errorColor);
                       })
                 ],
               ));
   }
 
   void initAsync() async {
-    DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection.doc(widget.model.protocolData['user_name']).get();
+    DocumentSnapshot<Map<String, dynamic>> doc = await socialRecoveryCollection
+        .doc(widget.model.protocolData['user_name'])
+        .get();
     if (!doc.exists) {
       failure = true;
       setState(() {});
@@ -820,12 +932,15 @@ class SocialRecoveryDocModel {
       requestVetoed: data['request_vetoed'],
       requestedRecovery: data['requested_recovery'],
       primeMod: data['prime_mod'],
-      users: (data['users'] as List).map((user) => SocialRecoveryUser.fromMap(user)).toList(),
+      users: (data['users'] as List)
+          .map((user) => SocialRecoveryUser.fromMap(user))
+          .toList(),
     );
   }
 
   // Convert Firestore snapshot to SocialRecoveryDocModel
-  factory SocialRecoveryDocModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory SocialRecoveryDocModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return SocialRecoveryDocModel.fromMap(data);
   }
