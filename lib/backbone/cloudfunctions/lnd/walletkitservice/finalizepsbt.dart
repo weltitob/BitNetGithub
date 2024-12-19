@@ -18,7 +18,7 @@ Future<RestResponse> finalizePsbt(String funded_psbt) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/psbt/finalize';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
@@ -37,7 +37,7 @@ Future<RestResponse> finalizePsbt(String funded_psbt) async {
 
     var response = await dioClient.post(url:url,
         headers: headers, data: data);
-    logger.i('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response Finazlize PSBT: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);

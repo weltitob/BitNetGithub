@@ -20,7 +20,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/psbt/fund';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
@@ -51,7 +51,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
 
     var response = await dioClient.post(url:url,
         headers: headers, data: data);
-    logger.i('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response Fund PSBT: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
