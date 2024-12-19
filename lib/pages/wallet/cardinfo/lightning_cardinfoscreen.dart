@@ -97,6 +97,8 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
     scrollController.dispose();
   }
 
+  WalletsController walletController = Get.find<WalletsController>();
+
   @override
   Widget build(BuildContext context) {
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
@@ -173,7 +175,24 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                         child: Container(
                           height: AppTheme.cardPadding * 7.5,
                           padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                          child: const BalanceCardLightning(),
+                          child: Obx(() {
+                            // Extracting reactive variables from the controller
+                            final predictedBalanceStr = walletController.predictedLightningBalance.value;
+                            final confirmedBalanceStr = walletController.lightningBalance.value.balance;
+                            final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+
+                            // Safely parse the string balances to doubles
+                            final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
+                            // Format the predicted balance to 8 decimal places
+                            final formattedBalance = predictedBalance.toStringAsFixed(8);
+
+                            return BalanceCardLightning(
+                              balance: formattedBalance,
+                              confirmedBalance: confirmedBalanceStr,
+                              unconfirmedBalance: unconfirmedBalanceStr,
+                              defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                            );
+                          }),
                         ),
                       ),
                     ),

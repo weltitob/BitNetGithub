@@ -13,6 +13,7 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -32,6 +33,7 @@ class WalletScreen extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
+    WalletsController walletController = Get.find<WalletsController>();
     // We'll introduce a local state using a StatefulBuilder.
     // Alternatively, you could create a StatefulWidget from scratch.
     return bitnetScaffold(
@@ -283,7 +285,24 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       onTap: () {
                                         context.go('/wallet/lightningcard');
                                       },
-                                      child: const BalanceCardLightning(),
+                                      child: Obx(() {
+                                        // Extracting reactive variables from the controller
+                                        final predictedBalanceStr = walletController.predictedLightningBalance.value;
+                                        final confirmedBalanceStr = walletController.lightningBalance.value.balance;
+                                        final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+
+                                        // Safely parse the string balances to doubles
+                                        final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
+                                        // Format the predicted balance to 8 decimal places
+                                        final formattedBalance = predictedBalance.toStringAsFixed(8);
+
+                                        return BalanceCardLightning(
+                                          balance: formattedBalance,
+                                          confirmedBalance: confirmedBalanceStr,
+                                          unconfirmedBalance: unconfirmedBalanceStr,
+                                          defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                                        );
+                                      }),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -295,7 +314,25 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       onTap: () {
                                         context.go('/wallet/bitcoincard');
                                       },
-                                      child: const BalanceCardBtc(),
+                                      child: Obx(() {
+                                        // Extracting reactive variables from the controller
+                                        final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
+                                        final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
+                                        final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+
+                                        // Safely parse the string balances to doubles
+                                        final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
+
+                                        // Format the predicted balance to 8 decimal places
+                                        final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
+
+                                        return BalanceCardBtc(
+                                          balance: formattedBalance,
+                                          confirmedBalance: confirmedBalanceStr,
+                                          unconfirmedBalance: unconfirmedBalanceStr,
+                                          defaultUnit: BitcoinUnits.SAT,
+                                        );
+                                      }),
                                     ),
                                   ];
                                   return cards[index];

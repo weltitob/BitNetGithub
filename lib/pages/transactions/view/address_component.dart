@@ -13,6 +13,7 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
@@ -52,10 +53,19 @@ class AddressComponent extends StatelessWidget {
                       children: [
                         Container(
                             height: 200,
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: BalanceCardBtc(
-                                balance:
-                                    '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}')),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child:
+                            Obx(() {
+                              return BalanceCardBtc(
+                                balance: '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}',
+                                unconfirmedBalance: '',
+                                confirmedBalance: '',
+                                defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                              );
+                            }),
+
+                        ),
                         BitNetListTile(
                           text: L10n.of(context)!.address,
                           trailing: Row(
