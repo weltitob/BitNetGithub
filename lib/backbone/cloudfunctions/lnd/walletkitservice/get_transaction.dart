@@ -14,7 +14,8 @@ Future<RestResponse> getTransaction(String tx_id) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/tx?txid=$tx_id';
 
-  ByteData byteData = await loadMacaroonAsset();
+
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

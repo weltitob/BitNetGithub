@@ -504,6 +504,7 @@ class WalletsController extends BaseController {
   @override
   void dispose() {
     transactionsSubscription?.cancel();
+    invoicesSubscription?.cancel();
     scrollController.dispose();
     sendTransactionsStream.close();
     super.dispose();

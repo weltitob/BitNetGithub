@@ -5,11 +5,16 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> addInvoice(int amount, String? memo) async {
+
+  final logger = Get.find<LoggerService>();
+  logger.i("Called addInvoice()"); // The combined JSON response
+
   // String restHost =
   //     AppTheme.baseUrlLightningTerminal; // Update the host as needed
 
@@ -26,8 +31,9 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   // Convert bytes to hex string
   String macaroon = base64.encode(bytes);
 
-  //String macaroon = bytesToHex(await File(macaroonPath).readAsBytes());
-  // Prepare the headers
+  logger.i("Macaroon: $macaroon used in addInvoice()");
+
+
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
   };
@@ -43,10 +49,12 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
+
+    logger.i("Trying to make request to addInvoice()");
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.post(url: url, headers: headers, data: data);
     // Print raw response for debugging
-    print('Raw Response: ${response.data}');
+    logger.i('Raw Response: ${response.data} from addInvoice()');
 
     if (response.statusCode == 200) {
       print(response.data);

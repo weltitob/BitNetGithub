@@ -1,8 +1,10 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -23,6 +25,8 @@ class OnChainSendTab extends GetWidget<SendsController> {
 
   @override
   Widget build(BuildContext context) {
+
+
     LoggerService logger = Get.find();
     return Form(
       key: controller.formKey,
@@ -58,8 +62,10 @@ class OnChainSendTab extends GetWidget<SendsController> {
                             ),
                           ),
                         ),
+                        feesWidget(context),
                       ],
                     ),
+
                     // A Padding widget that contains a button widget
                   ],
                 ),
@@ -75,6 +81,48 @@ class OnChainSendTab extends GetWidget<SendsController> {
           )
         ],
       ),
+    );
+  }
+
+  Widget feesWidget(
+      BuildContext context,
+      ){
+
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    final chartLine = Get.find<WalletsController>().chartLines.value;
+    final bitcoinPrice = chartLine?.price;
+    // final currencyEquivalent = bitcoinPrice != null
+    //     ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
+    //     : "0.00";
+    String inCurrency = CurrencyConverter.convertCurrency("SATS", controller.feesDouble, currency!, bitcoinPrice);
+    String inCurrencyBitNetFee = CurrencyConverter.convertCurrency("SATS", controller.feesDouble / 2, currency, bitcoinPrice);
+
+    return (controller.feesDouble.isNaN) ? Container() : Column(
+      children: [
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding / 2),
+        child: BitNetListTile(
+        // A ListTile widget with a leading icon and a title
+        text: L10n.of(context)!.networkFee,
+        trailing: Text(
+        currency == "SATS" ? controller.feesDouble.toString() : (inCurrency + getCurrency(currency)),
+        style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        // A Padding widget that contains a button widget
+        )),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding / 2),
+            child: BitNetListTile(
+              // A ListTile widget with a leading icon and a title
+
+              text: L10n.of(context)!.bitnetUsageFee,
+              trailing: Text(
+                currency == "SATS" ? (controller.feesDouble * 0.5).toString() : (inCurrencyBitNetFee + getCurrency(currency)),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              // A Padding widget that contains a button widget
+            )),
+      ],
     );
   }
 

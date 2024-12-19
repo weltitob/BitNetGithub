@@ -19,6 +19,9 @@ Future<RestResponse> listUnspent() async {
   String url = 'https://$restHost/v2/wallet/utxos';
 
   ByteData byteData = await loadAdminMacaroonAsset();
+
+
+
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
@@ -40,7 +43,7 @@ Future<RestResponse> listUnspent() async {
 
     var response = await dioClient.post(
         url: url, headers: headers, data: json.encode(data));
-    logger.i('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response List Unspent: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);

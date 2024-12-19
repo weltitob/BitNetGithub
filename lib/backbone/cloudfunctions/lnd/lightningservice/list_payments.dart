@@ -23,6 +23,8 @@ Future<RestResponse> listPayments() async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
+  logger.i("Macaroon: $macaroon used in litstPayments()");
+
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
   };
