@@ -15,9 +15,7 @@ import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/serverstate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:get/get.dart';
-
 
 class LitdController extends GetxController {
   // If runInReleaseMode is not explicitly set, it defaults to kReleaseMode
@@ -225,5 +223,4 @@ class LitdController extends GetxController {
   void dispose() {
     super.dispose();
   }
-
 }

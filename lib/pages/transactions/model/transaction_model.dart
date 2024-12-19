@@ -66,6 +66,16 @@ class TransactionModel {
     }
     return data;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TransactionModel) return false;
+    return this.txid == other.txid && this.txid != null && other.txid != null;
+  }
+
+  @override
+  int get hashCode => this.txid == null ? super.hashCode : this.txid.hashCode;
 }
 
 class Vin {

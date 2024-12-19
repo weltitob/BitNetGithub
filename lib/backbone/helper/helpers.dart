@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:bip39/bip39.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,6 +53,7 @@ bool isCompressedPublicKey(String input) {
   RegExp compressedKeyPattern = RegExp(r'^(02|03)[0-9a-fA-F]{64}$');
   return compressedKeyPattern.hasMatch(input);
 }
+
 bool isValidBitcoinTransactionID(String input) {
   RegExp txidPattern = RegExp(r'^[a-zA-Z0-9]{64}$');
   return txidPattern.hasMatch(input);
@@ -65,19 +67,21 @@ bool isValidBitcoinAddressHash(String input) {
   return blockHashPattern.hasMatch(input);
 }
 
-bool 
-containsSixIntegers(String input) {
+bool containsSixIntegers(String input) {
   RegExp sixIntegersPattern = RegExp(r'^\d{6}$');
   return sixIntegersPattern.hasMatch(input);
 }
 
 bool isStringALNInvoice(String input) {
-  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
+  RegExp lnInvoicePattern =
+      RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
   return lnInvoicePattern.hasMatch(input);
 }
 
 bool isLightningAdressAsMail(String input) {
-  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
+  RegExp lightningAddressPattern = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
 }
 
@@ -87,14 +91,20 @@ bool isStringPrivateDataFunc(String input) {
     PrivateData.fromJson(data);
     return true;
   } catch (e) {
+    String mnemonic = input;
+    if (validateMnemonic(mnemonic)) {
+      return true;
+    }
+
     return false;
   }
 }
 
-
 String getRandomString(int length) {
+  Random random = Random();
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return String.fromCharCodes(Iterable.generate(length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
+  return String.fromCharCodes(Iterable.generate(
+      length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
 //if already exists dont know if would actually be an problem
 
 //new generated codes need to be added to pesons own profile and als with used and unused
@@ -117,11 +127,13 @@ int timeNow() {
 
 // Get the average price of a list of items
 getaverage(dynamic currentline) {
-  return currentline.map((m) => m.price).reduce((a, b) => a + b) / currentline.length;
+  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
+      currentline.length;
 }
 
 // Display the time ago from a timestamp
-String displayTimeAgoFromTimestamp(String publishedAt, {bool numericDates = true}) {
+String displayTimeAgoFromTimestamp(String publishedAt,
+    {bool numericDates = true}) {
   DateTime date = DateTime.parse(publishedAt);
   final date2 = DateTime.now();
   final difference = date2.difference(date);
@@ -226,16 +238,22 @@ Future<String?> extractLogoUrl(String baseUrl) async {
   final document = parser.parse(htmlContent);
 
   // Try to find <link rel="icon"> or <link rel="shortcut icon"> tags
-  var iconLink = document.querySelector('link[rel="icon"]')?.attributes['href'] ??
+  var iconLink = document
+          .querySelector('link[rel="icon"]')
+          ?.attributes['href'] ??
       document.querySelector('link[rel="shortcut icon"]')?.attributes['href'] ??
-      document.querySelector('link[rel="apple-touch-icon"]')?.attributes['href'];
+      document
+          .querySelector('link[rel="apple-touch-icon"]')
+          ?.attributes['href'];
 
   if (iconLink != null) {
     return Uri.parse(baseUrl).resolve(iconLink).toString();
   }
 
   // If no icon link is found, try to find <meta property="og:image"> tag
-  var ogImage = document.querySelector('meta[property="og:image"]')?.attributes['content'];
+  var ogImage = document
+      .querySelector('meta[property="og:image"]')
+      ?.attributes['content'];
   if (ogImage != null) {
     return Uri.parse(baseUrl).resolve(ogImage).toString();
   }
@@ -249,7 +267,8 @@ Future<String?> extractLogoUrl(String baseUrl) async {
 class NumericalRangeFormatter extends TextInputFormatter {
   final double min; // The minimum value allowed
   final double max; // The maximum value allowed
-  final BuildContext context; // The context of the widget where the formatter is being used
+  final BuildContext
+      context; // The context of the widget where the formatter is being used
 
   NumericalRangeFormatter({
     required this.min,
@@ -284,7 +303,8 @@ class NumericalRangeFormatter extends TextInputFormatter {
 // This class formats a numerical input value to allow only one decimal point
 class DotFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     int numDots = RegExp(r"\.").allMatches(oldValue.toString()).length;
     print("The string '$oldValue' contains $numDots dots.");
 
@@ -316,7 +336,8 @@ class DotFormatter extends TextInputFormatter {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }

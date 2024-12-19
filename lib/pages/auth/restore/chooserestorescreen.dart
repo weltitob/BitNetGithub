@@ -43,14 +43,19 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? const EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: (screenWidth / 2 - 250.w) < 0 ? 0 : screenWidth / 2 - 250.w),
+            : EdgeInsets.symmetric(
+                horizontal: (screenWidth / 2 - 250.w) < 0
+                    ? 0
+                    : screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
@@ -67,7 +72,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               height: AppTheme.cardPadding * 1.5.h,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
                 L10n.of(context)!.restoreOptions,
                 textAlign: TextAlign.left,
@@ -80,10 +86,12 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer(L10n.of(context)!.wordRecovery, () {
+                BitNetImageWithTextContainer(L10n.of(context)!.wordRecovery,
+                    () {
                   context.go('/authhome/login/word_recovery');
                 }, image: "assets/images/wallet.png"),
-                BitNetImageWithTextContainer(L10n.of(context)!.connectWithOtherDevices, () {
+                BitNetImageWithTextContainer(
+                    L10n.of(context)!.connectWithOtherDevices, () {
                   context.go('/authhome/login/device_recovery');
                 }, image: "assets/images/scan_qr_device.png"),
               ],
@@ -94,12 +102,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer(L10n.of(context)!.socialRecovery, () {
+                BitNetImageWithTextContainer(L10n.of(context)!.socialRecovery,
+                    () {
                   context.go('/authhome/login/social_recovery');
                 }, image: "assets/images/friends.png"),
-                BitNetImageWithTextContainer(L10n.of(context)!.useDidPrivateKey, () {
-                  context.go('/authhome/login/did_recovery');
-                }, image: "assets/images/key_removed_bck.png"),
               ],
             ),
             // SizedBox(

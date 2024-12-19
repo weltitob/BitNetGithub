@@ -81,7 +81,9 @@ class AppRoutes {
 
   // Define your routes like this
   List<dynamic> get bottomnav_routes => [
-        GoRoute(path: '/loading', builder: (ctx, state) => const LoadingViewAppStart()),
+        GoRoute(
+            path: '/loading',
+            builder: (ctx, state) => const LoadingViewAppStart()),
         GoRoute(
           path: '/report',
           redirect: webRedirect,
@@ -89,29 +91,41 @@ class AppRoutes {
         ),
         GoRoute(
           path: '/showprofile/:profile_id',
-          builder: _dynamicTransition == null ? (ctx, state) => OtherProfile(profileId: state.pathParameters['profile_id'] ?? '') : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => OtherProfile(
+                  profileId: state.pathParameters['profile_id'] ?? '')
+              : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: OtherProfile(profileId: state.pathParameters['profile_id'] ?? ''),
+                  child: OtherProfile(
+                      profileId: state.pathParameters['profile_id'] ?? ''),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
             path: '/qrscanner',
             redirect: webRedirect,
-            builder: _dynamicTransition == null ? (ctx, state) => const QrScanner() : null,
+            builder: _dynamicTransition == null
+                ? (ctx, state) => const QrScanner()
+                : null,
             pageBuilder: _dynamicTransition != null
-                ? (ctx, state) =>
-                    CustomTransitionPage(key: state.pageKey, child: const QrScanner(), transitionsBuilder: _dynamicTransition!)
+                ? (ctx, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const QrScanner(),
+                    transitionsBuilder: _dynamicTransition!)
                 : null),
         GoRoute(
           path: '/error',
           redirect: webRedirect,
-          builder: _dynamicTransition == null ? (ctx, state) => const ReceiveScreen() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const ReceiveScreen()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const ReceiveScreen(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ReceiveScreen(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
@@ -123,19 +137,36 @@ class AppRoutes {
             return NftProductScreen(routerState: state);
           },
         ),
-        GoRoute(path: '/feed', builder: (ctx, state) => BottomNav(routerState: state), redirect: webRedirect, routes: [
-          GoRoute(path: kListScreenRoute, name: kListScreenRoute, builder: (ctx, state) => const ListScreen()),
-          GoRoute(path: kNotificationScreenRoute, builder: (ctx, state) => const NotificationScreen()),
-          GoRoute(
-            path: kCollectionScreenRoute + "/:collection_id",
-            name: kCollectionScreenRoute,
-            builder: (ctx, state) => CollectionScreen(
-              routerState: state,
-              context: ctx,
-            ),
-          ),
-        ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-        GoRoute(path: "/agbs", redirect: webRedirect, builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)),
+
+        GoRoute(
+            path: '/feed',
+            builder: (ctx, state) => BottomNav(routerState: state),
+            redirect: webRedirect,
+            routes: [
+              GoRoute(
+                  path: kListScreenRoute,
+                  name: kListScreenRoute,
+                  builder: (ctx, state) => const ListScreen()),
+              GoRoute(
+                  path: kNotificationScreenRoute,
+                  builder: (ctx, state) => const NotificationScreen()),
+              GoRoute(
+                path: kCollectionScreenRoute + "/:collection_id",
+                name: kCollectionScreenRoute,
+                builder: (ctx, state) => CollectionScreen(
+                  routerState: state,
+                  context: ctx,
+                ),
+              ),
+            ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
+
+        GoRoute(
+            path: "/agbs",
+            redirect: webRedirect,
+            builder: (ctx, state) =>
+                AgbsAndImpressumScreen(key: state.pageKey)),
+
+
         GoRoute(path: "/comingsoon", redirect: webRedirect, builder: (ctx, state) => ComingSoonPage(key: state.pageKey)),
         GoRoute(
           path: '/wallet',
@@ -144,42 +175,62 @@ class AppRoutes {
           routes: [
             GoRoute(
                 path: 'bitcoinscreen',
-                builder: _dynamicTransition == null ? (ctx, state) => const BitcoinScreen() : null,
+                builder: _dynamicTransition == null
+                    ? (ctx, state) => const BitcoinScreen()
+                    : null,
                 pageBuilder: _dynamicTransition != null
-                    ? (ctx, state) =>
-                        CustomTransitionPage(key: state.pageKey, child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!)
+                    ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BitcoinScreen(),
+                        transitionsBuilder: _dynamicTransition!)
                     : null,
                 routes: [
                   GoRoute(
                     path: 'mempool',
-                    builder: _dynamicTransition == null ? (ctx, state) => MempoolHome() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => MempoolHome()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'hashrate',
-                    builder: _dynamicTransition == null ? (ctx, state) => const HashrateScreen() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const HashrateScreen()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'whales',
-                    builder: _dynamicTransition == null ? (ctx, state) => const WhaleBehaviour() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const WhaleBehaviour()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'keymetrics',
-                    builder: _dynamicTransition == null ? (ctx, state) => const KeyMetricsScreen() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const KeyMetricsScreen()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -191,50 +242,72 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'analysts',
-                    builder: _dynamicTransition == null ? (ctx, state) => AnalysisScreen() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => AnalysisScreen()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'news',
-                    builder: _dynamicTransition == null ? (ctx, state) => NewsScreen() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => NewsScreen()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
                     path: 'fearandgreed',
-                    builder: _dynamicTransition == null ? (ctx, state) => const FearAndGreed() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const FearAndGreed()
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                 ]),
             GoRoute(
               path: 'block_transactions',
               redirect: webRedirect,
-              builder: _dynamicTransition == null ? (ctx, state) => const BlockTransactions() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const BlockTransactions()
+                  : null,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) =>
-                      CustomTransitionPage(key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const BlockTransactions(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'unaccepted_block_transactions',
               redirect: webRedirect,
-              builder: _dynamicTransition == null ? (ctx, state) => const UnacceptedBlockTransactions() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const UnacceptedBlockTransactions()
+                  : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey, child: const UnacceptedBlockTransactions(), transitionsBuilder: _dynamicTransition!)
+                      key: state.pageKey,
+                      child: const UnacceptedBlockTransactions(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             // GoRoute(
@@ -265,75 +338,112 @@ class AppRoutes {
             ),
             GoRoute(
               path: 'loop_screen',
-              builder: _dynamicTransition == null ? (ctx, state) => const Loop() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const Loop()
+                  : null,
               redirect: webRedirect,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: const Loop(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const Loop(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'send',
               redirect: webRedirect,
-              builder: _dynamicTransition == null ? (ctx, state) => Send(key: state.pageKey) : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => Send(key: state.pageKey)
+                  : null,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: const Send(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const Send(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'send/:code',
               redirect: webRedirect,
               builder: _dynamicTransition == null
-                  ? (ctx, state) => Send(key: state.pageKey, parameters: state.pathParameters['code'], state: state)
+                  ? (ctx, state) => Send(
+                      key: state.pageKey,
+                      parameters: state.pathParameters['code'],
+                      state: state)
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: Send(key: state.pageKey, parameters: state.pathParameters['code'], state: state),
+                      child: Send(
+                          key: state.pageKey,
+                          parameters: state.pathParameters['code'],
+                          state: state),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'lightningcard',
               redirect: webRedirect,
-              builder: _dynamicTransition == null ? (ctx, state) => const LightningCardInformationScreen() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const LightningCardInformationScreen()
+                  : null,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) =>
-                      CustomTransitionPage(key: state.pageKey, child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const BitcoinScreen(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'fiatcard',
               redirect: webRedirect,
-              builder: _dynamicTransition == null ? (ctx, state) => const FiatCardInfoScreen() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const FiatCardInfoScreen()
+                  : null,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) =>
-                      CustomTransitionPage(key: state.pageKey, child: const FiatCardInfoScreen(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const FiatCardInfoScreen(),
+                      transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
                 path: 'bitcoincard',
                 redirect: webRedirect,
-                builder: _dynamicTransition == null ? (ctx, state) => const BitcoinCardInformationScreen() : null,
+                builder: _dynamicTransition == null
+                    ? (ctx, state) => const BitcoinCardInformationScreen()
+                    : null,
                 pageBuilder: _dynamicTransition != null
-                    ? (ctx, state) =>
-                        CustomTransitionPage(key: state.pageKey, child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!)
+                    ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BitcoinScreen(),
+                        transitionsBuilder: _dynamicTransition!)
                     : null,
                 routes: [
                   GoRoute(
                     path: 'btcaddressinfo/:address',
                     redirect: webRedirect,
-                    builder: _dynamicTransition == null ? (ctx, state) => BitcoinAddressInformationScreen(state: state) : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) =>
+                            BitcoinAddressInformationScreen(state: state)
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: BitcoinAddressInformationScreen(state: state),
+                            child:
+                                BitcoinAddressInformationScreen(state: state),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   )
                 ]),
           ],
         ),
-        GoRoute(path: '/profile/:profileId', name: '/profile', redirect: webRedirect, builder: (ctx, state) => const Profile(), routes: []),
+        GoRoute(
+            path: '/profile/:profileId',
+            name: '/profile',
+            redirect: webRedirect,
+            builder: (ctx, state) => const Profile(),
+            routes: []),
         GoRoute(
           path: '/create',
           builder: (ctx, state) => const CreateAsset(),
@@ -353,10 +463,14 @@ class AppRoutes {
         GoRoute(
           path: '/single_transaction',
           redirect: webRedirect,
-          builder: _dynamicTransition == null ? (ctx, state) => const SingleTransactionScreen() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const SingleTransactionScreen()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const SingleTransactionScreen(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SingleTransactionScreen(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
@@ -392,27 +506,34 @@ class AppRoutes {
           path: '/',
           builder: (ctx, state) => const LoadingViewAppStart(),
         ),
-        GoRoute(path: '/website', builder: (ctx, state) => const WebsiteLandingPage(), routes: [
-          GoRoute(
-            path: 'report',
-            builder: (ctx, state) => const Report(),
-          ),
-          GoRoute(
-            path: 'aboutus',
-            builder: (ctx, state) => const AboutUs(),
-          ),
-          GoRoute(
-            path: 'redirect',
-            builder: (ctx, state) => const RedirectToApp(),
-          ),
-          GoRoute(
-            path: 'ourteam',
-            builder: (ctx, state) => const OurTeam(),
-          ),
-          GoRoute(path: 'agbs', builder: (ctx, state) => const AGBScreen()),
-          GoRoute(path: 'impressum', builder: (ctx, state) => const ImpressumScreen()),
-          GoRoute(path: 'submitidea', builder: (ctx, state) => const SubmitIdea()),
-        ]),
+        GoRoute(
+            path: '/website',
+            builder: (ctx, state) => const WebsiteLandingPage(),
+            routes: [
+              GoRoute(
+                path: 'report',
+                builder: (ctx, state) => const Report(),
+              ),
+              GoRoute(
+                path: 'aboutus',
+                builder: (ctx, state) => const AboutUs(),
+              ),
+              GoRoute(
+                path: 'redirect',
+                builder: (ctx, state) => const RedirectToApp(),
+              ),
+              GoRoute(
+                path: 'ourteam',
+                builder: (ctx, state) => const OurTeam(),
+              ),
+              GoRoute(path: 'agbs', builder: (ctx, state) => const AGBScreen()),
+              GoRoute(
+                  path: 'impressum',
+                  builder: (ctx, state) => const ImpressumScreen()),
+              GoRoute(
+                  path: 'submitidea',
+                  builder: (ctx, state) => const SubmitIdea()),
+            ]),
         GoRoute(
           path: '/authhome',
           builder: (ctx, state) => const GetStartedScreen(),
@@ -435,14 +556,18 @@ class AppRoutes {
                 ),
                 GoRoute(
                   path: 'reg_loading',
-                  builder: (ctx, state) => const AuthLoadingScreen(loadingText: "Patience, please. We're creating your account on the blockchain...",),
+                  builder: (ctx, state) => const AuthLoadingScreen(
+                    loadingText:
+                        "Patience, please. We're creating your account on the blockchain...",
+                  ),
                 ),
               ],
             ),
             GoRoute(
               path: 'log_loading',
               builder: (ctx, state) => const AuthLoadingScreen(
-                loadingText: "Patience, please. We're validating your account on the blockchain...",
+                loadingText:
+                    "Patience, please. We're validating your account on the blockchain...",
               ),
             ),
             GoRoute(
@@ -467,10 +592,6 @@ class AppRoutes {
                     ),
                   ],
                 ),
-                GoRoute(
-                  path: 'did_recovery',
-                  builder: (ctx, state) => DidAndPrivateKeyScreen(),
-                ),
               ],
             ),
 
@@ -486,48 +607,69 @@ class AppRoutes {
   List<GoRoute> get _settingsRoutes => [
         GoRoute(
           path: 'settings?tab=language',
-          builder: _dynamicTransition == null ? (ctx, state) => const ChangeLanguage() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const ChangeLanguage()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const ChangeLanguage(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ChangeLanguage(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=currency',
-          builder: _dynamicTransition == null ? (ctx, state) => const ChangeCurrency() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const ChangeCurrency()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const ChangeCurrency(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ChangeCurrency(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=style',
-          builder: _dynamicTransition == null ? (ctx, state) => const SettingsStyleView() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const SettingsStyleView()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const SettingsStyleView(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SettingsStyleView(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=invite_friends',
-          builder: _dynamicTransition == null ? (ctx, state) => const InvitationSettingsPage() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const InvitationSettingsPage()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const InvitationSettingsPage(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const InvitationSettingsPage(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=security_own',
-          builder: _dynamicTransition == null ? (ctx, state) => const SecuritySettingsPage() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => const SecuritySettingsPage()
+              : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: const SecuritySettingsPage(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SecuritySettingsPage(),
+                  transitionsBuilder: _dynamicTransition!)
               : null,
         ),
       ];
 
-  FadeTransition Function(BuildContext, Animation<double>, Animation<double>, Widget)? get _dynamicTransition =>
-      columnMode ? _fadeTransition : null;
+  FadeTransition Function(
+          BuildContext, Animation<double>, Animation<double>, Widget)?
+      get _dynamicTransition => columnMode ? _fadeTransition : null;
 
   FadeTransition _fadeTransition(
     ctx,

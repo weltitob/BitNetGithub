@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -16,7 +17,8 @@ dynamic callGenLitdAccount(String userId) async {
   try {
     // Attempt to retrieve App Check tokens for additional security.
     try {
-      final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
+      final appCheckToken =
+          await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       logger.i("App Check Token: $appCheckToken");
       logger.i("New App Check Token: $newAppCheckToken");
@@ -24,10 +26,9 @@ dynamic callGenLitdAccount(String userId) async {
       logger.e("Fehler beim Abrufen des App Check Tokens: $e");
     }
 
-
     logger.i("Generating challenge...");
     UserChallengeResponse? userChallengeResponse =
-    await create_challenge(userId, ChallengeType.litd_account_creation);
+        await create_challenge(userId, ChallengeType.litd_account_creation);
 
     if (userChallengeResponse == null) {
       logger.e("Challenge konnte nicht erstellt werden.");
@@ -45,16 +46,16 @@ dynamic callGenLitdAccount(String userId) async {
     // Retrieve private data (DID, private key)
     PrivateData privateData = await getPrivateData(userId);
     logger.d('Retrieved private data for user ${userId}');
-
-    final String publicKeyHex = privateData.did;
+    HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+    final String publicKeyHex = hdWallet.pubkey;
     logger.d('Public Key Hex: $publicKeyHex');
 
-    final String privateKeyHex = privateData.privateKey;
+    final String privateKeyHex = hdWallet.privkey;
     logger.d('Private Key Hex: $privateKeyHex');
 
     // Sign the challenge data
     String signatureHex =
-    await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
+        await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
     logger.d('Generated signature hex: $signatureHex');
 
     // Initialize FirebaseFunctions and call the Cloud Function
@@ -93,7 +94,8 @@ dynamic callGenLitdAccount(String userId) async {
       final macaroon = data['macaroon'];
 
       if (accountId == null || macaroon == null) {
-        logger.e("Fehler beim Aufruf der Cloud Function: Account-Informationen fehlen.");
+        logger.e(
+            "Fehler beim Aufruf der Cloud Function: Account-Informationen fehlen.");
         return null;
       }
 
@@ -114,20 +116,20 @@ dynamic callGenLitdAccount(String userId) async {
       };
 
       final LitdAccountResponse accountResponse =
-      LitdAccountResponse.fromJson(reshapedJson);
+          LitdAccountResponse.fromJson(reshapedJson);
 
       logger.i("LITD Account ID: ${accountResponse.account?.id}");
-      logger.i("LITD Initial Balance: ${accountResponse.account?.initialBalance}");
-      logger.i("LITD Current Balance: ${accountResponse.account?.currentBalance}");
+      logger.i(
+          "LITD Initial Balance: ${accountResponse.account?.initialBalance}");
+      logger.i(
+          "LITD Current Balance: ${accountResponse.account?.currentBalance}");
       logger.i("LITD Macaroon: ${accountResponse.macaroon}");
 
       return accountResponse;
-
     } catch (e) {
       logger.e("Fehler beim Parsen der Antwortdaten: $e");
       return null;
     }
-
   } catch (e) {
     final logger = Get.find<LoggerService>();
     logger.e("Fehler beim Aufruf der Cloud Function: $e");

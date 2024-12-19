@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -135,42 +137,29 @@ class AddressesWidget extends StatefulWidget {
 
 class _AddressesWidgetState extends State<AddressesWidget> {
   String searchPrompt = '';
-  bool isLoadingAddress = false;
-  late List<MapEntry<String, double>> sortedAddresses;
+  bool isLoadingAddress = true;
+  late LinkedHashMap<String, int> sortedAddresses;
 
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
     loadData();
   }
 
   void loadData() async {
-    if (!isLoadingAddress) {
-      setState(() {
-        isLoadingAddress = true;
-      });
-      Map<String, double> finalAddresses = {};
-      RestResponse response = await listBtcAddresses();
-      var accounts = response.data['account_with_addresses'] as List;
-      for (int i = 0; i < accounts.length; i++) {
-        var addresses = accounts[i]['addresses'];
-        for (int j = 0; j < addresses.length; j++) {
-          finalAddresses[addresses[j]['address']] =
-              double.parse(addresses[j]['balance']);
-        }
-      }
-      sortedAddresses = finalAddresses.entries.toList();
-
-      sortedAddresses.sort((a, b) => b.value.compareTo(a.value));
-
-      isLoadingAddress = false;
-      setState(() {});
-    }
+    sortedAddresses = await listBtcAddresses();
+    isLoadingAddress = false;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    List<MapEntry<String, int>> addressEntryList;
+    if (!isLoadingAddress) {
+      addressEntryList = sortedAddresses.entries.toList();
+    } else {
+      addressEntryList = List.empty();
+    }
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
@@ -226,7 +215,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                       // shrinkWrap: true,
                       itemCount: sortedAddresses.length,
                       itemBuilder: (ctx, i) {
-                        if (!sortedAddresses[i].key.contains(searchPrompt) &&
+                        if (!addressEntryList[i].key.contains(searchPrompt) &&
                             searchPrompt.isNotEmpty) {
                           return Container();
                         }
@@ -237,7 +226,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                             leading: SizedBox(
                                 width: 0.4.sw,
                                 child: Text(
-                                  sortedAddresses[i].key,
+                                  addressEntryList[i].key,
                                   style:
                                       Theme.of(context).textTheme.titleMedium,
                                   overflow: TextOverflow.ellipsis,
@@ -250,7 +239,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                                   children: [
                                     Text(
                                       textAlign: TextAlign.end,
-                                      sortedAddresses[i]
+                                      addressEntryList[i]
                                           .value
                                           .toInt()
                                           .toString(),
@@ -261,8 +250,8 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                                 )),
                             onTap: () {
                               context.go(
-                                  '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
-                                  extra: sortedAddresses[i].value);
+                                  '/wallet/bitcoincard/btcaddressinfo/${addressEntryList[i].key}',
+                                  extra: addressEntryList[i].value);
                             },
                           ),
                         );

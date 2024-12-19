@@ -1,91 +1,92 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/import_account.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:flutter_bitcoin/flutter_bitcoin.dart';
+import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
+
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:bip32/bip32.dart' as bip32;
-import 'package:bip39/bip39.dart' as bip39;
+import 'package:wallet/wallet.dart' as wallet;
 
-dynamic hdWalletFromMnemonic(String mnemonicString) {
+Future<HDWallet> createUserWallet(String mnemonic) async {
   LoggerService logger = Get.find<LoggerService>();
 
-  // Validate the mnemonic
-  bool isValid = bip39.validateMnemonic(mnemonicString);
-  logger.i('Mnemonic is valid: $isValid\n');
+  final seed = wallet.mnemonicToSeed(mnemonic.split(' '));
 
-  // Convert mnemonic to seed
-  String seed = bip39.mnemonicToSeedHex(mnemonicString);
-  logger.i('Seed derived from mnemonic:\n$seed\n');
-  Uint8List seedUnit = bip39.mnemonicToSeed(mnemonicString);
+  const taprootPath = "m/86'/0'/0'";
+  wallet.ExtendedPrivateKey master =
+      wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
+  // Step 2: Generate master key (BIP-32 Slip10 for secp256k1)
+  wallet.ExtendedKey root = master.forPath(taprootPath);
+  var privKey = wallet.PrivateKey(master.key);
 
-  // Create the HDWallet from the seed
+  String publicKey =
+      hex.encode(wallet.bitcoinbech32.createPublicKey(privKey).value);
+  String privKeyString = privKey.value.toRadixString(16);
+  String xpubkey = root.publicKey.toString();
+  // Step 3: Get the master fingerprint
+  final masterFingerprint = base64.encode(root.fingerprint);
 
-  HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
-  return [hdWallet, seedUnit];
-
-}
-
-List<String> deriveTaprootAddresses(String mnemonic) {
-  LoggerService logger = Get.find<LoggerService>();
-
-  // Create the master HD wallet from the mnemonic
-  final hdWallet = hdWalletFromMnemonic(mnemonic) as HDWallet;
-
-  // Taproot derivation path for BIP86:
-  // m/86'/0'/0'/0/i for mainnet receiving addresses
-  const pathFormat = "m/86'/0'/0'/0/";
+  // Step 4: Derive the xpub for Taproot path "m/86'/0'/0'/0"
+  await importAccount(publicKey, xpubkey, masterFingerprint);
 
   List<String> derivedAddresses = [];
-  for (int i = 0; i < 10; i++) {
-    final child = hdWallet.derivePath("$pathFormat$i");
-    final address = child.address; // Ensure this uses P2TR logic internally
-    derivedAddresses.add(address!);
-    logger.i("Taproot Address #$i: $address");
-  }
 
-  return derivedAddresses;
-}
-
-HDWallet createUserWallet(String mnemonic) {
-  LoggerService logger = Get.find<LoggerService>();
-
-  // Create the master HD wallet from the mnemonic
-  final data = hdWalletFromMnemonic(mnemonic);
-  HDWallet wallet = data[0] as HDWallet;
-  Uint8List seed = data[1];
-  final bip32Var = bip32.BIP32.fromSeed(
-      seed,
-      bip32.NetworkType(
-          bip32: bip32.Bip32Type(
-              public: bitcoin.bip32.public, private: bitcoin.bip32.private),
-          wif: bitcoin.wif));
-
-  // Taproot derivation path for BIP86:
-  // m/86'/0'/0'/0/i for mainnet receiving addresses
-  const pathFormat = "m/86'/0'/0'/0/";
-
-  List<String> derivedAddresses = [];
   for (int i = 0; i < 5; i++) {
-    final child = derivePath(bip32Var, "$pathFormat$i");
-    final address = child; // Ensure this uses P2TR logic internally
-    derivedAddresses.add(address);
-    logger.i("Taproot Address #$i: $address");
+    RestResponse addr = await nextAddr(publicKey);
+    print("Response" + addr.toString());
+    BitcoinAddress address = BitcoinAddress.fromJson(addr.data);
+    derivedAddresses.add(address.addr);
   }
-  btcAddressesRef.doc(wallet.pubKey).set({"addresses": derivedAddresses});
-  return wallet;
+
+  btcAddressesRef
+      .doc(publicKey)
+      .set({"addresses": derivedAddresses, "count": 5});
+  return HDWallet(
+      pubkey: publicKey,
+      xpubkey: xpubkey,
+      privkey: privKeyString,
+      fingerprint: masterFingerprint);
 }
 
-String derivePath(bip32.BIP32 bip, String path) {
-  final bip32 = bip.derivePath(path);
+class HDWallet {
+  final String pubkey;
+  final String xpubkey;
+  final String privkey;
+  final String fingerprint;
+  HDWallet(
+      {required this.fingerprint,
+      required this.privkey,
+      required this.pubkey,
+      required this.xpubkey});
 
-  // Generate P2WPKH address (Native SegWit)
-  final p2wpkh = P2WPKH(
-    data: PaymentData(pubkey: bip32.publicKey),
-    network: bitcoin, // Ensure this is set to bitcoin's mainnet or testnet
-  );
+  factory HDWallet.fromSeed(Uint8List seed) {
+    const taprootPath = "m/86'/0'/0'";
+    wallet.ExtendedPrivateKey master =
+        wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
+    // Step 2: Generate master key (BIP-32 Slip10 for secp256k1)
+    wallet.ExtendedKey root = master.forPath(taprootPath);
+    var privKey = wallet.PrivateKey(master.key);
 
-  return p2wpkh.data.address!;
+    String publicKey =
+        hex.encode(wallet.bitcoinbech32.createPublicKey(privKey).value);
+    String privKeyString = privKey.value.toRadixString(16);
+    String xpubkey = root.publicKey.toString();
+    final masterFingerprint = base64.encode(root.fingerprint);
+
+    return HDWallet(
+        privkey: privKeyString,
+        pubkey: publicKey,
+        xpubkey: xpubkey,
+        fingerprint: masterFingerprint);
+  }
+
+  factory HDWallet.fromMnemonic(String mnemonic) {
+    final seed = wallet.mnemonicToSeed(mnemonic.split(' '));
+    return HDWallet.fromSeed(seed);
+  }
 }

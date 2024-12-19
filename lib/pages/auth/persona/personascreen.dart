@@ -34,28 +34,25 @@ class _PersonaScreenState extends State<PersonaScreen> {
   void initState() {
     super.initState();
 
-
     //E/com.bitnet(11760): Invalid resource ID 0x00000000.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _configuration = TemplateIdConfiguration(
-          templateId: "itmpl_5pSqWSacZ5pZNLDaFPetpWXNurr5",
-          environment: InquiryEnvironment.sandbox,
-          environmentId: "env_wLzW9p11FDUsXUNNaoQBhKpnMrEg",
-          // locale: "pt-DE",
-          // Client theming is deprecated and will be removed in the future.
-          // theme: InquiryTheme(
-          //   source: InquiryThemeSource.client,
-          //   accentColor: Theme.of(context).colorScheme.secondary,
-          //   primaryColor: Theme.of(context).colorScheme.primary,
-          //   buttonBackgroundColor: Theme.of(context).colorScheme.surface,
-          //   darkPrimaryColor: Theme.of(context).colorScheme.onPrimary,
-          //   buttonCornerRadius: 8,
-          //   textFieldCornerRadius: 0,
-          // ),
-          );
+        templateId: "itmpl_5pSqWSacZ5pZNLDaFPetpWXNurr5",
+        environment: InquiryEnvironment.sandbox,
+        environmentId: "env_wLzW9p11FDUsXUNNaoQBhKpnMrEg",
+        // locale: "pt-DE",
+        // Client theming is deprecated and will be removed in the future.
+        // theme: InquiryTheme(
+        //   source: InquiryThemeSource.client,
+        //   accentColor: Theme.of(context).colorScheme.secondary,
+        //   primaryColor: Theme.of(context).colorScheme.primary,
+        //   buttonBackgroundColor: Theme.of(context).colorScheme.surface,
+        //   darkPrimaryColor: Theme.of(context).colorScheme.onPrimary,
+        //   buttonCornerRadius: 8,
+        //   textFieldCornerRadius: 0,
+        // ),
+      );
     });
-
-
 
     _streamCanceled = PersonaInquiry.onCanceled.listen(_onCanceled);
     _streamError = PersonaInquiry.onError.listen(_onError);
@@ -116,8 +113,6 @@ class _PersonaScreenState extends State<PersonaScreen> {
   Widget build(BuildContext context) {
     processParameters(context);
 
-
-
     return bitnetScaffold(
         body: Container(
           child: Column(
@@ -144,7 +139,9 @@ class _PersonaScreenState extends State<PersonaScreen> {
                       sessionToken: "sessionToken",
                     );
 
-                    PersonaInquiry.init(configuration: _configuration,);
+                    PersonaInquiry.init(
+                      configuration: _configuration,
+                    );
                     PersonaInquiry.start();
 
                     context.go(
@@ -159,7 +156,6 @@ class _PersonaScreenState extends State<PersonaScreen> {
                     //     'username': username,
                     //   }).toString(),
                     // );
-
                   })
             ],
           ),
