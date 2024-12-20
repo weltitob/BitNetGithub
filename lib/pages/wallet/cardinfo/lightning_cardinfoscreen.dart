@@ -196,22 +196,22 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                      child: BitNetListTile(
-                        text: "Possible Capacity", //this is the inbound liquidity of the users node
-                        trailing: loadedLiquidity
-                            ? liquidity == -1
-                                ? const Text('Error')
-                                : AmountPreviewer(
-                                    unitModel: liquidityUnitModel!,
-                                    textStyle: Theme.of(context).textTheme.bodyMedium!,
-                                    textColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                                  )
-                            : dotProgress(context),
-                      ),
-                    )),
+                    // SliverToBoxAdapter(
+                    //     child: Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    //   child: BitNetListTile(
+                    //     text: "Possible Capacity", //this is the inbound liquidity of the users node
+                    //     trailing: loadedLiquidity
+                    //         ? liquidity == -1
+                    //             ? const Text('Error')
+                    //             : AmountPreviewer(
+                    //                 unitModel: liquidityUnitModel!,
+                    //                 textStyle: Theme.of(context).textTheme.bodyMedium!,
+                    //                 textColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                    //               )
+                    //         : dotProgress(context),
+                    //   ),
+                    // )),
                     SliverToBoxAdapter(
                         child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),

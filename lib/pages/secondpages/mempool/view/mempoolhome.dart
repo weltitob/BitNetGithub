@@ -619,7 +619,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           );
                                                         },
                                                         icon: const Icon(
-                                                            Icons.cancel))
+                                                            FontAwesomeIcons.cancel))
                                                   ],
                                                 ),
                                               ),
