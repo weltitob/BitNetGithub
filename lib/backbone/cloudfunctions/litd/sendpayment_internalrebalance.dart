@@ -74,7 +74,16 @@ dynamic callInternalRebalance(
     );
 
     // Prepare data for internal_rebalance
-    final Map<String, dynamic> rebalanceData = {
+
+    logger.i("Calling internal_rebalance Cloud Function with data: "
+        "lightningAddress: $lightningAddress, "
+        "fallbackAddress: $fallbackAddress, "
+        "amountSatoshi: $amountSatoshi, "
+        "senderUserId: $senderUserId, "
+        "restHost: $restHost");
+
+    // Send request
+    final dynamic response = await callable.call(<String, dynamic>{
       'lightningAddress': lightningAddress,
       'fallbackAddress': fallbackAddress,
       'amountSatoshi': amountSatoshi,
@@ -82,13 +91,6 @@ dynamic callInternalRebalance(
       'signedMessage': signatureHex,
       'challenge_data': challengeData,
       'restHost': restHost,
-    };
-
-    logger.i("Calling internal_rebalance Cloud Function with data: $rebalanceData");
-
-    // Send request
-    final dynamic response = await callable.call(<String, dynamic>{
-      'data': rebalanceData,
     });
 
     logger.i("Response from server: ${response.data}");

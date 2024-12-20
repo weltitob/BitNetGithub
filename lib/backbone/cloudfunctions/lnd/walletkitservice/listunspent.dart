@@ -21,7 +21,6 @@ Future<RestResponse> listUnspent() async {
   ByteData byteData = await loadAdminMacaroonAsset();
 
 
-
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

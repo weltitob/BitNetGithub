@@ -14,14 +14,12 @@ loginION(String did, String signedMessage,) async {
     'signedMessage': signedMessage,
   });
 
-  logger.i(("Response loginION: ${response.data}");
-
+  logger.i("Response loginION: ${response.data}");
   final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
   final RestResponse callback = RestResponse.fromJson(responseData);
-  print("CloudfunctionCallback: ${callback.toString()}");
+  logger.i("CloudfunctionCallback: ${callback.toString()}");
 
   if (callback.statusCode == "200") {
-
     logger.i("LoginIon ${callback.message}");
     String customToken = callback.data['customToken']; // Extracting the signed message // Extracting the signed message
     return customToken;

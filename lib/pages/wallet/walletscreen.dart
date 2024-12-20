@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -364,12 +365,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                       //   await controller.getOnchainBalance();
                       // }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      // LongButtonWidget(
-                      //   title: "getOnchainTransactions",
-                      //   onTap: () async {
-                      //     await controller.getOnchainTransactions();
-                      //   },
-                      // ),
+                      LongButtonWidget(
+                        title: "getOnchainTransactions",
+                        onTap: () async {
+                          dynamic restResponseListUnspent = await listUnspent();
+                        },
+                      ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "subscribeToOnchainBalance ",
