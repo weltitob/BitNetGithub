@@ -407,7 +407,7 @@ class SendsController extends BaseController {
         showOverlay(this.context, "An error occurred: $error");
       });
     }, onDone: () {}, cancelOnError: true);
-    print(response.body);
+    logger.i("Payment successful! ${response.body}");
     resetValues();
     return payment;
   }

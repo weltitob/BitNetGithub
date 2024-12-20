@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/cloudfunctions/load_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
@@ -79,9 +80,10 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 
   void loadData() async {
     Get.put(WalletsController());
+    final logger = Get.find<LoggerService>();
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    print(allData);
+    logger.i("All Data: $allData");
     if (allData.contains(FirebaseAuth.instance.currentUser?.uid)) {
       var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
       ThemeController.of(context)

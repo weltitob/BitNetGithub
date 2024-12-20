@@ -296,7 +296,7 @@ class HomeController extends BaseController {
         if (data['projected-block-transactions']['blockTransactions'] != null) {
           blockTransactions.clear();
           blockTransactions = data['projected-block-transactions']['blockTransactions'];
-          print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
+          // print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
         }
         if (data['projected-block-transactions']['delta']['added'] != null) {
           blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
@@ -306,9 +306,9 @@ class HomeController extends BaseController {
           List remove = data['projected-block-transactions']['delta']['removed'];
           for (int i = 0; i < blockTransactions.length; i++) {
             String e = blockTransactions[i].first;
-            print(remove.contains(e));
+            // print(remove.contains(e));
             if (remove.contains(e)) {
-              print('remove');
+              // print('remove');
               blockTransactions.removeAt(i);
             }
           }
@@ -556,9 +556,8 @@ class HomeController extends BaseController {
           await FirebaseFirestore.instance.collection('postsNew').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
 
       return querySnapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>)).toList();
-    } catch (e, tr) {
-      print(e);
-      print(tr);
+    } catch (e) {
+      logger.e(e);
       return null;
     }
   }

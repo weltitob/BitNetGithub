@@ -13,10 +13,9 @@ import 'package:get/get.dart';
 import 'dart:convert';
 
 dynamic callInternalRebalance(
-    String userId,
     String lightningAddress,
     String fallbackAddress,
-    int amountSatoshi,
+    String amountSatoshi,
     String senderUserId,
     String restHost,
     ) async {
@@ -34,14 +33,14 @@ dynamic callInternalRebalance(
 
     logger.i("Generating challenge...");
     UserChallengeResponse? userChallengeResponse =
-    await create_challenge(userId, ChallengeType.internal_account_rebalance);
+    await create_challenge(senderUserId, ChallengeType.internal_account_rebalance);
 
     if (userChallengeResponse == null) {
       logger.e("Challenge konnte nicht erstellt werden.");
       return null;
     }
 
-    logger.d('Created challenge for user ${userId}: $userChallengeResponse');
+    logger.d('Created challenge for user ${senderUserId}: $userChallengeResponse');
 
     String challengeId = userChallengeResponse.challenge.challengeId;
     logger.d('Challenge ID: $challengeId');
@@ -50,8 +49,8 @@ dynamic callInternalRebalance(
     logger.d('Challenge Data: $challengeData');
 
     // Retrieve private data (DID, private key)
-    PrivateData privateData = await getPrivateData(userId);
-    logger.d('Retrieved private data for user ${userId}');
+    PrivateData privateData = await getPrivateData(senderUserId);
+    logger.d('Retrieved private data for user ${senderUserId}');
     HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
     final String publicKeyHex = hdWallet.pubkey;
     logger.d('Public Key Hex: $publicKeyHex');
@@ -78,7 +77,6 @@ dynamic callInternalRebalance(
     final Map<String, dynamic> rebalanceData = {
       'lightningAddress': lightningAddress,
       'fallbackAddress': fallbackAddress,
-      'userUid': userId,
       'amountSatoshi': amountSatoshi,
       'senderUserId': senderUserId,
       'signedMessage': signatureHex,

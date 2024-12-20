@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/litd/sendpayment_internalrebalance.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
@@ -70,7 +72,7 @@ Stream<RestResponse> sendPaymentV2Stream(
 
         logger.i("Accumulated Data: ${accumulatedData.toString()}");
 
-        if (isCompleteJson(accumulatedData.toString())) {
+        if (isCompleteJson(accumulatedData.toString()))  {
           var jsonString = accumulatedData.toString();
           accumulatedData.clear();
 
@@ -107,12 +109,11 @@ Stream<RestResponse> sendPaymentV2Stream(
                         "${invoiceDecoded.timestamp}, "
                         "${invoiceDecoded.amount}");
 
-                invoiceDecoded.tags.forEach((TaggedField t) {
+                invoiceDecoded.tags.forEach((TaggedField t) async {
                   print("${t.type}: ${t.data}");
                   if (t.type == 'fallback_address') { // Replace with actual tag name
                     final fallbackAddress = t.data;
                     logger.i("Fallback Address: $fallbackAddress");
-                    //die fallback address zum public key wieder converten falls possible
 
                     try{
                       //firebase function aufrufen die quasie diese fallback address jetzt ausliest und firebase checked und alles andere
@@ -120,6 +121,15 @@ Stream<RestResponse> sendPaymentV2Stream(
                       //den amount weitergeben
                       //die fallback address weitergeben
                       //user signature and userid of person in this account
+                      logger.i("Calling internal_rebalance Cloud Function with data: $invoiceString, $fallbackAddress, ${invoiceDecoded.amount.toString()}, ${Auth().currentUser!.uid}, $restHost");
+                      dynamic response = await callInternalRebalance(
+                          invoiceString,
+                          fallbackAddress,
+                          invoiceDecoded.amount.toString(),
+                          Auth().currentUser!.uid,
+                          restHost,
+                      );
+                      logger.i("Response from internal_rebalance server: $response");
 
 
                     } catch(e){
