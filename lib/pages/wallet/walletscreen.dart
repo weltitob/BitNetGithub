@@ -289,10 +289,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       },
                                       child: Obx(() {
                                         // Extracting reactive variables from the controller
-                                        final predictedBalanceStr =
-                                            walletController
-                                                .predictedLightningBalance
-                                                .value;
+
                                         final confirmedBalanceStr =
                                             walletController
                                                 .lightningBalance.value.balance;
@@ -300,17 +297,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             walletController.onchainBalance
                                                 .value.unconfirmedBalance;
 
-                                        // Safely parse the string balances to doubles
-                                        final predictedBalance =
-                                            double.tryParse(
-                                                    predictedBalanceStr) ??
-                                                0.0;
-                                        // Format the predicted balance to 8 decimal places
-                                        final formattedBalance =
-                                            predictedBalance.toStringAsFixed(8);
 
                                         return BalanceCardLightning(
-                                          balance: formattedBalance,
+                                          balance: confirmedBalanceStr,
                                           confirmedBalance: confirmedBalanceStr,
                                           unconfirmedBalance:
                                               unconfirmedBalanceStr,
@@ -331,12 +320,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         context.go('/wallet/bitcoincard');
                                       },
                                       child: Obx(() {
-                                        final logger =
-                                            Get.find<LoggerService>();
+                                        final logger = Get.find<LoggerService>();
                                         // Extracting reactive variables from the controller
-                                        final predictedBtcBalanceStr =
-                                            walletController
-                                                .predictedBtcBalance.value;
+
                                         final confirmedBalanceStr =
                                             walletController.onchainBalance
                                                 .value.confirmedBalance;
@@ -344,23 +330,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             walletController.onchainBalance
                                                 .value.unconfirmedBalance;
 
-                                        // Safely parse the string balances to doubles
-                                        final predictedBtcBalance =
-                                            double.tryParse(
-                                                    predictedBtcBalanceStr) ??
-                                                0.0;
-                                        logger.i(
-                                            "confirmedBalanceStr: $confirmedBalanceStr");
-                                        logger.i(
-                                            "predictedBtcBalance: $predictedBtcBalance");
-
-                                        // Format the predicted balance to 8 decimal places
-                                        final formattedBalance =
-                                            predictedBtcBalance
-                                                .toStringAsFixed(8);
+                                        logger.i("Confirmed Balance: $confirmedBalanceStr");
+                                        logger.i("Unconfirmed Balance: $unconfirmedBalanceStr");
 
                                         return BalanceCardBtc(
-                                          balance: formattedBalance,
+                                          balance: confirmedBalanceStr,
                                           confirmedBalance: confirmedBalanceStr,
                                           unconfirmedBalance:
                                               unconfirmedBalanceStr,

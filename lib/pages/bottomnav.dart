@@ -129,7 +129,9 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-
+    Get.put(FeedController());
+    Get.put(ProfileController());
+    Get.put(WalletsController());
     //we need to make sure we have the user doc id
     Get.find<ProfileController>().isUserLoading.listen((val) {
       if (!val) {
