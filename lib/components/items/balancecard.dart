@@ -157,7 +157,7 @@ class FiatCard extends StatelessWidget {
 class BalanceCardLightning extends StatelessWidget {
   final String balance; // Expected to be a formatted string (e.g., '1.23456789')
   final String confirmedBalance;
-  final String unconfirmedBalance;
+
   final BitcoinUnits defaultUnit;
   final Color? textColor;
 
@@ -165,7 +165,7 @@ class BalanceCardLightning extends StatelessWidget {
     Key? key,
     required this.balance,
     required this.confirmedBalance,
-    required this.unconfirmedBalance,
+
     this.defaultUnit = BitcoinUnits.SAT,
     this.textColor,
   }) : super(key: key);
@@ -197,22 +197,6 @@ class BalanceCardLightning extends StatelessWidget {
             walletAddress: "safdadasdas",
             cardname: 'Lightning Balance',
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
-          ),
-          unconfirmedBalance.isEmpty || double.parse(unconfirmedBalance) == 0
-              ? Container()
-              : Positioned(
-            bottom: -10,
-            left: 0,
-            child: UnconfirmedTextWidget(
-              balanceStr: unconfirmedBalance,
-              iconDataUnit: getCurrencyIcon(
-                BitcoinUnits.SAT.toString(), // Assuming SAT as default
-              ),
-              iconData: FontAwesomeIcons.wallet,
-              balanceSAT: unconfirmedBalance,
-              walletAddress: "safdadasdas",
-              cardname: 'Incoming Balance',
-            ),
           ),
           const PaymentNetworkPicture(
             imageUrl: "assets/images/lightning.png",

@@ -301,8 +301,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         return BalanceCardLightning(
                                           balance: confirmedBalanceStr,
                                           confirmedBalance: confirmedBalanceStr,
-                                          unconfirmedBalance:
-                                              unconfirmedBalanceStr,
                                           defaultUnit: BitcoinUnits
                                               .SAT, // You can adjust this as needed
                                         );

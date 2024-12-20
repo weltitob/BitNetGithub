@@ -179,7 +179,6 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                             // Extracting reactive variables from the controller
                             final predictedBalanceStr = walletController.predictedLightningBalance.value;
                             final confirmedBalanceStr = walletController.lightningBalance.value.balance;
-                            final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
 
                             // Safely parse the string balances to doubles
                             final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
@@ -189,7 +188,6 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                             return BalanceCardLightning(
                               balance: formattedBalance,
                               confirmedBalance: confirmedBalanceStr,
-                              unconfirmedBalance: unconfirmedBalanceStr,
                               defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
                             );
                           }),

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -144,15 +145,17 @@ class _LoopScreenState extends State<LoopScreen> {
                                 horizontal: AppTheme.cardPadding,
                               ),
                               child: Obx(() {
+                                final logger = Get.find<LoggerService>();
                                 // Extracting reactive variables from the controller
                                 final predictedBalanceStr = walletController.predictedLightningBalance.value;
                                 final confirmedBalanceStr = walletController.lightningBalance.value.balance;
-                                final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
 
                                 // Safely parse the string balances to doubles
                                 final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
                                 final confirmedBalance = double.tryParse(confirmedBalanceStr) ?? 0.0;
-                                final unconfirmedBalance = double.tryParse(unconfirmedBalanceStr) ?? 0.0;
+
+                                logger.i('predictedBalance: $predictedBalance');
+                                logger.i('confirmedBalance: $confirmedBalance');
 
                                 // Determine text color based on balance comparison
                                 Color? textColor;
@@ -170,7 +173,6 @@ class _LoopScreenState extends State<LoopScreen> {
                                 return BalanceCardLightning(
                                   balance: formattedBalance,
                                   confirmedBalance: confirmedBalanceStr,
-                                  unconfirmedBalance: unconfirmedBalanceStr,
                                   defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
                                   textColor: textColor,
                                 );
