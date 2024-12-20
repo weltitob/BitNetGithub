@@ -157,7 +157,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       },
       child: SafeArea(
         child: bitnetScaffold(
-          extendBodyBehindAppBar: false,
+          extendBodyBehindAppBar: true,
           context: context,
           appBar: widget.isFromHome == true
               ? const PreferredSize(
@@ -177,6 +177,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               () => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(height: AppTheme.cardPadding.h * 2.75,),
                   controller.socketLoading.isTrue
                       ? Padding(
                           padding: const EdgeInsets.only(

@@ -5,19 +5,18 @@ import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style_view.dart';
-import 'package:bitnet/pages/settings/social_recovery/social_recovery_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'settings_view.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+  Settings({Key? key}) : super(key: key);
+
+  final controller = Get.find<SettingsController>();
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<SettingsController>();
-
     return Obx(
       () => PopScope(
         canPop: controller.currentTab.value == 'main',
