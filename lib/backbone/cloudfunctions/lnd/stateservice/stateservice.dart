@@ -69,7 +69,7 @@ Future<WalletState> requestState() async {
   String url = 'https://$restHost/v1/state';
 
   // Read the macaroon file and convert it to a hexadecimal string
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

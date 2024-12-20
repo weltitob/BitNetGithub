@@ -20,7 +20,7 @@ Future<RestResponse> checkAddressesOwnership(List<String> addresses) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://us-central1-bitnet-cb34f.cloudfunctions.net/check_addresses_ownership';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

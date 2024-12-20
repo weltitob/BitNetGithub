@@ -16,7 +16,7 @@ Stream<RestResponse> sendPaymentV2Stream(
     List<String> invoiceStrings, int? amount) async* {
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

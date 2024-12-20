@@ -16,7 +16,7 @@ Future<RestResponse> loadBtcAddresses(String did) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://load-btc-addresses-466393582939.us-central1.run.app';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

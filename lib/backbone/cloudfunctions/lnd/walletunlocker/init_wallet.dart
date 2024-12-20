@@ -78,7 +78,7 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKe
   };
 
   // Load and convert the macaroon asset
-  dynamic byteData = await loadMacaroonAsset();
+  dynamic byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

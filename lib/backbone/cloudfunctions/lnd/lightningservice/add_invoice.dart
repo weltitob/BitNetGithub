@@ -25,7 +25,7 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   // Make the GET request
   String url = 'https://$restHost/v1/invoices';
   // Read the macaroon file and convert it to a hexadecimal string
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   // Convert ByteData to List<int>
   List<int> bytes = byteData.buffer.asUint8List();
   // Convert bytes to hex string
