@@ -366,7 +366,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       // }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       LongButtonWidget(
-                        title: "getOnchainTransactions",
+                        title: "list Unspent",
                         onTap: () async {
                           dynamic restResponseListUnspent = await listUnspent();
                         },
