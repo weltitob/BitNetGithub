@@ -177,7 +177,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               () => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: AppTheme.cardPadding.h * 2.75,),
+                  SizedBox(height: AppTheme.cardPadding.h * 3,),
                   controller.socketLoading.isTrue
                       ? Padding(
                           padding: const EdgeInsets.only(
@@ -619,7 +619,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           );
                                                         },
                                                         icon: const Icon(
-                                                            FontAwesomeIcons.cancel))
+                                                            Icons.cancel))
                                                   ],
                                                 ),
                                               ),
@@ -823,7 +823,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           ),
                                         ),
                                         Obx(
-                                          () => Visibility(
+                                          () => controller.txDetailsConfirmed.isNull ? Container() : Visibility(
                                               visible:
                                                   controller.showBlock.value,
                                               child: Column(

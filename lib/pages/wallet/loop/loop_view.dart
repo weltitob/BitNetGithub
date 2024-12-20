@@ -27,20 +27,26 @@ class LoopScreen extends StatefulWidget {
 
 class _LoopScreenState extends State<LoopScreen> {
   final loopGetController = Get.put(LoopGetxController());
+
   WalletsController walletController = Get.find<WalletsController>();
 
   @override
   void initState() {
     super.initState();
     WalletsController walletController = Get.find<WalletsController>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       walletController.predictedLightningBalance.value =
           walletController.lightningBalance.value.balance;
+
       walletController.predictedBtcBalance.value =
           walletController.onchainBalance.value.confirmedBalance;
+
       setState(() {});
       // Add listener to FocusNode
     });
+
+
     loopGetController.amtNode.addListener(() {
       if (loopGetController.amtNode.hasFocus) {
         loopGetController.scrollToBottom();
@@ -102,6 +108,7 @@ class _LoopScreenState extends State<LoopScreen> {
                                     horizontal: AppTheme.cardPadding),
                                 child:
                                 Obx(() {
+                                  final logger = Get.find<LoggerService>();
                                   // Extracting reactive variables from the controller
                                   final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
                                   final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
@@ -112,6 +119,10 @@ class _LoopScreenState extends State<LoopScreen> {
                                   final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
                                   final confirmedBalance = double.tryParse(confirmedBalanceStr) ?? 0.0;
                                   final unconfirmedBalance = double.tryParse(unconfirmedBalanceStr) ?? 0.0;
+
+                                  logger.i('predictedBtcBalance: $predictedBtcBalance');
+                                  logger.i('confirmedBalance: $confirmedBalance');
+                                  logger.i('unconfirmedBalance: $unconfirmedBalance');
 
                                   // Determine text color based on balance comparison
                                   Color? textColor;

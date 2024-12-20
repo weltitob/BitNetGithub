@@ -19,7 +19,7 @@ Future<RestResponse> listInvoices({bool pending_only = false}) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/invoices?pending_only=$pending_only';
 
-  ByteData byteData = await loadAdminMacaroonAsset();
+  ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

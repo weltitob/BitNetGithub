@@ -223,8 +223,10 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                       ),
                     )),
                     transactions.isEmpty
-                        ? const SliverToBoxAdapter(
-                            child: Text('Loading'),
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                                height: AppTheme.cardPadding * 8,
+                                child: Center(child: dotProgress(context))),
                           )
                         : Transactions(
                             hideLightning: true,

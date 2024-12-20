@@ -19,7 +19,7 @@ Future<RestResponse> listPayments() async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/payments';
 
-  ByteData byteData = await loadAdminMacaroonAsset();
+  ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

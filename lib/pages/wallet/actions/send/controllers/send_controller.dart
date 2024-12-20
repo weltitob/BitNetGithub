@@ -467,7 +467,9 @@ class SendsController extends BaseController {
 
           Stream<RestResponse> paymentStream = sendPaymentV2Stream(
               invoiceStrings, int.parse(satController.text));
+
           bool firstSuccess = false;
+
           paymentStream.listen((RestResponse response) {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
