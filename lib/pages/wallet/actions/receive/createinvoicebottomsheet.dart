@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -34,8 +35,8 @@ class CreateInvoice extends GetWidget<ReceiveController> {
               context: context,
               bitcoinUnit: controller.bitcoinUnit.value,
               enabled: ()=>true,
-              btcController: controller.btcController,
-              satController: controller.satController,
+              btcController: onChain ? controller.btcControllerOnChain : controller.btcController,
+              satController:  onChain ? controller.satControllerOnChain : controller.satController,
               currController: controller.currController,
               autoConvert: true,
               focusNode: controller.myFocusNode,
@@ -60,10 +61,19 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             title: L10n.of(context)!.generateInvoice,
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
-             controller.getTaprootAddress();
-              controller.getInvoice(
-                  (double.parse(controller.satController.text)).toInt(), "");
+             controller.getBtcAddress();
+
+              if(onChain){
+                controller.getInvoice(
+                    (double.parse(controller.satControllerOnChain.text)).toInt(), "");
+              } else {
+                controller.getInvoice(
+                    (double.parse(controller.satController.text)).toInt(), "");
+              }
+
               context.pop(true);
+
+
             })
       ],
     );

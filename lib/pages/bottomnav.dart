@@ -92,7 +92,8 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
       Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
       final walletController = Get.find<WalletsController>();
       walletController.setHideBalance(hide: data.data()?['hide_balance'] ?? false);
-      setState(() {});
+      if(mounted)
+        setState(() {});
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",

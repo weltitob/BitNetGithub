@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -29,20 +30,19 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
   // Get the current user's wallet from a provider
   final GlobalKey globalKeyQR = GlobalKey();
   ValueNotifier<String> btcControllerNotifier = ValueNotifier('');
+  final controller = Get.find<ReceiveController>();
+
   @override
   void initState() {
-    final controller = Get.find<ReceiveController>();
 
-    btcControllerNotifier = ValueNotifier(controller.btcController.text);
+    btcControllerNotifier = ValueNotifier(controller.btcControllerOnChain.text);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final controller = Get.find<ReceiveController>();
-
-    btcControllerNotifier = ValueNotifier(controller.btcController.text);
+    btcControllerNotifier = ValueNotifier(controller.btcControllerOnChain.text);
   }
 
   @override
@@ -54,7 +54,6 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final controller = Get.find<ReceiveController>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SingleChildScrollView(
@@ -71,12 +70,12 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
               controller.qrCodeDataStringOnchain.value;
               return GestureDetector(
                 onTap: () async {
-                  double? invoiceAmount =
-                      double.tryParse(controller.btcController.text);
-                  if (invoiceAmount != null && invoiceAmount > 0) {
+                  double? btcAmount =
+                      double.tryParse(controller.btcControllerOnChain.text);
+                  if (btcAmount != null && btcAmount > 0) {
                     await Clipboard.setData(ClipboardData(
                         text:
-                            'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
+                            'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${btcAmount}'));
                   } else {
                     await Clipboard.setData(ClipboardData(
                         text: controller.qrCodeDataStringOnchain.value));
@@ -112,14 +111,14 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                                   child: PrettyQrView.data(
                                       data: "bitcoin:${controller.qrCodeDataStringOnchain}" +
                                           ((double.tryParse(controller
-                                                          .btcController
+                                                          .btcControllerOnChain
                                                           .text) !=
                                                       null &&
                                                   double.tryParse(controller
-                                                          .btcController
+                                                          .btcControllerOnChain
                                                           .text) !=
                                                       0)
-                                              ? '?amount=${double.parse(controller.btcController.text)}'
+                                              ? '?amount=${double.parse(controller.btcControllerOnChain.text)}'
                                               : ''),
                                       decoration: const PrettyQrDecoration(
                                         shape: PrettyQrSmoothSymbol(
@@ -142,7 +141,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                               onTap: () {
                                 // Share the wallet address
                                 double? invoiceAmount = double.tryParse(
-                                    controller.btcController.text);
+                                    controller.btcControllerOnChain.text);
                                 if (invoiceAmount != null &&
                                     invoiceAmount > 0) {
                                   Share.share(
@@ -168,12 +167,15 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
             ),
             BitNetListTile(
               onTap: () async {
-                double? invoiceAmount =
-                    double.tryParse(controller.btcController.text);
-                if (invoiceAmount != null && invoiceAmount > 0) {
+                final logger = Get.find<LoggerService>();
+                logger.i('BTC Amount: ${controller.btcControllerOnChain.text}');
+                double? btcAmount =
+                    double.tryParse(controller.btcControllerOnChain.text);
+                logger.i('BTC Amount: $btcAmount');
+                if (btcAmount != null && btcAmount > 0) {
                   await Clipboard.setData(ClipboardData(
                       text:
-                          'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}'));
+                          'bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${btcAmount}'));
                 } else {
                   await Clipboard.setData(ClipboardData(
                       text: controller.qrCodeDataStringOnchain.value));
@@ -238,7 +240,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                   );
 
                   setState(() {});
-                  btcControllerNotifier.value = controller.btcController.text;
+                  btcControllerNotifier.value = controller.btcControllerOnChain.text;
                 },
                 text: L10n.of(context)!.amount,
                 trailing: Row(
@@ -252,13 +254,13 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                     ),
                     const SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
-                      controller.satController.text == "0" ||
-                              controller.satController.text.isEmpty
+                      controller.satControllerOnChain.text == "0" ||
+                              controller.satControllerOnChain.text.isEmpty
                           ? "Change Amount"
-                          : controller.satController.text,
+                          : controller.satControllerOnChain.text,
                     ),
-                    controller.satController.text == "0" ||
-                            controller.satController.text.isEmpty
+                    controller.satControllerOnChain.text == "0" ||
+                            controller.satControllerOnChain.text.isEmpty
                         ? const SizedBox()
                         : Icon(
                             getCurrencyIcon(
