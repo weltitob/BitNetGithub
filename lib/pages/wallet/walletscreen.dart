@@ -66,19 +66,17 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Row(
                                 children: [
-                                  Avatar(
-                                      size: AppTheme.cardPadding * 2.5.h,
-                                      mxContent: Uri.parse(
-                                          profileController
-                                              .userData
-                                              .value
-                                              .profileImageUrl),
-                                      type: profilePictureType.lightning,
-                                      isNft: profileController
-                                          .userData
-                                          .value
-                                          .nft_profile_id
-                                          .isNotEmpty),
+                                  profileController.isNull
+                                      ? Avatar(
+                                          isNft: false,
+                                        )
+                                      : Avatar(
+                                          size: AppTheme.cardPadding * 2.5.h,
+                                          mxContent: Uri.parse(profileController
+                                              .userData.value.profileImageUrl),
+                                          type: profilePictureType.lightning,
+                                          isNft: profileController.userData
+                                              .value.nft_profile_id.isNotEmpty),
                                   SizedBox(
                                     width: AppTheme.elementSpacing * 1.25.w,
                                   ),
@@ -259,27 +257,27 @@ class WalletScreen extends GetWidget<WalletsController> {
                               CardSwiper(
                                 backCardOffset: const Offset(
                                     0, -AppTheme.elementSpacing * 1.25),
-                                numberOfCardsDisplayed: 2, // Updated from 3 to 2
+                                numberOfCardsDisplayed:
+                                    2, // Updated from 3 to 2
                                 padding: const EdgeInsets.only(
                                     left: AppTheme.cardPadding,
                                     right: AppTheme.cardPadding,
                                     top: AppTheme.cardPadding),
                                 scale: 1.0,
-                                initialIndex: controller.selectedCard.value == 'onchain'
+                                initialIndex: controller.selectedCard.value ==
+                                        'onchain'
                                     ? 1 // Updated index after removing FiatCard
-                                // : controller.selectedCard.value == 'fiat'
-                                //     ? 1
+                                    // : controller.selectedCard.value == 'fiat'
+                                    //     ? 1
                                     : 0,
                                 cardsCount: 2, // Updated from 3 to 2
                                 onSwipe: (int index, int? previousIndex,
                                     CardSwiperDirection direction) {
-                                  controller.setSelectedCard(
-                                      previousIndex == 1
-                                          ? 'onchain'
+                                  controller.setSelectedCard(previousIndex == 1
+                                      ? 'onchain'
                                       // : previousIndex == 1
                                       //     ? 'fiat'
-                                          : 'lightning'
-                                  );
+                                      : 'lightning');
                                   return true;
                                 },
                                 cardBuilder: (context, index, percentThresholdX,
@@ -291,20 +289,33 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       },
                                       child: Obx(() {
                                         // Extracting reactive variables from the controller
-                                        final predictedBalanceStr = walletController.predictedLightningBalance.value;
-                                        final confirmedBalanceStr = walletController.lightningBalance.value.balance;
-                                        final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+                                        final predictedBalanceStr =
+                                            walletController
+                                                .predictedLightningBalance
+                                                .value;
+                                        final confirmedBalanceStr =
+                                            walletController
+                                                .lightningBalance.value.balance;
+                                        final unconfirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.unconfirmedBalance;
 
                                         // Safely parse the string balances to doubles
-                                        final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
+                                        final predictedBalance =
+                                            double.tryParse(
+                                                    predictedBalanceStr) ??
+                                                0.0;
                                         // Format the predicted balance to 8 decimal places
-                                        final formattedBalance = predictedBalance.toStringAsFixed(8);
+                                        final formattedBalance =
+                                            predictedBalance.toStringAsFixed(8);
 
                                         return BalanceCardLightning(
                                           balance: formattedBalance,
                                           confirmedBalance: confirmedBalanceStr,
-                                          unconfirmedBalance: unconfirmedBalanceStr,
-                                          defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                                          unconfirmedBalance:
+                                              unconfirmedBalanceStr,
+                                          defaultUnit: BitcoinUnits
+                                              .SAT, // You can adjust this as needed
                                         );
                                       }),
                                     ),
@@ -320,24 +331,39 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         context.go('/wallet/bitcoincard');
                                       },
                                       child: Obx(() {
-                                        final logger = Get.find<LoggerService>();
+                                        final logger =
+                                            Get.find<LoggerService>();
                                         // Extracting reactive variables from the controller
-                                        final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
-                                        final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
-                                        final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+                                        final predictedBtcBalanceStr =
+                                            walletController
+                                                .predictedBtcBalance.value;
+                                        final confirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.confirmedBalance;
+                                        final unconfirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.unconfirmedBalance;
 
                                         // Safely parse the string balances to doubles
-                                        final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
-                                        logger.i("confirmedBalanceStr: $confirmedBalanceStr");
-                                        logger.i("predictedBtcBalance: $predictedBtcBalance");
+                                        final predictedBtcBalance =
+                                            double.tryParse(
+                                                    predictedBtcBalanceStr) ??
+                                                0.0;
+                                        logger.i(
+                                            "confirmedBalanceStr: $confirmedBalanceStr");
+                                        logger.i(
+                                            "predictedBtcBalance: $predictedBtcBalance");
 
                                         // Format the predicted balance to 8 decimal places
-                                        final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
+                                        final formattedBalance =
+                                            predictedBtcBalance
+                                                .toStringAsFixed(8);
 
                                         return BalanceCardBtc(
                                           balance: formattedBalance,
                                           confirmedBalance: confirmedBalanceStr,
-                                          unconfirmedBalance: unconfirmedBalanceStr,
+                                          unconfirmedBalance:
+                                              unconfirmedBalanceStr,
                                           defaultUnit: BitcoinUnits.SAT,
                                         );
                                       }),

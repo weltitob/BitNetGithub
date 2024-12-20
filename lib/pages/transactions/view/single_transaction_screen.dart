@@ -1014,7 +1014,6 @@ class _AddressItemState extends State<AddressItem> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: widget.showDetails ? null : AppTheme.cardPadding * 6.5.w,
                               child: Row(
                                 children: [
                                   if (widget.isOwned) ...[
@@ -1023,19 +1022,12 @@ class _AddressItemState extends State<AddressItem> {
                                         child: Text('You ~ ', style: Theme.of(context).textTheme.titleLarge))
                                   ],
                                   SizedBox(
-                                    width: widget.showDetails
-                                        ? widget.isOwned
-                                            ? AppTheme.cardPadding * 9.w
-                                            : AppTheme.cardPadding * 10.w
-                                        : widget.isOwned
-                                            ? AppTheme.cardPadding * 5.w
-                                            : AppTheme.cardPadding * 6.5.w,
                                     child: Text(
                                       '${widget.address}',
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context).textTheme.titleMedium,
                                       softWrap: widget.showDetails,
-                                      maxLines: widget.showDetails ? 3 : null,
+                                      maxLines: widget.showDetails ? 3 : 1,
                                     ),
                                   ),
                                 ],

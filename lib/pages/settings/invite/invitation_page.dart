@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -46,6 +47,7 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
           text: L10n.of(context)!.inviteContact,
@@ -69,35 +71,47 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                   height: 400,
                   child: Center(child: dotProgress(context)));
             }
-            return Column(
-              children: [
-                BitNetListTile(
-                  leading: const Icon(Icons.share_outlined),
-                  text: L10n.of(context)!.inviteContact,
-                  trailing: const Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: AppTheme.iconSize * 0.75,
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // BitNetListTile(
+                  //   leading: const Icon(Icons.share_outlined),
+                  //   text: L10n.of(context)!.inviteContact,
+                  //   trailing: const Icon(
+                  //     Icons.arrow_forward_ios_rounded,
+                  //     size: AppTheme.iconSize * 0.75,
+                  //   ),
+                  //   onTap: () {
+                  //   },
+                  // ),
+                  const SizedBox(height: AppTheme.cardPadding * 3),
+                  Padding(
+                    padding: const EdgeInsets.all(AppTheme.cardPadding),
+                    child: Text( L10n.of(context)!.inviteDescription,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  onTap: () {
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(AppTheme.cardPadding),
-                  child: Text( L10n.of(context)!.inviteDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    child: Text("Invitation Keys",
+                        style: Theme.of(context).textTheme.titleSmall,
+                        textAlign: TextAlign.start
+                    ),
                   ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final verificationkey = snapshot.data![index];
-                    return _KeyItem(verificationkey: verificationkey);
-                  },
-                ),
-              ],
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final verificationkey = snapshot.data![index];
+                      return _KeyItem(verificationkey: verificationkey);
+                    },
+                  ),
+                ],
+              ),
             );
           },
         ),
@@ -159,30 +173,32 @@ class _KeyItemState extends State<_KeyItem> {
         ).copyWith(
           bottom: AppTheme.cardPadding,
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusMid,
-          color: Theme.of(context).colorScheme.secondaryContainer,
-        ),
-        child: Row(
-          children: <Widget>[
-            widget.verificationkey.used
-                ? buildUserResult()
-                : Icon(
-                    Icons.key,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    size: AppTheme.iconSize,
-                  ),
-            const SizedBox(width: AppTheme.cardPadding),
-            Text(widget.verificationkey.code,
-                style: Theme.of(context).textTheme.titleSmall),
-            const Spacer(),
-            widget.verificationkey.used
-                ? Text("used", style: Theme.of(context).textTheme.titleSmall)
-                : Text(_free, style: Theme.of(context).textTheme.titleSmall),
-          ],
+
+        child: GlassContainer(
+          borderRadius: AppTheme.cardRadiusSmall,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding,
+            ),
+            child: Row(
+              children: <Widget>[
+                widget.verificationkey.used
+                    ? buildUserResult()
+                    : Icon(
+                        Icons.key,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        size: AppTheme.iconSize,
+                      ),
+                const SizedBox(width: AppTheme.cardPadding),
+                Text(widget.verificationkey.code,
+                    style: Theme.of(context).textTheme.titleSmall),
+                const Spacer(),
+                widget.verificationkey.used
+                    ? Text("used", style: Theme.of(context).textTheme.titleSmall)
+                    : Text(_free, style: Theme.of(context).textTheme.titleSmall),
+              ],
+            ),
+          ),
         ),
       ),
     );
