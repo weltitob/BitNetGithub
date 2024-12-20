@@ -48,7 +48,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(context: context, hasBackButton: false, actions: [
-          const PopUpLangPickerWidget(),
+          // const PopUpLangPickerWidget(),
         ]),
         context: context,
         backgroundColor: Theme.of(context).colorScheme.surface,

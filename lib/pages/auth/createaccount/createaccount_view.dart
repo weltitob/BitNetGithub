@@ -53,7 +53,9 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   context.go('/authhome');
                 }
               },
-              actions: [const PopUpLangPickerWidget()]),
+              actions: [
+                // const PopUpLangPickerWidget()
+              ]),
           body: Form(
             key: widget.controller.form,
             child: ListView(

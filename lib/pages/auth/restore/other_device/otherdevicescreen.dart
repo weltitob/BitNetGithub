@@ -56,7 +56,9 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            actions: [const PopUpLangPickerWidget()]),
+            actions: [
+              // const PopUpLangPickerWidget()
+            ]),
         body: Stack(
           children: [
             Padding(

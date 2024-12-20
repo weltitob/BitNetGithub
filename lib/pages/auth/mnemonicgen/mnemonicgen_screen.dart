@@ -32,7 +32,9 @@ class MnemonicGenScreen extends StatelessWidget {
         },
         text: L10n.of(context)!.yourPassowrdBackup,
         context: context,
-        actions: [const PopUpLangPickerWidget()],
+        actions: [
+          // const PopUpLangPickerWidget()
+        ],
       ),
       body: Stack(
         children: [

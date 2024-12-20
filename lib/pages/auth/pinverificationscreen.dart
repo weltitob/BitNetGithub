@@ -137,7 +137,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           // text:
           context: context,
           actions: [
-            const PopUpLangPickerWidget()
+            // const PopUpLangPickerWidget()
           ]),
       // body: Container(),
       // key: scaffoldKey,

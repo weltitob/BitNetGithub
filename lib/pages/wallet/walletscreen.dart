@@ -236,7 +236,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               topRight:
                                                   AppTheme.cornerRadiusBig,
                                             ),
-                                            child: const Settings(),
+                                            child: Settings(),
                                           ),
                                         ),
                                       );

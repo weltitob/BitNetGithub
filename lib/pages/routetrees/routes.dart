@@ -476,7 +476,7 @@ class AppRoutes {
         GoRoute(
           path: '/settings',
           redirect: webRedirect,
-          builder: (ctx, state) => const Settings(),
+          builder: (ctx, state) => Settings(),
           routes: _settingsRoutes,
         ),
 
