@@ -1,9 +1,6 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/import_account.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -36,7 +33,8 @@ class WalletScreen extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
-    WalletsController walletController = Get.find<WalletsController>();
+    WalletsController walletController = Get.put(WalletsController());
+    ProfileController profileController = Get.put(ProfileController());
     // We'll introduce a local state using a StatefulBuilder.
     // Alternatively, you could create a StatefulWidget from scratch.
     return bitnetScaffold(
@@ -71,12 +69,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                                   Avatar(
                                       size: AppTheme.cardPadding * 2.5.h,
                                       mxContent: Uri.parse(
-                                          Get.find<ProfileController>()
+                                          profileController
                                               .userData
                                               .value
                                               .profileImageUrl),
                                       type: profilePictureType.lightning,
-                                      isNft: Get.find<ProfileController>()
+                                      isNft: profileController
                                           .userData
                                           .value
                                           .nft_profile_id
@@ -261,26 +259,27 @@ class WalletScreen extends GetWidget<WalletsController> {
                               CardSwiper(
                                 backCardOffset: const Offset(
                                     0, -AppTheme.elementSpacing * 1.25),
-                                numberOfCardsDisplayed: 3,
+                                numberOfCardsDisplayed: 2, // Updated from 3 to 2
                                 padding: const EdgeInsets.only(
                                     left: AppTheme.cardPadding,
                                     right: AppTheme.cardPadding,
                                     top: AppTheme.cardPadding),
                                 scale: 1.0,
-                                initialIndex: controller.selectedCard.value ==
-                                        'onchain'
-                                    ? 2
-                                    : controller.selectedCard.value == 'fiat'
-                                        ? 1
-                                        : 0,
-                                cardsCount: 3,
+                                initialIndex: controller.selectedCard.value == 'onchain'
+                                    ? 1 // Updated index after removing FiatCard
+                                // : controller.selectedCard.value == 'fiat'
+                                //     ? 1
+                                    : 0,
+                                cardsCount: 2, // Updated from 3 to 2
                                 onSwipe: (int index, int? previousIndex,
                                     CardSwiperDirection direction) {
-                                  controller.setSelectedCard(previousIndex == 2
-                                      ? 'onchain'
-                                      : previousIndex == 1
-                                          ? 'fiat'
-                                          : 'lightning');
+                                  controller.setSelectedCard(
+                                      previousIndex == 1
+                                          ? 'onchain'
+                                      // : previousIndex == 1
+                                      //     ? 'fiat'
+                                          : 'lightning'
+                                  );
                                   return true;
                                 },
                                 cardBuilder: (context, index, percentThresholdX,
@@ -309,17 +308,19 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         );
                                       }),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        context.go('/wallet/fiatcard');
-                                      },
-                                      child: const FiatCard(),
-                                    ),
+                                    // // Uncomment the below GestureDetector to reactivate the FiatCard
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     context.go('/wallet/fiatcard');
+                                    //   },
+                                    //   child: const FiatCard(),
+                                    // ),
                                     GestureDetector(
                                       onTap: () {
                                         context.go('/wallet/bitcoincard');
                                       },
                                       child: Obx(() {
+                                        final logger = Get.find<LoggerService>();
                                         // Extracting reactive variables from the controller
                                         final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
                                         final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
@@ -327,6 +328,8 @@ class WalletScreen extends GetWidget<WalletsController> {
 
                                         // Safely parse the string balances to doubles
                                         final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
+                                        logger.i("confirmedBalanceStr: $confirmedBalanceStr");
+                                        logger.i("predictedBtcBalance: $predictedBtcBalance");
 
                                         // Format the predicted balance to 8 decimal places
                                         final formattedBalance = predictedBtcBalance.toStringAsFixed(8);

@@ -28,7 +28,7 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                 Text(
                   "Allgemeine Geschäftsbedingungen",
                   maxLines: 2,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(
                   height: AppTheme.cardPadding,
@@ -45,8 +45,8 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                 Text(
                   "Diese Geschäftsbedingungen"
                       "regeln die Nutzung der Bitcoin-Wallet-App"
-                      "(im Folgenden BitNet), die von der BitNet GmbH bereitgestellt wird."
-                      "Durch die Nutzung der App erklären Sie sich mit diesen"
+                      " (im Folgenden BitNet), die von der BitNet GmbH bereitgestellt wird."
+                      " Durch die Nutzung der App erklären Sie sich mit diesen"
                       "Geschäftsbedingungen einverstanden.",
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
@@ -171,19 +171,19 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
-                  "BitNet GmbH",
+                  "BitNet LLC",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
-                  "Fallenbrunnen 12",
+                  "Fünf Linden 42",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
-                  "88405 Friedrichshafen",
+                  "88400 Biberach an der Riss",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
-                  "Deutschland",
+                  "Germany",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(

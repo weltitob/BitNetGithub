@@ -1089,7 +1089,7 @@ class _AddressItemState extends State<AddressItem> {
                                         child: Text(
                                           coin.coin ?? true
                                               ? widget.unitModel.amount.toString()
-                                              : "$currencyEquivalent${getCurrency(currency!)}",
+                                              : "${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}",
                                           overflow: TextOverflow.ellipsis,
                                           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                               color: widget.direction == TransactionDirection.received
@@ -1257,7 +1257,7 @@ class _AddressItemState extends State<AddressItem> {
                                     child: Text(
                                       coin.coin ?? true
                                           ? widget.unitModel.amount.toString()
-                                          : "$currencyEquivalent${getCurrency(currency!)}",
+                                          : "${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}",
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                           color: widget.direction == TransactionDirection.received
@@ -1278,7 +1278,6 @@ class _AddressItemState extends State<AddressItem> {
                       ],
                     ),
                   ),
-                  Divider()
                 ]
               ],
             ),

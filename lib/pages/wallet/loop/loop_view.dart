@@ -104,6 +104,7 @@ class _LoopScreenState extends State<LoopScreen> {
                                   // Extracting reactive variables from the controller
                                   final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
                                   final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
+
                                   final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
 
                                   // Safely parse the string balances to doubles

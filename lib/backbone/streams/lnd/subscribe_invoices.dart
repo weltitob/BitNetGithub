@@ -20,7 +20,7 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
 
   // Read the macaroon file and convert it to a hexadecimal string
   //this needs to be removed before relase
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
 
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
