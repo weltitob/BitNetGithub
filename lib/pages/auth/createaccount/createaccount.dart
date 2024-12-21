@@ -59,10 +59,14 @@ class CreateAccountController extends State<CreateAccount> {
         // logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
         // // context.go("/persona)")
 
-
         context.go(
-          Uri(path: '/authhome/pinverification/persona').toString(),
+          Uri(path: '/').toString(),
         );
+
+        //
+        // context.go(
+        //   Uri(path: '/authhome/pinverification/persona').toString(),
+        // );
 
         // context.go(
         //   Uri(path: '/authhome/pinverification/persona', queryParameters: {

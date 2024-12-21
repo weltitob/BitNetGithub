@@ -11,6 +11,7 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
@@ -34,6 +35,7 @@ class _BitcoinCardInformationScreenState
   bool isShowMore = false;
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
+  WalletsController walletController = Get.find<WalletsController>();
 
   late ScrollController scrollController;
 
@@ -76,7 +78,25 @@ class _BitcoinCardInformationScreenState
                   height: AppTheme.cardPadding * 7.5,
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
-                  child: const BalanceCardBtc(),
+                  child:  Obx(() {
+                    // Extracting reactive variables from the controller
+                    final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
+                    final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
+                    final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+
+                    // Safely parse the string balances to doubles
+                    final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
+
+                    // Format the predicted balance to 8 decimal places
+                    final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
+
+                    return BalanceCardBtc(
+                      balance: formattedBalance,
+                      confirmedBalance: confirmedBalanceStr,
+                      unconfirmedBalance: unconfirmedBalanceStr,
+                      defaultUnit: BitcoinUnits.SAT,
+                    );
+                  }),
                 ),
               ),
             ),

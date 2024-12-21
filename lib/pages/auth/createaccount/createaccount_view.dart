@@ -3,12 +3,10 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/country_picker_widget.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
-import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,8 +38,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
         return bitnetScaffold(
           margin: 
-              const EdgeInsets.symmetric(horizontal: 0)
-             ,
+              const EdgeInsets.symmetric(horizontal: 0),
           extendBodyBehindAppBar: true,
           context: context,
           gradientColor: Colors.black,
@@ -53,7 +50,9 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   context.go('/authhome');
                 }
               },
-              actions: [const PopUpLangPickerWidget()]),
+              actions: [
+                // const PopUpLangPickerWidget()
+              ]),
           body: Form(
             key: widget.controller.form,
             child: ListView(
@@ -66,9 +65,6 @@ class _CreateAccountViewState extends State<CreateAccountView>
                 SizedBox(
                   height: AppTheme.cardPadding * 2.h,
                 ),
-
-
-
                 // Container(
                 //   height: AppTheme.cardPadding * 5.h,
                 //   child: Text(

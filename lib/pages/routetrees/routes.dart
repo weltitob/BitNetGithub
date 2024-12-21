@@ -137,6 +137,7 @@ class AppRoutes {
             return NftProductScreen(routerState: state);
           },
         ),
+
         GoRoute(
             path: '/feed',
             builder: (ctx, state) => BottomNav(routerState: state),
@@ -163,6 +164,7 @@ class AppRoutes {
             redirect: webRedirect,
             builder: (ctx, state) =>
                 AgbsAndImpressumScreen(key: state.pageKey)),
+
         GoRoute(
             path: "/comingsoon",
             redirect: webRedirect,
@@ -475,7 +477,7 @@ class AppRoutes {
         GoRoute(
           path: '/settings',
           redirect: webRedirect,
-          builder: (ctx, state) => const Settings(),
+          builder: (ctx, state) => Settings(),
           routes: _settingsRoutes,
         ),
 

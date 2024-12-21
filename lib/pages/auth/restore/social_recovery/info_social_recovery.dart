@@ -57,7 +57,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
             Navigator.of(context).pop();
           },
           actions: [
-            const PopUpLangPickerWidget(),
+            // const PopUpLangPickerWidget(),
           ],
         ),
         body: Padding(

@@ -19,6 +19,8 @@ Future<RestResponse> listUnspent(String account) async {
   String url = 'https://$restHost/v2/wallet/utxos';
 
   ByteData byteData = await loadAdminMacaroonAsset();
+
+
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

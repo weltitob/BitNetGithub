@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/import_account.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -19,9 +14,7 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
-import 'package:bitnet/models/bitcoin/walletkit/output.dart';
-import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -44,6 +37,8 @@ class WalletScreen extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
+    WalletsController walletController = Get.put(WalletsController());
+    ProfileController profileController = Get.put(ProfileController());
     // We'll introduce a local state using a StatefulBuilder.
     // Alternatively, you could create a StatefulWidget from scratch.
     return bitnetScaffold(
@@ -75,34 +70,17 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Row(
                                 children: [
-                                  Avatar(
-                                      onTap: () async {
-                                        PrivateData data = await getPrivateData(
-                                            Auth().currentUser!.uid);
-                                        String mnemonic = data.mnemonic;
-                                        HDWallet wallet =
-                                            HDWallet.fromMnemonic(mnemonic);
-                                        RawTransactionData txData =
-                                            RawTransactionData(
-                                                inputs: [],
-                                                outputs: Outputs(outputs: {}));
-
-                                        BitcoinSigner signer =
-                                            BitcoinSigner.fromKeyBytes(
-                                                hex.decode(wallet.privkey));
-                                      },
-                                      size: AppTheme.cardPadding * 2.5.h,
-                                      mxContent: Uri.parse(
-                                          Get.find<ProfileController>()
-                                              .userData
-                                              .value
-                                              .profileImageUrl),
-                                      type: profilePictureType.lightning,
-                                      isNft: Get.find<ProfileController>()
-                                          .userData
-                                          .value
-                                          .nft_profile_id
-                                          .isNotEmpty),
+                                  profileController.isNull
+                                      ? Avatar(
+                                          isNft: false,
+                                        )
+                                      : Avatar(
+                                          size: AppTheme.cardPadding * 2.5.h,
+                                          mxContent: Uri.parse(profileController
+                                              .userData.value.profileImageUrl),
+                                          type: profilePictureType.lightning,
+                                          isNft: profileController.userData
+                                              .value.nft_profile_id.isNotEmpty),
                                   SizedBox(
                                     width: AppTheme.elementSpacing * 1.25.w,
                                   ),
@@ -262,7 +240,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               topRight:
                                                   AppTheme.cornerRadiusBig,
                                             ),
-                                            child: const Settings(),
+                                            child: Settings(),
                                           ),
                                         ),
                                       );
@@ -283,7 +261,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                               CardSwiper(
                                 backCardOffset: const Offset(
                                     0, -AppTheme.elementSpacing * 1.25),
-                                numberOfCardsDisplayed: 3,
+                                numberOfCardsDisplayed:
+                                    2, // Updated from 3 to 2
                                 padding: const EdgeInsets.only(
                                     left: AppTheme.cardPadding,
                                     right: AppTheme.cardPadding,
@@ -291,18 +270,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 scale: 1.0,
                                 initialIndex: controller.selectedCard.value ==
                                         'onchain'
-                                    ? 2
-                                    : controller.selectedCard.value == 'fiat'
-                                        ? 1
-                                        : 0,
-                                cardsCount: 3,
+                                    ? 1 // Updated index after removing FiatCard
+                                    // : controller.selectedCard.value == 'fiat'
+                                    //     ? 1
+                                    : 0,
+                                cardsCount: 2, // Updated from 3 to 2
                                 onSwipe: (int index, int? previousIndex,
                                     CardSwiperDirection direction) {
-                                  controller.setSelectedCard(previousIndex == 2
+                                  controller.setSelectedCard(previousIndex == 1
                                       ? 'onchain'
-                                      : previousIndex == 1
-                                          ? 'fiat'
-                                          : 'lightning');
+                                      // : previousIndex == 1
+                                      //     ? 'fiat'
+                                      : 'lightning');
                                   return true;
                                 },
                                 cardBuilder: (context, index, percentThresholdX,
@@ -312,19 +291,60 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       onTap: () {
                                         context.go('/wallet/lightningcard');
                                       },
-                                      child: const BalanceCardLightning(),
+                                      child: Obx(() {
+                                        // Extracting reactive variables from the controller
+
+                                        final confirmedBalanceStr =
+                                            walletController
+                                                .lightningBalance.value.balance;
+                                        final unconfirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.unconfirmedBalance;
+
+                                        return BalanceCardLightning(
+                                          balance: confirmedBalanceStr,
+                                          confirmedBalance: confirmedBalanceStr,
+                                          defaultUnit: BitcoinUnits
+                                              .SAT, // You can adjust this as needed
+                                        );
+                                      }),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        context.go('/wallet/fiatcard');
-                                      },
-                                      child: const FiatCard(),
-                                    ),
+                                    // // Uncomment the below GestureDetector to reactivate the FiatCard
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     context.go('/wallet/fiatcard');
+                                    //   },
+                                    //   child: const FiatCard(),
+                                    // ),
                                     GestureDetector(
                                       onTap: () {
                                         context.go('/wallet/bitcoincard');
                                       },
-                                      child: const BalanceCardBtc(),
+                                      child: Obx(() {
+                                        final logger =
+                                            Get.find<LoggerService>();
+                                        // Extracting reactive variables from the controller
+
+                                        final confirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.confirmedBalance;
+                                        final unconfirmedBalanceStr =
+                                            walletController.onchainBalance
+                                                .value.unconfirmedBalance;
+
+                                        logger.i(
+                                            "Confirmed Balance: $confirmedBalanceStr");
+                                        logger.i(
+                                            "Unconfirmed Balance: $unconfirmedBalanceStr");
+
+                                        return BalanceCardBtc(
+                                          balance: confirmedBalanceStr,
+                                          confirmedBalance: confirmedBalanceStr,
+                                          unconfirmedBalance:
+                                              unconfirmedBalanceStr,
+                                          defaultUnit: BitcoinUnits.SAT,
+                                        );
+                                      }),
                                     ),
                                   ];
                                   return cards[index];
@@ -350,12 +370,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                       //   await controller.getOnchainBalance();
                       // }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      // LongButtonWidget(
-                      //   title: "getOnchainTransactions",
-                      //   onTap: () async {
-                      //     await controller.getOnchainTransactions();
-                      //   },
-                      // ),
+                      LongButtonWidget(
+                        title: "list Unspent",
+                        onTap: () async {
+                          dynamic restResponseListUnspent = await listUnspent();
+                        },
+                      ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "subscribeToOnchainBalance ",

@@ -176,9 +176,9 @@ class FeedController extends GetxController
             if (ndef.cachedMessage != null) {
               String message = String.fromCharCodes(
                   ndef.cachedMessage!.records.first.payload);
-              print(
-                message.substring(3, message.length),
-              );
+              // print(
+              //   message.substring(3, message.length),
+              // );
               QRScannerController().onQRCodeScanned(
                   message.substring(3, message.length), context);
             }

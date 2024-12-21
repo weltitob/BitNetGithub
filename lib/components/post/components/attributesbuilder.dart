@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/PropertieList.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 // USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
 class AttributesBuilder extends StatelessWidget {
@@ -18,9 +20,10 @@ class AttributesBuilder extends StatelessWidget {
     List<Map<String, String>> propertyList = [];
 
     try {
+      final logger = Get.find<LoggerService>();
       // Ensuring the JSON string is properly formatted
       final List<dynamic> jsonData = json.decode(attributes);
-      print(jsonData);
+      logger.i("Json Data: $jsonData");
       propertyList = jsonData.map((item) => {
         'trait_type': item['trait_type'] as String,
         'value': item['value'] as String

@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   intl: any
   flutter_localized_locales: ^2.0.5
   get:

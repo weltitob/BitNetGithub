@@ -97,6 +97,8 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
     scrollController.dispose();
   }
 
+  WalletsController walletController = Get.find<WalletsController>();
+
   @override
   Widget build(BuildContext context) {
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
@@ -173,26 +175,41 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                         child: Container(
                           height: AppTheme.cardPadding * 7.5,
                           padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                          child: const BalanceCardLightning(),
+                          child: Obx(() {
+                            // Extracting reactive variables from the controller
+                            final predictedBalanceStr = walletController.predictedLightningBalance.value;
+                            final confirmedBalanceStr = walletController.lightningBalance.value.balance;
+
+                            // Safely parse the string balances to doubles
+                            final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
+                            // Format the predicted balance to 8 decimal places
+                            final formattedBalance = predictedBalance.toStringAsFixed(8);
+
+                            return BalanceCardLightning(
+                              balance: formattedBalance,
+                              confirmedBalance: confirmedBalanceStr,
+                              defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                            );
+                          }),
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                      child: BitNetListTile(
-                        text: "Possible Capacity", //this is the inbound liquidity of the users node
-                        trailing: loadedLiquidity
-                            ? liquidity == -1
-                                ? const Text('Error')
-                                : AmountPreviewer(
-                                    unitModel: liquidityUnitModel!,
-                                    textStyle: Theme.of(context).textTheme.bodyMedium!,
-                                    textColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                                  )
-                            : dotProgress(context),
-                      ),
-                    )),
+                    // SliverToBoxAdapter(
+                    //     child: Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    //   child: BitNetListTile(
+                    //     text: "Possible Capacity", //this is the inbound liquidity of the users node
+                    //     trailing: loadedLiquidity
+                    //         ? liquidity == -1
+                    //             ? const Text('Error')
+                    //             : AmountPreviewer(
+                    //                 unitModel: liquidityUnitModel!,
+                    //                 textStyle: Theme.of(context).textTheme.bodyMedium!,
+                    //                 textColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                    //               )
+                    //         : dotProgress(context),
+                    //   ),
+                    // )),
                     SliverToBoxAdapter(
                         child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -206,8 +223,10 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                       ),
                     )),
                     transactions.isEmpty
-                        ? const SliverToBoxAdapter(
-                            child: Text('Loading'),
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                                height: AppTheme.cardPadding * 8,
+                                child: Center(child: dotProgress(context))),
                           )
                         : Transactions(
                             hideLightning: true,

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
@@ -296,7 +297,7 @@ class HomeController extends BaseController {
         if (data['projected-block-transactions']['blockTransactions'] != null) {
           blockTransactions.clear();
           blockTransactions = data['projected-block-transactions']['blockTransactions'];
-          print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
+          // print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
         }
         if (data['projected-block-transactions']['delta']['added'] != null) {
           blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
@@ -306,9 +307,9 @@ class HomeController extends BaseController {
           List remove = data['projected-block-transactions']['delta']['removed'];
           for (int i = 0; i < blockTransactions.length; i++) {
             String e = blockTransactions[i].first;
-            print(remove.contains(e));
+            // print(remove.contains(e));
             if (remove.contains(e)) {
-              print('remove');
+              // print('remove');
               blockTransactions.removeAt(i);
             }
           }
@@ -372,8 +373,7 @@ class HomeController extends BaseController {
   }
 
   callApiWithDelay() async {
-    print('callapi with delay called ');
-
+    // print('callapi with delay called ');
     // timer =
     //     Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
     try {
@@ -404,6 +404,7 @@ class HomeController extends BaseController {
   }
 
   Future<int?> getBlockHeight(String txId) async {
+    final logger = Get.find<LoggerService>();
     loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
@@ -413,10 +414,10 @@ class HomeController extends BaseController {
           jsonEncode(response.data),
         ),
       );
-      print(txDetailsConfirmed!.height);
+      // print(txDetailsConfirmed!.height);
       return txDetailsConfirmed!.height;
     } catch (e) {
-      print(e);
+      logger.e(e);
     }
     return null;
   }
@@ -556,9 +557,8 @@ class HomeController extends BaseController {
           await FirebaseFirestore.instance.collection('postsNew').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
 
       return querySnapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>)).toList();
-    } catch (e, tr) {
-      print(e);
-      print(tr);
+    } catch (e) {
+      logger.e(e);
       return null;
     }
   }
@@ -719,8 +719,8 @@ class HomeController extends BaseController {
 
     final likeCountMap = await getMostLikedPostIds();
     final clickCountMap = await getMostClickedPostIds();
-    print(likeCountMap);
-    print(clickCountMap);
+    // print(likeCountMap);
+    // print(clickCountMap);
     print('above is like and click data');
 
     // Combine and count total interactions
@@ -738,7 +738,7 @@ class HomeController extends BaseController {
     final sortedPostIds = totalCountMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     final sortedRelevantPostIds = sortedPostIds.map((entry) => entry.key).toList();
-    print(sortedRelevantPostIds);
+    // print(sortedRelevantPostIds);
 
     if (sortedRelevantPostIds.isEmpty) {
       yield [];
@@ -753,11 +753,11 @@ class HomeController extends BaseController {
         i,
         i + chunkSize > sortedRelevantPostIds.length ? sortedRelevantPostIds.length : i + chunkSize,
       );
-      print(chunk);
+      // print(chunk);
 
       final snapshot = await FirebaseFirestore.instance.collection('postsNew').where('postId', whereIn: chunk).get();
       allPosts.addAll(snapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data())).toList());
-      print(allPosts);
+      // print(allPosts);
     }
 
     yield allPosts;

@@ -38,11 +38,11 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
     logger.i('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(response.data);
+      logger.i("Successfully published transaction ${response.data}");
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully published transaction",
-          data: response.data);
+          data: response.data.to);
     } else {
       logger.e(
           'Failed to load data (publishtransaction.dart): ${response.statusCode}, ${response.data}');

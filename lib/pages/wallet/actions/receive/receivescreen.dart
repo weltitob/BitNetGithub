@@ -103,7 +103,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
 
     controller.currController = TextEditingController();
     controller.getInvoice(0, "");
-    controller.getTaprootAddress();
+    controller.getBtcAddress();
     //im not sure if the timer should reset each time the page is open or if it is a bug. (assuming it is a bug for now.)
     if ((controller.duration.inSeconds <= 0)) {
       controller.duration = const Duration(minutes: 20);
@@ -272,7 +272,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                           buttonType: ButtonType.transparent,
                           iconData: FontAwesomeIcons.refresh,
                           onTap: () {
-                            controller.getTaprootAddress();
+                            controller.getBtcAddress();
                           },
                         ),
                 ),

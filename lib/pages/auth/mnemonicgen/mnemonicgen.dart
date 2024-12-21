@@ -98,32 +98,22 @@ class MnemonicController extends State<MnemonicGen> {
       HDWallet hdWallet = await createUserWallet(mnemonicString);
 
       // Master public key (compressed)
-      String? masterPublicKey = hdWallet.pubkey;
+      String? masterPublicKey = await hdWallet.pubkey;
       logger.i('Master Public Key: $masterPublicKey\n');
-      String? masterPrivateKey = hdWallet.privkey;
-      logger.i('Master Private Key: $masterPrivateKey\n');
-
       // Set the DID (Decentralized Identifier) as the public key hex
       did = masterPublicKey;
+      //Master private key
+      String? masterPrivateKey = await hdWallet.privkey;
+      logger.i('Master Private Key: $masterPrivateKey\n');
+
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
-      final privateData = PrivateData(did: did, mnemonic: mnemonicString);
+      final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
 
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
 
-      // Begin user registration process
-      final litdController = Get.find<LitdController>();
-      logger.i("AWS ECS: Registering and setting up user...");
-
-      // litdController.isLoading.value = true;
-      // final String shortDid = did.substring(0, 12);
-      // final registrationResponse = await litdController.registerAndSetupUser(shortDid, mnemonicString);
-      //
-      // litdController.isLoading.value = false;
-
-      // Update the state (if needed)
       setState(() {
         // Placeholder for any UI updates
       });

@@ -45,7 +45,7 @@ Future<RestResponse> finalizePsbt(String funded_psbt, String acc) async {
     final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.post(url: url, headers: headers, data: data);
-    logger.i('Raw Response finalize psbt: ${response.data}');
+    logger.i('Raw Response Finazlize PSBT: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);

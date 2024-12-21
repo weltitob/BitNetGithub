@@ -30,33 +30,36 @@ class _LastTransactionsState extends State<LastTransactions> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
-      height: 600,
-      width: 900,
-      //contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
-        child: Column(
-          children: [
-            TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(text: L10n.of(context)!.recentTransactions),
-                Tab(text: L10n.of(context)!.recentReplacements),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  SingleChildScrollView(child: RecentTransactions(ownedTransactions: widget.ownedTransactions)),
-                  SingleChildScrollView(child: RecentReplacements(ownedTransactions: widget.ownedTransactions)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Container();
+
+
+    //   GlassContainer(
+    //   height: 600,
+    //   width: 900,
+    //   //contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
+    //   child: Padding(
+    //     padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+    //     child: Column(
+    //       children: [
+    //         TabBar(
+    //           controller: _tabController,
+    //           tabs: [
+    //             Tab(text: L10n.of(context)!.recentTransactions),
+    //             Tab(text: L10n.of(context)!.recentReplacements),
+    //           ],
+    //         ),
+    //         Expanded(
+    //           child: TabBarView(
+    //             controller: _tabController,
+    //             children: [
+    //               SingleChildScrollView(child: RecentTransactions(ownedTransactions: widget.ownedTransactions)),
+    //               SingleChildScrollView(child: RecentReplacements(ownedTransactions: widget.ownedTransactions)),
+    //             ],
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }

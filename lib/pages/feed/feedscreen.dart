@@ -59,7 +59,6 @@ class _FeedScreenState extends State<FeedScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
-    print(controller.searchResultsFuture);
     return KeyboardSizeProvider(
       child: bitnetScaffold(
         body: NestedScrollView(

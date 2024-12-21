@@ -74,7 +74,7 @@ Future<SubServersStatus?> fetchSubServerStatus() async {
 
   // Load the macaroon from assets
   try {
-    ByteData byteData = await loadMacaroonAsset();
+    ByteData byteData = await loadAdminMacaroonAsset();
     List<int> bytes = byteData.buffer.asUint8List();
     String macaroon = bytesToHex(bytes);
 

@@ -183,7 +183,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                     child: const AppBarActionButton(
                       iconData: Icons.info_outline_rounded,
                     )),
-                const PopUpLangPickerWidget(),
+                // const PopUpLangPickerWidget(),
               ],
               text: L10n.of(context)!.socialRecovery,
               context: context,

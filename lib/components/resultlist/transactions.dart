@@ -341,32 +341,42 @@ class _TransactionsState extends State<Transactions>
       }
     });
 
-    getLoopOperations().then((value) {
-      futuresCompleted++;
-      if (!value) {
-        errorCount++;
-        errorMessage = L10n.of(context)!.failedToLoadOperations;
-      }
-
-      if (futuresCompleted == 4) {
-        updateDataWithNew();
-
-        setState(() {
-          transactionsLoaded = true;
-          heavyFiltering(sticky: true);
-        });
-        handlePageLoadErrors(errorCount, errorMessage, context);
-      }
-    });
+    // getLoopOperations().then((value) {
+    //   futuresCompleted++;
+    //   if (!value) {
+    //     errorCount++;
+    //     errorMessage = L10n.of(context)!.failedToLoadOperations;
+    //   }
+    //
+    //   if (futuresCompleted == 4) {
+    //     updateDataWithNew();
+    //
+    //     setState(() {
+    //       transactionsLoaded = true;
+    //       heavyFiltering(sticky: true);
+    //     });
+    //     handlePageLoadErrors(errorCount, errorMessage, context);
+    //   }
+    // });
   }
 
   void handlePageLoadErrors(
       int errorCount, String errorMessage, BuildContext context) {
+
+    final logger = Get.find<LoggerService>();
+
     if (errorCount == 1) {
       showOverlay(context, errorMessage, color: AppTheme.errorColor);
+      logger.e("Error loading transactions: $errorMessage");
+
     } else if (errorCount > 1) {
       showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
           color: AppTheme.errorColor);
+      //for each error print
+      for (int i = 0; i < errorCount; i++) {
+        logger.e("Error loading transactions: $errorMessage");
+      }
+
     }
   }
 

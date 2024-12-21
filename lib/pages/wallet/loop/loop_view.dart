@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -16,10 +17,8 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class LoopScreen extends StatefulWidget {
-  final LoopController controller;
   const LoopScreen({
     super.key,
-    required this.controller,
   });
 
   @override
@@ -28,6 +27,33 @@ class LoopScreen extends StatefulWidget {
 
 class _LoopScreenState extends State<LoopScreen> {
   final loopGetController = Get.put(LoopGetxController());
+
+  WalletsController walletController = Get.find<WalletsController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WalletsController walletController = Get.find<WalletsController>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      walletController.predictedLightningBalance.value =
+          walletController.lightningBalance.value.balance;
+
+      walletController.predictedBtcBalance.value =
+          walletController.onchainBalance.value.confirmedBalance;
+
+      setState(() {});
+      // Add listener to FocusNode
+    });
+
+
+    loopGetController.amtNode.addListener(() {
+      if (loopGetController.amtNode.hasFocus) {
+        loopGetController.scrollToBottom();
+        print('Keyboard is open');
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -44,28 +70,7 @@ class _LoopScreenState extends State<LoopScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WalletsController walletController = Get.find<WalletsController>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      walletController.predictedLightningBalance.value =
-          walletController.lightningBalance.value.balance;
-      walletController.predictedBtcBalance.value =
-          walletController.onchainBalance.value.confirmedBalance;
-      setState(() {});
-      // Add listener to FocusNode
-    });
-    loopGetController.amtNode.addListener(() {
-      if (loopGetController.amtNode.hasFocus) {
-        loopGetController.scrollToBottom();
-        print('Keyboard is open');
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    WalletsController walletController = Get.find<WalletsController>();
     return PopScope(
       onPopInvoked: (bool bool) {
         if (bool) {
@@ -101,52 +106,92 @@ class _LoopScreenState extends State<LoopScreen> {
                                 height: AppTheme.cardPadding * 7.5,
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding),
-                                child: Obx(() => BalanceCardBtc(
-                                    balance:
-                                        double.parse(walletController.predictedBtcBalance.value)
-                                            .toStringAsFixed(8),
+                                child:
+                                Obx(() {
+                                  final logger = Get.find<LoggerService>();
+                                  // Extracting reactive variables from the controller
+                                  final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
+                                  final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
+
+                                  final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+
+                                  // Safely parse the string balances to doubles
+                                  final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
+                                  final confirmedBalance = double.tryParse(confirmedBalanceStr) ?? 0.0;
+                                  final unconfirmedBalance = double.tryParse(unconfirmedBalanceStr) ?? 0.0;
+
+                                  logger.i('predictedBtcBalance: $predictedBtcBalance');
+                                  logger.i('confirmedBalance: $confirmedBalance');
+                                  logger.i('unconfirmedBalance: $unconfirmedBalance');
+
+                                  // Determine text color based on balance comparison
+                                  Color? textColor;
+                                  if (confirmedBalance < predictedBtcBalance) {
+                                    textColor = AppTheme.successColor;
+                                  } else if (confirmedBalance > predictedBtcBalance) {
+                                    textColor = AppTheme.errorColor;
+                                  } else {
+                                    textColor = null;
+                                  }
+
+                                  // Format the predicted balance to 8 decimal places
+                                  final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
+
+                                  return BalanceCardBtc(
+                                    balance: formattedBalance,
+                                    confirmedBalance: confirmedBalanceStr,
+                                    unconfirmedBalance: unconfirmedBalanceStr,
                                     defaultUnit: BitcoinUnits.SAT,
-                                    textColor: double.parse(walletController
-                                                .onchainBalance
-                                                .value
-                                                .confirmedBalance) <
-                                            double.parse(walletController
-                                                .predictedBtcBalance.value)
-                                        ? AppTheme.successColor
-                                        : double.parse(walletController
-                                                    .onchainBalance
-                                                    .value
-                                                    .confirmedBalance) >
-                                                double.parse(walletController.predictedBtcBalance.value)
-                                            ? AppTheme.errorColor
-                                            : null))),
+                                    textColor: textColor,
+                                  );
+                                }),
+
+                            ),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
                             Container(
-                                height: AppTheme.cardPadding * 7.5,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.cardPadding,
-                                ),
-                                child: Obx(() {
-                                  return BalanceCardLightning(
-                                      balance: double.parse(walletController
-                                              .predictedLightningBalance.value)
-                                          .toStringAsFixed(8),
-                                      textColor: double.parse(walletController
-                                                  .lightningBalance
-                                                  .value
-                                                  .balance) <
-                                              double.parse(walletController
-                                                  .predictedLightningBalance
-                                                  .value)
-                                          ? AppTheme.successColor
-                                          : double.parse(walletController.lightningBalance.value.balance) >
-                                                  double.parse(
-                                                      walletController.predictedLightningBalance.value)
-                                              ? AppTheme.errorColor
-                                              : null);
-                                })),
+                              height: AppTheme.cardPadding * 7.5,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.cardPadding,
+                              ),
+                              child: Obx(() {
+                                final logger = Get.find<LoggerService>();
+                                // Extracting reactive variables from the controller
+                                final predictedBalanceStr = walletController.predictedLightningBalance.value;
+                                final confirmedBalanceStr = walletController.lightningBalance.value.balance;
+
+                                // Safely parse the string balances to doubles
+                                final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
+                                final confirmedBalance = double.tryParse(confirmedBalanceStr) ?? 0.0;
+
+                                logger.i('predictedBalance: $predictedBalance');
+                                logger.i('confirmedBalance: $confirmedBalance');
+
+                                // Determine text color based on balance comparison
+                                Color? textColor;
+                                if (confirmedBalance < predictedBalance) {
+                                  textColor = AppTheme.successColor;
+                                } else if (confirmedBalance > predictedBalance) {
+                                  textColor = AppTheme.errorColor;
+                                } else {
+                                  textColor = null;
+                                }
+
+                                // Format the predicted balance to 8 decimal places
+                                final formattedBalance = predictedBalance.toStringAsFixed(8);
+
+                                return BalanceCardLightning(
+                                  balance: formattedBalance,
+                                  confirmedBalance: confirmedBalanceStr,
+                                  defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                                  textColor: textColor,
+                                );
+                              }),
+
+
+                            ),
+
                           ],
                         ),
                         Align(

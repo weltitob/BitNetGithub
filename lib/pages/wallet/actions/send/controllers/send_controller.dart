@@ -24,12 +24,9 @@ import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
-import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
-import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
 import 'package:bitnet/models/bitcoin/walletkit/fundpsbtresponse.dart';
 import 'package:bitnet/models/bitcoin/walletkit/input.dart';
@@ -43,7 +40,6 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:blockchain_utils/hex/hex.dart';
 import 'package:blockchain_utils/utils/string/string.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
@@ -429,7 +425,7 @@ class SendsController extends BaseController {
         showOverlay(this.context, "An error occurred: $error");
       });
     }, onDone: () {}, cancelOnError: true);
-    print(response.body);
+    logger.i("Payment successful! ${response.body}");
     resetValues();
     return payment;
   }
@@ -790,18 +786,91 @@ class SendsController extends BaseController {
     resendUsers.value = resendUsers.toSet().toList();
   }
 
-  String convertRawTxToTxId(String rawFinalTx) {
-    Uint8List rawTxBytes = Uint8List.fromList(hex.decode(rawFinalTx));
+  String? convertRawTxToTxId(String rawFinalTx) {
+    LoggerService logger = Get.find(); // Retrieve the LoggerService instance
 
-    Digest hash1 = sha256.convert(rawTxBytes);
+    try {
+      logger.i("Starting conversion of rawFinalTx to txId.");
+      logger.i("Raw Final Transaction Hex: $rawFinalTx");
 
-    Digest hash2 = sha256.convert(hash1.bytes);
+      // Step 1: Validate the Hex String
+      bool isValidHex = RegExp(r'^[0-9a-fA-F]+$').hasMatch(rawFinalTx);
+      if (!isValidHex) {
+        logger.e("Invalid hex string detected in rawFinalTx.");
+        throw FormatException(
+            "rawFinalTx contains non-hexadecimal characters.");
+      }
+      logger.i("Hex string validation passed.");
 
-    Uint8List reversedHash = Uint8List.fromList(hash2.bytes.reversed.toList());
+      // Step 2: Decode Hex to Bytes
+      Uint8List rawTxBytes;
+      try {
+        rawTxBytes = Uint8List.fromList(hex.decode(rawFinalTx));
+        logger.i(
+            "Decoded rawFinalTx to bytes successfully. Byte Length: ${rawTxBytes.length}");
+      } catch (e, stacktrace) {
+        logger.e(
+          "Error decoding rawFinalTx from hex: $e",
+        );
+        throw FormatException("Failed to decode rawFinalTx from hex.");
+      }
 
-    String txId = hex.encode(reversedHash);
+      // Step 3: Perform First SHA256 Hash
+      Digest hash1;
+      try {
+        hash1 = sha256.convert(rawTxBytes);
+        logger.i("First SHA256 hash computed successfully.");
+        logger.d("Hash1 Bytes: ${hex.encode(hash1.bytes)}");
+      } catch (e, stacktrace) {
+        logger.e(
+          "Error computing first SHA256 hash: $e",
+        );
+        throw Exception("Failed to compute first SHA256 hash.");
+      }
 
-    return txId;
+      // Step 4: Perform Second SHA256 Hash
+      Digest hash2;
+      try {
+        hash2 = sha256.convert(hash1.bytes);
+        logger.i("Second SHA256 hash computed successfully.");
+        logger.d("Hash2 Bytes: ${hex.encode(hash2.bytes)}");
+      } catch (e, stacktrace) {
+        logger.e(
+          "Error computing second SHA256 hash: $e",
+        );
+        throw Exception("Failed to compute second SHA256 hash.");
+      }
+
+      // Step 5: Reverse the Hash Bytes
+      Uint8List reversedHash;
+      try {
+        reversedHash = Uint8List.fromList(hash2.bytes.reversed.toList());
+        logger.i("Reversed hash bytes successfully.");
+        logger.d("Reversed Hash Bytes: ${hex.encode(reversedHash)}");
+      } catch (e) {
+        logger.e(
+          "Error reversing hash bytes: $e",
+        );
+        throw Exception("Failed to reverse hash bytes.");
+      }
+
+      // Step 6: Encode Reversed Hash to Hex String (txId)
+      String txId;
+      try {
+        txId = hex.encode(reversedHash);
+        logger.i("Encoded reversed hash to hex string (txId) successfully.");
+        logger.i("Computed txId: $txId");
+      } catch (e, stacktrace) {
+        logger.e("Error encoding reversed hash to hex string: $e");
+        throw Exception("Failed to encode reversed hash to hex string.");
+      }
+
+      logger.i("Conversion of rawFinalTx to txId completed successfully.");
+      return txId;
+    } catch (e) {
+      logger.e("Failed to convert rawFinalTx to txId: $e");
+    }
+    return null;
   }
 }
 

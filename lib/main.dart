@@ -110,6 +110,18 @@ Future<void> main() async {
   Get.put(TransactionController());
   Get.put(LitdController());
   Get.put(ReceiveController(), permanent: true);
+
+  // Get.put(LoggerService(), permanent: true);
+  // Get.put(DioClient(), permanent: true);
+  // Get.put(SettingsController(), permanent: true);
+  // Get.put(TransactionController(), permanent: true);
+  // Get.put(LitdController(), permanent:  true);
+  // Get.put(WalletsController(), permanent: true);
+  // Get.put(ReceiveController(), permanent: true);
+  // Get.put(SettingsController(), permanent: true);
+  // Get.put(FeedController(), permanent: true);
+  // Get.put(ProfileController(), permanent: true);
+
   // Run the app
   runApp(
     const MyApp(),

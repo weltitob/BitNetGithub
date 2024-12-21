@@ -82,8 +82,9 @@ class _ImagePickerState extends State<ImagePicker> {
   }
 
   void loadData() async {
+    final logger = Get.find<LoggerService>();
     List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
-    print(loadedAlbums.length);
+    logger.i("Loaded Albums... ${loadedAlbums.length}");
     // assert(false);
     List<AssetEntity> photos = await BitnetPhotoManager.loadImages(loadedAlbums.first, 0, 50);
     albums = loadedAlbums;

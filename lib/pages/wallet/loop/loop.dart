@@ -21,105 +21,11 @@ class Loop extends StatefulWidget {
 }
 
 class LoopController extends State<Loop> {
-  late final Future<LottieComposition> compositionSend;
-  late final Future<LottieComposition> compositionReceive;
-  late OnchainBalance onchainBalance = OnchainBalance(
-      totalBalance: '0',
-      confirmedBalance: '0',
-      unconfirmedBalance: '0',
-      lockedBalance: '0',
-      reservedBalanceAnchorChan: '',
-      accountBalance: '');
-  late LightningBalance lightningBalance = LightningBalance(
-      balance: '0',
-      pendingOpenBalance: '0',
-      localBalance: '0',
-      remoteBalance: '0',
-      unsettledLocalBalance: '0',
-      pendingOpenLocalBalance: '',
-      unsettledRemoteBalance: '',
-      pendingOpenRemoteBalance: '');
-  bool visible = false;
 
-  StreamSubscription<List<ReceivedInvoice>>? _invoicesSubscription;
-  StreamSubscription<List<BitcoinTransaction>>? _transactionsSubscription;
-
-  String totalBalanceStr = "0";
-  double totalBalanceSAT = 0;
-
-  @override
-  void initState() {
-    super.initState(); 
-    fetchOnchainWalletBalance();
-    fetchLightingWalletBalance();
-  }
-
-  void fetchOnchainWalletBalance() async {
-    try {
-      RestResponse onchainBalanceRest = await walletBalance();
-      if (!onchainBalanceRest.data.isEmpty) {
-        OnchainBalance onchainBalance =
-            OnchainBalance.fromJson(onchainBalanceRest.data);
-
-        setState(() {
-          this.onchainBalance = onchainBalance;
-        });
-      }
-
-      changeTotalBalanceStr();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void fetchLightingWalletBalance() async {
-    try {
-      RestResponse lightningBalanceRest = await channelBalance();
-
-      LightningBalance lightningBalance =
-          LightningBalance.fromJson(lightningBalanceRest.data);
-      setState(() {
-        if (!lightningBalanceRest.data.isEmpty) {
-          this.lightningBalance = lightningBalance;
-        }
-      });
-      changeTotalBalanceStr();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  changeTotalBalanceStr() {
-    // Assuming both values are strings and represent numerical values
-    String confirmedBalanceStr = onchainBalance.confirmedBalance;
-    String balanceStr = lightningBalance.balance;
-
-    double confirmedBalanceSAT = double.parse(confirmedBalanceStr);
-    double balanceSAT = double.parse(balanceStr);
-
-    totalBalanceSAT = confirmedBalanceSAT + balanceSAT;
-
-    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
-        totalBalanceSAT, BitcoinUnits.SAT);
-    final balance = bitcoinUnit.amount;
-    final unit = bitcoinUnit.bitcoinUnitAsString;
-
-    setState(() {
-      this.totalBalanceStr = balance.toString() + " " + unit;
-    });
-  }
-
-  @override
-  void dispose() {
-    _invoicesSubscription?.cancel();
-    _transactionsSubscription?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return LoopScreen(
-      controller: this,
     );
   }
 }

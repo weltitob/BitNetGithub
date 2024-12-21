@@ -48,7 +48,7 @@ Future<RestResponse> fundPsbt(TransactionData model, String account) async {
     final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.post(url: url, headers: headers, data: data);
-    logger.i('Raw Response fund psbt: ${response.data}');
+    logger.i('Raw Response Fund PSBT: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
