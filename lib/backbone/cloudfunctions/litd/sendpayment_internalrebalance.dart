@@ -66,7 +66,7 @@ dynamic callInternalRebalance(
     // Initialize FirebaseFunctions and call the Cloud Function
     final functions = FirebaseFunctions.instance;
     final callable = functions.httpsCallable(
-      'internal_rebalance',
+      'internal_rebalance_http',
       options: HttpsCallableOptions(
         timeout: const Duration(minutes: 10),
         limitedUseAppCheckToken: true,

@@ -241,6 +241,7 @@ Stream<dynamic> sendPaymentV2Stream(
   // Send request
   for (String invoiceString in invoiceStrings) {
     try {
+
       final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
       String amountInSatFromInvoice = invoiceDecoded.amount.toString();
       Map<String, dynamic> data = {};
@@ -281,6 +282,7 @@ Stream<dynamic> sendPaymentV2Stream(
       } catch (e) {
         logger.e("error sending payment: $e");
         yield null;
+
       }
     } catch (e) {
       final logger = Get.find<LoggerService>();
