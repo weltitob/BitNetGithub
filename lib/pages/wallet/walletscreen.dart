@@ -385,13 +385,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                       //     await controller.subscribeToOnchainBalance();
                       //   },
                       // ),
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "${Auth().currentUser!.uid}",
-                        onTap: () async {
-                          await controller.subscribeToOnchainTransactions();
-                        },
-                      ),
+                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      // LongButtonWidget(
+                      //   title: "${Auth().currentUser!.uid}",
+                      //   onTap: () async {
+                      //     await controller.subscribeToOnchainTransactions();
+                      //   },
+                      // ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "Genlitdaccount",

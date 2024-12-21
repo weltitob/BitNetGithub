@@ -80,7 +80,7 @@ class _TransactionsState extends State<Transactions>
 
   // UI- & Paging-States
   List<Widget> orderedTransactions = [];
-  int loadedTransactionGroups = 10;
+  int loadedActivityItems = 4;
   bool isLoadingTransactionGroups = false;
 
   // Streams
@@ -456,7 +456,7 @@ class _TransactionsState extends State<Transactions>
 
     if (mounted) {
       setState(() {
-        loadedTransactionGroups += 4;
+        loadedActivityItems += 4;
         isLoadingTransactionGroups = false;
       });
     }
