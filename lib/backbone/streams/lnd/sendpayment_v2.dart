@@ -112,8 +112,11 @@ Stream<RestResponse> sendPaymentV2Stream(
                 invoiceDecoded.tags.forEach((TaggedField t) async {
                   print("${t.type}: ${t.data}");
                   if (t.type == 'fallback_address') { // Replace with actual tag name
+
                     final fallbackAddress = t.data;
                     logger.i("Fallback Address: $fallbackAddress");
+
+                    //0010f1312e6aeac55dab5f5fee0306a8fa5ad3ed7f to bitcoin address
 
                     try{
                       //firebase function aufrufen die quasie diese fallback address jetzt ausliest und firebase checked und alles andere
