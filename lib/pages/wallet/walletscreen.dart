@@ -371,13 +371,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                       //   await controller.getOnchainBalance();
                       // }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      LongButtonWidget(
-                        title: "list Unspent",
-                        onTap: () async {
-                          dynamic restResponseListUnspent =
-                              await listUnspent(Auth().currentUser!.uid);
-                        },
-                      ),
+                      // LongButtonWidget(
+                      //   title: "list Unspent",
+                      //   onTap: () async {
+                      //     dynamic restResponseListUnspent =
+                      //         await listUnspent(Auth().currentUser!.uid);
+                      //   },
+                      // ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "subscribeToOnchainBalance ",

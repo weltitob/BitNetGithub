@@ -1,81 +1,114 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:blockchain_utils/hex/hex.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
-Future<RestResponse> addInvoice(
-    int amount, String? memo, String fallbackAddr) async {
+Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress) async {
+  HttpOverrides.global = MyHttpOverrides();
+
   final logger = Get.find<LoggerService>();
-  logger.i("Called addInvoice()"); // The combined JSON response
+  logger.i("Calling addInvoice() with fallback address $fallbackAddress");
 
-  // String restHost =
-  //     AppTheme.baseUrlLightningTerminal; // Update the host as needed
+  // 1. Try finding LitdController
+  LitdController? litdController;
+  try {
+    litdController = Get.find<LitdController>();
+  } catch (e) {
+    logger.e("LitdController not found: $e");
+    return RestResponse(
+        statusCode: "error",
+        message: "LitdController not found!",
+        data: {}
+    );
+  }
 
-  final litdController = Get.find<LitdController>();
-  final String restHost = litdController.litd_baseurl.value;
-  // const String macaroonPath =
-  //     'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
-  // Make the GET request
-  String url = 'https://$restHost/v1/invoices';
-  // Read the macaroon file and convert it to a hexadecimal string
-  ByteData byteData = await loadAdminMacaroonAsset();
-  // Convert ByteData to List<int>
-  List<int> bytes = byteData.buffer.asUint8List();
-  // Convert bytes to hex string
+  // 2. Check if litd_baseurl is set
+  final String? restHost = litdController?.litd_baseurl.value.isNotEmpty == true
+      ? litdController.litd_baseurl.value
+      : null;
+  if (restHost == null) {
+    logger.e("litd_baseurl is null or empty.");
+    return RestResponse(
+        statusCode: "error",
+        message: "LITD base URL is empty!",
+        data: {}
+    );
+  }
+
+  // 3. Load macaroon
+  ByteData? byteData;
+  try {
+    byteData = await loadAdminMacaroonAsset();
+    if (byteData == null) {
+      throw Exception("Macaroon asset is null");
+    }
+  } catch (e, stackTrace) {
+    logger.e("Error loading macaroon asset: $e\n$stackTrace");
+    return RestResponse(
+        statusCode: "error",
+        message: "Error loading macaroon asset",
+        data: {}
+    );
+  }
+
+  // Convert bytes to base64
+  final List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  logger.i("Macaroon: $macaroon used in addInvoice()");
-
-  Map<String, String> headers = {
-    'Content-Type': 'application/json',
+  // Prepare headers and payload
+  final String url = 'https://$restHost/v1/invoices';
+  final Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
+    'Content-Type': 'application/json',
   };
+
   final Map<String, dynamic> data = {
     'memo': memo ?? "",
     'value': amount,
     'expiry': 1200,
-    'fallback_addr': fallbackAddr,
+    'fallback_addr': fallbackAddress,
     'private': false,
-    'is_keysend': true
+    'is_keysend': true,
   };
 
-  HttpOverrides.global = MyHttpOverrides();
-
+  // 4. Post invoice request using http package
   try {
-    logger.i("Trying to make request to addInvoice()");
-    final DioClient dioClient = Get.find<DioClient>();
-    var response = await dioClient.post(url: url, headers: headers, data: data);
-    // Print raw response for debugging
-    logger.i('Raw Response: ${response.data} from addInvoice()');
+    logger.i("Making POST request to $url with headers $headers and payload $data");
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(data),
+    );
 
+    // Check the response
     if (response.statusCode == 200) {
-      print(response.data);
+      final responseData = jsonDecode(response.body);
+      logger.i("Successfully added invoice: $responseData");
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully added invoice",
-          data: response.data);
+          data: responseData
+      );
     } else {
-      print('Failed to load data: ${response.statusCode}, ${response.data}');
+      logger.e("Failed to add invoice. Status: ${response.statusCode}, Body: ${response.body}");
       return RestResponse(
           statusCode: "error",
-          message:
-              "Failed to load data: ${response.statusCode}, ${response.data}",
-          data: {});
+          message: "Failed to add invoice: ${response.statusCode}",
+          data: jsonDecode(response.body)
+      );
     }
-  } catch (e) {
-    print('Error: $e');
+  } catch (e, stackTrace) {
+    logger.e("Error in HTTP POST: $e\nStackTrace: $stackTrace");
     return RestResponse(
         statusCode: "error",
-        message:
-            "Failed to load data: Could not get response from Lightning node!",
-        data: {});
+        message: "Failed to add invoice due to an error",
+        data: {}
+    );
   }
 }

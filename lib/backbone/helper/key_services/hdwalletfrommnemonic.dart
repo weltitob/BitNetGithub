@@ -19,43 +19,63 @@ import 'package:wallet/wallet.dart' as wallet;
 Future<HDWallet> createUserWallet(String mnemonic) async {
   LoggerService logger = Get.find<LoggerService>();
 
-  final seed = wallet.mnemonicToSeed(mnemonic.split(' '));
+  try {
+    logger.i("Starting wallet creation process...");
 
-  const taprootPath = "m/84'/0'/0'";
-  wallet.ExtendedPrivateKey master =
-      wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
-  // Step 2: Generate master key (BIP-32 Slip10 for secp256k1)
-  wallet.ExtendedKey root = master.forPath(taprootPath);
-  var privKey = wallet.PrivateKey(master.key);
+    // Step 1: Convert mnemonic to seed
+    final seed = wallet.mnemonicToSeed(mnemonic.split(' '));
+    logger.i("Seed generated successfully.");
 
-  String publicKey =
-      hex.encode(wallet.bitcoinbech32.createPublicKey(privKey).value);
-  String privKeyString = privKey.value.toRadixString(16);
-  String xpubkey = root.publicKey.toString();
-  // Step 3: Get the master fingerprint
-  final masterFingerprint = base64.encode(root.fingerprint);
+    // Step 2: Generate master key
+    const taprootPath = "m/84'/0'/0'";
+    wallet.ExtendedPrivateKey master =
+    wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
+    logger.i("Master key generated successfully.");
 
-  // Step 4: Derive the xpub for Taproot path "m/86'/0'/0'/0"
-  await importAccount(publicKey, xpubkey, masterFingerprint);
+    // Step 3: Generate extended key for path
+    wallet.ExtendedKey root = master.forPath(taprootPath);
+    logger.i("Extended key generated for path: $taprootPath");
 
-  List<String> derivedAddresses = [];
+    // Step 4: Derive private and public keys
+    var privKey = wallet.PrivateKey(master.key);
+    String publicKey = hex.encode(wallet.bitcoinbech32.createPublicKey(privKey).value);
+    String privKeyString = privKey.value.toRadixString(16);
+    String xpubkey = root.publicKey.toString();
+    logger.i("Public and private keys derived successfully.");
+    logger.i("Public Key: $publicKey");
+    logger.i("XPub Key: $xpubkey");
 
-  for (int i = 0; i < 5; i++) {
-    String addr = await nextAddr(publicKey);
-    print("Response" + addr);
-    BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
-    derivedAddresses.add(address.addr);
+    // Step 5: Get the master fingerprint
+    final masterFingerprint = base64.encode(root.fingerprint);
+    logger.i("Master fingerprint derived successfully: $masterFingerprint");
+
+    // Step 6: Import account details
+    await importAccount(publicKey, xpubkey, masterFingerprint);
+    logger.i("Account imported successfully.");
+
+    // Step 7: Generate derived addresses
+    //THIS NEEDS TO GO INTO A FIREBASE FUNCTION 100%
+    List<String> derivedAddresses = [];
+    for (int i = 0; i < 5; i++) {
+      String addr = await nextAddr(publicKey);
+      logger.i("Derived address [$i]: $addr");
+      BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
+      derivedAddresses.add(address.addr);
+    }
+    logger.i("Derived addresses: $derivedAddresses");
+
+    // Return the HDWallet instance
+    logger.i("Wallet creation process completed successfully.");
+    return HDWallet(
+        pubkey: publicKey,
+        xpubkey: xpubkey,
+        privkey: privKeyString,
+        fingerprint: masterFingerprint);
+  } catch (e, stacktrace) {
+    logger.e("Error in createUserWallet: $e");
+    logger.e("Stacktrace: $stacktrace");
+    throw Exception("Failed to create wallet: $e");
   }
-
-//have firebase function handle this, it's safer
-  // btcAddressesRef
-  //     .doc(publicKey)
-  //     .set({"addresses": derivedAddresses, "count": 5});
-  return HDWallet(
-      pubkey: publicKey,
-      xpubkey: xpubkey,
-      privkey: privKeyString,
-      fingerprint: masterFingerprint);
 }
 
 class HDWallet {

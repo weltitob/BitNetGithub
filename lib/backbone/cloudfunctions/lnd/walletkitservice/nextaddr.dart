@@ -103,7 +103,7 @@ dynamic nextAddr(String account, {bool change = false}) async {
       'change': change
     });
 
-    logger.i("Antwort vom Server: ${response.data}");
+    logger.i("Response nextAddr Server: ${response.data}");
     Map<String, dynamic> responseData;
 
     if (response.data is Map) {

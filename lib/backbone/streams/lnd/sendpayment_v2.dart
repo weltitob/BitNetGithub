@@ -1,49 +1,39 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
-import 'package:bitnet/backbone/cloudfunctions/litd/sendpayment_internalrebalance.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+
 // Stream<RestResponse> sendPaymentV2Stream(
 //     List<String> invoiceStrings, int? amount) async* {
-
+//
 //   final litdController = Get.find<LitdController>();
 //   final String restHost = litdController.litd_baseurl.value;
 //   ByteData byteData = await loadAdminMacaroonAsset();
 //   List<int> bytes = byteData.buffer.asUint8List();
 //   String macaroon = bytesToHex(bytes);
-
+//
 //   Map<String, String> headers = {
 //     'Grpc-Metadata-macaroon': macaroon,
 //   };
-
+//
 //   String url = 'https://$restHost/v2/router/send';
-
+//
 //   HttpOverrides.global = MyHttpOverrides();
-
+//
 //   final logger = Get.find<LoggerService>();
-
+//
 //   for (var invoiceString in invoiceStrings) {
 //     Bolt11PaymentRequest invoiceDecoded = Bolt11PaymentRequest(invoiceString);
 //     String amountInSatFromInvoice = invoiceDecoded.amount.toString();
-
+//
 //     logger.i("amountInSatFromInvoice: $amountInSatFromInvoice");
 //     logger.i("Invoice sats amount: $amount");
-
+//
 //     late Map<String, dynamic> data;
-
+//
 //     if (amountInSatFromInvoice == "0") {
 //       logger.i("Invoice amount is 0 so we will use custom amount");
 //       data = {
@@ -60,24 +50,24 @@ import 'package:http/http.dart' as http;
 //         'payment_request': invoiceString,
 //       };
 //     }
-
+//
 //     try {
 //       var request = http.Request('POST', Uri.parse(url))
 //         ..headers.addAll(headers)
 //         ..body = json.encode(data);
-
+//
 //       var streamedResponse = await request.send();
 //       var accumulatedData = StringBuffer();
-
+//
 //       await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
 //         accumulatedData.write(chunk);
-
+//
 //         logger.i("Accumulated Data: ${accumulatedData.toString()}");
-
+//
 //         if (isCompleteJson(accumulatedData.toString()))  {
 //           var jsonString = accumulatedData.toString();
 //           accumulatedData.clear();
-
+//
 //           Map<String, dynamic>? decoded;
 //           try {
 //             decoded = json.decode(jsonString) as Map<String, dynamic>;
@@ -90,9 +80,9 @@ import 'package:http/http.dart' as http;
 //             );
 //             continue;
 //           }
-
+//
 //           logger.i("Decoded JSON: $decoded");
-
+//
 //           // Überprüfen, ob ein Fehler in der Antwort vorhanden ist
 //           if (decoded.containsKey('error')) {
 //             var error = decoded['error'];
@@ -110,13 +100,13 @@ import 'package:http/http.dart' as http;
 //                         "${invoiceDecoded.tags}, "
 //                         "${invoiceDecoded.timestamp}, "
 //                         "${invoiceDecoded.amount}");
-
+//
 //                 invoiceDecoded.tags.forEach((TaggedField t) async {
 //                   print("${t.type}: ${t.data}");
 //                   if (t.type == 'fallback_address') { // Replace with actual tag name
 //                     final fallbackAddress = t.data;
 //                     logger.i("Fallback Address: $fallbackAddress");
-
+//
 //                     try{
 //                       //firebase function aufrufen die quasie diese fallback address jetzt ausliest und firebase checked und alles andere
 //                       //lnbc weitergeben
@@ -132,29 +122,29 @@ import 'package:http/http.dart' as http;
 //                           restHost,
 //                       );
 //                       logger.i("Response from internal_rebalance server: $response");
-
+//
 //                     } catch(e){
-
+//
 //                     }
-
+//
 //                   }
 //                 });
-
+//
 //                 //first of all we need to identify the fallback address and then we can associate one of our users with it who the payment should have been routed to
-
+//
 //                 //call firebase funciton to rebalance the two accounts on that amount
-
+//
 //                 //save this as an invoice to firebase but we will show it in our frontend as internal app payment in the list
-
+//
 //                 //...
-
+//
 //                 yield RestResponse(
 //                   statusCode: errorCode.toString(),
 //                   message:
 //                       "Error: Selfpayments not allowed (user tried sending to someone else inside app) (Code: $errorCode)",
 //                   data: error,
 //                 );
-
+//
 //                 continue;
 //               } else {
 //                 // Allgemeine Fehlerbehandlung
@@ -168,7 +158,7 @@ import 'package:http/http.dart' as http;
 //               }
 //             }
 //           }
-
+//
 //           // Check structure: wir erwarten 'result' key und darin einen 'status' key
 //           if (decoded["result"] == null ||
 //               decoded["result"] is! Map<String, dynamic>) {
@@ -181,7 +171,7 @@ import 'package:http/http.dart' as http;
 //             );
 //             continue;
 //           }
-
+//
 //           final resultMap = decoded["result"] as Map<String, dynamic>;
 //           if (!resultMap.containsKey("status")) {
 //             logger.e("Kein 'status' Schlüssel in der Antwort gefunden!");
@@ -192,7 +182,7 @@ import 'package:http/http.dart' as http;
 //             );
 //             continue;
 //           }
-
+//
 //           // Wenn wir hier angekommen sind, haben wir einen gültigen Status
 //           yield RestResponse(
 //             statusCode: "success",
@@ -209,7 +199,7 @@ import 'package:http/http.dart' as http;
 //         data: {},
 //       );
 //     }
-
+//
 //     await Future.delayed(const Duration(seconds: 10));
 //   }
 // }

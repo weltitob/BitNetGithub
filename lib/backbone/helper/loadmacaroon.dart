@@ -17,6 +17,7 @@ Future<ByteData> loadAdminMacaroonAsset() async {
 // Diese Funktion ersetzt den bisherigen loadMacaroonAsset-Aufruf
 // Sie liest den Macaroon aus dem Secure Storage für den aktuell eingelogten User aus.
 Future<ByteData> loadMacaroonAsset() async {
+
   final userId = Auth().currentUser?.uid;
   if (userId == null) {
     throw Exception('No user logged in.');

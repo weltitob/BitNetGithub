@@ -78,29 +78,37 @@ class ReceiveController extends BaseController {
     btcController.text = value;
   }
 
+
+
   void getInvoice(int amount, String? memo) async {
+    logger.i("Getting invoice: $amount");
     bitcoinUnit == BitcoinUnits.SAT
         ? amount = amount
         : amount =
             CurrencyConverter.convertBitcoinToSats(amount.toDouble()).toInt();
-    List<String> addresses =
-        await Get.find<WalletsController>().getOnchainAddresses();
-    RestResponse callback = await addInvoice(amount, memo ?? "", addresses[0]);
-    print("Response" + callback.data.toString());
-    InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
-    print("Invoice" + invoiceModel.payment_request.toString());
-    qrCodeDataStringLightning.value = invoiceModel.payment_request.toString();
+    try{
+      List<String> addresses = await Get.find<WalletsController>().getOnchainAddresses();
+      final btcAddress = addresses[0];
+      logger.i("BTC Address: $btcAddress");
+      RestResponse callback = await addInvoice(amount, memo ?? "", addresses[0]);
+      logger.i("Response addInvoice" + callback.data.toString());
+      InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
+      logger.i("Invoice: " + invoiceModel.payment_request.toString());
+      qrCodeDataStringLightning.value = invoiceModel.payment_request.toString();
+    } catch(e){
+      logger.e("Error getting invoice: $e");
+    }
   }
 
   void getBtcAddress() async {
+    logger.i("Getting BTC Address");
     String addr = await nextAddr(Auth().currentUser!.uid);
-    print("Response" + addr);
     BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
     Get.find<WalletsController>().btcAddresses.add(address.addr);
     LocalStorage.instance.setStringList(
         Get.find<WalletsController>().btcAddresses,
         "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
-    print("Bitcoin onchain Address" + address.addr.toString());
+    logger.i("Bitcoin onchain Address" + address.addr.toString());
     qrCodeDataStringOnchain.value = address.addr.toString();
   }
 
