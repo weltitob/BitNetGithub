@@ -18,9 +18,10 @@ import 'package:http/http.dart' as http;
 
 // Stream<RestResponse> sendPaymentV2Stream(
 //     List<String> invoiceStrings, int? amount) async* {
+
 //   final litdController = Get.find<LitdController>();
 //   final String restHost = litdController.litd_baseurl.value;
-//   ByteData byteData = await loadMacaroonAsset();
+//   ByteData byteData = await loadAdminMacaroonAsset();
 //   List<int> bytes = byteData.buffer.asUint8List();
 //   String macaroon = bytesToHex(bytes);
 
@@ -35,7 +36,7 @@ import 'package:http/http.dart' as http;
 //   final logger = Get.find<LoggerService>();
 
 //   for (var invoiceString in invoiceStrings) {
-//     final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
+//     Bolt11PaymentRequest invoiceDecoded = Bolt11PaymentRequest(invoiceString);
 //     String amountInSatFromInvoice = invoiceDecoded.amount.toString();
 
 //     logger.i("amountInSatFromInvoice: $amountInSatFromInvoice");
@@ -73,7 +74,7 @@ import 'package:http/http.dart' as http;
 
 //         logger.i("Accumulated Data: ${accumulatedData.toString()}");
 
-//         if (isCompleteJson(accumulatedData.toString())) {
+//         if (isCompleteJson(accumulatedData.toString()))  {
 //           var jsonString = accumulatedData.toString();
 //           accumulatedData.clear();
 
@@ -92,14 +93,90 @@ import 'package:http/http.dart' as http;
 
 //           logger.i("Decoded JSON: $decoded");
 
-//           // Check structure: we expect 'result' key and inside it a 'status' key
+//           // Überprüfen, ob ein Fehler in der Antwort vorhanden ist
+//           if (decoded.containsKey('error')) {
+//             var error = decoded['error'];
+//             if (error is Map<String, dynamic>) {
+//               String errorMessage = error['message'] ?? 'Unbekannter Fehler';
+//               int errorCode = error['code'] ?? -1;
+//               // Spezifische Behandlung für "self-payments not allowed"
+//               if (errorMessage.contains("self-payments not allowed")) {
+//                 logger.i(
+//                     "Error: Selfpayments not allowed (user tried sending to someone else inside app) (Code: $errorCode)");
+//                 logger.i(
+//                     "Invoice Decoded: $invoiceDecoded,"
+//                         " ${invoiceDecoded.signature}, "
+//                         "${invoiceDecoded.prefix}, "
+//                         "${invoiceDecoded.tags}, "
+//                         "${invoiceDecoded.timestamp}, "
+//                         "${invoiceDecoded.amount}");
+
+//                 invoiceDecoded.tags.forEach((TaggedField t) async {
+//                   print("${t.type}: ${t.data}");
+//                   if (t.type == 'fallback_address') { // Replace with actual tag name
+//                     final fallbackAddress = t.data;
+//                     logger.i("Fallback Address: $fallbackAddress");
+
+//                     try{
+//                       //firebase function aufrufen die quasie diese fallback address jetzt ausliest und firebase checked und alles andere
+//                       //lnbc weitergeben
+//                       //den amount weitergeben
+//                       //die fallback address weitergeben
+//                       //user signature and userid of person in this account
+//                       logger.i("Calling internal_rebalance Cloud Function with data: $invoiceString, $fallbackAddress, ${invoiceDecoded.amount.toString()}, ${Auth().currentUser!.uid}, $restHost");
+//                       dynamic response = await callInternalRebalance(
+//                           invoiceString,
+//                           fallbackAddress,
+//                           invoiceDecoded.amount.toString(),
+//                           Auth().currentUser!.uid,
+//                           restHost,
+//                       );
+//                       logger.i("Response from internal_rebalance server: $response");
+
+//                     } catch(e){
+
+//                     }
+
+//                   }
+//                 });
+
+//                 //first of all we need to identify the fallback address and then we can associate one of our users with it who the payment should have been routed to
+
+//                 //call firebase funciton to rebalance the two accounts on that amount
+
+//                 //save this as an invoice to firebase but we will show it in our frontend as internal app payment in the list
+
+//                 //...
+
+//                 yield RestResponse(
+//                   statusCode: errorCode.toString(),
+//                   message:
+//                       "Error: Selfpayments not allowed (user tried sending to someone else inside app) (Code: $errorCode)",
+//                   data: error,
+//                 );
+
+//                 continue;
+//               } else {
+//                 // Allgemeine Fehlerbehandlung
+//                 logger.e("Fehler (Code: $errorCode): $errorMessage");
+//                 yield RestResponse(
+//                   statusCode: "error",
+//                   message: errorMessage,
+//                   data: error,
+//                 );
+//                 continue;
+//               }
+//             }
+//           }
+
+//           // Check structure: wir erwarten 'result' key und darin einen 'status' key
 //           if (decoded["result"] == null ||
 //               decoded["result"] is! Map<String, dynamic>) {
-//             logger
-//                 .e("No 'result' key found in JSON response or it's not a map!");
+//             logger.e(
+//                 "Kein 'result' Schlüssel in der JSON-Antwort gefunden oder es ist keine Map!");
 //             yield RestResponse(
 //               statusCode: "error",
-//               message: "No result key in JSON response",
+//               message: "Kein 'result' Schlüssel in der JSON-Antwort",
 //               data: decoded,
 //             );
 //             continue;
@@ -107,16 +184,16 @@ import 'package:http/http.dart' as http;
 
 //           final resultMap = decoded["result"] as Map<String, dynamic>;
 //           if (!resultMap.containsKey("status")) {
-//             logger.e("No 'status' key found in response!");
+//             logger.e("Kein 'status' Schlüssel in der Antwort gefunden!");
 //             yield RestResponse(
 //               statusCode: "error",
-//               message: "No status key in JSON response",
+//               message: "Kein 'status' Schlüssel in der JSON-Antwort",
 //               data: decoded,
 //             );
 //             continue;
 //           }
 
-//           // If we reached here, we have a proper status
+//           // Wenn wir hier angekommen sind, haben wir einen gültigen Status
 //           yield RestResponse(
 //             statusCode: "success",
 //             message: "Payment processed",
@@ -125,10 +202,10 @@ import 'package:http/http.dart' as http;
 //         }
 //       }
 //     } catch (e) {
-//       logger.e("Network Error: $e");
+//       logger.e("Netzwerkfehler: $e");
 //       yield RestResponse(
 //         statusCode: "error",
-//         message: "Error during network call: $e",
+//         message: "Fehler während des Netzwerkanrufs: $e",
 //         data: {},
 //       );
 //     }

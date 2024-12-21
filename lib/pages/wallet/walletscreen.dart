@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -373,7 +374,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       LongButtonWidget(
                         title: "list Unspent",
                         onTap: () async {
-                          dynamic restResponseListUnspent = await listUnspent();
+                          dynamic restResponseListUnspent =
+                              await listUnspent(Auth().currentUser!.uid);
                         },
                       ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
