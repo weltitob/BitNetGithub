@@ -1,17 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/broadcast_transaction.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/get_transaction.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
@@ -19,6 +25,7 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
@@ -32,11 +39,13 @@ import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:blockchain_utils/hex/hex.dart';
+import 'package:blockchain_utils/utils/string/string.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
@@ -65,9 +74,11 @@ class SendsController extends BaseController {
   }
 
   Future<void> getClipboardData() async {
-    RestResponse restLightningInvoices = await listInvoices(pending_only: true);
-    ReceivedInvoicesList lightningInvoices =
-        ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+    List<ReceivedInvoice> restLightningInvoices =
+        await listInvoices(Auth().currentUser!.uid, pending_only: true);
+    ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson({
+      'invoices': restLightningInvoices.map((inv) => inv.toJson()).toList()
+    });
     LoggerService logger = Get.find();
     ClipboardData? data = await Clipboard.getData('text/plain');
     List<ReceivedInvoice> memoVoices =
@@ -382,8 +393,8 @@ class SendsController extends BaseController {
     sub = paymentStream.listen((dynamic response) {
       isFinished.value = true;
       if ((response as Map<String, dynamic>)['status'] == 'SUCCEEDED') {
-        sendPaymentDataLnUrl(response['result'], lnUrl, lnUrlname);
-        payment = LightningPayment.fromJson(response['result']);
+        //sendPaymentDataLnUrl(response, lnUrl, lnUrlname);
+        payment = LightningPayment.fromJson(response);
         if (!transactionsUpdated) {
           Get.find<WalletsController>().newTransactionData.add(payment);
           transactionsUpdated = true;
@@ -485,14 +496,13 @@ class SendsController extends BaseController {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
             if (response['status'] == "SUCCEEDED") {
-              logger.i("Success: ${response.data}");
+              logger.i("Success: ${response}");
               //connect this with transactions view
-              LightningPayment invoice =
-                  LightningPayment.fromJson(response.data["result"]);
+              LightningPayment invoice = LightningPayment.fromJson(response);
 
               Get.find<WalletsController>().newTransactionData.add(invoice);
               // Handle success
-              sendPaymentDataInvoice(response.data['result']);
+              sendPaymentDataInvoice(response);
 
               logger.i("Payment successful!");
               if (!firstSuccess) {
@@ -535,11 +545,26 @@ class SendsController extends BaseController {
         } else if (sendType == SendType.OnChain) {
           logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
           final amountInSat = int.parse(satController.text);
+          RestResponse listAddressesResponse =
+              await listAddressesLnd(Auth().currentUser!.uid);
 
-          dynamic restResponseListUnspent = await listUnspent();
+          AccountWithAddresses account = AccountWithAddresses.fromJson(
+              (listAddressesResponse.data['account_with_addresses'] as List)
+                  .firstWhereOrNull(
+                      (acc) => acc['name'] == Auth().currentUser!.uid));
+          List<String> changeAddresses = account.addresses
+              .where((test) => test.isInternal)
+              .map((test) => test.address)
+              .toList();
+          List<String> nonChangeAddresses = account.addresses
+              .where((test) => !test.isInternal)
+              .map((test) => test.address)
+              .toList();
+
+          dynamic restResponseListUnspent =
+              await listUnspent(Auth().currentUser!.uid);
           UtxoRequestList utxos =
               UtxoRequestList.fromJson(restResponseListUnspent.data);
-
           TransactionData transactiondata = TransactionData(
               raw: RawTransactionData(
                 inputs: utxos.utxos
@@ -562,37 +587,99 @@ class SendsController extends BaseController {
               changeType: 0 //CHANGE_ADDRESS_TYPE_UNSPECIFIED
               );
 
-          dynamic fundPsbtrestResponse = await fundPsbt(transactiondata);
-          FundedPsbtResponse fundedPsbtResponse =
-              FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
-          dynamic finalizedPsbtRestResponse =
-              await finalizePsbt(fundedPsbtResponse.fundedPsbt);
-          FinalizePsbtResponse finalizedPsbtResponse =
-              FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
+          PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+          dynamic feeResponse =
+              await estimateFee(AppTheme.targetConf.toString());
+          final sat_per_kw = double.parse(feeResponse.data["sat_per_kw"]);
+          double utxoSum = 0;
+          for (Utxo utxo in utxos.utxos) {
+            utxoSum += utxo.amountSat;
+          }
 
-          RestResponse publishTransactionRestResponse =
-              await publishTransaction(
-                  finalizedPsbtResponse.rawFinalTx, ""); //txhex and label
+          String changeAddress =
+              await nextAddr(Auth().currentUser!.uid, change: true);
+          HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+          final builder = BitcoinTransactionBuilder(
+              outPuts: [
+                BitcoinOutput(
+                    address: parseBitcoinAddress(bitcoinReceiverAdress),
+                    value: BigInt.from(amountInSat.toInt())),
+                BitcoinOutput(
+                    address: parseBitcoinAddress(changeAddress),
+                    value: BigInt.from(
+                        utxoSum - (amountInSat.toInt() + sat_per_kw)))
+              ],
+              fee: BigInt.from(sat_per_kw),
+              network: BitcoinNetwork.mainnet,
+              utxos: utxos.utxos
+                  .map((utxo) => UtxoWithAddress(
+                      utxo: BitcoinUtxo(
+                          txHash: utxo.outpoint.txidStr,
+                          value: BigInt.from(utxo.amountSat),
+                          vout: utxo.outpoint.outputIndex,
+                          scriptType: parseBitcoinAddress(utxo.address).type),
+                      ownerDetails: UtxoAddressDetails(
+                          publicKey: hdWallet
+                              .findKeyPair(
+                                utxo.address,
+                                privData.mnemonic,
+                                changeAddresses.contains(utxo.address) ? 1 : 0,
+                              )
+                              .getPublic()
+                              .publicKey
+                              .toHex(),
+                          address: parseBitcoinAddress(utxo.address))))
+                  .toList());
+          // dynamic fundPsbtrestResponse =
+          //     await fundPsbt(transactiondata, Auth().currentUser!.uid);
+          // FundedPsbtResponse fundedPsbtResponse =
+          //     FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
+          // print('fundedpsbt izak');
+          // print(fundedPsbtResponse.fundedPsbt);
+          // dynamic finalizedPsbtRestResponse =
+          //     await signPsbt(fundedPsbtResponse.fundedPsbt);
+          // FinalizePsbtResponse finalizedPsbtResponse =
+          //     FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
+          final tr =
+              builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+            String address =
+                utxo.ownerDetails.address.toAddress(BitcoinNetwork.mainnet);
+            final ECPrivate privateKey = hdWallet.findKeyPair(
+              address,
+              privData.mnemonic,
+              changeAddresses.contains(address) ? 1 : 0,
+            );
+            return privateKey.signInput(trDigest, sigHash: sighash);
+          });
+          final txId = tr.serialize();
+          // RestResponse publishTransactionRestResponse =
+          //     await broadcastTransaction(txId); //txhex and label
+          const network = BitcoinNetwork.mainnet;
 
+          /// Define http provider and api provider
+          final service = BitcoinApiService();
+          final api = ApiProvider.fromBlocCypher(network, service);
+          String response = await api.sendRawTransaction(tr.serialize());
+          print(response);
           isFinished.value = true;
-          if (publishTransactionRestResponse.statusCode == "200") {
-            sendPaymentDataOnchain({
-              ...finalizedPsbtRestResponse.data,
-              ...fundPsbtrestResponse.data,
-              'min_confs': 4,
-              'address': bitcoinReceiverAdress
-            });
-            getTransaction(convertRawTxToTxId(
-                    finalizedPsbtRestResponse.data['raw_final_tx']))
-                .then((d) {
-              if (d.statusCode == "200") {
-                BitcoinTransaction transaction =
-                    BitcoinTransaction.fromJson(d.data);
-                Get.find<WalletsController>()
-                    .newTransactionData
-                    .add(transaction);
-              }
-            });
+          if ('' == "200") {
+            // sendPaymentDataOnchain({
+            //   ...finalizedPsbtRestResponse.data,
+            //   ...fundPsbtrestResponse.data,
+            //   'min_confs': 4,
+            //   'address': bitcoinReceiverAdress
+            // });
+            // getTransaction(convertRawTxToTxId(
+            //         finalizedPsbtRestResponse.data['raw_final_tx']))
+            //     .then((d) {
+            //   if (d.statusCode == "200") {
+            //     BitcoinTransaction transaction =
+            //         BitcoinTransaction.fromJson(d.data);
+            //     Get.find<WalletsController>()
+            //         .newTransactionData
+            //         .add(transaction);
+            //   }
+            // });
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -724,4 +811,92 @@ enum SendType {
   OnChain,
   Invoice,
   Unknown,
+}
+
+class BitcoinApiService implements ApiService {
+  BitcoinApiService([http.Client? client]) : _client = client ?? http.Client();
+  final http.Client _client;
+  @override
+  Future<T> get<T>(String url) async {
+    final response = await _client.get(Uri.parse(url));
+    return _readResponse<T>(response);
+  }
+
+  @override
+  Future<T> post<T>(String url,
+      {Map<String, String> headers = const {"Content-Type": "application/json"},
+      Object? body}) async {
+    final response =
+        await _client.post(Uri.parse(url), headers: headers, body: body);
+    return _readResponse<T>(response);
+  }
+
+  T _readResponse<T>(http.Response response) {
+    final String toString = _readBody(response);
+    switch (T) {
+      case String:
+        return toString as T;
+      case List:
+      case Map:
+        return jsonDecode(toString) as T;
+      default:
+        try {
+          return jsonDecode(toString) as T;
+        } catch (e) {
+          throw Exception("invalid request");
+        }
+    }
+  }
+
+  String _readBody(http.Response response) {
+    _readErr(response);
+    return StringUtils.decode(response.bodyBytes);
+  }
+
+  void _readErr(http.Response response) {
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+    String toString = StringUtils.decode(response.bodyBytes);
+    Map<String, dynamic>? errorResult;
+    try {
+      if (toString.isNotEmpty) {
+        errorResult = StringUtils.toJson(toString);
+      }
+      // ignore: empty_catches
+    } catch (e) {}
+    toString = toString.isEmpty ? "request_error" : toString;
+    throw Exception(toString);
+  }
+}
+
+/// Determines the Bitcoin address type and returns the appropriate address object.
+BitcoinBaseAddress parseBitcoinAddress(String address) {
+  final mainnetPrefix = 'bc';
+  final testnetPrefix = 'tb';
+
+  if (address.startsWith('1')) {
+    // P2PKH (Pay-to-PubKey-Hash)
+    return P2pkhAddress.fromAddress(
+        address: address, network: BitcoinNetwork.mainnet);
+  } else if (address.startsWith('3')) {
+    // P2SH (Pay-to-Script-Hash)
+    return P2shAddress.fromAddress(
+        address: address, network: BitcoinNetwork.mainnet);
+  } else if (address.startsWith('${mainnetPrefix}1q') ||
+      address.startsWith('${testnetPrefix}1q')) {
+    // P2WPKH (Pay-to-Witness-PubKey-Hash)
+    return P2wpkhAddress.fromAddress(
+        address: address, network: BitcoinNetwork.mainnet);
+  } else if (address.startsWith('${mainnetPrefix}1p') ||
+      address.startsWith('${testnetPrefix}1p')) {
+    // P2TR (Pay-to-Taproot)
+    return P2trAddress.fromAddress(
+        address: address, network: BitcoinNetwork.mainnet);
+  } else if (address.startsWith('${mainnetPrefix}1') ||
+      address.startsWith('${testnetPrefix}1')) {
+    // P2WSH (Pay-to-Witness-Script-Hash)
+    return P2wshAddress.fromAddress(
+        address: address, network: BitcoinNetwork.mainnet);
+  } else {
+    throw ArgumentError('Unsupported or invalid Bitcoin address: $address');
+  }
 }

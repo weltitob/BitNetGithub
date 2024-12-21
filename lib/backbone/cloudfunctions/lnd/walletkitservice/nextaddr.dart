@@ -72,7 +72,7 @@ import 'package:get/get.dart';
 //   }
 // }
 
-dynamic nextAddr(String account) async {
+dynamic nextAddr(String account, {bool change = false}) async {
   final logger = Get.put(LoggerService());
   try {
     // Attempt to retrieve App Check tokens for additional security.
@@ -99,7 +99,8 @@ dynamic nextAddr(String account) async {
     // Send request
     final dynamic response = await callable.call(<String, dynamic>{
       'account': account,
-      'address_type': 'WITNESS_PUBKEY_HASH'
+      'address_type': 'WITNESS_PUBKEY_HASH',
+      'change': change
     });
 
     logger.i("Antwort vom Server: ${response.data}");

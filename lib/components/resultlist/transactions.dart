@@ -14,6 +14,7 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
@@ -71,8 +72,8 @@ class _TransactionsState extends State<Transactions>
   List<Widget> orderedTransactions = List.empty(growable: true);
   int loadedTransactionGroups = 6;
   bool isLoadingTransactionGroups = false;
-  StreamSubscription<RestResponse>? transactionStream;
-  StreamSubscription<RestResponse>? lightningStream;
+  StreamSubscription<BitcoinTransaction?>? transactionStream;
+  StreamSubscription<ReceivedInvoice?>? lightningStream;
 
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
@@ -101,10 +102,10 @@ class _TransactionsState extends State<Transactions>
     try {
       logger.i("Getting loop operations");
 
-      Map<String, dynamic> data = walletController.loopOperations;
-      this.loopOperations = SwapList.fromJson(data).swaps;
-      logger.i(
-          'This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
+      // Map<String, dynamic> data = walletController.loopOperations;
+      // this.loopOperations = SwapList.fromJson(data).swaps;
+      // logger.i(
+      //     'This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
 
       // compute((d) {
       //   SwapList swapList = SwapList.fromJson(d);
@@ -199,11 +200,11 @@ class _TransactionsState extends State<Transactions>
       return;
     }
     ;
-    if (walletController.futuresCompleted >= 4) {
+    if (walletController.futuresCompleted >= 3) {
       loadTransactions();
     } else {
       walletController.futuresCompleted.listen((val) {
-        if (val >= 4) {
+        if (val >= 3) {
           loadTransactions();
         }
       });
@@ -230,12 +231,14 @@ class _TransactionsState extends State<Transactions>
 
       //async updates
       LoggerService logger = Get.find<LoggerService>();
-      transactionStream = subscribeTransactionsStream().listen((restResponse) {
-        logger.i("subscribeTransactionsStream got data: $restResponse");
-        BitcoinTransaction bitcoinTransaction =
-            BitcoinTransaction.fromJson(restResponse.data);
+      transactionStream =
+          walletController.subscribeToOnchainTransactions().listen((val) {
+        logger.i("subscribeTransactionsStream got data: $val");
+        if (val == null) {
+          return;
+        }
 
-        onchainTransactions.add(bitcoinTransaction);
+        onchainTransactions.add(val);
 
         heavyFiltering(sticky: true);
         //});
@@ -244,17 +247,18 @@ class _TransactionsState extends State<Transactions>
       });
       //LIGHTNING
       //Lightning payments
-      lightningStream = subscribeInvoicesStream().listen((restResponse) {
-        logger.i("Received data from Invoice-stream: $restResponse");
-        final result = restResponse.data["result"];
-        logger.i("Result: $result");
-        ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(result);
-        if (receivedInvoice.settled == true) {
-          lightningInvoices.add(receivedInvoice);
+      lightningStream = walletController.subscribeToInvoices().listen((inv) {
+        logger.i("Received data from Invoice-stream: $inv");
+
+        if (inv == null) {
+          return;
+        }
+
+        if (inv.settled == true) {
+          lightningInvoices.add(inv);
           heavyFiltering(sticky: true);
         } else {
-          logger.i(
-              "Invoice received but not settled yet: ${receivedInvoice.settled}");
+          logger.i("Invoice received but not settled yet: ${inv.settled}");
         }
       }, onError: (error) {
         logger.e("Received error for Invoice-stream: $error");
@@ -767,7 +771,7 @@ class _TransactionsState extends State<Transactions>
     if (!mounted) {
       return;
     }
-    if(mounted){
+    if (mounted) {
       setState(() {
         isLoadingTransactionGroups = true;
       });
@@ -776,13 +780,12 @@ class _TransactionsState extends State<Transactions>
     // Simulate a delay to show the "Loading..." text
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if(mounted) {
+    if (mounted) {
       setState(() {
         loadedTransactionGroups += 4;
         isLoadingTransactionGroups = false;
       });
     }
-
   }
 
   void updateDataWithNew() {
@@ -876,7 +879,6 @@ class _TransactionsState extends State<Transactions>
           .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
 
       return newTransactions;
-
     }, allData)
         .then((data) {
       btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});

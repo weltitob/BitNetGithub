@@ -42,7 +42,7 @@ Future<RestResponse> addInvoice(
     'memo': memo ?? "",
     'value': amount,
     'expiry': 1200,
-    'fallback_addr': 'bc1qtfmrfu3n5vx8jgep5vw2s7z68u0aq40c24e2ps',
+    'fallback_addr': fallbackAddr,
     'private': false,
     'is_keysend': true
   };

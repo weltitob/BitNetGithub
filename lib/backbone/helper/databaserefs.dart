@@ -19,6 +19,8 @@ final btcSendsRef = FirebaseFirestore.instance.collection("send_receipts");
 final btcReceiveRef = FirebaseFirestore.instance.collection("receive_receipts");
 final btcAddressesRef =
     FirebaseFirestore.instance.collection("bitcoin_addresses");
+
+final backendRef = FirebaseFirestore.instance.collection('backend');
 //after bitnetold posts has been added
 final storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');

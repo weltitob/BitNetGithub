@@ -18,6 +18,7 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -119,25 +120,25 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     LoggerService logger = Get.find();
 
     //Onchain checking for transactions
-    subscribeTransactionsStream().listen((restResponse) {
-      logger.i("subscribeTransactionsStream got data: $restResponse");
-      BitcoinTransaction bitcoinTransaction =
-          BitcoinTransaction.fromJson(restResponse.data);
-      sendPaymentDataOnchainReceived(restResponse.data);
-
+    Get.find<WalletsController>().subscribeToOnchainTransactions().listen(
+        (val) {
+      logger.i("subscribeTransactionsStream got data: $val");
+      if (val == null) {
+        return;
+      }
       if (Get.overlayContext != null && Get.overlayContext!.mounted)
         showOverlayTransaction(
             Get.overlayContext!,
             "Onchain transaction settled",
             TransactionItemData(
-              amount: bitcoinTransaction.amount.toString(),
-              timestamp: bitcoinTransaction.timeStamp,
+              amount: val.amount.toString(),
+              timestamp: val.timeStamp,
               type: TransactionType.onChain,
               fee: 0,
               status: TransactionStatus.confirmed,
               direction: TransactionDirection.received,
-              receiver: bitcoinTransaction.destAddresses[0],
-              txHash: bitcoinTransaction.txHash ?? 'null',
+              receiver: val.destAddresses[0],
+              txHash: val.txHash ?? 'null',
             ));
       //});
     }, onError: (error) {
@@ -145,36 +146,34 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     });
     //LIGHTNING
     //Lightning payments
-    subscribeInvoicesStream().listen((restResponse) {
-      logger.i("Received data from Invoice-stream: $restResponse");
-      final result = restResponse.data["result"];
-      logger.i("Result: $result");
-      ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(result);
-      if (receivedInvoice.settled == true) {
-        sendPaymentDataInvoiceReceived(restResponse.data);
-
+    Get.find<WalletsController>().subscribeToInvoices().listen((inv) {
+      logger.i("Received data from Invoice-stream: $inv");
+      if (inv == null) {
+        return;
+      }
+      if (inv.state == 'SETTLED') {
         logger.i("showOverlay should be triggered now");
         if (Get.overlayContext != null && Get.overlayContext!.mounted)
           OverlayTransactionWidget.showOverlayTransaction(
             Get.context!,
             "Lightning invoice settled",
             TransactionItemData(
-              amount: receivedInvoice.amtPaidSat.toString(),
-              timestamp: receivedInvoice.settleDate,
+              amount: inv.amtPaidSat.toString(),
+              timestamp: inv.settleDate,
               type: TransactionType.lightning,
               fee: 0,
               status: TransactionStatus.confirmed,
               direction: TransactionDirection.received,
-              receiver: receivedInvoice.paymentRequest ?? "Yourself",
-              txHash: receivedInvoice.rHash ?? "forwarded through lightning",
+              receiver: inv.paymentRequest ?? "Yourself",
+              txHash: inv.rHash ?? "forwarded through lightning",
             ),
           );
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
-        if (Get.context != null && Get.context!.mounted) ReceiveController().getInvoice(0, "Empty invoice");
+        if (Get.context != null && Get.context!.mounted)
+          ReceiveController().getInvoice(0, "Empty invoice");
       } else {
-        logger.i(
-            "Invoice received but not settled yet: ${receivedInvoice.settled}");
+        logger.i("Invoice received but not settled yet: ${inv.settled}");
       }
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");

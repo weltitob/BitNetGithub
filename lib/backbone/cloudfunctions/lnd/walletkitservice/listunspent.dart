@@ -11,7 +11,7 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> listUnspent() async {
+Future<RestResponse> listUnspent(String account) async {
   LoggerService logger = Get.find();
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
@@ -28,7 +28,7 @@ Future<RestResponse> listUnspent() async {
   final Map<String, dynamic> data = {
     'min_confs': 4,
     'max_confs': 999999,
-    'account': "default",
+    'account': account,
     'unconfirmed_only':
         false, //false or true decides if only unconfirmed utxos are returned
   };
@@ -40,7 +40,7 @@ Future<RestResponse> listUnspent() async {
 
     var response = await dioClient.post(
         url: url, headers: headers, data: json.encode(data));
-    logger.i('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response List Unspent: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
@@ -57,7 +57,7 @@ Future<RestResponse> listUnspent() async {
           data: {});
     }
   } catch (e) {
-    logger.e('Error trying to publish transaction: $e');
+    logger.e('Error trying to list unspent: $e');
     return RestResponse(
         statusCode: "error",
         message:

@@ -29,7 +29,7 @@ Future<RestResponse> getTransaction(String tx_id) async {
     final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(url: url, headers: headers, data: data);
-    logger.i('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response get transaction: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);

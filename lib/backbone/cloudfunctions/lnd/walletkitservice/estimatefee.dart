@@ -10,7 +10,6 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
 Future<RestResponse> estimateFee(String conf_target) async {
   LoggerService logger = Get.find();
   final litdController = Get.find<LitdController>();
@@ -18,7 +17,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/estimatefee/$conf_target';
 
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
@@ -29,7 +28,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(
       url: url,
@@ -52,7 +51,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
           data: {});
     }
   } catch (e) {
-    logger.e('Error trying to publish transaction: $e');
+    logger.e('Error trying to estimate fee: $e');
     return RestResponse(
         statusCode: "error",
         message:

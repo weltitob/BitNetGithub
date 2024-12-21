@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/import_account.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
@@ -16,10 +19,16 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
+import 'package:bitnet/models/bitcoin/walletkit/output.dart';
+import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:blockchain_utils/signer/bitcoin_signer.dart';
+import 'package:bs58/bs58.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -67,6 +76,21 @@ class WalletScreen extends GetWidget<WalletsController> {
                               Row(
                                 children: [
                                   Avatar(
+                                      onTap: () async {
+                                        PrivateData data = await getPrivateData(
+                                            Auth().currentUser!.uid);
+                                        String mnemonic = data.mnemonic;
+                                        HDWallet wallet =
+                                            HDWallet.fromMnemonic(mnemonic);
+                                        RawTransactionData txData =
+                                            RawTransactionData(
+                                                inputs: [],
+                                                outputs: Outputs(outputs: {}));
+
+                                        BitcoinSigner signer =
+                                            BitcoinSigner.fromKeyBytes(
+                                                hex.decode(wallet.privkey));
+                                      },
                                       size: AppTheme.cardPadding * 2.5.h,
                                       mxContent: Uri.parse(
                                           Get.find<ProfileController>()

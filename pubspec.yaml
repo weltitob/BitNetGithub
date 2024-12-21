@@ -214,6 +214,7 @@ dependencies:
   crypto: ^3.0.5
   bip32: ^2.0.0
   wallet: ^0.0.13
+  bitcoin_base: ^4.9.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
