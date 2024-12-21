@@ -370,15 +370,4 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       context: context,
     );
   }
-
-  void sendPaymentDataInvoiceReceived(Map<String, dynamic> data) {
-    btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
-    btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').add(data);
-  }
-
-  void sendPaymentDataOnchainReceived(Map<String, dynamic> data) {
-    btcReceiveRef.doc(Auth().currentUser!.uid).set({'initialized': true});
-
-    btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
-  }
 }

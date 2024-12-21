@@ -56,6 +56,8 @@ import 'package:get/get.dart';
 // }
 
 Future<List<LightningPayment>> listPayments(String acc) async {
+  final logger = Get.find<LoggerService>();
+  logger.i("Calling listPayments() with account $acc");
   QuerySnapshot<Map<String, dynamic>> query =
       await backendRef.doc(acc).collection('payments').get();
   List<LightningPayment> payments =

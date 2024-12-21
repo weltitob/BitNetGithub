@@ -1,99 +1,12 @@
 import 'dart:async';
-
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:get/get.dart';
 
-
-/*
-This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.
-It uses a StreamController to emit ChartLine objects, which contain the timestamp and the price of the fetched data.
-The price is fetched every 12 seconds using a Timer, and the result is sent to the StreamController.
-The start() method starts the timer and begins the stream, while the stop() method cancels the timer and closes the stream.
-If there is an error fetching the price, it is caught and printed to the console.
-*/
-// Stream<ChartLine> bitcoinPriceStream(Duration updateInterval) async* {
-//   Timer.periodic(updateInterval, (Timer timer) async* {
-//     logger.w("Fetching Bitcoin price...");
-//     try {
-//       final Map<String, String> params = {
-//         'ids': 'bitcoin',
-//         'vs_currencies': 'eur',
-//         'include_last_updated_at': 'true',
-//       };
-//       final response = await http.get(Uri.parse(AppTheme.baseUrlCoinGecko).replace(queryParameters: params));
-//       if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//         final double price = double.parse(data['bitcoin']['eur'].toString());
-//         final int lastUpdated = data['bitcoin']['last_updated_at'];
-//         final ChartLine chartLine = ChartLine(time: DateTime.now().millisecondsSinceEpoch.toDouble(), price: price);
-//         yield chartLine;
-//       } else {
-//         print('Error fetching data: ${response.statusCode}');
-//       }
-//     } catch (e) {
-//       print('Error: $e');
-//     }
-//   });
-// }
-//
-//
-// class BitcoinPriceStream {
-//   final String _url = 'https://api.coingecko.com/api/v3/simple/price';
-//   StreamController<ChartLine> _priceController = StreamController<ChartLine>();
-//   late Timer _timer;
-//   Duration _updateInterval = Duration(seconds: 10);
-//
-//   Stream<ChartLine> get priceStream => _priceController.stream;
-//
-//   // This function starts the Bitcoin price stream by creating a Timer that periodically fetches the Bitcoin price from Coingecko API
-//   void start() {
-//     _timer = Timer.periodic(_updateInterval, (_) async {
-//       try {
-//         final Map<String, String> params = {
-//           'ids': 'bitcoin',
-//           'vs_currencies': 'eur',
-//           'include_last_updated_at': 'true'
-//         };
-//         // Fetch the Bitcoin price from the Coingecko API using the HTTP GET method
-//         final response = await get(
-//             Uri.parse(_url).replace(queryParameters: params),
-//             headers: {});
-//         // If the response status code is 200, then parse the response body and send the Bitcoin price to the stream
-//         if (response.statusCode == 200) {
-//           print('Getting BTC price...');
-//           String price = jsonDecode(response.body)['bitcoin']['eur'].toString();
-//           final time = jsonDecode(response.body)['bitcoin']['last_updated_at']
-//               .toString();
-//           double priceasdouble = double.parse(price);
-//           double timeasdouble = double.parse(time);
-//           final ChartLine latestchart =
-//           ChartLine(time: timeasdouble, price: priceasdouble);
-//           _priceController.add(latestchart);
-//           print('The current price of Bitcoin in Euro is $price');
-//         } else {
-//           // If the response status code is not 200, then log an error message
-//           print("An Error occured trying to livefetch the bitcoinprice");
-//           print('Error ${response.statusCode}: ${response.reasonPhrase}');
-//         }
-//       } catch (e) {
-//         // If an error occurs while fetching the Bitcoin price, then log an error message
-//         print('Error fetching Bitcoin price: $e');
-//       }
-//     });
-//   }
-//
-//   // This function stops the Bitcoin price stream by canceling the Timer and closing the StreamController
-//   void stop() {
-//     _timer.cancel();
-//     _priceController.close();
-//   }
-// }
 class BitcoinPriceStream {
-
-  late StreamController<ChartLine> _priceController;
+  late final StreamController<ChartLine> _priceController;
   Timer? _timer;
   final Duration _updateInterval = const Duration(seconds: 45);
   String localCurrency = 'eur'; // Default currency
@@ -115,6 +28,7 @@ class BitcoinPriceStream {
     );
     _startStream();
   }
+
   Stream<ChartLine> get priceStream => _priceController.stream;
 
   void updateCurrency(String currency) {
@@ -129,42 +43,6 @@ class BitcoinPriceStream {
     _timer = Timer.periodic(_updateInterval, (_) => _fetchAndUpdate());
   }
 
-  Future<void> _fetchAndUpdate() async {
-    LoggerService logger = Get.find();
-    logger.d("Fetching bitcoin price in $localCurrency...");
-    try {
-      final Map<String, String> params = {
-        'ids': 'bitcoin',
-        'vs_currencies': localCurrency,
-        'include_last_updated_at': 'true',
-        'x_cg_pro_api_key': AppTheme.coinGeckoApiKey,
-      };
-      final DioClient dioClient = Get.find<DioClient>();
-      final String _url = "${AppTheme.baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin&vs_currencies=${localCurrency}&include_last_updated_at='true'&x_cg_pro_api_key=${AppTheme.coinGeckoApiKey}";
-
-      final response = await dioClient.get(
-          url: _url );
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final double price =
-            double.parse(data['bitcoin'][localCurrency].toString());
-        // TODO: the command is not returning the time, only the price.
-        final double time =
-            double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
-        logger.d("Price of bitcoin in $localCurrency: $price");
-
-        final ChartLine latestChartLine = ChartLine(time: time, price: price);
-        _priceController.add(latestChartLine);
-      } else {
-         logger.e(
-             "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}");
-      }
-    } catch (e) {
-       logger.e("Error fetching Bitcoin price: $e");
-    }
-  }
-
   void _stopStream() {
     _timer?.cancel();
   }
@@ -174,7 +52,57 @@ class BitcoinPriceStream {
     _startStream();
   }
 
+  Future<void> _fetchAndUpdate() async {
+    final logger = Get.find<LoggerService>();
+    logger.d("Fetching bitcoin price in $localCurrency...");
+
+    try {
+      final Map<String, String> params = {
+        'ids': 'bitcoin',
+        'vs_currencies': localCurrency,
+        'include_last_updated_at': 'true',
+        'x_cg_pro_api_key': AppTheme.coinGeckoApiKey,
+      };
+
+      final DioClient dioClient = Get.find<DioClient>();
+      final String _url =
+          "${AppTheme.baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin"
+          "&vs_currencies=$localCurrency"
+          "&include_last_updated_at='true'"
+          "&x_cg_pro_api_key=${AppTheme.coinGeckoApiKey}";
+
+      final response = await dioClient.get(url: _url);
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final double price =
+        double.parse(data['bitcoin'][localCurrency].toString());
+
+        // The API might not return `last_updated_at` as a double, so parse safely:
+        final double time =
+            double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
+
+        logger.d("Price of bitcoin in $localCurrency: $price");
+
+        final ChartLine latestChartLine = ChartLine(time: time, price: price);
+
+        // --- IMPORTANT CHECK HERE: do not add events if closed or no one is listening.
+        if (!_priceController.isClosed && _priceController.hasListener) {
+          _priceController.add(latestChartLine);
+        }
+
+      } else {
+        logger.e(
+          "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}",
+        );
+      }
+    } catch (e) {
+      logger.e("Error fetching Bitcoin price: $e");
+    }
+  }
+
   void dispose() {
+    // Once dispose() is called, we’ll assume the stream should be closed.
     _stopStream();
     _priceController.close();
   }

@@ -13,6 +13,7 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,8 +79,6 @@ class ReceiveController extends BaseController {
     btcController.text = value;
   }
 
-
-
   void getInvoice(int amount, String? memo) async {
     logger.i("Getting invoice: $amount");
     bitcoinUnit == BitcoinUnits.SAT
@@ -95,6 +94,34 @@ class ReceiveController extends BaseController {
       InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
       logger.i("Invoice: " + invoiceModel.payment_request.toString());
       qrCodeDataStringLightning.value = invoiceModel.payment_request.toString();
+
+      try {
+        // Update Firebase with new invoice
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null) {
+          final userId = currentUser.uid;
+
+          // Reference to the "allInvoices" collection
+          final invoiceRef = FirebaseFirestore.instance
+              .collection("allInvoices")
+              .doc(invoiceModel.payment_request.toString());
+
+          // Example data to store
+          final data = {
+            "userId": userId,
+            "createdAt": FieldValue.serverTimestamp(),
+            "invoice": invoiceModel.toMap(),
+          };
+
+          // Set or update the document
+          await invoiceRef.set(data, SetOptions(merge: true));
+          logger.i("Invoice saved to Firestore with ID: ${invoiceModel
+              .payment_request}");
+        }
+      } catch (e){
+        logger.e("Error saving invoice to Firestore: $e");
+      }
+
     } catch(e){
       logger.e("Error getting invoice: $e");
     }

@@ -5,11 +5,13 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
  
 Future<RestResponse> channelBalance() async {
+    final logger = Get.find<LoggerService>();
     final DioClient dioClient = Get.find<DioClient>();
 
     final litdController = Get.find<LitdController>();
@@ -18,7 +20,7 @@ Future<RestResponse> channelBalance() async {
     // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
     String url = 'https://$restHost/v1/balance/channels';
 
-    ByteData byteData = await loadAdminMacaroonAsset();
+    ByteData byteData = await loadMacaroonAsset();
     List<int> bytes = byteData.buffer.asUint8List();
     String macaroon = bytesToHex(bytes);
 
@@ -32,7 +34,7 @@ Future<RestResponse> channelBalance() async {
     var response = await dioClient.get(url: url, headers: headers);
 
     // Print raw response for debugging
-    print('Raw Response Light: ${response.data}');
+    logger.i('Raw Response getting channel balance: ${response.data}');
 
     if (response.statusCode == 200) {
       //print(json.decode(response.data));
@@ -49,7 +51,7 @@ Future<RestResponse> channelBalance() async {
           data: {});
     }
   } catch (e) {
-    print('Error: $e');
+    logger.e('Error retriving channel balance: $e');
     return RestResponse(
         statusCode: "error",
         message:

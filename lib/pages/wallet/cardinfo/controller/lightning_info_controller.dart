@@ -21,8 +21,7 @@ class LightningInfoController extends GetxController {
     LoggerService logger = Get.find();
     logger.i("Getting lightning invoices");
     try {
-      List<ReceivedInvoice> restLightningInvoices =
-          await listInvoices(Auth().currentUser!.uid);
+      List<ReceivedInvoice> restLightningInvoices = await listInvoices(Auth().currentUser!.uid);
       ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson({
         'invoices': restLightningInvoices.map((inv) => inv.toJson()).toList()
       });

@@ -100,7 +100,6 @@ class ReceivedInvoicesList {
   ReceivedInvoicesList({required this.invoices});
 
   factory ReceivedInvoicesList.fromJson(Map<String, dynamic>? json) {
-    print('json $json');
     if (json == null || json['invoices'] == null) {
       throw ArgumentError('JSON data or "invoices" key is missing or null');
     }

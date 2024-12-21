@@ -96,6 +96,7 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
 
     final currencyEquivalent =
         bitcoinPrice != null ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -265,7 +266,7 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
                                     coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
                                   },
                                   child: Text(
-                                    coin.coin ?? true ? widget.data.amount : "$currencyEquivalent${getCurrency(currency!)}",
+                                    coin.coin ?? true ? widget.data.amount : widget.data.direction == TransactionDirection.received ? "+$currencyEquivalent${getCurrency(currency!)}" : "$currencyEquivalent${getCurrency(currency!)}",
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                         color: widget.data.direction == TransactionDirection.received

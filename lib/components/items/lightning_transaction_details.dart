@@ -143,7 +143,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                           Text(
                                             coin.coin ?? true
                                                 ? double.parse(data.amount) > 0
-                                                    ? '+${data.amount}'
+                                                    ? '${data.amount}'
                                                     : data.amount
                                                 : double.parse(data.amount) > 0
                                                     ? "+${currencyEquivalent}"

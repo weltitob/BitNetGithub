@@ -5,11 +5,13 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
  
 Future<RestResponse> inboundLiquidity() async {
+    final logger = Get.find<LoggerService>();
     final DioClient dioClient = Get.find<DioClient>();
     final litdController = Get.find<LitdController>();
     final String restHost = litdController.litd_baseurl.value;

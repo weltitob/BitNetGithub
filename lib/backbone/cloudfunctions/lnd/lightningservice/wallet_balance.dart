@@ -5,11 +5,15 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> walletBalance({String acc = ''}) async {
+  final logger = Get.find<LoggerService>();
+
+  logger.i("Calling walletBalance() with account $acc");
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
@@ -36,16 +40,15 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
       headers: headers,
     );
     // Print raw response for debugging
-    print('Raw Response: ${response.data}');
+    logger.i('Raw Response account onchainbalance: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(response.data);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved OnChain Balance",
           data: response.data);
     } else {
-      print('Failed to load data: ${response.statusCode}, ${response.data}');
+      logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
       return RestResponse(
           statusCode: "error",
           message:
@@ -53,7 +56,7 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
           data: {});
     }
   } catch (e) {
-    print('Error: $e');
+    logger.e('Error retriving onchain Balance: $e');
     return RestResponse(
         statusCode: "error",
         message:

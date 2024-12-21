@@ -44,7 +44,7 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
   // 3. Load macaroon
   ByteData? byteData;
   try {
-    byteData = await loadAdminMacaroonAsset();
+    byteData = await loadMacaroonAsset();
     if (byteData == null) {
       throw Exception("Macaroon asset is null");
     }

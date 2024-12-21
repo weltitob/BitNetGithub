@@ -334,9 +334,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 .value.unconfirmedBalance;
 
                                         logger.i(
-                                            "Confirmed Balance: $confirmedBalanceStr");
+                                            "Confirmed Balance onchain: $confirmedBalanceStr");
                                         logger.i(
-                                            "Unconfirmed Balance: $unconfirmedBalanceStr");
+                                            "Unconfirmed Balance onchain: $unconfirmedBalanceStr");
 
                                         return BalanceCardBtc(
                                           balance: confirmedBalanceStr,
@@ -385,13 +385,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                       //     await controller.subscribeToOnchainBalance();
                       //   },
                       // ),
-                      // SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                      // LongButtonWidget(
-                      //   title: "fetchBitcoin Balance",
-                      //   onTap: () async {
-                      //     await controller.subscribeToOnchainTransactions();
-                      //   },
-                      // ),
+                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      LongButtonWidget(
+                        title: "${Auth().currentUser!.uid}",
+                        onTap: () async {
+                          await controller.subscribeToOnchainTransactions();
+                        },
+                      ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "Genlitdaccount",

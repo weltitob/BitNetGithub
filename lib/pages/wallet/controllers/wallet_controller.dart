@@ -1,25 +1,19 @@
 import 'dart:async';
-
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
-import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
@@ -29,10 +23,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
-import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -112,17 +103,193 @@ class WalletsController extends BaseController {
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
 
+
+  RxBool coin = false.obs;
+
+  // Getters for currencies
+
+  RxString? selectedCurrency;
+
+
+  @override
+  void onInit() {
+
+    final logger = Get.find<LoggerService>();
+    logger.i("Calling onInit in wallet_controller");
+
+    super.onInit();
+    Get.put(CryptoItemController());
+    Get.put(WalletFilterController());
+    Get.put(BitcoinScreenController());
+
+
+    // Get.put(PurchaseSheetController());
+    // Get.put(() => SellSheetController());
+    scrollController = ScrollController();
+    reversed.value = LocalStorage.instance.getBool(reversedConstant);
+
+    selectedCard.value =
+        LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
+            (value) {
+          coin.value = value.data()?["showCoin"] ?? false;
+          selectedCurrency = RxString("");
+          selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
+
+        }, onError: (a, b) {
+      coin.value = false;
+      selectedCurrency = RxString("");
+      selectedCurrency!.value = "USD";
+    });
+
+    //----------------------BALANCES----------------------
+
+    logger.i("Fetching balances initally in wallet_controller");
+
+    fetchOnchainWalletBalance().then((value) {
+      loadedFutures++;
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Onchain Balance";
+      }
+      if (loadedFutures == 2) {
+        queueErrorOvelay = true;
+      }
+    });
+
+    fetchLightingWalletBalance().then((value) {
+      loadedFutures++;
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Lightning Balance";
+      }
+      if (loadedFutures == 2) {
+        queueErrorOvelay = true;
+      }
+    });
+
+    //---------------------------------------------------
+
+
+    //----------------------ACTIVITY----------------------
+
+    logger.i("Fetching activity initally in wallet_controller");
+
+    getTransactions(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching transactions in wallet_controller");
+      onchainTransactions.value = {
+        'transactions': val.map((tx) => tx.toJson()).toList()
+      };
+      logger.i("Transactions: $onchainTransactions");
+      futuresCompleted++;
+    });
+
+    listPayments(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching payments in wallet_controller");
+      List<Map<String, dynamic>> paymentsMapped =
+      val.map((payment) => payment.toJson()).toList();
+      lightningPayments.value = {
+        'payments': paymentsMapped,
+        'first_index_offset': -1,
+        'last_index_offset': -1,
+        'total_num_payments': paymentsMapped.length
+      };
+      logger.i("Payments: $paymentsMapped");
+      futuresCompleted++;
+    });
+
+    listInvoices(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching invoices in wallet_controller");
+      List<Map<String, dynamic>> mapList =
+      val.map((inv) => inv.toJson()).toList();
+      lightningInvoices.value = {'invoices': mapList};
+      logger.i("Invoices: $mapList");
+      futuresCompleted++;
+    });
+
+
+    // listSwaps().then((val) {
+    //   logger.i("Fetching swaps in wallet_controller");
+    //   loopOperations.addAll(val.data);
+    //   futuresCompleted++;
+    // });
+
+    //---------------------------------------------------
+
+
+    //----------------------SUBSCRIPTIONS----------------------
+    logger.i("Subscribing to streams in wallet_controller");
+
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('invoices')
+        .snapshots()
+        .listen((query) {
+      ReceivedInvoice? model;
+      try {
+        logger.i("Received invoice from stream");
+        model = ReceivedInvoice.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert invoice json to invoice model');
+      }
+      latestInvoice.value = model;
+    });
+
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('payments')
+        .snapshots()
+        .listen((query) {
+      LightningPayment? model;
+      try {
+        logger.i("Received payment from stream");
+        model = LightningPayment.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert payment json to payment model');
+      }
+      latestPayment.value = model;
+    });
+
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('transactions')
+        .snapshots()
+        .listen((query) {
+      BitcoinTransaction? model;
+      try {
+        logger.i("Received transaction from stream");
+        model = BitcoinTransaction.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert transaction json to transaction model');
+      }
+      latestTransaction.value = model;
+    });
+
+    //---------------------------------------------------
+    subscribeToOnchainBalance();
+    subscribeToInvoices();
+    subscribeToLightningPayments();
+    subscribeToOnchainTransactions();
+    //------------------------
+
+  }
+
   //------------------------------------------------------------------------------------------
   //----------------------NEW SECTION FOR UPDATED WALLET SYSTEM-------------------------------
   //------------------------------------------------------------------------------------------
 
   Future<OnchainBalance> getOnchainBalance() async {
     try {
+
       RestResponse onchainBalanceRest =
-          await walletBalance(acc: Auth().currentUser!.uid);
+      await walletBalance(acc: Auth().currentUser!.uid);
+
       if (!onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
-            OnchainBalance.fromJson(onchainBalanceRest.data);
+        OnchainBalance.fromJson(onchainBalanceRest.data);
 
         this.onchainBalance.value = onchainBalance;
       }
@@ -141,7 +308,7 @@ class WalletsController extends BaseController {
       if (response.statusCode == 200) {
         List utxos = response.data;
         num addressBalance =
-            utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
+        utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
         return addressBalance;
       }
       return 0;
@@ -156,7 +323,7 @@ class WalletsController extends BaseController {
   // ----------------------
   Future<int?> getAddressesCount() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
       return doc.data()!['count'];
     } else {
@@ -169,7 +336,7 @@ class WalletsController extends BaseController {
   // ----------------------
   Future<List<String>> getOnchainAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -181,7 +348,7 @@ class WalletsController extends BaseController {
 
   Future<List<String>> getChangeAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -193,7 +360,7 @@ class WalletsController extends BaseController {
 
   Future<List<String>> getNonChangeAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -260,9 +427,6 @@ class WalletsController extends BaseController {
     });
   }
 
-  // ----------------------
-  // SUBSCRIBE TO ON-CHAIN TRANSACTIONS
-  // ----------------------
   Stream<BitcoinTransaction?> subscribeToOnchainTransactions() {
     return latestTransaction.stream.asBroadcastStream();
   }
@@ -274,10 +438,6 @@ class WalletsController extends BaseController {
   Stream<ReceivedInvoice?> subscribeToInvoices() {
     return latestInvoice.stream.asBroadcastStream();
   }
-
-  //------------------------------------------------------------------------------------------
-  //------------------------------------------------------------------------------------------
-  //------------------------------------------------------------------------------------------
 
   // Call this method from your UI when you want to fetch the status
   Future<void> updateSubServerStatus() async {
@@ -308,6 +468,20 @@ class WalletsController extends BaseController {
     LocalStorage.instance.setBool(val, reversedConstant);
   }
 
+  // Method to update the first currency and its corresponding Firestore document
+  void setFirstCurrencyInDatabase(String currency) {
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      "selectedCurrency": currency,
+    });
+    selectedCurrency!.value = currency;
+  }
+
+  // Clear method adjusted to reset currency values
+  void clearCurrencies() {
+    selectedCurrency = null;
+  }
+
+
   // Getters for currencies
 
   // Method to update the first currency and its corresponding Firestore document
@@ -323,171 +497,6 @@ class WalletsController extends BaseController {
   //   selectedCard = null;
   // }
 
-  RxBool coin = false.obs;
-
-  // Getters for currencies
-
-  // Method to update the first currency and its corresponding Firestore document
-  void setCurrencyType(bool type, {bool updateDatabase = true}) {
-    if (updateDatabase) {
-      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update(
-        {
-          "showCoin": type,
-        },
-      );
-    }
-
-    coin.value = type;
-    update();
-  }
-
-  // Clear method adjusted to reset currency values
-  void clearCurrencyType() {
-    coin.value = false;
-  }
-
-  RxString? selectedCurrency;
-
-  // Method to update the first currency and its corresponding Firestore document
-  void setFirstCurrencyInDatabase(String currency) {
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "selectedCurrency": currency,
-    });
-    selectedCurrency!.value = currency;
-  }
-
-  // Clear method adjusted to reset currency values
-  void clearCurrencies() {
-    selectedCurrency = null;
-  }
-
-  @override
-  void onInit() {
-    final logger = Get.find<LoggerService>();
-    super.onInit();
-    Get.put(CryptoItemController());
-    Get.put(WalletFilterController());
-    Get.put(BitcoinScreenController());
-    // Get.put(PurchaseSheetController());
-    // Get.put(() => SellSheetController());
-    scrollController = ScrollController();
-    reversed.value = LocalStorage.instance.getBool(reversedConstant);
-    selectedCard.value =
-        LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
-        (value) {
-      coin.value = value.data()?["showCoin"] ?? false;
-      selectedCurrency = RxString("");
-      selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
-      print("Currency Value : ${selectedCurrency!.value}");
-    }, onError: (a, b) {
-      coin.value = false;
-      selectedCurrency = RxString("");
-      selectedCurrency!.value = "USD";
-
-      print("Currency Value : ${selectedCurrency!.value}");
-    });
-
-    fetchOnchainWalletBalance().then((value) {
-      loadedFutures++;
-      if (!value) {
-        errorCount++;
-        loadMessageError = "Failed to load Onchain Balance";
-      }
-      if (loadedFutures == 2) {
-        queueErrorOvelay = true;
-      }
-    });
-
-    fetchLightingWalletBalance().then((value) {
-      loadedFutures++;
-      if (!value) {
-        errorCount++;
-        loadMessageError = "Failed to load Lightning Balance";
-      }
-      if (loadedFutures == 2) {
-        queueErrorOvelay = true;
-      }
-    });
-
-    getTransactions(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching transactions in wallet_controller");
-      onchainTransactions.value = {
-        'transactions': val.map((tx) => tx.toJson()).toList()
-      };
-      futuresCompleted++;
-    });
-    // listSwaps().then((val) {
-    //   logger.i("Fetching swaps in wallet_controller");
-    //   loopOperations.addAll(val.data);
-    //   futuresCompleted++;
-    // });
-    listPayments(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching payments in wallet_controller");
-      List<Map<String, dynamic>> paymentsMapped =
-          val.map((payment) => payment.toJson()).toList();
-      lightningPayments.value = {
-        'payments': paymentsMapped,
-        'first_index_offset': -1,
-        'last_index_offset': -1,
-        'total_num_payments': paymentsMapped.length
-      };
-      futuresCompleted++;
-    });
-    listInvoices(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching invoices in wallet_controller");
-      List<Map<String, dynamic>> mapList =
-          val.map((inv) => inv.toJson()).toList();
-      lightningInvoices.value = {'invoices': mapList};
-      futuresCompleted++;
-    });
-
-    backendRef
-        .doc(Auth().currentUser!.uid)
-        .collection('invoices')
-        .snapshots()
-        .listen((query) {
-      ReceivedInvoice? model;
-      try {
-        model = ReceivedInvoice.fromJson(query.docs.last.data());
-      } catch (e) {
-        model = null;
-        logger.e('failed to convert invoice json to invoice model');
-      }
-      latestInvoice.value = model;
-    });
-    backendRef
-        .doc(Auth().currentUser!.uid)
-        .collection('payments')
-        .snapshots()
-        .listen((query) {
-      LightningPayment? model;
-      try {
-        model = LightningPayment.fromJson(query.docs.last.data());
-      } catch (e) {
-        model = null;
-        logger.e('failed to convert payment json to payment model');
-      }
-      latestPayment.value = model;
-    });
-
-    backendRef
-        .doc(Auth().currentUser!.uid)
-        .collection('transactions')
-        .snapshots()
-        .listen((query) {
-      BitcoinTransaction? model;
-      try {
-        model = BitcoinTransaction.fromJson(query.docs.last.data());
-      } catch (e) {
-        model = null;
-        logger.e('failed to convert transaction json to transaction model');
-      }
-      latestTransaction.value = model;
-    });
-
-    subscribeToOnchainBalance();
-  }
 
   void handleFuturesCompleted(BuildContext context) {
     logger.i(
@@ -514,12 +523,32 @@ class WalletsController extends BaseController {
     return true;
   }
 
+
+  // Method to update the first currency and its corresponding Firestore document
+  void setCurrencyType(bool type, {bool updateDatabase = true}) {
+    if (updateDatabase) {
+      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update(
+        {
+          "showCoin": type,
+        },
+      );
+    }
+
+    coin.value = type;
+    update();
+  }
+
+  // Clear method adjusted to reset currency values
+  void clearCurrencyType() {
+    coin.value = false;
+  }
+
   Future<bool> fetchLightingWalletBalance() async {
     try {
       RestResponse lightningBalanceRest = await channelBalance();
 
       LightningBalance lightningBalance =
-          LightningBalance.fromJson(lightningBalanceRest.data);
+      LightningBalance.fromJson(lightningBalanceRest.data);
       if (!lightningBalanceRest.data.isEmpty) {
         this.lightningBalance.value = lightningBalance;
       }

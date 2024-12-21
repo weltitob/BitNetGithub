@@ -16,7 +16,7 @@ final activityFeedRef = FirebaseFirestore.instance.collection("activityFeed");
 final postsCollection = FirebaseFirestore.instance.collection("posts");
 final usersCountRef = FirebaseFirestore.instance.collection("usersCount");
 final btcSendsRef = FirebaseFirestore.instance.collection("send_receipts");
-final btcReceiveRef = FirebaseFirestore.instance.collection("receive_receipts");
+// final btcReceiveRef = FirebaseFirestore.instance.collection("receive_receipts");
 final btcAddressesRef =
     FirebaseFirestore.instance.collection("bitcoin_addresses");
 
