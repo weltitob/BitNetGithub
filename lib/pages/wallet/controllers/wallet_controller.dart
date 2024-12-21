@@ -19,8 +19,10 @@ import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
@@ -100,8 +102,12 @@ class WalletsController extends BaseController {
 
   List<String> btcAddresses = List<String>.empty(growable: true);
 
-  late StreamController<dynamic> sendTransactionsStream;
   RxInt futuresCompleted = 0.obs;
+
+  //reactive values to handle transaction and invoice streams
+  Rx<BitcoinTransaction?> latestTransaction = Rx<BitcoinTransaction?>(null);
+  Rx<ReceivedInvoice?> latestInvoice = Rx<ReceivedInvoice?>(null);
+  Rx<LightningPayment?> latestPayment = Rx<LightningPayment?>(null);
 
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
@@ -111,46 +117,21 @@ class WalletsController extends BaseController {
   //------------------------------------------------------------------------------------------
 
   Future<OnchainBalance> getOnchainBalance() async {
-    // 1. Get all addresses
-    List<String> addresses = await getOnchainAddresses();
-    int totalBalance = 0;
-    int confirmedBalance = 0;
-    int unconfirmedBalance = 0;
-    final DioClient dioClient = Get.find<DioClient>();
+    try {
+      RestResponse onchainBalanceRest =
+          await walletBalance(acc: Auth().currentUser!.uid);
+      if (!onchainBalanceRest.data.isEmpty) {
+        OnchainBalance onchainBalance =
+            OnchainBalance.fromJson(onchainBalanceRest.data);
 
-    // 2. For each address, fetch UTXOs and sum up the value
-    for (String addr in addresses) {
-      String url = '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/utxo';
-      try {
-        final response = await dioClient.get(
-          url: url,
-        );
-        if (response.statusCode == 200) {
-          List utxos = response.data;
-          // Sum all UTXOs for this address
-          for (int i = 0; i < utxos.length; i++) {
-            int balance = utxos[i]['value'];
-            bool confirmed = utxos[i]['status']['confirmed'];
-            totalBalance += balance;
-            if (confirmed) {
-              confirmedBalance += balance;
-            } else {
-              unconfirmedBalance += balance;
-            }
-          }
-        }
-      } catch (e) {
-        // Handle errors gracefully
-        print('Error fetching UTXOs for $addr: $e');
+        this.onchainBalance.value = onchainBalance;
       }
+      changeTotalBalanceStr();
+    } catch (e) {
+      print(e);
     }
-    return OnchainBalance(
-        totalBalance: totalBalance.toString(),
-        confirmedBalance: confirmedBalance.toString(),
-        unconfirmedBalance: unconfirmedBalance.toString(),
-        lockedBalance: '0',
-        reservedBalanceAnchorChan: '0',
-        accountBalance: totalBalance.toString()); // in satoshis
+
+    return this.onchainBalance.value;
   }
 
   Future<num> getOnchainAddressBalance(String addr) async {
@@ -189,6 +170,8 @@ class WalletsController extends BaseController {
   Future<List<String>> getOnchainAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
         await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    String uid = Auth().currentUser!.uid;
+    Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
       return (doc.data()!['addresses'] as List).cast<String>();
     } else {
@@ -196,88 +179,100 @@ class WalletsController extends BaseController {
     }
   }
 
-  // ----------------------
-  // GET ON-CHAIN TRANSACTIONS
-  // ----------------------
-  Future<List<dynamic>> getOnchainTransactions() async {
-    // 1. Get all addresses
-    List<String> addresses = await getOnchainAddresses();
-    final DioClient dioClient = Get.find<DioClient>();
-
-    List<TransactionModel> allTxs = [];
-
-    // 2. Fetch transactions for each address and aggregate
-    for (String addr in addresses) {
-      try {
-        String url =
-            '${AppTheme.baseUrlMemPoolSpaceApi}v1/validate-address/$addr';
-        print(url);
-        await dioClient.get(url: url).then((value) async {
-          print(value.data);
-          ValidateAddressComponentModel validateAddressComponentModel =
-              ValidateAddressComponentModel.fromJson(value.data);
-          print(validateAddressComponentModel.isvalid);
-          validateAddressComponentModel.isvalid
-              ? await dioClient
-                  .get(
-                      url:
-                          '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/txs')
-                  .then((value) async {
-                  for (int i = 0; i < value.data.length; i++) {
-                    allTxs.add(TransactionModel.fromJson(value.data[i]));
-                  }
-                  print(value.data);
-                })
-              : null;
-        });
-      } catch (e, tr) {
-        print(e);
-        print(tr);
-      }
+  Future<List<String>> getChangeAddresses() async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    String uid = Auth().currentUser!.uid;
+    Map<String, dynamic>? data = doc.data();
+    if (doc.data() != null && doc.data()!.isNotEmpty) {
+      return (doc.data()!['change_addresses'] as List).cast<String>();
+    } else {
+      return <String>[];
     }
-
-    // Optional: Deduplicate transactions if they appear in multiple addresses
-    // You can identify transactions by their txid and maintain a set.
-
-    // Return aggregated transaction list
-    allTxs = allTxs.toSet().toList();
-    return allTxs;
   }
+
+  Future<List<String>> getNonChangeAddresses() async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    String uid = Auth().currentUser!.uid;
+    Map<String, dynamic>? data = doc.data();
+    if (doc.data() != null && doc.data()!.isNotEmpty) {
+      return (doc.data()!['non_change_addresses'] as List).cast<String>();
+    } else {
+      return <String>[];
+    }
+  }
+
+  // // // ----------------------
+  // // // GET ON-CHAIN TRANSACTIONS
+  // // // ----------------------
+  // Future<List<dynamic>> getOnchainTransactions() async {
+  //   // 1. Get all addresses
+  //   List<String> addresses = await getOnchainAddresses();
+  //   final DioClient dioClient = Get.find<DioClient>();
+
+  //   List<TransactionModel> allTxs = [];
+
+  //   // 2. Fetch transactions for each address and aggregate
+  //   for (String addr in addresses) {
+  //     try {
+  //       String url =
+  //           '${AppTheme.baseUrlMemPoolSpaceApi}v1/validate-address/$addr';
+  //       print(url);
+  //       await dioClient.get(url: url).then((value) async {
+  //         print(value.data);
+  //         ValidateAddressComponentModel validateAddressComponentModel =
+  //             ValidateAddressComponentModel.fromJson(value.data);
+  //         print(validateAddressComponentModel.isvalid);
+  //         validateAddressComponentModel.isvalid
+  //             ? await dioClient
+  //                 .get(
+  //                     url:
+  //                         '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/txs')
+  //                 .then((value) async {
+  //                 for (int i = 0; i < value.data.length; i++) {
+  //                   allTxs.add(TransactionModel.fromJson(value.data[i]));
+  //                 }
+  //                 print(value.data);
+  //               })
+  //             : null;
+  //       });
+  //     } catch (e, tr) {
+  //       print(e);
+  //       print(tr);
+  //     }
+  //   }
+
+  //   // Optional: Deduplicate transactions if they appear in multiple addresses
+  //   // You can identify transactions by their txid and maintain a set.
+
+  //   // Return aggregated transaction list
+  //   allTxs = allTxs.toSet().toList();
+  //   return allTxs;
+  // }
 
   // ----------------------
   // SUBSCRIBE TO ON-CHAIN BALANCE UPDATES
   // ----------------------
   dynamic subscribeToOnchainBalance() {
-    String mnemonic = "your mnemonic here";
-    // There's no direct "address subscription" endpoint.
-    // Instead, subscribe to mempool-wide events and filter on client side:
-    // You can reuse logic from TransactionController’s websocket setup.
-
-    // Steps:
-    // 1. Derive addresses.
-    // 2. Connect to mempool.space WebSocket.
-    // 3. Subscribe to mempool transactions using {"action": "want", "data": ["watch-mempool"]}.
-    // 4. On each incoming tx, check if it involves the derived addresses (vin/vout).
-    // 5. If it does, re-fetch the balances or update the cached balance incrementally.
+    subscribeToOnchainTransactions().listen((val) {
+      getOnchainBalance();
+    });
   }
 
   // ----------------------
   // SUBSCRIBE TO ON-CHAIN TRANSACTIONS
   // ----------------------
-  dynamic subscribeToOnchainTransactions() {
-    String mnemonic = "your mnemonic here";
-    // Similar to subscribeToOnchainBalance:
-    // 1. Derive addresses.
-    // 2. Connect to WebSocket and subscribe to mempool updates.
-    // 3. Filter incoming transactions:
-    //    - Parse tx from websocket message
-    //    - If any input or output matches the derived addresses, trigger update in UI or internal state.
-    //
-    // The TransactionController code you have already shows how to connect and receive data:
-    // You'd move that logic to a dedicated method in the WalletController that:
-    // - Opens the WS connection
-    // - Sends the initial "want" message
-    // - On message, checks against known addresses.
+  Stream<BitcoinTransaction?> subscribeToOnchainTransactions() {
+    return latestTransaction.stream.asBroadcastStream();
+  }
+
+  Stream<LightningPayment?> subscribeToLightningPayments() {
+    return latestPayment.stream.asBroadcastStream();
+  }
+
+  Stream<ReceivedInvoice?> subscribeToInvoices() {
+    return latestInvoice.stream.asBroadcastStream();
   }
 
   //------------------------------------------------------------------------------------------
@@ -415,28 +410,83 @@ class WalletsController extends BaseController {
       }
     });
 
-    getTransactions().then((val) {
+    getTransactions(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching transactions in wallet_controller");
-      onchainTransactions.addAll(val.data);
+      onchainTransactions.value = {
+        'transactions': val.map((tx) => tx.toJson()).toList()
+      };
       futuresCompleted++;
     });
-    listSwaps().then((val) {
-      logger.i("Fetching swaps in wallet_controller");
-      loopOperations.addAll(val.data);
-      futuresCompleted++;
-    });
-    listPayments().then((val) {
+    // listSwaps().then((val) {
+    //   logger.i("Fetching swaps in wallet_controller");
+    //   loopOperations.addAll(val.data);
+    //   futuresCompleted++;
+    // });
+    listPayments(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching payments in wallet_controller");
-      lightningPayments.addAll(val.data);
+      List<Map<String, dynamic>> paymentsMapped =
+          val.map((payment) => payment.toJson()).toList();
+      lightningPayments.value = {
+        'payments': paymentsMapped,
+        'first_index_offset': -1,
+        'last_index_offset': -1,
+        'total_num_payments': paymentsMapped.length
+      };
       futuresCompleted++;
     });
-    listInvoices().then((val) {
+    listInvoices(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching invoices in wallet_controller");
-      lightningInvoices.addAll(val.data);
+      List<Map<String, dynamic>> mapList =
+          val.map((inv) => inv.toJson()).toList();
+      lightningInvoices.value = {'invoices': mapList};
       futuresCompleted++;
     });
 
-    sendTransactionsStream = StreamController<dynamic>.broadcast();
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('invoices')
+        .snapshots()
+        .listen((query) {
+      ReceivedInvoice? model;
+      try {
+        model = ReceivedInvoice.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert invoice json to invoice model');
+      }
+      latestInvoice.value = model;
+    });
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('payments')
+        .snapshots()
+        .listen((query) {
+      LightningPayment? model;
+      try {
+        model = LightningPayment.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert payment json to payment model');
+      }
+      latestPayment.value = model;
+    });
+
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('transactions')
+        .snapshots()
+        .listen((query) {
+      BitcoinTransaction? model;
+      try {
+        model = BitcoinTransaction.fromJson(query.docs.last.data());
+      } catch (e) {
+        model = null;
+        logger.e('failed to convert transaction json to transaction model');
+      }
+      latestTransaction.value = model;
+    });
+
+    subscribeToOnchainBalance();
   }
 
   void handleFuturesCompleted(BuildContext context) {
@@ -506,7 +556,6 @@ class WalletsController extends BaseController {
     transactionsSubscription?.cancel();
     invoicesSubscription?.cancel();
     scrollController.dispose();
-    sendTransactionsStream.close();
     super.dispose();
   }
 

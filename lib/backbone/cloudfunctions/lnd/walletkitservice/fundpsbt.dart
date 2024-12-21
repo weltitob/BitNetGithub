@@ -11,8 +11,7 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
-Future<RestResponse> fundPsbt(TransactionData model) async {
+Future<RestResponse> fundPsbt(TransactionData model, String account) async {
   LoggerService logger = Get.find();
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
@@ -29,14 +28,13 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
   };
 
   final Map<String, dynamic> data = {
-    
     //'psbt': base64.b64encode(<bytes>), This stands for Partially Signed Bitcoin Transaction. It's a base64-encoded string representing a transaction that has not been fully signed yet. To generate a PSBT, you would typically use a Bitcoin wallet or library that supports PSBT creation. The library or tool you choose would allow you to specify transaction details such as inputs, outputs, amounts, and more. After creating a PSBT, you would encode it in base64 format to use in this field.
     'raw': model.raw.toJson(),
     'target_conf': model
         .targetConf, //The number of blocks to aim for when confirming the transaction. If the transaction cannot be confirmed in the specified number of blocks, it will be rejected. If this field is not set, the wallet will use the default number of blocks specified in the server configuration.
     //'sat_per_vbyte': sat_per_kw,//sat_per_vbyte, #feerate in sat/vbyte >> will get this from feerate servcie
     'account':
-        "", //#The name of the account to fund the PSBT with. If empty, the default wallet account is used.
+        account, //#The name of the account to fund the PSBT with. If empty, the default wallet account is used.
     'min_confs': model
         .minConfs, //#going for safety and not speed because for speed oyu would use the lightning network
     'spend_unconfirmed': model
@@ -47,10 +45,9 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
-    var response = await dioClient.post(url:url,
-        headers: headers, data: data);
+    var response = await dioClient.post(url: url, headers: headers, data: data);
     logger.i('Raw Response Fund PSBT: ${response.data}');
 
     if (response.statusCode == 200) {
@@ -68,7 +65,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
           data: {});
     }
   } catch (e) {
-    logger.e('Error trying to publish transaction: $e');
+    logger.e('Error trying to fund psbt: $e');
     return RestResponse(
         statusCode: "error",
         message:

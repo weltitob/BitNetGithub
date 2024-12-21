@@ -41,7 +41,7 @@ dynamic importAccount(String name, String exPubKey, String fingerprint) async {
       'name': name,
       'extended_public_key': exPubKey,
       'master_key_fingerprint': fingerprint,
-      'address_type': 'TAPROOT_PUBKEY'
+      'address_type': 'WITNESS_PUBKEY_HASH'
     });
 
     logger.i("Antwort vom Server: ${response.data}");

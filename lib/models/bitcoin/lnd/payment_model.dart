@@ -53,6 +53,26 @@ class LightningPayment {
           json['failure_reason'] ?? '', // Assuming failureReason can be null
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'payment_hash': this.paymentHash,
+      'value': this.value,
+      'creation_date': creationDate,
+      'fee': fee,
+      'payment_preimage': paymentPreimage,
+      'value_sat': valueSat,
+      'value_msat': valueMsat,
+      'payment_request': paymentRequest,
+      'status': status,
+      'fee_sat': feeSat,
+      'fee_msat': feeMsat,
+      'creation_time_ns': creationTimeNs,
+      'htlcs': htlcs.map((htlc) => htlc.toJson()).toList(),
+      'payment_index': paymentIndex,
+      'failure_reason': failureReason
+    };
+  }
 }
 
 class Htlc {
@@ -85,6 +105,18 @@ class Htlc {
       preimage: json['preimage'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'attempt_id': attemptId,
+      'status': status,
+      'route': route.toJson(),
+      'attempt_time_ns': attemptTimeNs,
+      'resolve_time_ns': resolveTimeNs,
+      'failure': failure,
+      'preimage': preimage
+    };
+  }
 }
 
 class Route {
@@ -113,6 +145,17 @@ class Route {
       totalFeesMsat: int.parse(json['total_fees_msat'].toString()),
       totalAmtMsat: int.parse(json['total_amt_msat'].toString()),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total_time_lock': totalTimeLock,
+      'total_fees': totalFees,
+      'total_amt': totalAmt,
+      'hops': hops.map((hop) => hop.toJson()).toList(),
+      'total_fees_msat': totalFeesMsat,
+      'total_amt_msat': totalAmtMsat
+    };
   }
 }
 
@@ -151,6 +194,19 @@ class Hop {
       pubKey: json['pub_key'],
       tlvPayload: json['tlv_payload'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'chan_id': chanId,
+      'chan_capacity': chanCapacity,
+      'amt_to_forward': amtToForward,
+      'fee': fee,
+      'expiry': expiry,
+      'amt_to_forward_msat': amtToForwardMsat,
+      'fee_msat': feeMsat,
+      'pub_key': pubKey,
+      'tlv_payload': tlvPayload
+    };
   }
 }
 

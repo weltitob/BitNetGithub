@@ -9,11 +9,14 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> walletBalance() async {
+Future<RestResponse> walletBalance({String acc = ''}) async {
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/balance/blockchain';
+  if (acc.isNotEmpty) {
+    url = 'https://$restHost/v1/balance/blockchain?account=${acc}';
+  }
 
   ByteData byteData = await loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -26,10 +29,10 @@ Future<RestResponse> walletBalance() async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(
-      url:url,
+      url: url,
       headers: headers,
     );
     // Print raw response for debugging

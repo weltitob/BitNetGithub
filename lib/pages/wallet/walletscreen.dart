@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -19,6 +20,9 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:blockchain_utils/signer/bitcoin_signer.dart';
+import 'package:bs58/bs58.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -298,7 +302,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             walletController.onchainBalance
                                                 .value.unconfirmedBalance;
 
-
                                         return BalanceCardLightning(
                                           balance: confirmedBalanceStr,
                                           confirmedBalance: confirmedBalanceStr,
@@ -319,7 +322,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         context.go('/wallet/bitcoincard');
                                       },
                                       child: Obx(() {
-                                        final logger = Get.find<LoggerService>();
+                                        final logger =
+                                            Get.find<LoggerService>();
                                         // Extracting reactive variables from the controller
 
                                         final confirmedBalanceStr =
@@ -329,8 +333,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             walletController.onchainBalance
                                                 .value.unconfirmedBalance;
 
-                                        logger.i("Confirmed Balance: $confirmedBalanceStr");
-                                        logger.i("Unconfirmed Balance: $unconfirmedBalanceStr");
+                                        logger.i(
+                                            "Confirmed Balance: $confirmedBalanceStr");
+                                        logger.i(
+                                            "Unconfirmed Balance: $unconfirmedBalanceStr");
 
                                         return BalanceCardBtc(
                                           balance: confirmedBalanceStr,
@@ -368,7 +374,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       LongButtonWidget(
                         title: "list Unspent",
                         onTap: () async {
-                          dynamic restResponseListUnspent = await listUnspent();
+                          dynamic restResponseListUnspent =
+                              await listUnspent(Auth().currentUser!.uid);
                         },
                       ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),

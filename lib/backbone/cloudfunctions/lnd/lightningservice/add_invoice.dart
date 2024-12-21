@@ -7,11 +7,12 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:blockchain_utils/hex/hex.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> addInvoice(int amount, String? memo) async {
-
+Future<RestResponse> addInvoice(
+    int amount, String? memo, String fallbackAddr) async {
   final logger = Get.find<LoggerService>();
   logger.i("Called addInvoice()"); // The combined JSON response
 
@@ -25,23 +26,23 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   // Make the GET request
   String url = 'https://$restHost/v1/invoices';
   // Read the macaroon file and convert it to a hexadecimal string
-  ByteData byteData = await loadMacaroonAsset();
+  ByteData byteData = await loadAdminMacaroonAsset();
   // Convert ByteData to List<int>
   List<int> bytes = byteData.buffer.asUint8List();
   // Convert bytes to hex string
-  String macaroon = base64.encode(bytes);
+  String macaroon = bytesToHex(bytes);
 
   logger.i("Macaroon: $macaroon used in addInvoice()");
 
-
   Map<String, String> headers = {
+    'Content-Type': 'application/json',
     'Grpc-Metadata-macaroon': macaroon,
   };
   final Map<String, dynamic> data = {
     'memo': memo ?? "",
     'value': amount,
     'expiry': 1200,
-    'fallback_addr': 'bc1qtfmrfu3n5vx8jgep5vw2s7z68u0aq40c24e2ps',
+    'fallback_addr': fallbackAddr,
     'private': false,
     'is_keysend': true
   };
@@ -49,7 +50,6 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-
     logger.i("Trying to make request to addInvoice()");
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.post(url: url, headers: headers, data: data);

@@ -159,15 +159,16 @@ class AppRoutes {
                 ),
               ),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-
         GoRoute(
             path: "/agbs",
             redirect: webRedirect,
             builder: (ctx, state) =>
                 AgbsAndImpressumScreen(key: state.pageKey)),
 
-
-        GoRoute(path: "/comingsoon", redirect: webRedirect, builder: (ctx, state) => ComingSoonPage(key: state.pageKey)),
+        GoRoute(
+            path: "/comingsoon",
+            redirect: webRedirect,
+            builder: (ctx, state) => ComingSoonPage(key: state.pageKey)),
         GoRoute(
           path: '/wallet',
           builder: (ctx, state) => Container(),
