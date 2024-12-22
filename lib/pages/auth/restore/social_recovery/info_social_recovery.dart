@@ -40,11 +40,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+
       return bitnetScaffold(
         margin: const EdgeInsets.symmetric(horizontal: 0)
             ,
@@ -168,6 +164,5 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
           ),
         ),
       );
-    });
   }
 }

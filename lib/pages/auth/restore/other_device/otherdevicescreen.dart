@@ -43,10 +43,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
         context: context,
@@ -182,6 +179,5 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
           ],
         ),
       );
-    });
   }
 }

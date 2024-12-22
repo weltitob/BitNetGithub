@@ -43,19 +43,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
-
-      return bitnetScaffold(
-        margin: isSuperSmallScreen
-            ? const EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(
-                horizontal: (screenWidth / 2 - 250.w) < 0
-                    ? 0
-                    : screenWidth / 2 - 250.w),
+    return
+      bitnetScaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
@@ -64,7 +53,9 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
           onTap: () {
             Navigator.pop(context);
           },
-          actions: [const PopUpLangPickerWidget()],
+          actions: [
+            // const PopUpLangPickerWidget()
+          ],
         ),
         body: ListView(
           children: [
@@ -151,6 +142,5 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         ),
         context: context,
       );
-    });
   }
 }

@@ -36,16 +36,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   @override
   Widget build(BuildContext context) {
     LoggerService logger = Get.find();
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      bool isSmallScreen = 375.w < AppTheme.isSmallScreen;
-      bool isMidScreen = 375.w < AppTheme.isMidScreen;
-
-      double spacingMultiplier = isMidScreen
-          ? isSmallScreen
-              ? 0.5
-              : 0.75
-          : 1;
-      return bitnetScaffold(
+    return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(context: context, hasBackButton: false, actions: [
           // const PopUpLangPickerWidget(),
@@ -70,7 +61,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               ),
               Container(
                 color: Colors.transparent,
-                width: (AppTheme.cardPadding * 20 * spacingMultiplier.ws),
+                width: (AppTheme.cardPadding * 20 ),
                 child: FutureBuilder(
                   future: _compostionBitcoin,
                   builder: (context, snapshot) {
@@ -131,7 +122,6 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
           ),
         ),
       );
-    });
   }
 } //
 
