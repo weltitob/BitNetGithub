@@ -2,16 +2,19 @@ import 'dart:io';
 
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
-  String restHost = AppTheme.baseUrlLightningTerminal;
+  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
 
   ByteData byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

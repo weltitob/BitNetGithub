@@ -15,14 +15,14 @@ final id_token =
     'eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ3YjkzOTc3MWE3ODAwYzQxM2Y5MDA1MTAxMmQ5NzU5ODE5MTZkNzEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNjE4MTA0NzA4MDU0LTlyOXMxYzRhbGczNmVybGl1Y2hvOXQ1Mm4zMm42ZGdxLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNjE4MTA0NzA4MDU0LTlyOXMxYzRhbGczNmVybGl1Y2hvOXQ1Mm4zMm42ZGdxLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA2Mjk1NjEzNzk0MTQ2MjMxMDUyIiwiZW1haWwiOiJhYmR1bGFoLnplaW5AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJybUhVSWM0SVhXUGg3N0hxcTVvbF9nIiwibmJmIjoxNzI1ODA3MDY5LCJpYXQiOjE3MjU4MDczNjksImV4cCI6MTcyNTgxMDk2OSwianRpIjoiNzVhNTQzYzdhYjUyOTQ3YmU5ZjAwMTYxNzRjZTU3MmYzMTU3ZDYxNCJ9.dS0UCaqP7W8gJ9vm3lBH_qpfB0bL9W5sYrPS19-j4lJ67LtPppCqIbV_1rb5Cv5IgCi6lTcixQ6i10d_oJ9_mhsNf3uxtRtXHTaR4HSkzhdsPoKc76mfDm8dqNKFieioo274zCHdMs4RjmiRK2KS8ie01VWfVdLi4YpW0v23vEBM9LFIOq1u32osVobv9h1BnLuUyNmm0LeYlMhQW4i31_Enqc2P96DJs3I-y-DHP1ACBrH370--OPrqcQHq08nqwt2ZuDW73OmSCnYUhgG7t9NcBWRxOCrukNQWQwXcNeR-edaKstaAkjUAk_78gEo0gHSowoweG1t2cZotLoAcfA';
 Future<RestResponse> checkAddressesOwnership(List<String> addresses) async {
   LoggerService logger = Get.find();
-  String baseUrl = AppTheme.baseUrlLightningTerminal;
+  // String baseUrl = AppTheme.baseUrlLightningTerminal;
 
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://us-central1-bitnet-cb34f.cloudfunctions.net/check_addresses_ownership';
 
-  ByteData byteData = await loadAdminMacaroonAsset();
-  List<int> bytes = byteData.buffer.asUint8List();
-  String macaroon = bytesToHex(bytes);
+  // ByteData byteData = await loadAdminMacaroonAsset();
+  // List<int> bytes = byteData.buffer.asUint8List();
+  // String macaroon = bytesToHex(bytes);
 
   Map<String, String> headers = {
     'Authorization': 'Bearer $id_token',

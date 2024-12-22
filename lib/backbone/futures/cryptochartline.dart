@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -14,7 +15,6 @@ class CryptoChartLine {
   final String crypto;
   final String days;
   final String currency;
-  final String apiKey = AppTheme.coinGeckoApiKey;
 
   CryptoChartLine({
     required this.crypto,
@@ -25,13 +25,19 @@ class CryptoChartLine {
   // List to store the chart data
   List<ChartLine> chartLine = [];
 
+
   // Function to fetch chart data from Coingecko API
   Future<void> getChartData() async {
+
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    String baseUrlCoinGeckoApiPro = remoteConfigController.baseUrlCoinGeckoApiPro.value;
+    String apiKey = remoteConfigController.coinGeckoApiKey.value;
+
     LoggerService logger = Get.find();
     logger.d("Fetching chart data for $crypto... $days days, $currency currency");
     final currencyLower = currency.toLowerCase();
     var url =
-        "${AppTheme.baseUrlCoinGeckoApiPro}/coins/$crypto/market_chart?vs_currency=$currencyLower&days=$days&x_cg_pro_api_key=${apiKey}";
+        "${baseUrlCoinGeckoApiPro}/coins/$crypto/market_chart?vs_currency=$currencyLower&days=$days&x_cg_pro_api_key=${apiKey}";
     http.Response res = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {

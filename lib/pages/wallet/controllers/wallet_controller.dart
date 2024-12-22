@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balan
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -306,7 +307,10 @@ class WalletsController extends BaseController {
   }
 
   Future<num> getOnchainAddressBalance(String addr) async {
-    String url = '${AppTheme.baseUrlMemPoolSpaceApi}address/$addr/utxo';
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    String baseUrlMemPoolSpaceApi = remoteConfigController.baseUrlMemPoolSpaceApi.value;
+
+    String url = '${baseUrlMemPoolSpaceApi}address/$addr/utxo';
     try {
       final response = await dioClient.get(url: url);
       if (response.statusCode == 200) {

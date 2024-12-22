@@ -10,9 +10,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 
-Future<ByteData> loadAdminMacaroonAsset() async {
-  return await rootBundle.load('assets/keys/lnd_admin.macaroon');
-}
+// Future<ByteData> loadAdminMacaroonAsset() async {
+//   return await rootBundle.load('assets/keys/lnd_admin.macaroon');
+// }
 
 // Diese Funktion ersetzt den bisherigen loadMacaroonAsset-Aufruf
 // Sie liest den Macaroon aus dem Secure Storage für den aktuell eingelogten User aus.
@@ -54,5 +54,6 @@ Future<ByteData> loadLoopMacaroonAsset() async {
 }
 
 Future<ByteData> loadTapdMacaroonAsset() async {
-  return await rootBundle.load('assets/keys/tapd_admin.macaroon');
+  return rootBundle.load("...");
+  // return await rootBundle.load('assets/keys/tapd_admin.macaroon');
 }

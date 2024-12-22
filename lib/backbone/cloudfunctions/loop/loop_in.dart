@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -10,7 +11,9 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> loopin(Map<String, dynamic> data) async {
-  String restHost = AppTheme.baseUrlLightningTerminal;
+
+  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
   String url = 'https://$restHost/v1/loop/in';
 
   final logger = Get.find<LoggerService>();

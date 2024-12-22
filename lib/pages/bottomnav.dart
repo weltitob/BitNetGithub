@@ -131,6 +131,10 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+
+    // Initialize Remote Config Controller and fetch data
+
+
     Get.put(FeedController());
     Get.put(ProfileController());
     Get.put(WalletsController());

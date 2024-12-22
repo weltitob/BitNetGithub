@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -11,12 +12,14 @@ import 'package:get/get.dart';
 
 Future<RestResponse> loadBtcAddresses(String did) async {
   LoggerService logger = Get.find();
-  String baseUrl = AppTheme.baseUrlLightningTerminal;
+  // String baseUrl = AppTheme.baseUrlLightningTerminal;
 
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://load-btc-addresses-466393582939.us-central1.run.app';
 
-  ByteData byteData = await loadAdminMacaroonAsset();
+  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+
+  ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 

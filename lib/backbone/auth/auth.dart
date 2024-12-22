@@ -13,6 +13,7 @@ import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.d
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -100,6 +101,8 @@ class Auth {
   }) async {
     fbAuth.UserCredential user =
         await _firebaseAuth.signInWithCustomToken(customToken);
+    final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+    await remoteConfigController.fetchRemoteConfigData();
     return user;
   }
 
@@ -159,6 +162,9 @@ class Auth {
     logger.i("GenLitdAccount Response: $genlitdresponse");
 
     final currentuser = await signInWithToken(customToken: customAuthToken);
+
+    final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+    await remoteConfigController.fetchRemoteConfigData();
 
     // Initialize user settings in the database
     await settingsCollection.doc(currentuser?.user!.uid).set({
@@ -397,6 +403,9 @@ class Auth {
 
       logger.i("Verify message response: ${customAuthToken.toString()}");
       final currentuser = await signInWithToken(customToken: customAuthToken);
+
+      final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+      await remoteConfigController.fetchRemoteConfigData();
 
       if (currentuser == null) {
         // Remove the loading screen

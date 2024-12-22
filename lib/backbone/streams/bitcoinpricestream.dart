@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -53,6 +54,11 @@ class BitcoinPriceStream {
   }
 
   Future<void> _fetchAndUpdate() async {
+
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    String baseUrlCoinGeckoApiPro = remoteConfigController.baseUrlCoinGeckoApiPro.value;
+    String apiKey = remoteConfigController.coinGeckoApiKey.value;
+
     final logger = Get.find<LoggerService>();
     logger.d("Fetching bitcoin price in $localCurrency...");
 
@@ -61,15 +67,15 @@ class BitcoinPriceStream {
         'ids': 'bitcoin',
         'vs_currencies': localCurrency,
         'include_last_updated_at': 'true',
-        'x_cg_pro_api_key': AppTheme.coinGeckoApiKey,
+        'x_cg_pro_api_key': apiKey,
       };
 
       final DioClient dioClient = Get.find<DioClient>();
       final String _url =
-          "${AppTheme.baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin"
+          "${baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin"
           "&vs_currencies=$localCurrency"
           "&include_last_updated_at='true'"
-          "&x_cg_pro_api_key=${AppTheme.coinGeckoApiKey}";
+          "&x_cg_pro_api_key=${apiKey}";
 
       final response = await dioClient.get(url: _url);
 

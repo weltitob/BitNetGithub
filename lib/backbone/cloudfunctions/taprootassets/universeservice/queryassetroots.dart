@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,9 @@ getUniverseRoot(String assetIdStr) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  String restHost = AppTheme.baseUrlLightningTerminal;
+  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+
+  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
 
   String url = 
   //  kDebugMode

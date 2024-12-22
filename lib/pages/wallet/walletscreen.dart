@@ -20,6 +20,7 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
@@ -42,6 +43,8 @@ class WalletScreen extends GetWidget<WalletsController> {
   Widget build(BuildContext context) {
     WalletsController walletController = Get.put(WalletsController());
     ProfileController profileController = Get.put(ProfileController());
+    SettingsController settingsController = Get.put(SettingsController());
+
     // We'll introduce a local state using a StatefulBuilder.
     // Alternatively, you could create a StatefulWidget from scratch.
     return bitnetScaffold(
@@ -73,7 +76,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Row(
                                 children: [
-                                  profileController.isNull
+                                  profileController.userData.value == null
                                       ? Avatar(
                                           isNft: false,
                                         )
@@ -299,14 +302,14 @@ class WalletScreen extends GetWidget<WalletsController> {
 
                                         final confirmedBalanceStr =
                                             walletController
-                                                .lightningBalance.value.balance;
+                                                .lightningBalance.value.balance.obs;
                                         final unconfirmedBalanceStr =
                                             walletController.onchainBalance
-                                                .value.unconfirmedBalance;
+                                                .value.unconfirmedBalance.obs;
 
                                         return BalanceCardLightning(
-                                          balance: confirmedBalanceStr,
-                                          confirmedBalance: confirmedBalanceStr,
+                                          balance: confirmedBalanceStr.value,
+                                          confirmedBalance: confirmedBalanceStr.value,
                                           defaultUnit: BitcoinUnits
                                               .SAT, // You can adjust this as needed
                                         );
@@ -330,10 +333,10 @@ class WalletScreen extends GetWidget<WalletsController> {
 
                                         final confirmedBalanceStr =
                                             walletController.onchainBalance
-                                                .value.confirmedBalance;
+                                                .value.confirmedBalance.obs;
                                         final unconfirmedBalanceStr =
                                             walletController.onchainBalance
-                                                .value.unconfirmedBalance;
+                                                .value.unconfirmedBalance.obs;
 
                                         logger.i(
                                             "Confirmed Balance onchain: $confirmedBalanceStr");
@@ -341,10 +344,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             "Unconfirmed Balance onchain: $unconfirmedBalanceStr");
 
                                         return BalanceCardBtc(
-                                          balance: confirmedBalanceStr,
-                                          confirmedBalance: confirmedBalanceStr,
+                                          balance: confirmedBalanceStr.value,
+                                          confirmedBalance: confirmedBalanceStr.value,
                                           unconfirmedBalance:
-                                              unconfirmedBalanceStr,
+                                              unconfirmedBalanceStr.value,
                                           defaultUnit: BitcoinUnits.SAT,
                                         );
                                       }),

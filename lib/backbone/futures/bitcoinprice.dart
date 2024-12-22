@@ -1,11 +1,18 @@
 
 // This method is used to fetch the current Bitcoin price from the CoinGecko API.
 import 'dart:convert';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 
 Future<double> getBitcoinPrice() async {
-  final String url = '${AppTheme.baseUrlCoinGeckoApiPro}/simple/price?x_cg_pro_api_key=${AppTheme.coinGeckoApiKey}';
+
+  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  String baseUrlCoinGeckoApiPro = remoteConfigController.baseUrlCoinGeckoApiPro.value;
+  String apiKey = remoteConfigController.coinGeckoApiKey.value;
+
+  final String url = '${baseUrlCoinGeckoApiPro}/simple/price?x_cg_pro_api_key=${apiKey}';
 
   final Map<String, String> params = {
     'ids': 'bitcoin',

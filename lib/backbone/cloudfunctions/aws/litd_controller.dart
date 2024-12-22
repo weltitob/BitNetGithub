@@ -9,6 +9,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/stateservice.dar
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
@@ -32,14 +33,20 @@ class LitdController extends GetxController {
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
 
+  // Access the RemoteConfigController
+
   @override
   void onInit() {
     super.onInit();
     // If not running in release mode, force the litd_baseurl to the AppTheme debug value and never update it
-    if (!runInReleaseMode) {
-      litd_baseurl.value = AppTheme.baseUrlLightningTerminalWithPort;
-      publicIp.value = AppTheme.baseUrlLightningTerminal;
-    }
+
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+
+    litd_baseurl.value = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+    publicIp.value = remoteConfigController.baseUrlLightningTerminal.value;
+
+
+
     // loadServerStateFromFirestore();
   }
   //

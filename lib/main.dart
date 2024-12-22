@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -69,13 +70,7 @@ Future<void> main() async {
   // Initialize Date Formatting
   await initializeDateFormatting();
 
-  if (!kIsWeb) {
-    Stripe.publishableKey = AppTheme.stripeTestKey;
-    await Stripe.instance.applySettings();
-  }
-  if (kIsWeb) {
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  }
+
   await LocalStorage.instance.initStorage();
   ShakeDetector.autoStart(
     onPhoneShake: () {
@@ -107,6 +102,10 @@ Future<void> main() async {
     appleProvider: AppleProvider.debug,
   );
 
+  // Initialize Remote Config Controller and fetch data
+  final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+  await remoteConfigController.fetchRemoteConfigData();
+
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
   Get.put(SettingsController());
@@ -124,6 +123,15 @@ Future<void> main() async {
   // Get.put(SettingsController(), permanent: true);
   // Get.put(FeedController(), permanent: true);
   // Get.put(ProfileController(), permanent: true);
+
+
+  if (!kIsWeb) {
+    Stripe.publishableKey = remoteConfigController.stripeTestKey.value;
+    await Stripe.instance.applySettings();
+  }
+  if (kIsWeb) {
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  }
 
   // Run the app
   runApp(

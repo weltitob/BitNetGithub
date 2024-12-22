@@ -9,12 +9,34 @@ import 'package:google_fonts/google_fonts.dart';
 abstract class AppTheme {
   static IconData satoshiIcon = const IconData(0x0021, fontFamily: 'SatoshiSymbol');
 
-  static String baseUrlLightningTerminal = 'mybitnet.com';
-  static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
+  // static String baseUrlLightningTerminal = 'mybitnet.com';
+  // static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
+  //
+  static String baseUrlMemPoolSpaceApi = 'https://mempool.space/api/';
+  static String createStripeAccountUrl = "https://bitnet.ai/#/website/redirect";
+
+  static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
+  static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
+  static String twitterUrl = 'https://twitter.com/bitnet_ai';
+  static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
+  static String linkedinUrl = 'https://www.linkedin.com/company/bitnet-ai';
+  static String pinterestUrl = 'https://www.pinterest.com/bitnet_ai';
+  static String youtubeUrl = 'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
+  static String discordUrl = 'https://discord.gg/9QJ2X8Q';
+  static String telegramUrl = 'https://t.me/bitnet_ai';
+  static String snapchatUrl = 'https://www.snapchat.com/add/bitnet.ai';
+  static String tiktokUrl = 'https://tiktok.com/@bitnet_ai';
+  static String goFundMeUrl = 'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
+
+  static String _privacyUrl = 'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
+  static String get privacyUrl => _privacyUrl;
+  static const String enablePushTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
+  static const String encryptionTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
+  static const String appId = 'com.bitnet.bitnet';
+  static const String appOpenUrlScheme = 'com.bitnet';
 
   static String applicationName = 'BitNet';
 
-  static String baseUrlMemPoolSpaceApi = 'https://mempool.space/api/';
 
   static dynamic targetConf = 4;
 
@@ -51,38 +73,21 @@ abstract class AppTheme {
   //onTap: () => launchUrlString(AppTheme.supportUrl),
   //Marketing startegie ist EXTREME CONTENT STRATEGIE
 
+  // //for exchangerates:
+  // static String mykey = 'b16be475b04d4272b9a06fcb2b4c0bbd';
+  // static String baseUrl = 'https://openexchangerates.org/api/';
+  // static String ratesUrl = '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
 
-
-  static String createStripeAccountUrl = "https://bitnet.ai/#/website/redirect";
-
-  static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
-
-  static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
-  static String twitterUrl = 'https://twitter.com/bitnet_ai';
-  static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
-  static String linkedinUrl = 'https://www.linkedin.com/company/bitnet-ai';
-  static String pinterestUrl = 'https://www.pinterest.com/bitnet_ai';
-  static String youtubeUrl = 'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
-  static String discordUrl = 'https://discord.gg/9QJ2X8Q';
-  static String telegramUrl = 'https://t.me/bitnet_ai';
-  static String snapchatUrl = 'https://www.snapchat.com/add/bitnet.ai';
-  static String tiktokUrl = 'https://tiktok.com/@bitnet_ai';
-
-  //for exchangerates:
-  static String mykey = 'b16be475b04d4272b9a06fcb2b4c0bbd';
-  static String baseUrl = 'https://openexchangerates.org/api/';
-  static String ratesUrl = '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
-
-  static String baseUrlCoinGecko = 'https://openexchangerates.org/api/';
-  static String baseUrlCoinGeckoApiPro = 'https://pro-api.coingecko.com/api/v3';
-  static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
+  // static String baseUrlCoinGecko = 'https://openexchangerates.org/api/';
+  // static String baseUrlCoinGeckoApiPro = 'https://pro-api.coingecko.com/api/v3';
+  // static String coinGeckoApiKey = 'CG-tSVcnPrFSyfWd8G7xaA4qUUv';
   //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
 
-  static String stripeTestKey =
-      "pk_test_51Ov55sRxZq4zmuaG9zp35ejVDONTsacEXYDDbGQ2gjo97XDMKnhsRivkXBEBiMMAaeRADwrIrqrtPWMgZbFYlO0C00xBfhtT6Z";
-
-  static String stripeLiveKey =
-      'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
+  // static String stripeTestKey =
+  //     "pk_test_51Ov55sRxZq4zmuaG9zp35ejVDONTsacEXYDDbGQ2gjo97XDMKnhsRivkXBEBiMMAaeRADwrIrqrtPWMgZbFYlO0C00xBfhtT6Z";
+  //
+  // static String stripeLiveKey =
+  //     'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
   //twitch
   //github
@@ -99,27 +104,18 @@ abstract class AppTheme {
   //YouPorn
   //RedTube
 
-  static String goFundMeUrl = 'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
-
-  static String _privacyUrl = 'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
-  static String get privacyUrl => _privacyUrl;
-  static const String enablePushTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
-  static const String encryptionTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
-  static const String appId = 'com.bitnet.bitnet';
-  static const String appOpenUrlScheme = 'com.bitnet';
-
-
   static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;
 
 
   static const String currentWebDomain = 'bitnet.ai';
   static const String supportUrl = 'https://gitlab.com/famedly/fluffychat/issues';
-  static final Uri newIssueUrl = Uri(
-    scheme: 'https',
-    host: 'gitlab.com',
-    path: '/famedly/fluffychat/-/issues/new',
-  );
+  // static final Uri newIssueUrl = Uri(
+  //   scheme: 'https',
+  //   host: 'gitlab.com',
+  //   path: '/famedly/fluffychat/-/issues/new',
+  // );
+
   static const bool enableSentry = true;
   static const String sentryDns = 'https://8591d0d863b646feb4f3dda7e5dcab38@o256755.ingest.sentry.io/5243143';
   static bool renderHtml = true;
