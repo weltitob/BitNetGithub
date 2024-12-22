@@ -25,6 +25,8 @@ class LightningSendTab extends GetWidget<SendsController> {
   @override
   Widget build(BuildContext context) {
     LoggerService logger = Get.find();
+    final sendController = Get.find<SendsController>();
+
     return Form(
       key: controller.formKey,
       child: Stack(
@@ -100,11 +102,11 @@ class LightningSendTab extends GetWidget<SendsController> {
           Obx(
             () => BottomCenterButton(
               buttonTitle: L10n.of(context)!.sendNow,
-              buttonState: controller.loadingSending.value == true ? ButtonState.loading : ButtonState.idle,
+              buttonState: sendController.loadingSending.value == true ? ButtonState.loading : ButtonState.idle,
               onButtonTap: () async {
-                controller.loadingSending.value = true;
+                sendController.loadingSending.value = true;
                 dynamic response = await controller.sendBTC(context);
-                controller.loadingSending.value = false;
+                sendController.loadingSending.value = false;
               },
             ),
           )

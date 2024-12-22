@@ -472,7 +472,7 @@ class SendsController extends BaseController {
 
   sendBTC(BuildContext context) async {
 
-    loadingSending.value = true;
+    loadingSending = true.obs;
     LoggerService logger = Get.find();
     logger.i("sendBTC() called");
 
@@ -715,7 +715,7 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
-    loadingSending.value = false;
+    loadingSending = false.obs;
   }
 
   @override

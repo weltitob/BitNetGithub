@@ -369,9 +369,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LongButtonWidget(title: "fetch Lightning Balance", onTap: () async {
-                        await controller.fetchLightingWalletBalance();
-                      }),
+                      // LongButtonWidget(title: "fetch Lightning Balance", onTap: () async {
+                      //   await controller.fetchLightingWalletBalance();
+                      // }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "list Unspent",

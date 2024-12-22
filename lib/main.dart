@@ -83,7 +83,10 @@ Future<void> main() async {
         GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/report');
       }
     },
+    shakeThresholdGravity: 4.5, // Increase for more vigorous shaking
+    minimumShakeCount: 5, // Require two shakes
   );
+
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(
