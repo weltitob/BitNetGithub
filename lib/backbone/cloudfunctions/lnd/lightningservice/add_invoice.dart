@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +11,19 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 
-Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress) async {
+
+List<int> generatePreimage() {
+  final random = Random.secure();
+  return List<int>.generate(32, (_) => random.nextInt(256));
+}
+
+
+List<int> computeHash(List<int> preimage) {
+  return sha256.convert(preimage).bytes;
+}
+
+
+Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress, dynamic preimage) async {
   HttpOverrides.global = MyHttpOverrides();
 
   final logger = Get.find<LoggerService>();
@@ -68,7 +82,13 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
     'Content-Type': 'application/json',
   };
 
+  final hash = computeHash(preimage);
+
+  logger.i("Generated preimage: ${base64Encode(preimage)}");
+
   final Map<String, dynamic> data = {
+    'r_hash': base64Encode(hash),
+    'r_preimage': base64Encode(preimage),
     'memo': memo ?? "",
     'value': amount,
     'expiry': 1200,

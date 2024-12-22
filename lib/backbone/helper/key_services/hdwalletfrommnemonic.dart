@@ -32,6 +32,7 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
     logger.i("Master key generated successfully.");
 
+
     // Step 3: Generate extended key for path
     wallet.ExtendedKey root = master.forPath(taprootPath);
     logger.i("Extended key generated for path: $taprootPath");

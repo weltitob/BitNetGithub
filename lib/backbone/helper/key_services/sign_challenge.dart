@@ -8,6 +8,7 @@ import 'package:convert/convert.dart';
 import 'package:pointycastle/macs/hmac.dart';
 import 'package:pointycastle/pointycastle.dart';
 
+//need to change this into DER format in order to be able to sign utxos with it before broadcasting
 Future<String> signChallengeData(String masterPrivateKeyHex,
     String masterPublicKeyHex, String challengeData) async {
   try {

@@ -114,11 +114,11 @@ class _TransactionsState extends State<Transactions>
 
     // War mal: "if (walletController.futuresCompleted >= 3)"
     if (walletController.futuresCompleted >= 3) {
-      loadTransactions();
+      loadActivity();
     } else {
       walletController.futuresCompleted.listen((val) {
         if (val >= 3) {
-          loadTransactions();
+          loadActivity();
         }
       });
     }
@@ -176,10 +176,11 @@ class _TransactionsState extends State<Transactions>
   }
 
   /// Startet das Laden aller Daten (Onchain, Lightning)
-  void loadTransactions() {
+  void loadActivity() {
     setState(() {
       transactionsLoaded = false;
     });
+
     int futuresCompleted = 0;
     int errorCount = 0;
     String errorMessage = "";
@@ -250,6 +251,9 @@ class _TransactionsState extends State<Transactions>
       if (data is LightningPayment) {
         logger.i("Adding new lightning payment from newData: $data");
         lightningPayments.add(data);
+       }else if(data is ReceivedInvoice) {
+        logger.i("Adding new ReceivedInvoice from newData: $data");
+        lightningInvoices.add(data);
       } else if (data is BitcoinTransaction) {
         logger.i("Adding new onchain tx from newData: $data");
         onchainTransactions.add(data);
@@ -361,34 +365,62 @@ class _TransactionsState extends State<Transactions>
   }
 
   /// (Neu) Filter- & Suchlogik
+  /// (Neu) Filter- & Suchlogik
   List<TransactionItem> applyFiltersAndSearch(List<TransactionItem> items) {
-    // Zeitfilter
+    // 1) Zeitfilter
     final timeFiltered = items.where((tx) {
       final ts = tx.data.timestamp;
       return ts >= controller.start && ts <= controller.end;
     }).toList();
 
-    // Suchfeld => receiver
+    // 2) Suchfeld => durchsucht "receiver"
     final searchText = searchCtrl.text.trim().toLowerCase();
     final searchFiltered = timeFiltered.where((tx) {
       return tx.data.receiver.toLowerCase().contains(searchText);
     }).toList();
 
-    // Filter "Sent/Received"
+    // 3) Filter Onchain/Lightning
+    final filterOnchain = controller.selectedFilters.contains('Onchain');
+    final filterLightning = controller.selectedFilters.contains('Lightning');
+
+    List<TransactionItem> typeFiltered = searchFiltered;
+    if (filterOnchain && !filterLightning) {
+      // Nur Onchain anzeigen
+      typeFiltered = searchFiltered.where(
+              (tx) => tx.data.type == TransactionType.onChain
+      ).toList();
+    } else if (!filterOnchain && filterLightning) {
+      // Nur Lightning anzeigen
+      typeFiltered = searchFiltered.where(
+              (tx) => tx.data.type == TransactionType.lightning
+      ).toList();
+    }
+    // Falls beide oder keine ausgewählt sind, zeigen wir alle an (onChain + lightning).
+    // Möchtest du Loop oder andere Typen filtern, erweitere hier entsprechend.
+
+    // 4) Filter "Sent/Received"
     final filterSent = controller.selectedFilters.contains('Sent');
     final filterReceived = controller.selectedFilters.contains('Received');
 
+    // a) Beide aktiviert oder beide nicht vorhanden => alles anzeigen
+    // b) Nur 'Sent' => amount fängt mit '-' an
+    // c) Nur 'Received' => amount fängt mit '+' an
     if (filterSent && !filterReceived) {
-      // Nur gesendete => amount fängt mit "-" an
-      return searchFiltered.where((tx) => tx.data.amount.startsWith('-')).toList();
+      // Nur gesendete => amount fängt mit '-' an
+      return typeFiltered
+          .where((tx) => tx.data.amount.startsWith('-'))
+          .toList();
     } else if (filterReceived && !filterSent) {
-      // Nur empfangene => amount fängt mit "+" an
-      return searchFiltered.where((tx) => tx.data.amount.startsWith('+')).toList();
+      // Nur empfangene => amount fängt mit '+' an
+      return typeFiltered
+          .where((tx) => tx.data.amount.startsWith('+'))
+          .toList();
     } else {
-      // Beides anzeigen
-      return searchFiltered;
+      // Beide oder gar keine => alles anzeigen
+      return typeFiltered;
     }
   }
+
 
   /// Wie gehabt, gruppiert nach Zeit in "Kategorien"
   List<Widget> arrangeTransactions(List<TransactionItem> combinedTransactions) {
@@ -470,6 +502,7 @@ class _TransactionsState extends State<Transactions>
       onchainTransactions = await Future.microtask(() {
         return BitcoinTransactionsList.fromJson(data).transactions;
       });
+      logger.i("Loaded ${onchainTransactions.length} on-chain transactions.");
     } catch (e) {
       logger.e("Error loading on-chain TX: $e");
       return false;

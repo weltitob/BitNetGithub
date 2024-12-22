@@ -33,7 +33,7 @@ dynamic callInternalRebalance(
 
     logger.i("Generating challenge...");
     UserChallengeResponse? userChallengeResponse =
-    await create_challenge(senderUserId, ChallengeType.internal_account_rebalance);
+    await create_challenge(senderUserId, ChallengeType.send_btc_or_internal_account_rebalance);
 
     if (userChallengeResponse == null) {
       logger.e("Challenge konnte nicht erstellt werden.");

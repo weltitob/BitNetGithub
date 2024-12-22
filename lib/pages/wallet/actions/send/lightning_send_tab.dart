@@ -61,17 +61,17 @@ class LightningSendTab extends GetWidget<SendsController> {
                         ),
                       ],
                     ),
-                    Obx(
-                      () => Text(
-                        controller.amountWidgetOverBound.value
-                            ? L10n.of(context)!.youAreOverLimit
-                            : controller.amountWidgetUnderBound.value
-                                ? L10n.of(context)!.youAreUnderLimit
-                                : "",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                    // Obx(
+                    //   () => Text(
+                    //     controller.amountWidgetOverBound.value
+                    //         ? L10n.of(context)!.youAreOverLimit
+                    //         : controller.amountWidgetUnderBound.value
+                    //             ? L10n.of(context)!.youAreUnderLimit
+                    //             : "",
+                    //     style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                    //     textAlign: TextAlign.center,
+                    //   ),
+                    // ),
                     // A Padding widget that contains a button widget
                     // Padding(
                     //   padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
@@ -100,9 +100,11 @@ class LightningSendTab extends GetWidget<SendsController> {
           Obx(
             () => BottomCenterButton(
               buttonTitle: L10n.of(context)!.sendNow,
-              buttonState: controller.loadingSending.value ? ButtonState.loading : ButtonState.idle,
+              buttonState: controller.loadingSending.value == true ? ButtonState.loading : ButtonState.idle,
               onButtonTap: () async {
+                controller.loadingSending.value = true;
                 dynamic response = await controller.sendBTC(context);
+                controller.loadingSending.value = false;
               },
             ),
           )

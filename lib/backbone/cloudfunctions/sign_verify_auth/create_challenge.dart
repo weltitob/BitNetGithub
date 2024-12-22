@@ -19,7 +19,7 @@ enum ChallengeType {
   privkey_login,
   securestorage_login,
   litd_account_creation,
-  internal_account_rebalance,
+  send_btc_or_internal_account_rebalance,
 }
 
 

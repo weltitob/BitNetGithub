@@ -1,4 +1,12 @@
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/keys/userchallenge.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -208,6 +216,8 @@ Stream<dynamic> sendPaymentV2Stream(
     String account, List<String> invoiceStrings, int? amount) async* {
   final logger = Get.put(LoggerService());
 
+  final senderUserId = Auth().currentUser!.uid;
+
   // Attempt to retrieve App Check tokens for additional security.
   try {
     final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
@@ -228,9 +238,44 @@ Stream<dynamic> sendPaymentV2Stream(
     ),
   );
 
+
+  logger.i("Generating challenge...");
+  UserChallengeResponse? userChallengeResponse =
+  await create_challenge(senderUserId, ChallengeType.send_btc_or_internal_account_rebalance);
+
+  if (userChallengeResponse == null) {
+    logger.e("Challenge konnte nicht erstellt werden.");
+    throw Exception("Challenge konnte nicht erstellt werden.");
+  }
+
+  logger.d('Created challenge for user ${senderUserId}: $userChallengeResponse');
+
+  String challengeId = userChallengeResponse.challenge.challengeId;
+  logger.d('Challenge ID: $challengeId');
+
+  String challengeData = userChallengeResponse.challenge.title;
+  logger.d('Challenge Data: $challengeData');
+
+  // Retrieve private data (DID, private key)
+  PrivateData privateData = await getPrivateData(senderUserId);
+  logger.d('Retrieved private data for user ${senderUserId}');
+  HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+  final String publicKeyHex = hdWallet.pubkey;
+  logger.d('Public Key Hex: $publicKeyHex');
+
+  final String privateKeyHex = hdWallet.privkey;
+  logger.d('Private Key Hex: $privateKeyHex');
+
+  // Sign the challenge data
+  String signatureHex =
+  await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
+  logger.d('Generated signature hex: $signatureHex');
+
   // Send request
   for (String invoiceString in invoiceStrings) {
     try {
+      final litdController = Get.find<LitdController>();
+      final String restHost = litdController.litd_baseurl.value;
 
       final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
       String amountInSatFromInvoice = invoiceDecoded.amount.toString();
@@ -238,24 +283,34 @@ Stream<dynamic> sendPaymentV2Stream(
       if (amountInSatFromInvoice == "0") {
         logger.i("Invoice amount is 0 so we will use custom amount");
         data = {
-          'account': account,
           'amt': amount,
+          'sender_user_id': senderUserId,
+          'account': account,
           'timeout_seconds': 60,
           'fee_limit_sat': 1000,
           'payment_request': invoiceString,
+          'senderUserId': senderUserId,
+          'signedMessage': signatureHex,
+          'challenge_data': challengeData,
+          'restHost': restHost,
         };
       } else {
         logger.i("Invoice amount is not 0 so well use the ln invoice amount");
         data = {
+          'sender_user_id': Auth().currentUser!.uid,
           'account': account,
           'timeout_seconds': 60,
           'fee_limit_sat': 100,
           'payment_request': invoiceString,
+          'senderUserId': senderUserId,
+          'signedMessage': signatureHex,
+          'challenge_data': challengeData,
+          'restHost': restHost,
         };
       }
       final dynamic response = await callable.call(data);
 
-      logger.i("Antwort vom Server: ${response.data}");
+      logger.i("Response sendPayment Cloudfunction: ${response.data}");
       Map<String, dynamic> responseData;
 
       if (response.data is Map) {

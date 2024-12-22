@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.dart';
@@ -89,7 +90,9 @@ class ReceiveController extends BaseController {
       List<String> addresses = await Get.find<WalletsController>().getOnchainAddresses();
       final btcAddress = addresses[0];
       logger.i("BTC Address: $btcAddress");
-      RestResponse callback = await addInvoice(amount, memo ?? "", addresses[0]);
+
+      final preimage = generatePreimage();
+      RestResponse callback = await addInvoice(amount, memo ?? "", btcAddress, preimage);
       logger.i("Response addInvoice" + callback.data.toString());
       InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
       logger.i("Invoice: " + invoiceModel.payment_request.toString());
@@ -107,8 +110,13 @@ class ReceiveController extends BaseController {
               .doc(invoiceModel.payment_request.toString());
 
           // Example data to store
+          final base64preimage = base64Encode(preimage);
+          logger.i("Base64 preimage for firebase...: $base64preimage");
+
           final data = {
             "userId": userId,
+            "preimage": base64preimage,
+            "fallbackAddress": btcAddress,
             "createdAt": FieldValue.serverTimestamp(),
             "invoice": invoiceModel.toMap(),
           };

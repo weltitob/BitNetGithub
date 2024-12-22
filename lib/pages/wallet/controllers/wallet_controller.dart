@@ -73,7 +73,10 @@ class WalletsController extends BaseController {
       BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
   String loadMessageError = "";
   int errorCount = 0;
-  int loadedFutures = 0;
+
+  int loadedBalanceFutures = 0;
+  RxInt futuresCompleted = 0.obs;
+
   bool queueErrorOvelay = false;
 
   //for amount widget
@@ -93,7 +96,7 @@ class WalletsController extends BaseController {
 
   List<String> btcAddresses = List<String>.empty(growable: true);
 
-  RxInt futuresCompleted = 0.obs;
+
 
   //reactive values to handle transaction and invoice streams
   Rx<BitcoinTransaction?> latestTransaction = Rx<BitcoinTransaction?>(null);
@@ -147,23 +150,24 @@ class WalletsController extends BaseController {
     logger.i("Fetching balances initally in wallet_controller");
 
     fetchOnchainWalletBalance().then((value) {
-      loadedFutures++;
+      loadedBalanceFutures++;
       if (!value) {
         errorCount++;
         loadMessageError = "Failed to load Onchain Balance";
       }
-      if (loadedFutures == 2) {
+      if (loadedBalanceFutures == 2) {
         queueErrorOvelay = true;
       }
     });
 
     fetchLightingWalletBalance().then((value) {
-      loadedFutures++;
+
+      loadedBalanceFutures++;
       if (!value) {
         errorCount++;
         loadMessageError = "Failed to load Lightning Balance";
       }
-      if (loadedFutures == 2) {
+      if (loadedBalanceFutures == 2) {
         queueErrorOvelay = true;
       }
     });
@@ -544,6 +548,7 @@ class WalletsController extends BaseController {
   }
 
   Future<bool> fetchLightingWalletBalance() async {
+    logger.i("Fetching Lightning Wallet Balance...");
     try {
       RestResponse lightningBalanceRest = await channelBalance();
 
@@ -552,7 +557,9 @@ class WalletsController extends BaseController {
       if (!lightningBalanceRest.data.isEmpty) {
         this.lightningBalance.value = lightningBalance;
       }
+      logger.i("Lightning Balance: ${lightningBalance.balance.toString()}");
       changeTotalBalanceStr();
+
     } on Error catch (_) {
       return false;
     } catch (e) {

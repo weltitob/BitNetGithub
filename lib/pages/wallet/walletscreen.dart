@@ -1,6 +1,6 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
+
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -15,14 +15,15 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
+
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
-import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/signer/bitcoin_signer.dart';
-import 'package:bs58/bs58.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -32,6 +33,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
@@ -367,15 +369,175 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // LongButtonWidget(title: "fetchOnchain Balance", onTap: () async {
-                      //   await controller.getOnchainBalance();
-                      // }),
+                      LongButtonWidget(title: "fetch Lightning Balance", onTap: () async {
+                        await controller.fetchLightingWalletBalance();
+                      }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "list Unspent",
                       //   onTap: () async {
-                      //     dynamic restResponseListUnspent =
-                      //         await listUnspent(Auth().currentUser!.uid);
+                      //     final bitcoinReceiverAdress = "bc1pt4kgverny8jhutqljjcqaanf2hncuxczx0dj83ulpr3ey5e0q00splw8zw";
+                      //     final amountInSat = 1;
+                      //     final logger = Get.find<LoggerService>();
+                      //
+                      //     logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
+                      //
+                      //     // logger.i("Fetching addresses from LND...");
+                      //     // RestResponse listAddressesResponse =
+                      //     // await listAddressesLnd(Auth().currentUser!.uid);
+                      //
+                      //     // AccountWithAddresses account = AccountWithAddresses.fromJson(
+                      //     //     (listAddressesResponse.data['account_with_addresses'] as List)
+                      //     //         .firstWhereOrNull(
+                      //     //             (acc) => acc['name'] == Auth().currentUser!.uid));
+                      //     //
+                      //     // logger.i("Addresses fetched successfully.");
+                      //     // List<String> changeAddresses = account.addresses
+                      //     //     .where((test) => test.isInternal)
+                      //     //     .map((test) => test.address)
+                      //     //     .toList();
+                      //     //
+                      //     // List<String> nonChangeAddresses = account.addresses
+                      //     //     .where((test) => !test.isInternal)
+                      //     //     .map((test) => test.address)
+                      //     //     .toList();
+                      //
+                      //     dynamic restResponseListUnspent = await listUnspent(Auth().currentUser!.uid);
+                      //     UtxoRequestList utxos = UtxoRequestList.fromJson(restResponseListUnspent.data);
+                      //
+                      //     logger.i("UTXOs fetched successfully: $restResponseListUnspent");
+                      //
+                      //
+                      //     TransactionData transactiondata = TransactionData(
+                      //         raw: RawTransactionData(
+                      //           inputs: utxos.utxos
+                      //               .map((i) => Input(
+                      //             txidStr: i.outpoint.txidStr,
+                      //             txidBytes: i.outpoint.txidBytes,
+                      //             outputIndex: i.outpoint.outputIndex,
+                      //           ))
+                      //               .toList(),
+                      //           outputs: Outputs(
+                      //               outputs: {bitcoinReceiverAdress: amountInSat.toInt()}),
+                      //         ),
+                      //         targetConf: AppTheme
+                      //             .targetConf, //The number of blocks to aim for when confirming the transaction.
+                      //         account: "",
+                      //         minConfs:
+                      //         4, //going for safety and not speed because for speed oyu would use the lightning network
+                      //         spendUnconfirmed:
+                      //         false, //Whether unconfirmed outputs should be used as inputs for the transaction.
+                      //         changeType: 0 //CHANGE_ADDRESS_TYPE_UNSPECIFIED
+                      //     );
+                      //
+                      //     logger.i("Transaction data created successfully.");
+                      //
+                      //     logger.i("getting local privateData");
+                      //     PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+                      //
+                      //     logger.i("Reriving fee now...");
+                      //     dynamic feeResponse =
+                      //     await estimateFee(AppTheme.targetConf.toString());
+                      //
+                      //     final sat_per_kw = double.parse(feeResponse.data["sat_per_kw"]);
+                      //     double utxoSum = 0;
+                      //     for (Utxo utxo in utxos.utxos) {
+                      //       utxoSum += utxo.amountSat;
+                      //     }
+                      //
+                      //     logger.i("utxoSum: $utxoSum");
+                      //     logger.i("sat_per_kw: $sat_per_kw");
+                      //
+                      //     String changeAddress = await nextAddr(Auth().currentUser!.uid, change: true);
+                      //     logger.i("Change address: $changeAddress");
+                      //
+                      //     logger.i("This is our mnemonic: ${privData.mnemonic}");
+                      //
+                      //
+                      //     logger.i("make HD Wallet");
+                      //     HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+                      //
+                      //     print("Wif private key: ${hdWallet.privkey}");
+                      //
+                      //
+                      //     // logger.i("Building transaction...");
+                      //     //
+                      //     // final builder = BitcoinTransactionBuilder(
+                      //     //     outPuts: [
+                      //     //       BitcoinOutput(
+                      //     //           address: parseBitcoinAddress(bitcoinReceiverAdress),
+                      //     //           value: BigInt.from(amountInSat.toInt())),
+                      //     //       BitcoinOutput(
+                      //     //           address: parseBitcoinAddress(changeAddress),
+                      //     //           value: BigInt.from(
+                      //     //               utxoSum - (amountInSat.toInt() + sat_per_kw)))
+                      //     //     ],
+                      //     //
+                      //     //     fee: BigInt.from(sat_per_kw),
+                      //     //     network: BitcoinNetwork.mainnet,
+                      //     //     utxos: utxos.utxos
+                      //     //         .map((utxo) => UtxoWithAddress(
+                      //     //         utxo: BitcoinUtxo(
+                      //     //             txHash: utxo.outpoint.txidStr,
+                      //     //             value: BigInt.from(utxo.amountSat),
+                      //     //             vout: utxo.outpoint.outputIndex,
+                      //     //             scriptType: parseBitcoinAddress(utxo.address).type),
+                      //     //         ownerDetails: UtxoAddressDetails(
+                      //     //             publicKey: hdWallet
+                      //     //                 .findKeyPair(
+                      //     //               utxo.address,
+                      //     //               privData.mnemonic,
+                      //     //               changeAddresses.contains(utxo.address) ? 1 : 0,
+                      //     //             )
+                      //     //                 .getPublic()
+                      //     //                 .publicKey
+                      //     //                 .toHex(),
+                      //     //             address: parseBitcoinAddress(utxo.address))))
+                      //     //         .toList());
+                      //
+                      //     // dynamic fundPsbtrestResponse =
+                      //     //     await fundPsbt(transactiondata, Auth().currentUser!.uid);
+                      //     //
+                      //     // FundedPsbtResponse fundedPsbtResponse =
+                      //     //     FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
+                      //
+                      //     // logger.i("Funded ${fundedPsbtResponse.fundedPsbt}");
+                      //
+                      //     //Lnd must be the last signer of the transaction. That means, if there are any unsigned non-witness inputs or inputs without UTXO information attached or inputs without witness data that do not belong to lnd's wallet, this method will fail.
+                      //     // dynamic finalizedPsbtRestResponse =
+                      //     //     await signPsbt(fundedPsbtResponse.fundedPsbt);
+                      //     // FinalizePsbtResponse finalizedPsbtResponse =
+                      //     //     FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
+                      //
+                      //     //replace this here with own signature service copied
+                      //
+                      //     //After this we can essentially use publishtransaction again I belive
+                      //     logger.i("Building transaction...");
+                      //     // final tr = builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+                      //     //   String address =
+                      //     //   utxo.ownerDetails.address.toAddress(BitcoinNetwork.mainnet);
+                      //     //   final ECPrivate privateKey = hdWallet.findKeyPair(
+                      //     //     address,
+                      //     //     privData.mnemonic,
+                      //     //     changeAddresses.contains(address) ? 1 : 0,
+                      //     //   );
+                      //     //   return privateKey.signInput(trDigest, sigHash: sighash);
+                      //     // });
+                      //     // final txId = tr.serialize();
+                      //     // logger.i("Transaction ID: $txId");
+                      //     // RestResponse publishTransactionRestResponse =
+                      //     //     await broadcastTransaction(txId); //txhex and label
+                      //     // const network = BitcoinNetwork.mainnet;
+                      //
+                      //     /// Define http provider and api provider
+                      //     // logger.i("Creating BitcoinApiService...");
+                      //     // final service = BitcoinApiService();
+                      //     // final api = ApiProvider.fromBlocCypher(network, service);
+                      //     // logger.i("Sending raw transaction: ${tr.serialize()}");
+                      //     //
+                      //     // String response = await api.sendRawTransaction(tr.serialize());
+                      //     // logger.i("Response from sendRawTransaction server: $response");
+                      //
                       //   },
                       // ),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),

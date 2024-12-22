@@ -105,7 +105,9 @@ class SendsController extends BaseController {
   RxBool moneyTextFieldIsEnabled = true.obs;
   RxBool amountWidgetOverBound = false.obs;
   RxBool amountWidgetUnderBound = false.obs;
+
   RxBool loadingSending = false.obs;
+
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   late double feesInEur_medium;
@@ -224,7 +226,7 @@ class SendsController extends BaseController {
       case QRTyped.Invoice:
         logger.i(
             "Invoice was detected will forward to Send screen with invoice: $encodedString");
-        showOverlay(context, encodedString);
+        // showOverlay(context, encodedString);
         giveValuesToInvoice(encodedString);
         //cxt.go("/wallet/send?walletAdress=$encodedString");
         break;
@@ -390,43 +392,48 @@ class SendsController extends BaseController {
       isFinished.value = true;
       if ((response as Map<String, dynamic>)['status'] == 'SUCCEEDED') {
         //sendPaymentDataLnUrl(response, lnUrl, lnUrlname);
-        payment = LightningPayment.fromJson(response);
+        // Convert response to a valid JSON string
+        String jsonString = jsonEncode(response);
+
+        // Decode the JSON string back into a Map<String, dynamic>
+        var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
+
+        LightningPayment payment = LightningPayment.fromJson(typedResponse);
         if (!transactionsUpdated) {
           Get.find<WalletsController>().newTransactionData.add(payment);
           transactionsUpdated = true;
         }
-
         //connect this with transactions views
         Get.find<WalletsController>().fetchLightingWalletBalance();
         sub!.cancel();
+        logger.i("Payment successful! Forwarding to feed...");
+        showOverlay(this.context, "Payment successful!");
+        context.go("/");
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showOverlay(this.context, "Payment successful!");
-          GoRouter.of(this.context).go("/feed");
-        });
       } else if ((response)['status'] == 'FAILED') {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showOverlay(
-              this.context, "Payment failed: ${response['failure_reason']}");
-        });
+
+        showOverlay(
+            this.context, "Payment failed: ${response['failure_reason']}");
+
         isFinished.value = false;
         sub!.cancel();
       } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
           showOverlay(
               this.context, "Payment failed: please try again later...");
-        });
+
         isFinished.value = false;
         sub!.cancel();
       }
     }, onError: (error) {
       isFinished.value = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+
         showOverlay(this.context, "An error occurred: $error");
-      });
-    }, onDone: () {}, cancelOnError: true);
+
+    }, onDone: () {
+      resetValues();
+    }, cancelOnError: true);
     logger.i("Payment successful! ${response.body}");
-    resetValues();
+
     return payment;
   }
 
@@ -464,18 +471,23 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
-    loadingSending = RxBool(true);
+
+    loadingSending.value = true;
     LoggerService logger = Get.find();
     logger.i("sendBTC() called");
+
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         if (sendType == SendType.LightningUrl) {
+
           logger.i("Amount that is being sent: ${satController.text}");
           logger.i("Satcontroller text: ${satController.text}");
           logger
               .i("Satcontroller text parsed: ${int.parse(satController.text)}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
+
+
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
@@ -493,21 +505,26 @@ class SendsController extends BaseController {
                 true; // Assuming you might want to update UI on each response
             if (response['status'] == "SUCCEEDED") {
               logger.i("Success: ${response}");
-              //connect this with transactions view
-              LightningPayment invoice = LightningPayment.fromJson(response);
 
-              Get.find<WalletsController>().newTransactionData.add(invoice);
+              String jsonString = jsonEncode(response);
+
+              // Decode the JSON string back into a Map<String, dynamic>
+              var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
+
+              LightningPayment payment = LightningPayment.fromJson(typedResponse);
+
+              Get.find<WalletsController>().newTransactionData.add(payment);
               // Handle success
               sendPaymentDataInvoice(response);
 
-              logger.i("Payment successful!");
               if (!firstSuccess) {
+                logger.i("Payment successful!");
                 Get.find<WalletsController>().fetchLightingWalletBalance();
 
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  showOverlay(this.context, "Payment successful!");
-                  GoRouter.of(this.context).go("/feed");
-                });
+                showOverlay(this.context, "Payment successful!");
+                logger.i("Payment successful! Forwarding to wallet...");
+                context.go("/");
+
                 firstSuccess = true;
               }
             }
@@ -515,10 +532,9 @@ class SendsController extends BaseController {
               // Handle error
               logger.i("Payment failed!");
               if (!firstSuccess) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  showOverlay(
-                      this.context, "Payment failed: ${response.message}");
-                });
+                showOverlay(
+                    this.context, "Payment failed: ${response.message}");
+
                 firstSuccess = true;
               }
 
@@ -531,9 +547,8 @@ class SendsController extends BaseController {
             }
           }, onError: (error) {
             isFinished.value = false;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showOverlay(this.context, "An error occurred: $error");
-            });
+            showOverlay(this.context, "An error occurred: $error");
+
           }, onDone: () {
             // Handle stream completion if necessary
           }, cancelOnError: true // Cancel the subscription upon first error
@@ -700,7 +715,7 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
-    loadingSending = RxBool(false);
+    loadingSending.value = false;
   }
 
   @override
