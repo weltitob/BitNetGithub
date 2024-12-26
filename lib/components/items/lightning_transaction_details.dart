@@ -317,27 +317,18 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       SizedBox(
                         width: 10.w,
                       ),
-                      Container(
-                        height: AppTheme.cardPadding * 1.5,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.elementSpacing),
-                        decoration: BoxDecoration(
-                          borderRadius: AppTheme.cardRadiusCircular,
+                      Text(
+                        data.status == TransactionStatus.confirmed
+                            ? 'Received'
+                            : data.status == TransactionStatus.pending
+                                ? 'Pending'
+                                : 'Error',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: data.status == TransactionStatus.confirmed
                               ? AppTheme.successColor
                               : data.status == TransactionStatus.pending
-                                  ? AppTheme.colorBitcoin
-                                  : AppTheme.errorColor,
-                        ),
-                        child: Center(
-                          child: Text(
-                            data.status == TransactionStatus.confirmed
-                                ? 'Received'
-                                : data.status == TransactionStatus.pending
-                                    ? 'Pending'
-                                    : 'Error',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                              ? AppTheme.colorBitcoin
+                              : AppTheme.errorColor,
                         ),
                       ),
                     ],

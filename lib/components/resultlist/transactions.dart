@@ -605,7 +605,11 @@ class _TransactionsState extends State<Transactions>
             children: [
               //image
 
+
               //text that user doesnt have any transactions yet
+              Container(
+                  height: AppTheme.cardPadding * 4,
+                  child: Center(child: Text("No activity to display")))
 
             ],
           ),

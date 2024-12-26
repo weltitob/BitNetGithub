@@ -223,26 +223,18 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                       SizedBox(
                         width: 10.w,
                       ),
-                      Container(
-                        height: AppTheme.cardPadding * 1.5,
-                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                        decoration: BoxDecoration(
-                          borderRadius: AppTheme.cardRadiusCircular,
+                      Text(
+                        transactionItemData.status == TransactionStatus.confirmed
+                            ? 'Received'
+                            : transactionItemData.status == TransactionStatus.pending
+                            ? 'Pending'
+                            : 'Error',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: transactionItemData.status == TransactionStatus.confirmed
                               ? AppTheme.successColor
                               : transactionItemData.status == TransactionStatus.pending
-                                  ? AppTheme.colorBitcoin
-                                  : AppTheme.errorColor,
-                        ),
-                        child: Center(
-                          child: Text(
-                            transactionItemData.status == TransactionStatus.confirmed
-                                ? 'Received'
-                                : transactionItemData.status == TransactionStatus.pending
-                                    ? 'Pending'
-                                    : 'Error',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                              ? AppTheme.colorBitcoin
+                              : AppTheme.errorColor,
                         ),
                       ),
                     ],

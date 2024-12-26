@@ -374,27 +374,21 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                     ),
                                     BitNetListTile(
                                       text: L10n.of(context)!.status,
-                                      trailing: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
-                                        decoration: BoxDecoration(
-                                          borderRadius: AppTheme.cardRadiusCircular,
-                                          color: controller.transactionModel == null
-                                              ? AppTheme.errorColor
-                                              : controller.transactionModel!.status!.confirmed!
-                                                  ? AppTheme.successColor
-                                                  : controllerHome.isRbfTransaction.value == true
-                                                      ? AppTheme.colorBitcoin
-                                                      : AppTheme.errorColor,
+                                      trailing: Center(
+                                        child: Text(
+                                          controllerHome.isRbfTransaction.value == true
+                                              ? L10n.of(context)!.replaced
+                                              : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
+                                                  controller.statusTransaction.value,
+                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                            color: controller.transactionModel == null
+                                                ? AppTheme.errorColor
+                                                : controller.transactionModel!.status!.confirmed!
+                                                ? AppTheme.successColor
+                                                : controllerHome.isRbfTransaction.value == true
+                                                ? AppTheme.colorBitcoin
+                                                : AppTheme.errorColor,
                                         ),
-                                        child: Center(
-                                          child: Text(
-                                            controllerHome.isRbfTransaction.value == true
-                                                ? L10n.of(context)!.replaced
-                                                : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
-                                                    controller.statusTransaction.value,
-                                            style: const TextStyle(color: Colors.white),
-                                          ),
                                         ),
                                       ),
                                     ),
