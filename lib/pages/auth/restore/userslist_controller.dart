@@ -155,7 +155,9 @@ class UsersListController extends GetxController {
   }
 
   /// Handles the login process for a user
-  Future<void> loginButtonPressed(String did) async {
+  Future<void> loginButtonPressed(String did, BuildContext context) async {
+    final logger = Get.find<LoggerService>();
+    logger.i("Login for user $did pressed");
     try {
       PrivateData? privateData = didToPrivateDataMap[did];
 
@@ -176,17 +178,21 @@ class UsersListController extends GetxController {
 
       logger.d('Generated signature hex: $signatureHex');
       await Auth().signIn(ChallengeType.securestorage_login, privateData,
-          signatureHex, Get.context!);
-    } catch (e) {
-      print("Error trying to sign in: $e");
-      Get.snackbar('Login Error', 'An error occurred during login.',
-          snackPosition: SnackPosition.BOTTOM);
+          signatureHex, context);
+
+      logger.i('User signed in successfully!');
+
+    } catch (e, stackTrace) {
+      logger.e("Error trying to sign in: $e, $stackTrace");
+      showOverlay(context, 'An error occurred during login.',
+          color: AppTheme.errorColor);
       // Optionally, you can rethrow or handle the exception as needed
     }
   }
 
   /// Deletes a user based on their DID
   Future<void> deleteUser(String did) async {
+    final logger = Get.find<LoggerService>();
     try {
       await deleteUserFromStoredIONData(did);
       userDataList.removeWhere((user) => user.did == did);
@@ -194,9 +200,9 @@ class UsersListController extends GetxController {
       Get.snackbar('Success', 'User deleted successfully.',
           snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      print("Error deleting user with DID $did: $e");
-      Get.snackbar('Deletion Error', 'Failed to delete user.',
-          snackPosition: SnackPosition.BOTTOM);
+      logger.e("Error deleting user with DID $did: $e");
+      showOverlay(Get.context!, 'Failed to delete user.',
+          color: AppTheme.errorColor);
     }
   }
 }

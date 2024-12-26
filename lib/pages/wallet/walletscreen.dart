@@ -1,4 +1,5 @@
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -78,9 +79,16 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 children: [
                                   profileController.userData.value == null
                                       ? Avatar(
+                                          onTap: () {
+                                            // context.go('/profile/$profileId');
+                                          },
                                           isNft: false,
                                         )
                                       : Avatar(
+                                          onTap: () {
+                                            final profileId = Auth().currentUser?.uid;
+                                            // context.go('/profile/$profileId');
+                                          },
                                           size: AppTheme.cardPadding * 2.5.h,
                                           mxContent: Uri.parse(profileController
                                               .userData.value.profileImageUrl),

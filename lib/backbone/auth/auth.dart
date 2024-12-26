@@ -327,7 +327,10 @@ class Auth {
       String signatureHex, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
-    LoggerService logger = Get.find();
+
+    final logger = Get.find<LoggerService>();
+    logger.i("Signing in user...");
+
 
     final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
 

@@ -64,7 +64,7 @@ class UsersList extends GetView<UsersListController> {
                                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                                 child: UserResult(
                                   onTap: () async {
-                                    await controller.loginButtonPressed(userData.did);
+                                    await controller.loginButtonPressed(userData.did, context);
                                   },
                                   userData: userData,
                                   onDelete: () async {
@@ -108,7 +108,7 @@ class UsersList extends GetView<UsersListController> {
                                 child: Center(
                                   child: UserResult(
                                     onTap: () async {
-                                      await controller.loginButtonPressed(userData.did);
+                                      await controller.loginButtonPressed(userData.did, context);
                                     },
                                     userData: userData,
                                     onDelete: () async {

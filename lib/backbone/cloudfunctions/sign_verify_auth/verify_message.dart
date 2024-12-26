@@ -14,7 +14,6 @@ dynamic verifyMessage(String userId, String challengeId, String signature) async
   FirebaseFunctions.instance.httpsCallable('verify_signature'); //old_fake_login
 
   final logger = Get.find<LoggerService>();
-  logger.i("FAKE LOGIN WHILE ION IS BROKEN..");
 
   final HttpsCallableResult<dynamic> response =
   await callable.call(<String, dynamic>{
