@@ -30,11 +30,12 @@ class ProfileController extends BaseController {
 
   late List<Widget> pages;
   RxInt currentview = 0.obs;
-  RxBool isUserLoading = true.obs;
+
   RxBool isLoading = true.obs;
 
   Rx<bool> assetsLoading = false.obs;
 
+  RxBool isUserLoading = true.obs;
   late Rx<UserData> userData;
 
   RxBool? isPrivate;
@@ -83,9 +84,9 @@ class ProfileController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    loadData();
     fetchTaprootAssets();
     scrollController = ScrollController();
-    loadData();
     pages = [
       const ColumnViewTab(),
       RowViewTab(),

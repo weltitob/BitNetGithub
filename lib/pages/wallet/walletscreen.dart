@@ -78,7 +78,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Row(
                                 children: [
-                                  profileController.userData.value == null
+                                  profileController.isUserLoading == true.obs
                                       ? Avatar(
                                           onTap: () {
                                             // context.go('/profile/$profileId');
