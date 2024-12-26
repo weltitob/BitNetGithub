@@ -106,6 +106,7 @@ Future<void> main() async {
   final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
   await remoteConfigController.fetchRemoteConfigData();
 
+
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
   Get.put(SettingsController());
