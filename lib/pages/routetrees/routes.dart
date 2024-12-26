@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
@@ -9,7 +8,6 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:bitnet/pages/auth/persona/personascreen.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
-import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:bitnet/pages/auth/restore/other_device/otherdevicescreen.dart';
 import 'package:bitnet/pages/auth/restore/social_recovery/info_social_recovery.dart';
 import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';

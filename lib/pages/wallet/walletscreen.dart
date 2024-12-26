@@ -18,11 +18,9 @@ import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:bitnet/pages/profile/profile.dart';
 
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
