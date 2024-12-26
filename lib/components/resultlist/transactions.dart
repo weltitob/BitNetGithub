@@ -1,13 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
-
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -18,13 +12,10 @@ import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/loop/swaps.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -558,10 +549,13 @@ class _TransactionsState extends State<Transactions>
     }
 
     if (widget.fullList) {
+
+
       // Falls "fullList" == true, alles in einem SliverToBoxAdapter
       return SliverToBoxAdapter(
         child: Column(
           children: [
+
             // (Neu) Search & Filter-Bar
             Container(
               margin: const EdgeInsets.symmetric(
@@ -605,6 +599,19 @@ class _TransactionsState extends State<Transactions>
       );
     } else {
       // Ansonsten im SliverList
+      if(orderedTransactions.length == 0) {
+        return SliverToBoxAdapter(
+          child: Column(
+            children: [
+              //image
+
+              //text that user doesnt have any transactions yet
+
+            ],
+          ),
+        );
+      }
+
       return SliverList(
         delegate: SliverChildBuilderDelegate(
               (ctx, index) {

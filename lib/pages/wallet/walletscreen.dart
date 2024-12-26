@@ -18,6 +18,7 @@ import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/profile/profile.dart';
 
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
@@ -42,9 +43,9 @@ class WalletScreen extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
-    WalletsController walletController = Get.put(WalletsController());
-    ProfileController profileController = Get.put(ProfileController());
-    SettingsController settingsController = Get.put(SettingsController());
+
+    WalletsController walletController = Get.find<WalletsController>();
+    ProfileController profileController = Get.find<ProfileController>();
 
     // We'll introduce a local state using a StatefulBuilder.
     // Alternatively, you could create a StatefulWidget from scratch.
@@ -116,7 +117,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           children: [
                                             controller.hideBalance.value
                                                 ? Text(
-                                                    '*****',
+                                                    '******',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall,
@@ -717,7 +718,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                   ),
                 ),
               ),
-
               SliverToBoxAdapter(
                 child: StatefulBuilder(builder: (context, setStateInner) {
                   return Padding(

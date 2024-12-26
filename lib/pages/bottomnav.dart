@@ -11,12 +11,10 @@ import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
-import 'package:bitnet/pages/feed/feedscreen.dart';
-import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +25,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-int _selectedIndex = 0;
+int _selectedIndex = 1;
 
 class BottomNav extends StatefulWidget {
   final GoRouterState routerState;
@@ -133,11 +131,11 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
 
     // Initialize Remote Config Controller and fetch data
+    WalletsController walletController = Get.put(WalletsController());
+    ProfileController profileController = Get.put(ProfileController());
+    SettingsController settingsController = Get.put(SettingsController());
+    FeedController feedController = Get.put(FeedController());
 
-
-    Get.put(FeedController());
-    Get.put(ProfileController());
-    Get.put(WalletsController());
     //we need to make sure we have the user doc id
     Get.find<ProfileController>().isUserLoading.listen((val) {
       if (!val) {
