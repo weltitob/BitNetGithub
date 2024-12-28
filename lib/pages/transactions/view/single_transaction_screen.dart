@@ -102,6 +102,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
 
     String currencyAmount = CurrencyConverter.convertCurrency('SAT', amount.toDouble(), currency, bitcoinPrice ?? 0);
     String currSymbol = getCurrency(currency);
+
+    final overlayController = Get.find<OverlayController>();
+
     return bitnetScaffold(
       context: context,
       extendBodyBehindAppBar: true,
@@ -158,7 +161,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             await Clipboard.setData(ClipboardData(
                                               text: controllerHome.replacedTx.value,
                                             ));
-                                            showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                                            overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
                                           },
                                           child: Row(
                                             children: [
@@ -322,7 +325,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             await Clipboard.setData(ClipboardData(
                                               text: controller.txID!,
                                             ));
-                                            showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                                            overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
                                           },
                                           child: Row(
                                             children: [

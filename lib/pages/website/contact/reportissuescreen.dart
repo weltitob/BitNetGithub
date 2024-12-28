@@ -11,6 +11,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -26,6 +27,9 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   TextEditingController issueController = TextEditingController();
   final User? user = Auth().currentUser;
 
+  final overlayController = Get.find<OverlayController>();
+
+
   void sendIssue() async {
     if (issueController.text.isNotEmpty) {
       issueController.text = "";
@@ -35,10 +39,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
           useremail: mail, issue: issueController.text);
       // Push issuereport object to Firebase Realtime Database
       await issueCollection.doc(uid).set(issuereport.toMap());
-      showOverlay(context, L10n.of(context)!.yourErrorReportForwarded);
+      overlayController.showOverlay(context, L10n.of(context)!.yourErrorReportForwarded);
       Navigator.of(context).pop();
     } else {
-      showOverlay(context, L10n.of(context)!.pleaseProvideErrorMsg);
+      overlayController.showOverlay(context, L10n.of(context)!.pleaseProvideErrorMsg);
     }
   }
 

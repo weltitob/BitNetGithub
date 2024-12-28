@@ -44,6 +44,9 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   }
 
   void onSignInPressed(mCtrl, tCtrls) async {
+
+    final overlayController = Get.find<OverlayController>();
+
     try {
       setState(() {
         _isLoading = true;
@@ -83,7 +86,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       );
 
       // Show success overlay
-      showOverlay(
+      overlayController.showOverlay(
         context,
         "Successfully Signed In.",
         color: AppTheme.successColor,
@@ -96,7 +99,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       setState(() {
         _isLoading = false;
       });
-      showOverlay(
+      overlayController.showOverlay(
         context,
         "No User was found with the provided Mnemonic",
         color: AppTheme.errorColor,

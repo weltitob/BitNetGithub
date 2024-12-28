@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -23,6 +24,9 @@ class QRScannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final overlayController = Get.find<OverlayController>();
+
     return WillPopScope(
       onWillPop: () async {
         // context.pop();
@@ -106,11 +110,11 @@ class QRScannerView extends StatelessWidget {
                                       controller.onQRCodeScanned(code.rawValue!, context);
                                     }
                                   } else {
-                                    showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
+                                    overlayController.showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
                                   }
                                 });
                               } else {
-                                showOverlay(context, L10n.of(context)!.pleaseGiveAccess);
+                                overlayController.showOverlay(context, L10n.of(context)!.pleaseGiveAccess);
                               }
                             },
                             child: const Icon(Icons.image))

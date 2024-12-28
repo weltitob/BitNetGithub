@@ -54,6 +54,9 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final overlayController = Get.find<OverlayController>();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SingleChildScrollView(
@@ -81,7 +84,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                         text: controller.qrCodeDataStringOnchain.value));
                   }
                   // Display a snackbar to indicate that the wallet address has been copied
-                  showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                  overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
                 },
                 child: SizedBox(
                   child: Center(
@@ -182,7 +185,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                 }
 
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {

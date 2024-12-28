@@ -139,17 +139,18 @@ class MnemonicController extends State<MnemonicGen> {
     setState(() {
       isLoadingSignUp = true;
     });
+    final overlayController = Get.find<OverlayController>();
     LoggerService logger = Get.find();
     logger.i("Confirming mnemonic...");
     logger.i("Typed Mnemonic: $typedMnemonic Mnemonic: $mnemonicString");
     if (mnemonicString == typedMnemonic) {
-      showOverlay(context, L10n.of(context)!.mnemonicCorrect,
+      overlayController.showOverlay(context, L10n.of(context)!.mnemonicCorrect,
           color: AppTheme.successColor);
       bool signUpBool = await signUp();
 
     } else {
       // Implement error throw
-      showOverlay(context, L10n.of(context)!.mnemonicInCorrect,
+      overlayController.showOverlay(context, L10n.of(context)!.mnemonicInCorrect,
           color: AppTheme.errorColor);
       logger.e("Mnemonic does not match");
       changeWrittenDown();

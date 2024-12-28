@@ -12,6 +12,7 @@ import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
@@ -113,6 +114,7 @@ Future<void> main() async {
   Get.put(TransactionController());
   Get.put(LitdController());
   Get.put(ReceiveController(), permanent: true);
+  Get.put(OverlayController(), permanent: true);
 
   // Get.put(LoggerService(), permanent: true);
   // Get.put(DioClient(), permanent: true);

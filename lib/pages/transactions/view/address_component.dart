@@ -31,6 +31,8 @@ class AddressComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
+    final overlayController = Get.find<OverlayController>();
+
 
     return bitnetScaffold(
         context: context,
@@ -80,7 +82,7 @@ class AddressComponent extends StatelessWidget {
                                   await Clipboard.setData(ClipboardData(
                                     text: controller.addressId,
                                   ));
-                                  showOverlay(context,
+                                  overlayController.showOverlay(context,
                                       L10n.of(context)!.copiedToClipboard);
                                 },
                                 icon: Icon(

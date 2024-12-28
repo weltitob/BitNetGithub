@@ -42,6 +42,8 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
         bitcoinPrice != null ? (double.parse(transactionItemData.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
     final currencyEquivalentFee =
         bitcoinPrice != null ? (transactionItemData.fee.toDouble() / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final overlayController = Get.find<OverlayController>();
+
     return bitnetScaffold(
         context: context,
         extendBodyBehindAppBar: true,
@@ -141,7 +143,7 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                         await Clipboard.setData(ClipboardData(
                           text: transactionItemData.txHash,
                         ));
-                        showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                        overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(
                         children: [

@@ -195,7 +195,9 @@ class _CreateAssetState extends State<CreateAsset> {
   //da stettdessen den von izak mit sleection nehmen
   //imagecopression
   _pickImageFiles(MediaType mediaType) async {
-    print(mediaType);
+    final logger = Get.find<LoggerService>();
+    logger.i("Mediatype: $mediaType");
+    final overlayController = Get.find<OverlayController>();
     // dynamic file = await FilePickerService(mediaType).pickFile();
     // if (file == null) return;
     //removed compression only add when the file size is bigger then 1mb
@@ -203,7 +205,7 @@ class _CreateAssetState extends State<CreateAsset> {
         final PermissionState ps =
                                   await PhotoManager.requestPermissionExtend();
                               if (!ps.isAuth && !ps.hasAccess) {
-                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
+                                overlayController.showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
                                 return;
                               }
     File? file = await ImagePickerBottomSheet(context, onImageTap: (album, image) async {
@@ -277,6 +279,7 @@ class _CreateAssetState extends State<CreateAsset> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
+    final overlayController = Get.find<OverlayController>();
 
     return PopScope(
       canPop: true,
@@ -364,7 +367,7 @@ class _CreateAssetState extends State<CreateAsset> {
                               convertToBase64AndMakePushReady(
                                   context, postFiles, nameController.text);
                             } else {
-                              showOverlay(
+                              overlayController.showOverlay(
                                 context,
                                 L10n.of(context)!.postContentError,
                                 color: AppTheme.errorColor,
@@ -570,9 +573,11 @@ Map<String, dynamic> convertToAssetJsonMap(List<Media> medias) {
 
 void triggerAssetMinting(
     BuildContext context, List<Media> mediasFormatted, String assetName) async {
+  final overlayController = Get.find<OverlayController>();
   try {
     // Convert mediasFormatted to JSON
     final jsonMap = convertToAssetJsonMap(mediasFormatted);
+
 
     print("THE JSON MAP IS: $jsonMap");
 
@@ -588,7 +593,7 @@ void triggerAssetMinting(
         await mintAsset(assetName, assetDataBase64, false);
 
     if (mintAssetResponse == null) {
-      showOverlay(
+      overlayController.showOverlay(
         context,
         L10n.of(context)!.assetMintError,
         color: AppTheme.errorColor,
@@ -606,7 +611,8 @@ void triggerAssetMinting(
     // Use the batch key for the finalize screen
     context.go('/create/finalize/$base64BatchKey');
   } catch (e) {
-    showOverlay(
+
+    overlayController.showOverlay(
       context,
       e.toString(),
       color: AppTheme.errorColor,
@@ -616,6 +622,7 @@ void triggerAssetMinting(
 
 void convertToBase64AndMakePushReady(
     BuildContext context, postFiles, String assetName) async {
+  final overlayController = Get.find<OverlayController>();
   try {
     //isLoading = true;
     final mediasFormatted = <Media>[];
@@ -676,8 +683,7 @@ void convertToBase64AndMakePushReady(
     });
   } catch (e) {
     //isLoading = false;
-
-    showOverlay(
+    overlayController.showOverlay(
       context,
       e.toString(),
       color: AppTheme.errorColor,

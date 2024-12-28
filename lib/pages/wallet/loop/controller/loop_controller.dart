@@ -187,6 +187,7 @@ class LoopGetxController extends GetxController {
 
   // Handle Loop-In Quote
   Future<void> loopInQuote(BuildContext context) async {
+    final overlayController = Get.find<OverlayController>();
     log('This is the loop-in amount: ${satController.text}');
     if (btcController.text != '0') {
       updateLoadingState(true);
@@ -197,7 +198,7 @@ class LoopGetxController extends GetxController {
       final response = await getLoopinQuote(roundedAmount.toString());
 
       if (response.statusCode == 'error') {
-        showOverlay(context, response.message);
+        overlayController.showOverlay(context, response.message);
       } else {
         final loop = LoopQuoteModel.fromJson(response.data);
         log('Loop-in swap fee in SAT: ${loop.swapFeeSat}');
@@ -205,12 +206,13 @@ class LoopGetxController extends GetxController {
       }
       updateLoadingState(false);
     } else {
-      showOverlay(context, 'Please enter an amount');
+      overlayController.showOverlay(context, 'Please enter an amount');
     }
   }
 
   // Handle Loop-Out Quote
   Future<void> loopOutQuote(BuildContext context) async {
+    final overlayController = Get.find<OverlayController>();
     if (btcController.text != '0') {
       log('Loop-out amount: ${satController.text}');
       updateLoadingState(true);
@@ -220,7 +222,7 @@ class LoopGetxController extends GetxController {
 
       final response = await getLoopOutQuote(roundedAmount.toString());
       if (response.statusCode == 'error') {
-        showOverlay(context, response.message);
+        overlayController.showOverlay(context, response.message);
       } else {
         final loop = LoopQuoteModel.fromJson(response.data);
         log('Loop-out swap fee in SAT: ${loop.swapFeeSat}');
@@ -228,7 +230,7 @@ class LoopGetxController extends GetxController {
       }
       updateLoadingState(false);
     } else {
-      showOverlay(context, 'Please enter an amount');
+      overlayController.showOverlay(context, 'Please enter an amount');
       updateLoadingState(false);
     }
   }
@@ -426,17 +428,18 @@ class LoopGetxController extends GetxController {
   Future<void> loopin_func(Map<String, dynamic> data) async {
     // Implement the loop-in functionality
     // Example:
+    final overlayController = Get.find<OverlayController>();
     updateLoadingState(true);
     try {
       // Call your loop-in function
       await loopin(data);
-      showOverlay(Get.context!, 'Loop-In successful!');
+      overlayController.showOverlay(Get.context!, 'Loop-In successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();
       await fetchLightningWalletBalance();
     } catch (e) {
       log('Error during loop-in: $e');
-      showOverlay(Get.context!, 'Loop-In failed: $e');
+      overlayController.showOverlay(Get.context!, 'Loop-In failed: $e');
     } finally {
       updateLoadingState(false);
     }
@@ -446,16 +449,17 @@ class LoopGetxController extends GetxController {
     // Implement the loop-out functionality
     // Example:
     updateLoadingState(true);
+    final overlayController = Get.find<OverlayController>();
     try {
       // Call your loop-out function
       await loopOut(data);
-      showOverlay(Get.context!, 'Loop-Out successful!');
+      overlayController.showOverlay(Get.context!, 'Loop-Out successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();
       await fetchLightningWalletBalance();
     } catch (e) {
       log('Error during loop-out: $e');
-      showOverlay(Get.context!, 'Loop-Out failed: $e');
+      overlayController.showOverlay(Get.context!, 'Loop-Out failed: $e');
     } finally {
       updateLoadingState(false);
     }

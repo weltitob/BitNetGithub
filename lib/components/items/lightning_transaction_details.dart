@@ -27,6 +27,8 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
 
   LightningTransactionDetails({required this.data, super.key});
 
+  final overlayController = Get.find<OverlayController>();
+
   @override
   Widget build(BuildContext context) {
     final String formattedDate = displayTimeAgoFromInt(data.timestamp);
@@ -226,7 +228,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                         await Clipboard.setData(ClipboardData(
                           text: data.txHash,
                         ));
-                        showOverlay(
+                        overlayController.showOverlay(
                             context, L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(

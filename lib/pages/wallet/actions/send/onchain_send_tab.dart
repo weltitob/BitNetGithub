@@ -210,11 +210,14 @@ class OnChainSendTab extends GetWidget<SendsController> {
 
 // A widget to display the bitcoin receiver address in a row with an icon for copying it to the clipboard
   Widget cardWithNumber(BuildContext context) {
+
+    final overlayController = Get.find<OverlayController>();
+
     return GestureDetector(
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
-        showOverlay(context, L10n.of(context)!.walletAddressCopied);
+        overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
         children: [

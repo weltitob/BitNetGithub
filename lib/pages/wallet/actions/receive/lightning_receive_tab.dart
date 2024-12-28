@@ -33,6 +33,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
   Widget build(BuildContext context) {
     super.build(context);
     final controller = Get.find<ReceiveController>();
+    final overlayController = Get.find<OverlayController>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -52,7 +53,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
               onTap: () async {
                 await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               child: SizedBox(
                 child: Center(
@@ -104,9 +105,10 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
             ),
             BitNetListTile(
               onTap: () async {
+
                 await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {

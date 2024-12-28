@@ -370,6 +370,7 @@ class SendsController extends BaseController {
   Future<LightningPayment?> payLnUrl(
       String url, int amount, BuildContext context) async {
     final logger = Get.find<LoggerService>();
+    final overlayController = Get.find<OverlayController>();
 
     logger.i("payLnUrl called with url: $url and amount: ${amount * 1000}");
 
@@ -407,18 +408,18 @@ class SendsController extends BaseController {
         Get.find<WalletsController>().fetchLightingWalletBalance();
         sub!.cancel();
         logger.i("Payment successful! Forwarding to feed...");
-        showOverlay(this.context, "Payment successful!");
+        overlayController.showOverlay(this.context, "Payment successful!");
         context.go("/");
 
       } else if ((response)['status'] == 'FAILED') {
 
-        showOverlay(
+        overlayController.showOverlay(
             this.context, "Payment failed: ${response['failure_reason']}");
 
         isFinished.value = false;
         sub!.cancel();
       } else {
-          showOverlay(
+        overlayController.showOverlay(
               this.context, "Payment failed: please try again later...");
 
         isFinished.value = false;
@@ -427,7 +428,7 @@ class SendsController extends BaseController {
     }, onError: (error) {
       isFinished.value = false;
 
-        showOverlay(this.context, "An error occurred: $error");
+      overlayController.showOverlay(this.context, "An error occurred: $error");
 
     }, onDone: () {
       resetValues();
@@ -473,7 +474,8 @@ class SendsController extends BaseController {
   sendBTC(BuildContext context) async {
 
     loadingSending = true.obs;
-    LoggerService logger = Get.find();
+    LoggerService logger = Get.find<LoggerService>();
+    final overlayController = Get.find<OverlayController>();
     logger.i("sendBTC() called");
 
     await isBiometricsAvailable();
@@ -521,7 +523,7 @@ class SendsController extends BaseController {
                 logger.i("Payment successful!");
                 Get.find<WalletsController>().fetchLightingWalletBalance();
 
-                showOverlay(this.context, "Payment successful!");
+                overlayController.showOverlay(this.context, "Payment successful!");
                 logger.i("Payment successful! Forwarding to wallet...");
                 context.go("/");
 
@@ -532,7 +534,7 @@ class SendsController extends BaseController {
               // Handle error
               logger.i("Payment failed!");
               if (!firstSuccess) {
-                showOverlay(
+                overlayController.showOverlay(
                     this.context, "Payment failed: ${response.message}");
 
                 firstSuccess = true;
@@ -547,7 +549,7 @@ class SendsController extends BaseController {
             }
           }, onError: (error) {
             isFinished.value = false;
-            showOverlay(this.context, "An error occurred: $error");
+            overlayController.showOverlay(this.context, "An error occurred: $error");
 
           }, onDone: () {
             // Handle stream completion if necessary
@@ -693,14 +695,14 @@ class SendsController extends BaseController {
             // });
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showOverlay(this.context, "Payment successful!");
-              GoRouter.of(this.context).go("/feed");
-            });
+
+            overlayController.showOverlay(this.context, "Payment successful!");
+            GoRouter.of(this.context).go("/feed");
+
           } else {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showOverlay(this.context, "Payment failed.");
-            });
+
+              overlayController.showOverlay(this.context, "Payment failed.");
+
             isFinished.value = false;
           }
         } else {

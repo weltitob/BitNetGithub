@@ -104,7 +104,8 @@ class UsersListController extends GetxController {
   }
 
   void showError(BuildContext context) {
-    showOverlay(
+    final overlayController = Get.find<OverlayController>();
+    overlayController.showOverlay(
       context,
       L10n.of(context)!.overlayErrorOccured,
       color: AppTheme.errorColor,
@@ -183,8 +184,9 @@ class UsersListController extends GetxController {
       logger.i('User signed in successfully!');
 
     } catch (e, stackTrace) {
+      final overlayController = Get.find<OverlayController>();
       logger.e("Error trying to sign in: $e, $stackTrace");
-      showOverlay(context, 'An error occurred during login.',
+      overlayController.showOverlay(context, 'An error occurred during login.',
           color: AppTheme.errorColor);
       // Optionally, you can rethrow or handle the exception as needed
     }
@@ -192,6 +194,7 @@ class UsersListController extends GetxController {
 
   /// Deletes a user based on their DID
   Future<void> deleteUser(String did) async {
+    final overlayController = Get.find<OverlayController>();
     final logger = Get.find<LoggerService>();
     try {
       await deleteUserFromStoredIONData(did);
@@ -201,7 +204,7 @@ class UsersListController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
       logger.e("Error deleting user with DID $did: $e");
-      showOverlay(Get.context!, 'Failed to delete user.',
+      overlayController.showOverlay(Get.context!, 'Failed to delete user.',
           color: AppTheme.errorColor);
     }
   }

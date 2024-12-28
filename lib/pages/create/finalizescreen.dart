@@ -19,6 +19,7 @@ import 'package:bitnet/models/tapd/batch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -232,6 +233,7 @@ class _BatchScreenState extends State<BatchScreen> {
     setState(() {
       isLoading = true;
     });
+    final overlayController = Get.find<OverlayController>();
     try {
       await finalizeMint();
       setState(() {
@@ -243,7 +245,7 @@ class _BatchScreenState extends State<BatchScreen> {
       setState(() {
         isLoading = false;
       });
-      showOverlay(context, L10n.of(context)!.errorFinalizingBatch,
+      overlayController.showOverlay(context, L10n.of(context)!.errorFinalizingBatch,
           color: AppTheme.errorColor);
     }
   }

@@ -149,6 +149,9 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   @override
   Widget build(BuildContext context) {
+
+    final overlayController = Get.find<OverlayController>();
+
     return PopScope(
       canPop: false,
       onPopInvoked: (v) {
@@ -754,7 +757,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           text: controller
                                                                               .txDetailsConfirmed!
                                                                               .id));
-                                                                      showOverlay(
+                                                                      overlayController.showOverlay(
                                                                           context,
                                                                           L10n.of(context)!
                                                                               .copiedToClipboard);

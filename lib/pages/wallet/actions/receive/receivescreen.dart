@@ -43,6 +43,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
   late AnimationController _animationController;
   late StreamSubscription<ReceiveType> receiveTypeSub;
   bool tappedOffset = false;
+  final overlayController = Get.find<OverlayController>();
 
   @override
   void initState() {
@@ -127,7 +128,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
         return;
       }
       if (Get.overlayContext != null && Get.overlayContext!.mounted)
-        showOverlayTransaction(
+        overlayController.showOverlayTransaction(
             Get.overlayContext!,
             "Onchain transaction settled",
             TransactionItemData(
@@ -154,7 +155,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       if (inv.state == 'SETTLED') {
         logger.i("showOverlay should be triggered now");
         if (Get.overlayContext != null && Get.overlayContext!.mounted)
-          OverlayTransactionWidget.showOverlayTransaction(
+          overlayController.showOverlayTransaction(
             Get.context!,
             "Lightning invoice settled",
             TransactionItemData(

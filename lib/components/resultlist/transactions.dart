@@ -223,11 +223,14 @@ class _TransactionsState extends State<Transactions>
 
   void handlePageLoadErrors(
       int errorCount, String errorMessage, BuildContext context) {
+
+    final overlayController = Get.find<OverlayController>();
+
     if (errorCount == 1) {
-      showOverlay(context, errorMessage, color: AppTheme.errorColor);
+      overlayController.showOverlay(context, errorMessage, color: AppTheme.errorColor);
       logger.e("Error loading transactions: $errorMessage");
     } else if (errorCount > 1) {
-      showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
+      overlayController.showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
           color: AppTheme.errorColor);
       logger.e("Multiple errors loading transactions: $errorMessage");
     }

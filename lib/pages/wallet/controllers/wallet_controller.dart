@@ -507,14 +507,16 @@ class WalletsController extends BaseController {
 
 
   void handleFuturesCompleted(BuildContext context) {
+    final overlayController = Get.find<OverlayController>();
+
     logger.i(
         "Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
     if (errorCount > 1) {
-      showOverlay(
+      overlayController.showOverlay(
           context, "Failed to load certain services, please try again later.",
           color: AppTheme.errorColor);
     } else if (errorCount == 1) {
-      showOverlay(context, loadMessageError, color: AppTheme.errorColor);
+      overlayController.showOverlay(context, loadMessageError, color: AppTheme.errorColor);
     }
   }
 

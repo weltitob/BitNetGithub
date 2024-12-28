@@ -32,6 +32,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
   @override
   Widget build(BuildContext context) {
     const colorPickerSize = AppTheme.cardPadding * 1.5;
+    final overlayController = Get.find<OverlayController>();
 
     return bitnetScaffold(
       extendBodyBehindAppBar: false,
@@ -118,7 +119,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                                                     controller.selectedUsers
                                                         .add(user);
                                                   } else {
-                                                    showOverlay(context,
+                                                    overlayController.showOverlay(context,
                                                         'You already have 5 users selected, please deselect one, then try again.',
                                                         color: AppTheme
                                                             .errorColor);
@@ -158,7 +159,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                           curve: Curves.easeIn);
                     },
                     onButtonTapDisabled: () {
-                      showOverlay(context,
+                      overlayController.showOverlay(context,
                           'You should select atleast 3 users and at most 5.',
                           color: AppTheme.errorColor);
                     },
@@ -183,7 +184,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                       mnemonicFieldKey.currentState?.textControllers ?? []);
                 },
                 onButtonTapDisabled: () {
-                  showOverlay(context, 'Please fill out your Mnemonic.',
+                  overlayController.showOverlay(context, 'Please fill out your Mnemonic.',
                       color: AppTheme.errorColor);
                 },
               ),
@@ -223,7 +224,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                         duration: Duration(milliseconds: 200),
                         curve: Curves.easeIn);
                   } else {
-                    showOverlay(
+                    overlayController.showOverlay(
                         context, 'Your private key was incorrect, try again.',
                         color: AppTheme.errorColor);
                   }
@@ -320,6 +321,8 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
 
   triggerMnemonicCheck(BuildContext context, MnemonicController? mCtrl,
       List<TextEditingController> tCtrls) async {
+    final overlayController = Get.find<OverlayController>();
+
     final String mnemonic =
         tCtrls.map((controller) => controller.text).join(' ');
     PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
@@ -327,7 +330,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
       controller.pageControllerSocialRecovery.nextPage(
           duration: Duration(milliseconds: 200), curve: Curves.easeIn);
     } else {
-      showOverlay(context, 'Your Mnemonic was Incorrect, please try again',
+      overlayController.showOverlay(context, 'Your Mnemonic was Incorrect, please try again',
           color: AppTheme.errorColor);
     }
 
@@ -355,6 +358,8 @@ class ConfirmPrivateKeyPage extends StatelessWidget {
   final Function(String) onChanged;
   @override
   Widget build(BuildContext context) {
+    final overlayController = Get.find<OverlayController>();
+
     return MaxWidthBody(
         child: Stack(
       children: [
@@ -388,7 +393,7 @@ class ConfirmPrivateKeyPage extends StatelessWidget {
             buttonState: buttonState,
             buttonTitle: 'Confirm Private Key',
             onButtonTap: onConfirm,
-            onButtonTapDisabled: () => showOverlay(
+            onButtonTapDisabled: () => overlayController.showOverlay(
                 context, 'please write down your private key.',
                 color: AppTheme.errorColor))
       ],

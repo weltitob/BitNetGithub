@@ -145,6 +145,7 @@ class QRScannerController extends State<QrScanner> {
   }
 
   void onScannedForSendingBitcoin(dynamic encodedString) async {
+    final overlayController = Get.find<OverlayController>();
     final currentqr = QR_BitcoinAddress.fromJson(encodedString);
 
     /// a simple check if its a BTC wallet or not, regardless of its type
@@ -160,7 +161,7 @@ class QRScannerController extends State<QrScanner> {
     if (isValid) {
       context.go("/wallet/send");
     } else {
-      showOverlay(context, L10n.of(context)!.qrCodeFormatInvalid);
+      overlayController.showOverlay(context, L10n.of(context)!.qrCodeFormatInvalid);
     }
   }
 

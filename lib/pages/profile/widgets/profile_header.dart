@@ -20,9 +20,13 @@ import 'package:photo_manager/photo_manager.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
+
   @override
   Widget build(BuildContext context) {
+
+    final overlayController = Get.find<OverlayController>();
     final controller = Get.find<ProfileController>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,6 +70,7 @@ class ProfileHeader extends StatelessWidget {
                                         print('follow dagelassen lol');
                                       }
                                     : () {
+
                                         BitNetBottomSheet(
                                           height: MediaQuery.of(context).size.height * 0.6,
                                           context: context,
@@ -110,7 +115,7 @@ class ProfileHeader extends StatelessWidget {
                                                       Navigator.pop(context);
                                                       final PermissionState ps = await PhotoManager.requestPermissionExtend();
                                                       if (!ps.isAuth && !ps.hasAccess) {
-                                                        showOverlay(context, 'please give the app photo access to continue.',
+                                                        overlayController.showOverlay(context, 'please give the app photo access to continue.',
                                                             color: AppTheme.errorColor);
                                                         return;
                                                       }
@@ -128,7 +133,7 @@ class ProfileHeader extends StatelessWidget {
                                                       Navigator.pop(context);
                                                       final PermissionState ps = await PhotoManager.requestPermissionExtend();
                                                       if (!ps.isAuth && !ps.hasAccess) {
-                                                        showOverlay(context, 'please give the app photo access to continue.',
+                                                        overlayController.showOverlay(context, 'please give the app photo access to continue.',
                                                             color: AppTheme.errorColor);
                                                         return;
                                                       }
