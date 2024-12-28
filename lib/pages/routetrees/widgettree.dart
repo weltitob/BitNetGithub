@@ -46,26 +46,31 @@ class WidgetTree extends StatelessWidget {
               minTextAdapt: false,
               splitScreenMode: false,
               builder: (_, child) {
-                return MaterialApp.router(
-                  routerConfig: AppRouter.router,
-                  title: AppTheme.applicationName,
-                  debugShowCheckedModeBanner: false,
+                return GetMaterialApp(
                   themeMode: themeMode,
                   theme: AppTheme.customTheme(Brightness.light, primaryColor),
                   darkTheme: AppTheme.customTheme(Brightness.dark, primaryColor),
-                  scrollBehavior: CustomScrollBehavior(),
-                  locale: provider.locale,
-                  supportedLocales: L10n.supportedLocales,
-                  localizationsDelegates: [
-                    intl.L10n.delegate,
-                    L10n.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                  ],
-                  builder: (context, child) => Matrix(
-                    context: context,
-                    child: child,
+                  home: MaterialApp.router(
+                    routerConfig: AppRouter.router,
+                    title: AppTheme.applicationName,
+                    debugShowCheckedModeBanner: false,
+                    themeMode: themeMode,
+                    theme: AppTheme.customTheme(Brightness.light, primaryColor),
+                    darkTheme: AppTheme.customTheme(Brightness.dark, primaryColor),
+                    scrollBehavior: CustomScrollBehavior(),
+                    locale: provider.locale,
+                    supportedLocales: L10n.supportedLocales,
+                    localizationsDelegates: [
+                      intl.L10n.delegate,
+                      L10n.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                    builder: (context, child) => Matrix(
+                      context: context,
+                      child: child,
+                    ),
                   ),
                 );
               });

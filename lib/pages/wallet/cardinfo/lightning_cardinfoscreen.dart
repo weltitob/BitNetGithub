@@ -113,7 +113,6 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
             final transaction = controller.combinedTransactions[index];
             if (transaction is ReceivedInvoice) {
               transactions.add(TransactionItem(
-                context: context,
                 data: TransactionItemData(
                   timestamp: transaction.settleDate,
                   type: TransactionType.lightning,
@@ -127,7 +126,6 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
               ));
             } else if (transaction is LightningPayment) {
               transactions.add(TransactionItem(
-                context: context,
                 data: TransactionItemData(
                   timestamp: transaction.creationDate,
                   type: TransactionType.lightning,

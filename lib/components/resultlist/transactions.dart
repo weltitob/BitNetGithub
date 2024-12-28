@@ -127,7 +127,7 @@ class _TransactionsState extends State<Transactions>
           widget.customTransactions == null) {
         Future.microtask(() {
           final tmp = walletController.allTransactions
-              .map((item) => TransactionItem(data: item, context: context))
+              .map((item) => TransactionItem(data: item,))
               .toList();
           orderedTransactions = arrangeTransactions(tmp);
           transactionsLoaded = true;
@@ -263,7 +263,6 @@ class _TransactionsState extends State<Transactions>
         // On-Chain
         ...onchainTransactions.map(
               (tx) => TransactionItem(
-            context: context,
             data: TransactionItemData(
               timestamp: tx.timeStamp,
               status: tx.numConfirmations > 0
@@ -287,7 +286,6 @@ class _TransactionsState extends State<Transactions>
         // Lightning-Payments (sent)
         ...lightningPayments.map(
               (pmt) => TransactionItem(
-            context: context,
             data: TransactionItemData(
               timestamp: pmt.creationDate,
               type: TransactionType.lightning,
@@ -307,7 +305,6 @@ class _TransactionsState extends State<Transactions>
         // Lightning-Invoices (received)
         ...lightningInvoices.map(
               (inv) => TransactionItem(
-            context: context,
             data: TransactionItemData(
               timestamp: inv.settleDate,
               type: TransactionType.lightning,
@@ -697,7 +694,7 @@ class TransactionContainer extends StatelessWidget {
               children: transactions,
             ),
           ),
-          SizedBox(height: AppTheme.cardPadding * 2.h),
+          SizedBox(height: AppTheme.cardPadding * 1.h),
         ],
       ),
     );

@@ -278,7 +278,6 @@ class AddressComponent extends StatelessWidget {
                                                                 .txid!);
                                                   },
                                                   child: TransactionItem(
-                                                      context: context,
                                                       data: TransactionItemData(
                                                         timestamp: controller
                                                                 .subTransactionModel[

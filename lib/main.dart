@@ -71,7 +71,6 @@ Future<void> main() async {
   // Initialize Date Formatting
   await initializeDateFormatting();
 
-
   await LocalStorage.instance.initStorage();
   ShakeDetector.autoStart(
     onPhoneShake: () {
@@ -82,7 +81,6 @@ Future<void> main() async {
     shakeThresholdGravity: 4.5, // Increase for more vigorous shaking
     minimumShakeCount: 5, // Require two shakes
   );
-
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -99,14 +97,15 @@ Future<void> main() async {
 
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.debug, //kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    androidProvider: AndroidProvider
+        .debug, //kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.debug,
   );
 
   // Initialize Remote Config Controller and fetch data
-  final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+  final remoteConfigController =
+      Get.put(RemoteConfigController(), permanent: true);
   await remoteConfigController.fetchRemoteConfigData();
-
 
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
@@ -127,7 +126,6 @@ Future<void> main() async {
   // Get.put(FeedController(), permanent: true);
   // Get.put(ProfileController(), permanent: true);
 
-
   if (!kIsWeb) {
     Stripe.publishableKey = remoteConfigController.stripeTestKey.value;
     await Stripe.instance.applySettings();
@@ -138,7 +136,7 @@ Future<void> main() async {
 
   // Run the app
   runApp(
-    GetMaterialApp(home: const MyApp()),
+    const MyApp(),
   );
   if (kIsWeb) {
     FlutterNativeSplash.remove();
@@ -240,24 +238,32 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 // ChangeNotifierProvider<BalanceHideProvider>(
                 //   create: (context) => BalanceHideProvider(),
                 // ),
-                ChangeNotifierProvider<CurrencyTypeProvider>(create: (context) => CurrencyTypeProvider()),
+                ChangeNotifierProvider<CurrencyTypeProvider>(
+                    create: (context) => CurrencyTypeProvider()),
                 ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-                  update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                    if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
+                  update:
+                      (context, currencyChangeProvider, bitcoinPriceStream) {
+                    if (bitcoinPriceStream == null ||
+                        bitcoinPriceStream.localCurrency !=
+                            currencyChangeProvider.selectedCurrency) {
                       bitcoinPriceStream?.dispose();
                       final newStream = BitcoinPriceStream();
-                      newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                      newStream.updateCurrency(
+                          currencyChangeProvider.selectedCurrency ?? 'usd');
                       newStream.priceStream.asBroadcastStream().listen((data) {
                         Get.find<WalletsController>().chartLines.value = data;
                       });
                       return newStream;
                     }
-                    bitcoinPriceStream.priceStream.asBroadcastStream().listen((data) {
+                    bitcoinPriceStream.priceStream
+                        .asBroadcastStream()
+                        .listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
                     });
                     return bitcoinPriceStream;
                   },
-                  dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
+                  dispose: (context, bitcoinPriceStream) =>
+                      bitcoinPriceStream.dispose(),
                 ),
               ],
               child: bTree.WidgetTree(),
@@ -265,8 +271,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           )
         : MultiProvider(
             providers: [
-              ChangeNotifierProvider<CardChangeProvider>(create: (context) => CardChangeProvider()),
-              ChangeNotifierProvider<CurrencyTypeProvider>(create: (context) => CurrencyTypeProvider()),
+              ChangeNotifierProvider<CardChangeProvider>(
+                  create: (context) => CardChangeProvider()),
+              ChangeNotifierProvider<CurrencyTypeProvider>(
+                  create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
@@ -278,21 +286,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
+                  if (bitcoinPriceStream == null ||
+                      bitcoinPriceStream.localCurrency !=
+                          currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    newStream.updateCurrency(
+                        currencyChangeProvider.selectedCurrency ?? 'usd');
                     newStream.priceStream.asBroadcastStream().listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
                     });
                     return newStream;
                   }
-                  bitcoinPriceStream.priceStream.asBroadcastStream().listen((data) {
+                  bitcoinPriceStream.priceStream
+                      .asBroadcastStream()
+                      .listen((data) {
                     Get.find<WalletsController>().chartLines.value = data;
                   });
                   return bitcoinPriceStream;
                 },
-                dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
+                dispose: (context, bitcoinPriceStream) =>
+                    bitcoinPriceStream.dispose(),
               ),
               // This provider is now made redundant, use WalletsController.chartlines and
               //Obx if you need to listen for changes.

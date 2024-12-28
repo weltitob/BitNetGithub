@@ -874,7 +874,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               .map(
                                                             (transaction) =>
                                                                 TransactionItem(
-                                                              context: context,
                                                               data:
                                                                   TransactionItemData(
                                                                 timestamp:

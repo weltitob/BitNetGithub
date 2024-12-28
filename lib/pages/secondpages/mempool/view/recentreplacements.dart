@@ -179,7 +179,6 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                                     : Colors.white.withAlpha(50)),
                                             borderRadius: BorderRadius.circular(AppTheme.cardPadding * 0.2)),
                                         child: TransactionItem(
-                                            context: context,
                                             data: TransactionItemData(
                                               timestamp: ownedTransaction.timeStamp,
                                               status: ownedTransaction.numConfirmations > 0

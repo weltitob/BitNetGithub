@@ -212,7 +212,6 @@ class OverlayController extends GetxController with SingleGetTickerProviderMixin
                   // Transaction Item
                   TransactionItem(
                     data: itemData,
-                    context: providerContext!, // pass overlayContext if needed
                   ),
                 ],
               ),

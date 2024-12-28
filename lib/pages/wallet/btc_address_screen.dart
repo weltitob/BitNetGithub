@@ -109,7 +109,6 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
         }
 
         transactions.add(TransactionItem(
-            context: context,
             data: TransactionItemData(
               timestamp: timeDate != null ? (timeDate.millisecondsSinceEpoch ~/ 1000) : 0,
               type: TransactionType.onChain,
