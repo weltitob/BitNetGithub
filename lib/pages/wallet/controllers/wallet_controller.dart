@@ -513,10 +513,10 @@ class WalletsController extends BaseController {
         "Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
     if (errorCount > 1) {
       overlayController.showOverlay(
-          context, "Failed to load certain services, please try again later.",
+          "Failed to load certain services, please try again later.",
           color: AppTheme.errorColor);
     } else if (errorCount == 1) {
-      overlayController.showOverlay(context, loadMessageError, color: AppTheme.errorColor);
+      overlayController.showOverlay(loadMessageError, color: AppTheme.errorColor);
     }
   }
 

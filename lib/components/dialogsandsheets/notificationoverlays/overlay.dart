@@ -7,37 +7,45 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
-class OverlayController extends GetxController {
-  // Rx-Variablen zur Verwaltung des Overlay-Zustands
+class OverlayController extends GetxController with SingleGetTickerProviderMixin {
+  // Rx variable to manage the current overlay entry
   Rx<OverlayEntry?> overlayEntry = Rx<OverlayEntry?>(null);
 
-  // Methode zum Anzeigen eines einfachen Text-Overlays
-  void showOverlay(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
+  // 1) Simple Text Overlay
+  Future<void> showOverlay(String? message, {Color color = AppTheme.successColor}) async {
+    final overlayContext = Get.overlayContext;
+    if (overlayContext == null) {
+      debugPrint("No overlay context found. Cannot display overlay.");
+      return;
+    }
+
     // Trigger vibration
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate();
     }
 
+    final animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    )..forward();
+
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
+
     final overlay = OverlayEntry(
-      builder: (context) => Positioned(
+      builder: (_) => Positioned(
         top: 0,
         left: 0,
         right: 0,
         child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: AnimationController(
-              duration: const Duration(milliseconds: 300),
-              vsync: Navigator.of(context),
-            )..forward(),
-            curve: Curves.easeOut,
-          )),
+          position: offsetAnimation,
           child: Material(
-            elevation: 10.0,
+            type: MaterialType.transparency,
             child: Container(
-              padding: const EdgeInsets.all(AppTheme.elementSpacing),
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: const BorderRadius.only(
@@ -45,6 +53,7 @@ class OverlayController extends GetxController {
                   bottomRight: Radius.circular(AppTheme.borderRadiusBig),
                 ),
               ),
+              padding: const EdgeInsets.all(AppTheme.elementSpacing),
               child: Center(
                 child: Text(
                   message ?? 'Transaction received!',
@@ -57,43 +66,51 @@ class OverlayController extends GetxController {
       ),
     );
 
-    // Add overlay entry to the overlay
-    Overlay.of(context)?.insert(overlay);
+    Overlay.of(overlayContext)?.insert(overlay);
     overlayEntry.value = overlay;
 
-    // Remove the overlay entry after a duration
+    // Remove the overlay after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       overlay.remove();
+      animationController.dispose();
     });
   }
 
-  // Methode zum Anzeigen eines Internet-Verbindungs-Overlays
-  void showOverlayInternet(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
+  // 2) Internet Connectivity Overlay
+  Future<void> showOverlayInternet(String? message, {Color color = AppTheme.successColor}) async {
+    final overlayContext = Get.overlayContext;
+    if (overlayContext == null) {
+      debugPrint("No overlay context found. Cannot display overlay.");
+      return;
+    }
+
     // Trigger vibration
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate();
     }
 
+    final animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    )..forward();
+
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
+
     final overlay = OverlayEntry(
-      builder: (context) => Positioned(
+      builder: (_) => Positioned(
         top: 0,
         left: 0,
         right: 0,
         child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: AnimationController(
-              duration: const Duration(milliseconds: 300),
-              vsync: Navigator.of(context),
-            )..forward(),
-            curve: Curves.easeOut,
-          )),
+          position: offsetAnimation,
           child: Material(
-            elevation: 10.0,
+            type: MaterialType.transparency,
             child: Container(
-              padding: const EdgeInsets.all(AppTheme.elementSpacing),
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: const BorderRadius.only(
@@ -101,6 +118,7 @@ class OverlayController extends GetxController {
                   bottomRight: Radius.circular(AppTheme.borderRadiusBig),
                 ),
               ),
+              padding: const EdgeInsets.all(AppTheme.elementSpacing),
               child: Center(
                 child: Text(
                   message ?? 'Transaction received!',
@@ -113,45 +131,55 @@ class OverlayController extends GetxController {
       ),
     );
 
-    // Add overlay entry to the overlay
-    Overlay.of(context)?.insert(overlay);
+    Overlay.of(overlayContext)?.insert(overlay);
     overlayEntry.value = overlay;
 
-    // Connectivity check to remove the overlay after 2 seconds if internet is available
+    // Check connectivity every 2 seconds and remove overlay once online
     Timer.periodic(const Duration(seconds: 2), (timer) async {
-      var connectivityResult = await Connectivity().checkConnectivity();
+      final connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         overlay.remove();
+        animationController.dispose();
         timer.cancel();
       }
     });
   }
 
-  // Methode zum Anzeigen eines Transaktions-Overlays
-  void showOverlayTransaction(BuildContext context, String? message, TransactionItemData itemData) async {
+  // 3) Transaction Overlay
+  Future<void> showOverlayTransaction(String? message, TransactionItemData itemData) async {
+    final overlayContext = Get.overlayContext;
+    final providerContext = Get.context;
+    if (overlayContext == null) {
+      debugPrint("No overlay context found. Cannot display overlay.");
+      return;
+    }
+
     // Trigger vibration
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate();
     }
 
+    final animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    )..forward();
+
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
+
     final overlay = OverlayEntry(
-      builder: (context) => Positioned(
+      builder: (_) => Positioned(
         top: 0,
         left: 0,
         right: 0,
         child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: AnimationController(
-              duration: const Duration(milliseconds: 300),
-              vsync: Navigator.of(context),
-            )..forward(),
-            curve: Curves.easeOut,
-          )),
+          position: offsetAnimation,
           child: Material(
-            elevation: 10.0,
+            type: MaterialType.transparency,
             child: Container(
               height: AppTheme.cardPadding * 8,
               decoration: const BoxDecoration(
@@ -168,7 +196,6 @@ class OverlayController extends GetxController {
                   const SizedBox(height: AppTheme.cardPadding),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.check_circle_outline_rounded,
@@ -177,14 +204,15 @@ class OverlayController extends GetxController {
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(
                         message ?? 'Transaction received!',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Get.textTheme.titleLarge,
                       ),
                     ],
                   ),
                   const SizedBox(height: AppTheme.elementSpacing),
+                  // Transaction Item
                   TransactionItem(
                     data: itemData,
-                    context: context,
+                    context: providerContext!, // pass overlayContext if needed
                   ),
                 ],
               ),
@@ -194,17 +222,16 @@ class OverlayController extends GetxController {
       ),
     );
 
-    // Insert overlay into the overlay stack
-    Overlay.of(context)?.insert(overlay);
+    Overlay.of(overlayContext)?.insert(overlay);
     overlayEntry.value = overlay;
 
-    // Remove overlay after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       overlay.remove();
+      animationController.dispose();
     });
   }
 
-  // Methode zum Entfernen des Overlays
+  // Method to manually remove any active overlay
   void removeOverlay() {
     overlayEntry.value?.remove();
     overlayEntry.value = null;

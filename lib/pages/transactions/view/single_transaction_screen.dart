@@ -161,7 +161,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             await Clipboard.setData(ClipboardData(
                                               text: controllerHome.replacedTx.value,
                                             ));
-                                            overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                                            overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
                                           },
                                           child: Row(
                                             children: [
@@ -325,7 +325,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             await Clipboard.setData(ClipboardData(
                                               text: controller.txID!,
                                             ));
-                                            overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                                            overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
                                           },
                                           child: Row(
                                             children: [

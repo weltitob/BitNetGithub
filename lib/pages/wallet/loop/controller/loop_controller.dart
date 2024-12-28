@@ -198,7 +198,7 @@ class LoopGetxController extends GetxController {
       final response = await getLoopinQuote(roundedAmount.toString());
 
       if (response.statusCode == 'error') {
-        overlayController.showOverlay(context, response.message);
+        overlayController.showOverlay(response.message);
       } else {
         final loop = LoopQuoteModel.fromJson(response.data);
         log('Loop-in swap fee in SAT: ${loop.swapFeeSat}');
@@ -206,7 +206,7 @@ class LoopGetxController extends GetxController {
       }
       updateLoadingState(false);
     } else {
-      overlayController.showOverlay(context, 'Please enter an amount');
+      overlayController.showOverlay('Please enter an amount');
     }
   }
 
@@ -222,7 +222,7 @@ class LoopGetxController extends GetxController {
 
       final response = await getLoopOutQuote(roundedAmount.toString());
       if (response.statusCode == 'error') {
-        overlayController.showOverlay(context, response.message);
+        overlayController.showOverlay(response.message);
       } else {
         final loop = LoopQuoteModel.fromJson(response.data);
         log('Loop-out swap fee in SAT: ${loop.swapFeeSat}');
@@ -230,7 +230,7 @@ class LoopGetxController extends GetxController {
       }
       updateLoadingState(false);
     } else {
-      overlayController.showOverlay(context, 'Please enter an amount');
+      overlayController.showOverlay('Please enter an amount');
       updateLoadingState(false);
     }
   }
@@ -433,13 +433,13 @@ class LoopGetxController extends GetxController {
     try {
       // Call your loop-in function
       await loopin(data);
-      overlayController.showOverlay(Get.context!, 'Loop-In successful!');
+      overlayController.showOverlay('Loop-In successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();
       await fetchLightningWalletBalance();
     } catch (e) {
       log('Error during loop-in: $e');
-      overlayController.showOverlay(Get.context!, 'Loop-In failed: $e');
+      overlayController.showOverlay('Loop-In failed: $e');
     } finally {
       updateLoadingState(false);
     }
@@ -453,13 +453,13 @@ class LoopGetxController extends GetxController {
     try {
       // Call your loop-out function
       await loopOut(data);
-      overlayController.showOverlay(Get.context!, 'Loop-Out successful!');
+      overlayController.showOverlay('Loop-Out successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();
       await fetchLightningWalletBalance();
     } catch (e) {
       log('Error during loop-out: $e');
-      overlayController.showOverlay(Get.context!, 'Loop-Out failed: $e');
+      overlayController.showOverlay('Loop-Out failed: $e');
     } finally {
       updateLoadingState(false);
     }

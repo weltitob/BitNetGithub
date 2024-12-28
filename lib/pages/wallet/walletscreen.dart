@@ -12,6 +12,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -379,9 +380,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // LongButtonWidget(title: "fetch Lightning Balance", onTap: () async {
-                      //   await controller.fetchLightingWalletBalance();
-                      // }),
+                      LongButtonWidget(title: "fetch Lightning Balance", onTap: () async {
+                        // await controller.fetchLightingWalletBalance();
+                        final overlayController = Get.find<OverlayController>();
+                        overlayController.showOverlay("Fetching Lightning Wallet Balance");
+                      }),
                       // SizedBox(height: AppTheme.cardPadding.h * 1.75),
                       // LongButtonWidget(
                       //   title: "list Unspent",

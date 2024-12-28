@@ -245,7 +245,7 @@ class _BatchScreenState extends State<BatchScreen> {
       setState(() {
         isLoading = false;
       });
-      overlayController.showOverlay(context, L10n.of(context)!.errorFinalizingBatch,
+      overlayController.showOverlay(L10n.of(context)!.errorFinalizingBatch,
           color: AppTheme.errorColor);
     }
   }

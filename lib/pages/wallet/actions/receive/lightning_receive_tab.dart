@@ -53,7 +53,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
               onTap: () async {
                 await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
               },
               child: SizedBox(
                 child: Center(
@@ -108,7 +108,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
 
                 await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
+                overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {

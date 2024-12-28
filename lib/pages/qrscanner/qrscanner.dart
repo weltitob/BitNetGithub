@@ -161,7 +161,7 @@ class QRScannerController extends State<QrScanner> {
     if (isValid) {
       context.go("/wallet/send");
     } else {
-      overlayController.showOverlay(context, L10n.of(context)!.qrCodeFormatInvalid);
+      overlayController.showOverlay(L10n.of(context)!.qrCodeFormatInvalid);
     }
   }
 

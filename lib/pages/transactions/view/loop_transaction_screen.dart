@@ -143,7 +143,7 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                         await Clipboard.setData(ClipboardData(
                           text: transactionItemData.txHash,
                         ));
-                        overlayController.showOverlay(context, L10n.of(context)!.copiedToClipboard);
+                        overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(
                         children: [

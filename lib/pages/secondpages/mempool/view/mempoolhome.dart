@@ -758,7 +758,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                               .txDetailsConfirmed!
                                                                               .id));
                                                                       overlayController.showOverlay(
-                                                                          context,
                                                                           L10n.of(context)!
                                                                               .copiedToClipboard);
                                                                     },

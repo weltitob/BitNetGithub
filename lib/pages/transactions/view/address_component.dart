@@ -82,7 +82,7 @@ class AddressComponent extends StatelessWidget {
                                   await Clipboard.setData(ClipboardData(
                                     text: controller.addressId,
                                   ));
-                                  overlayController.showOverlay(context,
+                                  overlayController.showOverlay(
                                       L10n.of(context)!.copiedToClipboard);
                                 },
                                 icon: Icon(

@@ -113,7 +113,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           }
           if (socialRecoveryModel!.requestedRecovery && !initUserExists) {
             final overlayController = Get.find<OverlayController>();
-            overlayController.showOverlay(context, 'Someone else is trying to recover this account.', color: AppTheme.errorColor);
+            overlayController.showOverlay('Someone else is trying to recover this account.', color: AppTheme.errorColor);
             state = 0;
             setState(() {});
             return;
@@ -279,7 +279,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           },
                           onButtonTapDisabled: () {
                             final overlayController = Get.find<OverlayController>();
-                            overlayController.showOverlay(context, 'Please find your account first.', color: AppTheme.errorColor);
+                            overlayController.showOverlay('Please find your account first.', color: AppTheme.errorColor);
                           })
                 ],
               ),
@@ -349,7 +349,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                         onPressed: () {
                                           if (socialRecoveryModel!.requestTimestamp == null) {
 
-                                            overlayController.showOverlay(context, 'something bad happened. please try again later.',
+                                            overlayController.showOverlay('something bad happened. please try again later.',
                                                 color: AppTheme.errorColor);
                                           } else {
                                             if (socialRecoveryModel!.requestTimestamp!
@@ -357,7 +357,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                                     .difference(DateTime.now())
                                                     .compareTo(Duration(days: 7)) <
                                                 0) {
-                                              overlayController.showOverlay(context, 'You can only send recovery requests once every week.',
+                                              overlayController.showOverlay('You can only send recovery requests once every week.',
                                                   color: AppTheme.errorColor);
                                             } else {
                                               for (int i = 0; i < socialRecoveryModel!.users.length; i++) {
@@ -378,7 +378,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                               socialRecoveryCollection
                                                   .doc(selectedUser!['username'])
                                                   .update({'request_timestamp': Timestamp.now()});
-                                              overlayController.showOverlay(context, 'Successfully sent recovery requests.', color: AppTheme.successColor);
+                                              overlayController.showOverlay('Successfully sent recovery requests.', color: AppTheme.successColor);
                                             }
                                           }
                                         })
@@ -455,7 +455,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           buttonTitle: 'Recover Account',
                           onButtonTap: () async {
                             if (socialRecoveryModel == null) {
-                              overlayController.showOverlay(context, 'Something bad happened, please try again later.', color: AppTheme.errorColor);
+                              overlayController.showOverlay('Something bad happened, please try again later.', color: AppTheme.errorColor);
                               return;
                             }
                             QuerySnapshot<Map<String, dynamic>> snap = await protocolCollection
@@ -471,7 +471,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                               }
                             }
                             if (activeProtocol) {
-                              overlayController.showOverlay(context, 'Please wait 3 days for your mnemonic to be retrieved.', color: AppTheme.errorColor);
+                              overlayController.showOverlay('Please wait 3 days for your mnemonic to be retrieved.', color: AppTheme.errorColor);
                               return;
                             }
                             int successfulInvites = socialRecoveryModel!.users.where((test) => test.requestState == 2).length;
@@ -485,9 +485,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                               ProtocolModel modelAccess =
                                   ProtocolModel(protocolId: '', protocolType: 'social_recovery_access_attempt', protocolData: {});
                               modelAccess.sendProtocol(selectedUser!['doc_id']);
-                              overlayController.showOverlay(context, 'Your mnemonic will be retrieved in 3 days');
+                              overlayController.showOverlay('Your mnemonic will be retrieved in 3 days');
                             } else {
-                              overlayController.showOverlay(context, 'Not enough people have accepted the social recovery request yet.',
+                              overlayController.showOverlay('Not enough people have accepted the social recovery request yet.',
                                   color: AppTheme.errorColor);
                             }
                           },

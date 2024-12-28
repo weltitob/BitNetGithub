@@ -229,7 +229,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                           text: data.txHash,
                         ));
                         overlayController.showOverlay(
-                            context, L10n.of(context)!.copiedToClipboard);
+                            L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(
                         children: [

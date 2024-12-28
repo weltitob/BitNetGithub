@@ -863,7 +863,7 @@ class _PresentMnemonicWidgetState extends State<PresentMnemonicWidget> {
                       onButtonTapDisabled: () {
                         final overlayController = Get.find<OverlayController>();
 
-                        overlayController.showOverlay(context,
+                        overlayController.showOverlay(
                             'Please wait till your mnemonic is loaded.',
                             color: AppTheme.errorColor);
                       })

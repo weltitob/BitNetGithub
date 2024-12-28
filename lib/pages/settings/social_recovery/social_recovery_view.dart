@@ -119,7 +119,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                                                     controller.selectedUsers
                                                         .add(user);
                                                   } else {
-                                                    overlayController.showOverlay(context,
+                                                    overlayController.showOverlay(
                                                         'You already have 5 users selected, please deselect one, then try again.',
                                                         color: AppTheme
                                                             .errorColor);
@@ -159,7 +159,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                           curve: Curves.easeIn);
                     },
                     onButtonTapDisabled: () {
-                      overlayController.showOverlay(context,
+                      overlayController.showOverlay(
                           'You should select atleast 3 users and at most 5.',
                           color: AppTheme.errorColor);
                     },
@@ -184,7 +184,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                       mnemonicFieldKey.currentState?.textControllers ?? []);
                 },
                 onButtonTapDisabled: () {
-                  overlayController.showOverlay(context, 'Please fill out your Mnemonic.',
+                  overlayController.showOverlay('Please fill out your Mnemonic.',
                       color: AppTheme.errorColor);
                 },
               ),
@@ -225,7 +225,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                         curve: Curves.easeIn);
                   } else {
                     overlayController.showOverlay(
-                        context, 'Your private key was incorrect, try again.',
+                        'Your private key was incorrect, try again.',
                         color: AppTheme.errorColor);
                   }
                 },
@@ -330,7 +330,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
       controller.pageControllerSocialRecovery.nextPage(
           duration: Duration(milliseconds: 200), curve: Curves.easeIn);
     } else {
-      overlayController.showOverlay(context, 'Your Mnemonic was Incorrect, please try again',
+      overlayController.showOverlay('Your Mnemonic was Incorrect, please try again',
           color: AppTheme.errorColor);
     }
 
@@ -394,7 +394,7 @@ class ConfirmPrivateKeyPage extends StatelessWidget {
             buttonTitle: 'Confirm Private Key',
             onButtonTap: onConfirm,
             onButtonTapDisabled: () => overlayController.showOverlay(
-                context, 'please write down your private key.',
+                'please write down your private key.',
                 color: AppTheme.errorColor))
       ],
     ));

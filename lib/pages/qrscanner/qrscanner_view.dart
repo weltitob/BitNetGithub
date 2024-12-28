@@ -110,11 +110,11 @@ class QRScannerView extends StatelessWidget {
                                       controller.onQRCodeScanned(code.rawValue!, context);
                                     }
                                   } else {
-                                    overlayController.showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
+                                    overlayController.showOverlay(L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
                                   }
                                 });
                               } else {
-                                overlayController.showOverlay(context, L10n.of(context)!.pleaseGiveAccess);
+                                overlayController.showOverlay(L10n.of(context)!.pleaseGiveAccess);
                               }
                             },
                             child: const Icon(Icons.image))

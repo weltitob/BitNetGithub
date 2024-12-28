@@ -408,19 +408,17 @@ class SendsController extends BaseController {
         Get.find<WalletsController>().fetchLightingWalletBalance();
         sub!.cancel();
         logger.i("Payment successful! Forwarding to feed...");
-        overlayController.showOverlay(this.context, "Payment successful!");
+        overlayController.showOverlay("Payment successful!");
         context.go("/");
 
       } else if ((response)['status'] == 'FAILED') {
 
-        overlayController.showOverlay(
-            this.context, "Payment failed: ${response['failure_reason']}");
+        overlayController.showOverlay("Payment failed: ${response['failure_reason']}");
 
         isFinished.value = false;
         sub!.cancel();
       } else {
-        overlayController.showOverlay(
-              this.context, "Payment failed: please try again later...");
+        overlayController.showOverlay("Payment failed: please try again later...");
 
         isFinished.value = false;
         sub!.cancel();
@@ -428,7 +426,7 @@ class SendsController extends BaseController {
     }, onError: (error) {
       isFinished.value = false;
 
-      overlayController.showOverlay(this.context, "An error occurred: $error");
+      overlayController.showOverlay("An error occurred: $error");
 
     }, onDone: () {
       resetValues();
@@ -523,7 +521,7 @@ class SendsController extends BaseController {
                 logger.i("Payment successful!");
                 Get.find<WalletsController>().fetchLightingWalletBalance();
 
-                overlayController.showOverlay(this.context, "Payment successful!");
+                overlayController.showOverlay("Payment successful!");
                 logger.i("Payment successful! Forwarding to wallet...");
                 context.go("/");
 
@@ -534,8 +532,7 @@ class SendsController extends BaseController {
               // Handle error
               logger.i("Payment failed!");
               if (!firstSuccess) {
-                overlayController.showOverlay(
-                    this.context, "Payment failed: ${response.message}");
+                overlayController.showOverlay("Payment failed: ${response.message}");
 
                 firstSuccess = true;
               }
@@ -549,7 +546,7 @@ class SendsController extends BaseController {
             }
           }, onError: (error) {
             isFinished.value = false;
-            overlayController.showOverlay(this.context, "An error occurred: $error");
+            overlayController.showOverlay("An error occurred: $error");
 
           }, onDone: () {
             // Handle stream completion if necessary
@@ -696,12 +693,12 @@ class SendsController extends BaseController {
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
 
-            overlayController.showOverlay(this.context, "Payment successful!");
+            overlayController.showOverlay("Payment successful!");
             GoRouter.of(this.context).go("/feed");
 
           } else {
 
-              overlayController.showOverlay(this.context, "Payment failed.");
+              overlayController.showOverlay("Payment failed.");
 
             isFinished.value = false;
           }

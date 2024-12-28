@@ -206,7 +206,7 @@ class LightningSendTab extends GetWidget<SendsController> {
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
-        overlayController.showOverlay(context, L10n.of(context)!.walletAddressCopied);
+        overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
         children: [

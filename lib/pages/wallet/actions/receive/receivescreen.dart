@@ -129,7 +129,6 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       }
       if (Get.overlayContext != null && Get.overlayContext!.mounted)
         overlayController.showOverlayTransaction(
-            Get.overlayContext!,
             "Onchain transaction settled",
             TransactionItemData(
               amount: val.amount.toString(),
@@ -154,25 +153,23 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       }
       if (inv.state == 'SETTLED') {
         logger.i("showOverlay should be triggered now");
-        if (Get.overlayContext != null && Get.overlayContext!.mounted)
-          overlayController.showOverlayTransaction(
-            Get.context!,
-            "Lightning invoice settled",
-            TransactionItemData(
-              amount: inv.amtPaidSat.toString(),
-              timestamp: inv.settleDate,
-              type: TransactionType.lightning,
-              fee: 0,
-              status: TransactionStatus.confirmed,
-              direction: TransactionDirection.received,
-              receiver: inv.paymentRequest ?? "Yourself",
-              txHash: inv.rHash ?? "forwarded through lightning",
-            ),
-          );
+        overlayController.showOverlayTransaction(
+          "Lightning invoice settled",
+          TransactionItemData(
+            amount: inv.amtPaidSat.toString(),
+            timestamp: inv.settleDate,
+            type: TransactionType.lightning,
+            fee: 0,
+            status: TransactionStatus.confirmed,
+            direction: TransactionDirection.received,
+            receiver: inv.paymentRequest ?? "Yourself",
+            txHash: inv.rHash ?? "forwarded through lightning",
+          ),
+        );
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
-        if (Get.context != null && Get.context!.mounted)
-          ReceiveController().getInvoice(0, "Empty invoice");
+        ReceiveController().getInvoice(0, "");
+
       } else {
         logger.i("Invoice received but not settled yet: ${inv.settled}");
       }

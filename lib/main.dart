@@ -138,7 +138,7 @@ Future<void> main() async {
 
   // Run the app
   runApp(
-    const MyApp(),
+    GetMaterialApp(home: const MyApp()),
   );
   if (kIsWeb) {
     FlutterNativeSplash.remove();

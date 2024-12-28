@@ -13,7 +13,6 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/keys/privateionkey.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
@@ -106,7 +105,7 @@ class UsersListController extends GetxController {
   void showError(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
     overlayController.showOverlay(
-      context,
+
       L10n.of(context)!.overlayErrorOccured,
       color: AppTheme.errorColor,
     );
@@ -186,7 +185,7 @@ class UsersListController extends GetxController {
     } catch (e, stackTrace) {
       final overlayController = Get.find<OverlayController>();
       logger.e("Error trying to sign in: $e, $stackTrace");
-      overlayController.showOverlay(context, 'An error occurred during login.',
+      overlayController.showOverlay('An error occurred during login.',
           color: AppTheme.errorColor);
       // Optionally, you can rethrow or handle the exception as needed
     }
@@ -204,7 +203,7 @@ class UsersListController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
       logger.e("Error deleting user with DID $did: $e");
-      overlayController.showOverlay(Get.context!, 'Failed to delete user.',
+      overlayController.showOverlay('Failed to delete user.',
           color: AppTheme.errorColor);
     }
   }

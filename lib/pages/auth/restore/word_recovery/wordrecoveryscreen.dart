@@ -87,7 +87,6 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
       // Show success overlay
       overlayController.showOverlay(
-        context,
         "Successfully Signed In.",
         color: AppTheme.successColor,
       );
@@ -100,7 +99,6 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
         _isLoading = false;
       });
       overlayController.showOverlay(
-        context,
         "No User was found with the provided Mnemonic",
         color: AppTheme.errorColor,
       );

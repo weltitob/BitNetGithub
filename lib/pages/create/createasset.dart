@@ -205,7 +205,7 @@ class _CreateAssetState extends State<CreateAsset> {
         final PermissionState ps =
                                   await PhotoManager.requestPermissionExtend();
                               if (!ps.isAuth && !ps.hasAccess) {
-                                overlayController.showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
+                                overlayController.showOverlay('please give the app photo access to continue.', color: AppTheme.errorColor);
                                 return;
                               }
     File? file = await ImagePickerBottomSheet(context, onImageTap: (album, image) async {
@@ -368,7 +368,6 @@ class _CreateAssetState extends State<CreateAsset> {
                                   context, postFiles, nameController.text);
                             } else {
                               overlayController.showOverlay(
-                                context,
                                 L10n.of(context)!.postContentError,
                                 color: AppTheme.errorColor,
                               );
@@ -594,7 +593,6 @@ void triggerAssetMinting(
 
     if (mintAssetResponse == null) {
       overlayController.showOverlay(
-        context,
         L10n.of(context)!.assetMintError,
         color: AppTheme.errorColor,
       );
@@ -613,7 +611,6 @@ void triggerAssetMinting(
   } catch (e) {
 
     overlayController.showOverlay(
-      context,
       e.toString(),
       color: AppTheme.errorColor,
     );
@@ -684,7 +681,6 @@ void convertToBase64AndMakePushReady(
   } catch (e) {
     //isLoading = false;
     overlayController.showOverlay(
-      context,
       e.toString(),
       color: AppTheme.errorColor,
     );

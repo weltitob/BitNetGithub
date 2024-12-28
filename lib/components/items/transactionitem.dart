@@ -86,16 +86,30 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
   Widget build(BuildContext context) {
     super.build(context);
 
-    final controller = Get.find<WalletsController>();
+    // final controller = Get.find<WalletsController>();
     // Use DateFormat for formatting the timestamp
-    final chartLine = controller.chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    // final chartLine = controller.chartLines.value;
+    // String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    // final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    //
+    // currency = currency ?? "USD";
+    // final bitcoinPrice = chartLine?.price;
+    //
+    // final currencyEquivalent =
+    //     bitcoinPrice != null ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
+    final chartLine = Get.find<WalletsController>().chartLines.value;
+    final controller = Get.find<WalletsController>();
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
-    final bitcoinPrice = chartLine?.price;
 
-    final currencyEquivalent =
-        bitcoinPrice != null ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice)
+        .toStringAsFixed(2)
+        : "0.00";
 
     return Material(
       color: Colors.transparent,

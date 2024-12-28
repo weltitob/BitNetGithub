@@ -115,7 +115,7 @@ class ProfileHeader extends StatelessWidget {
                                                       Navigator.pop(context);
                                                       final PermissionState ps = await PhotoManager.requestPermissionExtend();
                                                       if (!ps.isAuth && !ps.hasAccess) {
-                                                        overlayController.showOverlay(context, 'please give the app photo access to continue.',
+                                                        overlayController.showOverlay('please give the app photo access to continue.',
                                                             color: AppTheme.errorColor);
                                                         return;
                                                       }
@@ -133,7 +133,7 @@ class ProfileHeader extends StatelessWidget {
                                                       Navigator.pop(context);
                                                       final PermissionState ps = await PhotoManager.requestPermissionExtend();
                                                       if (!ps.isAuth && !ps.hasAccess) {
-                                                        overlayController.showOverlay(context, 'please give the app photo access to continue.',
+                                                        overlayController.showOverlay('please give the app photo access to continue.',
                                                             color: AppTheme.errorColor);
                                                         return;
                                                       }
