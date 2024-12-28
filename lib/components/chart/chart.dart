@@ -176,7 +176,10 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   void initState() {
     super.initState();
-    getChartLine("USD");
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
+    currency = currency ?? "USD";
+    getChartLine(currency);
     _loading = true;
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
