@@ -96,11 +96,16 @@ class _ChartWidgetState extends State<ChartWidget> {
       currency: currency,
       days: "max",
     );
-    await chartClassDay.getChartData();
-    await chartClassWeek.getChartData();
-    await chartClassMonth.getChartData();
-    await chartClassYear.getChartData();
-    await chartClassMax.getChartData();
+
+    // Call getChartData for each in parallel
+    await Future.wait([
+      chartClassDay.getChartData(),
+      chartClassWeek.getChartData(),
+      chartClassMonth.getChartData(),
+      chartClassYear.getChartData(),
+      chartClassMax.getChartData(),
+    ]);
+
     if (chartClassDay.chartLine.isNotEmpty) {
       Get.find<CryptoItemController>().firstPrice.value =
           chartClassDay.chartLine.first.price;
