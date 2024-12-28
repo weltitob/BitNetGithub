@@ -405,7 +405,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                      SizedBox(height: AppTheme.cardPadding.h * 1.5),
                       Text(
                         L10n.of(context)!.actions,
                         style: Theme.of(context).textTheme.titleLarge,
