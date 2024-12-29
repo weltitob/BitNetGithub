@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/auth/restore/userslist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,128 +14,138 @@ class UsersList extends GetView<UsersListController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.selectedIndex.value = 0;
+    // One Obx at the top to watch isLoading, userDataList, etc.
     return Obx(() {
-        if (controller.isLoading.value) {
-          return SizedBox(
-            height: AppTheme.cardPadding * 8,
-            child: Center(child: dotProgress(context)),
-          );
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
-              child: Container(
-                height: AppTheme.cardPadding * 8,
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return SizedBox(
-                      height: AppTheme.cardPadding * 8,
-                      child: Center(child: dotProgress(context)),
-                    );
-                  }
-
-                  if (controller.userDataList.isEmpty) {
-                    return searchForFilesAnimation(
-                        controller.searchForFilesComposition,
-                        controller.isVisible.value,
-                        context);
-                  }
-
-                  if (controller.userDataList.length > 10) {
-                    // Show a vertical ScrollView with all users
-                    return VerticalFadeListView(
-                      child: Container(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: controller.userDataList.map((userData) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                child: UserResult(
-                                  onTap: () async {
-                                    await controller.loginButtonPressed(userData.did, context);
-                                  },
-                                  userData: userData,
-                                  onDelete: () async {
-                                    await controller.deleteUser(userData.did);
-                                  },
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    // Show the PageView indicator
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          height: AppTheme.cardPadding * 3.5,
-                          child: PageView.builder(
-                            controller: controller.pageController,
-                            onPageChanged: (index) {
-                              controller.selectedIndex.value = index;
-                            },
-                            itemCount: controller.userDataList.length,
-                            itemBuilder: (context, index) {
-                              final userData = controller.userDataList
-                                  .reversed
-                                  .toList()[index];
-                              var scale = controller.selectedIndex.value == index ? 1.0 : 0.85;
-
-                              return TweenAnimationBuilder<double>(
-                                tween: Tween<double>(begin: scale, end: scale),
-                                curve: Curves.ease,
-                                duration: const Duration(milliseconds: 350),
-                                builder: (context, value, child) {
-                                  return Transform.scale(
-                                    scale: value,
-                                    child: child,
-                                  );
-                                },
-                                child: Center(
-                                  child: UserResult(
-                                    onTap: () async {
-                                      await controller.loginButtonPressed(userData.did, context);
-                                    },
-                                    userData: userData,
-                                    onDelete: () async {
-                                      await controller.deleteUser(userData.did);
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          height: AppTheme.cardPadding,
-                        ),
-                        Center(
-                          child: CustomIndicator(
-                            pageController: controller.pageController,
-                            count: controller.userDataList.length,
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                }),
-              ),
-            ),
-          ],
+      if (controller.isLoading.value) {
+        return SizedBox(
+          height: AppTheme.cardPadding * 8,
+          child: Center(child: dotProgress(context)),
         );
       }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
+            child: SizedBox(
+              height: AppTheme.cardPadding * 8,
+              child: _buildUsers(context),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  /// Builds the main content for the list or page view
+  Widget _buildUsers(BuildContext context) {
+    // If still loading
+    if (controller.isLoading.value) {
+      return SizedBox(
+        height: AppTheme.cardPadding * 8,
+        child: Center(child: dotProgress(context)),
+      );
+    }
+
+    // If no users are found
+    if (controller.userDataList.isEmpty) {
+      return searchForFilesAnimation(
+        controller.searchForFilesComposition,
+        controller.isVisible.value,
+        context,
+      );
+    }
+
+    // If more than 10 users, show vertical list
+    if (controller.userDataList.length > 10) {
+      return VerticalFadeListView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+          child: SingleChildScrollView(
+            child: Column(
+              children: controller.userDataList.map((userData) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: UserResult(
+                    onTap: () async {
+                      await controller.loginButtonPressed(
+                        userData.did,
+                        context,
+                      );
+                    },
+                    userData: userData,
+                    onDelete: () async {
+                      await controller.deleteUser(userData.did);
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Show a PageView with an indicator
+    return Column(
+      children: [
+        SizedBox(
+          height: AppTheme.cardPadding * 3.5,
+          child: PageView.builder(
+            controller: controller.pageController,
+            onPageChanged: (index) {
+              // Update the selectedIndex
+              controller.selectedIndex.value = index;
+            },
+            itemCount: controller.userDataList.length,
+            itemBuilder: (context, index) {
+              // Build each item in its own Obx => forces re-check of selectedIndex
+              return Obx(() {
+                final isSelected = (controller.selectedIndex.value == index);
+                final userData = controller.userDataList[index];
+
+                return Center(
+                  child: AnimatedScale(
+                    scale: isSelected ? 1.0 : 0.85,
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeInOut,
+                    child: UserResult(
+                      onTap: () async {
+                        await controller.loginButtonPressed(
+                          userData.did,
+                          context,
+                        );
+                      },
+                      userData: userData,
+                      onDelete: () async {
+                        await controller.deleteUser(userData.did);
+                      },
+                    ),
+                  ),
+                );
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: AppTheme.cardPadding),
+        Center(
+          child: CustomIndicator(
+            pageController: controller.pageController,
+            count: controller.userDataList.length,
+          ),
+        ),
+      ],
     );
   }
 
   /// Widget to display the "search for files" animation
   Widget searchForFilesAnimation(
-      Future<LottieComposition> compositionFuture, bool isVisible, BuildContext context) {
+      Future<LottieComposition> compositionFuture,
+      bool isVisible,
+      BuildContext context,
+      ) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -158,19 +169,16 @@ class UsersList extends GetView<UsersListController> {
                     ),
                   );
                 } else {
-                  return Container(
-                    color: Colors.transparent,
-                  );
+                  return const SizedBox.shrink();
                 }
               },
             ),
           ),
-          const SizedBox(
-            height: AppTheme.elementSpacing,
-          ),
+          const SizedBox(height: AppTheme.elementSpacing),
           Container(
             margin: const EdgeInsets.symmetric(
-                horizontal: AppTheme.cardPadding * 2),
+              horizontal: AppTheme.cardPadding * 2,
+            ),
             child: Text(
               "It appears that you haven't added any users to your device yet.",
               textAlign: TextAlign.center,

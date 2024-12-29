@@ -54,6 +54,7 @@ class UsersListController extends GetxController {
   @override
   void onClose() {
     pageController.dispose();
+    selectedIndex = 0.obs;
     super.onClose();
   }
 
