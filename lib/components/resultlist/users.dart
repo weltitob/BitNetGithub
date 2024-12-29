@@ -13,17 +13,8 @@ class UsersList extends GetView<UsersListController> {
 
   @override
   Widget build(BuildContext context) {
-
-    // Initialize the controller
-    Get.put(UsersListController());
-
-    // controller.onScreenForward();
-
     return Obx(() {
-
         if (controller.isLoading.value) {
-
-
           return SizedBox(
             height: AppTheme.cardPadding * 8,
             child: Center(child: dotProgress(context)),
