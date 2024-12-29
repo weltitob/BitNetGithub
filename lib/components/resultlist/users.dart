@@ -1,7 +1,6 @@
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/pages/auth/restore/userslist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:bitnet/pages/auth/restore/userslist_controller.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/items/userresult.dart';
@@ -9,46 +8,68 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 
-class UsersList extends GetView<UsersListController> {
-  const UsersList({Key? key}) : super(key: key);
+class UsersListWidget extends StatefulWidget {
+  const UsersListWidget({Key? key}) : super(key: key);
+
+  @override
+  State<UsersListWidget> createState() => _UsersListState();
+}
+
+class _UsersListState extends State<UsersListWidget> {
+  // Get the controller once.
+  final controller = Get.find<UsersListController>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Call updateUsers() ONCE here so it doesn't get triggered on every rebuild.
+    controller.selectedIndex.value = 0;
+    controller.fetchUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.selectedIndex.value = 0;
-    // One Obx at the top to watch isLoading, userDataList, etc.
+    // Watch changes to isLoading, userDataList, etc.
     return Obx(() {
+      // Show a small overlay if isLoading is true, but don't block the entire screen.
       if (controller.isLoading.value) {
-        return SizedBox(
-          height: AppTheme.cardPadding * 8,
-          child: Center(child: dotProgress(context)),
+        return Stack(
+          children: [
+            _buildMainContent(),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: dotProgress(context),
+              ),
+            ),
+          ],
         );
       }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
-            child: SizedBox(
-              height: AppTheme.cardPadding * 8,
-              child: _buildUsers(context),
-            ),
-          ),
-        ],
-      );
+      // If not loading at all, show the main content
+      return _buildMainContent();
     });
   }
 
-  /// Builds the main content for the list or page view
-  Widget _buildUsers(BuildContext context) {
-    // If still loading
-    if (controller.isLoading.value) {
-      return SizedBox(
-        height: AppTheme.cardPadding * 8,
-        child: Center(child: dotProgress(context)),
-      );
-    }
+  Widget _buildMainContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
+          child: SizedBox(
+            height: AppTheme.cardPadding * 8,
+            child: _buildUsers(),
+          ),
+        ),
+      ],
+    );
+  }
 
+  Widget _buildUsers() {
     // If no users are found
     if (controller.userDataList.isEmpty) {
       return searchForFilesAnimation(
@@ -70,10 +91,7 @@ class UsersList extends GetView<UsersListController> {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: UserResult(
                     onTap: () async {
-                      await controller.loginButtonPressed(
-                        userData.did,
-                        context,
-                      );
+                      await controller.loginButtonPressed(userData.did, context);
                     },
                     userData: userData,
                     onDelete: () async {
@@ -88,7 +106,7 @@ class UsersList extends GetView<UsersListController> {
       );
     }
 
-    // Show a PageView with an indicator
+    // Otherwise, show a PageView with an indicator
     return Column(
       children: [
         SizedBox(
@@ -96,12 +114,11 @@ class UsersList extends GetView<UsersListController> {
           child: PageView.builder(
             controller: controller.pageController,
             onPageChanged: (index) {
-              // Update the selectedIndex
               controller.selectedIndex.value = index;
             },
             itemCount: controller.userDataList.length,
             itemBuilder: (context, index) {
-              // Build each item in its own Obx => forces re-check of selectedIndex
+              // Build each item in its own Obx => re-checks selectedIndex
               return Obx(() {
                 final isSelected = (controller.selectedIndex.value == index);
                 final userData = controller.userDataList[index];
@@ -140,7 +157,6 @@ class UsersList extends GetView<UsersListController> {
     );
   }
 
-  /// Widget to display the "search for files" animation
   Widget searchForFilesAnimation(
       Future<LottieComposition> compositionFuture,
       bool isVisible,

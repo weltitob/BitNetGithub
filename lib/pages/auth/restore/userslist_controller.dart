@@ -103,14 +103,69 @@ class UsersListController extends GetxController {
     }
   }
 
+  /// Function that fetches all users again and adds to the list if not already present
+  /// Only sets `isLoading` to true if we actually find new DIDs that aren't in `userDataList` yet.
+  // Future<void> updateUsers() async {
+  //   try {
+  //     // Re-fetch local PrivateData
+  //     List<PrivateData> ionDataList = await getIONDatafromLocalStorage();
+  //     if (ionDataList.isEmpty) return;
+  //
+  //     // First check if there is at least one new DID that doesn't exist in `userDataList`
+  //     // Build a temporary map to detect new DIDs
+  //     final Map<String, PrivateData> localDidMap = {};
+  //     for (var ionData in ionDataList) {
+  //       HDWallet hdWallet = HDWallet.fromMnemonic(ionData.mnemonic);
+  //       localDidMap[hdWallet.pubkey] = ionData;
+  //     }
+  //
+  //     // Convert local DID map to list
+  //     List<String> localDids = localDidMap.keys.toList();
+  //
+  //     // Check if there's any DID in `localDids` not in the existing `userDataList`
+  //     bool hasNewDids = localDids.any(
+  //           (did) => userDataList.every((existingUser) => existingUser.did != did),
+  //     );
+  //
+  //     // If no new DIDs, just return; no need to toggle `isLoading`.
+  //     if (!hasNewDids) return;
+  //
+  //     // There are indeed new users, so set loading to true
+  //     isLoading.value = true;
+  //
+  //     // Refresh our main didToPrivateDataMap with the new local map
+  //     didToPrivateDataMap.clear();
+  //     didToPrivateDataMap.addAll(localDidMap);
+  //
+  //     // Fetch from Firebase
+  //     List<UserData> fetchedUserData = await getUserDatafromFirebase(localDids);
+  //
+  //     // Only add those fetched users not already in the list
+  //     for (var user in fetchedUserData) {
+  //       bool existsAlready =
+  //       userDataList.any((existingUser) => existingUser.did == user.did);
+  //       if (!existsAlready) {
+  //         userDataList.add(user);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     // Handle error globally or notify the view
+  //     throw Exception('Failed to update users: $e');
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
+
   void showError(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
     overlayController.showOverlay(
-
       L10n.of(context)!.overlayErrorOccured,
       color: AppTheme.errorColor,
     );
   }
+
+
+
 
   /// Retrieves all PrivateData from local storage
   dynamic getIONDatafromLocalStorage() async {
@@ -158,7 +213,7 @@ class UsersListController extends GetxController {
   /// Handles the login process for a user
   Future<void> loginButtonPressed(String did, BuildContext context) async {
     final logger = Get.find<LoggerService>();
-    logger.i("Login for user $did pressed");
+    logger.i("Localfunction Login for user $did pressed");
     try {
       PrivateData? privateData = didToPrivateDataMap[did];
 

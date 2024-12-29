@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
@@ -192,21 +193,25 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   }
 }
 
+// Main method that’s called by your code
 Future<List<PrivateData>> getAllStoredIonData() async {
+  // 1) Read the raw JSON as a string (async I/O)
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
   if (privateDataJson == null) {
     print('Failed to retrieve IONData from secure storage');
-    //return empty list
     return [];
   }
 
-  // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List)
-      .map((json) => PrivateData.fromMap(json))
-      .toList();
+  // 2) Parse the JSON in a background isolate using compute
+  final parsedList = await compute(_parsePrivateDataList, privateDataJson);
+  return parsedList;
+}
 
-  return usersStored;
+// Helper function that runs on a separate isolate (via `compute`)
+List<PrivateData> _parsePrivateDataList(String data) {
+  final List<dynamic> jsonList = jsonDecode(data) as List<dynamic>;
+  return jsonList.map((item) => PrivateData.fromMap(item)).toList();
 }
 
 Future<void> deleteUserFromStoredIONData(String did) async {

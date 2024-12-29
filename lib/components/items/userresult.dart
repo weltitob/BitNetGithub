@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
@@ -6,6 +7,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class UserResult extends StatefulWidget {
   final UserData userData;
@@ -136,8 +138,11 @@ class _UserResultState extends State<UserResult> {
                             padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                             child: InkWell(
                               onTap: () async {
+                                final logger = Get.find<LoggerService>();
+                                logger.i("Login for user ${widget.userData.did} pressed");
                                 setState(() {
                                   _loading = true;
+                                  logger.i("Loading set to true");
                                 });
                                 try {
                                   await widget.onTap();

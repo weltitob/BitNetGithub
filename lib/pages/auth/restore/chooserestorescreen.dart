@@ -111,7 +111,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             ),
           ),
           // List accounts
-          UsersList(),
+          UsersListWidget(),
 
           const SizedBox(
             height: AppTheme.cardPadding,

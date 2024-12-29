@@ -39,10 +39,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
           useremail: mail, issue: issueController.text);
       // Push issuereport object to Firebase Realtime Database
       await issueCollection.doc(uid).set(issuereport.toMap());
-      overlayController.showOverlay(context, L10n.of(context)!.yourErrorReportForwarded);
+      overlayController.showOverlay(L10n.of(context)!.yourErrorReportForwarded);
       Navigator.of(context).pop();
     } else {
-      overlayController.showOverlay(context, L10n.of(context)!.pleaseProvideErrorMsg);
+      overlayController.showOverlay(L10n.of(context)!.pleaseProvideErrorMsg);
     }
   }
 

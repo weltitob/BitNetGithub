@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -5,12 +6,17 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/country_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class CreateAccountView extends StatefulWidget {
   final CreateAccountController controller;
@@ -22,8 +28,13 @@ class CreateAccountView extends StatefulWidget {
 
 class _CreateAccountViewState extends State<CreateAccountView>
     with TickerProviderStateMixin {
+
+
   @override
   Widget build(BuildContext context) {
+
+    Get.put(ProfileController());
+
     return WillPopScope(
       onWillPop: () async {
         if (!widget.controller.isLoading) {
@@ -37,8 +48,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
         return bitnetScaffold(
-          margin: 
-              const EdgeInsets.symmetric(horizontal: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 0),
           extendBodyBehindAppBar: true,
           context: context,
           gradientColor: Colors.black,
@@ -77,14 +87,43 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Avatar(
-                      mxContent: Uri.parse(""),
-                      size: AppTheme.cardPadding * 5.25.h,
-                      type: profilePictureType.none,
-                      isNft: false,
-                      // cornerWidget: ProfileButton(),
+                    GestureDetector(
+                      onTap: () async {
+                        final overlayController = Get.find<OverlayController>();
+                        final profileController = Get.find<ProfileController>();
+
+                        // Navigator.pop(context);
+                        final PermissionState ps =
+                            await PhotoManager.requestPermissionExtend();
+                        if (!ps.isAuth && !ps.hasAccess) {
+                          overlayController.showOverlay(
+                              'please give the app photo access to continue.',
+                              color: AppTheme.errorColor);
+                          return;
+                        }
+                        ImagePickerNftMixedBottomSheet(context, onImageTap:
+                            (AssetPathEntity? album, AssetEntity? image,
+                                MediaDatePair? pair) async {
+                          if (image != null) {
+                            await profileController.handleProfileImageSelected(image);
+                          } else if (pair != null) {
+                            await profileController.handleProfileNftSelected(pair);
+                          }
+                          // Navigator.pop(context);
+                        });
+                      },
+                      child: Avatar(
+                        mxContent: Uri.parse(""),
+                        size: AppTheme.cardPadding * 5.25.h,
+                        type: profilePictureType.none,
+                        isNft: false,
+                        cornerWidget: ProfileButton(),
+                        // cornerWidget: ProfileButton(),
+                      ),
                     ),
-                    SizedBox(height: AppTheme.cardPadding.h * 2,),
+                    SizedBox(
+                      height: AppTheme.cardPadding.h * 2,
+                    ),
                     PopUpCountryPickerWidget(),
                     FormTextField(
                       width: AppTheme.cardPadding * 14.ws,
@@ -110,7 +149,6 @@ class _CreateAccountViewState extends State<CreateAccountView>
                         //no sso removed sso (single-sign-on) buttons because we have own system
                         if (widget.controller.form.currentState!.validate()) {
                           widget.controller.createAccountPressed();
-
                         }
                       },
                       state: widget.controller.isLoading

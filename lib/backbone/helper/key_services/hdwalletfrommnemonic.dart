@@ -15,6 +15,8 @@ import 'package:cryptography/cryptography.dart';
 import 'package:get/get.dart';
 import 'package:pointycastle/export.dart';
 import 'package:wallet/wallet.dart' as wallet;
+// Make sure nextAddr returns a Future<String>
+
 
 Future<HDWallet> createUserWallet(String mnemonic) async {
   LoggerService logger = Get.find<LoggerService>();
@@ -31,7 +33,6 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     wallet.ExtendedPrivateKey master =
     wallet.ExtendedPrivateKey.master(seed, wallet.zprv);
     logger.i("Master key generated successfully.");
-
 
     // Step 3: Generate extended key for path
     wallet.ExtendedKey root = master.forPath(taprootPath);
@@ -54,11 +55,21 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     await importAccount(publicKey, xpubkey, masterFingerprint);
     logger.i("Account imported successfully.");
 
-    // Step 7: Generate derived addresses
-    //THIS NEEDS TO GO INTO A FIREBASE FUNCTION 100%
-    List<String> derivedAddresses = [];
-    for (int i = 0; i < 5; i++) {
-      String addr = await nextAddr(publicKey);
+    // Step 7: Generate derived addresses in parallel
+    logger.i("Generating derived addresses in parallel...");
+
+    // Type the list as List<Future<String>> (matching nextAddr's return type)
+    final List<Future<String>> futures = List.generate(
+      5,
+          (i) => nextAddr(publicKey),
+    );
+
+    // Also type Future.wait accordingly
+    final List<String> results = await Future.wait<String>(futures);
+
+    final List<String> derivedAddresses = [];
+    for (int i = 0; i < results.length; i++) {
+      final addr = results[i];
       logger.i("Derived address [$i]: $addr");
       BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
       derivedAddresses.add(address.addr);
@@ -68,10 +79,11 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     // Return the HDWallet instance
     logger.i("Wallet creation process completed successfully.");
     return HDWallet(
-        pubkey: publicKey,
-        xpubkey: xpubkey,
-        privkey: privKeyString,
-        fingerprint: masterFingerprint);
+      pubkey: publicKey,
+      xpubkey: xpubkey,
+      privkey: privKeyString,
+      fingerprint: masterFingerprint,
+    );
   } catch (e, stacktrace) {
     logger.e("Error in createUserWallet: $e");
     logger.e("Stacktrace: $stacktrace");

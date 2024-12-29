@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
@@ -58,6 +59,11 @@ class CreateAccountController extends State<CreateAccount> {
         logger.i("Username is still available");
         // logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
         // // context.go("/persona)")
+
+        //Update the username in our database for the user
+        ProfileController profileController = Get.find<ProfileController>();
+
+        profileController.userNameController.text = localpart;
 
         context.go(
           Uri(path: '/').toString(),
