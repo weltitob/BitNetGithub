@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vibration/vibration.dart';
@@ -7,12 +8,14 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
-class OverlayController extends GetxController with SingleGetTickerProviderMixin {
+class OverlayController extends GetxController
+    with SingleGetTickerProviderMixin {
   // Rx variable to manage the current overlay entry
   Rx<OverlayEntry?> overlayEntry = Rx<OverlayEntry?>(null);
 
   // 1) Simple Text Overlay
-  Future<void> showOverlay(String? message, {Color color = AppTheme.successColor}) async {
+  Future<void> showOverlay(String? message,
+      {Color color = AppTheme.successColor}) async {
     final overlayContext = Get.overlayContext;
     if (overlayContext == null) {
       debugPrint("No overlay context found. Cannot display overlay.");
@@ -77,7 +80,8 @@ class OverlayController extends GetxController with SingleGetTickerProviderMixin
   }
 
   // 2) Internet Connectivity Overlay
-  Future<void> showOverlayInternet(String? message, {Color color = AppTheme.successColor}) async {
+  Future<void> showOverlayInternet(String? message,
+      {Color color = AppTheme.successColor}) async {
     final overlayContext = Get.overlayContext;
     if (overlayContext == null) {
       debugPrint("No overlay context found. Cannot display overlay.");
@@ -146,7 +150,8 @@ class OverlayController extends GetxController with SingleGetTickerProviderMixin
   }
 
   // 3) Transaction Overlay
-  Future<void> showOverlayTransaction(String? message, TransactionItemData itemData) async {
+  Future<void> showOverlayTransaction(
+      String? message, TransactionItemData itemData) async {
     final overlayContext = Get.overlayContext;
     final providerContext = Get.context;
     if (overlayContext == null) {
@@ -210,8 +215,15 @@ class OverlayController extends GetxController with SingleGetTickerProviderMixin
                   ),
                   const SizedBox(height: AppTheme.elementSpacing),
                   // Transaction Item
-                  TransactionItem(
-                    data: itemData,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: GlassContainer(
+                      customColor: Theme.of(Get.context!).colorScheme.background,
+                      child: TransactionItem(
+                        data: itemData,
+                      ),
+                    ),
                   ),
                 ],
               ),

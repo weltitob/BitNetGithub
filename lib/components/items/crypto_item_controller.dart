@@ -2,9 +2,11 @@ import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class CryptoItemController extends GetxController with GetSingleTickerProviderStateMixin {
   late List<ChartLine> onedaychart = <ChartLine>[].obs;
@@ -24,10 +26,11 @@ class CryptoItemController extends GetxController with GetSingleTickerProviderSt
   @override
   void onInit() {
     super.onInit();
-    getChartLine(
-      "BTC",
-      "USD",
-    );
+
+    LoggerService logger = Get.find();
+
+    waitForCurrencyAndFetchLine();
+
     controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
@@ -41,6 +44,17 @@ class CryptoItemController extends GetxController with GetSingleTickerProviderSt
           controller.reset();
         }
       });
+  }
+
+
+  // This function "awaits" until selectedCurrency is not null
+  Future<void> waitForCurrencyAndFetchLine() async {
+    final currencyProvider = Provider.of<CurrencyChangeProvider>(Get.context!, listen: false);
+    while (currencyProvider.selectedCurrency == null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    final currency = currencyProvider.selectedCurrency!;
+    getChartLine('BTC', currency);
   }
 
   getChartLine(String crypto, String currency) async {

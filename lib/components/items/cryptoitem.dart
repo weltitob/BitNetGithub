@@ -263,6 +263,7 @@ class _CryptoItemState extends State<CryptoItem> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
+
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Column(
