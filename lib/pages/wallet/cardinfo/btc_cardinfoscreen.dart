@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -79,22 +80,38 @@ class _BitcoinCardInformationScreenState
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child:  Obx(() {
-                    // Extracting reactive variables from the controller
-                    final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
-                    final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
-                    final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
+                    final logger =
+                    Get.find<LoggerService>();
+                    final confirmedBalanceStr =
+                        walletController
+                            .onchainBalance
+                            .value
+                            .confirmedBalance
+                            .obs;
+                    final unconfirmedBalanceStr =
+                        walletController
+                            .onchainBalance
+                            .value
+                            .unconfirmedBalance
+                            .obs;
 
-                    // Safely parse the string balances to doubles
-                    final predictedBtcBalance = double.tryParse(predictedBtcBalanceStr) ?? 0.0;
-
-                    // Format the predicted balance to 8 decimal places
-                    final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
+                    logger.i(
+                      "Confirmed Balance onchain: $confirmedBalanceStr",
+                    );
+                    logger.i(
+                      "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
+                    );
 
                     return BalanceCardBtc(
-                      balance: formattedBalance,
-                      confirmedBalance: confirmedBalanceStr,
-                      unconfirmedBalance: unconfirmedBalanceStr,
-                      defaultUnit: BitcoinUnits.SAT,
+                      balance:
+                      confirmedBalanceStr.value,
+                      confirmedBalance:
+                      confirmedBalanceStr.value,
+                      unconfirmedBalance:
+                      unconfirmedBalanceStr
+                          .value,
+                      defaultUnit:
+                      BitcoinUnits.SAT,
                     );
                   }),
                 ),
@@ -134,10 +151,10 @@ class _BitcoinCardInformationScreenState
             ),
             Transactions(
               hideLightning: true,
-              hideOnchain: true,
+              hideOnchain: false,
               filters: [L10n.of(context)!.onchain],
               scrollController: scrollController,
-              newData: Get.find<WalletsController>().newTransactionData,
+              // newData: Get.find<WalletsController>().newTransactionData,
             ),
           ],
         ),
