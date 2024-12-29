@@ -75,7 +75,7 @@ class _BitcoinCardInformationScreenState
               child: Padding(
                 padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                 child: Container(
-                  height: AppTheme.cardPadding * 7.5,
+                  height: AppTheme.cardPadding * 7,
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child:  Obx(() {

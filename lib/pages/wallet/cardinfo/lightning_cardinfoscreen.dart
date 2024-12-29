@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/inbound_liqu
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
@@ -28,67 +29,62 @@ class LightningCardInformationScreen extends StatefulWidget {
   const LightningCardInformationScreen({super.key});
 
   @override
-  State<LightningCardInformationScreen> createState() => _LightningCardInformationScreenState();
+  State<LightningCardInformationScreen> createState() =>
+      _LightningCardInformationScreenState();
 }
 
-class _LightningCardInformationScreenState extends State<LightningCardInformationScreen> {
+class _LightningCardInformationScreenState
+    extends State<LightningCardInformationScreen> {
   late ScrollController scrollController;
-  List<TransactionItem> transactions = List.empty(growable: true);
   bool loadedLiquidity = false;
   int liquidity = 0;
   BitcoinUnitModel? liquidityUnitModel;
   String liquidityCurrBalance = '';
   String liquidityCurrSymbol = '';
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return bitnetScaffold(
-//         extendBodyBehindAppBar: true,
-//         body: PopScope(
-//             canPop: false,
-//             onPopInvoked: (v) {
-//               context.go("/feed");
-//             },
-//             child: Container()),
-//         appBar: bitnetAppBar(
-//           text: L10n.of(context)!.lightningCardInfo,
-//           context: context,
-//           onTap: () {
-//             context.go("/feed");
-//           },
-//         ),
-//         context: context);
-//   }
-// }
-
   @override
   void initState() {
-    final controller = Get.put(LightningInfoController());
-    scrollController = ScrollController();
-    inboundLiquidity().then((response) {
-      if (response.data.isEmpty) {
-        liquidity = -1;
-        loadedLiquidity = true;
-        setState(() {});
-      } else {
-        liquidity = response.data['liquidity'].toInt();
-        liquidityUnitModel = CurrencyConverter.convertToBitcoinUnit(liquidity.toDouble(), BitcoinUnits.SAT);
-        String? currency = Provider.of<CurrencyChangeProvider>(context, listen: false).selectedCurrency;
-        currency = currency ?? "USD";
-        final chartLine = Get.find<WalletsController>().chartLines.value;
-        final bitcoinPrice = chartLine?.price;
 
-        liquidityCurrBalance = CurrencyConverter.convertCurrency(
-            liquidityUnitModel!.bitcoinUnitAsString, (liquidityUnitModel!.amount as num).toDouble(), currency, bitcoinPrice);
-        liquidityCurrSymbol = getCurrency(currency);
-        loadedLiquidity = true;
-        setState(() {});
-      }
-    });
-    controller.loadingState.listen((val) {
-      setState(() {});
-    });
+
+    // inboundLiquidity().then((response) {
+    //   if (response.data.isEmpty) {
+    //     liquidity = -1;
+    //     loadedLiquidity = true;
+    //     setState(() {});
+    //   } else {
+    //     liquidity = response.data['liquidity'].toInt();
+    //     liquidityUnitModel = CurrencyConverter.convertToBitcoinUnit(liquidity.toDouble(), BitcoinUnits.SAT);
+    //     String? currency = Provider.of<CurrencyChangeProvider>(context, listen: false).selectedCurrency;
+    //     currency = currency ?? "USD";
+    //     final chartLine = Get.find<WalletsController>().chartLines.value;
+    //     final bitcoinPrice = chartLine?.price;
+    //
+    //     liquidityCurrBalance = CurrencyConverter.convertCurrency(
+    //         liquidityUnitModel!.bitcoinUnitAsString, (liquidityUnitModel!.amount as num).toDouble(), currency, bitcoinPrice);
+    //     liquidityCurrSymbol = getCurrency(currency);
+    //     loadedLiquidity = true;
+    //     setState(() {});
+    //   }
+    // });
+
+    // controller.loadingState.listen((val) {
+    //   setState(() {});
+    // });
     super.initState();
+    scrollController = ScrollController();
+
+    // WalletsController walletController = Get.find<WalletsController>();
+    //
+    // final logger = Get.find<LoggerService>();
+    // RxList<TransactionItemData> allActivity = walletController.allTransactions;
+    //
+    // logger.i("allActivity: $allActivity");
+    //
+    // transactions = allActivity
+    //     .map((txData) => TransactionItem(data: txData))
+    //     .toList();
+    //
+    // logger.i("transactions: $transactions");
   }
 
   @override
@@ -97,53 +93,16 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
     scrollController.dispose();
   }
 
-  WalletsController walletController = Get.find<WalletsController>();
 
   @override
   Widget build(BuildContext context) {
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
-    currency = currency ?? "USD";
+    // String? currency =
+    //     Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    // currency = currency ?? "USD";
+    // final controller = Get.put(LightningInfoController());
+    // final lightningInfoController = Get.find<LightningInfoController>();
+    WalletsController walletController = Get.find<WalletsController>();
 
-    final controller = Get.put(LightningInfoController());
-    final List<dynamic> data = controller.combinedTransactions;
-    if (!controller.loadingState.value && transactions.isEmpty) {
-      Future.microtask(
-        () {
-          for (int index = 0; index < data.length; index++) {
-            final transaction = controller.combinedTransactions[index];
-            if (transaction is ReceivedInvoice) {
-              transactions.add(TransactionItem(
-                data: TransactionItemData(
-                  timestamp: transaction.settleDate,
-                  type: TransactionType.lightning,
-                  direction: TransactionDirection.received,
-                  receiver: transaction.paymentRequest.toString(),
-                  txHash: transaction.value.toString(),
-                  amount: "+" + transaction.amtPaid.toString(),
-                  fee: 0,
-                  status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
-                ),
-              ));
-            } else if (transaction is LightningPayment) {
-              transactions.add(TransactionItem(
-                data: TransactionItemData(
-                  timestamp: transaction.creationDate,
-                  type: TransactionType.lightning,
-                  direction: TransactionDirection.sent,
-                  receiver: transaction.paymentRequest.toString(),
-                  txHash: transaction.paymentHash.toString(),
-                  amount: "-" + transaction.value.toString(),
-                  fee: transaction.fee,
-                  status: transaction.status == 'SUCCEEDED' ? TransactionStatus.confirmed : TransactionStatus.failed,
-                ),
-              ));
-            }
-          }
-        },
-      ).then((val) {
-        setState(() {});
-      });
-    }
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
@@ -159,34 +118,32 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
         onPopInvoked: (v) {
           context.go("/feed");
         },
-        child: Obx(
-          () => controller.loadingState.value
-              ? Center(
-                  child: dotProgress(context),
-                )
-              : CustomScrollView(
+        child: CustomScrollView(
                   controller: scrollController,
                   slivers: [
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
+                        padding: const EdgeInsets.only(
+                            top: AppTheme.cardPadding * 3),
                         child: Container(
-                          height: AppTheme.cardPadding * 7.5,
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                          height: AppTheme.cardPadding * 7,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
                           child: Obx(() {
-                            // Extracting reactive variables from the controller
-                            final predictedBalanceStr = walletController.predictedLightningBalance.value;
-                            final confirmedBalanceStr = walletController.lightningBalance.value.balance;
-
-                            // Safely parse the string balances to doubles
-                            final predictedBalance = double.tryParse(predictedBalanceStr) ?? 0.0;
-                            // Format the predicted balance to 8 decimal places
-                            final formattedBalance = predictedBalance.toStringAsFixed(8);
+                            final confirmedBalanceStr =
+                                walletController
+                                    .lightningBalance
+                                    .value
+                                    .balance
+                                    .obs;
 
                             return BalanceCardLightning(
-                              balance: formattedBalance,
-                              confirmedBalance: confirmedBalanceStr,
-                              defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                              balance:
+                              confirmedBalanceStr.value,
+                              confirmedBalance:
+                              confirmedBalanceStr.value,
+                              defaultUnit:
+                              BitcoinUnits.SAT,
                             );
                           }),
                         ),
@@ -210,27 +167,24 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                     // )),
                     SliverToBoxAdapter(
                         child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                          Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                          Text(L10n.of(context)!.activity,
+                              style: Theme.of(context).textTheme.titleLarge),
                           SizedBox(height: AppTheme.elementSpacing.h),
                         ],
                       ),
                     )),
-                    transactions.isEmpty
-                        ? SliverToBoxAdapter(
-                            child: Container(
-                                height: AppTheme.cardPadding * 8,
-                                child: Center(child: dotProgress(context))),
-                          )
-                        : Transactions(
-                            hideLightning: true,
+                    Transactions(
+                            // hideLightning: false,
                             hideOnchain: true,
+                            // fullList: true,
                             filters: ['Lightning'],
-                            customTransactions: transactions,
+                            // customTransactions: transactions,
                             scrollController: scrollController,
                           ),
                     const SliverPadding(
@@ -239,7 +193,6 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
                   ],
                 ),
         ),
-      ),
     );
   }
 }
