@@ -168,7 +168,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
         );
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
-        ReceiveController().getInvoice(0, "");
+        controller.getInvoice(0, "");
 
       } else {
         logger.i("Invoice received but not settled yet: ${inv.settled}");
