@@ -48,7 +48,7 @@ class WalletScreen extends GetWidget<WalletsController> {
           // the next/previous card partially peeks in
           final pageController = PageController(
             initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
-            viewportFraction: 0.875, // see some of the next/prev card
+            viewportFraction: 0.8875, // see some of the next/prev card
           );
 
           SubServersStatus? subServersStatus; // local variable to store fetched data
