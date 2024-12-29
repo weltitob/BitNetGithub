@@ -234,6 +234,12 @@ class WalletsController extends BaseController {
       try {
         logger.i("Received invoice from stream");
         model = ReceivedInvoice.fromJson(query.docs.last.data());
+        //if the receivedinvoice is settled
+        if (model.settled) {
+
+          //update the lightning balance
+          fetchLightingWalletBalance();
+        }
       } catch (e) {
         model = null;
         logger.e('failed to convert invoice json to invoice model');
@@ -250,6 +256,12 @@ class WalletsController extends BaseController {
       try {
         logger.i("Received payment from stream");
         model = LightningPayment.fromJson(query.docs.last.data());
+        //if the payment is settled
+        if (model.status == "SUCCEEDED") {
+
+          //update the lightning balance
+          fetchLightingWalletBalance();
+        }
       } catch (e) {
         model = null;
         logger.e('failed to convert payment json to payment model');
@@ -266,6 +278,11 @@ class WalletsController extends BaseController {
       try {
         logger.i("Received transaction from stream");
         model = BitcoinTransaction.fromJson(query.docs.last.data());
+        //if the transaction is confirmed
+        if (model.numConfirmations > 0) {
+          //update the onchain balance
+          fetchOnchainWalletBalance();
+        }
       } catch (e) {
         model = null;
         logger.e('failed to convert transaction json to transaction model');
