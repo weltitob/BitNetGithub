@@ -56,11 +56,13 @@ class OverlayController extends GetxController
                   bottomRight: Radius.circular(AppTheme.borderRadiusBig),
                 ),
               ),
-              padding: const EdgeInsets.all(AppTheme.elementSpacing),
               child: Center(
-                child: Text(
-                  message ?? 'Transaction received!',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding * 1, horizontal: AppTheme.cardPadding),
+                  child: Text(
+                    message ?? 'Transaction received!',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
               ),
             ),
