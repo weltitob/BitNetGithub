@@ -60,8 +60,8 @@ class OverlayController extends GetxController
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding * 1, horizontal: AppTheme.cardPadding),
                   child: Text(
-                    message ?? 'Transaction received!',
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    message ?? 'Success!',
+                    style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(color, 70)),
                   ),
                 ),
               ),
@@ -128,7 +128,7 @@ class OverlayController extends GetxController
               child: Center(
                 child: Text(
                   message ?? 'Transaction received!',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(color, 70)),
                 ),
               ),
             ),
@@ -211,7 +211,7 @@ class OverlayController extends GetxController
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(
                         message ?? 'Transaction received!',
-                        style: Get.textTheme.titleLarge,
+                        style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(AppTheme.successColor, 70)),
                       ),
                     ],
                   ),
