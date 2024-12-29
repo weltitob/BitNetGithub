@@ -204,9 +204,10 @@ class OverlayController extends GetxController
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_circle_outline_rounded,
                         size: AppTheme.cardPadding * 1.25,
+                        color: darken(AppTheme.successColor, 70),
                       ),
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(

@@ -63,11 +63,6 @@ class _TransactionsState extends State<Transactions>
   bool transactionsOrdered = false;
   bool firstInit = false;
 
-  // Hier werden alle Transaktionen gesammelt (ungefiltert):
-  List<LightningPayment> lightningPayments = [];
-  List<ReceivedInvoice> lightningInvoices = [];
-  List<BitcoinTransaction> onchainTransactions = [];
-  List<Swap> loopOperations = []; // optional
 
   // UI- & Paging-States
   List<Widget> orderedTransactions = [];
@@ -105,59 +100,59 @@ class _TransactionsState extends State<Transactions>
 
     // War mal: "if (walletController.futuresCompleted >= 3)"
     if (walletController.futuresCompleted >= 3) {
-      loadActivity();
+      _checkAndDisplay();
     } else {
       walletController.futuresCompleted.listen((val) {
         if (val >= 3) {
-          loadActivity();
+          _checkAndDisplay();
         }
       });
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!firstInit) {
-      firstInit = true;
-
-      // Falls schon Transaktionen zwischengespeichert sind:
-      if (walletController.allTransactions.isNotEmpty &&
-          widget.customTransactions == null) {
-        Future.microtask(() {
-          final tmp = walletController.allTransactions
-              .map((item) => TransactionItem(data: item,))
-              .toList();
-          orderedTransactions = arrangeTransactions(tmp);
-          transactionsLoaded = true;
-          transactionsOrdered = true;
-          setState(() {});
-        });
-      }
-
-      // Stream: Onchain
-      transactionStream =
-          walletController.subscribeToOnchainTransactions().listen((val) {
-            if (val != null) {
-              onchainTransactions.add(val);
-              combineAllTransactionsWithFiltering();
-            }
-          }, onError: (error) {
-            logger.e("Received error for Transactions-stream: $error");
-          });
-
-      // Stream: Lightning (Invoices)
-      lightningStream = walletController.subscribeToInvoices().listen((inv) {
-        if (inv != null && inv.settled == true) {
-          lightningInvoices.add(inv);
-          combineAllTransactionsWithFiltering();
-        }
-      }, onError: (error) {
-        logger.e("Received error for Invoice-stream: $error");
-      });
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //
+  //   if (!firstInit) {
+  //     firstInit = true;
+  //
+  //     // Falls schon Transaktionen zwischengespeichert sind:
+  //     if (walletController.allTransactions.isNotEmpty &&
+  //         widget.customTransactions == null) {
+  //       Future.microtask(() {
+  //         final tmp = walletController.allTransactions
+  //             .map((item) => TransactionItem(data: item,))
+  //             .toList();
+  //         orderedTransactions = arrangeTransactions(tmp);
+  //         transactionsLoaded = true;
+  //         transactionsOrdered = true;
+  //         setState(() {});
+  //       });
+  //     }
+  //
+  //     // Stream: Onchain
+  //     transactionStream =
+  //         walletController.subscribeToOnchainTransactions().listen((val) {
+  //           if (val != null) {
+  //             onchainTransactions.add(val);
+  //             combineAllTransactionsWithFiltering();
+  //           }
+  //         }, onError: (error) {
+  //           logger.e("Received error for Transactions-stream: $error");
+  //         });
+  //
+  //     // Stream: Lightning (Invoices)
+  //     lightningStream = walletController.subscribeToInvoices().listen((inv) {
+  //       if (inv != null && inv.settled == true) {
+  //         lightningInvoices.add(inv);
+  //         combineAllTransactionsWithFiltering();
+  //       }
+  //     }, onError: (error) {
+  //       logger.e("Received error for Invoice-stream: $error");
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -166,58 +161,22 @@ class _TransactionsState extends State<Transactions>
     super.dispose();
   }
 
-  /// Startet das Laden aller Daten (Onchain, Lightning)
-  void loadActivity() {
-    setState(() {
-      transactionsLoaded = false;
-    });
 
-    int futuresCompleted = 0;
-    int errorCount = 0;
-    String errorMessage = "";
-
-    // 1) On-Chain
-    getOnchainTransactions().then((success) {
-      futuresCompleted++;
-      if (!success) {
-        errorCount++;
-        errorMessage = "${L10n.of(context)!.failedToLoadOnchain}";
-      }
-      _checkAndDisplay(futuresCompleted, errorCount, errorMessage);
-    });
-
-    // 2) LN-Payments
-    getLightningPayments().then((success) {
-      futuresCompleted++;
-      if (!success) {
-        errorCount++;
-        errorMessage = "${L10n.of(context)!.failedToLoadPayments}";
-      }
-      _checkAndDisplay(futuresCompleted, errorCount, errorMessage);
-    });
-
-    // 3) LN-Invoices
-    getLightningInvoices().then((success) {
-      futuresCompleted++;
-      if (!success) {
-        errorCount++;
-        errorMessage = "${L10n.of(context)!.failedToLoadLightning}";
-      }
-      _checkAndDisplay(futuresCompleted, errorCount, errorMessage);
-    });
-  }
-
-  void _checkAndDisplay(int futuresCompleted, int errorCount, String errorMsg) {
+  void _checkAndDisplay() {
     // Passe hier an, wenn du mehr oder weniger als 3 Ladefunktionen hast
-    if (futuresCompleted == 3) {
-      updateDataWithNew();
-      if (mounted) {
-        setState(() {
+    if(walletController.transactionsLoaded.value) {
+      logger.i("Loading all transactions...");
+      combineAllTransactionsWithFiltering();
+      transactionsLoaded = true;
+    } else {
+      logger.i("Transactions not loaded yet. Waiting...");
+      walletController.transactionsLoaded.listen((loaded) {
+        if (loaded) {
+          logger.i("Loading all transactions...");
+          combineAllTransactionsWithFiltering();
           transactionsLoaded = true;
-        });
-        combineAllTransactionsWithFiltering();
-        handlePageLoadErrors(errorCount, errorMsg, context);
-      }
+        }
+      });
     }
   }
 
@@ -237,90 +196,29 @@ class _TransactionsState extends State<Transactions>
   }
 
   /// Daten, die über [widget.newData] reinkommen, einpflegen
-  void updateDataWithNew() {
-    logger.i("Checking for newData...");
-    if (widget.newData == null) return;
-
-    for (dynamic data in widget.newData!) {
-      if (data is LightningPayment) {
-        logger.i("Adding new lightning payment from newData: $data");
-        lightningPayments.add(data);
-       }else if(data is ReceivedInvoice) {
-        logger.i("Adding new ReceivedInvoice from newData: $data");
-        lightningInvoices.add(data);
-      } else if (data is BitcoinTransaction) {
-        logger.i("Adding new onchain tx from newData: $data");
-        onchainTransactions.add(data);
-      }
-    }
-  }
+  // void updateDataWithNew() {
+  //   logger.i("Checking for newData...");
+  //   if (widget.newData == null) return;
+  //
+  //   for (dynamic data in widget.newData!) {
+  //     if (data is LightningPayment) {
+  //       logger.i("Adding new lightning payment from newData: $data");
+  //       lightningPayments.add(data);
+  //      }else if(data is ReceivedInvoice) {
+  //       logger.i("Adding new ReceivedInvoice from newData: $data");
+  //       lightningInvoices.add(data);
+  //     } else if (data is BitcoinTransaction) {
+  //       logger.i("Adding new onchain tx from newData: $data");
+  //       onchainTransactions.add(data);
+  //     }
+  //   }
+  // }
 
   /// (Neu) Alle Transaktionen sammeln + Filterung + Search anwenden
   void combineAllTransactionsWithFiltering({bool sticky = true}) {
     Future.microtask(() {
       // 1) Alle Transaktionen (ungefiltert) sammeln
-      final List<TransactionItem> combinedTransactions = [
-        // On-Chain
-        ...onchainTransactions.map(
-              (tx) => TransactionItem(
-            data: TransactionItemData(
-              timestamp: tx.timeStamp,
-              status: tx.numConfirmations > 0
-                  ? TransactionStatus.confirmed
-                  : TransactionStatus.pending,
-              type: TransactionType.onChain,
-              direction: tx.amount!.contains("-")
-                  ? TransactionDirection.sent
-                  : TransactionDirection.received,
-              receiver: tx.amount!.contains("-")
-                  ? tx.destAddresses.last
-                  : tx.destAddresses.first,
-              txHash: tx.txHash.toString(),
-              fee: 0,
-              amount: tx.amount!.contains("-")
-                  ? tx.amount.toString()
-                  : "+${tx.amount}",
-            ),
-          ),
-        ),
-        // Lightning-Payments (sent)
-        ...lightningPayments.map(
-              (pmt) => TransactionItem(
-            data: TransactionItemData(
-              timestamp: pmt.creationDate,
-              type: TransactionType.lightning,
-              direction: TransactionDirection.sent,
-              receiver: pmt.paymentHash,
-              txHash: pmt.paymentHash,
-              amount: "-${pmt.valueSat}",
-              fee: pmt.fee,
-              status: pmt.status == "SUCCEEDED"
-                  ? TransactionStatus.confirmed
-                  : pmt.status == "FAILED"
-                  ? TransactionStatus.failed
-                  : TransactionStatus.pending,
-            ),
-          ),
-        ),
-        // Lightning-Invoices (received)
-        ...lightningInvoices.map(
-              (inv) => TransactionItem(
-            data: TransactionItemData(
-              timestamp: inv.settleDate,
-              type: TransactionType.lightning,
-              direction: TransactionDirection.received,
-              receiver: inv.paymentRequest.toString(),
-              txHash: inv.rHash,
-              amount: "+${inv.amtPaidSat}",
-              fee: 0,
-              status: inv.settled
-                  ? TransactionStatus.confirmed
-                  : TransactionStatus.failed,
-            ),
-          ),
-        ),
-        // Optional: Loop
-      ];
+      final List<TransactionItem> combinedTransactions = walletController.allTransactionItems;
 
       // 2) Duplikate entfernen
       final Set<String> seenIds = {};
@@ -355,7 +253,6 @@ class _TransactionsState extends State<Transactions>
     });
   }
 
-  /// (Neu) Filter- & Suchlogik
   /// (Neu) Filter- & Suchlogik
   List<TransactionItem> applyFiltersAndSearch(List<TransactionItem> items) {
     // 1) Zeitfilter
@@ -485,56 +382,6 @@ class _TransactionsState extends State<Transactions>
     }
   }
 
-  /// Holt Onchain TX
-  Future<bool> getOnchainTransactions() async {
-    try {
-      logger.i("Getting onchain transactions...");
-      Map<String, dynamic> data = walletController.onchainTransactions;
-      onchainTransactions = await Future.microtask(() {
-        return BitcoinTransactionsList.fromJson(data).transactions;
-      });
-      logger.i("Loaded ${onchainTransactions.length} on-chain transactions.");
-    } catch (e) {
-      logger.e("Error loading on-chain TX: $e");
-      return false;
-    }
-    return true;
-  }
-
-  /// Holt Lightning Payments
-  Future<bool> getLightningPayments() async {
-    try {
-      logger.i("Getting lightning payments...");
-      Map<String, dynamic> data = walletController.lightningPayments;
-      lightningPayments = await compute(
-            (d) => LightningPaymentsList.fromJson(d).payments,
-        data,
-      );
-      logger.i("Loaded ${lightningPayments.length} lightning payments.");
-    } catch (e) {
-      logger.e("Error loading LN payments: $e");
-      return false;
-    }
-    return true;
-  }
-
-  /// Holt Lightning Invoices
-  Future<bool> getLightningInvoices() async {
-    try {
-      logger.i("Getting lightning invoices...");
-      Map<String, dynamic> data = walletController.lightningInvoices;
-      lightningInvoices = await compute((d) {
-        final allInv = ReceivedInvoicesList.fromJson(d);
-        return allInv.invoices.where((i) => i.settled).toList();
-      }, data);
-      logger.i("Loaded ${lightningInvoices.length} settled LN invoices.");
-    } catch (e) {
-      logger.e("Error loading LN invoices: $e");
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -549,7 +396,6 @@ class _TransactionsState extends State<Transactions>
     }
 
     if (widget.fullList) {
-
 
       // Falls "fullList" == true, alles in einem SliverToBoxAdapter
       return SliverToBoxAdapter(

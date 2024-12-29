@@ -43,7 +43,6 @@ class _ReceiveScreenState extends State<ReceiveScreen>
   late AnimationController _animationController;
   late StreamSubscription<ReceiveType> receiveTypeSub;
   bool tappedOffset = false;
-  final overlayController = Get.find<OverlayController>();
 
   @override
   void initState() {
@@ -118,70 +117,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       _animationController.forward();
     });
 
-    LoggerService logger = Get.find();
 
-    //Onchain checking for transactions
-    Get.find<WalletsController>().subscribeToOnchainTransactions().listen(
-        (val) {
-      logger.i("subscribeTransactionsStream got data: $val");
-      if (val == null) {
-        return;
-      }
-      if (Get.overlayContext != null && Get.overlayContext!.mounted)
-        overlayController.showOverlayTransaction(
-            "Onchain transaction settled",
-            TransactionItemData(
-              amount: val.amount.toString(),
-              timestamp: val.timeStamp,
-              type: TransactionType.onChain,
-              fee: 0,
-              status: TransactionStatus.confirmed,
-              direction: TransactionDirection.received,
-              receiver: val.destAddresses[0],
-              txHash: val.txHash ?? 'null',
-            ));
 
-          final walletController = Get.find<WalletsController>();
-          walletController.fetchOnchainWalletBalance();
-      //});
-    }, onError: (error) {
-      logger.e("Received error for Transactions-stream: $error");
-    });
-    //LIGHTNING
-    //Lightning payments
-    Get.find<WalletsController>().subscribeToInvoices().listen((inv) {
-      logger.i("Received data from Invoice-stream: $inv");
-      if (inv == null) {
-        return;
-      }
-      if (inv.state == 'SETTLED') {
-        logger.i("showOverlay should be triggered now");
-        overlayController.showOverlayTransaction(
-          "Lightning invoice settled",
-          TransactionItemData(
-            amount: inv.amtPaidSat.toString(),
-            timestamp: inv.settleDate,
-            type: TransactionType.lightning,
-            fee: 0,
-            status: TransactionStatus.confirmed,
-            direction: TransactionDirection.received,
-            receiver: inv.paymentRequest ?? "Yourself",
-            txHash: inv.rHash ?? "forwarded through lightning",
-          ),
-        );
-        //generate a new invoice for the user with 0 amount
-        logger.i("Generating new empty invoice for user");
-        controller.getInvoice(0, "");
-
-        final walletController = Get.find<WalletsController>();
-        walletController.fetchLightingWalletBalance();
-
-      } else {
-        logger.i("Invoice received but not settled yet: ${inv.settled}");
-      }
-    }, onError: (error) {
-      logger.e("Received error for Invoice-stream: $error");
-    });
   }
 
   void decodeNetwork() {

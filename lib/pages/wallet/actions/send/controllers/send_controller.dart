@@ -4,16 +4,11 @@ import 'dart:convert';
 import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/broadcast_transaction.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/get_transaction.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -26,9 +21,6 @@ import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
-import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
-import 'package:bitnet/models/bitcoin/walletkit/fundpsbtresponse.dart';
 import 'package:bitnet/models/bitcoin/walletkit/input.dart';
 import 'package:bitnet/models/bitcoin/walletkit/output.dart';
 import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
@@ -387,7 +379,7 @@ class SendsController extends BaseController {
     Stream<dynamic> paymentStream =
         sendPaymentV2Stream(Auth().currentUser!.uid, invoiceStrings, amount);
     StreamSubscription? sub;
-    bool transactionsUpdated = false;
+    // bool transactionsUpdated = false;
 
     sub = paymentStream.listen((dynamic response) {
       isFinished.value = true;
@@ -395,42 +387,30 @@ class SendsController extends BaseController {
         //sendPaymentDataLnUrl(response, lnUrl, lnUrlname);
         // Convert response to a valid JSON string
         String jsonString = jsonEncode(response);
-
         // Decode the JSON string back into a Map<String, dynamic>
         var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
-
         LightningPayment payment = LightningPayment.fromJson(typedResponse);
-        if (!transactionsUpdated) {
-          Get.find<WalletsController>().newTransactionData.add(payment);
-          transactionsUpdated = true;
-        }
-        //connect this with transactions views
-        Get.find<WalletsController>().fetchLightingWalletBalance();
         sub!.cancel();
         logger.i("Payment successful! Forwarding to feed...");
-        overlayController.showOverlay("Payment successful!");
         context.go("/");
 
       } else if ((response)['status'] == 'FAILED') {
-
         overlayController.showOverlay("Payment failed: ${response['failure_reason']}");
-
         isFinished.value = false;
         sub!.cancel();
       } else {
         overlayController.showOverlay("Payment failed: please try again later...");
-
         isFinished.value = false;
         sub!.cancel();
       }
     }, onError: (error) {
       isFinished.value = false;
-
       overlayController.showOverlay("An error occurred: $error");
 
     }, onDone: () {
       resetValues();
     }, cancelOnError: true);
+
     logger.i("Payment successful! ${response.body}");
 
     return payment;
@@ -471,7 +451,7 @@ class SendsController extends BaseController {
 
   sendBTC(BuildContext context) async {
 
-    loadingSending = true.obs;
+    loadingSending.value = true;
     LoggerService logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();
     logger.i("sendBTC() called");
@@ -483,8 +463,7 @@ class SendsController extends BaseController {
 
           logger.i("Amount that is being sent: ${satController.text}");
           logger.i("Satcontroller text: ${satController.text}");
-          logger
-              .i("Satcontroller text parsed: ${int.parse(satController.text)}");
+          logger.i("Satcontroller text parsed: ${int.parse(satController.text)}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
 
 
@@ -512,16 +491,16 @@ class SendsController extends BaseController {
               var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
 
               LightningPayment payment = LightningPayment.fromJson(typedResponse);
-
-              Get.find<WalletsController>().newTransactionData.add(payment);
+              //
+              // Get.find<WalletsController>().newTransactionData.add(payment);
               // Handle success
               sendPaymentDataInvoice(response);
 
               if (!firstSuccess) {
-                logger.i("Payment successful!");
-                Get.find<WalletsController>().fetchLightingWalletBalance();
+                logger.i("Payment successful it should update the stream in walletcontroller which shows the overlay!");
+                // Get.find<WalletsController>().fetchLightingWalletBalance();
+                // overlayController.showOverlay("Payment successful!");
 
-                overlayController.showOverlay("Payment successful!");
                 logger.i("Payment successful! Forwarding to wallet...");
                 context.go("/");
 
@@ -693,7 +672,7 @@ class SendsController extends BaseController {
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
 
-            overlayController.showOverlay("Payment successful!");
+            overlayController.showOverlay("Onchain transaction successfully broadcastet, it can take a while!");
             GoRouter.of(this.context).go("/feed");
 
           } else {
@@ -792,6 +771,7 @@ class SendsController extends BaseController {
   void sendPaymentDataOnchain(Map<String, dynamic> data) {
     btcSendsRef.doc(Auth().currentUser!.uid).set({"initialized": true});
     btcSendsRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
+
     resendUsers.add(ReSendUser(
         address: data['address'],
         profileUrl: 'https://walletofsatoshi.com/assets/images/icon.png',
