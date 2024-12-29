@@ -140,6 +140,9 @@ class _ReceiveScreenState extends State<ReceiveScreen>
               receiver: val.destAddresses[0],
               txHash: val.txHash ?? 'null',
             ));
+
+          final walletController = Get.find<WalletsController>();
+          walletController.fetchOnchainWalletBalance();
       //});
     }, onError: (error) {
       logger.e("Received error for Transactions-stream: $error");
@@ -169,6 +172,9 @@ class _ReceiveScreenState extends State<ReceiveScreen>
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
         controller.getInvoice(0, "");
+
+        final walletController = Get.find<WalletsController>();
+        walletController.fetchLightingWalletBalance();
 
       } else {
         logger.i("Invoice received but not settled yet: ${inv.settled}");

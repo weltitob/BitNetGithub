@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -15,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
@@ -50,13 +52,14 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-          text: L10n.of(context)!.inviteContact,
-          context: context,
-          buttonType: ButtonType.transparent,
-          onTap: () {
-            final controller = Get.find<SettingsController>();
-            controller.switchTab('main');
-          }),
+        text: L10n.of(context)!.inviteContact,
+        context: context,
+        buttonType: ButtonType.transparent,
+        onTap: () {
+          final controller = Get.find<SettingsController>();
+          controller.switchTab('main');
+        },
+      ),
       body: Container(
         color: Colors.transparent,
         child: StreamBuilder(
@@ -68,37 +71,31 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 !snapshot.hasData) {
               return Container(
-                  height: 400,
-                  child: Center(child: dotProgress(context)));
+                height: 400,
+                child: Center(child: dotProgress(context)),
+              );
             }
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // BitNetListTile(
-                  //   leading: const Icon(Icons.share_outlined),
-                  //   text: L10n.of(context)!.inviteContact,
-                  //   trailing: const Icon(
-                  //     Icons.arrow_forward_ios_rounded,
-                  //     size: AppTheme.iconSize * 0.75,
-                  //   ),
-                  //   onTap: () {
-                  //   },
-                  // ),
                   const SizedBox(height: AppTheme.cardPadding * 3),
                   Padding(
                     padding: const EdgeInsets.all(AppTheme.cardPadding),
-                    child: Text( L10n.of(context)!.inviteDescription,
+                    child: Text(
+                      L10n.of(context)!.inviteDescription,
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    child: Text("Invitation Keys",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.start
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: Text(
+                      "Invitation Keys",
+                      style: Theme.of(context).textTheme.titleSmall,
+                      textAlign: TextAlign.start,
                     ),
                   ),
                   ListView.builder(
@@ -136,7 +133,7 @@ class _KeyItemState extends State<_KeyItem> {
   String _free = "free";
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     getUser(widget.verificationkey.receiver);
   }
@@ -154,26 +151,26 @@ class _KeyItemState extends State<_KeyItem> {
     return GestureDetector(
       onTap: widget.verificationkey.used
           ? () {
-              context.goNamed("/profile", pathParameters: {
-                'profileId': widget.verificationkey.receiver
-              });
+              context.goNamed(
+                "/profile",
+                pathParameters: {'profileId': widget.verificationkey.receiver},
+              );
             }
           : () {
-              //copy the key
+              // copy the key
               _free = "copied";
-              //change free text to copied code und dann abändern
               Clipboard.setData(
-                  ClipboardData(text: widget.verificationkey.code));
+                ClipboardData(text: widget.verificationkey.code),
+              );
               setState(() {});
             },
       child: Container(
-        height: AppTheme.cardPadding * 2,
+        height: AppTheme.cardPadding * 2.h,
         margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.cardPadding * 1.5,
         ).copyWith(
           bottom: AppTheme.cardPadding,
         ),
-
         child: GlassContainer(
           borderRadius: AppTheme.cardRadiusSmall,
           child: Container(
@@ -182,20 +179,30 @@ class _KeyItemState extends State<_KeyItem> {
             ),
             child: Row(
               children: <Widget>[
+                // If used, show user result. Otherwise, show an icon.
                 widget.verificationkey.used
-                    ? buildUserResult()
+                    ? Flexible(child: buildUserResult())
                     : Icon(
                         Icons.key,
-                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
                         size: AppTheme.iconSize,
                       ),
                 const SizedBox(width: AppTheme.cardPadding),
-                Text(widget.verificationkey.code,
-                    style: Theme.of(context).textTheme.titleSmall),
+                // Key code
+                Flexible(
+                  child: Text(
+                    widget.verificationkey.code,
+                    style: Theme.of(context).textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis, // Prevent overflow
+                  ),
+                ),
                 const Spacer(),
-                widget.verificationkey.used
-                    ? Text("used", style: Theme.of(context).textTheme.titleSmall)
-                    : Text(_free, style: Theme.of(context).textTheme.titleSmall),
+                // If used, show "used". Otherwise, show _free/copy status
+                Text(
+                  widget.verificationkey.used ? "used" : _free,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
               ],
             ),
           ),
@@ -204,21 +211,34 @@ class _KeyItemState extends State<_KeyItem> {
     );
   }
 
-  FutureBuilder buildUserResult() {
-    return FutureBuilder(
-        future: userFuture,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return dotProgress(context);
-          } else {
-            UserData user = UserData.fromDocument(snapshot.data);
-            UserResult result = UserResult(
-              userData: user,
-              onTap: () async {},
-              onDelete: () {},
-            );
-            return result;
-          }
-        });
+  FutureBuilder<QuerySnapshot> buildUserResult() {
+    return FutureBuilder<QuerySnapshot>(
+      future: userFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return dotProgress(context);
+        } else if (snapshot.data!.docs.isEmpty) {
+          return Text("No user found");
+        } else {
+          // Grab the first matching document
+          final docSnapshot = snapshot.data!.docs.first;
+          // Convert DocumentSnapshot to UserData
+          UserData user = UserData.fromDocument(docSnapshot);
+          return Avatar(
+            size: AppTheme.cardPadding * 1.5.h,
+            mxContent: Uri.parse(user.profileImageUrl),
+            type: profilePictureType.lightning,
+            isNft: user.nft_profile_id.isNotEmpty,
+            onTap: () async {
+              //forward to the users profile
+              context.goNamed(
+                "/profile",
+                pathParameters: {'profileId': user.did},
+              );
+            },
+          );
+        }
+      },
+    );
   }
 }
