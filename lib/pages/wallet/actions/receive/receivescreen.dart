@@ -116,9 +116,6 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       _animationController.reset();
       _animationController.forward();
     });
-
-
-
   }
 
   void decodeNetwork() {

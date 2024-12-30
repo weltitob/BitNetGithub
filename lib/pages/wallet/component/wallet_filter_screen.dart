@@ -15,7 +15,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
-  const WalletFilterScreen({this.hideLightning = false, this.hideOnchain = false,this.hideFilters = false, this.forcedFilters, super.key});
+  const WalletFilterScreen(
+      {this.hideLightning = false,
+      this.hideOnchain = false,
+      this.hideFilters = false,
+      this.forcedFilters,
+      super.key});
   final bool hideLightning;
   final bool hideOnchain;
   final List<String>? forcedFilters;
@@ -28,25 +33,25 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
       appBar: bitnetAppBar(
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
             child: LongButtonWidget(
-              customWidth: AppTheme.cardPadding * 3.75,
+                customWidth: AppTheme.cardPadding * 3.75,
                 customHeight: AppTheme.cardPadding * 1.25,
                 buttonType: ButtonType.transparent,
-                title: L10n.of(context)!.clear, onTap: (){
-              controller.selectedFilters.clear();
-                if (forcedFilters != null) {
-                          for (int i = 0; i < forcedFilters!.length; i++) {
-                            controller.toggleFilter(forcedFilters![i]);
-                          }
-                        }
-              controller.start =
-                  controller.startDate.value.millisecondsSinceEpoch ~/
-                      1000;
-              controller.end =
-                  controller.endDate.value.millisecondsSinceEpoch ~/
-                      1000;
-            }),
+                title: L10n.of(context)!.clear,
+                onTap: () {
+                  controller.selectedFilters.clear();
+                  if (forcedFilters != null) {
+                    for (int i = 0; i < forcedFilters!.length; i++) {
+                      controller.toggleFilter(forcedFilters![i]);
+                    }
+                  }
+                  controller.start =
+                      controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+                  controller.end =
+                      controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
+                }),
           )
         ],
         hasBackButton: false,
@@ -62,18 +67,20 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 vertical: AppTheme.cardPadding * 2),
             child: Column(
               children: [
-
                 const SizedBox(height: AppTheme.cardPadding),
-                if(!hideFilters) BitNetFilterPillList(
-                  headingText: L10n.of(context)!.filterOptions,
-                  listDataText: [
-    if (!hideLightning) PillLabelModal(labelText: L10n.of(context)!.lightning),
-                if (!hideOnchain) PillLabelModal(labelText: L10n.of(context)!.onchain),
-                                  PillLabelModal(labelText: L10n.of(context)!.sent),
-                    PillLabelModal(labelText: L10n.of(context)!.received),
-                    PillLabelModal(labelText: 'Loop'),
-                  ],
-                ),
+                if (!hideFilters)
+                  BitNetFilterPillList(
+                    headingText: L10n.of(context)!.filterOptions,
+                    listDataText: [
+                      if (!hideLightning)
+                        PillLabelModal(labelText: L10n.of(context)!.lightning),
+                      if (!hideOnchain)
+                        PillLabelModal(labelText: L10n.of(context)!.onchain),
+                      PillLabelModal(labelText: L10n.of(context)!.sent),
+                      PillLabelModal(labelText: L10n.of(context)!.received),
+                      PillLabelModal(labelText: 'Loop'),
+                    ],
+                  ),
                 SizedBox(height: AppTheme.cardPadding.h * 1.75),
                 CommonHeading(
                   headingText: L10n.of(context)!.timeFrame,
@@ -82,8 +89,8 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                   child: Container(
                     child: Row(
                       children: [
-                        Expanded(
-                            child: StatefulBuilder(builder: (context, setState) {
+                        Expanded(child:
+                            StatefulBuilder(builder: (context, setState) {
                           return GlassContainer(
                               child: InkWell(
                             onTap: () async {
@@ -95,8 +102,8 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                               setState(() {});
                             },
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                              padding: const EdgeInsets.all(
+                                  AppTheme.elementSpacing / 2),
                               child: Center(
                                   child: Text(
                                       DateFormat('dd-MM-yyyy')
@@ -108,11 +115,11 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                           ));
                         })),
                         Container(
-                          margin: EdgeInsets.only(left: AppTheme.elementSpacing.w, right: AppTheme.elementSpacing.w),
-                          child: Text(
-                            L10n.of(context)!.to,
-                            style: Theme.of(context).textTheme.titleSmall
-                          ),
+                          margin: EdgeInsets.only(
+                              left: AppTheme.elementSpacing.w,
+                              right: AppTheme.elementSpacing.w),
+                          child: Text(L10n.of(context)!.to,
+                              style: Theme.of(context).textTheme.titleSmall),
                         ),
                         Expanded(
                           child: StatefulBuilder(builder: (context, setState) {
@@ -121,8 +128,8 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                                 onTap: () async {
                                   controller.endDate.value =
                                       await controller.selectDate(context);
-                                  controller.end = controller
-                                          .endDate.value.millisecondsSinceEpoch ~/
+                                  controller.end = controller.endDate.value
+                                          .millisecondsSinceEpoch ~/
                                       1000;
                                   setState(() {});
                                 },
@@ -130,12 +137,11 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Center(
                                     child: Text(
-                                      DateFormat('dd-MM-yyyy')
-                                          .format(controller.endDate.value),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall
-                                    ),
+                                        DateFormat('dd-MM-yyyy')
+                                            .format(controller.endDate.value),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall),
                                   ),
                                 ),
                               ),
@@ -149,13 +155,16 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
               ],
             ),
           ),
-          BottomCenterButton(buttonTitle: L10n.of(context)!.apply, buttonState: ButtonState.idle, onButtonTap: (){
-            controller.start =
-                controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
-            controller.end =
-                controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
-            Navigator.pop(context);
-          })
+          BottomCenterButton(
+              buttonTitle: L10n.of(context)!.apply,
+              buttonState: ButtonState.idle,
+              onButtonTap: () {
+                controller.start =
+                    controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+                controller.end =
+                    controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
+                Navigator.pop(context);
+              })
         ],
       ),
     );

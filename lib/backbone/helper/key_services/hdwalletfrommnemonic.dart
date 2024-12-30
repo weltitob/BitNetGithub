@@ -59,13 +59,13 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     logger.i("Generating derived addresses in parallel...");
 
     // Type the list as List<Future<String>> (matching nextAddr's return type)
-    final List<Future<String>> futures = List.generate(
+    final List<Future<dynamic>> futures = List.generate(
       5,
           (i) => nextAddr(publicKey),
     );
 
     // Also type Future.wait accordingly
-    final List<String> results = await Future.wait<String>(futures);
+    final List<dynamic> results = await Future.wait<dynamic>(futures);
 
     final List<String> derivedAddresses = [];
     for (int i = 0; i < results.length; i++) {

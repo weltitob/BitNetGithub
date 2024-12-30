@@ -34,6 +34,8 @@ class _CreateAccountViewState extends State<CreateAccountView>
   Widget build(BuildContext context) {
 
     Get.put(ProfileController());
+    final overlayController = Get.find<OverlayController>();
+    final profileController = Get.find<ProfileController>();
 
     return WillPopScope(
       onWillPop: () async {
@@ -89,9 +91,6 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        final overlayController = Get.find<OverlayController>();
-                        final profileController = Get.find<ProfileController>();
-
                         // Navigator.pop(context);
                         final PermissionState ps =
                             await PhotoManager.requestPermissionExtend();
@@ -109,17 +108,16 @@ class _CreateAccountViewState extends State<CreateAccountView>
                           } else if (pair != null) {
                             await profileController.handleProfileNftSelected(pair);
                           }
-                          // Navigator.pop(context);
+                          Navigator.pop(context);
                         });
                       },
-                      child: Avatar(
-                        mxContent: Uri.parse(""),
+                      child: Obx(() => Avatar(
+                        mxContent: Uri.parse(profileController.userData.value.profileImageUrl),
                         size: AppTheme.cardPadding * 5.25.h,
-                        type: profilePictureType.none,
-                        isNft: false,
+                        type: profilePictureType.lightning,
+                        isNft: profileController.userData.value.nft_profile_id.isNotEmpty,
                         cornerWidget: ProfileButton(),
-                        // cornerWidget: ProfileButton(),
-                      ),
+                      )),
                     ),
                     SizedBox(
                       height: AppTheme.cardPadding.h * 2,

@@ -42,6 +42,8 @@ class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
   RxBool showInfo = false.obs;
   RxBool transactionsLoaded = false.obs;
+  RxBool additionalTransactionsLoaded = false.obs;
+
 
   late final ScrollController scrollController;
   RxInt currentView = 0.obs;
@@ -115,10 +117,10 @@ class WalletsController extends BaseController {
   RxMap<String, dynamic> loopOperations = <String, dynamic>{}.obs;
 
   // Hier werden alle Transaktionen gesammelt (ungefiltert):
-  List<LightningPayment> lightningPayments_list = [];
-  List<ReceivedInvoice> lightningInvoices_list = [];
-  List<BitcoinTransaction> onchainTransactions_list = [];
-  List<Swap> loopOperations_list = []; // optional
+  RxList<LightningPayment> lightningPayments_list = <LightningPayment>[].obs;
+  RxList<ReceivedInvoice> lightningInvoices_list = <ReceivedInvoice>[].obs;
+  RxList<BitcoinTransaction> onchainTransactions_list = <BitcoinTransaction>[].obs;
+  RxList<Swap> loopOperations_list = <Swap>[].obs; // optional
 
   List<TransactionItem> allTransactionItems = [];
   RxList<TransactionItemData> allTransactions =
@@ -256,45 +258,43 @@ class WalletsController extends BaseController {
         .snapshots()
         .listen((query) {
       ReceivedInvoice? model;
+      additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received invoice from stream");
         model = ReceivedInvoice.fromJson(query.docs.last.data());
 
-        // Update the latest invoice
-        latestInvoice.value = model;
+        // Create TransactionItemData for the settled invoice
+        TransactionItemData transactionItem = TransactionItemData(
+          timestamp: model.settleDate,
+          type: TransactionType.lightning,
+          direction: TransactionDirection.received,
+          receiver: model.paymentRequest.toString(),
+          txHash: model.rHash,
+          amount: "+${model.amtPaidSat}",
+          fee: 0,
+          status: TransactionStatus.confirmed,
+        );
+
+        // Add to allTransactions list
+        addOrUpdateTransaction(transactionItem);
+
+        // Add to lightningInvoices_list
+        addOrUpdateLightningInvoice(model);
+
+        // Generate a new empty invoice for the user with 0 amount
+        logger.i("Generating new empty invoice for user");
+        final receiveController = Get.find<ReceiveController>();
+        receiveController.getInvoice(0, "");
 
         // If the received invoice is settled
         if (model.settled) {
           logger.i("Received invoice from stream: showOverlay should be triggered now");
-
-          // Create TransactionItemData for the settled invoice
-          TransactionItemData transactionItem = TransactionItemData(
-            timestamp: model.settleDate,
-            type: TransactionType.lightning,
-            direction: TransactionDirection.received,
-            receiver: model.paymentRequest.toString(),
-            txHash: model.rHash,
-            amount: "+${model.amtPaidSat}",
-            fee: 0,
-            status: TransactionStatus.confirmed,
-          );
 
           // Show overlay for the settled invoice
           overlayController.showOverlayTransaction(
             "Lightning invoice settled",
             transactionItem,
           );
-
-          // Add to allTransactions list
-          addOrUpdateTransaction(transactionItem);
-
-          // Add to lightningInvoices_list
-          addOrUpdateLightningInvoice(model);
-
-          // Generate a new empty invoice for the user with 0 amount
-          logger.i("Generating new empty invoice for user");
-          final receiveController = Get.find<ReceiveController>();
-          receiveController.getInvoice(0, "");
 
           // Update the lightning balance
           fetchLightingWalletBalance();
@@ -310,6 +310,7 @@ class WalletsController extends BaseController {
 
       // Update the latest invoice regardless of settlement status
       latestInvoice.value = model;
+      additionalTransactionsLoaded.value = true;
     });
 
     // --- Payments Stream Listener ---
@@ -319,12 +320,10 @@ class WalletsController extends BaseController {
         .snapshots()
         .listen((query) {
       LightningPayment? model;
+      additionalTransactionsLoaded.value = false;
       try {
         logger.i("Payment sent and detected in wallet_controller stream");
         model = LightningPayment.fromJson(query.docs.last.data());
-
-        // Update the latest payment
-        latestPayment.value = model;
 
         // If the payment is succeeded
         if (model.status == "SUCCEEDED") {
@@ -367,21 +366,21 @@ class WalletsController extends BaseController {
 
       // Update the latest payment regardless of status
       latestPayment.value = model;
+      additionalTransactionsLoaded.value = true;
     });
 
     // --- Transactions Stream Listener ---
+    // this currently causes a bug because it shows a transaction each time we load the app and it does that even before we loaded all transactions causing some issues
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('transactions')
         .snapshots()
         .listen((query) {
       BitcoinTransaction? model;
+      additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received transaction from stream");
         model = BitcoinTransaction.fromJson(query.docs.last.data());
-
-        // Update the latest transaction
-        latestTransaction.value = model;
 
         // If the transaction is confirmed
         if (model.numConfirmations > 0) {
@@ -432,6 +431,7 @@ class WalletsController extends BaseController {
 
       // Update the latest transaction regardless of confirmation status
       latestTransaction.value = model;
+      additionalTransactionsLoaded.value = true;
     });
 
 
@@ -458,10 +458,12 @@ class WalletsController extends BaseController {
       // Update existing transaction in both lists
       allTransactions[index] = transaction;
       allTransactionItems[indexForItem] = TransactionItem(data: transaction);
+      logger.i("allTransactions and allTransactionItems existing transaction updated ");
     } else if (index == -1 && indexForItem == -1) {
       // Add new transaction to both lists
       allTransactions.insert(0, transaction);
       allTransactionItems.insert(0, TransactionItem(data: transaction));
+      logger.i("allTransactions and allTransactionItems updated");
     } else {
       // Handle inconsistent state where one list contains the transaction and the other does not
       logger.i("Inconsistent state: Transaction found in one list but not the other.");
@@ -478,55 +480,99 @@ class WalletsController extends BaseController {
   }
 
   // Method to add or update invoices in lightningInvoices_list
+// Method to add or update invoices in lightningInvoices_list and lightningInvoices Map
   void addOrUpdateLightningInvoice(ReceivedInvoice invoice) {
+    // Find the index of the existing invoice in the list
     int index = lightningInvoices_list.indexWhere((inv) => inv.rHash == invoice.rHash);
+
     if (index != -1) {
-      // Update existing invoice
+      // Update existing invoice in the list
       lightningInvoices_list[index] = invoice;
+      logger.i("Updated existing lightning invoice with rHash: ${invoice.rHash}");
     } else {
-      // Add new invoice
+      // Add new invoice to the list
       lightningInvoices_list.add(invoice);
+      logger.i("Added new lightning invoice with rHash: ${invoice.rHash}");
     }
-    combineTransactions(); // Re-combine the transactions
+
+    // Update the RxMap with the invoice's JSON representation
+    lightningInvoices[invoice.rHash] = invoice.toJson();
+    logger.i("Updated lightningInvoices RxMap for rHash: ${invoice.rHash}");
+
+    // Re-combine the transactions to refresh the combined list
+    combineTransactions();
   }
+
 
   // Method to add or update payments in lightningPayments_list
+  // Method to add or update payments in lightningPayments_list and lightningPayments Map
   void addOrUpdateLightningPayment(LightningPayment payment) {
+    // Find the index of the existing payment in the list
     int index = lightningPayments_list.indexWhere((pmt) => pmt.paymentHash == payment.paymentHash);
+
     if (index != -1) {
-      // Update existing payment
+      // Update existing payment in the list
       lightningPayments_list[index] = payment;
+      logger.i("Updated existing lightning payment with paymentHash: ${payment.paymentHash}");
     } else {
-      // Add new payment
+      // Add new payment to the list
       lightningPayments_list.add(payment);
+      logger.i("Added new lightning payment with paymentHash: ${payment.paymentHash}");
     }
-    combineTransactions(); // Re-combine the transactions
+
+    // Update the RxMap with the payment's JSON representation
+    lightningPayments[payment.paymentHash] = payment.toJson();
+    logger.i("Updated lightningPayments RxMap for paymentHash: ${payment.paymentHash}");
+
+    // Re-combine the transactions to refresh the combined list
+    combineTransactions();
   }
 
+
   // Method to add or update onchain transactions in onchainTransactions_list
+  // Method to add or update onchain transactions in onchainTransactions_list and onchainTransactions Map
   void addOrUpdateOnchainTransaction(BitcoinTransaction transaction) {
+    // Find the index of the existing transaction in the list
     int index = onchainTransactions_list.indexWhere((tx) => tx.txHash == transaction.txHash);
+
     if (index != -1) {
-      // Update existing transaction
+      // Update existing transaction in the list
       onchainTransactions_list[index] = transaction;
+      logger.i("Updated existing onchain transaction with txHash: ${transaction.txHash}");
     } else {
-      // Add new transaction
+      // Add new transaction to the list
       onchainTransactions_list.add(transaction);
+      logger.i("Added new onchain transaction with txHash: ${transaction.txHash}");
     }
-    combineTransactions(); // Re-combine the transactions
+
+    // Update the RxMap with the transaction's JSON representation
+    onchainTransactions[transaction.txHash!] = transaction.toJson();
+    logger.i("Updated onchainTransactions RxMap for txHash: ${transaction.txHash}");
+
+    // Re-combine the transactions to refresh the combined list
+    combineTransactions();
   }
+
 
   //------------------------------------------------------------------------------------------
 
   /// Holt Onchain TX
+  /// Fetch Onchain Transactions
   Future<bool> getOnchainTransactionsList() async {
     try {
       logger.i("Getting onchain transactions...");
-      Map<String, dynamic> data = onchainTransactions;
-      onchainTransactions_list = await Future.microtask(() {
-        return BitcoinTransactionsList.fromJson(data).transactions;
-      });
+      Map<String, dynamic> data = onchainTransactions; // Access the RxMap's value
+
+      // Parse the transactions from JSON
+      List<BitcoinTransaction> transactions = BitcoinTransactionsList.fromJson(data).transactions;
+
+      // Update the RxList using assignAll to maintain reactivity
+      onchainTransactions_list.assignAll(transactions);
       logger.i("Loaded ${onchainTransactions_list.length} on-chain transactions.");
+
+      // Update the RxMap with the latest transactions
+      onchainTransactions['transactions'] = transactions.map((tx) => tx.toJson()).toList();
+      logger.i("Updated onchainTransactions RxMap.");
     } catch (e) {
       logger.e("Error loading on-chain TX: $e");
       return false;
@@ -535,15 +581,25 @@ class WalletsController extends BaseController {
   }
 
   /// Holt Lightning Payments
+  /// Fetch Lightning Payments
   Future<bool> getLightningPaymentsList() async {
     try {
       logger.i("Getting lightning payments...");
-      Map<String, dynamic> data = lightningPayments;
-      lightningPayments_list = await compute(
+      Map<String, dynamic> data = lightningPayments; // Access the RxMap's value
+
+      // Parse the payments from JSON using compute for background processing
+      List<LightningPayment> payments = await compute(
             (d) => LightningPaymentsList.fromJson(d).payments,
         data,
       );
+
+      // Update the RxList using assignAll
+      lightningPayments_list.assignAll(payments);
       logger.i("Loaded ${lightningPayments_list.length} lightning payments.");
+
+      // Update the RxMap with the latest payments
+      lightningPayments['payments'] = payments.map((pmt) => pmt.toJson()).toList();
+      logger.i("Updated lightningPayments RxMap.");
     } catch (e) {
       logger.e("Error loading LN payments: $e");
       return false;
@@ -551,22 +607,37 @@ class WalletsController extends BaseController {
     return true;
   }
 
+
   /// Holt Lightning Invoices
+  /// Fetch Lightning Invoices
   Future<bool> getLightningInvoicesList() async {
     try {
       logger.i("Getting lightning invoices...");
-      Map<String, dynamic> data = lightningInvoices;
-      lightningInvoices_list = await compute((d) {
-        final allInv = ReceivedInvoicesList.fromJson(d);
-        return allInv.invoices.where((i) => i.settled).toList();
-      }, data);
+      Map<String, dynamic> data = lightningInvoices; // Access the RxMap's value
+
+      // Parse the invoices from JSON and filter settled invoices using compute
+      List<ReceivedInvoice> invoices = await compute(
+            (d) {
+          final allInv = ReceivedInvoicesList.fromJson(d);
+          return allInv.invoices.where((i) => i.settled).toList();
+        },
+        data,
+      );
+
+      // Update the RxList using assignAll
+      lightningInvoices_list.assignAll(invoices);
       logger.i("Loaded ${lightningInvoices_list.length} settled LN invoices.");
+
+      // Update the RxMap with the latest invoices
+      lightningInvoices['invoices'] = invoices.map((inv) => inv.toJson()).toList();
+      logger.i("Updated lightningInvoices RxMap.");
     } catch (e) {
       logger.e("Error loading LN invoices: $e");
       return false;
     }
     return true;
   }
+
 
   Future<void> loadActivity() async {
     final LoggerService logger = Get.find();

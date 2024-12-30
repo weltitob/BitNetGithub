@@ -8,11 +8,7 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
-import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/models/loop/swaps.dart';
+import 'package:bitnet/components/resultlist/transactions_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -53,38 +49,39 @@ class Transactions extends StatefulWidget {
 class _TransactionsState extends State<Transactions>
     with AutomaticKeepAliveClientMixin {
   final walletController = Get.find<WalletsController>();
+  late final WalletFilterController filterController;
+  late final TransactionsController transactionsController;
+  // final transactionsController = Get.find<TransactionsController>();
+
   final logger = Get.find<LoggerService>();
 
   // (Neu) Filter-Controller & Suchfeld
-  late final WalletFilterController controller;
+
   final TextEditingController searchCtrl = TextEditingController();
 
-  bool transactionsLoaded = false;
-  bool transactionsOrdered = false;
+
   bool firstInit = false;
 
-
-  // UI- & Paging-States
-  List<Widget> orderedTransactions = [];
-  int loadedActivityItems = 4;
-  bool isLoadingTransactionGroups = false;
-
-  // Streams
-  StreamSubscription<BitcoinTransaction?>? transactionStream;
-  StreamSubscription<ReceivedInvoice?>? lightningStream;
+  // // Streams
+  // StreamSubscription<BitcoinTransaction?>? transactionStream;
+  // StreamSubscription<ReceivedInvoice?>? lightningStream;
+  // StreamSubscription<ReceivedInvoice?>? paymentStream;
 
   @override
   void initState() {
     super.initState();
 
     // (Neu) Vorherigen Filter-Controller entfernen und neu anlegen
+    Get.delete<TransactionsController>();
     Get.delete<WalletFilterController>();
-    controller = Get.put(WalletFilterController());
+
+    filterController = Get.put(WalletFilterController());
+    transactionsController = Get.put(TransactionsController());
 
     // (Neu) Bereits mitgegebene Filter anwenden
     if (widget.filters != null) {
       for (int i = 0; i < widget.filters!.length; i++) {
-        controller.toggleFilter(widget.filters![i]);
+        filterController.toggleFilter(widget.filters![i]);
       }
     }
 
@@ -93,7 +90,6 @@ class _TransactionsState extends State<Transactions>
 
     // Falls du customTransactions mitgibst
     if (widget.customTransactions != null) {
-      transactionsLoaded = true;
       combineAllTransactionsWithFiltering();
       return;
     }
@@ -108,73 +104,95 @@ class _TransactionsState extends State<Transactions>
         }
       });
     }
+
+    //Onchain checking for transactions
+    Get.find<WalletsController>().subscribeToOnchainTransactions().listen(
+            (val) {
+          logger.i("subscribeTransactionsStream got data in transactions.dart: $val");
+          _checkAndDisplayAdditional();
+
+        }, onError: (error) {
+      logger.e("Received error for Transactions-stream: $error");
+    });
+
+    //Lightning payments
+    Get.find<WalletsController>().subscribeToInvoices().listen((inv) {
+      logger.i("Received data from Invoice-stream in transactions.dart: $inv");
+      _checkAndDisplayAdditional();
+
+
+    }, onError: (error) {
+      logger.e("Received error for Invoice-stream: $error");
+    });
+
+    Get.find<WalletsController>().subscribeToLightningPayments().listen((inv) {
+      logger.i("Received Payment data from Invoice-stream in transactions.dart: $inv");
+      _checkAndDisplayAdditional();
+
+    }, onError: (error) {
+      logger.e("Received error for Invoice-stream: $error");
+    });
+
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //
-  //   if (!firstInit) {
-  //     firstInit = true;
-  //
-  //     // Falls schon Transaktionen zwischengespeichert sind:
-  //     if (walletController.allTransactions.isNotEmpty &&
-  //         widget.customTransactions == null) {
-  //       Future.microtask(() {
-  //         final tmp = walletController.allTransactions
-  //             .map((item) => TransactionItem(data: item,))
-  //             .toList();
-  //         orderedTransactions = arrangeTransactions(tmp);
-  //         transactionsLoaded = true;
-  //         transactionsOrdered = true;
-  //         setState(() {});
-  //       });
-  //     }
-  //
-  //     // Stream: Onchain
-  //     transactionStream =
-  //         walletController.subscribeToOnchainTransactions().listen((val) {
-  //           if (val != null) {
-  //             onchainTransactions.add(val);
-  //             combineAllTransactionsWithFiltering();
-  //           }
-  //         }, onError: (error) {
-  //           logger.e("Received error for Transactions-stream: $error");
-  //         });
-  //
-  //     // Stream: Lightning (Invoices)
-  //     lightningStream = walletController.subscribeToInvoices().listen((inv) {
-  //       if (inv != null && inv.settled == true) {
-  //         lightningInvoices.add(inv);
-  //         combineAllTransactionsWithFiltering();
-  //       }
-  //     }, onError: (error) {
-  //       logger.e("Received error for Invoice-stream: $error");
-  //     });
-  //   }
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!firstInit) {
+      firstInit = true;
+
+      // Falls schon Transaktionen zwischengespeichert sind:
+      if (walletController.allTransactions.isNotEmpty &&
+          widget.customTransactions == null) {
+        Future.microtask(() {
+          final tmp = walletController.allTransactions
+              .map((item) => TransactionItem(data: item,))
+              .toList();
+          transactionsController.orderedTransactions.value = arrangeTransactions(tmp);
+          transactionsController.transactionsOrdered.value = true;
+          // setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
-    lightningStream?.cancel();
-    transactionStream?.cancel();
+    // lightningStream?.cancel();
+    // transactionStream?.cancel();
     super.dispose();
   }
 
+  void _checkAndDisplayAdditional() {
+// Passe hier an, wenn du mehr oder weniger als 3 Ladefunktionen hast
+    if(walletController.additionalTransactionsLoaded.value) {
+      logger.i("Loading all additional transactions...");
+      combineAllTransactionsWithFiltering();
+    } else {
+      logger.i("Transactions not loaded yet. Waiting...");
+      walletController.additionalTransactionsLoaded.listen((loaded) {
+        if (loaded) {
+          logger.i("Loading all additional transactions...");
+          combineAllTransactionsWithFiltering();
+        }
+      });
+    }
+  }
 
   void _checkAndDisplay() {
     // Passe hier an, wenn du mehr oder weniger als 3 Ladefunktionen hast
     if(walletController.transactionsLoaded.value) {
       logger.i("Loading all transactions...");
       combineAllTransactionsWithFiltering();
-      transactionsLoaded = true;
+
     } else {
       logger.i("Transactions not loaded yet. Waiting...");
       walletController.transactionsLoaded.listen((loaded) {
         if (loaded) {
           logger.i("Loading all transactions...");
           combineAllTransactionsWithFiltering();
-          transactionsLoaded = true;
+
         }
       });
     }
@@ -217,8 +235,11 @@ class _TransactionsState extends State<Transactions>
   /// (Neu) Alle Transaktionen sammeln + Filterung + Search anwenden
   void combineAllTransactionsWithFiltering({bool sticky = true}) {
     Future.microtask(() {
+
+      logger.i("Combining all transactions with filtering...");
       // 1) Alle Transaktionen (ungefiltert) sammeln
       final List<TransactionItem> combinedTransactions = walletController.allTransactionItems;
+      //We need to check if the list actually got longer
 
       // 2) Duplikate entfernen
       final Set<String> seenIds = {};
@@ -247,9 +268,9 @@ class _TransactionsState extends State<Transactions>
       // 5) Final in Kategorien packen
       return arrangeTransactions(filteredSearchList);
     }).then((val) {
-      orderedTransactions = val;
-      transactionsOrdered = true;
-      setState(() {});
+      transactionsController.orderedTransactions.value = val;
+      transactionsController.transactionsOrdered.value = true;
+      // setState(() {});
     });
   }
 
@@ -258,7 +279,7 @@ class _TransactionsState extends State<Transactions>
     // 1) Zeitfilter
     final timeFiltered = items.where((tx) {
       final ts = tx.data.timestamp;
-      return ts >= controller.start && ts <= controller.end;
+      return ts >= filterController.start && ts <= filterController.end;
     }).toList();
 
     // 2) Suchfeld => durchsucht "receiver"
@@ -268,8 +289,8 @@ class _TransactionsState extends State<Transactions>
     }).toList();
 
     // 3) Filter Onchain/Lightning
-    final filterOnchain = controller.selectedFilters.contains('Onchain');
-    final filterLightning = controller.selectedFilters.contains('Lightning');
+    final filterOnchain = filterController.selectedFilters.contains('Onchain');
+    final filterLightning = filterController.selectedFilters.contains('Lightning');
 
     List<TransactionItem> typeFiltered = searchFiltered;
     if (filterOnchain && !filterLightning) {
@@ -287,8 +308,8 @@ class _TransactionsState extends State<Transactions>
     // Möchtest du Loop oder andere Typen filtern, erweitere hier entsprechend.
 
     // 4) Filter "Sent/Received"
-    final filterSent = controller.selectedFilters.contains('Sent');
-    final filterReceived = controller.selectedFilters.contains('Received');
+    final filterSent = filterController.selectedFilters.contains('Sent');
+    final filterReceived = filterController.selectedFilters.contains('Received');
 
     // a) Beide aktiviert oder beide nicht vorhanden => alles anzeigen
     // b) Nur 'Sent' => amount fängt mit '-' an
@@ -346,11 +367,11 @@ class _TransactionsState extends State<Transactions>
               vertical: AppTheme.elementSpacing),
           child: Text(
             category,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(Get.context!).textTheme.titleMedium,
           ),
         ),
       );
-
+      //transactions: transactions
       finalTransactions.add(TransactionContainer(transactions: transactions));
     });
 
@@ -361,113 +382,45 @@ class _TransactionsState extends State<Transactions>
   void _onScroll() {
     if (widget.scrollController.position.pixels ==
         widget.scrollController.position.maxScrollExtent &&
-        !isLoadingTransactionGroups) {
+        !transactionsController.isLoadingTransactionGroups.value) {
       _loadMoreTransactionGroups();
     }
   }
 
   void _loadMoreTransactionGroups() async {
-    if (!mounted) return;
-    setState(() {
-      isLoadingTransactionGroups = true;
-    });
+
+    transactionsController.isLoadingTransactionGroups.value = true;
+
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (mounted) {
-      setState(() {
-        loadedActivityItems += 4;
-        isLoadingTransactionGroups = false;
-      });
-    }
+    transactionsController.loadedActivityItems.value += 4;
+    transactionsController.isLoadingTransactionGroups.value = false;
+
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    if (!transactionsOrdered) {
-      return SliverToBoxAdapter(
-        child: Container(
-          height: AppTheme.cardPadding * 10.h,
-          child: dotProgress(context),
-        ),
-      );
-    }
-
-    if (widget.fullList) {
-
-      // Falls "fullList" == true, alles in einem SliverToBoxAdapter
-      return SliverToBoxAdapter(
-        child: Column(
-          children: [
-
-            // (Neu) Search & Filter-Bar
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: AppTheme.cardPadding,
-                vertical: AppTheme.elementSpacing,
-              ),
-              child: SearchFieldWidget(
-                hintText: 'Search',
-                isSearchEnabled: true,
-                handleSearch: (v) {
-                  searchCtrl.text = v;
-                  combineAllTransactionsWithFiltering();
-                },
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.filter,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? AppTheme.white60
-                        : AppTheme.black60,
-                    size: AppTheme.cardPadding * 0.75,
-                  ),
-                  onPressed: () async {
-                    await BitNetBottomSheet(
-                      context: context,
-                      child: WalletFilterScreen(
-                        hideLightning: widget.hideLightning,
-                        hideOnchain: widget.hideOnchain,
-                        forcedFilters: widget.filters,
-                      ),
-                    );
-                    combineAllTransactionsWithFiltering();
-                    setState(() {});
-                  },
-                ),
-              ),
-            ),
-            // Die kategorisierten Transaktionen
-            ...orderedTransactions,
-          ],
-        ),
-      );
-    } else {
-      // Ansonsten im SliverList
-      if(orderedTransactions.length == 0) {
+    return Obx(() {
+      // Check if transactions are ordered/loading
+      if (!transactionsController.transactionsOrdered.value) {
         return SliverToBoxAdapter(
-          child: Column(
-            children: [
-              //image
-
-
-              //text that user doesnt have any transactions yet
-              Container(
-                  height: AppTheme.cardPadding * 4,
-                  child: Center(child: Text("No activity to display")))
-
-            ],
+          child: Container(
+            height: AppTheme.cardPadding * 10.h,
+            child: dotProgress(context),
           ),
         );
       }
 
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-              (ctx, index) {
-            if (index == 0) {
-              // (Neu) Erster Eintrag = Search-Bar + Filter-Button
-              return Container(
+      // If fullList is true, display all transactions in a SliverToBoxAdapter
+      if (widget.fullList) {
+        return SliverToBoxAdapter(
+          child: Column(
+            children: [
+              // Search & Filter Bar
+              Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: AppTheme.cardPadding,
                   vertical: AppTheme.elementSpacing,
@@ -475,6 +428,7 @@ class _TransactionsState extends State<Transactions>
                 child: SearchFieldWidget(
                   hintText: 'Search',
                   isSearchEnabled: true,
+                  // controller: searchCtrl,
                   handleSearch: (v) {
                     searchCtrl.text = v;
                     combineAllTransactionsWithFiltering();
@@ -497,24 +451,93 @@ class _TransactionsState extends State<Transactions>
                         ),
                       );
                       combineAllTransactionsWithFiltering();
-                      setState(() {});
                     },
                   ),
                 ),
-              );
-            }
+              ),
+              // Categorized Transactions
+              ...transactionsController.orderedTransactions,
+            ],
+          ),
+        );
+      } else {
+        // If not fullList, display transactions in a SliverList
+        if (transactionsController.orderedTransactions.isEmpty) {
+          return SliverToBoxAdapter(
+            child: Column(
+              children: [
+                // You can add an image here if desired
+                // Image.asset('path_to_image'),
 
-            final contentIndex = index - 1;
-            if (contentIndex < orderedTransactions.length) {
-              return orderedTransactions[contentIndex];
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-          childCount: orderedTransactions.length + 1,
-        ),
-      );
-    }
+                // Text indicating no transactions
+                Container(
+                  height: AppTheme.cardPadding * 4,
+                  child: Center(
+                    child: Text(
+                      "No activity to display",
+                      style: Theme.of(Get.context!).textTheme.bodyMedium,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (ctx, index) {
+              if (index == 0) {
+                // First entry: Search-Bar + Filter-Button
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding,
+                    vertical: AppTheme.elementSpacing,
+                  ),
+                  child: SearchFieldWidget(
+                    hintText: 'Search',
+                    isSearchEnabled: true,
+                    // controller: searchCtrl,
+                    handleSearch: (v) {
+                      searchCtrl.text = v;
+                      combineAllTransactionsWithFiltering();
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.filter,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.white60
+                            : AppTheme.black60,
+                        size: AppTheme.cardPadding * 0.75,
+                      ),
+                      onPressed: () async {
+                        await BitNetBottomSheet(
+                          context: context,
+                          child: WalletFilterScreen(
+                            hideLightning: widget.hideLightning,
+                            hideOnchain: widget.hideOnchain,
+                            forcedFilters: widget.filters,
+                          ),
+                        );
+                        combineAllTransactionsWithFiltering();
+                      },
+                    ),
+                  ),
+                );
+              }
+
+              final contentIndex = index - 1;
+              if (contentIndex < transactionsController.orderedTransactions.length) {
+                return transactionsController.orderedTransactions[contentIndex];
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            childCount: transactionsController.orderedTransactions.length + 1,
+          ),
+        );
+      }
+    });
   }
 
   @override

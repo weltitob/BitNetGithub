@@ -116,6 +116,7 @@ Future<void> main() async {
   Get.put(ReceiveController(), permanent: true);
   Get.put(OverlayController(), permanent: true);
   Get.put(UsersListController(), permanent: true);
+  // Get.put(WalletsCon(), permanent: true);
 
 
   // Get.put(LoggerService(), permanent: true);
