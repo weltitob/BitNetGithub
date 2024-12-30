@@ -43,9 +43,8 @@ class WalletsController extends BaseController {
   RxBool showInfo = false.obs;
   RxBool transactionsLoaded = false.obs;
   RxBool additionalTransactionsLoaded = false.obs;
-
-
   late final ScrollController scrollController;
+
   RxInt currentView = 0.obs;
   Rx<OnchainBalance> onchainBalance = OnchainBalance(
     totalBalance: '0',
@@ -145,15 +144,16 @@ class WalletsController extends BaseController {
 
   @override
   void onInit() {
+    super.onInit();
     final logger = Get.find<LoggerService>();
     logger.i("Calling onInit in wallet_controller");
 
-    super.onInit();
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
 
     scrollController = ScrollController();
+
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
 
     selectedCard.value =

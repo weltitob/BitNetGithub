@@ -67,8 +67,8 @@ class SendBTCScreen extends GetWidget<SendsController> {
                 child: controller.initializedValues.value
                     ? (controller.sendType == SendType.Invoice ||
                             controller.sendType == SendType.LightningUrl)
-                        ? const LightningSendTab()
-                        : const OnChainSendTab()
+                        ?  LightningSendTab()
+                        :  OnChainSendTab()
                     : dotProgress(context),
               ),
             ),

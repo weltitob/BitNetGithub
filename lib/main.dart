@@ -256,6 +256,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           currencyChangeProvider.selectedCurrency ?? 'usd');
                       if(Auth().currentUser != null){
                         newStream.priceStream.asBroadcastStream().listen((data) {
+                          // Get.put(WalletsController());
                           Get.find<WalletsController>().chartLines.value = data;
                         });
                       }
@@ -301,6 +302,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         currencyChangeProvider.selectedCurrency ?? 'usd');
                     if(Auth().currentUser != null){
                       newStream.priceStream.asBroadcastStream().listen((data) {
+                        // Get.put(WalletsController());
                         Get.find<WalletsController>().chartLines.value = data;
                       });
                     }

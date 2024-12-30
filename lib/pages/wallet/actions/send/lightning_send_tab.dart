@@ -102,7 +102,9 @@ class LightningSendTab extends GetWidget<SendsController> {
           Obx(
             () => BottomCenterButton(
               buttonTitle: L10n.of(context)!.sendNow,
-              buttonState: sendController.loadingSending.value == true ? ButtonState.loading : ButtonState.idle,
+              buttonState: (sendController.loadingSending.value == true)
+                  ? ButtonState.loading
+                  : ButtonState.idle,
               onButtonTap: () async {
                 sendController.loadingSending.value = true;
                 dynamic response = await controller.sendBTC(context);
