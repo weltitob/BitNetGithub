@@ -254,9 +254,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       final newStream = BitcoinPriceStream();
                       newStream.updateCurrency(
                           currencyChangeProvider.selectedCurrency ?? 'usd');
-                      newStream.priceStream.asBroadcastStream().listen((data) {
-                        Get.find<WalletsController>().chartLines.value = data;
-                      });
+                      if(Auth().currentUser != null){
+                        newStream.priceStream.asBroadcastStream().listen((data) {
+                          Get.find<WalletsController>().chartLines.value = data;
+                        });
+                      }
                       return newStream;
                     }
                     bitcoinPriceStream.priceStream
@@ -297,9 +299,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-                    newStream.priceStream.asBroadcastStream().listen((data) {
-                      Get.find<WalletsController>().chartLines.value = data;
-                    });
+                    if(Auth().currentUser != null){
+                      newStream.priceStream.asBroadcastStream().listen((data) {
+                        Get.find<WalletsController>().chartLines.value = data;
+                      });
+                    }
                     return newStream;
                   }
                   bitcoinPriceStream.priceStream
