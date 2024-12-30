@@ -450,7 +450,6 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
-
     loadingSending.value = true;
     LoggerService logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();

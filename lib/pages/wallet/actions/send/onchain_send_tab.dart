@@ -74,7 +74,9 @@ class OnChainSendTab extends GetWidget<SendsController> {
           ),
           BottomCenterButton(
             buttonTitle: L10n.of(context)!.sendNow,
-            buttonState: ButtonState.idle,
+            buttonState: (controller.loadingSending.value == true)
+                ? ButtonState.loading
+                : ButtonState.idle,
             onButtonTap: () async {
               await controller.sendBTC(context);
             },
