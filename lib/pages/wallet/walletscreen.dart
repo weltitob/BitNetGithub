@@ -32,7 +32,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class WalletScreen extends GetWidget<WalletsController> {
-  const WalletScreen({Key? key}) : super(key: key);
+  WalletScreen({Key? key}) : super(key: key);
+
+
 
   @override
   Widget build(BuildContext context) {

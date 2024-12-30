@@ -212,18 +212,21 @@ class ProfileController extends BaseController {
   GlobalKey globalKeyQR = GlobalKey();
 
   void updateProfilepic() {
+    logger.i("Updating profile pic");
     usersCollection.doc(profileId).update({
       'profileImageUrl': _profileImage,
     });
   }
 
   void updateUsername() {
+    logger.i("Updating username");
     usersCollection.doc(profileId).update({
       'username': userNameController.text,
     });
   }
 
   void updateDisplayName() {
+    logger.i("Updating display name");
     displayNameValid.value = displayNameController.text.trim().length >= 3;
     if (displayNameValid.value) {
       usersCollection.doc(profileId).update({
@@ -233,12 +236,14 @@ class ProfileController extends BaseController {
   }
 
   void updateBackgroundpic() {
+    logger.i("Updating background pic");
     usersCollection.doc(profileId).update({
       'backgroundImageUrl': _backgroundImage,
     });
   }
 
   void updateBio() {
+    logger.i("Updating bio");
     bioValid.value = bioController.text.trim().length <= 40;
     if (bioValid.value) {
       usersCollection.doc(profileId).update({
@@ -248,6 +253,7 @@ class ProfileController extends BaseController {
   }
 
   void updateShowFollowers(bool showFollowers) {
+    logger.i("Updating show followers");
     usersCollection.doc(profileId).update({
       'showFollowers': showFollowers,
     });

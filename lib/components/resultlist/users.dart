@@ -33,19 +33,9 @@ class _UsersListState extends State<UsersListWidget> {
     return Obx(() {
       // Show a small overlay if isLoading is true, but don't block the entire screen.
       if (controller.isLoading.value) {
-        return Stack(
-          children: [
-            _buildMainContent(),
-            Positioned(
-              top: 10,
-              right: 10,
-              child: SizedBox(
-                height: 20,
-                width: 20,
-                child: dotProgress(context),
-              ),
-            ),
-          ],
+        return Container(
+          height: AppTheme.cardPadding * 5,
+          child: Center(child: dotProgress(context)),
         );
       }
 

@@ -62,8 +62,8 @@ class CreateAccountController extends State<CreateAccount> {
 
         //Update the username in our database for the user
         ProfileController profileController = Get.find<ProfileController>();
-
         profileController.userNameController.text = localpart;
+        profileController.updateUsername();
 
         context.go(
           Uri(path: '/').toString(),

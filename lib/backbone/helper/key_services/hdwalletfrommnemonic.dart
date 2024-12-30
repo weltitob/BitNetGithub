@@ -70,9 +70,17 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     final List<String> derivedAddresses = [];
     for (int i = 0; i < results.length; i++) {
       final addr = results[i];
-      logger.i("Derived address [$i]: $addr");
-      BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
-      derivedAddresses.add(address.addr);
+      try {
+        // Log the derived address
+        logger.i("Derived address [$i]: $addr");
+
+        BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
+        // Add the valid address to the list
+        derivedAddresses.add(address.addr);
+      } catch (error, stackTrace) {
+        // Log the error with detailed information
+        logger.e("Error processing address at index [$i]: $addr, $error, $stackTrace");
+      }
     }
     logger.i("Derived addresses: $derivedAddresses");
 
