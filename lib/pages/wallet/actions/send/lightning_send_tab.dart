@@ -97,17 +97,26 @@ class LightningSendTab extends GetWidget<SendsController> {
               ),
             ],
           ),
-          Obx(
-            () => BottomCenterButton(
-              buttonTitle: L10n.of(context)!.sendNow,
-              buttonState: (controller.loadingSending.value == true)
-                  ? ButtonState.loading
-                  : ButtonState.idle,
-              onButtonTap: () async {
-                dynamic response = await controller.sendBTC(context);
-              },
-            ),
+          // Wrap the BottomCenterButton in Obx to make it reactive
+          Obx(() => BottomCenterButton(
+            buttonTitle: L10n.of(context)!.sendNow,
+            buttonState: controller.loadingSending.value
+                ? ButtonState.loading
+                : ButtonState.idle,
+            onButtonTap: () async {
+              if(controller.loadingSending == false) {
+                controller.toggleButtonState();
+                await controller.sendBTC(context);
+                controller.isFinished.listen((isFinished) {
+                  if (isFinished) {
+                    controller.toggleButtonState();
+                  }
+                });
+              }
+              // controller.toggleButtonState();
+            },
           )
+          ),
         ],
       ),
     );

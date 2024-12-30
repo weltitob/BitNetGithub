@@ -4,7 +4,9 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BottomCenterButton extends StatefulWidget {
+
+
+class BottomCenterButton extends StatelessWidget {
   final String buttonTitle;
   final VoidCallback onButtonTap;
   final VoidCallback? onButtonTapDisabled;
@@ -19,12 +21,11 @@ class BottomCenterButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<BottomCenterButton> createState() => _BottomCenterButtonState();
-}
-
-class _BottomCenterButtonState extends State<BottomCenterButton> {
-  @override
   Widget build(BuildContext context) {
+    // Debugging: Log the current button state
+    // LoggerService logger = Get.find<LoggerService>();
+    // logger.i("BottomCenterButton build with state: $buttonState");
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -45,13 +46,16 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
               ),
               child: Center(
                 child: LongButtonWidget(
-                  state: widget.buttonState,
-                  buttonType: widget.buttonState == ButtonState.disabled ? ButtonType.transparent : ButtonType.solid,
+                  state: buttonState,
+                  buttonType: buttonState == ButtonState.disabled
+                      ? ButtonType.transparent
+                      : ButtonType.solid,
                   customWidth: AppTheme.cardPadding * 13.w,
                   customHeight: AppTheme.cardPadding * 2.5,
-                  title: widget.buttonTitle,
-                  onTap: widget.onButtonTap,
-                  onTapDisabled: widget.onButtonTapDisabled,
+                  title: buttonTitle,
+                  onTap: buttonState == ButtonState.disabled
+                      ? onButtonTapDisabled
+                      : onButtonTap,
                 ),
               ),
             ),
@@ -61,6 +65,7 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
     );
   }
 }
+
 
 class BottomButtons extends StatefulWidget {
   final String leftButtonTitle;

@@ -1,12 +1,31 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:get/get.dart';
 
+class ButtonController extends GetxController {
+  var isLoading = false.obs; // Observable variable
 
-import 'package:flutter/material.dart';
+  void toggleButtonState() {
+    isLoading.value = !isLoading.value; // Toggle the state between true and false
+  }
+}
+
 
 class ComingSoonPage extends StatelessWidget {
-  const ComingSoonPage({super.key});
+  ComingSoonPage({super.key});
+
+  final ButtonController controller = Get.put(ButtonController()); // Initialize the controller
 
   @override
   Widget build(BuildContext context) {
@@ -14,24 +33,35 @@ class ComingSoonPage extends StatelessWidget {
       context: context,
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Centers the column vertically
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Image Widget: Replace the path with your own image asset
             Image.asset(
-              'assets/images/monkey.webp', // Update this path
-              width: 200, // Adjust width as needed
-              height: 200, // Adjust height as needed
-              fit: BoxFit.contain, // Adjust how the image should fit
+              'assets/images/monkey.webp',
+              width: 200,
+              height: 200,
+              fit: BoxFit.contain,
             ),
-            const SizedBox(height: AppTheme.cardPadding * 2), // Spacing between image and text
+            const SizedBox(height: AppTheme.cardPadding * 2),
             Text(
               'Coming soon...',
               style: Theme.of(context).textTheme.titleLarge,
             ),
+            const SizedBox(height: AppTheme.cardPadding * 2),
+            Obx(() => BottomCenterButton(
+              buttonTitle: "Testbutton",
+              buttonState: controller.isLoading.value ? ButtonState.loading : ButtonState.idle,
+              onButtonTap: () {
+                controller.toggleButtonState();
+                // Simulate a network call or process
+                Future.delayed(Duration(seconds: 2), () {
+                  // Toggle the state back after 2 seconds
+                  controller.toggleButtonState();
+                });
+              },
+            )),
           ],
         ),
       ),
     );
   }
 }
-

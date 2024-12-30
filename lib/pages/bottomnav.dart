@@ -115,7 +115,7 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
   //
   // static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
-  static List<Widget> navItems = <Widget>[ComingSoonPage(), const Wallet(), const ComingSoonPage()];
+  static List<Widget> navItems = <Widget>[ComingSoonPage(), const Wallet(),  ComingSoonPage()];
 
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {

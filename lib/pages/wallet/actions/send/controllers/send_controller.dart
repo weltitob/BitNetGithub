@@ -304,9 +304,10 @@ class SendsController extends BaseController {
   }
 
   void giveValuesToLnUrl(String lnUrl, {bool asAddress = false}) async {
-    logger.i("LNURL detected: $lnUrl");
+    logger.i("LNURL detected: $lnUrl, asAddress: $asAddress");
     String finalLnUrl = lnUrl;
     LNURLParseResult? lnResult = null;
+
     if (asAddress) {
       List<String> lnUrlParts = lnUrl.split('@');
       finalLnUrl =
@@ -315,6 +316,7 @@ class SendsController extends BaseController {
       if (httpResult.statusCode != 200) {
         return;
       }
+      logger.i("LNURL response: ${httpResult.body}");
       lnResult = LNURLParseResult(
           payParams: LNURLPayParams.fromJson(jsonDecode(httpResult.body)));
       lnUrlname = lnUrlParts[0];
@@ -449,8 +451,11 @@ class SendsController extends BaseController {
     }
   }
 
-  sendBTC(BuildContext context) async {
-    loadingSending.value = true;
+  void toggleButtonState() {
+    loadingSending.value = !loadingSending.value; // Toggle the state between true and false
+  }
+
+  Future<dynamic> sendBTC(BuildContext context) async {
     LoggerService logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();
     logger.i("sendBTC() called");
@@ -692,7 +697,6 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
-    loadingSending = false.obs;
   }
 
   @override
