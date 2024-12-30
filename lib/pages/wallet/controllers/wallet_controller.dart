@@ -255,13 +255,17 @@ class WalletsController extends BaseController {
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('invoices')
+        .orderBy('settle_date', descending: true)
         .snapshots()
         .listen((query) {
       ReceivedInvoice? model;
       additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received invoice from stream");
-        model = ReceivedInvoice.fromJson(query.docs.last.data());
+        logger.i("first data: ${query.docs.first.data()}");
+        logger.i("entire data: ${query.docs}");
+
+        model = ReceivedInvoice.fromJson(query.docs.first.data());
 
         // Create TransactionItemData for the settled invoice
         TransactionItemData transactionItem = TransactionItemData(
@@ -317,17 +321,20 @@ class WalletsController extends BaseController {
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('payments')
+        .orderBy('creation_date', descending: true)
         .snapshots()
         .listen((query) {
       LightningPayment? model;
       additionalTransactionsLoaded.value = false;
       try {
         logger.i("Payment sent and detected in wallet_controller stream");
-        model = LightningPayment.fromJson(query.docs.last.data());
+        model = LightningPayment.fromJson(query.docs.first.data());
 
         // If the payment is succeeded
         if (model.status == "SUCCEEDED") {
           logger.i("Payment succeeded: showOverlay gets triggered now");
+          logger.i("first data: ${query.docs.first.data()}");
+          logger.i("entire data: ${query.docs}");
 
           // Create TransactionItemData for the succeeded payment
           TransactionItemData transactionItem = TransactionItemData(
@@ -374,13 +381,18 @@ class WalletsController extends BaseController {
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('transactions')
+        .orderBy('time_stamp', descending: true)
         .snapshots()
         .listen((query) {
       BitcoinTransaction? model;
       additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received transaction from stream");
-        model = BitcoinTransaction.fromJson(query.docs.last.data());
+        //this right here is a problem sometimes it doesnt actually is the last data
+        logger.i("Last data: ${query.docs.first.data()}");
+        logger.i("entire data: ${query.docs}");
+
+        model = BitcoinTransaction.fromJson(query.docs.first.data());
 
         // If the transaction is confirmed
         if (model.numConfirmations > 0) {
