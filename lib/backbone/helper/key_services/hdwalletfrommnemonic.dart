@@ -59,29 +59,16 @@ Future<HDWallet> createUserWallet(String mnemonic) async {
     logger.i("Generating derived addresses in parallel...");
 
     // Type the list as List<Future<String>> (matching nextAddr's return type)
-    final List<Future<dynamic>> futures = List.generate(
-      5,
-          (i) => nextAddr(publicKey),
-    );
 
-    // Also type Future.wait accordingly
-    final List<dynamic> results = await Future.wait<dynamic>(futures);
-
+    //goback to old code from izak
     final List<String> derivedAddresses = [];
-    for (int i = 0; i < results.length; i++) {
-      final addr = results[i];
-      try {
-        // Log the derived address
-        logger.i("Derived address [$i]: $addr");
-
-        BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
-        // Add the valid address to the list
-        derivedAddresses.add(address.addr);
-      } catch (error, stackTrace) {
-        // Log the error with detailed information
-        logger.e("Error processing address at index [$i]: $addr, $error, $stackTrace");
-      }
+    for (int i = 0; i < 5; i++) {
+      String addr = await nextAddr(publicKey);
+      print("Response" + addr);
+      BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
+      derivedAddresses.add(address.addr);
     }
+
     logger.i("Derived addresses: $derivedAddresses");
 
     // Return the HDWallet instance

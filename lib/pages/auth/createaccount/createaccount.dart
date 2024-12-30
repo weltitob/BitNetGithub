@@ -32,10 +32,13 @@ class CreateAccountController extends State<CreateAccount> {
   bool isLoading = false;
   bool isDefaultPlatform = (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
   void login() => context.go('/authhome/login');
+  late ProfileController profileController;
 
   @override
   void initState() {
     super.initState();
+    profileController = Get.put(ProfileController());
+    profileController = Get.find<ProfileController>();
   }
 
   void createAccountPressed() async {
@@ -61,7 +64,7 @@ class CreateAccountController extends State<CreateAccount> {
         // // context.go("/persona)")
 
         //Update the username in our database for the user
-        ProfileController profileController = Get.find<ProfileController>();
+
         profileController.userNameController.text = localpart;
         profileController.updateUsername();
 
