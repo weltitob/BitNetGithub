@@ -37,8 +37,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
 
   getPrivateKey() async { 
     PrivateData privateuserdata = await getPrivateData(myuserdid);
-
-
+    print("privateuserdata: ${privateuserdata.mnemonic}");
     final userdataJsonString = json.encode(privateuserdata.toMap());
     return userdataJsonString;
   }
@@ -59,11 +58,11 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (!snapshot.hasData) {
                     return SizedBox(
-                        height: AppTheme.cardPadding * 10,
+                        height: AppTheme.cardPadding * 8,
                         child: Center(child: dotProgress(context)));
                   }
                   return Container(
-                    margin: const EdgeInsets.all(AppTheme.cardPadding),
+                    margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: AppTheme.cardRadiusBigger),

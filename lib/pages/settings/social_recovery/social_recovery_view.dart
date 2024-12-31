@@ -180,8 +180,12 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                 buttonTitle: 'Confirm',
                 buttonState: ButtonState.idle,
                 onButtonTap: () async {
+
+                  //this was the same before ==> when this works we should be done
                   triggerMnemonicCheck(context, null,
                       mnemonicFieldKey.currentState?.textControllers ?? []);
+
+
                 },
                 onButtonTapDisabled: () {
                   overlayController.showOverlay('Please fill out your Mnemonic.',
@@ -189,48 +193,6 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                 },
               ),
             ]),
-          if (controller.initiateSocialRecovery.value != 2)
-            Obx(
-              () => ConfirmPrivateKeyPage(
-                keyController: controller.keyController,
-                buttonState: controller.keyValid.value
-                    ? ButtonState.idle
-                    : ButtonState.disabled,
-                onChanged: (str) {
-                  if (str.isEmpty) {
-                    controller.keyValid.value = false;
-                  } else if (str.length < 6) {
-                    controller.keyValid.value = false;
-                  } else {
-                    controller.keyValid.value = true;
-                  }
-                },
-                onConfirm: () async {
-                  String did = Auth().currentUser!.uid;
-                  PrivateData privData =
-                      await getPrivateData(Auth().currentUser!.uid);
-                  HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
-                  if (controller.keyController.text == hdWallet.privkey) {
-                    List<UserData> invitedUsers = controller.selectedUsers
-                        .map((item) => UserData.fromMap(item))
-                        .toList();
-                    initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
-                            controller.selectedUsers.length, invitedUsers)
-                        .then((val) {
-                      controller.initiateSocialRecovery.value = val ? 2 : 1;
-                    });
-
-                    controller.pageControllerSocialRecovery.nextPage(
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.easeIn);
-                  } else {
-                    overlayController.showOverlay(
-                        'Your private key was incorrect, try again.',
-                        color: AppTheme.errorColor);
-                  }
-                },
-              ),
-            ),
           Obx(
             () => MaxWidthBody(
                 child: controller.initiateSocialRecovery.value == 0
@@ -326,9 +288,26 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
     final String mnemonic =
         tCtrls.map((controller) => controller.text).join(' ');
     PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+
     if (privData.mnemonic == mnemonic) {
+
+      String did = Auth().currentUser!.uid;
+
+      HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+      List<UserData> invitedUsers = controller.selectedUsers
+          .map((item) => UserData.fromMap(item))
+          .toList();
+
+      initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
+          controller.selectedUsers.length, invitedUsers)
+          .then((val) {
+        controller.initiateSocialRecovery.value = val ? 2 : 1;
+      });
+
       controller.pageControllerSocialRecovery.nextPage(
-          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+          duration: Duration(milliseconds: 200),
+          curve: Curves.easeIn);
+
     } else {
       overlayController.showOverlay('Your Mnemonic was Incorrect, please try again',
           color: AppTheme.errorColor);
@@ -344,62 +323,6 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
   }
 }
 
-class ConfirmPrivateKeyPage extends StatelessWidget {
-  const ConfirmPrivateKeyPage({
-    super.key,
-    required this.keyController,
-    required this.onConfirm,
-    required this.buttonState,
-    required this.onChanged,
-  });
-  final TextEditingController keyController;
-  final Function() onConfirm;
-  final ButtonState buttonState;
-  final Function(String) onChanged;
-  @override
-  Widget build(BuildContext context) {
-    final overlayController = Get.find<OverlayController>();
-
-    return MaxWidthBody(
-        child: Stack(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Please enter your private key',
-                style: Theme.of(context).textTheme.headlineSmall),
-            SizedBox(height: AppTheme.elementSpacing),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GlassContainer(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    onChanged: onChanged,
-                    decoration:
-                        InputDecoration(hintText: L10n.of(context)!.privateKey),
-                    controller: keyController,
-                    obscureText: true,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: AppTheme.cardPadding * 3,
-            ),
-          ],
-        ),
-        BottomCenterButton(
-            buttonState: buttonState,
-            buttonTitle: 'Confirm Private Key',
-            onButtonTap: onConfirm,
-            onButtonTapDisabled: () => overlayController.showOverlay(
-                'please write down your private key.',
-                color: AppTheme.errorColor))
-      ],
-    ));
-  }
-}
 
 class SocialRecoveryInfoAction extends StatelessWidget {
   const SocialRecoveryInfoAction({
