@@ -1019,6 +1019,7 @@ class _AddressItemState extends State<AddressItem> {
                                         child: Text('You ~ ', style: Theme.of(context).textTheme.titleLarge))
                                   ],
                                   SizedBox(
+                                    width: AppTheme.cardPadding * 5.w,
                                     child: Text(
                                       '${widget.address}',
                                       overflow: TextOverflow.ellipsis,
