@@ -17,12 +17,12 @@ class RemoteConfigController extends GetxController {
   ByteData? adminMacaroonByteData; // Admin macaroon in ByteData format
 
   // Observables for each remote config value
-  var baseUrlCoinGecko = ''.obs;
-  var baseUrlCoinGeckoApiPro = ''.obs;
+  // var baseUrlCoinGecko = ''.obs;
+  // var baseUrlCoinGeckoApiPro = ''.obs;
   var baseUrlLightningTerminal = ''.obs;
   var baseUrlLightningTerminalWithPort = ''.obs;
   var baseUrlMemPoolSpaceApi = ''.obs;
-  var coinGeckoApiKey = ''.obs;
+  // var coinGeckoApiKey = ''.obs;
   var exchangeRatesBaseUrl = ''.obs;
   var exchangeRatesMyKey = ''.obs;
   var exchangeRatesRatesUrl = ''.obs;
@@ -36,12 +36,12 @@ class RemoteConfigController extends GetxController {
       await _remoteConfig.fetchAndActivate();
 
       // Assign values to observables
-      baseUrlCoinGecko.value = _remoteConfig.getString('baseUrlCoinGecko');
-      baseUrlCoinGeckoApiPro.value = _remoteConfig.getString('baseUrlCoinGeckoApiPro');
+      // baseUrlCoinGecko.value = _remoteConfig.getString('baseUrlCoinGecko');
+      // baseUrlCoinGeckoApiPro.value = _remoteConfig.getString('baseUrlCoinGeckoApiPro');
       baseUrlLightningTerminal.value = _remoteConfig.getString('baseUrlLightningTerminal');
       baseUrlLightningTerminalWithPort.value = _remoteConfig.getString('baseUrlLightningTerminalWithPort');
       baseUrlMemPoolSpaceApi.value = _remoteConfig.getString('baseUrlMemPoolSpaceApi');
-      coinGeckoApiKey.value = _remoteConfig.getString('coinGeckoApiKey');
+      // coinGeckoApiKey.value = _remoteConfig.getString('coinGeckoApiKey');
       exchangeRatesBaseUrl.value = _remoteConfig.getString('exchangerates_baseUrl');
       exchangeRatesMyKey.value = _remoteConfig.getString('exchangerates_mykey');
       exchangeRatesRatesUrl.value = _remoteConfig.getString('exchangerates_ratesUrl');

@@ -1,17 +1,21 @@
 import 'dart:async';
-import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class BitcoinPriceStream {
   late final StreamController<ChartLine> _priceController;
-  Timer? _timer;
-  final Duration _updateInterval = const Duration(seconds: 45);
-  String localCurrency = 'eur'; // Default currency
+  String localCurrency = 'usd'; // Default currency
 
+  Stream<ChartLine> get priceStream => _priceController.stream;
+
+  // Subscription to Firestore snapshots
+  StreamSubscription<DocumentSnapshot>? _subscription;
+
+  // Constructor without initial currency
   BitcoinPriceStream() {
     _priceController = StreamController<ChartLine>(
       onListen: _startStream,
@@ -19,94 +23,106 @@ class BitcoinPriceStream {
     );
   }
 
+  // Constructor with initial currency
   BitcoinPriceStream.withCurrency(String currency) {
-    if (localCurrency != currency) {
-      localCurrency = currency.toLowerCase();
-    }
+
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
+    currency = currency ?? "USD";
+
     _priceController = StreamController<ChartLine>(
       onListen: _startStream,
       onCancel: _stopStream,
     );
-    _startStream();
   }
 
-  Stream<ChartLine> get priceStream => _priceController.stream;
-
+  // Update currency and restart listener if needed
   void updateCurrency(String currency) {
-    if (localCurrency != currency) {
+    if (localCurrency != currency.toLowerCase()) {
       localCurrency = currency.toLowerCase();
       _restartStream();
     }
   }
 
+  // Start listening to Firestore
   void _startStream() {
-    _fetchAndUpdate();
-    _timer = Timer.periodic(_updateInterval, (_) => _fetchAndUpdate());
+    _setupFirestoreListener();
   }
 
+  // Stop listening to Firestore
   void _stopStream() {
-    _timer?.cancel();
+    _subscription?.cancel();
+    _subscription = null;
   }
 
+  // Restart the Firestore listener
   void _restartStream() {
     _stopStream();
     _startStream();
   }
 
-  Future<void> _fetchAndUpdate() async {
-
-    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-    String baseUrlCoinGeckoApiPro = remoteConfigController.baseUrlCoinGeckoApiPro.value;
-    String apiKey = remoteConfigController.coinGeckoApiKey.value;
-
-    final logger = Get.find<LoggerService>();
-    logger.d("Fetching bitcoin price in $localCurrency...");
+  // Setup Firestore listener
+  Future<void> _setupFirestoreListener() async {
+    final LoggerService logger = Get.find<LoggerService>();
+    logger.d("Setting up Firestore listener for Bitcoin price in $localCurrency...");
 
     try {
-      final Map<String, String> params = {
-        'ids': 'bitcoin',
-        'vs_currencies': localCurrency,
-        'include_last_updated_at': 'true',
-        'x_cg_pro_api_key': apiKey,
-      };
+      String? currency =
+          Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
+      currency = currency ?? "USD";
 
-      final DioClient dioClient = Get.find<DioClient>();
-      final String _url =
-          "${baseUrlCoinGeckoApiPro}/simple/price?ids=bitcoin"
-          "&vs_currencies=$localCurrency"
-          "&include_last_updated_at='true'"
-          "&x_cg_pro_api_key=${apiKey}";
+      // Assume currency is already set via constructor or updateCurrency
+      String currencyUpper = localCurrency.toUpperCase();
+      DocumentReference dataRef = FirebaseFirestore.instance
+          .collection('chart_data')
+          .doc(currencyUpper)
+          .collection('live')
+          .doc('data');
 
-      final response = await dioClient.get(url: _url);
+      // Ensure any existing subscription is canceled before setting up a new one
+      await _subscription?.cancel();
 
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final double price =
-        double.parse(data['bitcoin'][localCurrency].toString());
+      // Set up the listener
+      _subscription = dataRef.snapshots().listen((docSnapshot) {
+        if (docSnapshot.exists) {
+          Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
-        // The API might not return `last_updated_at` as a double, so parse safely:
-        final double time =
-            double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
+          // Extract the price
+          double? price = data['price']?.toDouble();
 
-        logger.d("Price of bitcoin in $localCurrency: $price");
+          // Extract the last updated timestamp
+          Timestamp? timestamp = data['last_updated'] as Timestamp?;
+          double time = timestamp != null
+              ? timestamp.toDate().millisecondsSinceEpoch.toDouble()
+              : DateTime.now().millisecondsSinceEpoch.toDouble();
 
-        final ChartLine latestChartLine = ChartLine(time: time, price: price);
+          if (price != null) {
+            logger.d("Received Bitcoin price in $localCurrency: $price at $time");
+            final ChartLine latestChartLine = ChartLine(time: time, price: price);
 
-        // --- IMPORTANT CHECK HERE: do not add events if closed or no one is listening.
-        if (!_priceController.isClosed && _priceController.hasListener) {
-          _priceController.add(latestChartLine);
+            // Add to the stream if there are listeners
+            if (!_priceController.isClosed && _priceController.hasListener) {
+              _priceController.add(latestChartLine);
+            } else {
+              logger.i("No listeners available to receive Bitcoin price updates.");
+            }
+          } else {
+            logger.e("Price data is missing in Firestore for $currencyUpper > live.");
+          }
+        } else {
+          logger.e("No document found in Firestore for $localCurrency > live.");
         }
+      }, onError: (error) {
+        logger.e("Error listening to Firestore for Bitcoin price: $error");
+      });
 
-      } else {
-        logger.e(
-          "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}",
-        );
-      }
+      logger.d("Firestore listener successfully set up.");
     } catch (e) {
-      logger.e("Error fetching Bitcoin price: $e");
+      logger.e("Exception while setting up Firestore listener: $e");
     }
   }
 
+  // Dispose method to clean up resources
   void dispose() {
     // Once dispose() is called, we’ll assume the stream should be closed.
     _stopStream();

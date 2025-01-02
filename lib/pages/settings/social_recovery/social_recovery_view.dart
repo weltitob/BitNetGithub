@@ -180,15 +180,13 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                 buttonTitle: 'Confirm',
                 buttonState: ButtonState.idle,
                 onButtonTap: () async {
-
                   //this was the same before ==> when this works we should be done
                   triggerMnemonicCheck(context, null,
                       mnemonicFieldKey.currentState?.textControllers ?? []);
-
-
                 },
                 onButtonTapDisabled: () {
-                  overlayController.showOverlay('Please fill out your Mnemonic.',
+                  overlayController.showOverlay(
+                      'Please fill out your Mnemonic.',
                       color: AppTheme.errorColor);
                 },
               ),
@@ -290,7 +288,6 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
     PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
 
     if (privData.mnemonic == mnemonic) {
-
       String did = Auth().currentUser!.uid;
 
       HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
@@ -299,17 +296,16 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
           .toList();
 
       initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
-          controller.selectedUsers.length, invitedUsers)
+              controller.selectedUsers.length, invitedUsers)
           .then((val) {
         controller.initiateSocialRecovery.value = val ? 2 : 1;
       });
 
       controller.pageControllerSocialRecovery.nextPage(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.easeIn);
-
+          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
     } else {
-      overlayController.showOverlay('Your Mnemonic was Incorrect, please try again',
+      overlayController.showOverlay(
+          'Your Mnemonic was Incorrect, please try again',
           color: AppTheme.errorColor);
     }
 
@@ -322,7 +318,6 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
     // });
   }
 }
-
 
 class SocialRecoveryInfoAction extends StatelessWidget {
   const SocialRecoveryInfoAction({

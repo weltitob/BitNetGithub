@@ -1,37 +1,57 @@
-
-// This method is used to fetch the current Bitcoin price from the CoinGecko API.
-import 'dart:convert';
-import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:provider/provider.dart';
 
+/*
+This function retrieves the latest Bitcoin price in Euro from Firestore.
+*/
 Future<double> getBitcoinPrice() async {
+  // Retrieve the logger instance
+  LoggerService logger = Get.find<LoggerService>();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-  String baseUrlCoinGeckoApiPro = remoteConfigController.baseUrlCoinGeckoApiPro.value;
-  String apiKey = remoteConfigController.coinGeckoApiKey.value;
+  logger.d("Fetching latest Bitcoin price in EUR from Firestore.");
 
-  final String url = '${baseUrlCoinGeckoApiPro}/simple/price?x_cg_pro_api_key=${apiKey}';
+  try {
+    // Initialize Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final Map<String, String> params = {
-    'ids': 'bitcoin',
-    'vs_currencies': 'eur',
-    'include_last_updated_at': 'true'
-  };
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
+    currency = currency ?? "USD";
 
-  final response =
-  await get(Uri.parse(url).replace(queryParameters: params), headers: {});
-  if (response.statusCode == 200) {
-    final bitcoinprice =
-        double.parse(jsonDecode(response.body)['bitcoin']['eur'].toString());
-    print('The current price of Bitcoin in Euro is $bitcoinprice');
-    return bitcoinprice;
-  } else {
-    print(
-        'Error beim Laden des Bitcoin Preises: ${response.statusCode}: ${response.reasonPhrase}');
 
-      final moneyineur = "Ein Fehler ist aufgetreten";
+    // Define the Firestore path: chart_data > EUR > live > data
+    DocumentReference dataRef = firestore
+        .collection('chart_data')
+        .doc(currency)
+        .collection('live')
+        .doc('data');
+
+    // Fetch the document
+    DocumentSnapshot docSnapshot = await dataRef.get();
+
+    if (docSnapshot.exists) {
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+
+      // Extract the price
+      double? price = data['price']?.toDouble();
+
+      if (price != null) {
+        logger.d('The current price of Bitcoin in Euro is $price');
+        return price;
+      } else {
+        logger.e("Price data is missing in Firestore for EUR > live");
+        return 0.00;
+      }
+    } else {
+      logger.e("No chart data found in Firestore for EUR > live");
       return 0.00;
+    }
+  } catch (e) {
+    logger.e("Error fetching Bitcoin price from Firestore: $e");
+    return 0.00;
   }
 }
