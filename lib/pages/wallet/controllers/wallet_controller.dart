@@ -252,11 +252,13 @@ class WalletsController extends BaseController {
     logger.i("Subscribing to streams in wallet_controller");
 
     // --- Invoices Stream Listener ---
+    // --- Invoices Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('invoices')
         .orderBy('settle_date', descending: true)
         .snapshots()
+        .skip(1) // Skip the initial snapshot
         .listen((query) {
       ReceivedInvoice? model;
       additionalTransactionsLoaded.value = false;
@@ -308,8 +310,7 @@ class WalletsController extends BaseController {
         }
       } catch (e, stacktrace) {
         model = null;
-        logger.e(
-            'Failed to convert invoice JSON to invoice model: $e\n$stacktrace');
+        logger.e('Failed to convert invoice JSON to invoice model: $e\n$stacktrace');
       }
 
       // Update the latest invoice regardless of settlement status
@@ -317,12 +318,15 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = true;
     });
 
+
+    // --- Payments Stream Listener ---
     // --- Payments Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('payments')
         .orderBy('creation_date', descending: true)
         .snapshots()
+        .skip(1) // Skip the initial snapshot
         .listen((query) {
       LightningPayment? model;
       additionalTransactionsLoaded.value = false;
@@ -367,8 +371,7 @@ class WalletsController extends BaseController {
         }
       } catch (e, stacktrace) {
         model = null;
-        logger.e(
-            'Failed to convert payment JSON to payment model: $e\n$stacktrace');
+        logger.e('Failed to convert payment JSON to payment model: $e\n$stacktrace');
       }
 
       // Update the latest payment regardless of status
@@ -376,19 +379,22 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = true;
     });
 
+
     // --- Transactions Stream Listener ---
     // this currently causes a bug because it shows a transaction each time we load the app and it does that even before we loaded all transactions causing some issues
+    // --- Transactions Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('transactions')
         .orderBy('time_stamp', descending: true)
         .snapshots()
+        .skip(1) // Skip the initial snapshot
         .listen((query) {
       BitcoinTransaction? model;
       additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received transaction from stream");
-        //this right here is a problem sometimes it doesnt actually is the last data
+        // This right here is a problem sometimes it doesn't actually get the last data
         logger.i("Last data: ${query.docs.first.data()}");
         logger.i("entire data: ${query.docs}");
 
@@ -437,14 +443,14 @@ class WalletsController extends BaseController {
         }
       } catch (e, stacktrace) {
         model = null;
-        logger.e(
-            'Failed to convert transaction JSON to transaction model: $e\n$stacktrace');
+        logger.e('Failed to convert transaction JSON to transaction model: $e\n$stacktrace');
       }
 
       // Update the latest transaction regardless of confirmation status
       latestTransaction.value = model;
       additionalTransactionsLoaded.value = true;
     });
+
 
 
     //---------------------------------------------------
