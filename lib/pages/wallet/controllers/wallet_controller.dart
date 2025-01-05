@@ -338,17 +338,18 @@ class WalletsController extends BaseController {
         .skip(1) // Skip the initial snapshot
         .listen((query) {
       InternalRebalance? model;
-      additionalTransactionsLoaded.value = false;
-
-      model = InternalRebalance.fromJson(query.docs.first.data());
+      // additionalTransactionsLoaded.value = false;
 
       logger.i("Received internal rebalance from stream");
       logger.i("first data: ${query.docs.first.data()}");
       logger.i("entire data: ${query.docs}");
 
+      model = InternalRebalance.fromJson(query.docs.first.data());
+
+
       // Update the latest invoice regardless of settlement status
       latestinternalRebalance.value = model;
-      additionalTransactionsLoaded.value = true;
+      // additionalTransactionsLoaded.value = true;
     });
 
 
