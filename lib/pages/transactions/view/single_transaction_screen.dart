@@ -34,7 +34,8 @@ class SingleTransactionScreen extends StatefulWidget {
   const SingleTransactionScreen({Key? key}) : super(key: key);
 
   @override
-  State<SingleTransactionScreen> createState() => _SingleTransactionScreenState();
+  State<SingleTransactionScreen> createState() =>
+      _SingleTransactionScreenState();
 }
 
 class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
@@ -59,10 +60,14 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
-    final controllerWallet = Get.put(WalletsController());
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController());
+    }
+    final controllerWallet = Get.find<WalletsController>();
     final controllerHome = Get.put(HomeController());
 
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
     int amount = 0;
@@ -77,7 +82,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
       for (var vin in controller.transactionModel!.vin!) {
         if (vin.prevout != null && vin.prevout!.value != null) {
           // Check if the input is from our address
-          if (controller.currentOwnedAddresses.contains(vin.prevout?.scriptpubkeyAddress)) {
+          if (controller.currentOwnedAddresses
+              .contains(vin.prevout?.scriptpubkeyAddress)) {
             totalSent += vin.prevout!.value!;
           }
         }
@@ -86,7 +92,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
       for (var vout in controller.transactionModel!.vout!) {
         if (vout.value != null) {
           // Check if the output is to our address
-          if (controller.currentOwnedAddresses.contains(vout.scriptpubkeyAddress)) {
+          if (controller.currentOwnedAddresses
+              .contains(vout.scriptpubkeyAddress)) {
             totalReceived += vout.value!;
           }
           outputTotal += vout.value!;
@@ -100,7 +107,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
     final chartLine = controllerWallet.chartLines.value;
     final bitcoinPrice = chartLine?.price;
 
-    String currencyAmount = CurrencyConverter.convertCurrency('SAT', amount.toDouble(), currency, bitcoinPrice ?? 0);
+    String currencyAmount = CurrencyConverter.convertCurrency(
+        'SAT', amount.toDouble(), currency, bitcoinPrice ?? 0);
     String currSymbol = getCurrency(currency);
 
     final overlayController = Get.find<OverlayController>();
@@ -114,7 +122,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
         onTap: () {
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
-          channel.sink.add('{"action":"want","data":["blocks","mempool-blocks"]}');
+          channel.sink
+              .add('{"action":"want","data":["blocks","mempool-blocks"]}');
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
         },
@@ -138,7 +147,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                   ? const Center(child: Text('Something went wrong'))
                   : SingleChildScrollView(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
+                        padding: const EdgeInsets.only(
+                            top: AppTheme.cardPadding * 3),
                         child: Container(
                           child: Column(
                             children: [
@@ -146,46 +156,59 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                   ? Container(
                                       decoration: BoxDecoration(
                                         color: Colors.purple.shade400,
-                                        borderRadius: AppTheme.cardRadiusCircular,
+                                        borderRadius:
+                                            AppTheme.cardRadiusCircular,
                                       ),
-                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                        Text(
-                                          L10n.of(context)!.transactionReplaced,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            await Clipboard.setData(ClipboardData(
-                                              text: controllerHome.replacedTx.value,
-                                            ));
-                                            overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 300,
-                                                child: Text(
-                                                  controllerHome.replacedTx.value,
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                      // decoration:
-                                                      //     TextDecoration.underline,
-                                                      decorationColor: Colors.white,
-                                                      decorationThickness: 2),
-                                                ),
-                                              ),
-                                              const Icon(
-                                                Icons.copy,
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              L10n.of(context)!
+                                                  .transactionReplaced,
+                                              style: const TextStyle(
                                                 color: Colors.white,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ]),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                await Clipboard.setData(
+                                                    ClipboardData(
+                                                  text: controllerHome
+                                                      .replacedTx.value,
+                                                ));
+                                                overlayController.showOverlay(
+                                                    L10n.of(context)!
+                                                        .copiedToClipboard);
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 300,
+                                                    child: Text(
+                                                      controllerHome
+                                                          .replacedTx.value,
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          // decoration:
+                                                          //     TextDecoration.underline,
+                                                          decorationColor:
+                                                              Colors.white,
+                                                          decorationThickness:
+                                                              2),
+                                                    ),
+                                                  ),
+                                                  const Icon(
+                                                    Icons.copy,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ]),
                                     )
                                   : const SizedBox(),
                               Padding(
@@ -201,64 +224,90 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Column(
                                               children: [
                                                 Avatar(
-                                                  size: AppTheme.cardPadding * 4,
+                                                  size:
+                                                      AppTheme.cardPadding * 4,
                                                   onTap: () {
-                                                    LeftAvatarBitNetBottomSheet(controller);
+                                                    LeftAvatarBitNetBottomSheet(
+                                                        controller);
                                                   },
                                                   isNft: false,
                                                 ),
                                                 const SizedBox(
-                                                  height: AppTheme.elementSpacing * 0.5,
+                                                  height:
+                                                      AppTheme.elementSpacing *
+                                                          0.5,
                                                 ),
-                                                Text("Sender (${controller.transactionModel?.vin?.length})"),
+                                                Text(
+                                                    "Sender (${controller.transactionModel?.vin?.length})"),
                                               ],
                                             ),
                                             const SizedBox(
-                                              width: AppTheme.cardPadding * 0.75,
+                                              width:
+                                                  AppTheme.cardPadding * 0.75,
                                             ),
                                             Icon(
                                               Icons.double_arrow_rounded,
                                               size: AppTheme.cardPadding * 2.5,
-                                              color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white80 : AppTheme.black60,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? AppTheme.white80
+                                                  : AppTheme.black60,
                                             ),
                                             const SizedBox(
-                                              width: AppTheme.cardPadding * 0.75,
+                                              width:
+                                                  AppTheme.cardPadding * 0.75,
                                             ),
                                             Column(
                                               children: [
                                                 Avatar(
-                                                  size: AppTheme.cardPadding * 4,
+                                                  size:
+                                                      AppTheme.cardPadding * 4,
                                                   isNft: false,
                                                   onTap: () {
-                                                    RightAvatarBitnetBottomSheet(controller);
+                                                    RightAvatarBitnetBottomSheet(
+                                                        controller);
                                                   },
                                                 ),
                                                 const SizedBox(
-                                                  height: AppTheme.elementSpacing * 0.5,
+                                                  height:
+                                                      AppTheme.elementSpacing *
+                                                          0.5,
                                                 ),
-                                                Text("Receiver (${controller.transactionModel?.vout?.length})"),
+                                                Text(
+                                                    "Receiver (${controller.transactionModel?.vout?.length})"),
                                               ],
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: AppTheme.cardPadding * 0.75),
-                                        if (controller.currentOwnedAddresses.isNotEmpty) ...[
+                                        const SizedBox(
+                                            height:
+                                                AppTheme.cardPadding * 0.75),
+                                        if (controller.currentOwnedAddresses
+                                            .isNotEmpty) ...[
                                           controllerWallet.hideBalance.value
                                               ? Text(
                                                   '*****',
-                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium,
                                                 )
                                               : Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                                        coin.setCurrencyType(
+                                                            coin.coin != null
+                                                                ? !coin.coin!
+                                                                : false);
                                                       },
                                                       child: Text(
                                                           coin.coin ?? true
@@ -266,22 +315,36 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                               : amount > 0
                                                                   ? "+${currencyAmount} ${currSymbol}"
                                                                   : "${currencyAmount} ${currSymbol}",
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                                                              color: amount > 0
-                                                                  ? AppTheme.successColor
-                                                                  : amount < 0
-                                                                      ? AppTheme.errorColor
-                                                                      : null)),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .displayMedium!
+                                                              .copyWith(
+                                                                  color: amount >
+                                                                          0
+                                                                      ? AppTheme
+                                                                          .successColor
+                                                                      : amount <
+                                                                              0
+                                                                          ? AppTheme
+                                                                              .errorColor
+                                                                          : null)),
                                                     ),
                                                     coin.coin ?? true
-                                                        ? Icon(AppTheme.satoshiIcon,
+                                                        ? Icon(
+                                                            AppTheme
+                                                                .satoshiIcon,
                                                             color: amount > 0
-                                                                ? AppTheme.successColor
+                                                                ? AppTheme
+                                                                    .successColor
                                                                 : amount < 0
-                                                                    ? AppTheme.errorColor
+                                                                    ? AppTheme
+                                                                        .errorColor
                                                                     : null)
-                                                        : const SizedBox.shrink(),
+                                                        : const SizedBox
+                                                            .shrink(),
                                                   ],
                                                 ),
                                         ]
@@ -294,27 +357,36 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                 height: AppTheme.elementSpacing * 1,
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.elementSpacing),
                                 child: Column(
                                   children: [
                                     BitNetListTile(
                                       text: 'Transaction Volume',
                                       trailing: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                              coin.setCurrencyType(
+                                                  coin.coin != null
+                                                      ? !coin.coin!
+                                                      : false);
                                             },
                                             child: Text(
                                               coin.coin ?? true
                                                   ? '$outputTotal'
                                                   : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, outputTotal.toDouble(), currency!, bitcoinPrice)} ${getCurrency(currency)}',
                                               overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context).textTheme.titleMedium,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium,
                                             ),
                                           ),
-                                          coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : const SizedBox.shrink(),
+                                          coin.coin ?? true
+                                              ? Icon(AppTheme.satoshiIcon)
+                                              : const SizedBox.shrink(),
                                         ],
                                       ),
                                     ),
@@ -322,27 +394,36 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                         text: 'TransactionID',
                                         trailing: GestureDetector(
                                           onTap: () async {
-                                            await Clipboard.setData(ClipboardData(
+                                            await Clipboard.setData(
+                                                ClipboardData(
                                               text: controller.txID!,
                                             ));
-                                            overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
+                                            overlayController.showOverlay(
+                                                L10n.of(context)!
+                                                    .copiedToClipboard);
                                           },
                                           child: Row(
                                             children: [
                                               Icon(
                                                 Icons.copy,
                                                 color: AppTheme.white60,
-                                                size: AppTheme.cardPadding * 0.75,
+                                                size:
+                                                    AppTheme.cardPadding * 0.75,
                                               ),
                                               const SizedBox(
-                                                width: AppTheme.elementSpacing / 2,
+                                                width:
+                                                    AppTheme.elementSpacing / 2,
                                               ),
                                               Container(
-                                                width: AppTheme.cardPadding * 5.w,
+                                                width:
+                                                    AppTheme.cardPadding * 5.w,
                                                 child: Text(
                                                   controller.txID!,
-                                                  style: Theme.of(context).textTheme.bodyMedium,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
@@ -350,9 +431,14 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                         )),
                                     BitNetListTile(
                                       onTap: () {
-                                        if (controller.transactionModel!.status!.blockHeight != null)
-                                          controllerHome.blockHeight = controller.transactionModel!.status!.blockHeight!;
-                                        context.push('/wallet/bitcoinscreen/mempool');
+                                        if (controller.transactionModel!.status!
+                                                .blockHeight !=
+                                            null)
+                                          controllerHome.blockHeight =
+                                              controller.transactionModel!
+                                                  .status!.blockHeight!;
+                                        context.push(
+                                            '/wallet/bitcoinscreen/mempool');
                                       },
                                       text: L10n.of(context)!.block,
                                       trailing: Row(
@@ -362,7 +448,10 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleMedium!
-                                                .copyWith(color: Theme.of(context).colorScheme.primary),
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary),
                                           ),
                                           const SizedBox(
                                             width: AppTheme.elementSpacing / 2,
@@ -370,7 +459,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                           Icon(
                                             Icons.arrow_forward_ios,
                                             size: AppTheme.cardPadding * 0.75,
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
                                         ],
                                       ),
@@ -379,19 +470,35 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                       text: L10n.of(context)!.status,
                                       trailing: Center(
                                         child: Text(
-                                          controllerHome.isRbfTransaction.value == true
+                                          controllerHome
+                                                      .isRbfTransaction.value ==
+                                                  true
                                               ? L10n.of(context)!.replaced
                                               : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
-                                                  controller.statusTransaction.value,
-                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                            color: controller.transactionModel == null
-                                                ? AppTheme.errorColor
-                                                : controller.transactionModel!.status!.confirmed!
-                                                ? AppTheme.successColor
-                                                : controllerHome.isRbfTransaction.value == true
-                                                ? AppTheme.colorBitcoin
-                                                : AppTheme.errorColor,
-                                        ),
+                                                  controller
+                                                      .statusTransaction.value,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium!
+                                              .copyWith(
+                                                color: controller
+                                                            .transactionModel ==
+                                                        null
+                                                    ? AppTheme.errorColor
+                                                    : controller
+                                                            .transactionModel!
+                                                            .status!
+                                                            .confirmed!
+                                                        ? AppTheme.successColor
+                                                        : controllerHome
+                                                                    .isRbfTransaction
+                                                                    .value ==
+                                                                true
+                                                            ? AppTheme
+                                                                .colorBitcoin
+                                                            : AppTheme
+                                                                .errorColor,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -399,29 +506,37 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                       text: L10n.of(context)!.paymentNetwork,
                                       trailing: Row(
                                         children: [
-                                          Image.asset("assets/images/bitcoin.png",
-                                              width: AppTheme.cardPadding * 1, height: AppTheme.cardPadding * 1),
+                                          Image.asset(
+                                              "assets/images/bitcoin.png",
+                                              width: AppTheme.cardPadding * 1,
+                                              height: AppTheme.cardPadding * 1),
                                           const SizedBox(
                                             width: AppTheme.elementSpacing / 2,
                                           ),
                                           Text(
                                             'Onchain',
-                                            style: Theme.of(context).textTheme.titleMedium,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
                                           ),
                                         ],
                                       ),
                                     ),
                                     BitNetListTile(
                                       text: L10n.of(context)!.time,
-                                      trailing: controller.transactionModel!.status!.confirmed!
+                                      trailing: controller.transactionModel!
+                                              .status!.confirmed!
                                           ? Container(
                                               child: Column(
                                                 children: [
                                                   Text(
                                                     '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
                                                     ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: Theme.of(context).textTheme.bodyMedium,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium,
                                                   ),
                                                 ],
                                               ),
@@ -430,12 +545,15 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                               () {
                                                 return Text(
                                                   controller.timeST.value,
-                                                  style: Theme.of(context).textTheme.bodyMedium,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
                                                 );
                                               },
                                             ),
                                     ),
-                                    controller.transactionModel!.status!.confirmed!
+                                    controller.transactionModel!.status!
+                                            .confirmed!
                                         ? const SizedBox()
                                         : BitNetListTile(
                                             text: 'ETA',
@@ -444,27 +562,37 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 SizedBox(
                                                   width: 170.w,
                                                   child: Text(
-                                                    controllerHome.txPosition.value >= 7
-                                                        ? L10n.of(context)!.inSeveralHours
+                                                    controllerHome.txPosition
+                                                                .value >=
+                                                            7
+                                                        ? L10n.of(context)!
+                                                            .inSeveralHours
                                                         : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
-                                                    style: Theme.of(context).textTheme.bodyLarge,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge,
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                   width: 5,
                                                 ),
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                     horizontal: 4,
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.purple,
-                                                    borderRadius: AppTheme.cardRadiusCircular,
+                                                    borderRadius: AppTheme
+                                                        .cardRadiusCircular,
                                                   ),
                                                   child: Center(
                                                     child: Text(
-                                                      L10n.of(context)!.accelerate,
-                                                      style: Theme.of(context).textTheme.bodyMedium,
+                                                      L10n.of(context)!
+                                                          .accelerate,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium,
                                                     ),
                                                   ),
                                                 )
@@ -618,23 +746,32 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                     BitNetListTile(
                                         text: 'Fee',
                                         trailing: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                                coin.setCurrencyType(
+                                                    coin.coin != null
+                                                        ? !coin.coin!
+                                                        : false);
                                               },
                                               child: Text(
                                                 coin.coin ?? true
                                                     ? '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel!.fee.toString())}'
-                                                    : controller.transactionModel == null
+                                                    : controller.transactionModel ==
+                                                            null
                                                         ? ''
                                                         : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, controller.transactionModel!.fee?.toDouble() ?? 0, currency!, bitcoinPrice)} ${getCurrency(currency)}',
                                                 overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context).textTheme.titleMedium,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium,
                                               ),
                                             ),
-                                            coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : const SizedBox.shrink(),
+                                            coin.coin ?? true
+                                                ? Icon(AppTheme.satoshiIcon)
+                                                : const SizedBox.shrink(),
                                           ],
                                         )),
                                     // BitNetListTile(
@@ -714,13 +851,16 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
             text: L10n.of(context)!.outputTx,
             actions: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
                 child: Obx(
                   () => LongButtonWidget(
                       customWidth: AppTheme.cardPadding * 4.75,
                       customHeight: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
-                      title: !controller.showDetail.value ? L10n.of(context)!.showDetails : L10n.of(context)!.hideDetails,
+                      title: !controller.showDetail.value
+                          ? L10n.of(context)!.showDetails
+                          : L10n.of(context)!.hideDetails,
                       onTap: () {
                         controller.toggleExpansion();
                         setState(() {});
@@ -732,11 +872,13 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
           body: StatefulBuilder(
             builder: (context, setState) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: SingleChildScrollView(
                   physics: NeverScrollableScrollPhysics(),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6 - AppTheme.cardPadding * 1.25,
+                    height: MediaQuery.of(context).size.height * 0.6 -
+                        AppTheme.cardPadding * 1.25,
                     child: Column(
                       children: [
                         const SizedBox(
@@ -764,31 +906,68 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                 padding: EdgeInsets.only(top: 16),
                                 child: GlassContainer(
                                   child: ListView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: controller.transactionModel?.vout?.length,
+                                    itemCount: controller
+                                        .transactionModel?.vout?.length,
                                     itemBuilder: (context, index) {
-                                      double value = (controller.transactionModel!.vout![index].value!) / 100000000;
+                                      double value = (controller
+                                              .transactionModel!
+                                              .vout![index]
+                                              .value!) /
+                                          100000000;
 
                                       controller.output.value = double.parse(
                                         value.toStringAsFixed(8),
                                       );
                                       String address = '';
-                                      if (controller.transactionModel!.vout?[index].scriptpubkeyAddress != null)
-                                        address = controller.transactionModel!.vout?[index].scriptpubkeyAddress ?? '';
+                                      if (controller
+                                              .transactionModel!
+                                              .vout?[index]
+                                              .scriptpubkeyAddress !=
+                                          null)
+                                        address = controller
+                                                .transactionModel!
+                                                .vout?[index]
+                                                .scriptpubkeyAddress ??
+                                            '';
                                       return address.contains(outputCtrl.text)
                                           ? Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: AppTheme
+                                                          .elementSpacing),
                                               child: Obx(
                                                 () => AddressItem(
-                                                  unitModel: BitcoinUnitModel(amount: value, bitcoinUnit: BitcoinUnits.BTC),
+                                                  unitModel: BitcoinUnitModel(
+                                                      amount: value,
+                                                      bitcoinUnit:
+                                                          BitcoinUnits.BTC),
                                                   address: address,
-                                                  direction: TransactionDirection.received,
-                                                  isOwned: controller.currentOwnedAddresses.contains(address),
-                                                  showDetails: controller.showDetail.value,
-                                                  hex: controller.transactionModel!.vout?[index].scriptpubkey ?? '',
-                                                  asm: controller.transactionModel!.vout?[index].scriptpubkeyAsm ?? '',
-                                                  type: controller.transactionModel!.vout?[index].scriptpubkeyType ?? '',
+                                                  direction:
+                                                      TransactionDirection
+                                                          .received,
+                                                  isOwned: controller
+                                                      .currentOwnedAddresses
+                                                      .contains(address),
+                                                  showDetails: controller
+                                                      .showDetail.value,
+                                                  hex: controller
+                                                          .transactionModel!
+                                                          .vout?[index]
+                                                          .scriptpubkey ??
+                                                      '',
+                                                  asm: controller
+                                                          .transactionModel!
+                                                          .vout?[index]
+                                                          .scriptpubkeyAsm ??
+                                                      '',
+                                                  type: controller
+                                                          .transactionModel!
+                                                          .vout?[index]
+                                                          .scriptpubkeyType ??
+                                                      '',
                                                   isVin: false,
                                                 ),
                                               ))
@@ -810,7 +989,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
         ));
   }
 
-  Future<dynamic> LeftAvatarBitNetBottomSheet(TransactionController controller) {
+  Future<dynamic> LeftAvatarBitNetBottomSheet(
+      TransactionController controller) {
     return BitNetBottomSheet(
       context: context,
       height: MediaQuery.of(context).size.height * 0.6,
@@ -823,13 +1003,16 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
           text: L10n.of(context)!.inputTx,
           actions: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.elementSpacing),
               child: Obx(
                 () => LongButtonWidget(
                     customWidth: AppTheme.cardPadding * 4.75,
                     customHeight: AppTheme.cardPadding * 1.25,
                     buttonType: ButtonType.transparent,
-                    title: !controller.showDetail.value ? L10n.of(context)!.showDetails : L10n.of(context)!.hideDetails,
+                    title: !controller.showDetail.value
+                        ? L10n.of(context)!.showDetails
+                        : L10n.of(context)!.hideDetails,
                     onTap: () {
                       controller.toggleExpansion();
                       setState(() {});
@@ -846,7 +1029,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6 - AppTheme.cardPadding * 1.25,
+                height: MediaQuery.of(context).size.height * 0.6 -
+                    AppTheme.cardPadding * 1.25,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -874,27 +1058,61 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                 return ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: controller.transactionModel?.vin?.length,
+                                  itemCount:
+                                      controller.transactionModel?.vin?.length,
                                   itemBuilder: (context, index) {
-                                    double value = (controller.transactionModel!.vin![index].prevout!.value!) / 100000000;
-                                    controller.input.value = double.parse(value.toStringAsFixed(8));
+                                    double value = (controller.transactionModel!
+                                            .vin![index].prevout!.value!) /
+                                        100000000;
+                                    controller.input.value =
+                                        double.parse(value.toStringAsFixed(8));
                                     String address = '';
-                                    if (controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress != null)
-                                      address = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                    if (controller.transactionModel!.vin?[index]
+                                            .prevout!.scriptpubkeyAddress !=
+                                        null)
+                                      address = controller
+                                              .transactionModel!
+                                              .vin?[index]
+                                              .prevout!
+                                              .scriptpubkeyAddress ??
+                                          '';
                                     return address.contains(inputCtrl.text)
                                         ? Obx(
                                             () => AddressItem(
-                                              unitModel: BitcoinUnitModel(amount: value, bitcoinUnit: BitcoinUnits.BTC),
+                                              unitModel: BitcoinUnitModel(
+                                                  amount: value,
+                                                  bitcoinUnit:
+                                                      BitcoinUnits.BTC),
                                               address: address,
-                                              isOwned: controller.currentOwnedAddresses.contains(address),
-                                              direction: TransactionDirection.sent,
-                                              showDetails: controller.showDetail.value,
+                                              isOwned: controller
+                                                  .currentOwnedAddresses
+                                                  .contains(address),
+                                              direction:
+                                                  TransactionDirection.sent,
+                                              showDetails:
+                                                  controller.showDetail.value,
                                               hex: '',
-                                              asm: controller.transactionModel!.vin![index].prevout?.scriptpubkeyAsm ?? '',
-                                              type: controller.transactionModel!.vin![index].prevout?.scriptpubkeyType ?? '',
+                                              asm: controller
+                                                      .transactionModel!
+                                                      .vin![index]
+                                                      .prevout
+                                                      ?.scriptpubkeyAsm ??
+                                                  '',
+                                              type: controller
+                                                      .transactionModel!
+                                                      .vin![index]
+                                                      .prevout
+                                                      ?.scriptpubkeyType ??
+                                                  '',
                                               isVin: true,
-                                              witnesses: controller.transactionModel!.vin![index].witness,
-                                              sequence: controller.transactionModel!.vin![index].sequence,
+                                              witnesses: controller
+                                                  .transactionModel!
+                                                  .vin![index]
+                                                  .witness,
+                                              sequence: controller
+                                                  .transactionModel!
+                                                  .vin![index]
+                                                  .sequence,
                                             ),
                                           )
                                         : const SizedBox();
@@ -956,14 +1174,18 @@ class _AddressItemState extends State<AddressItem> {
     final transactionController = Get.find<TransactionController>();
     // Use DateFormat for formatting the timestamp
     final chartLine = controller.chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
     final bitcoinPrice = chartLine?.price;
 
     final currencyEquivalent = bitcoinPrice != null
         ? CurrencyConverter.convertCurrency(
-            widget.unitModel.bitcoinUnitAsString, widget.unitModel.amount.toDouble(), currency, bitcoinPrice)
+            widget.unitModel.bitcoinUnitAsString,
+            widget.unitModel.amount.toDouble(),
+            currency,
+            bitcoinPrice)
         : "0.00";
     return Material(
       color: Colors.transparent,
@@ -989,7 +1211,8 @@ class _AddressItemState extends State<AddressItem> {
           setState(() {});
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+          padding:
+              const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
           child: Padding(
             padding: const EdgeInsets.only(
               left: AppTheme.elementSpacing * 0.75,
@@ -1005,7 +1228,9 @@ class _AddressItemState extends State<AddressItem> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(child: const Avatar(size: AppTheme.cardPadding * 2, isNft: false)),
+                        Container(
+                            child: const Avatar(
+                                size: AppTheme.cardPadding * 2, isNft: false)),
                         const SizedBox(width: AppTheme.elementSpacing * 0.75),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1016,14 +1241,19 @@ class _AddressItemState extends State<AddressItem> {
                                   if (widget.isOwned) ...[
                                     SizedBox(
                                         width: AppTheme.cardPadding * 1.5.w,
-                                        child: Text('You ~ ', style: Theme.of(context).textTheme.titleLarge))
+                                        child: Text('You ~ ',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge))
                                   ],
                                   SizedBox(
                                     width: AppTheme.cardPadding * 5.w,
                                     child: Text(
                                       '${widget.address}',
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.titleMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
                                       softWrap: widget.showDetails,
                                       maxLines: widget.showDetails ? 3 : 1,
                                     ),
@@ -1052,7 +1282,8 @@ class _AddressItemState extends State<AddressItem> {
                                   Text(
                                     'Onchain',
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -1068,29 +1299,41 @@ class _AddressItemState extends State<AddressItem> {
                             controller.hideBalance.value
                                 ? Text(
                                     '*****',
-                                    style: Theme.of(context).textTheme.titleMedium,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
                                   )
                                 : Row(
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                          coin.setCurrencyType(coin.coin != null
+                                              ? !coin.coin!
+                                              : false);
                                         },
                                         child: Text(
                                           coin.coin ?? true
-                                              ? widget.unitModel.amount.toString()
+                                              ? widget.unitModel.amount
+                                                  .toString()
                                               : "${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}",
                                           overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                              color: widget.direction == TransactionDirection.received
-                                                  ? AppTheme.successColor
-                                                  : AppTheme.errorColor),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium!
+                                              .copyWith(
+                                                  color: widget.direction ==
+                                                          TransactionDirection
+                                                              .received
+                                                      ? AppTheme.successColor
+                                                      : AppTheme.errorColor),
                                         ),
                                       ),
                                       coin.coin ?? true
                                           ? Icon(
-                                              getCurrencyIcon(widget.unitModel.bitcoinUnitAsString),
-                                              color: widget.direction == TransactionDirection.received
+                                              getCurrencyIcon(widget.unitModel
+                                                  .bitcoinUnitAsString),
+                                              color: widget.direction ==
+                                                      TransactionDirection
+                                                          .received
                                                   ? AppTheme.successColor
                                                   : AppTheme.errorColor,
                                             )
@@ -1136,7 +1379,8 @@ class _AddressItemState extends State<AddressItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Text(L10n.of(context)!.witness, style: AppTheme.textTheme.bodyMedium),
+                            child: Text(L10n.of(context)!.witness,
+                                style: AppTheme.textTheme.bodyMedium),
                           ),
                           Expanded(
                             child: Column(
@@ -1147,8 +1391,10 @@ class _AddressItemState extends State<AddressItem> {
                                   itemCount: widget.witnesses!.length,
                                   itemBuilder: (context, ind) {
                                     return Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: Text('${widget.witnesses![ind]}', style: AppTheme.textTheme.bodyMedium),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: Text('${widget.witnesses![ind]}',
+                                          style: AppTheme.textTheme.bodyMedium),
                                     );
                                   },
                                 )
@@ -1165,7 +1411,8 @@ class _AddressItemState extends State<AddressItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('nSequence', style: AppTheme.textTheme.bodyMedium),
-                        Text('0x${widget.sequence?.toRadixString(16)}', style: AppTheme.textTheme.bodyMedium)
+                        Text('0x${widget.sequence?.toRadixString(16)}',
+                            style: AppTheme.textTheme.bodyMedium)
                       ],
                     ),
                     const SizedBox(
@@ -1176,7 +1423,10 @@ class _AddressItemState extends State<AddressItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.isVin ? L10n.of(context)!.previousOutputScripts : 'ScriptPubKey (ASM)	',
+                      Text(
+                          widget.isVin
+                              ? L10n.of(context)!.previousOutputScripts
+                              : 'ScriptPubKey (ASM)	',
                           style: AppTheme.textTheme.bodyMedium),
                       const SizedBox(
                         width: 10,
@@ -1197,7 +1447,8 @@ class _AddressItemState extends State<AddressItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('ScriptPubKey (HEX)	', style: AppTheme.textTheme.bodyMedium),
+                        Text('ScriptPubKey (HEX)	',
+                            style: AppTheme.textTheme.bodyMedium),
                         const SizedBox(
                           width: 10,
                         ),
@@ -1216,7 +1467,11 @@ class _AddressItemState extends State<AddressItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.isVin ? 'Previous output type' : L10n.of(context)!.typeBehavior, style: AppTheme.textTheme.bodyMedium),
+                      Text(
+                          widget.isVin
+                              ? 'Previous output type'
+                              : L10n.of(context)!.typeBehavior,
+                          style: AppTheme.textTheme.bodyMedium),
                       const SizedBox(
                         width: 10,
                       ),
@@ -1242,23 +1497,32 @@ class _AddressItemState extends State<AddressItem> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                      coin.setCurrencyType(coin.coin != null
+                                          ? !coin.coin!
+                                          : false);
                                     },
                                     child: Text(
                                       coin.coin ?? true
                                           ? widget.unitModel.amount.toString()
                                           : "${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}",
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                          color: widget.direction == TransactionDirection.received
-                                              ? AppTheme.successColor
-                                              : AppTheme.errorColor),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              color: widget.direction ==
+                                                      TransactionDirection
+                                                          .received
+                                                  ? AppTheme.successColor
+                                                  : AppTheme.errorColor),
                                     ),
                                   ),
                                   coin.coin ?? true
                                       ? Icon(
-                                          getCurrencyIcon(widget.unitModel.bitcoinUnitAsString),
-                                          color: widget.direction == TransactionDirection.received
+                                          getCurrencyIcon(widget
+                                              .unitModel.bitcoinUnitAsString),
+                                          color: widget.direction ==
+                                                  TransactionDirection.received
                                               ? AppTheme.successColor
                                               : AppTheme.errorColor,
                                         )

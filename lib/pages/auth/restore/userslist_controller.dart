@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -164,9 +165,6 @@ class UsersListController extends GetxController {
     );
   }
 
-
-
-
   /// Retrieves all PrivateData from local storage
   dynamic getIONDatafromLocalStorage() async {
     try {
@@ -213,6 +211,7 @@ class UsersListController extends GetxController {
   /// Handles the login process for a user
   Future<void> loginButtonPressed(String did, BuildContext context) async {
     final logger = Get.find<LoggerService>();
+    Get.delete<ProtocolController>(force: true);
     logger.i("Localfunction Login for user $did pressed");
     try {
       PrivateData? privateData = didToPrivateDataMap[did];
@@ -237,7 +236,6 @@ class UsersListController extends GetxController {
           signatureHex, context);
 
       logger.i('User signed in successfully!');
-
     } catch (e, stackTrace) {
       final overlayController = Get.find<OverlayController>();
       logger.e("Error trying to sign in: $e, $stackTrace");

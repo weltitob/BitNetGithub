@@ -86,13 +86,18 @@ class ThemeController extends State<ThemeBuilder> {
         ..updateCurrency(data.data()?['selected_currency'] ?? "USD");
       Provider.of<CurrencyTypeProvider>(context, listen: false)
           .setCurrencyType(data.data()?['showCoin'] ?? false);
-      Get.put(WalletsController())
-          .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
+      if (!Get.isRegistered<WalletsController>()) {
+        Get.put(WalletsController())
+            .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
+      }
       setState(() {
         _themeMode = ThemeMode.values
             .singleWhereOrNull((value) => value.name == rawThemeMode);
         Get.find<SettingsController>().selectedTheme.value =
             _themeMode ?? ThemeMode.system;
+        if (rawColor != null) {
+          print('${Color(rawColor).value}');
+        }
         _primaryColor = rawColor == null ? Colors.white : Color(rawColor);
       });
 
@@ -159,24 +164,37 @@ class ThemeController extends State<ThemeBuilder> {
     setState(() {});
   }
 
-  Future<void> setPrimaryColor(Color? newPrimaryColor) async {
+  Future<void> setPrimaryColor(Color? newPrimaryColor, bool updateDB) async {
     if (newPrimaryColor == Colors.white || newPrimaryColor == Colors.black) {
-      newPrimaryColor = AppTheme.colorSchemeSeed;
-      await settingsCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+      newPrimaryColor = AppTheme.immutableColorSchemeSeed;
+      setState(() {
+        _primaryColor = newPrimaryColor;
+      });
+      if (updateDB) {
+        await settingsCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+      }
     } else if (newPrimaryColor == null) {
-      await settingsCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: Colors.white.value});
+      setState(() {
+        _primaryColor = newPrimaryColor;
+      });
+      if (updateDB) {
+        await settingsCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({widget.primaryColorSettingsKey: Colors.white.value});
+      }
     } else {
-      await settingsCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+      setState(() {
+        _primaryColor = newPrimaryColor;
+      });
+
+      if (updateDB) {
+        await settingsCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+      }
     }
-    setState(() {
-      _primaryColor = newPrimaryColor;
-    });
   }
 
   @override

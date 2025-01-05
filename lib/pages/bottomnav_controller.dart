@@ -33,7 +33,8 @@ class BottomNavController extends GetxController {
   // Setzt den selektierten Index und führt die Navigation durch
   void onTabTapped(int index, ScrollController controller) {
     if (index == selectedIndex.value) {
-      controller.animateTo(0, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      controller.animateTo(0,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     } else {
       selectedIndex.value = index;
     }
@@ -43,7 +44,6 @@ class BottomNavController extends GetxController {
   void onInit() {
     super.onInit();
     // Du kannst hier auch eine Initialisierung vornehmen, falls nötig.
-
   }
 
   void initUser(BuildContext context) async {
@@ -79,40 +79,51 @@ class BottomNavController extends GetxController {
   }
 
   void loadAddresses() async {
-    AggregateQuery count =
-    FirebaseFirestore.instance.collection('addresses_cache').where(FieldPath.documentId, isEqualTo: Auth().currentUser!.uid).count();
+    AggregateQuery count = FirebaseFirestore.instance
+        .collection('addresses_cache')
+        .where(FieldPath.documentId, isEqualTo: Auth().currentUser!.uid)
+        .count();
     bool shouldLoad = !(((await count.get()).count ?? 0) >= 1);
     if (shouldLoad) {
       loadBtcAddresses(Auth().currentUser!.uid);
     }
   }
 
-
   void loadData(BuildContext context) async {
-    Get.put(WalletsController());
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController());
+    }
     final logger = Get.find<LoggerService>();
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     logger.i("All Data: $allData");
 
     if (allData.contains(FirebaseAuth.instance.currentUser?.uid)) {
-      var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
+      var data = await settingsCollection
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get();
 
       // Jetzt kannst du den `context` verwenden:
+      ThemeController.of(context).setThemeMode(ThemeMode.values
+              .singleWhereOrNull(
+                  (value) => value.name == data.data()?['theme_mode']) ??
+          ThemeMode.system);
       ThemeController.of(context)
-          .setThemeMode(ThemeMode.values.singleWhereOrNull((value) => value.name == data.data()?['theme_mode']) ?? ThemeMode.system);
-      ThemeController.of(context).setPrimaryColor(Color(data.data()?['primary_color']));
+          .setPrimaryColor(Color(data.data()?['primary_color']), false);
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<LocalProvider>(context, listen: false)
+          .setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false)
+          .setCardInDatabase(data.data()?['selected_card']);
 
       final walletController = Get.find<WalletsController>();
-      walletController.setHideBalance(hide: data.data()?['hide_balance'] ?? false);
+      walletController.setHideBalance(
+          hide: data.data()?['hide_balance'] ?? false);
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",
         "lang": "en",
-        "primary_color": 4283657726,
+        "primary_color": Colors.white.value,
         "selected_currency": "USD",
         "selected_card": "lightning",
         "hide_balance": false
@@ -120,8 +131,4 @@ class BottomNavController extends GetxController {
       settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).set(data);
     }
   }
-
-
-
-
 }
