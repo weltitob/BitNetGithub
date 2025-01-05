@@ -11,6 +11,7 @@ import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
+import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -35,7 +36,8 @@ class BottomNav extends StatefulWidget {
   State<BottomNav> createState() => _BottomNavState();
 }
 
-class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMixin {
+class _BottomNavState extends State<BottomNav>
+    with SingleTickerProviderStateMixin {
   String? profileId;
   Map<String, AnimationController> animationControllers = {};
 
@@ -77,28 +79,37 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
   }
 
   void loadData() async {
-    Get.put(WalletsController());
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController());
+    }
     final logger = Get.find<LoggerService>();
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     logger.i("All Data: $allData");
     if (allData.contains(FirebaseAuth.instance.currentUser?.uid)) {
-      var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
+      var data = await settingsCollection
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get();
+      ThemeController.of(context).setThemeMode(ThemeMode.values
+              .singleWhereOrNull(
+                  (value) => value.name == data.data()?['theme_mode']) ??
+          ThemeMode.system);
       ThemeController.of(context)
-          .setThemeMode(ThemeMode.values.singleWhereOrNull((value) => value.name == data.data()?['theme_mode']) ?? ThemeMode.system);
-      ThemeController.of(context).setPrimaryColor(Color(data.data()?['primary_color']));
+          .setPrimaryColor(Color(data.data()?['primary_color']), false);
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<LocalProvider>(context, listen: false)
+          .setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false)
+          .setCardInDatabase(data.data()?['selected_card']);
       final walletController = Get.find<WalletsController>();
-      walletController.setHideBalance(hide: data.data()?['hide_balance'] ?? false);
-      if(mounted)
-        setState(() {});
+      walletController.setHideBalance(
+          hide: data.data()?['hide_balance'] ?? false);
+      if (mounted) setState(() {});
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",
         "lang": "en",
-        "primary_color": 4283657726,
+        "primary_color": Colors.white.value,
         "selected_currency": "USD",
         "selected_card": "lightning",
         "hide_balance": false
@@ -115,12 +126,18 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
   //
   // static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
-  static List<Widget> navItems = <Widget>[ComingSoonPage(), const Wallet(),  ComingSoonPage()];
+  static List<Widget> navItems = <Widget>[
+    ComingSoonPage(),
+    const Wallet(),
+    Profile()
+  ];
 
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {
       if (index == _selectedIndex) {
-        controller.animateTo(0, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+        controller.animateTo(0,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut);
       } else {
         _selectedIndex = index;
       }
@@ -129,7 +146,6 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-
     // Initialize Remote Config Controller and fetch data
     WalletsController walletController = Get.put(WalletsController());
     ProfileController profileController = Get.put(ProfileController());
@@ -170,10 +186,15 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
             ? Container(height: 0, width: 0)
             : Container(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
-                    : darken(Theme.of(context).colorScheme.primaryContainer, 80),
-                padding:
-                    const EdgeInsets.only(top: 3, left: AppTheme.cardPadding, right: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
+                    ? lighten(
+                        Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.primaryContainer, 80),
+                padding: const EdgeInsets.only(
+                    top: 3,
+                    left: AppTheme.cardPadding,
+                    right: AppTheme.cardPadding,
+                    bottom: AppTheme.elementSpacing),
                 child: GlassContainer(
                   child: Theme(
                     data: Theme.of(context).copyWith(
@@ -206,18 +227,27 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
                       type: BottomNavigationBarType.fixed,
                       backgroundColor: Colors.transparent,
                       currentIndex: _selectedIndex,
-                      selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                      unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
+                      selectedItemColor:
+                          Theme.of(context).colorScheme.onPrimaryContainer,
+                      unselectedItemColor: Theme.of(context)
+                          .colorScheme
+                          .onPrimaryContainer
+                          .withOpacity(0.5),
                       showSelectedLabels: false,
                       showUnselectedLabels: false,
                       onTap: (i) {
                         switch (i) {
                           case 0:
-                            _onItemTapped(i, Get.find<FeedController>().scrollControllerColumn);
+                            _onItemTapped(
+                                i,
+                                Get.find<FeedController>()
+                                    .scrollControllerColumn);
                           case 1:
-                            _onItemTapped(i, Get.find<WalletsController>().scrollController);
+                            _onItemTapped(i,
+                                Get.find<WalletsController>().scrollController);
                           case 2:
-                            _onItemTapped(i, Get.find<ProfileController>().scrollController);
+                            _onItemTapped(i,
+                                Get.find<ProfileController>().scrollController);
                         }
                       },
                       elevation: 0, // Box-Shadow entfernen
@@ -237,10 +267,14 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
         ));
   }
 
-  final CollectionReference _collectionRef = FirebaseFirestore.instance.collection('settings');
+  final CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('settings');
 
   void getUserTheme() {
-    _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+    _collectionRef
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
       setState(() {
         String myTheme = value.get("theme");
       });
@@ -249,8 +283,10 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
 }
 
 void loadAddresses() async {
-  AggregateQuery count =
-      FirebaseFirestore.instance.collection('addresses_cache').where(FieldPath.documentId, isEqualTo: Auth().currentUser!.uid).count();
+  AggregateQuery count = FirebaseFirestore.instance
+      .collection('addresses_cache')
+      .where(FieldPath.documentId, isEqualTo: Auth().currentUser!.uid)
+      .count();
   bool shouldLoad = !(((await count.get()).count ?? 0) >= 1);
   if (shouldLoad) {
     loadBtcAddresses(Auth().currentUser!.uid);

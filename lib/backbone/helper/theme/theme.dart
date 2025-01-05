@@ -7,7 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppTheme {
-  static IconData satoshiIcon = const IconData(0x0021, fontFamily: 'SatoshiSymbol');
+  static IconData satoshiIcon =
+      const IconData(0x0021, fontFamily: 'SatoshiSymbol');
 
   // static String baseUrlLightningTerminal = 'mybitnet.com';
   // static String baseUrlLightningTerminalWithPort = 'mybitnet.com:8443';
@@ -21,25 +22,30 @@ abstract class AppTheme {
   static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
   static String linkedinUrl = 'https://www.linkedin.com/company/bitnet-ai';
   static String pinterestUrl = 'https://www.pinterest.com/bitnet_ai';
-  static String youtubeUrl = 'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
+  static String youtubeUrl =
+      'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
   static String discordUrl = 'https://discord.gg/9QJ2X8Q';
   static String telegramUrl = 'https://t.me/bitnet_ai';
   static String snapchatUrl = 'https://www.snapchat.com/add/bitnet.ai';
   static String tiktokUrl = 'https://tiktok.com/@bitnet_ai';
-  static String goFundMeUrl = 'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
+  static String goFundMeUrl =
+      'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
 
-  static String _privacyUrl = 'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
+  static String _privacyUrl =
+      'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
   static String get privacyUrl => _privacyUrl;
-  static const String enablePushTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
-  static const String encryptionTutorial = 'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
+  static const String enablePushTutorial =
+      'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
+  static const String encryptionTutorial =
+      'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
   static const String appId = 'com.bitnet.bitnet';
   static const String appOpenUrlScheme = 'com.bitnet';
 
   static String applicationName = 'BitNet';
 
-
   static dynamic targetConf = 4;
 
+  static final Color? immutableColorSchemeSeed = const Color(0xffffffff);
   static Color? colorSchemeSeed = const Color(0xffffffff);
   static const Color primaryColor = Color(0xffffffff);
 
@@ -104,12 +110,13 @@ abstract class AppTheme {
   //YouPorn
   //RedTube
 
-  static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
+  static String _webBaseUrl =
+      'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;
 
-
   static const String currentWebDomain = 'bitnet.ai';
-  static const String supportUrl = 'https://gitlab.com/famedly/fluffychat/issues';
+  static const String supportUrl =
+      'https://gitlab.com/famedly/fluffychat/issues';
   // static final Uri newIssueUrl = Uri(
   //   scheme: 'https',
   //   host: 'gitlab.com',
@@ -117,7 +124,8 @@ abstract class AppTheme {
   // );
 
   static const bool enableSentry = true;
-  static const String sentryDns = 'https://8591d0d863b646feb4f3dda7e5dcab38@o256755.ingest.sentry.io/5243143';
+  static const String sentryDns =
+      'https://8591d0d863b646feb4f3dda7e5dcab38@o256755.ingest.sentry.io/5243143';
   static bool renderHtml = true;
   static bool hideRedactedEvents = false;
   static bool hideUnknownEvents = true;
@@ -137,15 +145,18 @@ abstract class AppTheme {
 
   static const String pushNotificationsChannelId = 'fluffychat_push';
   static const String pushNotificationsChannelName = 'FluffyChat push channel';
-  static const String pushNotificationsChannelDescription = 'Push notifications for FluffyChat';
+  static const String pushNotificationsChannelDescription =
+      'Push notifications for FluffyChat';
   static const String pushNotificationsAppId = 'chat.fluffy.fluffychat';
-  static const String pushNotificationsGatewayUrl = 'https://push.fluffychat.im/_matrix/push/v1/notify';
+  static const String pushNotificationsGatewayUrl =
+      'https://push.fluffychat.im/_matrix/push/v1/notify';
 
   //wtf is this here ------------------------------------------------
 
   static const String pushNotificationsPusherFormat = 'event_id_only';
   static const String emojiFontName = 'Noto Emoji';
-  static const String emojiFontUrl = 'https://github.com/googlefonts/noto-emoji/';
+  static const String emojiFontUrl =
+      'https://github.com/googlefonts/noto-emoji/';
 
   static void loadFromJson(Map<String, dynamic> json) {
     LoggerService logger = Get.find();
@@ -153,7 +164,8 @@ abstract class AppTheme {
       try {
         colorSchemeSeed = Color(json['chat_color']);
       } catch (e) {
-        logger.i('Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000", error: $e');
+        logger.i(
+            'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000", error: $e');
       }
     }
     if (json['privacy_url'] is String) {
@@ -209,9 +221,11 @@ abstract class AppTheme {
   static Size size(BuildContext context) => MediaQuery.of(context).size;
 
   //responsiveness
-  static bool isColumnModeByWidth(double width) => width > columnWidth * 2 + navRailWidth;
+  static bool isColumnModeByWidth(double width) =>
+      width > columnWidth * 2 + navRailWidth;
 
-  static bool isColumnMode(BuildContext context) => isColumnModeByWidth(MediaQuery.of(context).size.width);
+  static bool isColumnMode(BuildContext context) =>
+      isColumnModeByWidth(MediaQuery.of(context).size.width);
 
   //breakpoints
   static const double isSuperSmallScreen = 600;
@@ -275,12 +289,18 @@ abstract class AppTheme {
 
   static Color colorGlassContainer = const Color(0xFFFFFFFF).withOpacity(0.15);
 
-  static InputDecoration textfieldDecoration(String hintText, BuildContext context) => InputDecoration(
+  static InputDecoration textfieldDecoration(
+          String hintText, BuildContext context) =>
+      InputDecoration(
         hintText: hintText,
         contentPadding: const EdgeInsets.all(0.25),
         border: InputBorder.none,
         hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.4),
+              color: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .color!
+                  .withOpacity(0.4),
             ),
       );
 
@@ -288,36 +308,43 @@ abstract class AppTheme {
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.lexend(
       fontSize: 52,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
     ),
     displayMedium: GoogleFonts.lexend(
         fontSize: 40,
-        fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+        fontWeight:
+            FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
         letterSpacing: -0.5),
     displaySmall: GoogleFonts.lexend(
       fontSize: 28,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
     ),
     headlineLarge: GoogleFonts.lexend(
       fontSize: 24,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineMedium: GoogleFonts.lexend(
       fontSize: 22,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineSmall: GoogleFonts.lexend(
       fontSize: 20,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleLarge: GoogleFonts.lexend(
       fontSize: 17,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleMedium: GoogleFonts.lexend(
@@ -432,7 +459,12 @@ abstract class AppTheme {
   );
 
   static bool getDisplayNavigationRail(BuildContext context) =>
-      GoRouter.of(context).routeInformationProvider.value.uri.path.startsWith('/settings');
+      GoRouter.of(context)
+          .routeInformationProvider
+          .value
+          .uri
+          .path
+          .startsWith('/settings');
 
   static const Curve animationCurve = Curves.easeInOut;
 
@@ -440,7 +472,8 @@ abstract class AppTheme {
     //hier die genauen hexes angeben je nachdme wie es in der cloud steht
     Color defaultSeed = seed ?? AppTheme.primaryColor;
 
-    if (defaultSeed == const Color(0xffffffff) || defaultSeed == const Color(0xff000000)) {
+    if (defaultSeed == const Color(0xffffffff) ||
+        defaultSeed == const Color(0xff000000)) {
       if (brightness == Brightness.dark) {
         ColorScheme colorScheme = ColorScheme(
           onPrimaryContainer: Colors.white,
@@ -464,7 +497,9 @@ abstract class AppTheme {
         );
         ThemeData themeData = ThemeData.from(
           colorScheme: colorScheme,
-          textTheme: brightness == Brightness.light ? fallbackTextTheme.merge(textTheme) : fallbackTextTheme.merge(textThemeDarkMode),
+          textTheme: brightness == Brightness.light
+              ? fallbackTextTheme.merge(textTheme)
+              : fallbackTextTheme.merge(textThemeDarkMode),
         );
         return themeData;
       } else {
@@ -499,7 +534,9 @@ abstract class AppTheme {
       );
       ThemeData themeData = ThemeData.from(
         colorScheme: colorScheme,
-        textTheme: brightness == Brightness.light ? fallbackTextTheme.merge(textTheme) : fallbackTextTheme.merge(textThemeDarkMode),
+        textTheme: brightness == Brightness.light
+            ? fallbackTextTheme.merge(textTheme)
+            : fallbackTextTheme.merge(textThemeDarkMode),
       );
       return themeData;
     }
@@ -507,14 +544,16 @@ abstract class AppTheme {
 }
 
 extension on Brightness {
-  Brightness get reversed => this == Brightness.dark ? Brightness.light : Brightness.dark;
+  Brightness get reversed =>
+      this == Brightness.dark ? Brightness.light : Brightness.dark;
 }
 
 /// Darken a color by [percent] amount (100 = black)
 Color darken(Color c, [int percent = 10]) {
   assert(1 <= percent && percent <= 100);
   var f = 1 - percent / 100;
-  return Color.fromARGB(c.alpha, (c.red * f).round(), (c.green * f).round(), (c.blue * f).round());
+  return Color.fromARGB(c.alpha, (c.red * f).round(), (c.green * f).round(),
+      (c.blue * f).round());
 }
 
 /// Lighten a color by [percent] amount (100 = white)
@@ -523,7 +562,11 @@ Color lighten(Color c, [int percent = 10]) {
   assert(1 <= percent && percent <= 100);
   var p = percent / 100;
   return Color.fromARGB(
-      c.alpha, c.red + ((255 - c.red) * p).round(), c.green + ((255 - c.green) * p).round(), c.blue + ((255 - c.blue) * p).round());
+      c.alpha,
+      c.red + ((255 - c.red) * p).round(),
+      c.green + ((255 - c.green) * p).round(),
+      c.blue + ((255 - c.blue) * p).round());
 }
 
-dynamic qrCodeSize(BuildContext context) => min(AppTheme.cardPadding * 9.5, AppTheme.cardPadding * 9.5).toDouble();
+dynamic qrCodeSize(BuildContext context) =>
+    min(AppTheme.cardPadding * 9.5, AppTheme.cardPadding * 9.5).toDouble();

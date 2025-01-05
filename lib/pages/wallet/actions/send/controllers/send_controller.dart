@@ -108,7 +108,7 @@ class SendsController extends BaseController {
   late SendType sendType;
   String feesSelected = "Niedrig";
   RxString description = "".obs;
-  late double feesDouble;
+  double? feesDouble;
   TextEditingController satController = TextEditingController();
   TextEditingController btcController =
       TextEditingController(); // the controller for the amount text field
@@ -395,20 +395,20 @@ class SendsController extends BaseController {
         sub!.cancel();
         logger.i("Payment successful! Forwarding to feed...");
         context.go("/");
-
       } else if ((response)['status'] == 'FAILED') {
-        overlayController.showOverlay("Payment failed: ${response['failure_reason']}");
+        overlayController
+            .showOverlay("Payment failed: ${response['failure_reason']}");
         isFinished.value = false;
         sub!.cancel();
       } else {
-        overlayController.showOverlay("Payment failed: please try again later...");
+        overlayController
+            .showOverlay("Payment failed: please try again later...");
         isFinished.value = false;
         sub!.cancel();
       }
     }, onError: (error) {
       isFinished.value = false;
       overlayController.showOverlay("An error occurred: $error");
-
     }, onDone: () {
       resetValues();
     }, cancelOnError: true);
@@ -452,7 +452,8 @@ class SendsController extends BaseController {
   }
 
   void toggleButtonState() {
-    loadingSending.value = !loadingSending.value; // Toggle the state between true and false
+    loadingSending.value =
+        !loadingSending.value; // Toggle the state between true and false
   }
 
   Future<dynamic> sendBTC(BuildContext context) async {
@@ -464,13 +465,11 @@ class SendsController extends BaseController {
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         if (sendType == SendType.LightningUrl) {
-
           logger.i("Amount that is being sent: ${satController.text}");
           logger.i("Satcontroller text: ${satController.text}");
-          logger.i("Satcontroller text parsed: ${int.parse(satController.text)}");
+          logger
+              .i("Satcontroller text parsed: ${int.parse(satController.text)}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
-
-
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
@@ -492,16 +491,19 @@ class SendsController extends BaseController {
               String jsonString = jsonEncode(response);
 
               // Decode the JSON string back into a Map<String, dynamic>
-              var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
+              var typedResponse =
+                  jsonDecode(jsonString) as Map<String, dynamic>;
 
-              LightningPayment payment = LightningPayment.fromJson(typedResponse);
+              LightningPayment payment =
+                  LightningPayment.fromJson(typedResponse);
               //
               // Get.find<WalletsController>().newTransactionData.add(payment);
               // Handle success
               sendPaymentDataInvoice(response);
 
               if (!firstSuccess) {
-                logger.i("Payment successful it should update the stream in walletcontroller which shows the overlay!");
+                logger.i(
+                    "Payment successful it should update the stream in walletcontroller which shows the overlay!");
                 // Get.find<WalletsController>().fetchLightingWalletBalance();
                 // overlayController.showOverlay("Payment successful!");
 
@@ -515,7 +517,8 @@ class SendsController extends BaseController {
               // Handle error
               logger.i("Payment failed!");
               if (!firstSuccess) {
-                overlayController.showOverlay("Payment failed: ${response.message}");
+                overlayController
+                    .showOverlay("Payment failed: ${response.message}");
 
                 firstSuccess = true;
               }
@@ -530,7 +533,6 @@ class SendsController extends BaseController {
           }, onError: (error) {
             isFinished.value = false;
             overlayController.showOverlay("An error occurred: $error");
-
           }, onDone: () {
             // Handle stream completion if necessary
           }, cancelOnError: true // Cancel the subscription upon first error
@@ -675,13 +677,11 @@ class SendsController extends BaseController {
             // });
             Get.find<WalletsController>().fetchOnchainWalletBalance();
 
-
-            overlayController.showOverlay("Onchain transaction successfully broadcastet, it can take a while!");
+            overlayController.showOverlay(
+                "Onchain transaction successfully broadcastet, it can take a while!");
             GoRouter.of(this.context).go("/feed");
-
           } else {
-
-              overlayController.showOverlay("Payment failed.");
+            overlayController.showOverlay("Payment failed.");
 
             isFinished.value = false;
           }

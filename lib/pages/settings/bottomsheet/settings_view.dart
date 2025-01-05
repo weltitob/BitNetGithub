@@ -114,11 +114,12 @@ class SettingsView extends StatelessWidget {
                   size: AppTheme.iconSize * 0.75,
                 ),
                 onTap: () async {
-                  await settingsCollection.doc(Auth().currentUser!.uid).update({
-                    'theme_mode': 'system',
-                    'primary_color': Colors.white.value,
-                  });
-                  ThemeController.of(context).setPrimaryColor(Colors.white);
+                  // await settingsCollection.doc(Auth().currentUser!.uid).update({
+                  //   'theme_mode': 'system',
+                  //   'primary_color': Colors.white.value,
+                  // });
+                  ThemeController.of(context)
+                      .setPrimaryColor(Colors.white, false);
 
                   // Clear shared preferences if used
                   SharedPreferences prefs =
@@ -135,14 +136,14 @@ class SettingsView extends StatelessWidget {
                   //     await litdController.logoutAndStopEcs('${username}_uid');
                   // print('Stop ecs response: $stopecs_response');
 
-                  Get.delete<ProfileController>();
-                  Get.delete<WalletsController>();
-                  Get.delete<SettingsController>();
-                  Get.delete<ProtocolController>();
+                  Get.delete<ProfileController>(force: true);
+                  Get.delete<WalletsController>(force: true);
+                  Get.delete<ProtocolController>(force: true);
 
                   await Auth().signOut();
 
                   context.pop();
+                  Get.delete<SettingsController>(force: true);
                   context.go('/authhome');
                   Get.put(ProtocolController(logIn: false));
                 },

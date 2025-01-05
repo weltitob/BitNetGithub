@@ -17,7 +17,8 @@ class SettingsController extends BaseController {
   RxBool profileUpdated = false.obs;
   RxBool? crossSigningCached;
 
-  RxList<Map<String, dynamic>> socialRecoveryUsers = RxList<Map<String, dynamic>>([]);
+  RxList<Map<String, dynamic>> socialRecoveryUsers =
+      RxList<Map<String, dynamic>>([]);
   RxList<Map<String, dynamic>> selectedUsers = RxList<Map<String, dynamic>>([]);
   late PageController pageControllerSocialRecovery;
   late TextEditingController keyController;
@@ -34,12 +35,14 @@ class SettingsController extends BaseController {
 
   void setChatColor(Color? color, BuildContext context) async {
     AppTheme.colorSchemeSeed = color;
-    ThemeController.of(context).setPrimaryColor(color);
+    ThemeController.of(context).setPrimaryColor(color, true);
   }
 
-  ThemeMode currentTheme(BuildContext context) => ThemeController.of(context).themeMode;
+  ThemeMode currentTheme(BuildContext context) =>
+      ThemeController.of(context).themeMode;
 
-  Color? currentColor(BuildContext context) => ThemeController.of(context).primaryColor;
+  Color? currentColor(BuildContext context) =>
+      ThemeController.of(context).primaryColor;
 
   final List<Color?> customColors = [
     Colors.white,
@@ -53,7 +56,8 @@ class SettingsController extends BaseController {
     logger.i("switchTheme: $newTheme");
     if (newTheme == null) return;
     //Get.changeThemeMode(newTheme); // Update the theme mode using GetX
-    ThemeController.of(context).setThemeMode(newTheme); // Ensure ThemeController updates the theme
+    ThemeController.of(context)
+        .setThemeMode(newTheme); // Ensure ThemeController updates the theme
   }
 
   @override

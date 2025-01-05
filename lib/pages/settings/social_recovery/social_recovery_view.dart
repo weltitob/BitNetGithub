@@ -169,18 +169,39 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
             ),
           if (controller.initiateSocialRecovery.value != 2)
             Stack(children: [
-              MnemonicFieldWidget(
-                mnemonicController: null,
-                key: mnemonicFieldKey,
-                triggerMnemonicCheck: (mCtrl, tCtrls) {
-                  //triggerMnemonicCheck(context, mCtrl, tCtrls);
-                },
+              SingleChildScrollView(
+                child: MnemonicFieldWidget(
+                  mnemonicController: null,
+                  key: mnemonicFieldKey,
+                  triggerMnemonicCheck: (mCtrl, tCtrls) {
+                    //triggerMnemonicCheck(context, mCtrl, tCtrls);
+                  },
+                ),
               ),
               BottomCenterButton(
                 buttonTitle: 'Confirm',
                 buttonState: ButtonState.idle,
                 onButtonTap: () async {
                   //this was the same before ==> when this works we should be done
+                  String did = Auth().currentUser!.uid;
+                  PrivateData privData =
+                      await getPrivateData(Auth().currentUser!.uid);
+
+                  HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+                  List<UserData> invitedUsers = controller.selectedUsers
+                      .map((item) => UserData.fromMap(item))
+                      .toList();
+
+                  initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
+                          controller.selectedUsers.length, invitedUsers)
+                      .then((val) {
+                    controller.initiateSocialRecovery.value = val ? 2 : 1;
+                  });
+
+                  controller.pageControllerSocialRecovery.nextPage(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.easeIn);
+
                   triggerMnemonicCheck(context, null,
                       mnemonicFieldKey.currentState?.textControllers ?? []);
                 },
