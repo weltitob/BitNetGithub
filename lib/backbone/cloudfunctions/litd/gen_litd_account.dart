@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
@@ -58,6 +59,8 @@ dynamic callGenLitdAccount(String userId) async {
         await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
     logger.d('Generated signature hex: $signatureHex');
 
+
+
     // Initialize FirebaseFunctions and call the Cloud Function
     final functions = FirebaseFunctions.instance;
     final callable = functions.httpsCallable(
@@ -68,11 +71,15 @@ dynamic callGenLitdAccount(String userId) async {
       ),
     );
 
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+
     // Send request
     final dynamic response = await callable.call(<String, dynamic>{
       'user_id': userId.toString(),
       'challenge_data': challengeData.toString(),
       'signature': signatureHex.toString(),
+      'rest_host': restHost.toString(),
     });
 
     logger.i("Antwort vom Server: ${response.data}");

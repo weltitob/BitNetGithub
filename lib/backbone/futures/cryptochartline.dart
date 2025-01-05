@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart'; // Adjust the import based on your project structure
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 
@@ -83,7 +82,7 @@ class CryptoChartLine {
   String _mapDaysToTimeframe(String days) {
     switch (days) {
       case '1':
-        return '1T'; // 1 day
+        return '1D'; // 1 day
       case '7':
         return '1W'; // 7 days
       case '30':
@@ -95,7 +94,7 @@ class CryptoChartLine {
       case 'live':
         return 'live'; // Live data
       default:
-        return '1T'; // Default to 1 day if unrecognized
+        return '1D'; // Default to 1 day if unrecognized
     }
   }
 }

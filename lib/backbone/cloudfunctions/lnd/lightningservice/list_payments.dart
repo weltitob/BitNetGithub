@@ -64,3 +64,124 @@ Future<List<LightningPayment>> listPayments(String acc) async {
       query.docs.map((map) => LightningPayment.fromJson(map.data())).toList();
   return payments;
 }
+
+Future<List<InternalRebalance>> listInternalRebalances(String userPubKey) async {
+  final logger = Get.find<LoggerService>();
+  logger.i("Fetching internal rebalances for account: $userPubKey");
+
+  try {
+    QuerySnapshot<Map<String, dynamic>> query = await backendRef
+        .doc(userPubKey)
+        .collection('internalRebalances')
+        .orderBy('timestamp', descending: true)  // Optional: sort by timestamp
+        .get();
+
+    List<InternalRebalance> rebalances = query.docs
+        .map((doc) => InternalRebalance.fromFirestore(doc))
+        .toList();
+
+    logger.i("Found ${rebalances.length} internal rebalances");
+    return rebalances;
+  } catch (e) {
+    logger.e("Error fetching internal rebalances: $e");
+    throw Exception("Failed to fetch internal rebalances: $e");
+  }
+}
+
+
+class InternalRebalance {
+  final String senderUserUid;
+  final String receiverUserUid;
+  final String internalAccountIdReceiver;
+  final String internalAccountIdSender;
+  final int amountSatoshi;
+  final String lightningAddressResolved;
+  final DateTime timestamp;
+  final String paymentNetwork;
+  final String rebalanceServer;
+  final Map<String, dynamic> senderResponseRebalanceServer;
+  final Map<String, dynamic> receiverResponseRebalanceServer;
+
+  InternalRebalance({
+    required this.senderUserUid,
+    required this.receiverUserUid,
+    required this.internalAccountIdReceiver,
+    required this.internalAccountIdSender,
+    required this.amountSatoshi,
+    required this.lightningAddressResolved,
+    required this.timestamp,
+    required this.paymentNetwork,
+    required this.rebalanceServer,
+    required this.senderResponseRebalanceServer,
+    required this.receiverResponseRebalanceServer,
+  });
+
+  // Create from Firestore document
+  factory InternalRebalance.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return InternalRebalance.fromJson(data);
+  }
+
+  // Create from JSON
+  factory InternalRebalance.fromJson(Map<String, dynamic> json) {
+    return InternalRebalance(
+      senderUserUid: json['SenderuserUid'] ?? '',
+      receiverUserUid: json['ReceiveruserUid'] ?? '',
+      internalAccountIdReceiver: json['internalAccountId_receiver'] ?? '',
+      internalAccountIdSender: json['internalAccountId_sender'] ?? '',
+      amountSatoshi: json['amountSatoshi'] ?? 0,
+      lightningAddressResolved: json['lightningAddress_resolved'] ?? '',
+      timestamp: (json['timestamp'] as Timestamp).toDate(),
+      paymentNetwork: json['paymentnetwork'] ?? '',
+      rebalanceServer: json['rebalanceServer'] ?? '',
+      senderResponseRebalanceServer: json['sender_response_rebalance_server'] ?? {},
+      receiverResponseRebalanceServer: json['receiver_response_rebalance_server'] ?? {},
+    );
+  }
+
+  // Convert to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'SenderuserUid': senderUserUid,
+      'ReceiveruserUid': receiverUserUid,
+      'internalAccountId_receiver': internalAccountIdReceiver,
+      'internalAccountId_sender': internalAccountIdSender,
+      'amountSatoshi': amountSatoshi,
+      'lightningAddress_resolved': lightningAddressResolved,
+      'timestamp': FieldValue.serverTimestamp(),
+      'paymentnetwork': paymentNetwork,
+      'rebalanceServer': rebalanceServer,
+      'sender_response_rebalance_server': senderResponseRebalanceServer,
+      'receiver_response_rebalance_server': receiverResponseRebalanceServer,
+    };
+  }
+
+  // Copy with method for immutability
+  InternalRebalance copyWith({
+    String? senderUserUid,
+    String? receiverUserUid,
+    String? internalAccountIdReceiver,
+    String? internalAccountIdSender,
+    int? amountSatoshi,
+    String? lightningAddressResolved,
+    DateTime? timestamp,
+    String? paymentNetwork,
+    String? rebalanceServer,
+    Map<String, dynamic>? senderResponseRebalanceServer,
+    Map<String, dynamic>? receiverResponseRebalanceServer,
+  }) {
+    return InternalRebalance(
+      senderUserUid: senderUserUid ?? this.senderUserUid,
+      receiverUserUid: receiverUserUid ?? this.receiverUserUid,
+      internalAccountIdReceiver: internalAccountIdReceiver ?? this.internalAccountIdReceiver,
+      internalAccountIdSender: internalAccountIdSender ?? this.internalAccountIdSender,
+      amountSatoshi: amountSatoshi ?? this.amountSatoshi,
+      lightningAddressResolved: lightningAddressResolved ?? this.lightningAddressResolved,
+      timestamp: timestamp ?? this.timestamp,
+      paymentNetwork: paymentNetwork ?? this.paymentNetwork,
+      rebalanceServer: rebalanceServer ?? this.rebalanceServer,
+      senderResponseRebalanceServer: senderResponseRebalanceServer ?? this.senderResponseRebalanceServer,
+      receiverResponseRebalanceServer: receiverResponseRebalanceServer ?? this.receiverResponseRebalanceServer,
+    );
+  }
+}
