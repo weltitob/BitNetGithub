@@ -14,15 +14,18 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/main.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 
 class SocialRecoveryView extends GetWidget<SettingsController> {
@@ -212,75 +215,149 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                 },
               ),
             ]),
-          Obx(
-            () => MaxWidthBody(
-                child: controller.initiateSocialRecovery.value == 0
-                    ? dotProgress(context)
-                    : controller.initiateSocialRecovery.value == 2
-                        ? Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              SizedBox(
-                                height: 50,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.white),
-                                ),
-                                child: Icon(Icons.check, size: 128),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Your social recovery has been activated, you will be notified when all your friends have accepted their invites.',
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 8),
-                              Divider(indent: 32, endIndent: 32),
-                              Text(
-                                'Select Restore Account -> Social Recovery in cases of emergency',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 25),
-                            ]))
-                        : Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              SizedBox(
-                                height: 50,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.white),
-                                ),
-                                child: Icon(Icons.clear, size: 128),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Something bad happened...',
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 8),
-                              Divider(indent: 32, endIndent: 32),
-                              Text(
-                                'Please try again later.',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 25),
-                            ]))),
+          Stack(
+            children: [
+              Obx(
+                () => MaxWidthBody(
+                    child: controller.initiateSocialRecovery.value == 0
+                        ? dotProgress(context)
+                        : controller.initiateSocialRecovery.value == 2
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                                child: Column(children: [
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
+                                    child: Icon(Icons.check, size: 128),
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Your social recovery has been activated, you will be notified when all your friends have accepted their invites.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Divider(indent: 32, endIndent: 32),
+                                  Text(
+                                    'Select Restore Account -> Social Recovery in cases of emergency',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 25),
+                                ]))
+                            : Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(children: [
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
+                                    child: Icon(Icons.clear, size: 128),
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Something bad happened...',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Divider(indent: 32, endIndent: 32),
+                                  Text(
+                                    'Please try again later.',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 25),
+                                ]))),
+              ),
+              Obx(
+                () => controller.isLoadingCancelSocialRecoveryButton.value
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: dotProgress(context))
+                    : BottomCenterButton(
+                        buttonTitle: 'Cancel Social Recovery',
+                        buttonState: ButtonState.idle,
+                        onButtonTap: () async {
+                          controller.isLoadingCancelSocialRecoveryButton.value =
+                              true;
+
+                          SocialRecoveryDocModel socialRecoveryModel =
+                              SocialRecoveryDocModel.fromMap(
+                                  (await socialRecoveryCollection
+                                          .doc(Get.find<ProfileController>()
+                                              .userData
+                                              .value
+                                              .username)
+                                          .get())
+                                      .data()!);
+
+                          for (SocialRecoveryUser user
+                              in socialRecoveryModel.users) {
+                            String userDocId = (await usersCollection
+                                    .where('username', isEqualTo: user.username)
+                                    .get())
+                                .docs
+                                .first
+                                .id;
+                            QuerySnapshot<Map<String, dynamic>> qSnap =
+                                await protocolCollection
+                                    .doc(userDocId)
+                                    .collection('protocols')
+                                    .where('protocol_type',
+                                        isEqualTo:
+                                            'social_recovery_invite_user')
+                                    .get();
+                            for (DocumentSnapshot<Map<String, dynamic>> doc
+                                in qSnap.docs) {
+                              if (doc.data() != null &&
+                                  doc.data()!['protocol_data']
+                                          ['inviter_doc_id'] ==
+                                      Get.find<ProfileController>()
+                                          .userData
+                                          .value
+                                          .did) {
+                                await doc.reference.delete();
+                              }
+                            }
+                          }
+                          socialRecoveryCollection
+                              .doc(Get.find<ProfileController>()
+                                  .userData
+                                  .value
+                                  .username)
+                              .delete();
+                          controller.isLoadingCancelSocialRecoveryButton.value =
+                              false;
+
+                          context.pop();
+                          controller.initiateSocialRecovery.value = 0;
+                          // controller
+                          //     .pageControllerSocialRecovery = PageController(
+                          //   initialPage: 0,
+                          // );
+                        }),
+              )
+            ],
           )
         ],
       ),
