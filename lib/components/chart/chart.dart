@@ -63,9 +63,9 @@ class _ChartWidgetState extends State<ChartWidget> {
   StreamController<ChartLine> _priceStreamController =
       StreamController<ChartLine>();
 
-  String selectedtimespan = "1T";
+  String selectedtimespan = "1D";
 
-  List<String> timespans = ["1T", "1W", "1M", "1J", "Max"];
+  List<String> timespans = ["1D", "1W", "1M", "1J", "Max"];
 
   // Initialized the global variable
   ChartSeriesController? _chartSeriesController;
@@ -228,14 +228,14 @@ class _ChartWidgetState extends State<ChartWidget> {
           ],
         ),
         CustomizableTimeChooser(
-          timePeriods: ['1T', '1W', '1M', '1J', 'Max'],
+          timePeriods: ['1D', '1W', '1M', '1J', 'Max'],
           initialSelectedPeriod: selectedtimespan,
           onTimePeriodSelected: (String newTimeperiod) {
             setState(() {
               selectedtimespan = newTimeperiod;
               // Update price widget
               switch (selectedtimespan) {
-                case "1T":
+                case "1D":
                   currentline = onedaychart;
                   break;
                 case "1W":

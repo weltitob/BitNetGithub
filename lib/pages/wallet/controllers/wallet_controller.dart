@@ -113,12 +113,14 @@ class WalletsController extends BaseController {
   RxMap<String, dynamic> onchainTransactions = <String, dynamic>{}.obs;
   RxMap<String, dynamic> lightningInvoices = <String, dynamic>{}.obs;
   RxMap<String, dynamic> lightningPayments = <String, dynamic>{}.obs;
+  RxMap<String, dynamic> internalRebalances = <String, dynamic>{}.obs;
   RxMap<String, dynamic> loopOperations = <String, dynamic>{}.obs;
 
   // Hier werden alle Transaktionen gesammelt (ungefiltert):
   RxList<LightningPayment> lightningPayments_list = <LightningPayment>[].obs;
   RxList<ReceivedInvoice> lightningInvoices_list = <ReceivedInvoice>[].obs;
   RxList<BitcoinTransaction> onchainTransactions_list = <BitcoinTransaction>[].obs;
+  RxList<InternalRebalance> internalRebalancess_list = <InternalRebalance>[].obs;
   RxList<Swap> loopOperations_list = <Swap>[].obs; // optional
 
   List<TransactionItem> allTransactionItems = [];
@@ -133,6 +135,7 @@ class WalletsController extends BaseController {
   Rx<BitcoinTransaction?> latestTransaction = Rx<BitcoinTransaction?>(null);
   Rx<ReceivedInvoice?> latestInvoice = Rx<ReceivedInvoice?>(null);
   Rx<LightningPayment?> latestPayment = Rx<LightningPayment?>(null);
+  Rx<InternalRebalance?> latestinternalRebalance = Rx<InternalRebalance?>(null);
 
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
@@ -233,6 +236,15 @@ class WalletsController extends BaseController {
       futuresCompleted++;
     });
 
+    listInternalRebalances(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching internal node rebalances in wallet_controller");
+      List<Map<String, dynamic>> mapList =
+      val.map((inv) => inv.toJson()).toList();
+      internalRebalances.value = {'internalRebalances': mapList};
+      logger.i("Internal rebalances: $mapList");
+      // futuresCompleted++;
+    });
+
     // War mal: "if (walletController.futuresCompleted >= 3)"
     if (futuresCompleted >= 3) {
       logger.i("All 3 activity futures fetched can put into lists now");
@@ -316,6 +328,28 @@ class WalletsController extends BaseController {
       // Update the latest invoice regardless of settlement status
       latestInvoice.value = model;
       additionalTransactionsLoaded.value = true;
+    });
+
+    backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('internalRebalances')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .skip(1) // Skip the initial snapshot
+        .listen((query) {
+      InternalRebalance? model;
+      // additionalTransactionsLoaded.value = false;
+
+      logger.i("Received internal rebalance from stream");
+      logger.i("first data: ${query.docs.first.data()}");
+      logger.i("entire data: ${query.docs}");
+
+      model = InternalRebalance.fromJson(query.docs.first.data());
+
+
+      // Update the latest invoice regardless of settlement status
+      latestinternalRebalance.value = model;
+      // additionalTransactionsLoaded.value = true;
     });
 
 
