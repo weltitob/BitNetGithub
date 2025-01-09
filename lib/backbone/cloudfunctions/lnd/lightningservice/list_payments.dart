@@ -14,37 +14,37 @@ import 'package:get/get.dart';
 
 // Future<RestResponse> listPayments() async {
 //   LoggerService logger = Get.find();
-
+//
 //   final litdController = Get.find<LitdController>();
 //   final String restHost = litdController.litd_baseurl.value;
-
+//
 //   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
 //   String url = 'https://$restHost/v1/payments';
-
+//
 //   ByteData byteData = await loadAdminMacaroonAsset();
 //   List<int> bytes = byteData.buffer.asUint8List();
 //   String macaroon = bytesToHex(bytes);
-
+//
 //   logger.i("Macaroon: $macaroon used in litstPayments()");
-
+//
 //   Map<String, String> headers = {
 //     'Grpc-Metadata-macaroon': macaroon,
 //   };
-
+//
 //   HttpOverrides.global = MyHttpOverrides();
-
+//
 //   //data still needs to add the include_incomplete parameter
-
+//
 //   try {
 //       final DioClient dioClient = Get.find<DioClient>();
 //     var response = await dioClient.get(url:url, headers: headers,);
 //     // Print raw response for debugging
 //     logger.d('Raw Response Payments: ${response.data}');
-
+//
 //     if (response.statusCode == 200) {
 //       print(response.data);
 //       return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: response.data);
-
+//
 //     } else {
 //       print('Failed to load data: ${response.statusCode}, ${response.data}');
 //       return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
@@ -59,9 +59,9 @@ Future<List<LightningPayment>> listPayments(String acc) async {
   final logger = Get.find<LoggerService>();
   logger.i("Calling listPayments() with account $acc");
   QuerySnapshot<Map<String, dynamic>> query =
-      await backendRef.doc(acc).collection('payments').get();
+  await backendRef.doc(acc).collection('payments').get();
   List<LightningPayment> payments =
-      query.docs.map((map) => LightningPayment.fromJson(map.data())).toList();
+  query.docs.map((map) => LightningPayment.fromJson(map.data())).toList();
   return payments;
 }
 
@@ -88,7 +88,6 @@ Future<List<InternalRebalance>> listInternalRebalances(String userPubKey) async 
   }
 }
 
-
 class InternalRebalance {
   final String senderUserUid;
   final String receiverUserUid;
@@ -96,7 +95,7 @@ class InternalRebalance {
   final String internalAccountIdSender;
   final int amountSatoshi;
   final String lightningAddressResolved;
-  final DateTime timestamp;
+  final int timestamp; // Jetzt als int behandeln
   final String paymentNetwork;
   final String rebalanceServer;
   final Map<String, dynamic> senderResponseRebalanceServer;
@@ -116,13 +115,13 @@ class InternalRebalance {
     required this.receiverResponseRebalanceServer,
   });
 
-  // Create from Firestore document
+  // Erstellen aus Firestore-Dokument
   factory InternalRebalance.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return InternalRebalance.fromJson(data);
   }
 
-  // Create from JSON
+  // Erstellen aus JSON
   factory InternalRebalance.fromJson(Map<String, dynamic> json) {
     return InternalRebalance(
       senderUserUid: json['SenderuserUid'] ?? '',
@@ -131,7 +130,8 @@ class InternalRebalance {
       internalAccountIdSender: json['internalAccountId_sender'] ?? '',
       amountSatoshi: json['amountSatoshi'] ?? 0,
       lightningAddressResolved: json['lightningAddress_resolved'] ?? '',
-      timestamp: (json['timestamp'] as Timestamp).toDate(),
+      // Umwandlung von Timestamp zu int (Sekunden seit Epoche)
+      timestamp: (json['timestamp'] as Timestamp).seconds,
       paymentNetwork: json['paymentnetwork'] ?? '',
       rebalanceServer: json['rebalanceServer'] ?? '',
       senderResponseRebalanceServer: json['sender_response_rebalance_server'] ?? {},
@@ -139,7 +139,7 @@ class InternalRebalance {
     );
   }
 
-  // Convert to JSON
+  // Konvertierung in JSON
   Map<String, dynamic> toJson() {
     return {
       'SenderuserUid': senderUserUid,
@@ -148,7 +148,8 @@ class InternalRebalance {
       'internalAccountId_sender': internalAccountIdSender,
       'amountSatoshi': amountSatoshi,
       'lightningAddress_resolved': lightningAddressResolved,
-      'timestamp': FieldValue.serverTimestamp(),
+      // Hier setzen wir den timestamp als int-Wert.
+      'timestamp': timestamp,
       'paymentnetwork': paymentNetwork,
       'rebalanceServer': rebalanceServer,
       'sender_response_rebalance_server': senderResponseRebalanceServer,
@@ -156,7 +157,7 @@ class InternalRebalance {
     };
   }
 
-  // Copy with method for immutability
+  // Copy-with-Methode für Immutabilität
   InternalRebalance copyWith({
     String? senderUserUid,
     String? receiverUserUid,
@@ -164,7 +165,7 @@ class InternalRebalance {
     String? internalAccountIdSender,
     int? amountSatoshi,
     String? lightningAddressResolved,
-    DateTime? timestamp,
+    int? timestamp,
     String? paymentNetwork,
     String? rebalanceServer,
     Map<String, dynamic>? senderResponseRebalanceServer,
@@ -183,5 +184,29 @@ class InternalRebalance {
       senderResponseRebalanceServer: senderResponseRebalanceServer ?? this.senderResponseRebalanceServer,
       receiverResponseRebalanceServer: receiverResponseRebalanceServer ?? this.receiverResponseRebalanceServer,
     );
+  }
+}
+
+// Added InternalRebalancesList class
+class InternalRebalancesList {
+  final List<InternalRebalance> rebalances;
+
+  InternalRebalancesList({
+    required this.rebalances,
+  });
+
+  factory InternalRebalancesList.fromJson(Map<String, dynamic> json) {
+    return InternalRebalancesList(
+      rebalances: json['rebalances'] != null
+          ? List<InternalRebalance>.from(
+          json['rebalances'].map((x) => InternalRebalance.fromJson(x)))
+          : [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'rebalances': rebalances.map((x) => x.toJson()).toList(),
+    };
   }
 }

@@ -20,6 +20,7 @@ enum TransactionType {
   onChain,
   loopIn,
   loopOut,
+  internalRebalance,
 }
 
 enum TransactionStatus { failed, pending, confirmed }
@@ -70,14 +71,16 @@ class _TransactionItemState extends State<TransactionItem>
     super.initState();
   }
 
-  String getTransactionType() {
-    if (widget.data.type == TransactionType.loopIn) {
-      return 'Swap';
-    } else if (widget.data.type == TransactionType.loopOut) {
-      return 'Swap';
-    }
-    return '';
-  }
+  // String getTransactionType() {
+  //   if (widget.data.type == TransactionType.loopIn) {
+  //     return 'Swap';
+  //   } else if (widget.data.type == TransactionType.loopOut) {
+  //     return 'Swap';
+  //   } else if (widget.data.type == TransactionType.internalRebalance) {
+  //     return '';
+  //   }
+  //   return '';
+  // }
 
   bool showInfo = false;
 
@@ -207,7 +210,7 @@ class _TransactionItemState extends State<TransactionItem>
                                 horizontal: AppTheme.elementSpacing / 2,
                               ),
                               child: widget.data.type ==
-                                  TransactionType.lightning
+                                  TransactionType.lightning || widget.data.type == TransactionType.internalRebalance
                                   ? Image.asset(
                                 "assets/images/lightning.png",
                                 width: AppTheme.cardPadding * 0.75,
@@ -256,7 +259,8 @@ class _TransactionItemState extends State<TransactionItem>
                                   : widget.data.type ==
                                   TransactionType.lightning
                                   ? 'Lightning'
-                                  : 'Onchain',
+                                  : widget.data.type ==
+                                  TransactionType.internalRebalance ? 'Lightning' : 'Onchain',
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(Get.context!)
                                   .textTheme

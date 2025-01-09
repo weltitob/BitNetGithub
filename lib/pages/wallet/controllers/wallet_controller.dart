@@ -43,7 +43,7 @@ class WalletsController extends BaseController {
   RxBool showInfo = false.obs;
   RxBool transactionsLoaded = false.obs;
   RxBool additionalTransactionsLoaded = false.obs;
-  late final ScrollController scrollController;
+  ScrollController scrollController = ScrollController();
 
   RxInt currentView = 0.obs;
   Rx<OnchainBalance> onchainBalance = OnchainBalance(
@@ -155,7 +155,7 @@ class WalletsController extends BaseController {
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
 
-    scrollController = ScrollController();
+
 
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
 
@@ -330,6 +330,8 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = true;
     });
 
+
+    // --- Internal Rebalances Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
         .collection('internalRebalances')
@@ -347,13 +349,107 @@ class WalletsController extends BaseController {
       model = InternalRebalance.fromJson(query.docs.first.data());
 
 
+      //show an overlay
+      // overlayController.showOverlayTransaction(
+      //   "Internal rebalance",
+      //   TransactionItemData(
+      //     timestamp: 1020,
+      //     type: TransactionType.internalRebalance,
+      //     direction: TransactionDirection.sent,
+      //     receiver: model.receiverUserUid,
+      //     txHash: model.senderUserUid,
+      //     amount: "-${model.amountSatoshi}",
+      //     fee: 0,
+      //     status: TransactionStatus.confirmed,
+      //   ),
+      // );
+
+      TransactionItemData transactionItem =   TransactionItemData(
+        timestamp: 1020,
+        type: TransactionType.internalRebalance,
+        direction: TransactionDirection.sent,
+        receiver: model.receiverUserUid,
+        txHash: model.lightningAddressResolved,
+        amount: "+${model.amountSatoshi}",
+        fee: 0,
+        status: TransactionStatus.confirmed,
+      );
+
+      //check if received or paid invoice via internal rebalance
+      if(Auth().currentUser!.uid == model.internalAccountIdReceiver){
+        logger.i("Internal rebalance received: showOverlay gets triggered now");
+        overlayController.showOverlayTransaction(
+          "Lightning invoice settled via BitNet",
+            transactionItem
+        );
+
+        ReceivedInvoice receivemodel = ReceivedInvoice(
+          memo: "",
+          rPreimage: model.senderUserUid,
+          settleDate: model.timestamp,
+          paymentRequest: model.lightningAddressResolved,
+          rHash: model.senderUserUid,
+          amtPaidSat: model.amountSatoshi,
+          settled: true,
+          value: model.amountSatoshi,
+          valueMsat: model.amountSatoshi,
+          creationDate: model.timestamp,
+          state: '',
+          amtPaid: model.amountSatoshi,
+          amtPaidMsat: model.amountSatoshi,
+      );
+
+        // Add to allTransactions list
+        addOrUpdateTransaction(transactionItem);
+
+        // Add to lightningInvoices_list
+        addOrUpdateLightningInvoice(receivemodel);
+        //add to the received lightning invoices list
+
+      } else {
+        logger.i("Internal rebalance sent: showOverlay gets triggered from sendPayment anyways");
+        //add sent lightning invoice to the list
+        // Show overlay for the succeeded payment
+        overlayController.showOverlay(
+          "Payment succeeded!",
+        );
+
+        // Add to allTransactions list
+        addOrUpdateTransaction(transactionItem);
+
+        LightningPayment lightningModel = LightningPayment(
+            paymentHash: model.lightningAddressResolved,
+            value: model.amountSatoshi,
+            creationDate: model.timestamp,
+            fee: 0,
+            paymentPreimage: model.lightningAddressResolved,
+            valueSat: model.amountSatoshi,
+            valueMsat: model.amountSatoshi,
+            paymentRequest: "paymentRequest",
+            status: "TransactionStatus.confirmed",
+            feeSat: 0,
+            feeMsat: 0,
+            creationTimeNs: model.timestamp,
+            htlcs: [],
+            paymentIndex: "paymentIndex",
+            failureReason: "failureReason"
+        );
+
+
+        // Add to lightningPayments_list
+        addOrUpdateLightningPayment(lightningModel);
+
+      }
+
+      // Update the lightning balance
+      fetchLightingWalletBalance();
+
       // Update the latest invoice regardless of settlement status
       latestinternalRebalance.value = model;
       // additionalTransactionsLoaded.value = true;
     });
 
 
-    // --- Payments Stream Listener ---
     // --- Payments Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
@@ -632,6 +728,32 @@ class WalletsController extends BaseController {
     return true;
   }
 
+  // Future<bool> getInternalRebalances() async {
+  //   try {
+  //     logger.i("Getting internal rebalances...");
+  //     Map<String, dynamic> data = lightningPayments; // Access the RxMap's value
+  //
+  //     // Parse the payments from JSON using compute for background processing
+  //     List<InternalRebalance> internalRebalances = await compute(
+  //           (d) => InternalRebalance.fromJson(d).payments,
+  //       data,
+  //     );
+  //
+  //     //update the RxList of lightningINvoices
+  //     internalRebalancess_list.assignAll(internalRebalances);
+  //     logger.i("Loaded ${internalRebalancess_list.length} internal rebalances.");
+  //
+  //     // Update the RxMap with the latest payments
+  //     lightningPayments['payments'] = payments.map((pmt) => pmt.toJson()).toList();
+  //
+  //     logger.i("Updated lightningPayments RxMap.");
+  //   } catch (e) {
+  //     logger.e("Error loading LN payments: $e");
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
   /// Holt Lightning Payments
   /// Fetch Lightning Payments
   Future<bool> getLightningPaymentsList() async {
@@ -781,6 +903,31 @@ class WalletsController extends BaseController {
     Future.microtask(() {
       // Clear the existing combined list
       allTransactionItems.clear();
+
+      // Combine Internal Rebalances
+      //not needed since internal is mapped into lightning invoices and payments anyways
+      // allTransactionItems.addAll(
+      //   internalRebalancess_list.map((rebalance) {
+      //     final currentUid = Auth().currentUser!.uid;
+      //     final isReceiver = rebalance.receiverUserUid == currentUid;
+      //     return TransactionItem(
+      //       data: TransactionItemData(
+      //         timestamp: rebalance.timestamp,
+      //         type: TransactionType.internalRebalance,
+      //         direction: isReceiver
+      //             ? TransactionDirection.received
+      //             : TransactionDirection.sent,
+      //         receiver: rebalance.receiverUserUid,
+      //         txHash: rebalance.lightningAddressResolved,
+      //         amount: isReceiver
+      //             ? "+${rebalance.amountSatoshi}"
+      //             : "-${rebalance.amountSatoshi}",
+      //         fee: 0,
+      //         status: TransactionStatus.confirmed,
+      //       ),
+      //     );
+      //   }),
+      // );
 
       // Combine On-Chain Transactions
       allTransactionItems.addAll(
