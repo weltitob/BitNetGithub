@@ -130,8 +130,12 @@ class InternalRebalance {
       internalAccountIdSender: json['internalAccountId_sender'] ?? '',
       amountSatoshi: json['amountSatoshi'] ?? 0,
       lightningAddressResolved: json['lightningAddress_resolved'] ?? '',
-      // Umwandlung von Timestamp zu int (Sekunden seit Epoche)
-      timestamp: (json['timestamp'] as Timestamp).seconds,
+      // Handle timestamp as a direct integer value
+      timestamp: json['timestamp'] is int
+          ? json['timestamp']
+          : json['timestamp'] is Timestamp
+          ? (json['timestamp'] as Timestamp).seconds
+          : 0,
       paymentNetwork: json['paymentnetwork'] ?? '',
       rebalanceServer: json['rebalanceServer'] ?? '',
       senderResponseRebalanceServer: json['sender_response_rebalance_server'] ?? {},

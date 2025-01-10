@@ -119,15 +119,17 @@ class WalletsController extends BaseController {
   // Hier werden alle Transaktionen gesammelt (ungefiltert):
   RxList<LightningPayment> lightningPayments_list = <LightningPayment>[].obs;
   RxList<ReceivedInvoice> lightningInvoices_list = <ReceivedInvoice>[].obs;
-  RxList<BitcoinTransaction> onchainTransactions_list = <BitcoinTransaction>[].obs;
-  RxList<InternalRebalance> internalRebalancess_list = <InternalRebalance>[].obs;
+  RxList<BitcoinTransaction> onchainTransactions_list =
+      <BitcoinTransaction>[].obs;
+  RxList<InternalRebalance> internalRebalancess_list =
+      <InternalRebalance>[].obs;
   RxList<Swap> loopOperations_list = <Swap>[].obs; // optional
 
   List<TransactionItem> allTransactionItems = [];
   RxList<TransactionItemData> allTransactions =
-      RxList<TransactionItemData>.empty(growable: true);
+  RxList<TransactionItemData>.empty(growable: true);
   RxList<TransactionItemData> filteredTransactions =
-      RxList<TransactionItemData>.empty(growable: true);
+  RxList<TransactionItemData>.empty(growable: true);
 
   List<String> btcAddresses = List<String>.empty(growable: true);
 
@@ -155,25 +157,22 @@ class WalletsController extends BaseController {
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
 
-
-
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
 
     selectedCard.value =
         LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
     settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
-        (value) {
-      coin.value = value.data()?["showCoin"] ?? false;
-      selectedCurrency = RxString("");
-      selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
-    }, onError: (a, b) {
+            (value) {
+          coin.value = value.data()?["showCoin"] ?? false;
+          selectedCurrency = RxString("");
+          selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
+        }, onError: (a, b) {
       coin.value = false;
       selectedCurrency = RxString("");
       selectedCurrency!.value = "USD";
     });
 
     //----------------------BALANCES----------------------
-
     logger.i("Fetching balances initially in wallet_controller");
 
     fetchOnchainWalletBalance().then((value) {
@@ -201,7 +200,6 @@ class WalletsController extends BaseController {
     //---------------------------------------------------
 
     //----------------------ACTIVITY----------------------
-
     logger.i("Fetching activity initially in wallet_controller");
 
     getTransactions(Auth().currentUser!.uid).then((val) {
@@ -216,7 +214,7 @@ class WalletsController extends BaseController {
     listPayments(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching payments in wallet_controller");
       List<Map<String, dynamic>> paymentsMapped =
-          val.map((payment) => payment.toJson()).toList();
+      val.map((payment) => payment.toJson()).toList();
       lightningPayments.value = {
         'payments': paymentsMapped,
         'first_index_offset': -1,
@@ -230,29 +228,34 @@ class WalletsController extends BaseController {
     listInvoices(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching invoices in wallet_controller");
       List<Map<String, dynamic>> mapList =
-          val.map((inv) => inv.toJson()).toList();
+      val.map((inv) => inv.toJson()).toList();
       lightningInvoices.value = {'invoices': mapList};
       logger.i("Invoices: $mapList");
       futuresCompleted++;
     });
 
+    // FETCH ALL OLD REBALANCES ON INIT
     listInternalRebalances(Auth().currentUser!.uid).then((val) {
       logger.i("Fetching internal node rebalances in wallet_controller");
-      List<Map<String, dynamic>> mapList =
-      val.map((inv) => inv.toJson()).toList();
-      internalRebalances.value = {'internalRebalances': mapList};
+      final mapList = val.map((reb) => reb.toJson()).toList();
+      internalRebalances.value = {
+        'internalRebalances': mapList, // Even if mapList is empty
+      };
+
       logger.i("Internal rebalances: $mapList");
-      // futuresCompleted++;
+      // Not incrementing futuresCompleted here by default,
+      // will handle them in loadActivity with a new method
+      futuresCompleted++;
     });
 
     // War mal: "if (walletController.futuresCompleted >= 3)"
-    if (futuresCompleted >= 3) {
-      logger.i("All 3 activity futures fetched can put into lists now");
+    if (futuresCompleted >= 4) {
+      logger.i("All 4 activity futures fetched can put into lists now");
       loadActivity();
     } else {
       futuresCompleted.listen((val) {
-        if (val >= 3) {
-          logger.i("All 3 activity futures fetched can put into lists now");
+        if (val >= 4) {
+          logger.i("All 4 activity futures fetched can put into lists now");
           loadActivity();
         }
       });
@@ -263,7 +266,6 @@ class WalletsController extends BaseController {
     //----------------------SUBSCRIPTIONS----------------------
     logger.i("Subscribing to streams in wallet_controller");
 
-    // --- Invoices Stream Listener ---
     // --- Invoices Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
@@ -306,7 +308,8 @@ class WalletsController extends BaseController {
 
         // If the received invoice is settled
         if (model.settled) {
-          logger.i("Received invoice from stream: showOverlay should be triggered now");
+          logger.i(
+              "Received invoice from stream: showOverlay should be triggered now");
 
           // Show overlay for the settled invoice
           overlayController.showOverlayTransaction(
@@ -322,14 +325,14 @@ class WalletsController extends BaseController {
         }
       } catch (e, stacktrace) {
         model = null;
-        logger.e('Failed to convert invoice JSON to invoice model: $e\n$stacktrace');
+        logger.e(
+            'Failed to convert invoice JSON to invoice model: $e\n$stacktrace');
       }
 
       // Update the latest invoice regardless of settlement status
       latestInvoice.value = model;
       additionalTransactionsLoaded.value = true;
     });
-
 
     // --- Internal Rebalances Stream Listener ---
     backendRef
@@ -340,7 +343,6 @@ class WalletsController extends BaseController {
         .skip(1) // Skip the initial snapshot
         .listen((query) {
       InternalRebalance? model;
-      // additionalTransactionsLoaded.value = false;
 
       logger.i("Received internal rebalance from stream");
       logger.i("first data: ${query.docs.first.data()}");
@@ -348,41 +350,40 @@ class WalletsController extends BaseController {
 
       model = InternalRebalance.fromJson(query.docs.first.data());
 
-
-      //show an overlay
-      // overlayController.showOverlayTransaction(
-      //   "Internal rebalance",
-      //   TransactionItemData(
-      //     timestamp: 1020,
-      //     type: TransactionType.internalRebalance,
-      //     direction: TransactionDirection.sent,
-      //     receiver: model.receiverUserUid,
-      //     txHash: model.senderUserUid,
-      //     amount: "-${model.amountSatoshi}",
-      //     fee: 0,
-      //     status: TransactionStatus.confirmed,
-      //   ),
-      // );
-
-      TransactionItemData transactionItem =   TransactionItemData(
-        timestamp: 1020,
+      // We'll create a TransactionItemData object, but the direction depends on whether
+      // the current user is the receiver or the sender.
+      TransactionItemData transactionItem = TransactionItemData(
+        timestamp: model.timestamp,
         type: TransactionType.internalRebalance,
-        direction: TransactionDirection.sent,
-        receiver: model.receiverUserUid,
+        direction: TransactionDirection.sent, // default to 'sent'
+        receiver: model.lightningAddressResolved,
         txHash: model.lightningAddressResolved,
-        amount: "+${model.amountSatoshi}",
+        amount: "-${model.amountSatoshi}",
         fee: 0,
         status: TransactionStatus.confirmed,
       );
 
-      //check if received or paid invoice via internal rebalance
-      if(Auth().currentUser!.uid == model.internalAccountIdReceiver){
-        logger.i("Internal rebalance received: showOverlay gets triggered now");
-        overlayController.showOverlayTransaction(
-          "Lightning invoice settled via BitNet",
-            transactionItem
+      final currentUid = Auth().currentUser!.uid;
+
+      if (currentUid == model.internalAccountIdReceiver) {
+        // If I'm the receiver, treat it like a lightning invoice
+        transactionItem = TransactionItemData(
+          timestamp: model.timestamp,
+          type: TransactionType.internalRebalance,
+          direction: TransactionDirection.received,
+          receiver: model.lightningAddressResolved,
+          txHash: model.senderUserUid,
+          amount: "+${model.amountSatoshi}",
+          fee: 0,
+          status: TransactionStatus.confirmed,
         );
 
+        overlayController.showOverlayTransaction(
+          "Lightning invoice settled via BitNet",
+          transactionItem,
+        );
+
+        // Also build the corresponding invoice model
         ReceivedInvoice receivemodel = ReceivedInvoice(
           memo: "",
           rPreimage: model.senderUserUid,
@@ -397,19 +398,15 @@ class WalletsController extends BaseController {
           state: '',
           amtPaid: model.amountSatoshi,
           amtPaidMsat: model.amountSatoshi,
-      );
+        );
 
         // Add to allTransactions list
         addOrUpdateTransaction(transactionItem);
-
         // Add to lightningInvoices_list
         addOrUpdateLightningInvoice(receivemodel);
-        //add to the received lightning invoices list
 
       } else {
-        logger.i("Internal rebalance sent: showOverlay gets triggered from sendPayment anyways");
-        //add sent lightning invoice to the list
-        // Show overlay for the succeeded payment
+        // I'm the sender, treat it like a lightning payment
         overlayController.showOverlay(
           "Payment succeeded!",
         );
@@ -418,27 +415,25 @@ class WalletsController extends BaseController {
         addOrUpdateTransaction(transactionItem);
 
         LightningPayment lightningModel = LightningPayment(
-            paymentHash: model.lightningAddressResolved,
-            value: model.amountSatoshi,
-            creationDate: model.timestamp,
-            fee: 0,
-            paymentPreimage: model.lightningAddressResolved,
-            valueSat: model.amountSatoshi,
-            valueMsat: model.amountSatoshi,
-            paymentRequest: "paymentRequest",
-            status: "TransactionStatus.confirmed",
-            feeSat: 0,
-            feeMsat: 0,
-            creationTimeNs: model.timestamp,
-            htlcs: [],
-            paymentIndex: "paymentIndex",
-            failureReason: "failureReason"
+          paymentHash: model.lightningAddressResolved,
+          value: model.amountSatoshi,
+          creationDate: model.timestamp,
+          fee: 0,
+          paymentPreimage: model.lightningAddressResolved,
+          valueSat: model.amountSatoshi,
+          valueMsat: model.amountSatoshi,
+          paymentRequest: "paymentRequest",
+          status: "TransactionStatus.confirmed",
+          feeSat: 0,
+          feeMsat: 0,
+          creationTimeNs: model.timestamp,
+          htlcs: [],
+          paymentIndex: "paymentIndex",
+          failureReason: "failureReason",
         );
-
 
         // Add to lightningPayments_list
         addOrUpdateLightningPayment(lightningModel);
-
       }
 
       // Update the lightning balance
@@ -446,9 +441,7 @@ class WalletsController extends BaseController {
 
       // Update the latest invoice regardless of settlement status
       latestinternalRebalance.value = model;
-      // additionalTransactionsLoaded.value = true;
     });
-
 
     // --- Payments Stream Listener ---
     backendRef
@@ -509,9 +502,6 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = true;
     });
 
-
-    // --- Transactions Stream Listener ---
-    // this currently causes a bug because it shows a transaction each time we load the app and it does that even before we loaded all transactions causing some issues
     // --- Transactions Stream Listener ---
     backendRef
         .doc(Auth().currentUser!.uid)
@@ -524,7 +514,6 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = false;
       try {
         logger.i("Received transaction from stream");
-        // This right here is a problem sometimes it doesn't actually get the last data
         logger.i("Last data: ${query.docs.first.data()}");
         logger.i("entire data: ${query.docs}");
 
@@ -532,7 +521,8 @@ class WalletsController extends BaseController {
 
         // If the transaction is confirmed
         if (model.numConfirmations > 0) {
-          logger.i("Transaction confirmed: showOverlay should be triggered now");
+          logger.i(
+              "Transaction confirmed: showOverlay should be triggered now");
 
           // Create TransactionItemData for the confirmed transaction
           TransactionItemData transactionItem = TransactionItemData(
@@ -573,15 +563,14 @@ class WalletsController extends BaseController {
         }
       } catch (e, stacktrace) {
         model = null;
-        logger.e('Failed to convert transaction JSON to transaction model: $e\n$stacktrace');
+        logger.e(
+            'Failed to convert transaction JSON to transaction model: $e\n$stacktrace');
       }
 
       // Update the latest transaction regardless of confirmation status
       latestTransaction.value = model;
       additionalTransactionsLoaded.value = true;
     });
-
-
 
     //---------------------------------------------------
     subscribeToOnchainBalance();
@@ -600,13 +589,15 @@ class WalletsController extends BaseController {
     int index = allTransactions.indexWhere((tx) => tx.txHash == transaction.txHash);
 
     // Find the index in allTransactionItems list
-    int indexForItem = allTransactionItems.indexWhere((tx) => tx.data.txHash == transaction.txHash);
+    int indexForItem =
+    allTransactionItems.indexWhere((tx) => tx.data.txHash == transaction.txHash);
 
     if (index != -1 && indexForItem != -1) {
       // Update existing transaction in both lists
       allTransactions[index] = transaction;
       allTransactionItems[indexForItem] = TransactionItem(data: transaction);
-      logger.i("allTransactions and allTransactionItems existing transaction updated ");
+      logger.i(
+          "allTransactions and allTransactionItems existing transaction updated ");
     } else if (index == -1 && indexForItem == -1) {
       // Add new transaction to both lists
       allTransactions.insert(0, transaction);
@@ -614,7 +605,8 @@ class WalletsController extends BaseController {
       logger.i("allTransactions and allTransactionItems updated");
     } else {
       // Handle inconsistent state where one list contains the transaction and the other does not
-      logger.i("Inconsistent state: Transaction found in one list but not the other.");
+      logger.i(
+          "Inconsistent state: Transaction found in one list but not the other.");
       // Optionally, synchronize the lists
       if (index != -1 && indexForItem == -1) {
         allTransactionItems.insert(index, TransactionItem(data: transaction));
@@ -627,8 +619,7 @@ class WalletsController extends BaseController {
     combineTransactions();
   }
 
-  // Method to add or update invoices in lightningInvoices_list
-// Method to add or update invoices in lightningInvoices_list and lightningInvoices Map
+  // Method to add or update invoices in lightningInvoices_list and lightningInvoices Map
   void addOrUpdateLightningInvoice(ReceivedInvoice invoice) {
     // Find the index of the existing invoice in the list
     int index = lightningInvoices_list.indexWhere((inv) => inv.rHash == invoice.rHash);
@@ -651,21 +642,22 @@ class WalletsController extends BaseController {
     combineTransactions();
   }
 
-
-  // Method to add or update payments in lightningPayments_list
   // Method to add or update payments in lightningPayments_list and lightningPayments Map
   void addOrUpdateLightningPayment(LightningPayment payment) {
     // Find the index of the existing payment in the list
-    int index = lightningPayments_list.indexWhere((pmt) => pmt.paymentHash == payment.paymentHash);
+    int index =
+    lightningPayments_list.indexWhere((pmt) => pmt.paymentHash == payment.paymentHash);
 
     if (index != -1) {
       // Update existing payment in the list
       lightningPayments_list[index] = payment;
-      logger.i("Updated existing lightning payment with paymentHash: ${payment.paymentHash}");
+      logger.i(
+          "Updated existing lightning payment with paymentHash: ${payment.paymentHash}");
     } else {
       // Add new payment to the list
       lightningPayments_list.add(payment);
-      logger.i("Added new lightning payment with paymentHash: ${payment.paymentHash}");
+      logger.i(
+          "Added new lightning payment with paymentHash: ${payment.paymentHash}");
     }
 
     // Update the RxMap with the payment's JSON representation
@@ -676,12 +668,11 @@ class WalletsController extends BaseController {
     combineTransactions();
   }
 
-
-  // Method to add or update onchain transactions in onchainTransactions_list
   // Method to add or update onchain transactions in onchainTransactions_list and onchainTransactions Map
   void addOrUpdateOnchainTransaction(BitcoinTransaction transaction) {
     // Find the index of the existing transaction in the list
-    int index = onchainTransactions_list.indexWhere((tx) => tx.txHash == transaction.txHash);
+    int index =
+    onchainTransactions_list.indexWhere((tx) => tx.txHash == transaction.txHash);
 
     if (index != -1) {
       // Update existing transaction in the list
@@ -701,10 +692,6 @@ class WalletsController extends BaseController {
     combineTransactions();
   }
 
-
-  //------------------------------------------------------------------------------------------
-
-  /// Holt Onchain TX
   /// Fetch Onchain Transactions
   Future<bool> getOnchainTransactionsList() async {
     try {
@@ -712,14 +699,16 @@ class WalletsController extends BaseController {
       Map<String, dynamic> data = onchainTransactions; // Access the RxMap's value
 
       // Parse the transactions from JSON
-      List<BitcoinTransaction> transactions = BitcoinTransactionsList.fromJson(data).transactions;
+      List<BitcoinTransaction> transactions =
+          BitcoinTransactionsList.fromJson(data).transactions;
 
       // Update the RxList using assignAll to maintain reactivity
       onchainTransactions_list.assignAll(transactions);
       logger.i("Loaded ${onchainTransactions_list.length} on-chain transactions.");
 
       // Update the RxMap with the latest transactions
-      onchainTransactions['transactions'] = transactions.map((tx) => tx.toJson()).toList();
+      onchainTransactions['transactions'] =
+          transactions.map((tx) => tx.toJson()).toList();
       logger.i("Updated onchainTransactions RxMap.");
     } catch (e) {
       logger.e("Error loading on-chain TX: $e");
@@ -728,33 +717,6 @@ class WalletsController extends BaseController {
     return true;
   }
 
-  // Future<bool> getInternalRebalances() async {
-  //   try {
-  //     logger.i("Getting internal rebalances...");
-  //     Map<String, dynamic> data = lightningPayments; // Access the RxMap's value
-  //
-  //     // Parse the payments from JSON using compute for background processing
-  //     List<InternalRebalance> internalRebalances = await compute(
-  //           (d) => InternalRebalance.fromJson(d).payments,
-  //       data,
-  //     );
-  //
-  //     //update the RxList of lightningINvoices
-  //     internalRebalancess_list.assignAll(internalRebalances);
-  //     logger.i("Loaded ${internalRebalancess_list.length} internal rebalances.");
-  //
-  //     // Update the RxMap with the latest payments
-  //     lightningPayments['payments'] = payments.map((pmt) => pmt.toJson()).toList();
-  //
-  //     logger.i("Updated lightningPayments RxMap.");
-  //   } catch (e) {
-  //     logger.e("Error loading LN payments: $e");
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  /// Holt Lightning Payments
   /// Fetch Lightning Payments
   Future<bool> getLightningPaymentsList() async {
     try {
@@ -781,8 +743,6 @@ class WalletsController extends BaseController {
     return true;
   }
 
-
-  /// Holt Lightning Invoices
   /// Fetch Lightning Invoices
   Future<bool> getLightningInvoicesList() async {
     try {
@@ -803,7 +763,8 @@ class WalletsController extends BaseController {
       logger.i("Loaded ${lightningInvoices_list.length} settled LN invoices.");
 
       // Update the RxMap with the latest invoices
-      lightningInvoices['invoices'] = invoices.map((inv) => inv.toJson()).toList();
+      lightningInvoices['invoices'] =
+          invoices.map((inv) => inv.toJson()).toList();
       logger.i("Updated lightningInvoices RxMap.");
     } catch (e) {
       logger.e("Error loading LN invoices: $e");
@@ -812,6 +773,89 @@ class WalletsController extends BaseController {
     return true;
   }
 
+  /// Fetch internal rebalances; then place them in the correct list (invoice if I'm receiver, payment if I'm sender)
+  Future<bool> getInternalRebalancesList() async {
+    final logger = Get.find<LoggerService>();
+    try {
+      logger.i("Getting internal rebalances from internalRebalances RxMap...");
+      Map<String, dynamic> data = internalRebalances.value;
+
+      // Extract from our internalRebalances Map
+      if (!data.containsKey('internalRebalances')) {
+        logger.e("No 'internalRebalances' key found in the map.");
+        return true; // Not necessarily an error, just no rebalances
+      }
+
+      List<dynamic> rawList = data['internalRebalances'];
+      List<InternalRebalance> rebalances = rawList
+          .map((rebJson) => InternalRebalance.fromJson(rebJson))
+          .toList();
+
+      // Update the RxList
+      internalRebalancess_list.assignAll(rebalances);
+      logger.i("Loaded ${internalRebalancess_list.length} internal rebalances.");
+
+      // For each rebalance, if I'm the receiver => treat like LN invoice,
+      // if I'm the sender => treat like LN payment
+      final currentUid = Auth().currentUser!.uid;
+
+      for (final reb in rebalances) {
+        if (reb.internalAccountIdReceiver == currentUid) {
+          // Make it an invoice
+          // We create a dummy "TransactionItemData" in the combine step anyway,
+          // so let's just store them as a normal LN invoice:
+          logger.i("I'm the receiver of the rebalance.");
+
+          ReceivedInvoice invoiceModel = ReceivedInvoice(
+            memo: "",
+            rPreimage: reb.senderUserUid,
+            settleDate: reb.timestamp,
+            paymentRequest: reb.lightningAddressResolved,
+            rHash: reb.senderUserUid,
+            amtPaidSat: reb.amountSatoshi,
+            settled: true,
+            value: reb.amountSatoshi,
+            valueMsat: reb.amountSatoshi,
+            creationDate: reb.timestamp,
+            state: '',
+            amtPaid: reb.amountSatoshi,
+            amtPaidMsat: reb.amountSatoshi,
+          );
+          addOrUpdateLightningInvoice(invoiceModel);
+        } else {
+          logger.i("I'm the sender of the rebalance: $currentUid");
+          // Make it a LN payment
+          LightningPayment paymentModel = LightningPayment(
+            paymentHash: reb.lightningAddressResolved,
+            value: reb.amountSatoshi,
+            creationDate: reb.timestamp,
+            fee: 0,
+            paymentPreimage: reb.lightningAddressResolved,
+            valueSat: reb.amountSatoshi,
+            valueMsat: reb.amountSatoshi,
+            paymentRequest: "paymentRequest",
+            status: "SUCCEEDED",
+            feeSat: 0,
+            feeMsat: 0,
+            creationTimeNs: reb.timestamp,
+            htlcs: [],
+            paymentIndex: "paymentIndex",
+            failureReason: "failureReason",
+          );
+          addOrUpdateLightningPayment(paymentModel);
+        }
+      }
+
+      // Update the RxMap if desired
+      internalRebalances['internalRebalances'] =
+          rebalances.map((reb) => reb.toJson()).toList();
+      logger.i("Updated internalRebalances RxMap.");
+    } catch (e, stacktrace) {
+      logger.e("Error loading internal rebalances: $e\n$stacktrace");
+      return false;
+    }
+    return true;
+  }
 
   Future<void> loadActivity() async {
     final LoggerService logger = Get.find();
@@ -825,18 +869,21 @@ class WalletsController extends BaseController {
     List<String> errorMessages = [];
 
     try {
-      // Start all three loading functions in parallel
-      logger.i("Starting parallel loading of transactions, payments, and invoices...");
+      // Start all four loading functions in parallel (adding rebalances):
+      logger.i(
+          "Starting parallel loading of transactions, payments, invoices, and rebalances...");
       final List<bool> results = await Future.wait([
         getOnchainTransactionsList(),
         getLightningPaymentsList(),
         getLightningInvoicesList(),
+        getInternalRebalancesList(), // new
       ]);
 
       // Extract results
       bool onchainSuccess = results[0];
       bool paymentsSuccess = results[1];
       bool invoicesSuccess = results[2];
+      bool rebalancesSuccess = results[3];
 
       // Check each result and record errors if any
       if (!onchainSuccess) {
@@ -863,27 +910,31 @@ class WalletsController extends BaseController {
         logger.i("Lightning Invoices loaded successfully.");
       }
 
-      // If there were any errors, handle them (e.g., show an overlay or notify the user)
+      if (!rebalancesSuccess) {
+        errorCount++;
+        errorMessages.add("Failed to load Internal Rebalances.");
+        logger.e("Internal Rebalances failed to load.");
+      } else {
+        logger.i("Internal Rebalances loaded successfully.");
+      }
+
+      // If there were any errors, handle them
       if (errorCount > 0) {
         String combinedErrorMessage = errorMessages.join(' ');
         logger.e("Total Errors: $errorCount. Messages: $combinedErrorMessage");
 
-        // Example: Show an overlay notification with the error message
-        // Replace this with your actual error handling logic
         overlayController.showOverlay(
           combinedErrorMessage,
           color: AppTheme.errorColor,
         );
       }
-
     } catch (e, stacktrace) {
-      // Handle unexpected errors that might occur during the loading process
+      // Handle unexpected errors
       errorCount++;
       String errorMessage = "An unexpected error occurred: $e";
       errorMessages.add(errorMessage);
       logger.e("Error in loadActivity: $e\n$stacktrace");
 
-      // Example: Show an overlay notification with the error message
       overlayController.showOverlay(
         errorMessage,
         color: AppTheme.errorColor,
@@ -892,7 +943,8 @@ class WalletsController extends BaseController {
       // Set transactionsLoaded to true regardless of success or failure
       combineTransactions();
       transactionsLoaded.value = true;
-      logger.i("Finished loading activity. Transactions Loaded: ${transactionsLoaded.value}");
+      logger.i(
+          "Finished loading activity. Transactions Loaded: ${transactionsLoaded.value}");
     }
   }
 
@@ -904,30 +956,24 @@ class WalletsController extends BaseController {
       // Clear the existing combined list
       allTransactionItems.clear();
 
-      // Combine Internal Rebalances
-      //not needed since internal is mapped into lightning invoices and payments anyways
-      // allTransactionItems.addAll(
-      //   internalRebalancess_list.map((rebalance) {
-      //     final currentUid = Auth().currentUser!.uid;
-      //     final isReceiver = rebalance.receiverUserUid == currentUid;
-      //     return TransactionItem(
-      //       data: TransactionItemData(
-      //         timestamp: rebalance.timestamp,
-      //         type: TransactionType.internalRebalance,
-      //         direction: isReceiver
-      //             ? TransactionDirection.received
-      //             : TransactionDirection.sent,
-      //         receiver: rebalance.receiverUserUid,
-      //         txHash: rebalance.lightningAddressResolved,
-      //         amount: isReceiver
-      //             ? "+${rebalance.amountSatoshi}"
-      //             : "-${rebalance.amountSatoshi}",
-      //         fee: 0,
-      //         status: TransactionStatus.confirmed,
-      //       ),
-      //     );
-      //   }),
-      // );
+      allTransactionItems.addAll(
+        internalRebalancess_list.map(
+              (tx) => TransactionItem(
+            data: TransactionItemData(
+              timestamp: tx.timestamp,
+              status: TransactionStatus.confirmed,
+              type: TransactionType.lightning,
+              direction: tx.receiverUserUid == Auth().currentUser!.uid ?
+                   TransactionDirection.sent
+                  : TransactionDirection.received,
+              receiver: tx.receiverUserUid,
+              txHash: tx.lightningAddressResolved,
+              fee: 0,
+              amount: tx.receiverUserUid == Auth().currentUser!.uid ? "-${tx.amountSatoshi}" : "+${tx.amountSatoshi}",
+            ),
+          ),
+        ),
+      );
 
       // Combine On-Chain Transactions
       allTransactionItems.addAll(
@@ -989,19 +1035,20 @@ class WalletsController extends BaseController {
               txHash: inv.rHash,
               amount: "+${inv.amtPaidSat}",
               fee: 0,
-              status: inv.settled
-                  ? TransactionStatus.confirmed
-                  : TransactionStatus.failed,
+              status:
+              inv.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
             ),
           ),
         ),
       );
 
-      // Optional: Combine Loop Operations if needed
-      // allTransactionItems.addAll(...);
+      // (Optional) We could combine the actual internalRebalancess_list here too
+      // But because we already store them in LN invoice/payments
+      // we don't need to do a separate pass unless we want a unique display.
 
       // Sort the combined list by timestamp descending
       allTransactionItems.sort((a, b) => b.data.timestamp.compareTo(a.data.timestamp));
+
       // Update the reactive allTransactions list
       allTransactions.value = allTransactionItems.map((item) => item.data).toList();
     });
@@ -1014,11 +1061,11 @@ class WalletsController extends BaseController {
   Future<OnchainBalance> getOnchainBalance() async {
     try {
       RestResponse onchainBalanceRest =
-          await walletBalance(acc: Auth().currentUser!.uid);
+      await walletBalance(acc: Auth().currentUser!.uid);
 
       if (!onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
-            OnchainBalance.fromJson(onchainBalanceRest.data);
+        OnchainBalance.fromJson(onchainBalanceRest.data);
 
         this.onchainBalance.value = onchainBalance;
       }
@@ -1032,7 +1079,7 @@ class WalletsController extends BaseController {
 
   Future<num> getOnchainAddressBalance(String addr) async {
     final RemoteConfigController remoteConfigController =
-        Get.find<RemoteConfigController>();
+    Get.find<RemoteConfigController>();
     String baseUrlMemPoolSpaceApi =
         remoteConfigController.baseUrlMemPoolSpaceApi.value;
 
@@ -1042,7 +1089,7 @@ class WalletsController extends BaseController {
       if (response.statusCode == 200) {
         List utxos = response.data;
         num addressBalance =
-            utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
+        utxos.fold<num>(0, (sum, utxo) => sum + utxo['value']);
         return addressBalance;
       }
       return 0;
@@ -1057,7 +1104,7 @@ class WalletsController extends BaseController {
   // ----------------------
   Future<int?> getAddressesCount() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
       return doc.data()!['count'];
     } else {
@@ -1070,7 +1117,7 @@ class WalletsController extends BaseController {
   // ----------------------
   Future<List<String>> getOnchainAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -1082,7 +1129,7 @@ class WalletsController extends BaseController {
 
   Future<List<String>> getChangeAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -1094,7 +1141,7 @@ class WalletsController extends BaseController {
 
   Future<List<String>> getNonChangeAddresses() async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await btcAddressesRef.doc(Auth().currentUser!.uid).get();
+    await btcAddressesRef.doc(Auth().currentUser!.uid).get();
     String uid = Auth().currentUser!.uid;
     Map<String, dynamic>? data = doc.data();
     if (doc.data() != null && doc.data()!.isNotEmpty) {
@@ -1107,8 +1154,6 @@ class WalletsController extends BaseController {
   // ----------------------
   // SUBSCRIBE TO ON-CHAIN BALANCE UPDATES
   // ----------------------
-
-  // Call this method from your UI when you want to fetch the status
   Future<void> updateSubServerStatus() async {
     final result = await fetchSubServerStatus();
     subServersStatus.value = result;
@@ -1137,7 +1182,6 @@ class WalletsController extends BaseController {
     LocalStorage.instance.setBool(val, reversedConstant);
   }
 
-  // Method to update the first currency and its corresponding Firestore document
   void setFirstCurrencyInDatabase(String currency) {
     settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       "selectedCurrency": currency,
@@ -1145,25 +1189,9 @@ class WalletsController extends BaseController {
     selectedCurrency!.value = currency;
   }
 
-  // Clear method adjusted to reset currency values
   void clearCurrencies() {
     selectedCurrency = null;
   }
-
-  // Getters for currencies
-
-  // Method to update the first currency and its corresponding Firestore document
-  // void setCardInDatabase(String selectedCard) {
-  //   settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-  //     "selected_card": selectedCard,
-  //   });
-  //   selectedCard = selectedCard;
-  // }
-
-  // // Clear method adjusted to reset currency values
-  // void clearCard() {
-  //   selectedCard = null;
-  // }
 
   void handleFuturesCompleted(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
@@ -1183,7 +1211,6 @@ class WalletsController extends BaseController {
   Future<bool> fetchOnchainWalletBalance() async {
     try {
       this.onchainBalance.value = await getOnchainBalance();
-
       changeTotalBalanceStr();
     } on Error catch (_) {
       return false;
@@ -1193,7 +1220,6 @@ class WalletsController extends BaseController {
     return true;
   }
 
-  // Method to update the first currency and its corresponding Firestore document
   void setCurrencyType(bool type, {bool updateDatabase = true}) {
     if (updateDatabase) {
       settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update(
@@ -1202,12 +1228,10 @@ class WalletsController extends BaseController {
         },
       );
     }
-
     coin.value = type;
     update();
   }
 
-  // Clear method adjusted to reset currency values
   void clearCurrencyType() {
     coin.value = false;
   }
@@ -1218,7 +1242,7 @@ class WalletsController extends BaseController {
       RestResponse lightningBalanceRest = await channelBalance();
 
       LightningBalance lightningBalance =
-          LightningBalance.fromJson(lightningBalanceRest.data);
+      LightningBalance.fromJson(lightningBalanceRest.data);
       if (!lightningBalanceRest.data.isEmpty) {
         this.lightningBalance.value = lightningBalance;
       }
@@ -1253,7 +1277,6 @@ class WalletsController extends BaseController {
 
   @override
   void dispose() {
-    // No manual subscriptions to cancel as Firestore streams are handled by listen
     scrollController.dispose();
     super.dispose();
   }
