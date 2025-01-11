@@ -60,7 +60,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
                 ),
                 const SizedBox(width: AppTheme.elementSpacing),
                 Container(
-                  width: AppTheme.cardPadding * 5,
+                  width: AppTheme.cardPadding * 6,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -68,6 +68,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
                       Text(
                         "@${widget.userData.username}",
                         style: Theme.of(context).textTheme.titleSmall,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: AppTheme.elementSpacing / 4),
                       Text(

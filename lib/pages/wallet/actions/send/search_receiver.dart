@@ -8,6 +8,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -43,74 +44,78 @@ class SearchReceiver extends GetWidget<SendsController> {
           },
           child: Stack(
             children: [
-              SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 3,
-                    ),
-                    Consumer<ScreenHeight>(
-                      builder: (ctx, res, child) {
-                        if (!res.isOpen) {
-                          controller.myFocusNodeAdressSearch.unfocus();
-                        }
-                        return child!;
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.cardPadding),
-                        child: SearchFieldWidget(
-                          hintText: L10n.of(context)!.searchReceipient,
-                          onSuffixTap: (ctrler) {
-                            ctrler.clear();
+              Column(
+                children: [
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 3,
+                  ),
+                  Consumer<ScreenHeight>(
+                    builder: (ctx, res, child) {
+                      if (!res.isOpen) {
+                        controller.myFocusNodeAdressSearch.unfocus();
+                      }
+                      return child!;
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: SearchFieldWidget(
+                        hintText: L10n.of(context)!.searchReceipient,
+                        onSuffixTap: (ctrler) {
+                          ctrler.clear();
+                          controller.usersQuery.value = '';
+                          controller.handleSearch('');
+                          //clear found users
+                          controller.clearFoundUsers();
+                        },
+                        isSearchEnabled: true,
+                        handleSearch: (d) {
+                          if ((d as String).isEmpty) {
                             controller.usersQuery.value = '';
-                            controller.handleSearch('');
-                          },
-                          isSearchEnabled: true,
-                          handleSearch: (d) {
-                            if ((d as String).isEmpty) {
-                              controller.usersQuery.value = '';
-                              controller.handleSearch(d);
-                              controller.handleSearchPeople(d);
-                            } else {
-                              controller.handleSearch(d);
-                              controller.handleSearchPeople(d);
-                              controller.usersQuery.value = d;
-                              controller.queriedUsers = controller.resendUsers
-                                  .where((user) =>
-                                      user.userName.contains(d) ||
-                                      user.address.contains(d))
-                                  .toList();
-                            }
-                          },
-                          node: controller.myFocusNodeAdressSearch,
-                        ),
+                            controller.handleSearch(d);
+                            controller.handleSearchPeople(d);
+                          } else {
+                            controller.handleSearch(d);
+                            controller.handleSearchPeople(d);
+                            controller.usersQuery.value = d;
+                            controller.queriedUsers = controller.resendUsers
+                                .where((user) =>
+                                    user.userName.contains(d) ||
+                                    user.address.contains(d))
+                                .toList();
+                          }
+                        },
+                        node: controller.myFocusNodeAdressSearch,
                       ),
                     ),
-                    Obx(() {
-                      if (controller.foundUsers.isNotEmpty) {
-                        // Show your user results in a ListView or GridView
-                        return ListView.builder(
-                          itemCount: controller.foundUsers.length,
-                          itemBuilder: (ctx, i) {
-                            final user = controller.foundUsers[i];
+                  ),
+                  Obx(() {
+                    if (controller.foundUsers.isNotEmpty) {
+                      // Show your user results in a ListView or GridView
+                      return  SingleChildScrollView(
+                        child: Column(
+                          children: controller.foundUsers.map((user) {
                             return UserSearchResult(
+                              customWidth: MediaQuery.of(context).size.width - AppTheme.cardPadding * 2,
                               userData: user,
                               onTap: () {
-                                controller.onQRCodeScanned("${user.username}@lnurl.bitnet.ai", context);
+                                controller.onQRCodeScanned(
+                                  "${user.username}@lnurl.bitnet.ai",
+                                  context,
+                                );
                               },
                             );
-                          },
-                        );
-                      } else {
-                        // Fallback to your normal "featured" or "most used" content
-                        return buildRecentFeaturedSection(context);
-                      }
-                    })
+                          }).toList(),
+                        ),
+                      );
 
-                  ],
-                ),
+                    } else {
+                      // Fallback to your normal "featured" or "most used" content
+                      return buildRecentFeaturedSection(context);
+                    }
+                  })
+
+                ],
               ),
               BottomCenterButton(
                 onButtonTap: () async {
@@ -130,6 +135,7 @@ class SearchReceiver extends GetWidget<SendsController> {
   Widget buildRecentFeaturedSection(BuildContext context){
     return Obx(
           () => Container(
+            alignment: Alignment.topCenter,
         height: MediaQuery.of(context).size.height * 0.7,
         child: controller.usersQuery.value.isNotEmpty
             ? GridView.builder(
@@ -354,11 +360,11 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                 Avatar(
                   size: AppTheme.cardPadding * 2.75,
                   name: "BitNet",
-                  mxContent: Uri.parse("https://bitnet.cash"),
+                  mxContent: Uri.parse("https://a.pinatafarm.com/220x224/6a2830baad/sad-man.jpg"),
                   isNft: false,
                   onTap: () {
                     Get.find<SendsController>()
-                        .handleSearch("bitnet@bitnet.ai");
+                        .handleSearch("bitnet@lnurl.bitnet.ai");
                   },
                 ),
                 const SizedBox(
@@ -367,7 +373,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                 Container(
                   width: AppTheme.cardPadding * 3,
                   child: Text(
-                    "bitnet@bitnet.ai",
+                    "bitnet@lnurl.bitnet.ai",
                     style: Theme.of(context).textTheme.bodySmall,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -88,6 +88,10 @@ class SendsController extends BaseController {
     }
   }
 
+  clearFoundUsers() {
+    foundUsers.clear();
+  }
+
 
   Future<void> getClipboardData() async {
     List<ReceivedInvoice> restLightningInvoices =
@@ -734,6 +738,7 @@ class SendsController extends BaseController {
     btcController.dispose();
     satController.dispose();
     currencyController.dispose();
+    foundUsers.clear();
     super.dispose();
   }
 
