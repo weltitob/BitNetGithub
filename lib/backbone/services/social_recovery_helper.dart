@@ -313,13 +313,9 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                     )
                   ],
                 ),
-                isLoadingButton
-                    ? Align(
-                        alignment: Alignment.bottomCenter,
-                        child: dotProgress(context))
-                    : BottomCenterButton(
+             BottomCenterButton(
                         buttonTitle: 'Join',
-                        buttonState: ButtonState.idle,
+                        buttonState: isLoadingButton ? ButtonState.loading : ButtonState.idle,
                         onButtonTap: () async {
                           isLoadingButton = true;
                           setState(() {});
@@ -338,8 +334,16 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                               PrivateData data =
                                   await getPrivateData(Auth().currentUser!.uid);
                               AESCipher cipher = AESCipher(data.mnemonic);
+                              final logger = Get.find<LoggerService>();
+
+                              logger.i('open key: $openKey');
+                              logger.i('mnemonic: ${data.mnemonic}');
+                              logger.i('decrypted key: ${cipher.decryptText(openKey)}');
+                              logger.i('encrypted key: ${cipher.encryptText(openKey)}');
+
                               String encryptedText =
                                   cipher.encryptText(openKey);
+                              logger.i("encrypted text: $encryptedText");
                               users[i]['open_key'] = '';
                               users[i]['encrypted_key'] = encryptedText;
                               users[i]['accepted_invite'] = true;

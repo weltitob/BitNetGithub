@@ -7,6 +7,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -71,8 +72,10 @@ class SearchReceiver extends GetWidget<SendsController> {
                             if ((d as String).isEmpty) {
                               controller.usersQuery.value = '';
                               controller.handleSearch(d);
+                              controller.handleSearchPeople(d);
                             } else {
                               controller.handleSearch(d);
+                              controller.handleSearchPeople(d);
                               controller.usersQuery.value = d;
                               controller.queriedUsers = controller.resendUsers
                                   .where((user) =>
@@ -85,135 +88,27 @@ class SearchReceiver extends GetWidget<SendsController> {
                         ),
                       ),
                     ),
-                    Obx(
-                      () => Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: controller.usersQuery.value.isNotEmpty
-                            ? GridView.builder(
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2),
-                                itemBuilder: (ctx, i) {
-                                  return UserSendWidget(
-                                      user: controller.queriedUsers[i],
-                                      controller: controller);
-                                },
-                                itemCount: controller.queriedUsers.length,
-                              )
-                            : ListView(
-                                controller: controller.sendScrollerController,
-                                shrinkWrap: true,
-                                physics: const BouncingScrollPhysics(
-                                    parent: AlwaysScrollableScrollPhysics()),
-                                children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        right: AppTheme.cardPadding,
-                                        left: AppTheme.cardPadding,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Featured",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          SizedBox(
-                                            height: AppTheme.cardPadding.h,
-                                          ),
-                                          GlassContainer(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height:
-                                                AppTheme.cardPadding * 7.5.h,
-                                            child: Container(
-                                              margin: const EdgeInsets.all(
-                                                  AppTheme.elementSpacing),
-                                              child: MostPopularWidget(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height: AppTheme.cardPadding * 2.h),
+                    Obx(() {
+                      if (controller.foundUsers.isNotEmpty) {
+                        // Show your user results in a ListView or GridView
+                        return ListView.builder(
+                          itemCount: controller.foundUsers.length,
+                          itemBuilder: (ctx, i) {
+                            final user = controller.foundUsers[i];
+                            return UserSearchResult(
+                              userData: user,
+                              onTap: () {
+                                controller.onQRCodeScanned("${user.username}@lnurl.bitnet.ai", context);
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        // Fallback to your normal "featured" or "most used" content
+                        return buildRecentFeaturedSection(context);
+                      }
+                    })
 
-                                    Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: AppTheme.cardPadding),
-                                        child: Text("Most often used",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge)),
-                                    SizedBox(
-                                      height: AppTheme.cardPadding.h,
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 100,
-                                      child: HorizontalFadeListView(
-                                        child: Obx(
-                                          () => ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                                  controller.resendUsers.length,
-                                              itemBuilder: (context, i) {
-                                                return UserSendWidget(
-                                                  user:
-                                                      controller.resendUsers[i],
-                                                  controller: controller,
-                                                );
-                                              }),
-                                        ),
-                                      ),
-                                    ),
-                                    //space
-                                    const SizedBox(
-                                        height: AppTheme.cardPadding * 2),
-                                    if (controller.resendUsers.isNotEmpty) ...[
-                                      Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: AppTheme.cardPadding),
-                                          child: Text("Send Again",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge)),
-                                      SizedBox(
-                                        height: AppTheme.cardPadding.h,
-                                      ),
-                                      Container(
-                                        //color: Colors.green,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 100,
-                                        child: HorizontalFadeListView(
-                                          child: Obx(
-                                            () => ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: controller
-                                                    .resendUsers.length,
-                                                itemBuilder: (context, i) {
-                                                  return UserSendWidget(
-                                                    user: controller
-                                                        .resendUsers[i],
-                                                    controller: controller,
-                                                  );
-                                                }),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ]),
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -230,6 +125,139 @@ class SearchReceiver extends GetWidget<SendsController> {
         ),
       ),
     );
+  }
+
+  Widget buildRecentFeaturedSection(BuildContext context){
+    return Obx(
+          () => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: controller.usersQuery.value.isNotEmpty
+            ? GridView.builder(
+          gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2),
+          itemBuilder: (ctx, i) {
+            return UserSendWidget(
+                user: controller.queriedUsers[i],
+                controller: controller);
+          },
+          itemCount: controller.queriedUsers.length,
+        )
+            : ListView(
+            controller: controller.sendScrollerController,
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            children: [
+              Container(
+                margin: const EdgeInsets.only(
+                  right: AppTheme.cardPadding,
+                  left: AppTheme.cardPadding,
+                ),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  mainAxisAlignment:
+                  MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Featured",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge,
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding.h,
+                    ),
+                    GlassContainer(
+                      width: MediaQuery.of(context)
+                          .size
+                          .width,
+                      height:
+                      AppTheme.cardPadding * 7.5.h,
+                      child: Container(
+                        margin: const EdgeInsets.all(
+                            AppTheme.elementSpacing),
+                        child: MostPopularWidget(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                  height: AppTheme.cardPadding * 2.h),
+
+              Padding(
+                  padding: const EdgeInsets.only(
+                      left: AppTheme.cardPadding),
+                  child: Text("Most often used",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge)),
+              SizedBox(
+                height: AppTheme.cardPadding.h,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 100,
+                child: HorizontalFadeListView(
+                  child: Obx(
+                        () => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:
+                        controller.resendUsers.length,
+                        itemBuilder: (context, i) {
+                          return UserSendWidget(
+                            user:
+                            controller.resendUsers[i],
+                            controller: controller,
+                          );
+                        }),
+                  ),
+                ),
+              ),
+              //space
+              const SizedBox(
+                  height: AppTheme.cardPadding * 2),
+              if (controller.resendUsers.isNotEmpty) ...[
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: AppTheme.cardPadding),
+                    child: Text("Send Again",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge)),
+                SizedBox(
+                  height: AppTheme.cardPadding.h,
+                ),
+                Container(
+                  //color: Colors.green,
+                  width:
+                  MediaQuery.of(context).size.width,
+                  height: 100,
+                  child: HorizontalFadeListView(
+                    child: Obx(
+                          () => ListView.builder(
+                          scrollDirection:
+                          Axis.horizontal,
+                          itemCount: controller
+                              .resendUsers.length,
+                          itemBuilder: (context, i) {
+                            return UserSendWidget(
+                              user: controller
+                                  .resendUsers[i],
+                              controller: controller,
+                            );
+                          }),
+                    ),
+                  ),
+                ),
+              ],
+            ]),
+      ),
+    );
+
   }
 }
 

@@ -29,6 +29,7 @@ import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -56,10 +57,37 @@ class SendsController extends BaseController {
   Rx<String> usersQuery = ''.obs;
   List<ReSendUser> queriedUsers = List.empty(growable: true);
 
+  // ADD:
+  RxList<UserData> foundUsers = <UserData>[].obs;
+
+
   void handleSearch(String value) {
     logger.i("handleSearch called with value: $value");
     onQRCodeScanned(value, context);
   }
+
+  // ADD this method:
+  Future<void> handleSearchPeople(String query) async {
+    foundUsers.clear();
+    if (query.isEmpty) {
+      update();
+      return;
+    }
+    try {
+      QuerySnapshot users = await usersCollection.get();
+      for (var doc in users.docs) {
+        UserData user = UserData.fromDocument(doc);
+        if (user.username.toLowerCase().contains(query.toLowerCase()) ||
+            user.displayName.toLowerCase().contains(query.toLowerCase())) {
+          foundUsers.add(user);
+        }
+      }
+      update();
+    } catch (e) {
+      print("Error searching for user: $e");
+    }
+  }
+
 
   Future<void> getClipboardData() async {
     List<ReceivedInvoice> restLightningInvoices =
