@@ -129,7 +129,8 @@ class _BottomNavState extends State<BottomNav>
   static List<Widget> navItems = <Widget>[
     ComingSoonPage(),
     const Wallet(),
-    Profile()
+    ComingSoonPage()
+    //Profile()
   ];
 
   void _onItemTapped(int index, ScrollController controller) {

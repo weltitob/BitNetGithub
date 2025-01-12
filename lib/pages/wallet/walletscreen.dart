@@ -1,7 +1,9 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -11,12 +13,13 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';  // <--- NEW import
+import 'package:bitnet/components/indicators/smoothpageindicator.dart'; // <--- NEW import
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -34,11 +37,8 @@ import 'package:provider/provider.dart';
 class WalletScreen extends GetWidget<WalletsController> {
   WalletScreen({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
-
     WalletsController walletController = Get.find<WalletsController>();
     ProfileController profileController = Get.find<ProfileController>();
 
@@ -53,14 +53,15 @@ class WalletScreen extends GetWidget<WalletsController> {
             viewportFraction: 0.8885, // see some of the next/prev card
           );
 
-          SubServersStatus? subServersStatus; // local variable to store fetched data
+          SubServersStatus?
+              subServersStatus; // local variable to store fetched data
 
           return CustomScrollView(
             controller: controller.scrollController,
             slivers: [
               SliverToBoxAdapter(
                 child: Obx(
-                      () {
+                  () {
                     controller.chartLines.value;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -78,32 +79,32 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 children: [
                                   profileController.isUserLoading == true.obs
                                       ? Avatar(
-                                    onTap: () {
-                                      // context.go('/profile/$profileId');
-                                    },
-                                    isNft: false,
-                                  )
+                                          onTap: () async {
+                                            // context.go('/profile/$profileId');
+                                          },
+                                          isNft: false,
+                                        )
                                       : Avatar(
-                                    onTap: () {
-                                      final profileId =
-                                          Auth().currentUser?.uid;
-                                      // context.go('/profile/$profileId');
-                                    },
-                                    size: AppTheme.cardPadding * 2.5.h,
-                                    mxContent: Uri.parse(
-                                      profileController.userData.value
-                                          .profileImageUrl,
-                                    ),
-                                    type: profilePictureType.lightning,
-                                    isNft: profileController.userData.value
-                                        .nft_profile_id.isNotEmpty,
-                                  ),
+                                          onTap: () async {
+                                            final profileId =
+                                                Auth().currentUser?.uid;
+                                            // context.go('/profile/$profileId');
+                                          },
+                                          size: AppTheme.cardPadding * 2.5.h,
+                                          mxContent: Uri.parse(
+                                            profileController
+                                                .userData.value.profileImageUrl,
+                                          ),
+                                          type: profilePictureType.lightning,
+                                          isNft: profileController.userData
+                                              .value.nft_profile_id.isNotEmpty,
+                                        ),
                                   SizedBox(
                                     width: AppTheme.elementSpacing * 1.25.w,
                                   ),
                                   Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         L10n.of(context)!.totalWalletBal,
@@ -113,103 +114,100 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       ),
                                       const SizedBox(
                                           height:
-                                          AppTheme.elementSpacing * 0.25),
+                                              AppTheme.elementSpacing * 0.25),
                                       Obx(
-                                            () => Row(
+                                        () => Row(
                                           children: [
                                             controller.hideBalance.value
                                                 ? Text(
-                                              '******',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
-                                            )
+                                                    '******',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .displaySmall,
+                                                  )
                                                 : Obx(() {
-                                              final chartLine = controller
-                                                  .chartLines.value;
-                                              final bitcoinPrice =
-                                                  chartLine?.price;
-                                              final currencyEquivalent =
-                                              bitcoinPrice != null
-                                                  ? (controller
-                                                  .totalBalanceSAT
-                                                  .value /
-                                                  100000000 *
-                                                  bitcoinPrice)
-                                                  .toStringAsFixed(
-                                                  2)
-                                                  : "0.00";
+                                                    final chartLine = controller
+                                                        .chartLines.value;
+                                                    final bitcoinPrice =
+                                                        chartLine?.price;
+                                                    final currencyEquivalent =
+                                                        bitcoinPrice != null
+                                                            ? (controller
+                                                                        .totalBalanceSAT
+                                                                        .value /
+                                                                    100000000 *
+                                                                    bitcoinPrice)
+                                                                .toStringAsFixed(
+                                                                    2)
+                                                            : "0.00";
 
-                                              final coin = Provider.of<
-                                                  CurrencyTypeProvider>(
-                                                  context,
-                                                  listen: true);
-                                              final currency = Provider.of<
-                                                  CurrencyChangeProvider>(
-                                                  context,
-                                                  listen: true);
-                                              controller.coin.value =
-                                                  coin.coin ??
-                                                      controller
-                                                          .coin.value;
-                                              controller.selectedCurrency
-                                                  ?.value =
-                                                  currency
-                                                      .selectedCurrency ??
-                                                      controller
-                                                          .selectedCurrency!
-                                                          .value;
-
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  controller
-                                                      .setCurrencyType(
-                                                    !controller
-                                                        .coin.value,
-                                                    updateDatabase: false,
-                                                  );
-                                                  coin.setCurrencyType(
-                                                    controller
-                                                        .coin.value,
-                                                  );
-                                                },
-                                                child: (controller
-                                                    .coin.value)
-                                                    ? Row(
-                                                  children: [
-                                                    Text(
-                                                      controller
-                                                          .totalBalance
-                                                          .value
-                                                          .amount
-                                                          .toString(),
-                                                      overflow:
-                                                      TextOverflow
-                                                          .ellipsis,
-                                                      style: Theme.of(
-                                                          context)
-                                                          .textTheme
-                                                          .displaySmall,
-                                                    ),
-                                                    Icon(
-                                                      getCurrencyIcon(
+                                                    final coin = Provider.of<
+                                                            CurrencyTypeProvider>(
+                                                        context,
+                                                        listen: true);
+                                                    final currency = Provider
+                                                        .of<CurrencyChangeProvider>(
+                                                            context,
+                                                            listen: true);
+                                                    controller.coin.value = coin
+                                                            .coin ??
+                                                        controller.coin.value;
+                                                    controller.selectedCurrency
+                                                        ?.value = currency
+                                                            .selectedCurrency ??
                                                         controller
-                                                            .totalBalance
-                                                            .value
-                                                            .bitcoinUnitAsString,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                                    : Text(
-                                                  "$currencyEquivalent${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
-                                                  style: Theme.of(
-                                                      context)
-                                                      .textTheme
-                                                      .displaySmall,
-                                                ),
-                                              );
-                                            }),
+                                                            .selectedCurrency!
+                                                            .value;
+
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        controller
+                                                            .setCurrencyType(
+                                                          !controller
+                                                              .coin.value,
+                                                          updateDatabase: false,
+                                                        );
+                                                        coin.setCurrencyType(
+                                                          controller.coin.value,
+                                                        );
+                                                      },
+                                                      child: (controller
+                                                              .coin.value)
+                                                          ? Row(
+                                                              children: [
+                                                                Text(
+                                                                  controller
+                                                                      .totalBalance
+                                                                      .value
+                                                                      .amount
+                                                                      .toString(),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .displaySmall,
+                                                                ),
+                                                                Icon(
+                                                                  getCurrencyIcon(
+                                                                    controller
+                                                                        .totalBalance
+                                                                        .value
+                                                                        .bitcoinUnitAsString,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Text(
+                                                              "$currencyEquivalent${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displaySmall,
+                                                            ),
+                                                    );
+                                                  }),
                                           ],
                                         ),
                                       ),
@@ -220,13 +218,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                               Row(
                                 children: [
                                   Obx(
-                                        () => RoundedButtonWidget(
+                                    () => RoundedButtonWidget(
                                       size: AppTheme.cardPadding * 1.25,
                                       buttonType: ButtonType.transparent,
                                       iconData:
-                                      controller.hideBalance.value == false
-                                          ? FontAwesomeIcons.eyeSlash
-                                          : FontAwesomeIcons.eye,
+                                          controller.hideBalance.value == false
+                                              ? FontAwesomeIcons.eyeSlash
+                                              : FontAwesomeIcons.eye,
                                       onTap: () {
                                         controller.setHideBalance(
                                           hide: !controller.hideBalance.value,
@@ -248,19 +246,19 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         borderRadius: AppTheme.borderRadiusBig,
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .canvasColor,
-                                            borderRadius:
-                                             BorderRadius.only(
+                                            color:
+                                                Theme.of(context).canvasColor,
+                                            borderRadius: BorderRadius.only(
                                               topLeft: AppTheme.cornerRadiusBig,
-                                              topRight: AppTheme.cornerRadiusBig,
+                                              topRight:
+                                                  AppTheme.cornerRadiusBig,
                                             ),
                                           ),
                                           child: ClipRRect(
-                                            borderRadius:
-                                             BorderRadius.only(
+                                            borderRadius: BorderRadius.only(
                                               topLeft: AppTheme.cornerRadiusBig,
-                                              topRight: AppTheme.cornerRadiusBig,
+                                              topRight:
+                                                  AppTheme.cornerRadiusBig,
                                             ),
                                             child: Settings(),
                                           ),
@@ -302,69 +300,67 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       ),
                                       child: (index == 0)
                                           ? GestureDetector(
-                                        onTap: () {
-                                          context.go(
-                                              '/wallet/lightningcard');
-                                        },
-                                        child: Obx(() {
-                                          final confirmedBalanceStr =
-                                              walletController
-                                                  .lightningBalance
-                                                  .value
-                                                  .balance
-                                                  .obs;
+                                              onTap: () {
+                                                context.go(
+                                                    '/wallet/lightningcard');
+                                              },
+                                              child: Obx(() {
+                                                final confirmedBalanceStr =
+                                                    walletController
+                                                        .lightningBalance
+                                                        .value
+                                                        .balance
+                                                        .obs;
 
-                                          return BalanceCardLightning(
-                                            balance:
-                                            confirmedBalanceStr.value,
-                                            confirmedBalance:
-                                            confirmedBalanceStr.value,
-                                            defaultUnit:
-                                            BitcoinUnits.SAT,
-                                          );
-                                        }),
-                                      )
+                                                return BalanceCardLightning(
+                                                  balance:
+                                                      confirmedBalanceStr.value,
+                                                  confirmedBalance:
+                                                      confirmedBalanceStr.value,
+                                                  defaultUnit: BitcoinUnits.SAT,
+                                                );
+                                              }),
+                                            )
                                           : GestureDetector(
-                                        onTap: () {
-                                          context
-                                              .go('/wallet/bitcoincard');
-                                        },
-                                        child: Obx(() {
-                                          final logger =
-                                          Get.find<LoggerService>();
-                                          final confirmedBalanceStr =
-                                              walletController
-                                                  .onchainBalance
-                                                  .value
-                                                  .confirmedBalance
-                                                  .obs;
-                                          final unconfirmedBalanceStr =
-                                              walletController
-                                                  .onchainBalance
-                                                  .value
-                                                  .unconfirmedBalance
-                                                  .obs;
+                                              onTap: () {
+                                                context
+                                                    .go('/wallet/bitcoincard');
+                                              },
+                                              child: Obx(() {
+                                                final logger =
+                                                    Get.find<LoggerService>();
+                                                final confirmedBalanceStr =
+                                                    walletController
+                                                        .onchainBalance
+                                                        .value
+                                                        .confirmedBalance
+                                                        .obs;
+                                                final unconfirmedBalanceStr =
+                                                    walletController
+                                                        .onchainBalance
+                                                        .value
+                                                        .unconfirmedBalance
+                                                        .obs;
 
-                                          logger.i(
-                                            "Confirmed Balance onchain: $confirmedBalanceStr",
-                                          );
-                                          logger.i(
-                                            "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
-                                          );
+                                                logger.i(
+                                                  "Confirmed Balance onchain: $confirmedBalanceStr",
+                                                );
+                                                logger.i(
+                                                  "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
+                                                );
 
-                                          return BalanceCardBtc(
-                                            balance:
-                                            confirmedBalanceStr.value,
-                                            confirmedBalance:
-                                            confirmedBalanceStr.value,
-                                            unconfirmedBalance:
-                                            unconfirmedBalanceStr
-                                                .value,
-                                            defaultUnit:
-                                            BitcoinUnits.SAT,
-                                          );
-                                        }),
-                                      ),
+                                                return BalanceCardBtc(
+                                                  balance:
+                                                      confirmedBalanceStr.value,
+                                                  confirmedBalance:
+                                                      confirmedBalanceStr.value,
+                                                  unconfirmedBalance:
+                                                      unconfirmedBalanceStr
+                                                          .value,
+                                                  defaultUnit: BitcoinUnits.SAT,
+                                                );
+                                              }),
+                                            ),
                                     );
                                   },
                                 ),
@@ -418,7 +414,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                         children: [
                           BitNetImageWithTextButton(
                             L10n.of(context)!.send,
-                                () {
+                            () {
                               context.go('/wallet/send');
                             },
                             image: "assets/images/send_image.png",
@@ -428,7 +424,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           ),
                           BitNetImageWithTextButton(
                             L10n.of(context)!.receive,
-                                () {
+                            () {
                               context.go(
                                 '/wallet/receive/${controller.selectedCard.value}',
                               );
@@ -440,7 +436,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           ),
                           BitNetImageWithTextButton(
                             "Swap",
-                                () {
+                            () {
                               Get.put(LoopsController());
                               context.go("/wallet/loop_screen");
                             },

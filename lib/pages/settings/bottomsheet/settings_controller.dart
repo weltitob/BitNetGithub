@@ -25,7 +25,7 @@ class SettingsController extends BaseController {
   RxBool keyValid = false.obs;
   //0 stands for loading, 1 stands for failure, 2 stands for success
   RxInt initiateSocialRecovery = 0.obs;
-
+  RxBool isLoadingCancelSocialRecoveryButton = false.obs;
   Rx<Color> pickerColor = const Color(0xff443a49).obs;
   final user = Auth().currentUser;
 

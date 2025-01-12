@@ -17,6 +17,9 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<SettingsController>()) {
+      return Container();
+    }
     return Obx(
       () => PopScope(
         canPop: controller.currentTab.value == 'main',
