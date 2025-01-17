@@ -75,9 +75,7 @@ class FiatCard extends StatelessWidget {
     currency = currency ?? "USD";
 
     return Container(
-      decoration: BoxDecoration(boxShadow: [
-        AppTheme.boxShadowBig,
-      ]),
+
       child: Stack(
         children: [
           const CardBackgroundFiat(),
@@ -181,11 +179,8 @@ class BalanceCardLightning extends StatelessWidget {
     final String balanceStr = unitModel.amount.toString();
 
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          AppTheme.boxShadowBig,
-        ],
-      ),
+     
+
       child: Stack(
         children: [
           const CardBackgroundLightning(),
@@ -240,11 +235,7 @@ class BalanceCardBtc extends StatelessWidget {
     final String balanceStr = unitModel.amount.toString();
 
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          AppTheme.boxShadowBig,
-        ],
-      ),
+
       child: Stack(
         children: [
           const CardBackgroundOnchain(),

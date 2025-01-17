@@ -278,8 +278,14 @@ class _CryptoItemState extends State<CryptoItem> {
                 "${controllerCrypto.currentPriceString}${getCurrency(currency!)}",
                 //bitcoinPrice!.price.toString(),
                 style: controllerCrypto.currentPriceString.value.length > 8
-                    ? AppTheme.textTheme.bodySmall
-                    : AppTheme.textTheme.bodyMedium,
+                    ? AppTheme.textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black60
+                            : AppTheme.white60)
+                    : AppTheme.textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black60
+                            : AppTheme.white60),
               ),
             ],
           ),

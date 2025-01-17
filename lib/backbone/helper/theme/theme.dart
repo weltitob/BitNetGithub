@@ -308,86 +308,96 @@ abstract class AppTheme {
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.lexend(
       fontSize: 52,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
+      color: AppTheme.black90,
     ),
     displayMedium: GoogleFonts.lexend(
-        fontSize: 40,
-        fontWeight:
-            FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
-        letterSpacing: -0.5),
+      fontSize: 40,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      letterSpacing: -0.5,
+      color: AppTheme.black90,
+    ),
     displaySmall: GoogleFonts.lexend(
       fontSize: 28,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
+      color: AppTheme.black90,
     ),
     headlineLarge: GoogleFonts.lexend(
       fontSize: 24,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
+      color: AppTheme.black80,
     ),
     headlineMedium: GoogleFonts.lexend(
       fontSize: 22,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
+      color: AppTheme.black80,
     ),
     headlineSmall: GoogleFonts.lexend(
       fontSize: 20,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
+      color: AppTheme.black80,
     ),
     titleLarge: GoogleFonts.lexend(
       fontSize: 17,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
+      color: AppTheme.black70,
     ),
     titleMedium: GoogleFonts.lexend(
       fontSize: 17,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
+      color: AppTheme.black70,
     ),
     titleSmall: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
+      color: AppTheme.black70,
     ),
     bodyLarge: GoogleFonts.lexend(
       fontSize: 17,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
+      color: AppTheme.black60,
     ),
     bodyMedium: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
+      color: AppTheme.black60,
     ),
     bodySmall: GoogleFonts.lexend(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
+      color: AppTheme.black60,
     ),
     labelLarge: GoogleFonts.lexend(
       fontSize: 12,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
+      color: AppTheme.black60,
     ),
     labelMedium: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
+      color: AppTheme.black60,
     ),
     labelSmall: GoogleFonts.lexend(
       fontSize: 10,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
+      color: AppTheme.black60,
     ),
   );
+
 
   static final textThemeDarkMode = textTheme.copyWith(
     displayLarge: textTheme.displayLarge!.copyWith(

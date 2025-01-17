@@ -36,21 +36,21 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
     return Stack(
       children: [
         Container(
-          padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0, 0.25, 0.75, 1],
-              colors: [
-                Colors.white,
-                widget.colorprimary,
-                widget.colorsecondary,
-                Colors.white,
-              ],
-            ),
-          ),
+          // padding: const EdgeInsets.all(2),
+          // decoration: BoxDecoration(
+          //   borderRadius: widget.borderRadius,
+          //   gradient: LinearGradient(
+          //     begin: Alignment.topLeft,
+          //     end: Alignment.bottomRight,
+          //     stops: [0, 0.25, 0.75, 1],
+          //     colors: [
+          //       Colors.white,
+          //       widget.colorprimary,
+          //       widget.colorsecondary,
+          //       Colors.white,
+          //     ],
+          //   ),
+          // ),
           child: ClipRRect(
             borderRadius: widget.borderRadius,
             child: Container(

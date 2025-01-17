@@ -42,7 +42,7 @@ class GlassContainer extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             color: customColor ??
-                (Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.75) : Colors.white.withOpacity(opacity)),
+                ( Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Colors.white.withOpacity(opacity)),
             //went back to old approch
             //color:  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.4),
             // gradient: LinearGradient(
