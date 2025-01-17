@@ -289,7 +289,7 @@ class CardBackgroundLightning extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -303,7 +303,7 @@ class CardBackgroundLightning extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -346,7 +346,7 @@ class CardBackgroundFiat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -360,7 +360,7 @@ class CardBackgroundFiat extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -479,7 +479,7 @@ class CardBackgroundOnchain extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -493,7 +493,7 @@ class CardBackgroundOnchain extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBiggest,
+        borderRadius: AppTheme.cardRadiusBig,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
