@@ -67,7 +67,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: AppTheme.cardPadding * 1.5),
+                        SizedBox(height: AppTheme.cardPadding * 2.h),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppTheme.cardPadding * 1,
@@ -77,28 +77,28 @@ class WalletScreen extends GetWidget<WalletsController> {
                             children: [
                               Row(
                                 children: [
-                                  profileController.isUserLoading == true.obs
-                                      ? Avatar(
-                                          onTap: () async {
-                                            // context.go('/profile/$profileId');
-                                          },
-                                          isNft: false,
-                                        )
-                                      : Avatar(
-                                          onTap: () async {
-                                            final profileId =
-                                                Auth().currentUser?.uid;
-                                            // context.go('/profile/$profileId');
-                                          },
-                                          size: AppTheme.cardPadding * 2.5.h,
-                                          mxContent: Uri.parse(
-                                            profileController
-                                                .userData.value.profileImageUrl,
-                                          ),
-                                          type: profilePictureType.lightning,
-                                          isNft: profileController.userData
-                                              .value.nft_profile_id.isNotEmpty,
-                                        ),
+                                  // profileController.isUserLoading == true.obs
+                                  //     ? Avatar(
+                                  //         onTap: () async {
+                                  //           // context.go('/profile/$profileId');
+                                  //         },
+                                  //         isNft: false,
+                                  //       )
+                                  //     : Avatar(
+                                  //         onTap: () async {
+                                  //           final profileId =
+                                  //               Auth().currentUser?.uid;
+                                  //           // context.go('/profile/$profileId');
+                                  //         },
+                                  //         size: AppTheme.cardPadding * 2.5.h,
+                                  //         mxContent: Uri.parse(
+                                  //           profileController
+                                  //               .userData.value.profileImageUrl,
+                                  //         ),
+                                  //         type: profilePictureType.lightning,
+                                  //         isNft: profileController.userData
+                                  //             .value.nft_profile_id.isNotEmpty,
+                                  //       ),
                                   SizedBox(
                                     width: AppTheme.elementSpacing * 1.25.w,
                                   ),
@@ -123,7 +123,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                     '******',
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .displaySmall,
+                                                        .displayMedium,
                                                   )
                                                 : Obx(() {
                                                     final chartLine = controller
@@ -187,7 +187,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
-                                                                      .displaySmall,
+                                                                      .displayMedium,
                                                                 ),
                                                                 Icon(
                                                                   getCurrencyIcon(
@@ -204,7 +204,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .displaySmall,
+                                                                  .displayMedium,
                                                             ),
                                                     );
                                                   }),

@@ -68,13 +68,13 @@ class _BottomNavState extends State<BottomNav>
 
   List<Map<String, dynamic>> getNavItems() {
     return [
-      {'icon': FontAwesomeIcons.fire, 'route': '/comingsoon'},
-      // {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
+      // {'icon': FontAwesomeIcons.fire, 'route': '/comingsoon'},
+      {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
       // {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
       // {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
-      // {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
-      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/comingsoon'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
+      // {'icon': FontAwesomeIcons.userAstronaut, 'route': '/comingsoon'},
     ];
   }
 
@@ -129,8 +129,8 @@ class _BottomNavState extends State<BottomNav>
   static List<Widget> navItems = <Widget>[
     ComingSoonPage(),
     const Wallet(),
-    ComingSoonPage()
-    //Profile()
+    // ComingSoonPage()
+    Profile()
   ];
 
   void _onItemTapped(int index, ScrollController controller) {
