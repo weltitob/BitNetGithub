@@ -592,6 +592,7 @@ class SendsController extends BaseController {
               await listUnspent(Auth().currentUser!.uid);
           UtxoRequestList utxos =
               UtxoRequestList.fromJson(restResponseListUnspent.data);
+
           TransactionData transactiondata = TransactionData(
               raw: RawTransactionData(
                 inputs: utxos.utxos
