@@ -8,6 +8,8 @@ import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
@@ -17,7 +19,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
@@ -41,7 +42,14 @@ class SettingsView extends StatelessWidget {
             key: const Key('SettingsListViewContent'),
             children: [
               BitNetListTile(
-                leading: const Icon(Icons.color_lens),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.color_lens,
+                  onTap: () {
+                    controller.switchTab('style');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.changeTheme,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -52,7 +60,14 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.security),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.security,
+                  onTap: () {
+                    controller.switchTab('security');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.ownSecurity,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -63,7 +78,14 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.key_rounded),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.key_rounded,
+                  onTap: () {
+                    controller.switchTab('invite');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.inviteContact,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -74,7 +96,14 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.currency_bitcoin),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.currency_bitcoin,
+                  onTap: () {
+                    controller.switchTab('language');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.changeLanguage,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -85,7 +114,14 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.language),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.language,
+                  onTap: () {
+                    controller.switchTab('currency');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.changeCurrency,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -96,7 +132,14 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.info),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.info,
+                  onTap: () {
+                    controller.switchTab('agbs');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.agbsImpress,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -107,46 +150,41 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: const Icon(Icons.login_rounded),
+                leading: RoundedButtonWidget(
+                  iconData: Icons.login_rounded,
+                  onTap: () async {
+                    ThemeController.of(context)
+                        .setPrimaryColor(Colors.white, false);
+
+                    // Clear shared preferences if used
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    await prefs.remove('theme_mode');
+                    await prefs.remove('primary_color');
+                    final profile_controller = Get.put(ProfileController());
+                    final litdController = Get.find<LitdController>();
+                    String username =
+                        '${profile_controller.userData.value.username}';
+
+                    Get.delete<ProfileController>(force: true);
+                    Get.delete<WalletsController>(force: true);
+                    Get.delete<ProtocolController>(force: true);
+
+                    await Auth().signOut();
+
+                    context.pop();
+                    Get.delete<SettingsController>(force: true);
+                    context.go('/authhome');
+                    Get.put(ProtocolController(logIn: false));
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
                 text: L10n.of(context)!.logout,
                 trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
-                onTap: () async {
-                  // await settingsCollection.doc(Auth().currentUser!.uid).update({
-                  //   'theme_mode': 'system',
-                  //   'primary_color': Colors.white.value,
-                  // });
-                  ThemeController.of(context)
-                      .setPrimaryColor(Colors.white, false);
-
-                  // Clear shared preferences if used
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-
-                  await prefs.remove('theme_mode');
-                  await prefs.remove('primary_color');
-                  final profile_controller = Get.put(ProfileController());
-                  final litdController = Get.find<LitdController>();
-                  String username =
-                      '${profile_controller.userData.value.username}';
-
-                  // dynamic stopecs_response =
-                  //     await litdController.logoutAndStopEcs('${username}_uid');
-                  // print('Stop ecs response: $stopecs_response');
-
-                  Get.delete<ProfileController>(force: true);
-                  Get.delete<WalletsController>(force: true);
-                  Get.delete<ProtocolController>(force: true);
-
-                  await Auth().signOut();
-
-                  context.pop();
-                  Get.delete<SettingsController>(force: true);
-                  context.go('/authhome');
-                  Get.put(ProtocolController(logIn: false));
-                },
               ),
               const SizedBox(
                 height: AppTheme.cardPadding * 4,

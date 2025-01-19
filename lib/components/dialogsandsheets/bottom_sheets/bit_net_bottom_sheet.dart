@@ -110,7 +110,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           height: AppTheme.elementSpacing / 1.5,
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) : darken(Theme.of(context).colorScheme.primaryContainer, 70),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),

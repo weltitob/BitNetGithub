@@ -11,6 +11,7 @@ import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
+import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
@@ -127,7 +128,7 @@ class _BottomNavState extends State<BottomNav>
   // static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
   static List<Widget> navItems = <Widget>[
-    ComingSoonPage(),
+    FeedScreen(),
     const Wallet(),
     // ComingSoonPage()
     Profile()
