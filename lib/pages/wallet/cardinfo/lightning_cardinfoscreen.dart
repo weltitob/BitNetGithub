@@ -9,6 +9,7 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/items/balancecard.dart';
+import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -165,6 +166,36 @@ class _LightningCardInformationScreenState
                     //         : dotProgress(context),
                     //   ),
                     // )),
+
+                    SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                              Text("Chart",
+                                  style: Theme.of(context).textTheme.titleLarge),
+                              SizedBox(height: AppTheme.elementSpacing.h),
+                            ],
+                          ),
+                        )),
+                    SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                          child: CryptoItem(
+                            context: context,
+                            currency: Currency(
+                              name: "Bitcoin",
+                              code: "BTC",
+                              icon: Image.asset("assets/images/bitcoin.png"),
+                              // image: Image.asset("assets/images/bitcoin.png"),
+                            ),
+
+                          ),
+                        )
+                    ),
                     SliverToBoxAdapter(
                         child: Padding(
                       padding: const EdgeInsets.symmetric(

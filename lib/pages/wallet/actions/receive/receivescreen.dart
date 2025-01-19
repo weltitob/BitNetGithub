@@ -182,6 +182,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                                           Brightness.light
                                       ? AppTheme.black60
                                       : AppTheme.white80,
+                            size: AppTheme.elementSpacing * 1.5,
                                 ),
                           title:
                               "${controller.min.value}:${controller.sec.value}",

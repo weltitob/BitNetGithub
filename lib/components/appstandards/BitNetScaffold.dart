@@ -54,13 +54,13 @@ class bitnetScaffold extends StatelessWidget {
                     // Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? lighten(Colors.grey, 90) :
                     Theme.of(context).brightness == Brightness.light
                         ? lighten(
-                            Theme.of(context).colorScheme.primaryContainer, 60)
+                            Theme.of(context).colorScheme.primaryContainer, 50)
                         : darken(
                             Theme.of(context).colorScheme.primaryContainer, 80),
                     // Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? lighten(Colors.grey, 80) :
                     Theme.of(context).brightness == Brightness.light
                         ? lighten(
-                            Theme.of(context).colorScheme.tertiaryContainer, 60)
+                            Theme.of(context).colorScheme.tertiaryContainer, 50)
                         : darken(
                             Theme.of(context).colorScheme.tertiaryContainer,
                         80),
@@ -95,30 +95,30 @@ class bitnetScaffold extends StatelessWidget {
                                             Theme.of(context)
                                                 .colorScheme
                                                 .primaryContainer,
-                                            60),
+                                            50),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            60)
+                                            50)
                                             .withOpacity(0.9),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            60)
+                                            50)
                                             .withOpacity(0.7),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            60)
+                                            50)
                                             .withOpacity(0.4),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            60)
+                                            50)
                                             .withOpacity(0.0001),
                                       ]
                                     : [

@@ -10,6 +10,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
+import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -79,21 +80,12 @@ class _BitcoinCardInformationScreenState
                   height: AppTheme.cardPadding * 7,
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
-                  child:  Obx(() {
-                    final logger =
-                    Get.find<LoggerService>();
-                    final confirmedBalanceStr =
-                        walletController
-                            .onchainBalance
-                            .value
-                            .confirmedBalance
-                            .obs;
-                    final unconfirmedBalanceStr =
-                        walletController
-                            .onchainBalance
-                            .value
-                            .unconfirmedBalance
-                            .obs;
+                  child: Obx(() {
+                    final logger = Get.find<LoggerService>();
+                    final confirmedBalanceStr = walletController
+                        .onchainBalance.value.confirmedBalance.obs;
+                    final unconfirmedBalanceStr = walletController
+                        .onchainBalance.value.unconfirmedBalance.obs;
 
                     logger.i(
                       "Confirmed Balance onchain: $confirmedBalanceStr",
@@ -103,15 +95,10 @@ class _BitcoinCardInformationScreenState
                     );
 
                     return BalanceCardBtc(
-                      balance:
-                      confirmedBalanceStr.value,
-                      confirmedBalance:
-                      confirmedBalanceStr.value,
-                      unconfirmedBalance:
-                      unconfirmedBalanceStr
-                          .value,
-                      defaultUnit:
-                      BitcoinUnits.SAT,
+                      balance: confirmedBalanceStr.value,
+                      confirmedBalance: confirmedBalanceStr.value,
+                      unconfirmedBalance: unconfirmedBalanceStr.value,
+                      defaultUnit: BitcoinUnits.SAT,
                     );
                   }),
                 ),
@@ -124,7 +111,19 @@ class _BitcoinCardInformationScreenState
                     horizontal: AppTheme.elementSpacing),
                 child: BitNetListTile(
                     text: "Addresses",
-                    trailing: const Text("Show"),
+                    trailing: LongButtonWidget(
+                        buttonType: ButtonType.transparent,
+                        customWidth: AppTheme.cardPadding * 3,
+                        customHeight: AppTheme.cardPadding * 1.25,
+                        title: "Show",
+                        onTap: () async {
+                          BitNetBottomSheet(
+                              context: context,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.65.h,
+                              borderRadius: AppTheme.borderRadiusBig,
+                              child: const AddressesWidget());
+                        }),
                     onTap: () async {
                       BitNetBottomSheet(
                           context: context,
@@ -134,6 +133,33 @@ class _BitcoinCardInformationScreenState
                     }),
               )),
             ),
+            SliverToBoxAdapter(
+                child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                  Text("Chart", style: Theme.of(context).textTheme.titleLarge),
+                  SizedBox(height: AppTheme.elementSpacing.h),
+                ],
+              ),
+            )),
+            SliverToBoxAdapter(
+                child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: CryptoItem(
+                context: context,
+                currency: Currency(
+                  name: "Bitcoin",
+                  code: "BTC",
+                  icon: Image.asset("assets/images/bitcoin.png"),
+                  // image: Image.asset("assets/images/bitcoin.png"),
+                ),
+              ),
+            )),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(

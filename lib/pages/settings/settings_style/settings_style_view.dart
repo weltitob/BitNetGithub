@@ -134,7 +134,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                       },
                       isActive: controller.selectedTheme.value == ThemeMode.system,
                       image: "assets/images/system_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
+                      height: AppTheme.cardPadding * 5.25,
                       width: AppTheme.cardPadding * 4,
                     ),
                     const SizedBox(
@@ -147,7 +147,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                         controller.selectedTheme.value = ThemeMode.light;
                       },
                       image: "assets/images/sun_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
+                      height: AppTheme.cardPadding * 5.25,
                       isActive: controller.selectedTheme.value == ThemeMode.light,
                       width: AppTheme.cardPadding * 4,
                     ),
@@ -161,7 +161,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                         controller.selectedTheme.value = ThemeMode.dark;
                       },
                       image: "assets/images/moon_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
+                      height: AppTheme.cardPadding *  5.25,
                       isActive: controller.selectedTheme.value == ThemeMode.dark,
                       width: AppTheme.cardPadding * 4,
                     ),

@@ -202,14 +202,17 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BitNetListTile(
-                      text: L10n.of(context)!.address,
-                      trailing: Container(
-                        width: AppTheme.cardPadding * 10,
-                        child: Text(
-                          overflow: TextOverflow.ellipsis,
-                          address,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: BitNetListTile(
+                        text: L10n.of(context)!.address,
+                        trailing: Container(
+                          width: AppTheme.cardPadding * 10,
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            address,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
                       ),
                     ),
@@ -218,15 +221,18 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
                     child: SizedBox(height: AppTheme.elementSpacing),
                   ),
                   SliverToBoxAdapter(
-                    child: BitNetListTile(
-                      text: L10n.of(context)!.totalReceived,
-                      trailing: Row(
-                        children: [
-                          Text(
-                            '${((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: BitNetListTile(
+                        text: L10n.of(context)!.totalReceived,
+                        trailing: Row(
+                          children: [
+                            Text(
+                              '${((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -234,15 +240,18 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
                     child: SizedBox(height: 5),
                   ),
                   SliverToBoxAdapter(
-                    child: BitNetListTile(
-                      text: L10n.of(context)!.totalSent,
-                      trailing: Row(
-                        children: [
-                          Text(
-                            '${((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: BitNetListTile(
+                        text: L10n.of(context)!.totalSent,
+                        trailing: Row(
+                          children: [
+                            Text(
+                              '${((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -250,20 +259,23 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
                     child: SizedBox(height: 5),
                   ),
                   SliverToBoxAdapter(
-                    child: BitNetListTile(
-                      text: L10n.of(context)!.balance,
-                      trailing: Row(
-                        children: [
-                          Text(
-                            '${balance.toStringAsFixed(8)} BTC',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '$currSymbol $currBalance',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
-                          ),
-                        ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: BitNetListTile(
+                        text: L10n.of(context)!.balance,
+                        trailing: Row(
+                          children: [
+                            Text(
+                              '${balance.toStringAsFixed(8)} BTC',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              '$currSymbol $currBalance',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

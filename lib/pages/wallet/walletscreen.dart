@@ -182,9 +182,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         onTap: () {},
                                         customHeight:
                                             AppTheme.cardPadding * 1.25,
-                                        customWidth: AppTheme.cardPadding * 2.5,
-                                        leadingIcon:
-                                            Icon(Icons.arrow_drop_down_rounded),
+                                        customWidth: AppTheme.cardPadding * 2,
+                                        // leadingIcon:
+                                        //     Icon(Icons.arrow_drop_down_rounded),
                                       ),
                                       SizedBox(
                                         width: AppTheme.elementSpacing * 0.75.w,
