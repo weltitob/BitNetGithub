@@ -187,7 +187,7 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: AppTheme.cardPadding * 4,
+                height: AppTheme.cardPadding * 2,
               )
             ],
           ),

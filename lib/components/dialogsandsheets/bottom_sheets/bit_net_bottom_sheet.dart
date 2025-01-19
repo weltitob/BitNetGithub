@@ -107,10 +107,10 @@ class BitnetBottomSheetWidget extends StatelessWidget {
       children: [
         const SizedBox(height: AppTheme.elementSpacing),
         Container(
-          height: AppTheme.elementSpacing / 1.5,
+          height: AppTheme.elementSpacing / 1.375,
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) : darken(Theme.of(context).colorScheme.primaryContainer, 70),
+            color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.grey :  Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) : darken(Theme.of(context).colorScheme.primaryContainer, 70),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
@@ -123,7 +123,9 @@ class BitnetBottomSheetWidget extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                colors: Theme.of(context).brightness == Brightness.light
+                colors:
+                Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? [Colors.grey, Colors.grey ,Colors.grey, Colors.grey, Colors.grey] :
+                Theme.of(context).brightness == Brightness.light
                     ? [
                         lighten(Theme.of(context).colorScheme.primaryContainer, 40),
                         lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.9),

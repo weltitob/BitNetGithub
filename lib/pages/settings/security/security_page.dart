@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
@@ -163,7 +164,16 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           BitNetListTile(
-            leading: const Icon(FontAwesomeIcons.buildingLock),
+            leading: RoundedButtonWidget(
+              iconData: FontAwesomeIcons.buildingLock,
+              onTap: () {
+                setState(() {
+                  currentview = 2;
+                });
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
             text: "DID and private key",
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -176,7 +186,16 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: const Icon(FontAwesomeIcons.book),
+            leading: RoundedButtonWidget(
+              iconData: FontAwesomeIcons.book,
+              onTap: () {
+                setState(() {
+                  currentview = 3;
+                });
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
             text: "Word recovery",
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -189,19 +208,38 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-              leading: const Icon(FontAwesomeIcons.qrcode),
-              text: "Recover with QR Code",
-              trailing: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
-              ),
+            leading: RoundedButtonWidget(
+              iconData: FontAwesomeIcons.qrcode,
               onTap: () {
                 setState(() {
                   currentview = 1;
                 });
-              }),
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
+            text: "Recover with QR Code",
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
+            onTap: () {
+              setState(() {
+                currentview = 1;
+              });
+            },
+          ),
           BitNetListTile(
-            leading: const Icon(FontAwesomeIcons.person),
+            leading: RoundedButtonWidget(
+              iconData: FontAwesomeIcons.person,
+              onTap: () {
+                setState(() {
+                  currentview = 3;
+                });
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
             text: "Social recovery",
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -214,7 +252,16 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: const Icon(Icons.shield_outlined),
+            leading: RoundedButtonWidget(
+              iconData: Icons.shield_outlined,
+              onTap: () {
+                setState(() {
+                  currentview = 5;
+                });
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
             text: "Extended Sec", //L10n.of(context)!.security
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -227,16 +274,26 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: const Icon(FontAwesomeIcons.trash),
+            leading: RoundedButtonWidget(
+              iconData: FontAwesomeIcons.trash,
+              onTap: () {
+                // Handle account deletion here
+              },
+              size: AppTheme.iconSize * 1.5,
+              buttonType: ButtonType.transparent,
+            ),
             text: "Delete account",
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,
             ),
-            onTap: () {},
+            onTap: () {
+              // Handle account deletion action here
+            },
           ),
         ],
       ),
     );
   }
+
 }

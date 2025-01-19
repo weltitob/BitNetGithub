@@ -60,6 +60,7 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: AppTheme.elementSpacing,),
               SearchFieldWidget(
                   hintText: lang!.searchL,
                   isSearchEnabled: true,

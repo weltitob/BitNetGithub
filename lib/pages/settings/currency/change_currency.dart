@@ -67,6 +67,7 @@ class _DashboardPageState extends State<DashboardPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: AppTheme.elementSpacing,),
               SearchFieldWidget(
                   hintText: lang!.searchC,
                   isSearchEnabled: true,
