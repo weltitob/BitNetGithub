@@ -116,10 +116,7 @@ class _CryptoItemState extends State<CryptoItem> {
                         Container(
                             height: AppTheme.cardPadding * 1.75,
                             width: AppTheme.cardPadding * 1.75,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(500.0),
-                              color: Colors.grey,
-                            ),
+
                             child: ClipOval(child: widget.currency.icon)),
                         SizedBox(width: AppTheme.elementSpacing.w / 1.5),
                         Column(
@@ -227,12 +224,7 @@ class _CryptoItemState extends State<CryptoItem> {
                               child: Text(
                                 controllerCrypto.priceChangeString.value,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: controllerCrypto
-                                      .priceChangeString.value.length >
-                                      6
-                                      ? 12
-                                      : 16,
+                                style: Theme.of(context).textTheme.labelMedium!.copyWith(
                                   color: controllerCrypto.priceChange.value >= 0
                                       ? AppTheme.successColor
                                       : AppTheme.errorColor,

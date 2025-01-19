@@ -306,91 +306,91 @@ abstract class AppTheme {
 
   //.inter
   static final textTheme = TextTheme(
-    displayLarge: GoogleFonts.lexend(
+    displayLarge: GoogleFonts.inter(
       fontSize: 52,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
-    displayMedium: GoogleFonts.lexend(
+    displayMedium: GoogleFonts.inter(
       fontSize: 40,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
-    displaySmall: GoogleFonts.lexend(
+    displaySmall: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
       color: AppTheme.black90,
     ),
-    headlineLarge: GoogleFonts.lexend(
+    headlineLarge: GoogleFonts.inter(
       fontSize: 24,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
-    headlineMedium: GoogleFonts.lexend(
+    headlineMedium: GoogleFonts.inter(
       fontSize: 22,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
-    headlineSmall: GoogleFonts.lexend(
+    headlineSmall: GoogleFonts.inter(
       fontSize: 20,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black80,
     ),
-    titleLarge: GoogleFonts.lexend(
+    titleLarge: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black70,
     ),
-    titleMedium: GoogleFonts.lexend(
+    titleMedium: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
       color: AppTheme.black70,
     ),
-    titleSmall: GoogleFonts.lexend(
+    titleSmall: GoogleFonts.inter(
       fontSize: 15,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
       color: AppTheme.black70,
     ),
-    bodyLarge: GoogleFonts.lexend(
+    bodyLarge: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
       color: AppTheme.black60,
     ),
-    bodyMedium: GoogleFonts.lexend(
+    bodyMedium: GoogleFonts.inter(
       fontSize: 15,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
       color: AppTheme.black60,
     ),
-    bodySmall: GoogleFonts.lexend(
+    bodySmall: GoogleFonts.inter(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelLarge: GoogleFonts.lexend(
+    labelLarge: GoogleFonts.inter(
       fontSize: 12,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelMedium: GoogleFonts.lexend(
+    labelMedium: GoogleFonts.inter(
       fontSize: 15,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelSmall: GoogleFonts.lexend(
+    labelSmall: GoogleFonts.inter(
       fontSize: 10,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,

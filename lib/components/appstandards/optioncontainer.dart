@@ -229,9 +229,9 @@ class BitNetImageWithTextButton extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: AppTheme.elementSpacing.h),
+          SizedBox(height: AppTheme.elementSpacing * 0.75),
           Container(
-            width: width / 1.25,
+            width: width * 0.95,
             margin: const EdgeInsets.only(
               right: AppTheme.elementSpacing,
               left: AppTheme.elementSpacing,

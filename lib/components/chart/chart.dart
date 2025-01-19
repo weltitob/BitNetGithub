@@ -290,6 +290,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     return SizedBox(
       height: AppTheme.cardPadding * 16.h,
       child: SfCartesianChart(
+
           trackballBehavior: _trackballBehavior,
           onTrackballPositionChanging: (args) {
             // Print the y-value of the first series in the trackball.
@@ -525,36 +526,56 @@ class _CustomWidgetState extends State<CustomWidget>
                   ),
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 15, bottom: 15),
-                child: InkWell(
-                  child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.cardPadding * 2),
-                          color: trackBallValuePricechange.contains("-")
-                              ? AppTheme.errorColor.withOpacity(0.625)
-                              : AppTheme.successColor.withOpacity(0.625)),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing * 0.75,
-                            horizontal: AppTheme.elementSpacing,
-                          ),
-                          child: Text(trackBallValuePricechange,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall!
-                                  .copyWith(color: AppTheme.white100)),
-                        ),
-                      )),
-                ),
-              ),
+              BitNetPercentWidget(priceChange: trackBallValuePricechange),
+
             ],
           ),
         ],
       );
     });
+  }
+}
+
+
+class BitNetPercentWidget extends StatelessWidget {
+  final String priceChange;
+
+  const BitNetPercentWidget({super.key, required this.priceChange});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(
+        top: AppTheme.elementSpacing,
+        bottom: AppTheme.elementSpacing,
+      ),
+      child: InkWell(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: AppTheme.cardRadiusSmall,
+            color: priceChange.contains("-")
+                ? AppTheme.errorColor
+                : AppTheme.successColor,
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppTheme.elementSpacing * 0.625,
+                horizontal: AppTheme.elementSpacing,
+              ),
+              child: Text(
+                priceChange,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: priceChange.contains("-")
+                      ? darken(AppTheme.errorColor, 90)
+                      : darken(AppTheme.successColor, 90),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
