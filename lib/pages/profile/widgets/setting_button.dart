@@ -26,6 +26,7 @@ class SettingsButton extends StatelessWidget {
             child: Builder(
               builder: (context) {
                 return RoundedButtonWidget(
+                  size: AppTheme.cardPadding * 1.75,
                   buttonType: ButtonType.transparent,
                   iconData: Icons.brightness_low_rounded,
                   iconColor: Theme.of(context).brightness == Brightness.light

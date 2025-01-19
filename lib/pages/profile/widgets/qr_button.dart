@@ -95,6 +95,7 @@ class QrButton extends StatelessWidget {
             top: AppTheme.cardPadding,
           ),
           child: RoundedButtonWidget(
+            size: AppTheme.cardPadding * 1.75,
             iconData: Icons.qr_code_rounded,
             iconColor: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
             onTap: () {

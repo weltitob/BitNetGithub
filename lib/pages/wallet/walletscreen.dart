@@ -386,11 +386,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                                       ),
                                       SizedBox(
                                           width: AppTheme.elementSpacing *
-                                              0.5), // Add some spacing
+                                              0.25), // Add some spacing
                                       Transform.scale(
                                           child: BitNetPercentWidget(
                                               priceChange: "+0.83%"),
-                                          scale: 0.85),
+                                          scale: 0.8),
                                     ],
                                   ),
                                 ],
