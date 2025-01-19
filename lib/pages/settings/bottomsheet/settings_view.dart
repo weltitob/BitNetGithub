@@ -97,7 +97,8 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: RoundedButtonWidget(
-                  iconData: Icons.currency_bitcoin,
+                  iconData: Icons.language,
+
                   onTap: () {
                     controller.switchTab('language');
                   },
@@ -115,7 +116,7 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: RoundedButtonWidget(
-                  iconData: Icons.language,
+                  iconData: Icons.currency_bitcoin,
                   onTap: () {
                     controller.switchTab('currency');
                   },
