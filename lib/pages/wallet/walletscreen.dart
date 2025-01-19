@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -11,10 +12,14 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/indicators/smoothpageindicator.dart';
+import 'package:bitnet/components/items/balancecard.dart';
+import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -130,7 +135,6 @@ class WalletScreen extends GetWidget<WalletsController> {
               CustomScrollView(
                 controller: controller.scrollController,
                 slivers: [
-
                   SliverToBoxAdapter(
                     child: Obx(
                       () {
@@ -172,6 +176,19 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         ),
                                   Row(
                                     children: [
+                                      LongButtonWidget(
+                                        title: "1D",
+                                        buttonType: ButtonType.transparent,
+                                        onTap: () {},
+                                        customHeight:
+                                            AppTheme.cardPadding * 1.25,
+                                        customWidth: AppTheme.cardPadding * 2.5,
+                                        leadingIcon:
+                                            Icon(Icons.arrow_drop_down_rounded),
+                                      ),
+                                      SizedBox(
+                                        width: AppTheme.elementSpacing * 0.75.w,
+                                      ),
                                       Obx(
                                         () => RoundedButtonWidget(
                                           size: AppTheme.cardPadding * 1.25,
@@ -231,7 +248,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: AppTheme.cardPadding * 1.h),
+                            SizedBox(height: AppTheme.cardPadding * 1.5.h),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppTheme.cardPadding * 1,
@@ -346,7 +363,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Row(
                                         children: [
@@ -359,123 +377,28 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             "1,848.13\$",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyLarge!.copyWith(
+                                                .bodyLarge!
+                                                .copyWith(
                                                   color: AppTheme.successColor,
                                                 ),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(width: AppTheme.elementSpacing * 0.5), // Add some spacing
-                                      Transform.scale(child: BitNetPercentWidget(priceChange: "+0.83%"), scale: 0.85),
+                                      SizedBox(
+                                          width: AppTheme.elementSpacing *
+                                              0.5), // Add some spacing
+                                      Transform.scale(
+                                          child: BitNetPercentWidget(
+                                              priceChange: "+0.83%"),
+                                          scale: 0.85),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: AppTheme.cardPadding.h * 1.5,
-                            ),
                             // -------------------------------------------
                             // PageView with partial peeking & spacing
-                            // Container(
-                            //   height: AppTheme.cardPadding * 8.h,
-                            //   clipBehavior: Clip.none,
-                            //   child: Column(
-                            //     children: [
-                            //       Expanded(
-                            //         child: PageView.builder(
-                            //           controller: pageController,
-                            //           onPageChanged: (index) {
-                            //             if (index == 1) {
-                            //               controller.setSelectedCard('onchain');
-                            //             } else {
-                            //               controller.setSelectedCard('lightning');
-                            //             }
-                            //           },
-                            //           itemCount: 2, // only 2 cards
-                            //           itemBuilder: (context, index) {
-                            //             // Add margin so there's a gap between cards
-                            //             return Container(
-                            //               margin: const EdgeInsets.symmetric(
-                            //                 horizontal: AppTheme.elementSpacing / 2,
-                            //               ),
-                            //               child: (index == 0)
-                            //                   ? GestureDetector(
-                            //                       onTap: () {
-                            //                         context.go(
-                            //                             '/wallet/lightningcard');
-                            //                       },
-                            //                       child: Obx(() {
-                            //                         final confirmedBalanceStr =
-                            //                             walletController
-                            //                                 .lightningBalance
-                            //                                 .value
-                            //                                 .balance
-                            //                                 .obs;
-                            //
-                            //                         return BalanceCardLightning(
-                            //                           balance:
-                            //                               confirmedBalanceStr.value,
-                            //                           confirmedBalance:
-                            //                               confirmedBalanceStr.value,
-                            //                           defaultUnit: BitcoinUnits.SAT,
-                            //                         );
-                            //                       }),
-                            //                     )
-                            //                   : GestureDetector(
-                            //                       onTap: () {
-                            //                         context
-                            //                             .go('/wallet/bitcoincard');
-                            //                       },
-                            //                       child: Obx(() {
-                            //                         final logger =
-                            //                             Get.find<LoggerService>();
-                            //                         final confirmedBalanceStr =
-                            //                             walletController
-                            //                                 .onchainBalance
-                            //                                 .value
-                            //                                 .confirmedBalance
-                            //                                 .obs;
-                            //                         final unconfirmedBalanceStr =
-                            //                             walletController
-                            //                                 .onchainBalance
-                            //                                 .value
-                            //                                 .unconfirmedBalance
-                            //                                 .obs;
-                            //
-                            //                         logger.i(
-                            //                           "Confirmed Balance onchain: $confirmedBalanceStr",
-                            //                         );
-                            //                         logger.i(
-                            //                           "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
-                            //                         );
-                            //
-                            //                         return BalanceCardBtc(
-                            //                           balance:
-                            //                               confirmedBalanceStr.value,
-                            //                           confirmedBalance:
-                            //                               confirmedBalanceStr.value,
-                            //                           unconfirmedBalance:
-                            //                               unconfirmedBalanceStr
-                            //                                   .value,
-                            //                           defaultUnit: BitcoinUnits.SAT,
-                            //                         );
-                            //                       }),
-                            //                     ),
-                            //             );
-                            //           },
-                            //         ),
-                            //       ),
-                            //       SizedBox(height: AppTheme.cardPadding * 0.75),
-                            //       Center(
-                            //         child: CustomIndicator(
-                            //           pageController: pageController,
-                            //           count: 2,
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
+
                             // -------------------------------------------
                           ],
                         );
@@ -577,23 +500,61 @@ class WalletScreen extends GetWidget<WalletsController> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           SizedBox(height: AppTheme.cardPadding.h),
-                          CryptoItem(
-                            currency: Currency(
-                              code: 'BTC',
-                              name: 'Bitcoin',
-                              icon: Image.asset("assets/images/bitcoin.png"),
-                            ),
-                            context: context,
+                          Obx(
+                            () {
+                              final logger = Get.find<LoggerService>();
+                              final confirmedBalanceStr = walletController
+                                  .onchainBalance.value.confirmedBalance.obs;
+                              final unconfirmedBalanceStr = walletController
+                                  .onchainBalance.value.unconfirmedBalance.obs;
+
+                              logger.i(
+                                "Confirmed Balance onchain: $confirmedBalanceStr",
+                              );
+                              logger.i(
+                                "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
+                              );
+
+                              return CryptoInfoItem(
+                                balance: confirmedBalanceStr.value,
+                                // confirmedBalance: confirmedBalanceStr.value,
+                                // unconfirmedBalance: unconfirmedBalanceStr.value,
+                                defaultUnit: BitcoinUnits.SAT,
+                                currency: Currency(
+                                  code: 'BTC',
+                                  name: 'Bitcoin (Onchain)',
+                                  icon:
+                                      Image.asset("assets/images/bitcoin.png"),
+                                ),
+                                context: context,
+                                onTap: () {
+                                  context.go('/wallet/bitcoincard');
+                                },
+                              );
+                            },
                           ),
                           SizedBox(height: AppTheme.elementSpacing.h),
-                          CryptoItem(
-                            currency: Currency(
-                              code: 'BTC',
-                              name: 'Lightning BTC',
-                              icon: Image.asset("assets/images/lightning.png"),
-                            ),
-                            context: context,
-                          ),
+                          Obx(() {
+                            final confirmedBalanceStr = walletController
+                                .lightningBalance.value.balance.obs;
+
+                            return CryptoInfoItem(
+                              balance: confirmedBalanceStr.value,
+                              // confirmedBalance: confirmedBalanceStr.value,
+                              defaultUnit: BitcoinUnits.SAT,
+                              currency: Currency(
+                                code: 'BTC',
+                                name: 'Bitcoin (Lightning)',
+                                icon:
+                                    Image.asset("assets/images/lightning.png"),
+                              ),
+                              context: context,
+                              onTap: () {
+                                context.go('/wallet/lightningcard');
+                              },
+                              // unconfirmedBalance: '',
+                            );
+                          }),
                         ],
                       ),
                     ),
