@@ -54,6 +54,8 @@ Future<ByteData> loadLoopMacaroonAsset() async {
 }
 
 Future<ByteData> loadTapdMacaroonAsset() async {
-  return rootBundle.load("...");
+  final LoggerService logger = Get.find();
+  logger.i('Loading tapd macaroon');
+  return rootBundle.load("assets/keys/tapd_admin.macaroon");
   // return await rootBundle.load('assets/keys/tapd_admin.macaroon');
 }

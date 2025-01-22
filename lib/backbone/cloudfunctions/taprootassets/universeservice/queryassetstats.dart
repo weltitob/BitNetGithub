@@ -17,7 +17,7 @@ queryAssetStats(String assetIdStr) async {
 
   final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
+  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   //String url = 'https://$restHost/v1/taproot-assets/universe/roots/asset-id/$assetIdStr';
   String url = 

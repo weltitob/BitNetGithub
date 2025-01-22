@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
   final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
+  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   ByteData byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

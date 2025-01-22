@@ -207,40 +207,40 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           SizedBox(
                                             width: AppTheme.elementSpacing * 0.75.w,
                                           ),
-                                          RoundedButtonWidget(
-                                            size: AppTheme.cardPadding * 1.25,
-                                            buttonType: ButtonType.transparent,
-                                            iconData: Icons.settings,
-                                            onTap: () {
-                                              BitNetBottomSheet(
-                                                width: double.infinity,
-                                                context: context,
-                                                borderRadius:
-                                                    AppTheme.borderRadiusBig,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .canvasColor,
-                                                    borderRadius: BorderRadius.only(
-                                                      topLeft:
-                                                          AppTheme.cornerRadiusBig,
-                                                      topRight:
-                                                          AppTheme.cornerRadiusBig,
-                                                    ),
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.only(
-                                                      topLeft:
-                                                          AppTheme.cornerRadiusBig,
-                                                      topRight:
-                                                          AppTheme.cornerRadiusBig,
-                                                    ),
-                                                    child: Settings(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
+                                          // RoundedButtonWidget(
+                                          //   size: AppTheme.cardPadding * 1.25,
+                                          //   buttonType: ButtonType.transparent,
+                                          //   iconData: Icons.settings,
+                                          //   onTap: () {
+                                          //     BitNetBottomSheet(
+                                          //       width: double.infinity,
+                                          //       context: context,
+                                          //       borderRadius:
+                                          //           AppTheme.borderRadiusBig,
+                                          //       child: Container(
+                                          //         decoration: BoxDecoration(
+                                          //           color: Theme.of(context)
+                                          //               .canvasColor,
+                                          //           borderRadius: BorderRadius.only(
+                                          //             topLeft:
+                                          //                 AppTheme.cornerRadiusBig,
+                                          //             topRight:
+                                          //                 AppTheme.cornerRadiusBig,
+                                          //           ),
+                                          //         ),
+                                          //         child: ClipRRect(
+                                          //           borderRadius: BorderRadius.only(
+                                          //             topLeft:
+                                          //                 AppTheme.cornerRadiusBig,
+                                          //             topRight:
+                                          //                 AppTheme.cornerRadiusBig,
+                                          //           ),
+                                          //           child: Settings(),
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   },
+                                          // ),
                                         ],
                                       ),
                                     ],

@@ -299,6 +299,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/keys/
     - assets/tokens/
     - assets/images/
     - assets/marketplace/

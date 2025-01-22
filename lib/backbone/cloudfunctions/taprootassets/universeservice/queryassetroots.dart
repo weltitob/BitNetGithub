@@ -15,7 +15,7 @@ getUniverseRoot(String assetIdStr) async {
 
   final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
+  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   String url = 
   //  kDebugMode

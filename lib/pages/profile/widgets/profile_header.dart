@@ -45,7 +45,7 @@ class ProfileHeader extends StatelessWidget {
                     ],
                     image: DecorationImage(
                       image: NetworkImage(
-                        controller.userData.value.backgroundImageUrl,
+                        controller.userData.value.backgroundImageUrl ?? '',
                       ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
@@ -402,15 +402,14 @@ class UserInformation extends StatelessWidget {
 //                   color: Colors.black,
 //                   boxShadow: [AppTheme.boxShadowProfile],
 //                   image: DecorationImage(
-//                     image: NetworkImage(controller.userData.value.backgroundImageUrl),
-//                     fit: BoxFit.cover,
-//                     colorFilter: ColorFilter.mode(
-//                       Theme.of(context).brightness == Brightness.light
-//                           ? Colors.white.withOpacity(0.5)
-//                           : Colors.black.withOpacity(0.25),
-//                       BlendMode.dstATop,
-//                     ),
-//                   ),
+//                       image: NetworkImage(
+//                         controller.userData.value.backgroundImageUrl,
+//                       ),
+//                       fit: BoxFit.cover,
+//                       colorFilter: ColorFilter.mode(
+//                         Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.25),
+//                         BlendMode.dstATop,
+//                       ),),
 //                   borderRadius: BorderRadius.only(
 //                     bottomLeft: AppTheme.cornerRadiusBig,
 //                     bottomRight: AppTheme.cornerRadiusBig,
@@ -421,7 +420,7 @@ class UserInformation extends StatelessWidget {
 //             Column(
 //               children: [
 //                 Container(
-//                   width: double.infinity,
+//                   width: 500,
 //                   child: controller.currentview.value == 3
 //                       ? GlassContainer(
 //                     customColor: Theme.of(context).brightness == Brightness.light
@@ -504,7 +503,7 @@ class UserInformation extends StatelessWidget {
 //             children: [
 //               // Display Name
 //               Container(
-//                 width: double.infinity,
+//                 width: 500,
 //                 child: controller.currentview.value == 3
 //                     ? GlassContainer(
 //                   customColor: Theme.of(context).brightness == Brightness.light
@@ -540,7 +539,7 @@ class UserInformation extends StatelessWidget {
 //
 //               // Username
 //               Container(
-//                 width: double.infinity,
+//                 width: 500,
 //                 child: controller.currentview.value == 3
 //                     ? GlassContainer(
 //                   customColor: Theme.of(context).brightness == Brightness.light

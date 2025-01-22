@@ -1350,51 +1350,57 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 
   Widget blockHealth() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              L10n.of(context)!.health,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(
-              width: AppTheme.elementSpacing / 2,
-            ),
-            Icon(
-              Icons.help_outline_rounded,
-              color: AppTheme.white80,
-              size: AppTheme.cardPadding * 0.75,
-            )
-          ],
-        ),
-        const SizedBox(
-          height: AppTheme.cardPadding * 0.75,
-        ),
-        Icon(
-          FontAwesomeIcons.faceSmile,
-          color: controller.txDetailsConfirmed!.extras.matchRate >= 99
-              ? AppTheme.successColor
-              : controller.txDetailsConfirmed!.extras.matchRate >= 75 &&
-                      controller.txDetailsConfirmed!.extras.matchRate < 99
-                  ? AppTheme.colorBitcoin
-                  : AppTheme.errorColor,
-          size: AppTheme.cardPadding * 2.5,
-        ),
-        const SizedBox(
-          height: AppTheme.elementSpacing * 1.25,
-        ),
-        Row(
-          children: [
-            Container(
-              child: Text(
-                ('${controller.txDetailsConfirmed!.extras.matchRate} %'),
-                style: Theme.of(context).textTheme.bodyMedium,
+    return GlassContainer(
+      height: AppTheme.cardPadding * 6.h,
+      width: AppTheme.cardPadding * 6.w,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Text(
+                L10n.of(context)!.health,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ),
-          ],
-        ),
-      ],
+              const SizedBox(
+                width: AppTheme.elementSpacing / 2,
+              ),
+              Icon(
+                Icons.help_outline_rounded,
+                color: AppTheme.white80,
+                size: AppTheme.cardPadding * 0.75,
+              )
+            ],
+          ),
+          const SizedBox(
+            height: AppTheme.cardPadding * 0.75,
+          ),
+          Icon(
+            FontAwesomeIcons.faceSmile,
+            color: controller.txDetailsConfirmed!.extras.matchRate >= 99
+                ? AppTheme.successColor
+                : controller.txDetailsConfirmed!.extras.matchRate >= 75 &&
+                        controller.txDetailsConfirmed!.extras.matchRate < 99
+                    ? AppTheme.colorBitcoin
+                    : AppTheme.errorColor,
+            size: AppTheme.cardPadding * 2.5,
+          ),
+          const SizedBox(
+            height: AppTheme.elementSpacing * 1.25,
+          ),
+          Row(
+            children: [
+              Container(
+                child: Text(
+                  ('${controller.txDetailsConfirmed!.extras.matchRate} %'),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -1591,228 +1597,239 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 
   Widget feeDistributionAccepted() {
-    return Column(children: [
-      BitNetListTile(
-        leading: const Icon(FontAwesomeIcons.moneyBill),
-        text: L10n.of(context)!.feeDistribution,
-        trailing: Container(
-          child: Row(
+    return GlassContainer(
+      child: Column(children: [
+        BitNetListTile(
+          leading: const Icon(FontAwesomeIcons.moneyBill),
+          text: L10n.of(context)!.feeDistribution,
+          trailing: Container(
+            child: Row(
+              children: [
+                // Text(
+                //     (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
+                //         .toStringAsFixed(3),
+                //     style: Theme.of(context)
+                //         .textTheme
+                //         .bodySmall!
+                //         .copyWith(fontWeight: FontWeight.bold)),
+                // Transform.translate(
+                //   offset: const Offset(0, 2),
+                //   child: Text(
+                //     ' BTC  ',
+                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                //         fontWeight: FontWeight.bold,
+                //         color: AppTheme.secondaryColor),
+                //   ),
+                // ),
+                Text(
+                  '\$${controller.formatAmount((controller.txDetailsConfirmed!.extras.totalFees / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
+                  style: const TextStyle(
+                    color: AppTheme.successColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        Text(
+            '${L10n.of(context)!.median}' +
+                '~' +
+                '\$${(((controller.txDetailsConfirmed!.extras.medianFee * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: AppTheme.white90,
+                )),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        Container(
+          width: AppTheme.cardPadding * 12,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Text(
-              //     (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
-              //         .toStringAsFixed(3),
-              //     style: Theme.of(context)
-              //         .textTheme
-              //         .bodySmall!
-              //         .copyWith(fontWeight: FontWeight.bold)),
-              // Transform.translate(
-              //   offset: const Offset(0, 2),
-              //   child: Text(
-              //     ' BTC  ',
-              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              //         fontWeight: FontWeight.bold,
-              //         color: AppTheme.secondaryColor),
-              //   ),
-              // ),
-              Text(
-                '\$${controller.formatAmount((controller.txDetailsConfirmed!.extras.totalFees / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                style: const TextStyle(
-                  color: AppTheme.successColor,
-                  fontWeight: FontWeight.bold,
+              SfLinearGauge(
+                showTicks: false,
+                showLabels: false,
+                useRangeColorForAxis: true,
+                axisTrackStyle: const LinearAxisTrackStyle(
+                    thickness: AppTheme.cardPadding,
+                    color: Colors.grey,
+                    edgeStyle: LinearEdgeStyle.bothCurve,
+                    gradient: LinearGradient(
+                        colors: [Colors.redAccent, Colors.greenAccent],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        stops: [0.1, 0.9],
+                        tileMode: TileMode.clamp)),
+                minimum: controller.txDetailsConfirmed!.extras.feeRange.first,
+                maximum: controller.txDetailsConfirmed!.extras.feeRange.last,
+                markerPointers: [
+                  LinearWidgetPointer(
+                      value: controller.txDetailsConfirmed!.extras.medianFee,
+                      child: Container(
+                        height: AppTheme.cardPadding * 1.25,
+                        width: AppTheme.elementSpacing * 0.75,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        ),
+                      ))
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        '\$${(((controller.txDetailsConfirmed!.extras.feeRange.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.redAccent,
+                            )),
+                    Text(
+                        '\$${(((controller.txDetailsConfirmed!.extras.feeRange.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.greenAccent,
+                            )),
+                  ],
                 ),
               ),
+
             ],
           ),
         ),
-      ),
-      const SizedBox(
-        height: AppTheme.elementSpacing,
-      ),
-      Text(
-          '${L10n.of(context)!.median}' +
-              '~' +
-              '\$${(((controller.txDetailsConfirmed!.extras.medianFee * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: AppTheme.white90,
-              )),
-      const SizedBox(
-        height: AppTheme.elementSpacing,
-      ),
-      Container(
-        width: AppTheme.cardPadding * 12,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SfLinearGauge(
-              showTicks: false,
-              showLabels: false,
-              useRangeColorForAxis: true,
-              axisTrackStyle: const LinearAxisTrackStyle(
-                  thickness: AppTheme.cardPadding,
-                  color: Colors.grey,
-                  edgeStyle: LinearEdgeStyle.bothCurve,
-                  gradient: LinearGradient(
-                      colors: [Colors.redAccent, Colors.greenAccent],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      stops: [0.1, 0.9],
-                      tileMode: TileMode.clamp)),
-              minimum: controller.txDetailsConfirmed!.extras.feeRange.first,
-              maximum: controller.txDetailsConfirmed!.extras.feeRange.last,
-              markerPointers: [
-                LinearWidgetPointer(
-                    value: controller.txDetailsConfirmed!.extras.medianFee,
-                    child: Container(
-                      height: AppTheme.cardPadding * 1.25,
-                      width: AppTheme.elementSpacing * 0.75,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
-                    ))
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      '\$${(((controller.txDetailsConfirmed!.extras.feeRange.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.redAccent,
-                          )),
-                  Text(
-                      '\$${(((controller.txDetailsConfirmed!.extras.feeRange.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.greenAccent,
-                          )),
-                ],
-              ),
-            ),
-          ],
+        const SizedBox(
+          height: AppTheme.cardPadding,
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 
   Widget feeDistributionUnaccepted() {
-    return Column(children: [
-      BitNetListTile(
-        leading: const Icon(FontAwesomeIcons.moneyBill),
-        text: L10n.of(context)!.feeDistribution,
-        trailing: Container(
-          child: Row(
+    return GlassContainer(
+      child: Column(children: [
+        BitNetListTile(
+          leading: const Icon(FontAwesomeIcons.moneyBill),
+          text: L10n.of(context)!.feeDistribution,
+          trailing: Container(
+            child: Row(
+              children: [
+                // Text(
+                //   controller.mempoolBlocks.isNotEmpty
+                //       ? controller.numberFormat.format(controller
+                //               .mempoolBlocks[controller.indexShowBlock.value]
+                //               .totalFees! /
+                //           100000000)
+                //       : '',
+                //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                //         fontWeight: FontWeight.bold,
+                //       ),
+                // ),
+                // Transform.translate(
+                //   offset: const Offset(0, 2),
+                //   child: Text(
+                //     ' BTC  ',
+                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                //         fontWeight: FontWeight.bold,
+                //         color: AppTheme.secondaryColor),
+                //   ),
+                // ),
+                Text(
+                  controller.mempoolBlocks.isNotEmpty
+                      ? ('\$${controller.formatAmount((controller.mempoolBlocks[controller.indexShowBlock.value].totalFees! / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}')
+                      : '',
+                  style: const TextStyle(
+                    color: AppTheme.successColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        Text(
+            '${L10n.of(context)!.median}' +
+                '~' +
+                '\$${(((controller.mempoolBlocks.isEmpty ? 0 : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: AppTheme.black60,
+                )),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        Container(
+          width: AppTheme.cardPadding * 12,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Text(
-              //   controller.mempoolBlocks.isNotEmpty
-              //       ? controller.numberFormat.format(controller
-              //               .mempoolBlocks[controller.indexShowBlock.value]
-              //               .totalFees! /
-              //           100000000)
-              //       : '',
-              //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              // ),
-              // Transform.translate(
-              //   offset: const Offset(0, 2),
-              //   child: Text(
-              //     ' BTC  ',
-              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              //         fontWeight: FontWeight.bold,
-              //         color: AppTheme.secondaryColor),
-              //   ),
-              // ),
-              Text(
-                controller.mempoolBlocks.isNotEmpty
-                    ? ('\$${controller.formatAmount((controller.mempoolBlocks[controller.indexShowBlock.value].totalFees! / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}')
-                    : '',
-                style: const TextStyle(
-                  color: AppTheme.successColor,
-                  fontWeight: FontWeight.bold,
+              SfLinearGauge(
+                showTicks: false,
+                showLabels: false,
+                useRangeColorForAxis: true,
+                axisTrackStyle: const LinearAxisTrackStyle(
+                    thickness: AppTheme.cardPadding,
+                    color: Colors.grey,
+                    edgeStyle: LinearEdgeStyle.bothCurve,
+                    gradient: LinearGradient(
+                        colors: [Colors.redAccent, Colors.greenAccent],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        stops: [0.1, 0.9],
+                        tileMode: TileMode.clamp)),
+                minimum: controller.mempoolBlocks[controller.indexShowBlock.value]
+                    .feeRange!.first
+                    .toDouble(),
+                maximum: controller
+                    .mempoolBlocks[controller.indexShowBlock.value].feeRange!.last
+                    .toDouble(),
+                markerPointers: [
+                  LinearWidgetPointer(
+                      value: controller
+                          .mempoolBlocks[controller.indexShowBlock.value]
+                          .medianFee!
+                          .toDouble(),
+                      child: Container(
+                        height: AppTheme.cardPadding * 1.25,
+                        width: AppTheme.elementSpacing * 0.75,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        ),
+                      ))
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.redAccent,
+                            )),
+                    Text(
+                        '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.greenAccent,
+                            )),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-      ),
-      const SizedBox(
-        height: AppTheme.elementSpacing,
-      ),
-      Text(
-          '${L10n.of(context)!.median}' +
-              '~' +
-              '\$${(((controller.mempoolBlocks.isEmpty ? 0 : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: AppTheme.black60,
-              )),
-      const SizedBox(
-        height: AppTheme.elementSpacing,
-      ),
-      Container(
-        width: AppTheme.cardPadding * 12,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SfLinearGauge(
-              showTicks: false,
-              showLabels: false,
-              useRangeColorForAxis: true,
-              axisTrackStyle: const LinearAxisTrackStyle(
-                  thickness: AppTheme.cardPadding,
-                  color: Colors.grey,
-                  edgeStyle: LinearEdgeStyle.bothCurve,
-                  gradient: LinearGradient(
-                      colors: [Colors.redAccent, Colors.greenAccent],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      stops: [0.1, 0.9],
-                      tileMode: TileMode.clamp)),
-              minimum: controller.mempoolBlocks[controller.indexShowBlock.value]
-                  .feeRange!.first
-                  .toDouble(),
-              maximum: controller
-                  .mempoolBlocks[controller.indexShowBlock.value].feeRange!.last
-                  .toDouble(),
-              markerPointers: [
-                LinearWidgetPointer(
-                    value: controller
-                        .mempoolBlocks[controller.indexShowBlock.value]
-                        .medianFee!
-                        .toDouble(),
-                    child: Container(
-                      height: AppTheme.cardPadding * 1.25,
-                      width: AppTheme.elementSpacing * 0.75,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
-                    ))
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.redAccent,
-                          )),
-                  Text(
-                      '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.greenAccent,
-                          )),
-                ],
-              ),
-            ),
-          ],
+        const SizedBox(
+          height: AppTheme.cardPadding,
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 
   bool hasUserTxs(String blockhash) {

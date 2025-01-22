@@ -15,7 +15,7 @@ getAssetLeaves(String assetIdStr) async {
 
   final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminal.value;
+  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
