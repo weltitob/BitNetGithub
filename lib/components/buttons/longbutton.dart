@@ -114,7 +114,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                           children: [
                             if (widget.leadingIcon != null)
                               Padding(
-                                padding:  EdgeInsets.only(right: widget.customWidth * 0.025),
+                                padding:  EdgeInsets.only(right: widget.customWidth * 0.05),
                                 child: widget.leadingIcon,
                               ),
                             Text(

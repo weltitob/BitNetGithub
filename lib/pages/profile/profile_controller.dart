@@ -85,6 +85,7 @@ class ProfileController extends BaseController {
   void onInit() {
     super.onInit();
     loadData();
+    _setupUsernameListener();
     fetchTaprootAssets();
     scrollController = ScrollController();
     pages = [
@@ -93,6 +94,32 @@ class ProfileController extends BaseController {
       NotificationsWidget(),
       const EditProfileTab(),
     ];
+  }
+
+  void _setupUsernameListener() {
+    userNameController.addListener(() {
+      final currentText = userNameController.text;
+
+      // If empty, just set to '@'
+      if (currentText.isEmpty) {
+        userNameController.text = '@';
+        userNameController.selection = TextSelection.collapsed(
+          offset: userNameController.text.length,
+        );
+        return;
+      }
+
+      // If user tries removing or skipping '@', re-add it:
+      if (!currentText.startsWith('@')) {
+        // Remove any stray '@' in the middle of the text & enforce a single prefix
+        final cleanedText = currentText.replaceAll('@', '');
+        userNameController.text = '@$cleanedText';
+        // Move the cursor to the end
+        userNameController.selection = TextSelection.collapsed(
+          offset: userNameController.text.length,
+        );
+      }
+    });
   }
 
   Future<void> getUserId() async {

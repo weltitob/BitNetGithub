@@ -68,7 +68,7 @@ class _ProfileViewState extends State<ProfileView> {
                   const SliverToBoxAdapter(child: const ProfileHeader()),
                   const SliverToBoxAdapter(
                     child: const SizedBox(
-                      height: AppTheme.cardPadding * 0.75,
+                      height: AppTheme.cardPadding * 0.5,
                     ),
                   ),
                   Obx(() {
@@ -83,7 +83,7 @@ class _ProfileViewState extends State<ProfileView> {
             customHeight: AppTheme.cardPadding * 2,
             customWidth: AppTheme.cardPadding * 5,
             leadingIcon: Icon(
-              FontAwesomeIcons.add,
+              FontAwesomeIcons.image,
               color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.white : Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
             ),
             title: 'Create',
