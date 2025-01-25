@@ -49,40 +49,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     );
-    controller.receiveType.value = ReceiveType.Lightning;
+    controller.receiveType.value = ReceiveType.Lightning_b11;
     decodeNetwork();
-
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        tappedOffset = true;
-        controller.switchReceiveType();
-      }
-    });
-    _tabController.animation?.addListener(() {
-      if (_tabController.offset == 0.0 || _tabController.offset == -0.0) {
-        if (tappedOffset) {
-          tappedOffset = false;
-        }
-      } else if (tappedOffset) {
-      } else if (!_tabController.offset.isNegative &&
-          _tabController != 0.0 &&
-          _tabController.offset > 0.5) {
-        controller.receiveType.value = ReceiveType.OnChain;
-      } else if (!_tabController.offset.isNegative &&
-          _tabController != 0.0 &&
-          _tabController.offset < 0.5) {
-        controller.receiveType.value = ReceiveType.Lightning;
-      } else if (_tabController.offset.isNegative &&
-          _tabController != 0.0 &&
-          _tabController.offset < -0.5 &&
-          !(_tabController.offset < -1.5)) {
-        controller.receiveType.value = ReceiveType.Lightning;
-      } else if (_tabController.offset.isNegative &&
-          _tabController != 0.0 &&
-          _tabController.offset > -0.5) {
-        controller.receiveType.value = ReceiveType.OnChain;
-      }
-    });
 
     // _tabController.animation?.addListener(() {
     //   setState(() {});
@@ -159,7 +127,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                   axis: Axis.horizontal,
                   axisAlignment:
                       -1.0, // Adjust to control the direction of the animation
-                  child: controller.receiveType.value == ReceiveType.Lightning
+                  child: controller.receiveType.value == ReceiveType.Lightning_b11
                       ? LongButtonWidget(
                           customShadow:
                               Theme.of(context).brightness == Brightness.light
@@ -226,65 +194,9 @@ class _ReceiveScreenState extends State<ReceiveScreen>
           child: Column(
             children: [
               SizedBox(
-                height: AppTheme.cardPadding.h * 4,
+                height: AppTheme.cardPadding.h * 3,
               ),
-              Container(
-                height: AppTheme.cardPadding * 2,
-                child: TabBar.secondary(
-                  dividerColor: Colors.transparent,
-                  indicatorColor: Colors.transparent,
-                  indicatorPadding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing * 2),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  controller: _tabController,
-                  tabs: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          FontAwesomeIcons.bolt,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.black80
-                                  : AppTheme.white80,
-                        ),
-                        const SizedBox(
-                          width: AppTheme.cardPadding * 0.25,
-                        ),
-                        Text(
-                          ReceiveType.Lightning.name,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(FontAwesomeIcons.bitcoin,
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? AppTheme.black80
-                                    : AppTheme.white80),
-                        const SizedBox(
-                          width: AppTheme.cardPadding * 0.25,
-                        ),
-                        Text(
-                          ReceiveType.OnChain.name,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                  labelStyle: Theme.of(context).textTheme.headlineSmall,
-                  indicator: BoxDecoration(
-                    borderRadius: AppTheme.cardRadiusMid,
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.white.withOpacity(1)
-                        : Colors.white.withOpacity(0.1),
-                  ),
-                  unselectedLabelColor: Colors.white,
-                ),
-              ),
+
               Expanded(
                 child: TabBarView(
                   controller: _tabController,

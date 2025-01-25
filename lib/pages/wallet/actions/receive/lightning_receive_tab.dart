@@ -12,6 +12,9 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
+import 'package:bitnet/pages/wallet/actions/receive/widgets/address_listtile.dart';
+import 'package:bitnet/pages/wallet/actions/receive/widgets/receive_qr.dart';
+import 'package:bitnet/pages/wallet/actions/receive/widgets/receivetype_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -32,48 +35,7 @@ class LightningReceiveTab extends StatefulWidget {
 
 class _LightningReceiveTabState extends State<LightningReceiveTab>
     with AutomaticKeepAliveClientMixin {
-  final ScreenshotController screenshotController = ScreenshotController();
-  late Uint8List avatarImage;
-  bool isImageLoaded = false;
 
-  ProfileController profileController = Get.find<ProfileController>();
-
-  @override
-  void initState() {
-    super.initState();
-    captureAvatar();
-  }
-
-  Future<void> captureAvatar() async {
-    // Wrap your widget in a Material widget
-    final Widget avatarWidget = Material(
-      type: MaterialType.transparency, // or MaterialType.canvas if you like
-      child: SizedBox(
-        width: 50,
-        height: 50,
-        child: Avatar(
-          size: 50,
-          mxContent: Uri.parse(
-            profileController.userData.value.profileImageUrl,
-          ),
-          type: profilePictureType.lightning,
-          isNft: profileController.userData.value.nft_profile_id.isNotEmpty,
-        ),
-      ),
-    );
-
-    // Capture the widget
-    final avatarBytes = await screenshotController.captureFromWidget(
-      avatarWidget,
-      delay: const Duration(milliseconds: 100),
-      pixelRatio: 3.0,
-    );
-
-    setState(() {
-      avatarImage = avatarBytes;
-      isImageLoaded = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,122 +57,11 @@ class _LightningReceiveTabState extends State<LightningReceiveTab>
                   const SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      await Clipboard.setData(ClipboardData(
-                          text: controller.qrCodeDataStringLightning.value));
-                      // Display a snackbar to indicate that the wallet address has been copied
-                      overlayController
-                          .showOverlay(L10n.of(context)!.walletAddressCopied);
-                    },
-                    child: SizedBox(
-                      child: Center(
-                        child: RepaintBoundary(
-                          // The Qr code is generated from this widget's global key
-                          key: controller.globalKeyQR,
-                          child: Column(
-                            children: [
-                              // Custom border painted around the Qr code
-                              CustomPaint(
-                                foregroundPainter:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? BorderPainterBlack()
-                                        : BorderPainter(),
-                                child: Container(
-                                  margin: const EdgeInsets.all(
-                                      AppTheme.cardPadding),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: AppTheme.cardRadiusBigger),
-                                  child: Padding(
-                                      padding: EdgeInsets.all(
-                                          AppTheme.cardPadding / 1.25),
-                                      child: Obx(() => PrettyQrView.data(
-                                            data:
-                                                "lightning: ${controller.qrCodeDataStringLightning}",
-                                            decoration: PrettyQrDecoration(
-                                              shape: const PrettyQrSmoothSymbol(
-                                                roundFactor: 1,
-                                              ),
-                                              image: PrettyQrDecorationImage(
-                                                image: isImageLoaded
-                                                    ? MemoryImage(avatarImage)
-                                                        as ImageProvider
-                                                    : const AssetImage(
-                                                            'assets/images/lightning.png')
-                                                        as ImageProvider,
-                                              ),
-                                            ),
-
-                                            // image: PrettyQrDecorationImage(
-                                            //   image: AssetImage('assets/images/lightning.png'),
-                                            // ),
-                                          ))),
-                                ),
-                              ),
-                              LongButtonWidget(
-                                customHeight: AppTheme.cardPadding * 2,
-                                customWidth: AppTheme.cardPadding * 5,
-                                title: L10n.of(context)!.share,
-                                leadingIcon: const Icon(Icons.share_rounded),
-                                onTap: () {
-                                  Share.share(
-                                      'https://${AppTheme.currentWebDomain}/#/wallet/send/${controller.qrCodeDataStringLightning}');
-                                },
-                                buttonType: ButtonType.transparent,
-                              ),
-                              // SizedBox to add some spacing
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  ReceiveQRCode(),
                   const SizedBox(
                     height: AppTheme.cardPadding,
                   ),
-                  BitNetListTile(
-                    onTap: () async {
-                      await Clipboard.setData(ClipboardData(
-                          text: controller.qrCodeDataStringLightning.value));
-                      // Display a snackbar to indicate that the wallet address has been copied
-                      overlayController
-                          .showOverlay(L10n.of(context)!.walletAddressCopied);
-                    },
-                    text: L10n.of(context)!.invoice,
-                    trailing: Obx(() {
-                      final qrCodeData =
-                          controller.qrCodeDataStringLightning.value;
-                      if (qrCodeData.isEmpty ||
-                          qrCodeData == '' ||
-                          qrCodeData == 'null') {
-                        return Text('${L10n.of(context)!.loading}...');
-                      } else {
-                        final start = qrCodeData.length >= 8
-                            ? qrCodeData.substring(0, 8)
-                            : qrCodeData;
-                        final end = qrCodeData.length > 8
-                            ? qrCodeData.substring(qrCodeData.length - 5)
-                            : '';
-                        return Row(
-                          children: [
-                            Icon(
-                              Icons.copy_rounded,
-                              color: Theme.of(context).colorScheme.brightness ==
-                                      Brightness.dark
-                                  ? AppTheme.white60
-                                  : AppTheme.black80,
-                            ),
-                            const SizedBox(width: AppTheme.elementSpacing / 2),
-                            Text(start),
-                            if (qrCodeData.length > 8) const Text('....'),
-                            Text(end),
-                          ],
-                        );
-                      }
-                    }),
-                  ),
+                  AddressListTile(),
                   StatefulBuilder(builder: (context, setState) {
                     return BitNetListTile(
                       onTap: () async {
@@ -266,51 +117,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab>
                       ),
                     );
                   }),
-                  StatefulBuilder(builder: (context, setState) {
-                    return BitNetListTile(
-                      onTap: () async {
-                        await BitNetBottomSheet(
-                          context: context,
-                          //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: bitnetScaffold(
-                            extendBodyBehindAppBar: true,
-                            appBar: bitnetAppBar(
-                              hasBackButton: false,
-                              buttonType: ButtonType.transparent,
-                              text: "Data",
-                              context: context,
-                            ),
-                            body: SingleChildScrollView(child: CreateInvoice()),
-                            context: context,
-                          ),
-                        );
-
-                        setState(() {});
-                      },
-                      text: L10n.of(context)!.amount,
-                      trailing: LongButtonWidget(
-                        buttonType: ButtonType.transparent,
-                        title: 'Lightning B11',
-                        leadingIcon: const Icon(
-                          FontAwesomeIcons.bolt,
-                          size: AppTheme.cardPadding * 0.75,
-                        ),
-                        onTap: () {
-                          BitNetBottomSheet(
-                              context: context,
-                              child: bitnetScaffold(
-                                  body: Container(
-                                    child: Column(
-
-                                    ),
-                                  ), context: context));
-                        },
-                        customWidth: AppTheme.cardPadding * 6.5,
-                        customHeight: AppTheme.cardPadding * 1.5,
-                      ),
-                    );
-                  }),
+                  BitNetBottomSheet_ReceiveType(),
                   const SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),

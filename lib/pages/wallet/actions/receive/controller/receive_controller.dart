@@ -13,24 +13,27 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum ReceiveType {
-  Lightning,
-  OnChain,
+  Combined_b11_taproot,
+  Lightning_b11,
+  Lightning_lnurl,
+  OnChain_taproot,
+  OnChain_segwit,
 }
 
 class ReceiveController extends BaseController {
+  ValueNotifier<String> btcControllerNotifier = ValueNotifier('');
   RxBool isUnlocked = true.obs; // Added here
 
   RxString qrCodeDataStringLightning = "".obs;
   RxString qrCodeDataStringOnchain = "".obs;
   Rx<BitcoinUnits> bitcoinUnit = BitcoinUnits.SAT.obs;
-  Rx<ReceiveType> receiveType = ReceiveType.Lightning.obs;
+  Rx<ReceiveType> receiveType = ReceiveType.Combined_b11_taproot.obs;
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
@@ -147,16 +150,12 @@ class ReceiveController extends BaseController {
     qrCodeDataStringOnchain.value = address.addr.toString();
   }
 
-  void switchReceiveType() {
-    // setState(() {
-    switch (receiveType.value) {
-      case ReceiveType.Lightning:
-        receiveType.value = ReceiveType.OnChain;
-      case ReceiveType.OnChain:
-        receiveType.value = ReceiveType.Lightning;
-    }
-    // });
+  /// Sets the receive type explicitly to the provided type.
+  void setReceiveType(ReceiveType type) {
+    receiveType.value = type;
   }
+
+
 
   @override
   void onInit() {

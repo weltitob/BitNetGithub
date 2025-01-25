@@ -47,9 +47,7 @@ class WalletScreen extends GetWidget<WalletsController> {
             initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
             viewportFraction: 0.8885, // see some of the next/prev card
           );
-
-          SubServersStatus?
-              subServersStatus; // local variable to store fetched data
+          SubServersStatus? subServersStatus; // local variable to store fetched data
 
           return CustomScrollView(
             controller: controller.scrollController,
@@ -198,9 +196,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 );
                                               },
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: AppTheme.elementSpacing * 0.75.w,
                                           ),
                                           // RoundedButtonWidget(
                                           //   size: AppTheme.cardPadding * 1.25,

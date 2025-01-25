@@ -11,9 +11,12 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
+import 'package:bitnet/pages/wallet/actions/receive/widgets/receivetype_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
@@ -278,6 +281,8 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab>
                 ),
               );
             }),
+            BitNetBottomSheet_ReceiveType(),
+
             const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
