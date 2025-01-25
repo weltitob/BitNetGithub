@@ -9,12 +9,16 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/widgets/createinvoicebottomsheet.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-class AmountSpecifierListTile extends StatelessWidget {
+class AmountSpecifierListTile extends StatefulWidget {
+  @override
+  State<AmountSpecifierListTile> createState() => _AmountSpecifierListTileState();
+}
+
+class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
   final overlayController = Get.find<OverlayController>();
   final controller = Get.find<ReceiveController>();
 
@@ -44,7 +48,8 @@ class AmountSpecifierListTile extends StatelessWidget {
                 context: context,
               ),
             );
-          } else if (receiveType == ReceiveType.OnChain_taproot || receiveType == ReceiveType.OnChain_segwit) {
+          } else if (receiveType == ReceiveType.OnChain_taproot ||
+              receiveType == ReceiveType.OnChain_segwit) {
             // On-chain-specific logic
             await BitNetBottomSheet(
               context: context,
@@ -66,9 +71,15 @@ class AmountSpecifierListTile extends StatelessWidget {
               ),
             );
 
-            // Update state using GetX
-            controller.btcControllerNotifier.value = controller.btcControllerOnChain.text;
+            // Update the state immediately after closing the bottom sheet
+            setState(() {
+              controller.btcControllerNotifier.value =
+                  controller.btcControllerOnChain.text;
+            });
           }
+
+          // Update the state for Lightning logic
+          setState(() {});
         },
         text: L10n.of(context)!.amount,
         trailing: Row(
@@ -82,16 +93,18 @@ class AmountSpecifierListTile extends StatelessWidget {
             const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
               receiveType == ReceiveType.Lightning_b11
-                  ? (controller.satController.text == "0" || controller.satController.text.isEmpty
+                  ? (controller.satController.text == "0" ||
+                  controller.satController.text.isEmpty
                   ? L10n.of(context)!.changeAmount
                   : controller.satController.text)
-                  : (controller.satControllerOnChain.text == "0" || controller.satControllerOnChain.text.isEmpty
+                  : (controller.satControllerOnChain.text == "0" ||
+                  controller.satControllerOnChain.text.isEmpty
                   ? "Change Amount"
                   : controller.satControllerOnChain.text),
             ),
-            if (receiveType == ReceiveType.Lightning_b11 &&
+            if ((receiveType == ReceiveType.Lightning_b11 &&
                 controller.satController.text != "0" &&
-                controller.satController.text.isNotEmpty ||
+                controller.satController.text.isNotEmpty) ||
                 (receiveType != ReceiveType.Lightning_b11 &&
                     controller.satControllerOnChain.text != "0" &&
                     controller.satControllerOnChain.text.isNotEmpty))
