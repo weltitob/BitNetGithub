@@ -367,7 +367,7 @@ class _TransactionsState extends State<Transactions>
               vertical: AppTheme.elementSpacing),
           child: Text(
             category,
-            style: Theme.of(Get.context!).textTheme.titleMedium,
+            style: Theme.of(Get.context!).textTheme.titleSmall,
           ),
         ),
       );
@@ -563,7 +563,7 @@ class TransactionContainer extends StatelessWidget {
               children: transactions,
             ),
           ),
-          SizedBox(height: AppTheme.cardPadding * 1.h),
+          SizedBox(height: AppTheme.cardPadding * 0.5.h),
         ],
       ),
     );
