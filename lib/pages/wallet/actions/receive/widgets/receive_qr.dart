@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -13,7 +14,6 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-
 
 class ReceiveQRCode extends StatefulWidget {
   const ReceiveQRCode({super.key});
@@ -36,7 +36,6 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
   }
 
   Future<void> captureAvatar() async {
-    // Wrap your avatar widget in a Material so that it can be screenshot properly
     final Widget avatarWidget = Material(
       type: MaterialType.transparency,
       child: SizedBox(
@@ -69,8 +68,12 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
   Widget build(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
     final controller = Get.find<ReceiveController>();
+    final logger = Get.find<LoggerService>();
 
     return Obx(() {
+
+      print("ReceiveType detected in receive_qr.dart: ${controller.receiveType.value}");
+
       switch (controller.receiveType.value) {
         case ReceiveType.Lightning_b11:
           return _buildLightningQr(context, controller, overlayController);
@@ -78,14 +81,15 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
         case ReceiveType.OnChain_taproot:
           return _buildTaprootQr(context, controller, overlayController);
 
+        case ReceiveType.Combined_b11_taproot:
+          return _buildCombinedQr(context, controller, overlayController);
+
         default:
-        // Fallback UI if needed
           return const SizedBox();
       }
     });
   }
 
-  /// Existing Lightning QR snippet
   Widget _buildLightningQr(
       BuildContext context,
       ReceiveController controller,
@@ -93,11 +97,9 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
       ) {
     return GestureDetector(
       onTap: () async {
-        // Copy LN invoice data
         await Clipboard.setData(
           ClipboardData(text: controller.qrCodeDataStringLightning.value),
         );
-        // Show a small overlay notification
         overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
       },
       child: SizedBox(
@@ -155,38 +157,22 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
     );
   }
 
-  Widget _buildBip21Qr(
+  Widget _buildLNURLQr(
       BuildContext context,
       ReceiveController controller,
       OverlayController overlayController,
       ) {
-    // Suppose you store the final BIP21 with lightning param in these variables:
-    // e.g. "bc1q0lkecru62vc4v7uwrz5n46twx4rdt6q3nleccj"
-    final onChainAddress = controller.qrCodeDataStringOnchain.value;
-    // e.g. "LNBC1PNEFJ5GDQQN..."
-    final lightningInvoice = controller.qrCodeDataStringLightning.value;
-
-    // Build the BIP21 string.
-    // Minimal example: bitcoin:<address>?lightning=<invoice>
-    final bip21String = "bitcoin:$onChainAddress?lightning=$lightningInvoice";
-
-    // If you want to include an amount param, do something like:
-    // final amount = double.tryParse(controller.btcControllerOnChain.text);
-    // final bip21String = (amount != null && amount > 0)
-    //   ? "bitcoin:$onChainAddress?amount=$amount&lightning=$lightningInvoice"
-    //   : "bitcoin:$onChainAddress?lightning=$lightningInvoice";
-
     return GestureDetector(
       onTap: () async {
-        // Copy the BIP21 URI to the clipboard
-        await Clipboard.setData(ClipboardData(text: bip21String));
+        await Clipboard.setData(
+          ClipboardData(text: "LNURL"),
+        );
         overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
       },
       child: SizedBox(
         child: Center(
           child: RepaintBoundary(
-            // You can capture or share this QR if needed by hooking up to a GlobalKey
-            // key: someGlobalKey,
+            key: controller.globalKeyQR,
             child: Column(
               children: [
                 CustomPaint(
@@ -200,32 +186,32 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                       borderRadius: AppTheme.cardRadiusBigger,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                      // Use `PrettyQrView.data` just like in your other sections
-                      child: Container(
-                        child: PrettyQrView.data(
-                          data: bip21String,
-                          decoration: const PrettyQrDecoration(
-                            shape: PrettyQrSmoothSymbol(roundFactor: 1),
+                      padding: EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                      child: Obx(
+                            () => PrettyQrView.data(
+                          data: "lightning:${"LNURL"}",
+                          decoration: PrettyQrDecoration(
+                            shape: const PrettyQrSmoothSymbol(roundFactor: 1),
                             image: PrettyQrDecorationImage(
-                              image: AssetImage('assets/images/bip21.png'),
+                              image: isImageLoaded
+                                  ? MemoryImage(avatarImage) as ImageProvider
+                                  : const AssetImage('assets/images/lightning.png')
+                              as ImageProvider,
                             ),
                           ),
-                          errorCorrectLevel: QrErrorCorrectLevel.H,
-                      )),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                // Optional: share button
                 LongButtonWidget(
                   customHeight: AppTheme.cardPadding * 2,
                   customWidth: AppTheme.cardPadding * 5,
                   title: L10n.of(context)!.share,
                   leadingIcon: const Icon(Icons.share_rounded),
                   onTap: () {
-                    // You can share this as well
                     Share.share(
-                      'https://${AppTheme.currentWebDomain}/#/wallet/send/$bip21String',
+                      '',
                     );
                   },
                   buttonType: ButtonType.transparent,
@@ -238,21 +224,16 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
     );
   }
 
-  /// Your new Taproot (On-Chain) QR snippet
+
   Widget _buildTaprootQr(
       BuildContext context,
       ReceiveController controller,
       OverlayController overlayController,
       ) {
-    // If you also want to use a RepaintBoundary or a GlobalKey, define them as you do for lightning.
-    // You can also re-use the same key if you prefer. Adjust to your needs.
     final globalKeyQR = GlobalKey();
 
     return Obx(
           () {
-        // Just reading controller.qrCodeDataStringOnchain.value here
-        // triggers reactivity, but it's good practice to store it to a local
-        // variable if you’re using it multiple times.
         final onChainAddress = controller.qrCodeDataStringOnchain.value;
 
         return GestureDetector(
@@ -344,6 +325,75 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildCombinedQr(
+      BuildContext context,
+      ReceiveController controller,
+      OverlayController overlayController,
+      ) {
+    final globalKeyQR = GlobalKey();
+
+    final onChainAddress = controller.qrCodeDataStringOnchain.value;
+    final lightningInvoice = controller.qrCodeDataStringLightning.value;
+
+    final combinedBip21Uri =
+        "bitcoin:$onChainAddress?lightning=$lightningInvoice";
+
+    return GestureDetector(
+      onTap: () async {
+        await Clipboard.setData(ClipboardData(text: combinedBip21Uri));
+        overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
+      },
+      child: SizedBox(
+        child: Center(
+          child: RepaintBoundary(
+            key: globalKeyQR,
+            child: Column(
+              children: [
+                CustomPaint(
+                  foregroundPainter: Theme.of(context).brightness == Brightness.light
+                      ? BorderPainterBlack()
+                      : BorderPainter(),
+                  child: Container(
+                    margin: const EdgeInsets.all(AppTheme.cardPadding),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: AppTheme.cardRadiusBigger,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                      child: PrettyQrView.data(
+                        data: combinedBip21Uri,
+                        decoration: const PrettyQrDecoration(
+                          shape: PrettyQrSmoothSymbol(roundFactor: 1),
+                          image: PrettyQrDecorationImage(
+                            image: AssetImage('assets/images/bip21.png'),
+                          ),
+                        ),
+                        errorCorrectLevel: QrErrorCorrectLevel.H,
+                      ),
+                    ),
+                  ),
+                ),
+                LongButtonWidget(
+                  customHeight: AppTheme.cardPadding * 2,
+                  customWidth: AppTheme.cardPadding * 5,
+                  title: L10n.of(context)!.share,
+                  leadingIcon: const Icon(Icons.share_rounded),
+                  onTap: () {
+                    Share.share(
+                      'https://${AppTheme.currentWebDomain}/#/wallet/send/$combinedBip21Uri',
+                    );
+                  },
+                  buttonType: ButtonType.transparent,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

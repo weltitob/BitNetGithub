@@ -24,6 +24,7 @@ enum ReceiveType {
   Lightning_lnurl,
   OnChain_taproot,
   OnChain_segwit,
+  TokenTaprootAsset,
 }
 
 class ReceiveController extends BaseController {
@@ -33,7 +34,9 @@ class ReceiveController extends BaseController {
   RxString qrCodeDataStringLightning = "".obs;
   RxString qrCodeDataStringOnchain = "".obs;
   Rx<BitcoinUnits> bitcoinUnit = BitcoinUnits.SAT.obs;
+
   Rx<ReceiveType> receiveType = ReceiveType.Combined_b11_taproot.obs;
+
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
@@ -150,11 +153,11 @@ class ReceiveController extends BaseController {
     qrCodeDataStringOnchain.value = address.addr.toString();
   }
 
-  /// Sets the receive type explicitly to the provided type.
-  void setReceiveType(ReceiveType type) {
+  // /// Sets the receive type explicitly to the provided type.
+  setReceiveType(ReceiveType type) {
     receiveType.value = type;
+    logger.i("Set new receive type: $type");
   }
-
 
 
   @override
