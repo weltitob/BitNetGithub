@@ -67,183 +67,140 @@ class _NftProductSliderState extends State<NftProductSlider> {
           },
           child: GlassContainer(
             width: 214.w * widget.scale,
-            height: 50.w * widget.scale,
+            height: 50.h * widget.scale,
             customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
             child: Padding(
               padding: const EdgeInsets.all(AppTheme.elementSpacing),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 150.w * widget.scale,
-                        child: Text(
-                          widget.nftMainName,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
-                        ),
-                      ),
-                      GlassContainer(
-                          customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(
-                              FontAwesomeIcons.bolt,
-                              size: 16.w,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 150.w * widget.scale,
+                            child: Text(
+                              widget.nftMainName,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                             ),
-                          )),
+                          ),
+                          GlassContainer(
+                              customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Icon(
+                                  FontAwesomeIcons.bolt,
+                                  size: 16.w,
+                                ),
+                              )),
+                        ],
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing.h),
+                      Stack(children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.r),
+                            ),
+                            child: topWidget(firstMediaData?.type ?? '', firstMediaData)),
                     ],
                   ),
-                  SizedBox(height: AppTheme.elementSpacing.h),
-                  Stack(children: [
-                    ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.r),
-                        ),
-                        child: topWidget(firstMediaData?.type ?? '', firstMediaData)),
-                  ]),
-                  widget.isOwner
-                      ? Row(
+                    SizedBox(height: AppTheme.elementSpacing.h / 2),
+
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        child: widget.isOwner
+                            ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             widget.hasListForSale
                                 ? LongButtonWidget(
-                                    buttonType: ButtonType.transparent, customHeight: 30.h, customWidth: 80.w, title: "List", onTap: () {})
+                                buttonType: ButtonType.transparent, customHeight: 30.h, customWidth: 214.w * widget.scale - AppTheme.cardPadding * 2, title: "List", onTap: () {})
                                 : Container(),
                             widget.hasLikeButton
                                 ? RoundedButtonWidget(
-                                    iconData: Icons.favorite,
-                                    buttonType: ButtonType.transparent,
-                                    size: 30.h,
-                                    iconColor: widget.hasLiked
-                                        ? Colors.red
-                                        : Theme.of(context).brightness == Brightness.light
-                                            ? AppTheme.black70
-                                            : AppTheme.white90,
-                                    onTap: () async {
-                                      widget.hasLiked = !widget.hasLiked;
-                                      setState(() {});
-                                      controller.updateHasLiked(widget.postId!, widget.hasLiked);
-                                      controller.postsDataList = await controller.fetchPosts();
-                                      widget.hasLiked
-                                          ? controller.toggleLike(widget.postId!)
-                                          : controller.deleteLikeByPostId(widget.postId!);
-                                    },
-                                  )
+                              iconData: Icons.favorite,
+                              buttonType: ButtonType.transparent,
+                              size: 30.h,
+                              iconColor: widget.hasLiked
+                                  ? Colors.red
+                                  : Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black70
+                                  : AppTheme.white90,
+                              onTap: () async {
+                                widget.hasLiked = !widget.hasLiked;
+                                setState(() {});
+                                controller.updateHasLiked(widget.postId!, widget.hasLiked);
+                                controller.postsDataList = await controller.fetchPosts();
+                                widget.hasLiked
+                                    ? controller.toggleLike(widget.postId!)
+                                    : controller.deleteLikeByPostId(widget.postId!);
+                              },
+                            )
                                 : Container(),
                           ],
                         )
-                      : Row(
+                            : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             widget.hasPrice
                                 ? GlassContainer(
-                                    customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: AppTheme.elementSpacing / 4, horizontal: AppTheme.elementSpacing / 2),
-                                      child: Row(
-                                        children: [
-                                          Text(widget.cryptoText, style: Theme.of(context).textTheme.bodyMedium),
-                                          Icon(
-                                            Icons.currency_bitcoin,
-                                            size: 16.w,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
+                              customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: AppTheme.elementSpacing / 4, horizontal: AppTheme.elementSpacing / 2),
+                                child: Row(
+                                  children: [
+                                    Text(widget.cryptoText, style: Theme.of(context).textTheme.bodyMedium),
+                                    Icon(
+                                      Icons.currency_bitcoin,
+                                      size: 16.w,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
                                 : Container(),
                             widget.hasLikeButton
                                 ? RoundedButtonWidget(
-                                    iconData: Icons.favorite,
-                                    buttonType: ButtonType.transparent,
-                                    size: 30.w,
-                                    iconColor: widget.hasLiked
-                                        ? Colors.red
-                                        : Theme.of(context).brightness == Brightness.light
-                                            ? AppTheme.black70
-                                            : AppTheme.white90,
-                                    onTap: () async {
-                                      widget.hasLiked = !widget.hasLiked;
-                                      setState(() {});
-                                      controller.updateHasLiked(widget.postId!, widget.hasLiked);
-                                      controller.postsDataList = await controller.fetchPosts();
-                                      widget.hasLiked
-                                          ? controller.toggleLike(widget.postId!)
-                                          : controller.deleteLikeByPostId(widget.postId!);
-                                    },
-                                  )
+                              iconData: Icons.favorite,
+                              buttonType: ButtonType.transparent,
+                              size: 30.w,
+                              iconColor: widget.hasLiked
+                                  ? Colors.red
+                                  : Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black70
+                                  : AppTheme.white90,
+                              onTap: () async {
+                                widget.hasLiked = !widget.hasLiked;
+                                setState(() {});
+                                controller.updateHasLiked(widget.postId!, widget.hasLiked);
+                                controller.postsDataList = await controller.fetchPosts();
+                                widget.hasLiked
+                                    ? controller.toggleLike(widget.postId!)
+                                    : controller.deleteLikeByPostId(widget.postId!);
+                              },
+                            )
                                 : Container(),
                           ],
                         ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     widget.hasPrice
-                  //         ? GlassContainer(
-                  //             child: Padding(
-                  //               padding: const EdgeInsets.symmetric(
-                  //                   vertical: AppTheme.elementSpacing / 4,
-                  //                   horizontal: AppTheme.elementSpacing / 2),
-                  //               child: Row(
-                  //                 children: [
-                  //                   widget.hasListForSale
-                  //                       ? LongButtonWidget(
-                  //                           buttonType: ButtonType.transparent,
-                  //                           customHeight: 30.h,
-                  //                           customWidth: 80.w,
-                  //                           title: "List",
-                  //                           onTap: () {})
-                  //                       : Text(widget.cryptoText,
-                  //                           style: Theme.of(context)
-                  //                               .textTheme
-                  //                               .bodyMedium),
-                  //                   Icon(
-                  //                     Icons.currency_bitcoin,
-                  //                     size: 16.w,
-                  //                   )
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           )
-                  //         : Container(),
-                  //     widget.hasLikeButton
-                  //         ? RoundedButtonWidget(
-                  //             iconData: Icons.favorite,
-                  //             buttonType: ButtonType.transparent,
-                  //             size: 30.w,
-                  //             iconColor: widget.hasLiked
-                  //                 ? Colors.red
-                  //                 : Theme.of(context).brightness ==
-                  //                         Brightness.light
-                  //                     ? AppTheme.black70
-                  //                     : AppTheme.white90,
-                  //             onTap: () async {
-                  //               widget.hasLiked = !widget.hasLiked;
-                  //               setState(() {});
-                  //               controller.updateHasLiked(
-                  //                   widget.postId!, widget.hasLiked);
-                  //               controller.postsDataList =
-                  //                   await controller.fetchPosts();
-                  //               widget.hasLiked
-                  //                   ? controller.toggleLike(widget.postId!)
-                  //                   : controller
-                  //                       .deleteLikeByPostId(widget.postId!);
-                  //             },
-                  //           )
-                  //         : Container(),
-                  //   ],
-                  // ),
+                      ),
+                    ),
+                  ]),
+
+
                 ],
               ),
             ),

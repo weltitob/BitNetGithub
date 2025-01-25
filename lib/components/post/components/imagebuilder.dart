@@ -91,14 +91,14 @@ class ImageBox extends StatelessWidget {
               borderRadius: radius ?? AppTheme.cardRadiusMid.r,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.05),
                   offset: const Offset(0, 2.5),
                   blurRadius: 10,
                 ),
               ],
             ),
             child: ClipRRect(
-                borderRadius: radius ?? AppTheme.cardRadiusMid.r,
+                borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
                 child: child)),
       ],
     );

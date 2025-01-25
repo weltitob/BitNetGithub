@@ -17,7 +17,7 @@ class GlassContainer extends StatelessWidget {
     required this.child,
     this.blur = 50,
     this.opacity = 0.1,
-    this.borderRadius = const BorderRadius.all(Radius.circular(AppTheme.cardPadding * 2.5 / 2.5)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(AppTheme.cardPadding * 2.5 / 3)),
     this.height,
     this.width,
     this.borderThickness = 1,

@@ -47,8 +47,8 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(widget.customHeight / 2.5);
-    final borderRadiusNum = widget.customHeight / 2.5;
+    final borderRadius = BorderRadius.circular(widget.customHeight / 3);
+    final borderRadiusNum = widget.customHeight / 3;
 
     return Stack(
       children: [

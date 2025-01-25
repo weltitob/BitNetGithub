@@ -31,7 +31,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
   Widget build(BuildContext context) {
     final containerHeight = widget.size;
     final containerWidth = widget.size;
-    final borderRadius = BorderRadius.circular(widget.size / 2.5);
+    final borderRadius = BorderRadius.circular(widget.size / 3);
 
     return InkWell(
       borderRadius: borderRadius,

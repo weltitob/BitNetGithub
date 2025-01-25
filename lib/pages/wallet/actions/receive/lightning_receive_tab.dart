@@ -16,6 +16,7 @@ import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dar
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
@@ -54,12 +55,10 @@ class _LightningReceiveTabState extends State<LightningReceiveTab>
         child: Avatar(
           size: 50,
           mxContent: Uri.parse(
-            profileController.userData.value
-                .profileImageUrl,
+            profileController.userData.value.profileImageUrl,
           ),
           type: profilePictureType.lightning,
-          isNft: profileController.userData.value
-              .nft_profile_id.isNotEmpty,
+          isNft: profileController.userData.value.nft_profile_id.isNotEmpty,
         ),
       ),
     );
@@ -76,8 +75,6 @@ class _LightningReceiveTabState extends State<LightningReceiveTab>
       isImageLoaded = true;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +264,51 @@ class _LightningReceiveTabState extends State<LightningReceiveTab>
                                       : AppTheme.white90,
                                 )
                         ],
+                      ),
+                    );
+                  }),
+                  StatefulBuilder(builder: (context, setState) {
+                    return BitNetListTile(
+                      onTap: () async {
+                        await BitNetBottomSheet(
+                          context: context,
+                          //also add a help button as an action at the right once bitnetbottomsheet is fixed
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: bitnetScaffold(
+                            extendBodyBehindAppBar: true,
+                            appBar: bitnetAppBar(
+                              hasBackButton: false,
+                              buttonType: ButtonType.transparent,
+                              text: "Data",
+                              context: context,
+                            ),
+                            body: SingleChildScrollView(child: CreateInvoice()),
+                            context: context,
+                          ),
+                        );
+
+                        setState(() {});
+                      },
+                      text: L10n.of(context)!.amount,
+                      trailing: LongButtonWidget(
+                        buttonType: ButtonType.transparent,
+                        title: 'Lightning B11',
+                        leadingIcon: const Icon(
+                          FontAwesomeIcons.bolt,
+                          size: AppTheme.cardPadding * 0.75,
+                        ),
+                        onTap: () {
+                          BitNetBottomSheet(
+                              context: context,
+                              child: bitnetScaffold(
+                                  body: Container(
+                                    child: Column(
+
+                                    ),
+                                  ), context: context));
+                        },
+                        customWidth: AppTheme.cardPadding * 6.5,
+                        customHeight: AppTheme.cardPadding * 1.5,
                       ),
                     );
                   }),

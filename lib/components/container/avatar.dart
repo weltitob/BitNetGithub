@@ -54,7 +54,7 @@ class Avatar extends StatelessWidget {
       ),
     );
 
-    final borderRadius = BorderRadius.circular(size / 2.5);
+    final borderRadius = BorderRadius.circular(size / 3);
 
     // Apply the orange gradient when profilePictureType is either onchain or lightning
     final isSpecialType = type == profilePictureType.onchain ||
@@ -79,7 +79,7 @@ class Avatar extends StatelessWidget {
       ),
       child: Center(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular((size - borderPadding * 2) / 2.5),
+          borderRadius: BorderRadius.circular((size - borderPadding * 2) / 3),
           child: Container(
             width: size - borderPadding * 1.5,
             height: size - borderPadding * 1.5,

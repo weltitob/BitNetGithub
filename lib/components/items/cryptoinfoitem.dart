@@ -34,7 +34,7 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
     return GlassContainer(
       borderThickness: 1,
       height: AppTheme.cardPadding * 2.75,
-      borderRadius: AppTheme.cardRadiusBig,
+      borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
       child: Stack(
         children: [
           Padding(
