@@ -437,6 +437,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   width: AppTheme.cardPadding * 2.5.w,
                                                   height: AppTheme.cardPadding * 2.5.w,
                                                   fallbackIcon: FontAwesomeIcons.btc,
+                                                  fallbackIconSize: AppTheme.iconSize * 1.5,
+
                                                 ),
                                               ],
                                             ),

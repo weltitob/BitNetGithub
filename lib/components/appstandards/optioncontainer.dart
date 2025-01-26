@@ -10,6 +10,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
   final String? image;
   final double width;
   final double height;
+  final double? fallbackIconSize;
   final bool isActive;
   final Color? customColor;
   const BitNetImageWithTextContainer(
@@ -19,6 +20,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
     this.image,
     this.width = AppTheme.cardPadding * 6,
     this.height = AppTheme.cardPadding * 7,
+    this.fallbackIconSize = AppTheme.cardPadding * 1.75,
     this.isActive = true, // default value is true
     Key? key, this.customColor,
   }) : super(key: key);
@@ -68,7 +70,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
                     ? Image.asset(image!)
                     : Icon(
                         fallbackIcon ?? Icons.error,
-                        size: AppTheme.cardPadding * 1.75,
+                        size: fallbackIconSize ??AppTheme.cardPadding * 1.75,
                         color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
                       ),
               ),
@@ -91,6 +93,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
   final String text;
   final Function() action;
   final IconData? fallbackIcon;
+  final double? fallbackIconSize;
   final String? image;
   final double width;
   final double height;
@@ -100,6 +103,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
     this.text,
     this.action, {
     this.fallbackIcon,
+    this.fallbackIconSize = AppTheme.cardPadding * 1.75,
     this.image,
     this.width = AppTheme.cardPadding * 6,
     this.height = AppTheme.cardPadding * 7,
@@ -153,7 +157,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
                     ? Image.asset(image!)
                     : Icon(
                         fallbackIcon ?? Icons.error,
-                        size: AppTheme.cardPadding * 1.75,
+                        size: fallbackIconSize ?? AppTheme.cardPadding * 1.75,
                         color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
                       ),
               ),
@@ -176,6 +180,7 @@ class BitNetImageWithTextButton extends StatelessWidget {
   final String text;
   final Function() action;
   final IconData? fallbackIcon;
+  final double? fallbackIconSize;
   final String? image;
   final double width;
   final double height;
@@ -185,6 +190,7 @@ class BitNetImageWithTextButton extends StatelessWidget {
     this.text,
     this.action, {
     this.fallbackIcon,
+    this.fallbackIconSize = AppTheme.cardPadding * 1.75,
     this.image,
     this.width = AppTheme.cardPadding * 6,
     this.height = AppTheme.cardPadding * 7,
@@ -222,7 +228,7 @@ class BitNetImageWithTextButton extends StatelessWidget {
                       ? Image.asset(image!)
                       : Icon(
                           fallbackIcon ?? Icons.error,
-                          size: AppTheme.cardPadding * 1.75,
+                          size: fallbackIconSize ?? AppTheme.cardPadding * 1.75,
                           color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
                         ),
                 ),
