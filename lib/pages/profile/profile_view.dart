@@ -81,9 +81,10 @@ class _ProfileViewState extends State<ProfileView> {
           child: LongButtonWidget(
             buttonType: ButtonType.solid,
             customHeight: AppTheme.cardPadding * 2,
-            customWidth: AppTheme.cardPadding * 5.5,
+            customWidth: AppTheme.cardPadding * 5.25,
             leadingIcon: Icon(
-              FontAwesomeIcons.image,
+              FontAwesomeIcons.add,
+              size: AppTheme.cardPadding * 0.75,
               color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.white : Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
             ),
             title: 'Create',

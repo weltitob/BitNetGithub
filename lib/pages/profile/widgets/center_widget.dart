@@ -4,6 +4,7 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class CenterWidget extends StatelessWidget {
@@ -26,7 +27,7 @@ class CenterWidget extends StatelessWidget {
           width: containerWidth,
           height: (AppTheme.cardPadding * 2).h,
           padding: EdgeInsets.symmetric(
-            horizontal: (AppTheme.cardPadding * 0.8).w,
+            horizontal: (AppTheme.cardPadding * 0.5).w,
           ),
           // Wrap Row in SingleChildScrollView to prevent overflow
           child: Row(
@@ -54,10 +55,16 @@ class CenterWidget extends StatelessWidget {
                 onTap: () => controller.currentview.value = 2,
               ),
               CenterWidgetIcon(
-                label: 'Edit',
-                iconData: Icons.edit,
+                label: 'Liked',
+                iconData: FontAwesomeIcons.solidHeart,
                 index: 3,
                 onTap: () => controller.currentview.value = 3,
+              ),
+              CenterWidgetIcon(
+                label: 'Edit',
+                iconData: Icons.edit,
+                index: 4,
+                onTap: () => controller.currentview.value = 4,
               ),
               // Add more icons if needed
             ],
