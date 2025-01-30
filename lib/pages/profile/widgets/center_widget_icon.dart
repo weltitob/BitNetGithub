@@ -35,8 +35,8 @@ class CenterWidgetIcon extends StatelessWidget {
             if (!isSelected) ...[
             Container(
               color: Colors.transparent,
-              width: AppTheme.cardPadding * 2.h,
-              height: AppTheme.cardPadding * 2.h,
+              width: AppTheme.cardPadding * 1.75.h,
+              height: AppTheme.cardPadding * 1.75.h,
               child: Icon(
                 iconData,
                 size: AppTheme.iconSize,
@@ -48,11 +48,15 @@ class CenterWidgetIcon extends StatelessWidget {
             ],
             if (isSelected) ...[
               Container(
-                width: AppTheme.cardPadding * 2.h,
-                height: AppTheme.cardPadding * 2.h,
+                width: AppTheme.cardPadding * 1.75.h,
+                height: AppTheme.cardPadding * 1.75.h,
                 child: RoundedButtonWidget(
-                    buttonType: ButtonType.transparent,
-                    iconData: iconData, onTap: onTap),
+                  size: AppTheme.cardPadding * 1.75.h,
+                    buttonType:
+                    ButtonType.transparent,
+                    iconData: iconData, onTap: onTap
+
+                ),
               )
               // SizedBox(width: (AppTheme.elementSpacing * 0.4).w),
               // Text(
