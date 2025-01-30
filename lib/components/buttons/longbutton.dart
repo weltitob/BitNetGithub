@@ -122,6 +122,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                               style: widget.titleStyle != null
                                   ? widget.titleStyle
                                   : Theme.of(context).textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w700,
                                       color: widget.textColor != null
                                           ? widget.textColor
                                           : widget.buttonType == ButtonType.solid

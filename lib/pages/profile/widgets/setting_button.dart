@@ -15,8 +15,8 @@ class SettingsButton extends StatelessWidget {
     Get.put(SettingsController());
 
     return Positioned(
-      top: AppTheme.elementSpacing / 2,
-      right: AppTheme.elementSpacing / 2,
+      top: AppTheme.elementSpacing / 4,
+      right: AppTheme.elementSpacing / 4,
       child: Align(
         child: Padding(
             padding: const EdgeInsets.only(
