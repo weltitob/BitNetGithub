@@ -8,6 +8,7 @@ import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -85,6 +86,39 @@ bool isLightningAdressAsMail(String input) {
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
       caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
+}
+
+bool isBip21WithBolt11(String input) {
+  if (input.startsWith("bitcoin:")) {
+    Uri? uri = Uri.tryParse(input);
+    if (uri != null) {
+      String? lightningParam = uri.queryParameters["lightning"];
+
+      if (lightningParam != null) {
+        if (lightningParam.startsWith("LNBC") &&
+            isBitcoinWalletValid(uri.path)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+bool isBip21WithBolt12(String input) {
+  if (input.startsWith("bitcoin:")) {
+    Uri? uri = Uri.tryParse(input);
+    if (uri != null) {
+      String? lightningParam = uri.queryParameters["lightning"];
+
+      if (lightningParam != null) {
+        if (lightningParam.startsWith("LNO")) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool isStringPrivateDataFunc(String input) {

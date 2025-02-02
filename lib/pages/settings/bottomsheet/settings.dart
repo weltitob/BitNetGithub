@@ -5,6 +5,7 @@ import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style_view.dart';
+import 'package:bitnet/pages/settings/timezone/change_timezone.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,6 +55,10 @@ class Settings extends StatelessWidget {
               if (controller.currentTab.value == 'language')
                 const Expanded(
                   child: ChangeLanguage(),
+                ),
+              if (controller.currentTab.value == 'timezone')
+                const Expanded(
+                  child: ChangeTimeZone(),
                 ),
               if (controller.currentTab.value == "agbs")
                 Expanded(

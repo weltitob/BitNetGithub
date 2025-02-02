@@ -15,7 +15,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class AmountSpecifierListTile extends StatefulWidget {
   @override
-  State<AmountSpecifierListTile> createState() => _AmountSpecifierListTileState();
+  State<AmountSpecifierListTile> createState() =>
+      _AmountSpecifierListTileState();
 }
 
 class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
@@ -43,7 +44,10 @@ class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
                   context: context,
                 ),
                 body: SingleChildScrollView(
-                  child: CreateInvoice(),
+                  child: CreateInvoice(
+                    satController: controller.satController,
+                    btcController: controller.btcController,
+                  ),
                 ),
                 context: context,
               ),
@@ -64,7 +68,8 @@ class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
                 ),
                 body: SingleChildScrollView(
                   child: CreateInvoice(
-                    onChain: true,
+                    satController: controller.satControllerOnChain,
+                    btcController: controller.btcControllerOnChain,
                   ),
                 ),
                 context: context,
@@ -76,6 +81,27 @@ class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
               controller.btcControllerNotifier.value =
                   controller.btcControllerOnChain.text;
             });
+          } else if (receiveType == ReceiveType.Combined_b11_taproot) {
+            await BitNetBottomSheet(
+              context: context,
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: bitnetScaffold(
+                extendBodyBehindAppBar: true,
+                appBar: bitnetAppBar(
+                  hasBackButton: false,
+                  buttonType: ButtonType.transparent,
+                  text: "Change Amount",
+                  context: context,
+                ),
+                body: SingleChildScrollView(
+                  child: CreateInvoice(
+                    satController: controller.satControllerCombined,
+                    btcController: controller.btcControllerCombined,
+                  ),
+                ),
+                context: context,
+              ),
+            );
           }
 
           // Update the state for Lightning logic
@@ -92,22 +118,30 @@ class _AmountSpecifierListTileState extends State<AmountSpecifierListTile> {
             ),
             const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              receiveType == ReceiveType.Lightning_b11
-                  ? (controller.satController.text == "0" ||
-                  controller.satController.text.isEmpty
-                  ? L10n.of(context)!.changeAmount
-                  : controller.satController.text)
-                  : (controller.satControllerOnChain.text == "0" ||
-                  controller.satControllerOnChain.text.isEmpty
-                  ? "Change Amount"
-                  : controller.satControllerOnChain.text),
+              receiveType == ReceiveType.Combined_b11_taproot
+                  ? (controller.satControllerCombined.text == "0" ||
+                          controller.satControllerCombined.text.isEmpty
+                      ? L10n.of(context)!.changeAmount
+                      : controller.satControllerCombined.text)
+                  : receiveType == ReceiveType.Lightning_b11
+                      ? (controller.satController.text == "0" ||
+                              controller.satController.text.isEmpty
+                          ? L10n.of(context)!.changeAmount
+                          : controller.satController.text)
+                      : (controller.satControllerOnChain.text == "0" ||
+                              controller.satControllerOnChain.text.isEmpty
+                          ? "Change Amount"
+                          : controller.satControllerOnChain.text),
             ),
             if ((receiveType == ReceiveType.Lightning_b11 &&
-                controller.satController.text != "0" &&
-                controller.satController.text.isNotEmpty) ||
+                    controller.satController.text != "0" &&
+                    controller.satController.text.isNotEmpty) ||
                 (receiveType != ReceiveType.Lightning_b11 &&
                     controller.satControllerOnChain.text != "0" &&
-                    controller.satControllerOnChain.text.isNotEmpty))
+                    controller.satControllerOnChain.text.isNotEmpty) ||
+                (receiveType == ReceiveType.Combined_b11_taproot &&
+                    controller.satControllerCombined.text != "0" &&
+                    controller.satControllerCombined.text.isNotEmpty))
               Icon(
                 getCurrencyIcon(BitcoinUnits.SAT.name),
                 color: Theme.of(context).brightness == Brightness.light

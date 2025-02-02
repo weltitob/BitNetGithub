@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/informationwidget.dart';
@@ -10,6 +11,8 @@ import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart';
 
 class FearAndGreed extends StatefulWidget {
   const FearAndGreed({super.key});
@@ -37,6 +40,8 @@ class _FearAndGreedState extends State<FearAndGreed> {
   FearGearChartModel fearGearChartModel = FearGearChartModel();
 
   getFearChart() async {
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
     var dio = Dio();
     try {
       setState(() {
@@ -55,7 +60,9 @@ class _FearAndGreedState extends State<FearAndGreed> {
         fearGearChartModel = FearGearChartModel.fromJson(response.data);
         if (fearGearChartModel.lastUpdated != null) {
           DateTime dateTime =
-              DateTime.parse(fearGearChartModel.lastUpdated!.humanDate!);
+              DateTime.parse(fearGearChartModel.lastUpdated!.humanDate!)
+                  .toUtc()
+                  .add(Duration(milliseconds: loc.currentTimeZone.offset));
           formattedDate = DateFormat('d MMMM yyyy').format(dateTime);
         }
         setState(() {
@@ -75,7 +82,7 @@ class _FearAndGreedState extends State<FearAndGreed> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvoked: (bool) {
-        if(bool) {
+        if (bool) {
           context.pop();
         }
       },
@@ -102,7 +109,11 @@ class _FearAndGreedState extends State<FearAndGreed> {
                     children: [
                       const SizedBox(height: AppTheme.cardPadding * 3),
                       Align(
-                        alignment: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? Alignment.topRight : Alignment.topCenter : Alignment.topLeft,
+                        alignment: (fearGearChartModel.fgi!.now!.value! >= 25)
+                            ? (fearGearChartModel.fgi!.now!.value! > 75)
+                                ? Alignment.topRight
+                                : Alignment.topCenter
+                            : Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(
                               left: AppTheme.cardPadding,
@@ -119,7 +130,16 @@ class _FearAndGreedState extends State<FearAndGreed> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge
-                                      ?.copyWith(color: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? AppTheme.successColor : AppTheme.colorBitcoin : AppTheme.errorColor),
+                                      ?.copyWith(
+                                          color: (fearGearChartModel
+                                                      .fgi!.now!.value! >=
+                                                  25)
+                                              ? (fearGearChartModel
+                                                          .fgi!.now!.value! >
+                                                      75)
+                                                  ? AppTheme.successColor
+                                                  : AppTheme.colorBitcoin
+                                              : AppTheme.errorColor),
                                 ),
                               ],
                             ),
@@ -128,7 +148,8 @@ class _FearAndGreedState extends State<FearAndGreed> {
                       ),
                       Center(
                         child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: AnimatedRadialGauge(
                               duration: const Duration(seconds: 1),
                               curve: Curves.elasticOut,
@@ -143,11 +164,20 @@ class _FearAndGreedState extends State<FearAndGreed> {
                                 degrees: 180,
                                 style: GaugeAxisStyle(
                                   thickness: 20,
-                                  background: Theme.of(context).brightness == Brightness.dark ? AppTheme.white70 : AppTheme.black60,
+                                  background: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? AppTheme.white70
+                                      : AppTheme.black60,
                                   segmentSpacing: 4,
                                 ),
                                 progressBar: GaugeProgressBar.rounded(
-                                    color: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? AppTheme.successColor : AppTheme.colorBitcoin : AppTheme.errorColor,
+                                  color: (fearGearChartModel.fgi!.now!.value! >=
+                                          25)
+                                      ? (fearGearChartModel.fgi!.now!.value! >
+                                              75)
+                                          ? AppTheme.successColor
+                                          : AppTheme.colorBitcoin
+                                      : AppTheme.errorColor,
                                 ),
                               ),
                               builder: (context, child, value) =>
@@ -160,7 +190,9 @@ class _FearAndGreedState extends State<FearAndGreed> {
                       Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.cardPadding),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing,
+                                vertical: AppTheme.cardPadding),
                             child: Text(
                                 '${L10n.of(context)!.lastUpdated} $formattedDate'),
                           )),
@@ -169,7 +201,10 @@ class _FearAndGreedState extends State<FearAndGreed> {
                       ),
                     ],
                   ),
-                  const InformationWidget(title: "Information", description: "The Fear and Greed Index is a tool used to measure the overall sentiment of investors in the stock market. It gauges whether the market is driven more by fear or greed at any given time."),
+                  const InformationWidget(
+                      title: "Information",
+                      description:
+                          "The Fear and Greed Index is a tool used to measure the overall sentiment of investors in the stock market. It gauges whether the market is driven more by fear or greed at any given time."),
                 ],
               ),
       ),

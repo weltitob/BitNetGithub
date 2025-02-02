@@ -2,6 +2,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/pages/wallet/actions/send/bip21_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
@@ -65,10 +66,12 @@ class SendBTCScreen extends GetWidget<SendsController> {
             Obx(
               () => Expanded(
                 child: controller.initializedValues.value
-                    ? (controller.sendType == SendType.Invoice ||
-                            controller.sendType == SendType.LightningUrl)
-                        ?  LightningSendTab()
-                        :  OnChainSendTab()
+                    ? controller.sendType == SendType.Bip21
+                        ? Bip21SendTab()
+                        : (controller.sendType == SendType.Invoice ||
+                                controller.sendType == SendType.LightningUrl)
+                            ? LightningSendTab()
+                            : OnChainSendTab()
                     : dotProgress(context),
               ),
             ),

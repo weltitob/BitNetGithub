@@ -5,10 +5,12 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -20,10 +22,14 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:timezone/timezone.dart' as tz;
 
 // Removed unnecessary empty import
 
@@ -38,7 +44,6 @@ class MnemonicController extends State<MnemonicGen> {
   late String code;
   late String issuer;
   late String did;
-
 
   bool hasWrittenDown = false;
   bool isLoadingSignUp = false;
@@ -88,9 +93,7 @@ class MnemonicController extends State<MnemonicGen> {
       print("Mnemonic: $mnemonic");
       print("Mnemonic sentence: ${mnemonic.sentence}");
 
-
       mnemonicString = mnemonic.sentence;
-
 
       // Gene rate 256-bit entropy and create a mnemonic via api
 
@@ -119,16 +122,14 @@ class MnemonicController extends State<MnemonicGen> {
       String? masterPrivateKey = await hdWallet.privkey;
       logger.i('Master Private Key: $masterPrivateKey\n');
 
-
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
-      final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
+      final privateData =
+          PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
 
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
       logger.i("User registration and setup completed.");
-
-
     } catch (e) {
       logger.e("Error in generateMnemonic: $e");
       // Handle errors (e.g., show user-friendly error message)
@@ -147,7 +148,6 @@ class MnemonicController extends State<MnemonicGen> {
       overlayController.showOverlay(L10n.of(context)!.mnemonicCorrect,
           color: AppTheme.successColor);
       bool signUpBool = await signUp();
-
     } else {
       // Implement error throw
       overlayController.showOverlay(L10n.of(context)!.mnemonicInCorrect,
@@ -194,7 +194,8 @@ class MnemonicController extends State<MnemonicGen> {
         receiver: userdata.did,
       );
 
-      final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+      final UserData? currentuserwallet =
+          await firebaseAuthentication(userdata, verificationCode);
 
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -215,15 +216,23 @@ class MnemonicController extends State<MnemonicGen> {
           Provider.of<CountryProvider>(context, listen: false);
       countryProvider
           .setCountryInDatabase(countryProvider.getCountry() ?? "US");
-
+      try {
+        final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+        tz.Location loc = tz.getLocation(currentTimeZone);
+        TimezoneProvider timezoneProvider =
+            Provider.of<TimezoneProvider>(context, listen: false);
+        timezoneProvider.setTimezoneInDatabase(loc);
+      } catch (e) {
+        logger.e("could not determine position: ${e}");
+      }
       WidgetsBinding.instance
           .addPostFrameCallback(ThemeController.of(context).loadData);
 
       logger.i("Navigating to homescreen now...");
 
-      context.go(Uri(path: '/authhome/pinverification/createaccount').toString());
+      context
+          .go(Uri(path: '/authhome/pinverification/createaccount').toString());
       return true;
-
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       setState(() {
@@ -233,13 +242,8 @@ class MnemonicController extends State<MnemonicGen> {
       throw Exception(
         "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.",
       );
-
     } catch (e) {
-
-
       logger.e("Error trying to call signUp in mnemonicgen.dart: $e");
-
-
 
       setState(() {
         isLoadingSignUp = false;

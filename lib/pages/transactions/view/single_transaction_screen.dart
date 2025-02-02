@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -29,6 +30,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart';
 
 class SingleTransactionScreen extends StatefulWidget {
   const SingleTransactionScreen({Key? key}) : super(key: key);
@@ -60,6 +62,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
     if (!Get.isRegistered<WalletsController>()) {
       Get.put(WalletsController());
     }
@@ -530,8 +534,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
-                                                    ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
+                                                    '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))}'
+                                                    ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))})',
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: Theme.of(context)

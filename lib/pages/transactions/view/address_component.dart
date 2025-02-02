@@ -3,6 +3,7 @@
 import 'dart:math' as math;
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -24,6 +25,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart';
 
 class AddressComponent extends StatelessWidget {
   const AddressComponent({super.key});
@@ -32,7 +35,8 @@ class AddressComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
     final overlayController = Get.find<OverlayController>();
-
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
 
     return bitnetScaffold(
         context: context,
@@ -54,19 +58,18 @@ class AddressComponent extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                            height: 200,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child:
-                            Obx(() {
-                              return BalanceCardBtc(
-                                balance: '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}',
-                                unconfirmedBalance: '',
-                                confirmedBalance: '',
-                                defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
-                              );
-                            }),
-
+                          height: 200,
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Obx(() {
+                            return BalanceCardBtc(
+                              balance:
+                                  '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}',
+                              unconfirmedBalance: '',
+                              confirmedBalance: '',
+                              defaultUnit: BitcoinUnits
+                                  .SAT, // You can adjust this as needed
+                            );
+                          }),
                         ),
                         BitNetListTile(
                           text: L10n.of(context)!.address,
@@ -234,6 +237,11 @@ class AddressComponent extends StatelessWidget {
                                                               .blockTime!
                                                               .toInt() *
                                                           1000)
+                                                  .toUtc()
+                                                  .add(Duration(
+                                                      milliseconds: loc
+                                                          .currentTimeZone
+                                                          .offset))
                                                   .toString();
                                           int value = controller
                                               .calculateAddressValue(controller
@@ -279,45 +287,45 @@ class AddressComponent extends StatelessWidget {
                                                   },
                                                   child: TransactionItem(
                                                       data: TransactionItemData(
-                                                        timestamp: controller
-                                                                .subTransactionModel[
-                                                                    index]
-                                                                .locktime ??
-                                                            0,
-                                                        type: TransactionType
-                                                            .onChain,
-                                                        direction:
-                                                            TransactionDirection
-                                                                .received,
-                                                        receiver: controller
+                                                    timestamp: controller
                                                             .subTransactionModel[
                                                                 index]
-                                                            .txid
-                                                            .toString(),
-                                                        txHash: controller
+                                                            .locktime ??
+                                                        0,
+                                                    type:
+                                                        TransactionType.onChain,
+                                                    direction:
+                                                        TransactionDirection
+                                                            .received,
+                                                    receiver: controller
+                                                        .subTransactionModel[
+                                                            index]
+                                                        .txid
+                                                        .toString(),
+                                                    txHash: controller
+                                                        .subTransactionModel[
+                                                            index]
+                                                        .hashCode
+                                                        .toString(),
+                                                    amount: '0',
+                                                    fee: controller
                                                             .subTransactionModel[
                                                                 index]
-                                                            .hashCode
-                                                            .toString(),
-                                                        amount: '0',
-                                                        fee: controller
+                                                            .fee ??
+                                                        0,
+                                                    status: controller
                                                                 .subTransactionModel[
                                                                     index]
-                                                                .fee ??
-                                                            0,
-                                                        status: controller
-                                                                    .subTransactionModel[
-                                                                        index]
-                                                                    .status
-                                                                    ?.confirmed ??
-                                                                false
-                                                            ? TransactionStatus
-                                                                .confirmed
-                                                            : TransactionStatus
-                                                                .failed,
+                                                                .status
+                                                                ?.confirmed ??
+                                                            false
+                                                        ? TransactionStatus
+                                                            .confirmed
+                                                        : TransactionStatus
+                                                            .failed,
 
-                                                        // other properties
-                                                      )),
+                                                    // other properties
+                                                  )),
                                                 )
                                               : const SizedBox();
                                         });

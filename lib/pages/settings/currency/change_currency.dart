@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/supported_currencies.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
@@ -51,7 +52,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late Map<String, String> currenciesModel = supportedCurrencies;
- 
+
   TextEditingController search = TextEditingController();
 
   @override
@@ -67,7 +68,9 @@ class _DashboardPageState extends State<DashboardPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: AppTheme.elementSpacing,),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
               SearchFieldWidget(
                   hintText: lang!.searchC,
                   isSearchEnabled: true,
@@ -136,12 +139,14 @@ class _DashboardPageState extends State<DashboardPage> {
         style: Theme.of(context).textTheme.titleMedium,
       ),
       selected: key == selectedCurrency,
-      onTap: () { 
-
+      onTap: () {
         Provider.of<CurrencyChangeProvider>(context, listen: false)
             .setFirstCurrencyInDatabase(
           key,
         );
+        if (Get.isRegistered<BitcoinController>()) {
+          Get.find<BitcoinController>().getChartLine(key);
+        }
       },
     );
   }

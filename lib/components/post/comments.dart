@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:timezone/timezone.dart';
 
 class Comments extends StatefulWidget {
   final String postId;
@@ -58,30 +60,28 @@ class CommentsState extends State<Comments> {
     bool isNotPostOwner = postOwnerId != currentUser;
     final getCurrentUserData = Provider.of<UserData>(context, listen: false);
 
-      UserData user = getCurrentUserData;
+    UserData user = getCurrentUserData;
+    commentsRef.doc(postId).collection('comments').add({
+      'username': user.username,
+      'comment': commentController.text,
+      'timestamp': DateTime.now(),
+      'avatarUrl': user.profileImageUrl,
+      'userId': user.did,
+      'nft_profile_id': user.nft_profile_id
+    });
 
-      commentsRef.doc(postId).collection('comments').add({
+    if (isNotPostOwner) {
+      activityFeedRef.doc(postOwnerId).collection('feedItems').add({
+        'type': 'comment',
+        'commentData': commentController.text,
         'username': user.username,
-        'comment': commentController.text,
-        'timestamp': DateTime.now(),
-        'avatarUrl': user.profileImageUrl,
         'userId': user.did,
+        'userProfileImg': user.profileImageUrl,
+        'postId': postId,
+        'timestamp': DateTime.now(),
         'nft_profile_id': user.nft_profile_id
       });
-
-      if (isNotPostOwner) {
-        activityFeedRef.doc(postOwnerId).collection('feedItems').add({
-          'type': 'comment',
-          'commentData': commentController.text,
-          'username': user.username,
-          'userId': user.did,
-          'userProfileImg': user.profileImageUrl,
-          'postId': postId,
-          'timestamp': DateTime.now(),
-                  'nft_profile_id': user.nft_profile_id
-
-        });
-      }
+    }
 
     commentController.clear();
   }
@@ -130,18 +130,19 @@ class CommentsState extends State<Comments> {
           child: Row(
             children: [
               Avatar(
-                mxContent: Uri.parse(""),
-                profileId: currentuseruid,
-                size: AppTheme.cardPadding * 2,
-                fontSize: 18,
-                onTap: () => print('tapped'),
-                isNft: false
-              ),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2 )),
+                  mxContent: Uri.parse(""),
+                  profileId: currentuseruid,
+                  size: AppTheme.cardPadding * 2,
+                  fontSize: 18,
+                  onTap: () => print('tapped'),
+                  isNft: false),
+              const Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing / 2)),
               Expanded(
                 child: GlassContainer(
                   child: Container(
-                    height: AppTheme.cardPadding.h *  2,
+                    height: AppTheme.cardPadding.h * 2,
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.elementSpacing,
                     ),
@@ -150,12 +151,14 @@ class CommentsState extends State<Comments> {
                         const SizedBox(width: AppTheme.elementSpacing),
                         Expanded(
                           child: TextField(
-                            controller: commentController,
-                            decoration: AppTheme.textfieldDecoration("Write a comment...", context)
-                          ),
+                              controller: commentController,
+                              decoration: AppTheme.textfieldDecoration(
+                                  "Write a comment...", context)),
                         ),
-                        TextFieldButton(iconData: Icons.arrow_upward_rounded,
-                          onTap: () => addComment(),)
+                        TextFieldButton(
+                          iconData: Icons.arrow_upward_rounded,
+                          onTap: () => addComment(),
+                        )
                       ],
                     ),
                   ),
@@ -177,14 +180,13 @@ class Comment extends StatelessWidget {
   final Timestamp timestamp;
   final bool isNft;
 
-  const Comment({
-    required this.username,
-    required this.userId,
-    required this.avatarUrl,
-    required this.comment,
-    required this.timestamp,
-    required this.isNft
-  });
+  const Comment(
+      {required this.username,
+      required this.userId,
+      required this.avatarUrl,
+      required this.comment,
+      required this.timestamp,
+      required this.isNft});
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
     return Comment(
@@ -216,10 +218,7 @@ class Comment extends StatelessWidget {
                 ]),
           ),
           leading: Avatar(
-              profileId: userId,
-              mxContent: Uri.parse(avatarUrl),
-              isNft: isNft
-          ),
+              profileId: userId, mxContent: Uri.parse(avatarUrl), isNft: isNft),
           subtitle: RichText(
             text: TextSpan(
                 style: const TextStyle(

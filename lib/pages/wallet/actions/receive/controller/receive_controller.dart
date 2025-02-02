@@ -16,8 +16,8 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 
 enum ReceiveType {
   Combined_b11_taproot,
@@ -33,6 +33,7 @@ class ReceiveController extends BaseController {
   RxBool isUnlocked = true.obs; // Added here
 
   RxString qrCodeDataStringLightning = "".obs;
+  RxString qrCodeDataStringLightningCombined = "".obs;
   RxString qrCodeDataStringOnchain = "".obs;
   Rx<BitcoinUnits> bitcoinUnit = BitcoinUnits.SAT.obs;
 
@@ -47,6 +48,11 @@ class ReceiveController extends BaseController {
 
   TextEditingController satControllerOnChain = TextEditingController(text: '0');
   TextEditingController btcControllerOnChain = TextEditingController(text: '0');
+
+  TextEditingController satControllerCombined =
+      TextEditingController(text: '0');
+  TextEditingController btcControllerCombined =
+      TextEditingController(text: '0');
 
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
@@ -93,13 +99,15 @@ class ReceiveController extends BaseController {
         ? amount = amount
         : amount =
             CurrencyConverter.convertBitcoinToSats(amount.toDouble()).toInt();
-    try{
-      List<String> addresses = await Get.find<WalletsController>().getOnchainAddresses();
+    try {
+      List<String> addresses =
+          await Get.find<WalletsController>().getOnchainAddresses();
       final btcAddress = addresses[0];
       logger.i("BTC Address: $btcAddress");
 
       final preimage = generatePreimage();
-      RestResponse callback = await addInvoice(amount, memo ?? "", btcAddress, preimage);
+      RestResponse callback =
+          await addInvoice(amount, memo ?? "", btcAddress, preimage);
       logger.i("Response addInvoice" + callback.data.toString());
       InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
       logger.i("Invoice: " + invoiceModel.payment_request.toString());
@@ -130,14 +138,70 @@ class ReceiveController extends BaseController {
 
           // Set or update the document
           await invoiceRef.set(data, SetOptions(merge: true));
-          logger.i("Invoice saved to Firestore with ID: ${invoiceModel
-              .payment_request}");
+          logger.i(
+              "Invoice saved to Firestore with ID: ${invoiceModel.payment_request}");
         }
-      } catch (e){
+      } catch (e) {
         logger.e("Error saving invoice to Firestore: $e");
       }
+    } catch (e) {
+      logger.e("Error getting invoice: $e");
+    }
+  }
 
-    } catch(e){
+  void getInvoiceCombined(int amount, String? memo) async {
+    logger.i("Getting invoice: $amount");
+    bitcoinUnit == BitcoinUnits.SAT
+        ? amount = amount
+        : amount =
+            CurrencyConverter.convertBitcoinToSats(amount.toDouble()).toInt();
+    try {
+      List<String> addresses =
+          await Get.find<WalletsController>().getOnchainAddresses();
+      final btcAddress = addresses[0];
+      logger.i("BTC Address: $btcAddress");
+
+      final preimage = generatePreimage();
+      RestResponse callback =
+          await addInvoice(amount, memo ?? "", btcAddress, preimage);
+      logger.i("Response addInvoice" + callback.data.toString());
+      InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
+      logger.i("Invoice: " + invoiceModel.payment_request.toString());
+      qrCodeDataStringLightningCombined.value =
+          invoiceModel.payment_request.toString();
+
+      try {
+        // Update Firebase with new invoice
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null) {
+          final userId = currentUser.uid;
+
+          // Reference to the "allInvoices" collection
+          final invoiceRef = FirebaseFirestore.instance
+              .collection("allInvoices")
+              .doc(invoiceModel.payment_request.toString());
+
+          // Example data to store
+          final base64preimage = base64Encode(preimage);
+          logger.i("Base64 preimage for firebase...: $base64preimage");
+
+          final data = {
+            "userId": userId,
+            "preimage": base64preimage,
+            "fallbackAddress": btcAddress,
+            "createdAt": FieldValue.serverTimestamp(),
+            "invoice": invoiceModel.toMap(),
+          };
+
+          // Set or update the document
+          await invoiceRef.set(data, SetOptions(merge: true));
+          logger.i(
+              "Invoice saved to Firestore with ID: ${invoiceModel.payment_request}");
+        }
+      } catch (e) {
+        logger.e("Error saving invoice to Firestore: $e");
+      }
+    } catch (e) {
       logger.e("Error getting invoice: $e");
     }
   }
@@ -160,6 +224,50 @@ class ReceiveController extends BaseController {
     logger.i("Set new receive type: $type");
   }
 
+  void tapGenerateInvoice(TextEditingController controller) {
+    if (receiveType.value == ReceiveType.Lightning_b11) {
+      getInvoice((double.parse(controller.text)).toInt(), "");
+    } else if (receiveType.value == ReceiveType.OnChain_segwit ||
+        receiveType.value == ReceiveType.OnChain_taproot) {
+      getBtcAddress();
+    } else if (receiveType.value == ReceiveType.Combined_b11_taproot) {
+      getBtcAddress();
+      getInvoiceCombined((double.parse(controller.text)).toInt(), "");
+    }
+  }
+
+  Future<void> copyAddress() async {
+    if (receiveType == ReceiveType.Lightning_b11) {
+      // Logic for Lightning
+      final qrCodeData = qrCodeDataStringLightning.value;
+      logger.i('Lightning QR Data: $qrCodeData');
+      await Clipboard.setData(ClipboardData(text: qrCodeData));
+    } else if (receiveType == ReceiveType.OnChain_taproot ||
+        receiveType == ReceiveType.OnChain_segwit) {
+      // Logic for Onchain
+      logger.i('BTC Amount: ${btcControllerOnChain.text}');
+      double? btcAmount = double.tryParse(btcControllerOnChain.text);
+      logger.i('Parsed BTC Amount: $btcAmount');
+
+      final addressData = btcAmount != null && btcAmount > 0
+          ? 'bitcoin:${qrCodeDataStringOnchain.value}?amount=${btcAmount}'
+          : qrCodeDataStringOnchain.value;
+
+      await Clipboard.setData(ClipboardData(text: addressData));
+    } else if (receiveType == ReceiveType.Combined_b11_taproot) {
+      // Logic for Combined
+      final lightningInvoice = qrCodeDataStringLightningCombined.value;
+      final onChainAddress = qrCodeDataStringOnchain.value;
+      String bip21Data = "bitcoin:$onChainAddress?lightning=$lightningInvoice";
+      double? btcAmount = double.tryParse(btcControllerCombined.text);
+      if (btcAmount != null && btcAmount > 0) {
+        bip21Data =
+            "bitcoin:$onChainAddress?amount=$btcAmount?lightning=$lightningInvoice";
+      }
+      logger.i('Combined QR Data: $bip21Data');
+      await Clipboard.setData(ClipboardData(text: bip21Data));
+    }
+  }
 
   @override
   void onInit() {

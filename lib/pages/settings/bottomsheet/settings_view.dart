@@ -19,6 +19,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
@@ -98,7 +99,6 @@ class SettingsView extends StatelessWidget {
               BitNetListTile(
                 leading: RoundedButtonWidget(
                   iconData: Icons.language,
-
                   onTap: () {
                     controller.switchTab('language');
                   },
@@ -112,6 +112,24 @@ class SettingsView extends StatelessWidget {
                 ),
                 onTap: () {
                   controller.switchTab('language');
+                },
+              ),
+              BitNetListTile(
+                leading: RoundedButtonWidget(
+                  iconData: Icons.access_time_rounded,
+                  onTap: () {
+                    controller.switchTab('timezone');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
+                text: "Change Timezone",
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('timezone');
                 },
               ),
               BitNetListTile(
@@ -159,7 +177,7 @@ class SettingsView extends StatelessWidget {
 
                     // Clear shared preferences if used
                     SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
+                        await SharedPreferences.getInstance();
                     await prefs.remove('theme_mode');
                     await prefs.remove('primary_color');
                     final profile_controller = Get.put(ProfileController());

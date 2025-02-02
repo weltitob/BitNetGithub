@@ -26,67 +26,82 @@ class OnChainSendTab extends GetWidget<SendsController> {
   @override
   Widget build(BuildContext context) {
     LoggerService logger = Get.find();
-    return Form(
-      key: controller.formKey,
-      child: Stack(
-        children: [
-          ListView(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height -
-                    AppTheme.cardPadding * 7.5,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: <Widget>[
-                        userTile(context),
-                        // A SizedBox widget with a height of AppTheme.cardPadding * 2
-                        const SizedBox(
-                          height: AppTheme.cardPadding * 6,
-                        ),
-                        // A Center widget with a child of bitcoinWidget()
-                        Center(child: bitcoinWidget(context)),
-                        const SizedBox(
-                          height: AppTheme.cardPadding * 5,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.cardPadding),
-                          child: Obx(
-                            () => Text(
-                              controller.description.value.isEmpty
-                                  ? ""
-                                  : ',,${controller.description}"',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(),
-                              textAlign: TextAlign.center,
+    return Padding(
+      padding: EdgeInsets.only(
+          top: controller.sendType == SendType.Bip21 ? 0 : kToolbarHeight),
+      child: Form(
+        key: controller.formKey,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  userTile(context),
+                  ListView(
+                    shrinkWrap: true,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height -
+                            AppTheme.cardPadding * 7.5,
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: <Widget>[
+                                // A SizedBox widget with a height of AppTheme.cardPadding * 2
+                                const SizedBox(
+                                  height: AppTheme.cardPadding * 2,
+                                ),
+                                // A Center widget with a child of bitcoinWidget()
+                                Center(child: bitcoinWidget(context)),
+                                const SizedBox(
+                                  height: AppTheme.cardPadding * 5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: AppTheme.cardPadding),
+                                  child: Obx(
+                                    () => Text(
+                                      controller.description.value.isEmpty
+                                          ? ""
+                                          : ',,${controller.description}"',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                feesWidget(context),
+                              ],
                             ),
-                          ),
+                            // A Padding widget that contains a button widget
+                          ],
                         ),
-                        feesWidget(context),
-                      ],
-                    ),
-
-                    // A Padding widget that contains a button widget
-                  ],
-                ),
+                      ),
+                      SizedBox(height: 100)
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-          BottomCenterButton(
-            buttonTitle: L10n.of(context)!.sendNow,
-            buttonState: (controller.loadingSending.value == true)
-                ? ButtonState.loading
-                : ButtonState.idle,
-            onButtonTap: () async {
-              await controller.sendBTC(context);
-            },
-          )
-        ],
+            ),
+            BottomCenterButton(
+              buttonTitle: L10n.of(context)!.sendNow,
+              buttonState: (controller.loadingSending.value == true)
+                  ? ButtonState.loading
+                  : ButtonState.idle,
+              onButtonTap: () async {
+                if (controller.sendType == SendType.Bip21) {
+                  await controller.sendBip21BTC(context, true);
+                } else {
+                  await controller.sendBTC(context);
+                }
+              },
+            )
+          ],
+        ),
       ),
     );
   }

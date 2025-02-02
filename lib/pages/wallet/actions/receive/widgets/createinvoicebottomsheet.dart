@@ -9,10 +9,13 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class CreateInvoice extends GetWidget<ReceiveController> {
-  bool onChain;
-  CreateInvoice({this.onChain = false});
+  final TextEditingController satController;
+  final TextEditingController btcController;
+  CreateInvoice({
+    required this.satController,
+    required this.btcController,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -33,13 +36,13 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             child: AmountWidget(
               context: context,
               bitcoinUnit: controller.bitcoinUnit.value,
-              enabled: ()=>true,
-              btcController: onChain ? controller.btcControllerOnChain : controller.btcController,
-              satController:  onChain ? controller.satControllerOnChain : controller.satController,
+              enabled: () => true,
+              btcController: btcController,
+              satController: satController,
               currController: controller.currController,
               autoConvert: true,
               focusNode: controller.myFocusNode,
-                swapped: Get.find<WalletsController>().reversed.value,
+              swapped: Get.find<WalletsController>().reversed.value,
             ),
           );
         }),
@@ -60,19 +63,8 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             title: L10n.of(context)!.generateInvoice,
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
-             controller.getBtcAddress();
-
-              if(onChain){
-                controller.getInvoice(
-                    (double.parse(controller.satControllerOnChain.text)).toInt(), "");
-              } else {
-                controller.getInvoice(
-                    (double.parse(controller.satController.text)).toInt(), "");
-              }
-
+              controller.tapGenerateInvoice(satController);
               context.pop(true);
-
-
             })
       ],
     );
