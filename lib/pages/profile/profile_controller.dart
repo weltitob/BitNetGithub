@@ -13,6 +13,7 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
+import 'package:bitnet/components/tabs/likeviewtab.dart';
 import 'package:bitnet/components/tabs/rowviewtab.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
@@ -89,10 +90,11 @@ class ProfileController extends BaseController {
     fetchTaprootAssets();
     scrollController = ScrollController();
     pages = [
-      const ColumnViewTab(),
+      ColumnViewTab(),
       RowViewTab(),
       NotificationsWidget(),
-      const EditProfileTab(),
+      LikeViewTab(),
+      EditProfileTab(),
     ];
   }
 

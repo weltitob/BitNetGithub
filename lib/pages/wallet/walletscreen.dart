@@ -525,9 +525,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   },
                                                   // image: "assets/images/send_image.png",
                                                   width: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   height: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   fallbackIcon: Icons
                                                       .arrow_upward_rounded,
                                                 ),
@@ -540,9 +540,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   },
                                                   // image: "assets/images/receive_image.png",
                                                   width: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   height: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   fallbackIcon: Icons
                                                       .arrow_downward_rounded,
                                                 ),
@@ -555,9 +555,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   },
                                                   // image: "assets/images/rebalance_image.png",
                                                   width: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   height: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   fallbackIcon:
                                                       Icons.sync_rounded,
                                                 ),
@@ -570,9 +570,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   },
                                                   // image: "assets/images/send_image.png",
                                                   width: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   height: AppTheme.cardPadding *
-                                                      2.5.w,
+                                                      2.5.h,
                                                   fallbackIcon:
                                                       FontAwesomeIcons.btc,
                                                   fallbackIconSize:
