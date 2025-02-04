@@ -71,8 +71,8 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
     final logger = Get.find<LoggerService>();
 
     return Obx(() {
-
-      print("ReceiveType detected in receive_qr.dart: ${controller.receiveType.value}");
+      print(
+          "ReceiveType detected in receive_qr.dart: ${controller.receiveType.value}");
 
       switch (controller.receiveType.value) {
         case ReceiveType.Lightning_b11:
@@ -91,10 +91,10 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
   }
 
   Widget _buildLightningQr(
-      BuildContext context,
-      ReceiveController controller,
-      OverlayController overlayController,
-      ) {
+    BuildContext context,
+    ReceiveController controller,
+    OverlayController overlayController,
+  ) {
     return GestureDetector(
       onTap: () async {
         await Clipboard.setData(
@@ -109,9 +109,10 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
             child: Column(
               children: [
                 CustomPaint(
-                  foregroundPainter: Theme.of(context).brightness == Brightness.light
-                      ? BorderPainterBlack()
-                      : BorderPainter(),
+                  foregroundPainter:
+                      Theme.of(context).brightness == Brightness.light
+                          ? BorderPainterBlack()
+                          : BorderPainter(),
                   child: Container(
                     margin: const EdgeInsets.all(AppTheme.cardPadding),
                     decoration: BoxDecoration(
@@ -121,15 +122,17 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                     child: Padding(
                       padding: EdgeInsets.all(AppTheme.cardPadding / 1.25),
                       child: Obx(
-                            () => PrettyQrView.data(
-                          data: "lightning:${controller.qrCodeDataStringLightning}",
+                        () => PrettyQrView.data(
+                          data:
+                              "lightning:${controller.qrCodeDataStringLightning}",
                           decoration: PrettyQrDecoration(
                             shape: const PrettyQrSmoothSymbol(roundFactor: 1),
                             image: PrettyQrDecorationImage(
                               image: isImageLoaded
                                   ? MemoryImage(avatarImage) as ImageProvider
-                                  : const AssetImage('assets/images/lightning.png')
-                              as ImageProvider,
+                                  : const AssetImage(
+                                          'assets/images/lightning.png')
+                                      as ImageProvider,
                             ),
                           ),
                         ),
@@ -158,10 +161,10 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
   }
 
   Widget _buildLNURLQr(
-      BuildContext context,
-      ReceiveController controller,
-      OverlayController overlayController,
-      ) {
+    BuildContext context,
+    ReceiveController controller,
+    OverlayController overlayController,
+  ) {
     return GestureDetector(
       onTap: () async {
         await Clipboard.setData(
@@ -176,9 +179,10 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
             child: Column(
               children: [
                 CustomPaint(
-                  foregroundPainter: Theme.of(context).brightness == Brightness.light
-                      ? BorderPainterBlack()
-                      : BorderPainter(),
+                  foregroundPainter:
+                      Theme.of(context).brightness == Brightness.light
+                          ? BorderPainterBlack()
+                          : BorderPainter(),
                   child: Container(
                     margin: const EdgeInsets.all(AppTheme.cardPadding),
                     decoration: BoxDecoration(
@@ -188,15 +192,16 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                     child: Padding(
                       padding: EdgeInsets.all(AppTheme.cardPadding / 1.25),
                       child: Obx(
-                            () => PrettyQrView.data(
+                        () => PrettyQrView.data(
                           data: "lightning:${"LNURL"}",
                           decoration: PrettyQrDecoration(
                             shape: const PrettyQrSmoothSymbol(roundFactor: 1),
                             image: PrettyQrDecorationImage(
                               image: isImageLoaded
                                   ? MemoryImage(avatarImage) as ImageProvider
-                                  : const AssetImage('assets/images/lightning.png')
-                              as ImageProvider,
+                                  : const AssetImage(
+                                          'assets/images/lightning.png')
+                                      as ImageProvider,
                             ),
                           ),
                         ),
@@ -224,22 +229,21 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
     );
   }
 
-
   Widget _buildTaprootQr(
-      BuildContext context,
-      ReceiveController controller,
-      OverlayController overlayController,
-      ) {
+    BuildContext context,
+    ReceiveController controller,
+    OverlayController overlayController,
+  ) {
     final globalKeyQR = GlobalKey();
 
     return Obx(
-          () {
+      () {
         final onChainAddress = controller.qrCodeDataStringOnchain.value;
 
         return GestureDetector(
           onTap: () async {
             double? btcAmount =
-            double.tryParse(controller.btcControllerOnChain.text);
+                double.tryParse(controller.btcControllerOnChain.text);
             if (btcAmount != null && btcAmount > 0) {
               await Clipboard.setData(
                 ClipboardData(
@@ -251,7 +255,8 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                 ClipboardData(text: onChainAddress),
               );
             }
-            overlayController.showOverlay(L10n.of(context)!.walletAddressCopied);
+            overlayController
+                .showOverlay(L10n.of(context)!.walletAddressCopied);
           },
           child: SizedBox(
             child: Center(
@@ -263,9 +268,9 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                     children: [
                       CustomPaint(
                         foregroundPainter:
-                        Theme.of(context).brightness == Brightness.light
-                            ? BorderPainterBlack()
-                            : BorderPainter(),
+                            Theme.of(context).brightness == Brightness.light
+                                ? BorderPainterBlack()
+                                : BorderPainter(),
                         child: Container(
                           margin: const EdgeInsets.all(AppTheme.cardPadding),
                           decoration: BoxDecoration(
@@ -279,19 +284,18 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                             child: PrettyQrView.data(
                               data: "bitcoin:$onChainAddress" +
                                   ((double.tryParse(controller
-                                      .btcControllerOnChain
-                                      .text) !=
-                                      null &&
-                                      double.tryParse(controller
-                                          .btcControllerOnChain
-                                          .text)! >
-                                          0)
+                                                  .btcControllerOnChain.text) !=
+                                              null &&
+                                          double.tryParse(controller
+                                                  .btcControllerOnChain.text)! >
+                                              0)
                                       ? '?amount=${double.parse(controller.btcControllerOnChain.text)}'
                                       : ''),
                               decoration: const PrettyQrDecoration(
                                 shape: PrettyQrSmoothSymbol(roundFactor: 1),
                                 image: PrettyQrDecorationImage(
-                                  image: AssetImage('assets/images/bitcoin.png'),
+                                  image:
+                                      AssetImage('assets/images/bitcoin.png'),
                                 ),
                               ),
                               errorCorrectLevel: QrErrorCorrectLevel.H,
@@ -305,8 +309,8 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                         title: L10n.of(context)!.share,
                         leadingIcon: const Icon(Icons.share_rounded),
                         onTap: () {
-                          double? invoiceAmount =
-                          double.tryParse(controller.btcControllerOnChain.text);
+                          double? invoiceAmount = double.tryParse(
+                              controller.btcControllerOnChain.text);
                           if (invoiceAmount != null && invoiceAmount > 0) {
                             Share.share(
                                 'https://${AppTheme.currentWebDomain}/#/wallet/send/bitcoin:$onChainAddress?amount=$invoiceAmount');
@@ -329,18 +333,22 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
   }
 
   Widget _buildCombinedQr(
-      BuildContext context,
-      ReceiveController controller,
-      OverlayController overlayController,
-      ) {
+    BuildContext context,
+    ReceiveController controller,
+    OverlayController overlayController,
+  ) {
     final globalKeyQR = GlobalKey();
 
     final onChainAddress = controller.qrCodeDataStringOnchain.value;
-    final lightningInvoice = controller.qrCodeDataStringLightning.value;
+    final lightningInvoice = controller.qrCodeDataStringLightningCombined.value;
 
-    final combinedBip21Uri =
+    String combinedBip21Uri =
         "bitcoin:$onChainAddress?lightning=$lightningInvoice";
-
+    double? btcAmount = double.tryParse(controller.btcControllerCombined.text);
+    if (btcAmount != null && btcAmount > 0) {
+      combinedBip21Uri =
+          "bitcoin:$onChainAddress?amount=$btcAmount&lightning=$lightningInvoice";
+    }
     return GestureDetector(
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: combinedBip21Uri));
@@ -353,9 +361,10 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
             child: Column(
               children: [
                 CustomPaint(
-                  foregroundPainter: Theme.of(context).brightness == Brightness.light
-                      ? BorderPainterBlack()
-                      : BorderPainter(),
+                  foregroundPainter:
+                      Theme.of(context).brightness == Brightness.light
+                          ? BorderPainterBlack()
+                          : BorderPainter(),
                   child: Container(
                     margin: const EdgeInsets.all(AppTheme.cardPadding),
                     decoration: BoxDecoration(
@@ -363,7 +372,8 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                       borderRadius: AppTheme.cardRadiusBigger,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                      padding:
+                          const EdgeInsets.all(AppTheme.cardPadding / 1.25),
                       child: PrettyQrView.data(
                         data: combinedBip21Uri,
                         decoration: const PrettyQrDecoration(
@@ -383,8 +393,16 @@ class _ReceiveQRCodeState extends State<ReceiveQRCode> {
                   title: L10n.of(context)!.share,
                   leadingIcon: const Icon(Icons.share_rounded),
                   onTap: () {
+                    double? btcAmount =
+                        double.tryParse(controller.btcControllerCombined.text);
+                    String combinedQr =
+                        "bitcoin:$onChainAddress?lightning=$lightningInvoice";
+                    if (btcAmount != null && btcAmount > 0) {
+                      combinedQr =
+                          "bitcoin:$onChainAddress?amount=$btcAmount&lightning=$lightningInvoice";
+                    }
                     Share.share(
-                      'https://${AppTheme.currentWebDomain}/#/wallet/send/$combinedBip21Uri',
+                      'https://${AppTheme.currentWebDomain}/#/wallet/send/$combinedQr',
                     );
                   },
                   buttonType: ButtonType.transparent,

@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -7,10 +8,17 @@ import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:timezone/timezone.dart';
 
 GlobalKey<_HashRealTimeValuesState> hashKey =
     GlobalKey<_HashRealTimeValuesState>();
+var datetime = DateTime.now();
+DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+DateFormat timeFormat = DateFormat("HH:mm");
+String inital_date = dateFormat.format(datetime);
+String inital_time = timeFormat.format(datetime);
 String hashTrackBallValuePrice = "-----.--";
 String hashTrackBallValueTime = "${inital_time}";
 String hashTrackBallValueDate = "${inital_date}";
@@ -50,6 +58,8 @@ class _HashrateChartState extends State<HashrateChart> {
 
   @override
   Widget build(BuildContext context) {
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
     chartData = widget.chartData;
     print('ab ${widget.difficulty.length}');
     double _lastpriceexact =
@@ -62,8 +72,10 @@ class _HashrateChartState extends State<HashrateChart> {
     double _firstpriceexact = chartData.isEmpty ? 0 : chartData[0].price;
     hashTrackBallValuePrice = _lastpricerounded.toString();
     var datetime = DateTime.fromMillisecondsSinceEpoch(
-        (_lastimeeexact * 1000).round(),
-        isUtc: false);
+            (_lastimeeexact * 1000).round(),
+            isUtc: false)
+        .toUtc()
+        .add(Duration(milliseconds: loc.currentTimeZone.offset));
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
 
     String date = dateFormat.format(datetime);
@@ -79,115 +91,125 @@ class _HashrateChartState extends State<HashrateChart> {
             margin:
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: HashRealTimeValues(key: hashKey)),
+        widget.chartData.isEmpty
+            ? SizedBox(
+                height: AppTheme.cardPadding * 16, child: dotProgress(context))
+            : SizedBox(
+                height: AppTheme.cardPadding * 16,
+                child: SfCartesianChart(
+                    trackballBehavior: _trackballBehavior,
+                    onTrackballPositionChanging: (args) {
+                      // Print the y-value of the first series in the trackball.
+                      if (args.chartPointInfo.yPosition != null) {
+                        final pointInfoPrice = args.chartPointInfo.label!;
+                        //final pointInfoTime = double.parse(args.chartPointInfo.header!);
 
-         widget.chartData.isEmpty ? SizedBox(
-              height: AppTheme.cardPadding * 16,
-              child: dotProgress(context)): SizedBox(
-          height: AppTheme.cardPadding * 16,
-          child: SfCartesianChart(
-              trackballBehavior: _trackballBehavior,
-              onTrackballPositionChanging: (args) {
-                // Print the y-value of the first series in the trackball.
-                if (args.chartPointInfo.yPosition != null) {
-                  final pointInfoPrice = args.chartPointInfo.label!;
-                  //final pointInfoTime = double.parse(args.chartPointInfo.header!);
+                        //update for CustomWidget
+                        var datetime = DateTime.fromMillisecondsSinceEpoch(
+                                (chartData[args.chartPointInfo.dataPointIndex!]
+                                            .time *
+                                        1000)
+                                    .round(),
+                                isUtc: false)
+                            .toUtc()
+                            .add(Duration(
+                                milliseconds: loc.currentTimeZone.offset));
+                        DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                        DateFormat timeFormat = DateFormat("HH:mm");
+                        String time = timeFormat.format(datetime);
+                        print(time);
 
-                  //update for CustomWidget
-                  var datetime = DateTime.fromMillisecondsSinceEpoch(
-                      (chartData[args.chartPointInfo.dataPointIndex!].time *
-                              1000)
-                          .round(),
-                      isUtc: false);
-                  DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-                  DateFormat timeFormat = DateFormat("HH:mm");
-                  String time = timeFormat.format(datetime);
-                  print(time);
+                        hashTrackBallValueTime = time.toString();
 
-                  hashTrackBallValueTime = time.toString();
+                        String date = dateFormat.format(datetime);
+                        hashTrackBallValueDate = date.toString();
+                        hashTrackBallValuePrice =
+                            pointInfoPrice.replaceAll('EH/s', '');
+                        double priceChange =
+                            (double.parse(hashTrackBallValuePrice) -
+                                    _firstpriceexact) /
+                                _firstpriceexact;
+                        hashTrackBallValuePricechange = toPercent(priceChange);
+                        hashKey.currentState!.refresh();
+                      }
+                    },
+                    onChartTouchInteractionUp:
+                        (ChartTouchInteractionArgs args) {
+                      //reset to current latest price when selection ends
+                      hashTrackBallValuePrice = _lastpricerounded.toString();
+                      //reset to percent of screen
+                      double priceChange =
+                          (_lastpriceexact - _firstpriceexact) /
+                              _firstpriceexact;
+                      hashTrackBallValuePricechange = toPercent(priceChange);
+                      hashKey.currentState!.refresh();
 
-                  String date = dateFormat.format(datetime);
-                  hashTrackBallValueDate = date.toString();
-                  hashTrackBallValuePrice = pointInfoPrice.replaceAll('EH/s', '');
-                  double priceChange = (double.parse(hashTrackBallValuePrice) -
-                          _firstpriceexact) /
-                      _firstpriceexact;
-                  hashTrackBallValuePricechange = toPercent(priceChange);
-                  hashKey.currentState!.refresh();
-                }
-              },
-              onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
-                //reset to current latest price when selection ends
-                hashTrackBallValuePrice = _lastpricerounded.toString();
-                //reset to percent of screen
-                double priceChange =
-                    (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-                hashTrackBallValuePricechange = toPercent(priceChange);
-                hashKey.currentState!.refresh();
+                      //key.currentState!.refresh();
+                      //reset to date of last value
+                      var datetime = DateTime.fromMillisecondsSinceEpoch(
+                              (_lastimeeexact * 1000).round(),
+                              isUtc: false)
+                          .toUtc()
+                          .add(Duration(
+                              milliseconds: loc.currentTimeZone.offset));
+                      DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                      DateFormat timeFormat = DateFormat("HH:mm");
+                      String time = timeFormat.format(datetime);
 
-                //key.currentState!.refresh();
-                //reset to date of last value
-                var datetime = DateTime.fromMillisecondsSinceEpoch(
-                    (_lastimeeexact * 1000).round(),
-                    isUtc: false);
-                DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-                DateFormat timeFormat = DateFormat("HH:mm");
-                String time = timeFormat.format(datetime);
+                      String date = dateFormat.format(datetime);
+                      hashTrackBallValueDate = date.toString();
+                      hashTrackBallValueTime = time.toString();
+                    },
+                    plotAreaBorderWidth: 0,
+                    enableAxisAnimation: true,
+                    primaryXAxis: DateTimeAxis(
+                      intervalType: DateTimeIntervalType.days,
+                      edgeLabelPlacement: EdgeLabelPlacement.none,
+                      isVisible: false,
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      axisLine: const AxisLine(width: 0),
+                      plotOffset: 0,
+                      edgeLabelPlacement: EdgeLabelPlacement.none,
+                      isVisible: false,
+                      majorGridLines: const MajorGridLines(width: 0),
+                      majorTickLines: const MajorTickLines(width: 0),
+                      numberFormat: NumberFormat.compact(),
+                    ),
+                    series: <CartesianSeries>[
+                      SplineSeries<ChartLine, DateTime>(
+                        name: L10n.of(context)!.hashrate,
+                        enableTooltip: true,
+                        dataSource: widget.chartData,
+                        splineType: SplineType.cardinal,
+                        cardinalSplineTension: 0.7,
+                        animationDuration: 0,
+                        xValueMapper: (ChartLine sales, _) =>
+                            DateTime.fromMillisecondsSinceEpoch(
+                                sales.time.toInt() * 1000,
+                                isUtc: true),
+                        yValueMapper: (ChartLine sales, _) => double.parse(
+                            sales.price.toString().substring(0, 3)),
+                      ),
+                      SplineSeries<Difficulty, DateTime>(
+                        name: L10n.of(context)!.difficulty,
+                        enableTooltip: true,
+                        splineType: SplineType.cardinal,
+                        cardinalSplineTension: 0.3,
+                        animationDuration: 0,
 
-                String date = dateFormat.format(datetime);
-                hashTrackBallValueDate = date.toString();
-                hashTrackBallValueTime = time.toString();
-              },
-              plotAreaBorderWidth: 0,
-              enableAxisAnimation: true,
-              primaryXAxis: DateTimeAxis(
-                intervalType: DateTimeIntervalType.days,
-                edgeLabelPlacement: EdgeLabelPlacement.none,
-                isVisible: false,
-                majorGridLines: const MajorGridLines(width: 0),
+                        dataSource: widget.difficulty,
+                        xValueMapper: (Difficulty sales, _) =>
+                            DateTime.fromMillisecondsSinceEpoch(
+                                sales.time!.toInt() * 1000,
+                                isUtc: true),
+                        yValueMapper: (Difficulty sales, _) => double.parse(
+                            (sales.difficulty! / 100000000000).toStringAsFixed(
+                                2)), // Assuming price is double type
+                      ),
+                    ]),
               ),
-              primaryYAxis: NumericAxis(
-                axisLine: const AxisLine(width: 0),
-                plotOffset: 0,
-                edgeLabelPlacement: EdgeLabelPlacement.none,
-                isVisible: false,
-                majorGridLines: const MajorGridLines(width: 0),
-                majorTickLines: const MajorTickLines(width: 0),
-                numberFormat: NumberFormat.compact(),
-              ),
-              series: <CartesianSeries>[
-                SplineSeries<ChartLine, DateTime>(
-                  name: L10n.of(context)!.hashrate,
-                  enableTooltip: true,
-                  dataSource: widget.chartData,
-                  splineType: SplineType.cardinal,
-                  cardinalSplineTension: 0.7,
-                                animationDuration: 0,
-
-                  xValueMapper: (ChartLine sales, _) =>
-                      DateTime.fromMillisecondsSinceEpoch(
-                          sales.time.toInt() * 1000,
-                          isUtc: true),
-                  yValueMapper: (ChartLine sales, _) =>
-                      double.parse(sales.price.toString().substring(0, 3)),
-                ),
-                SplineSeries<Difficulty, DateTime>(
-                  name: L10n.of(context)!.difficulty,
-                  enableTooltip: true,
-                  splineType: SplineType.cardinal,
-                  cardinalSplineTension: 0.3,
-                                animationDuration: 0,
-
-                  dataSource: widget.difficulty,
-                  xValueMapper: (Difficulty sales, _) =>
-                      DateTime.fromMillisecondsSinceEpoch(
-                          sales.time!.toInt() * 1000,
-                          isUtc: true),
-                  yValueMapper: (Difficulty sales, _) => double.parse(
-                      (sales.difficulty! / 100000000000)
-                          .toStringAsFixed(2)), // Assuming price is double type
-                ),
-              ]),
-        ),
       ],
     );
   }

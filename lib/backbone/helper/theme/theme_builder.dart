@@ -5,7 +5,9 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_add
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
@@ -25,6 +27,7 @@ import 'package:get/get.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart';
 
 class ThemeBuilder extends StatefulWidget {
   final Widget Function(
@@ -82,6 +85,10 @@ class ThemeController extends State<ThemeBuilder> {
       Provider.of<CurrencyChangeProvider>(context, listen: false)
           .setFirstCurrencyInDatabase(
               data.data()?['selected_currency'] ?? "USD");
+      Provider.of<TimezoneProvider>(context, listen: false)
+          .setTimezoneInDatabase(
+              getLocation(data.data()?['timezone'] ?? "UTC"));
+
       Provider.of<BitcoinPriceStream>(context, listen: false)
         ..updateCurrency(data.data()?['selected_currency'] ?? "USD");
       Provider.of<CurrencyTypeProvider>(context, listen: false)
@@ -112,6 +119,10 @@ class ThemeController extends State<ThemeBuilder> {
                 "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}") ??
             [];
       });
+
+      Get.put(BitcoinController());
+      Get.find<BitcoinController>()
+          .getChartLine(data.data()?['selected_currency'] ?? "USD");
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",

@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
@@ -37,6 +38,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 import 'package:shake/shake.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'backbone/auth/auth.dart';
 
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -71,7 +73,7 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
-
+  tz.initializeTimeZones();
   await LocalStorage.instance.initStorage();
   ShakeDetector.autoStart(
     onPhoneShake: () {
@@ -117,7 +119,6 @@ Future<void> main() async {
   Get.put(OverlayController(), permanent: true);
   Get.put(UsersListController(), permanent: true);
   // Get.put(WalletsCon(), permanent: true);
-
 
   // Get.put(LoggerService(), permanent: true);
   // Get.put(DioClient(), permanent: true);
@@ -225,6 +226,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider(),
                 ),
+                ChangeNotifierProvider<TimezoneProvider>(
+                  create: (context) => TimezoneProvider(),
+                ),
                 ChangeNotifierProvider<CountryProvider>(
                   create: (context) => CountryProvider(),
                 ),
@@ -254,8 +258,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       final newStream = BitcoinPriceStream();
                       newStream.updateCurrency(
                           currencyChangeProvider.selectedCurrency ?? 'usd');
-                      if(Auth().currentUser != null){
-                        newStream.priceStream.asBroadcastStream().listen((data) {
+                      if (Auth().currentUser != null) {
+                        newStream.priceStream
+                            .asBroadcastStream()
+                            .listen((data) {
                           // Get.put(WalletsController());
                           Get.find<WalletsController>().chartLines.value = data;
                         });
@@ -285,12 +291,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
+              ChangeNotifierProvider<TimezoneProvider>(
+                create: (context) => TimezoneProvider(),
+              ),
               ChangeNotifierProvider<CountryProvider>(
                 create: (context) => CountryProvider(),
               ),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                 create: (context) => CurrencyChangeProvider(),
               ),
+
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
                   if (bitcoinPriceStream == null ||
@@ -300,7 +310,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-                    if(Auth().currentUser != null){
+                    if (Auth().currentUser != null) {
                       newStream.priceStream.asBroadcastStream().listen((data) {
                         // Get.put(WalletsController());
                         Get.find<WalletsController>().chartLines.value = data;

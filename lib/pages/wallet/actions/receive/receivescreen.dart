@@ -30,14 +30,12 @@ class ReceiveScreen extends StatefulWidget {
 
 class _ReceiveScreenState extends State<ReceiveScreen>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-
   final controller = Get.find<ReceiveController>();
   final logger = Get.find<LoggerService>();
 
   late Animation<double> _animation;
   late AnimationController _animationController;
   late StreamSubscription<ReceiveType> receiveTypeSub;
-
 
   @override
   void initState() {
@@ -63,7 +61,6 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       curve: Curves.easeInOut,
     );
 
-
     controller.btcController = TextEditingController();
     controller.btcController.text = "0.00001";
     controller.satController = TextEditingController();
@@ -71,6 +68,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
 
     controller.currController = TextEditingController();
     controller.getInvoice(0, "");
+    controller.getInvoiceCombined(0, "");
     controller.getBtcAddress();
     //im not sure if the timer should reset each time the page is open or if it is a bug. (assuming it is a bug for now.)
     if ((controller.duration.inSeconds <= 0)) {
@@ -119,7 +117,6 @@ class _ReceiveScreenState extends State<ReceiveScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Obx(() {
-
       final currentType = controller.receiveType.value;
       logger.i("ReceiveScreen: currentType: $currentType");
 
@@ -142,7 +139,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                     axisAlignment:
                         -1.0, // Adjust to control the direction of the animation
                     child: controller.receiveType ==
-                            ReceiveType.Lightning_b11
+                            ReceiveType.Combined_b11_taproot
                         ? LongButtonWidget(
                             customShadow:
                                 Theme.of(context).brightness == Brightness.light
@@ -170,7 +167,9 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                             title:
                                 "${controller.min.value}:${controller.sec.value}",
                             onTap: () {
-                              controller.getInvoice(
+                              controller.getBtcAddress();
+
+                              controller.getInvoiceCombined(
                                   (double.parse(controller.satController.text))
                                       .toInt(),
                                   "");
@@ -181,14 +180,55 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                                   controller.updateTimer);
                             },
                           )
-                        : RoundedButtonWidget(
-                            size: AppTheme.cardPadding * 1.5,
-                            buttonType: ButtonType.transparent,
-                            iconData: FontAwesomeIcons.refresh,
-                            onTap: () {
-                              controller.getBtcAddress();
-                            },
-                          ),
+                        : controller.receiveType == ReceiveType.Lightning_b11
+                            ? LongButtonWidget(
+                                customShadow: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? []
+                                    : null,
+                                buttonType: ButtonType.transparent,
+                                customHeight: AppTheme.cardPadding * 1.5,
+                                customWidth: AppTheme.cardPadding * 4,
+                                leadingIcon: controller.createdInvoice.value
+                                    ? Icon(
+                                        FontAwesomeIcons.cancel,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? AppTheme.black60
+                                            : AppTheme.white80,
+                                      )
+                                    : Icon(
+                                        FontAwesomeIcons.refresh,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? AppTheme.black60
+                                            : AppTheme.white80,
+                                        size: AppTheme.elementSpacing * 1.5,
+                                      ),
+                                title:
+                                    "${controller.min.value}:${controller.sec.value}",
+                                onTap: () {
+                                  controller.getInvoice(
+                                      (double.parse(
+                                              controller.satController.text))
+                                          .toInt(),
+                                      "");
+                                  controller.timer.cancel();
+                                  controller.duration =
+                                      const Duration(minutes: 20);
+                                  controller.timer = Timer.periodic(
+                                      const Duration(seconds: 1),
+                                      controller.updateTimer);
+                                },
+                              )
+                            : RoundedButtonWidget(
+                                size: AppTheme.cardPadding * 1.5,
+                                buttonType: ButtonType.transparent,
+                                iconData: FontAwesomeIcons.refresh,
+                                onTap: () {
+                                  controller.getBtcAddress();
+                                },
+                              ),
                   ),
                 ],
               );
@@ -203,46 +243,47 @@ class _ReceiveScreenState extends State<ReceiveScreen>
           onPopInvoked: (v) {
             context.go('/feed');
           },
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding.h * 3,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.cardPadding),
-                  child: SingleChildScrollView(
-                      child: controller.isUnlocked.value
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              //mainAxisSize: MainAxisSize.min,
-                              // The contents of the screen are centered vertically
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: AppTheme.cardPadding * 2,
-                                ),
-                                ReceiveQRCode(),
-                                const SizedBox(
-                                  height: AppTheme.cardPadding,
-                                ),
-                                AddressListTile(),
-                                AmountSpecifierListTile(),
-                                BitNetBottomSheetReceiveType(),
-                                const SizedBox(
-                                  height: AppTheme.cardPadding * 2,
-                                ),
-                              ],
-                            )
-                          : Container(
-                              child: Text(
-                                  "View with turbo channel to enable lightning recieve minimum send amount first time and fee."))),
-                ),
-              ],
+          child: SingleChildScrollView(
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: AppTheme.cardPadding.h * 3,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: SingleChildScrollView(
+                        child: controller.isUnlocked.value
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                //mainAxisSize: MainAxisSize.min,
+                                // The contents of the screen are centered vertically
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: AppTheme.cardPadding * 2,
+                                  ),
+                                  ReceiveQRCode(),
+                                  const SizedBox(
+                                    height: AppTheme.cardPadding,
+                                  ),
+                                  AddressListTile(),
+                                  AmountSpecifierListTile(),
+                                  BitNetBottomSheetReceiveType(),
+                                  const SizedBox(
+                                    height: AppTheme.cardPadding * 2,
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                child: Text(
+                                    "View with turbo channel to enable lightning recieve minimum send amount first time and fee."))),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

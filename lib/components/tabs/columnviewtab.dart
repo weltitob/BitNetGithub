@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/postmodels/post.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
@@ -6,6 +7,8 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart';
 
 class ColumnViewTab extends StatefulWidget {
   const ColumnViewTab({Key? key, this.other = false}) : super(key: key);
@@ -19,7 +22,9 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
   @override
   void initState() {
     super.initState();
-    controller = widget.other ? Get.find<OtherProfileController>() : Get.put(ProfileController());
+    controller = widget.other
+        ? Get.find<OtherProfileController>()
+        : Get.put(ProfileController());
   }
 
   @override
@@ -63,13 +68,17 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                         },
                         child: Post(
                           postId: assetId,
-                          ownerId: "${controller.userData.value.username}" ?? '',
-                          displayname: "${controller.userData.value.displayName}" ?? '',
-                          username: "${controller.userData.value.username}" ?? '',
+                          ownerId:
+                              "${controller.userData.value.username}" ?? '',
+                          displayname:
+                              "${controller.userData.value.displayName}" ?? '',
+                          username:
+                              "${controller.userData.value.username}" ?? '',
                           postName: asset.assetGenesis?.name ?? '',
                           rockets: {},
                           medias: meta != null ? meta.toMedias() : [],
-                          timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime! * 1000),
+                          timestamp: DateTime.fromMillisecondsSinceEpoch(
+                              asset.lockTime! * 1000),
                         ),
                       );
                     } else {

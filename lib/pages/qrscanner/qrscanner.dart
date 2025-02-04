@@ -25,6 +25,7 @@ enum QRTyped {
   OnChain,
   Profile,
   RestoreLogin,
+  BIP21WithBolt11,
   Unknown,
 }
 
@@ -42,32 +43,29 @@ class QRScannerController extends State<QrScanner> {
 
   QRTyped determineQRType(dynamic encodedString) {
     LoggerService logger = Get.find();
-    final isLightningMailValid = isLightningAdressAsMail(encodedString);
-    print("isLightingMailValid: $isLightningMailValid");
-    final isStringInvoice = isStringALNInvoice(encodedString);
-    print("isStringInvoice: $isStringInvoice");
-    final isBitcoinValid = isBitcoinWalletValid(encodedString);
-    print("isBitcoinValid: $isBitcoinValid");
-    final isStringPrivateData = isStringPrivateDataFunc(encodedString);
-    print("isStringPrivateData: $isStringPrivateData");
 
-    late QRTyped qrTyped;
+    final isBip21Bolt11 = isBip21WithBolt11(encodedString);
+    final isLightningMailValid = isLightningAdressAsMail(encodedString);
+    final isStringInvoice = isStringALNInvoice(encodedString);
+    final isBitcoinValid = isBitcoinWalletValid(encodedString);
+    final isStringPrivateData = isStringPrivateDataFunc(encodedString);
 
     logger.i("Determining the QR type...");
-    // Logic to determine the QR type based on the encoded string
-    // Return the appropriate QRTyped enum value
-    if (isLightningMailValid) {
-      qrTyped = QRTyped.LightningMail;
+
+    // Existing checks
+    if (isBip21Bolt11) {
+      return QRTyped.BIP21WithBolt11;
+    } else if (isLightningMailValid) {
+      return QRTyped.LightningMail;
     } else if (isStringPrivateData) {
-      qrTyped = QRTyped.RestoreLogin;
+      return QRTyped.RestoreLogin;
     } else if (isStringInvoice) {
-      qrTyped = QRTyped.Invoice;
+      return QRTyped.Invoice;
     } else if (isBitcoinValid) {
-      qrTyped = QRTyped.OnChain;
+      return QRTyped.OnChain;
     } else {
-      qrTyped = QRTyped.Unknown;
+      return QRTyped.Unknown;
     }
-    return qrTyped;
   }
 
   void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {

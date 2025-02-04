@@ -60,7 +60,6 @@ class SendsController extends BaseController {
   // ADD:
   RxList<UserData> foundUsers = <UserData>[].obs;
 
-
   void handleSearch(String value) {
     logger.i("handleSearch called with value: $value");
     onQRCodeScanned(value, context);
@@ -91,7 +90,6 @@ class SendsController extends BaseController {
   clearFoundUsers() {
     foundUsers.clear();
   }
-
 
   Future<void> getClipboardData() async {
     List<ReceivedInvoice> restLightningInvoices =
@@ -151,7 +149,16 @@ class SendsController extends BaseController {
   double bitcoinprice = 0.0;
   final GlobalKey<FormState> formKey =
       GlobalKey<FormState>(); // a key for the form widget
+  final GlobalKey<FormState> bip21InvoiceFormKey =
+      GlobalKey<FormState>(); // a key for the form widget
+
   String bitcoinReceiverAdress = ""; // the Bitcoin receiver address
+  String bip21InvoiceAddress = "";
+  TextEditingController bip21InvoiceSatController = TextEditingController();
+  TextEditingController bip21InvoiceBtcController = TextEditingController();
+  TextEditingController bip21InvoiceCurrencyController =
+      TextEditingController();
+
   int? lowerBound;
   int? upperBound;
   BitcoinUnits? boundType;
@@ -197,6 +204,8 @@ class SendsController extends BaseController {
     RegExp onchainQueryValidator = RegExp(r'bitcoin:(.+?)\?amount=([0-9.]+)');
     Match? onchainQueryMatch = onchainQueryValidator.firstMatch(encodedString);
 
+    final isBip21Bolt11 = isBip21WithBolt11(encodedString);
+
     final isLightningMailValid = isLightningAdressAsMail(encodedString);
     print("isLightingMailValid: $isLightningMailValid");
     final isStringInvoice = isStringALNInvoice(encodedString);
@@ -212,7 +221,9 @@ class SendsController extends BaseController {
     logger.i("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
-    if (isLightningMailValid) {
+    if (isBip21Bolt11) {
+      qrTyped = QRTyped.BIP21WithBolt11;
+    } else if (isLightningMailValid) {
       qrTyped = QRTyped.LightningMail;
     } else if (isLnUrl) {
       qrTyped = QRTyped.LightningUrl;
@@ -232,6 +243,10 @@ class SendsController extends BaseController {
     logger.i("TYPE DETECTED! $type");
 
     switch (type) {
+      case QRTyped.BIP21WithBolt11:
+        logger.i("Bip21 was detected");
+        giveValuesToBip21(encodedString);
+        break;
       case QRTyped.LightningUrl:
         logger.i("LightningUrl was detected");
         giveValuesToLnUrl(encodedString);
@@ -274,7 +289,9 @@ class SendsController extends BaseController {
   void onInit() {
     super.onInit();
     btcController.text = "0.0"; // set the initial amount to 0.0
-    satController.text = "0.0";
+    satController.text = "0";
+    bip21InvoiceSatController.text = "0";
+    bip21InvoiceBtcController.text = "0.0";
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
@@ -291,7 +308,10 @@ class SendsController extends BaseController {
     hasReceiver.value = false;
     bitcoinReceiverAdress = "";
     btcController.text = "0.0";
-    satController.text = "0.0";
+    satController.text = "0";
+    bip21InvoiceSatController.text = "0";
+    bip21InvoiceBtcController.text = "0.0";
+
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
     //context.go("/wallet/send");
@@ -299,29 +319,32 @@ class SendsController extends BaseController {
 
   void giveValuesToOnchainSend(String onchainAdress) async {
     resetValues();
-    RegExp onchainQueryValidator = RegExp(r'bitcoin:(.+?)\?amount=([0-9.]+)');
-    Match? onchainQueryMatch = onchainQueryValidator.firstMatch(onchainAdress);
+    Uri? uri = Uri.tryParse(onchainAdress);
+    if (uri == null) {
+      throw Exception(
+          "Reached onchain uri parsing, but uri failed to be parsed, please check this. ${StackTrace.current}");
+    }
+    String finalAddress = uri.path; // Extracts the Bitcoin address
+    String? amountStr = uri.queryParameters["amount"];
+    String? label = uri.queryParameters["label"];
+    String? message = uri.queryParameters["message"];
 
-    if (onchainQueryMatch != null &&
-        onchainQueryMatch.group(2) != null &&
-        double.tryParse(onchainQueryMatch.group(2)!) != null) {
-      btcController.text = onchainQueryMatch.group(2)!;
+    if (amountStr != null) {
+      btcController.text = amountStr;
 
-      satController.text = CurrencyConverter.convertBitcoinToSats(
-              double.parse(onchainQueryMatch.group(2)!))
-          .toStringAsFixed(0);
+      satController.text =
+          CurrencyConverter.convertBitcoinToSats(double.parse(amountStr))
+              .toStringAsFixed(0);
     } else {
       btcController.text = '0.0';
       satController.text = '0';
     }
 
-    String finalAddress = onchainQueryMatch?.group(1) != null
-        ? onchainQueryMatch!.group(1)!
-        : onchainAdress;
     {
       sendType = SendType.OnChain;
       hasReceiver.value = true;
       bitcoinReceiverAdress = finalAddress;
+      description.value = message ?? label ?? '';
       moneyTextFieldIsEnabled.value = true;
     }
 
@@ -456,7 +479,6 @@ class SendsController extends BaseController {
     sendType = SendType.Invoice;
     hasReceiver.value = true;
     bitcoinReceiverAdress = invoiceString;
-
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
     double satoshi =
         CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
@@ -465,6 +487,62 @@ class SendsController extends BaseController {
     // currencyController.text = CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, cleanAmount.toDouble(), outputCurrency, bitcoinPrice);
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
+  }
+
+  Future<void> giveValuesToBip21(String encodedString) async {
+    LoggerService logger = Get.find();
+    resetValues();
+
+    Uri? uri = Uri.tryParse(encodedString);
+    if (uri == null) {
+      throw Exception(
+          "Reached onchain uri parsing, but uri failed to be parsed, please check this. ${StackTrace.current}");
+    }
+    String finalAddress = uri.path; // Extracts the Bitcoin address
+    String? amountStr = uri.queryParameters["amount"];
+    String? label = uri.queryParameters["label"];
+    String? message = uri.queryParameters["message"];
+    String? invoice = uri.queryParameters["lightning"];
+
+    if (amountStr != null) {
+      btcController.text = amountStr;
+
+      satController.text =
+          CurrencyConverter.convertBitcoinToSats(double.parse(amountStr))
+              .toStringAsFixed(0);
+    } else {
+      btcController.text = '0.0';
+      satController.text = '0';
+    }
+
+    {
+      sendType = SendType.Bip21;
+      hasReceiver.value = true;
+      bitcoinReceiverAdress = finalAddress;
+      description.value = message ?? label ?? '';
+      moneyTextFieldIsEnabled.value = true;
+    }
+
+    dynamic fundedPsbtResponse =
+        await estimateFee(AppTheme.targetConf.toString());
+    final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
+    double sat_per_vbyte = double.parse(sat_per_kw); // / 4
+    feesDouble = sat_per_vbyte;
+    bitcoinUnit = BitcoinUnits.SAT;
+
+    logger.i("Estimated fees: $feesDouble");
+
+    logger.i("Invoice that is about to be paid for: $encodedString");
+    if (invoice != null) {
+      bip21InvoiceAddress = invoice;
+      Bolt11PaymentRequest req = Bolt11PaymentRequest(invoice);
+      double satoshi =
+          CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
+      int cleanAmount = satoshi.toInt();
+      bip21InvoiceSatController.text = cleanAmount.toString();
+      // currencyController.text = CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, cleanAmount.toDouble(), outputCurrency, bitcoinPrice);
+      // moneyTextFieldIsEnabled.value = false;
+    }
   }
 
   changeFees(String fees) {
@@ -486,6 +564,230 @@ class SendsController extends BaseController {
   void toggleButtonState() {
     loadingSending.value =
         !loadingSending.value; // Toggle the state between true and false
+  }
+
+  Future<dynamic> sendBip21BTC(BuildContext context, bool onchain) async {
+    LoggerService logger = Get.find<LoggerService>();
+    final overlayController = Get.find<OverlayController>();
+    logger.i("sendBTC() called");
+
+    await isBiometricsAvailable();
+    if (isBioAuthenticated == true || hasBiometrics == false) {
+      if (onchain) {
+        logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
+        final amountInSat = int.parse(satController.text);
+        RestResponse listAddressesResponse =
+            await listAddressesLnd(Auth().currentUser!.uid);
+
+        AccountWithAddresses account = AccountWithAddresses.fromJson(
+            (listAddressesResponse.data['account_with_addresses'] as List)
+                .firstWhereOrNull(
+                    (acc) => acc['name'] == Auth().currentUser!.uid));
+        List<String> changeAddresses = account.addresses
+            .where((test) => test.isInternal)
+            .map((test) => test.address)
+            .toList();
+        List<String> nonChangeAddresses = account.addresses
+            .where((test) => !test.isInternal)
+            .map((test) => test.address)
+            .toList();
+
+        dynamic restResponseListUnspent =
+            await listUnspent(Auth().currentUser!.uid);
+        UtxoRequestList utxos =
+            UtxoRequestList.fromJson(restResponseListUnspent.data);
+
+        TransactionData transactiondata = TransactionData(
+            raw: RawTransactionData(
+              inputs: utxos.utxos
+                  .map((i) => Input(
+                        txidStr: i.outpoint.txidStr,
+                        txidBytes: i.outpoint.txidBytes,
+                        outputIndex: i.outpoint.outputIndex,
+                      ))
+                  .toList(),
+              outputs: Outputs(
+                  outputs: {bitcoinReceiverAdress: amountInSat.toInt()}),
+            ),
+            targetConf: AppTheme
+                .targetConf, //The number of blocks to aim for when confirming the transaction.
+            account: "",
+            minConfs:
+                4, //going for safety and not speed because for speed oyu would use the lightning network
+            spendUnconfirmed:
+                false, //Whether unconfirmed outputs should be used as inputs for the transaction.
+            changeType: 0 //CHANGE_ADDRESS_TYPE_UNSPECIFIED
+            );
+
+        PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+        dynamic feeResponse = await estimateFee(AppTheme.targetConf.toString());
+        final sat_per_kw = double.parse(feeResponse.data["sat_per_kw"]);
+        double utxoSum = 0;
+        for (Utxo utxo in utxos.utxos) {
+          utxoSum += utxo.amountSat;
+        }
+
+        String changeAddress =
+            await nextAddr(Auth().currentUser!.uid, change: true);
+        HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+        final builder = BitcoinTransactionBuilder(
+            outPuts: [
+              BitcoinOutput(
+                  address: parseBitcoinAddress(bitcoinReceiverAdress),
+                  value: BigInt.from(amountInSat.toInt())),
+              BitcoinOutput(
+                  address: parseBitcoinAddress(changeAddress),
+                  value:
+                      BigInt.from(utxoSum - (amountInSat.toInt() + sat_per_kw)))
+            ],
+            fee: BigInt.from(sat_per_kw),
+            network: BitcoinNetwork.mainnet,
+            utxos: utxos.utxos
+                .map((utxo) => UtxoWithAddress(
+                    utxo: BitcoinUtxo(
+                        txHash: utxo.outpoint.txidStr,
+                        value: BigInt.from(utxo.amountSat),
+                        vout: utxo.outpoint.outputIndex,
+                        scriptType: parseBitcoinAddress(utxo.address).type),
+                    ownerDetails: UtxoAddressDetails(
+                        publicKey: hdWallet
+                            .findKeyPair(
+                              utxo.address,
+                              privData.mnemonic,
+                              changeAddresses.contains(utxo.address) ? 1 : 0,
+                            )
+                            .getPublic()
+                            .publicKey
+                            .toHex(),
+                        address: parseBitcoinAddress(utxo.address))))
+                .toList());
+        // dynamic fundPsbtrestResponse =
+        //     await fundPsbt(transactiondata, Auth().currentUser!.uid);
+        // FundedPsbtResponse fundedPsbtResponse =
+        //     FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
+        // print('fundedpsbt izak');
+        // print(fundedPsbtResponse.fundedPsbt);
+        // dynamic finalizedPsbtRestResponse =
+        //     await signPsbt(fundedPsbtResponse.fundedPsbt);
+        // FinalizePsbtResponse finalizedPsbtResponse =
+        //     FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
+        final tr =
+            builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+          String address =
+              utxo.ownerDetails.address.toAddress(BitcoinNetwork.mainnet);
+          final ECPrivate privateKey = hdWallet.findKeyPair(
+            address,
+            privData.mnemonic,
+            changeAddresses.contains(address) ? 1 : 0,
+          );
+          return privateKey.signInput(trDigest, sigHash: sighash);
+        });
+        final txId = tr.serialize();
+        // RestResponse publishTransactionRestResponse =
+        //     await broadcastTransaction(txId); //txhex and label
+        const network = BitcoinNetwork.mainnet;
+
+        /// Define http provider and api provider
+        final service = BitcoinApiService();
+        final api = ApiProvider.fromBlocCypher(network, service);
+        String response = await api.sendRawTransaction(tr.serialize());
+        print(response);
+        isFinished.value = true;
+        if ('' == "200") {
+          // sendPaymentDataOnchain({
+          //   ...finalizedPsbtRestResponse.data,
+          //   ...fundPsbtrestResponse.data,
+          //   'min_confs': 4,
+          //   'address': bitcoinReceiverAdress
+          // });
+          // getTransaction(convertRawTxToTxId(
+          //         finalizedPsbtRestResponse.data['raw_final_tx']))
+          //     .then((d) {
+          //   if (d.statusCode == "200") {
+          //     BitcoinTransaction transaction =
+          //         BitcoinTransaction.fromJson(d.data);
+          //     Get.find<WalletsController>()
+          //         .newTransactionData
+          //         .add(transaction);
+          //   }
+          // });
+          Get.find<WalletsController>().fetchOnchainWalletBalance();
+
+          overlayController.showOverlay(
+              "Onchain transaction successfully broadcastet, it can take a while!");
+          GoRouter.of(this.context).go("/feed");
+        } else {
+          overlayController.showOverlay("Payment failed.");
+
+          isFinished.value = false;
+        }
+      } else {
+        logger.i("Sending invoice: $bip21InvoiceAddress");
+
+        List<String> invoiceStrings = [
+          bip21InvoiceAddress
+        ]; // Assuming you want to send a list containing a single invoice for now
+
+        Stream<dynamic> paymentStream = sendPaymentV2Stream(
+            Auth().currentUser!.uid,
+            invoiceStrings,
+            int.parse(bip21InvoiceSatController.text));
+        bool firstSuccess = false;
+        paymentStream.listen((dynamic response) {
+          isFinished.value =
+              true; // Assuming you might want to update UI on each response
+          if (response['status'] == "SUCCEEDED") {
+            logger.i("Success: ${response}");
+
+            String jsonString = jsonEncode(response);
+
+            // Decode the JSON string back into a Map<String, dynamic>
+            var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
+
+            LightningPayment payment = LightningPayment.fromJson(typedResponse);
+            //
+            // Get.find<WalletsController>().newTransactionData.add(payment);
+            // Handle success
+            sendPaymentDataInvoice(response);
+
+            if (!firstSuccess) {
+              logger.i(
+                  "Payment successful it should update the stream in walletcontroller which shows the overlay!");
+              // Get.find<WalletsController>().fetchLightingWalletBalance();
+              // overlayController.showOverlay("Payment successful!");
+
+              logger.i("Payment successful! Forwarding to wallet...");
+              context.go("/");
+
+              firstSuccess = true;
+            }
+          }
+          if (response['status'] == "FAILED") {
+            // Handle error
+            logger.i("Payment failed!");
+            if (!firstSuccess) {
+              overlayController
+                  .showOverlay("Payment failed: ${response.message}");
+
+              firstSuccess = true;
+            }
+
+            isFinished.value =
+                false; // Keep the user on the same page to possibly retry or show error
+          } else {
+            logger.i("Parsing of response failed! PLEASE FIX");
+            isFinished.value =
+                false; // Keep the user on the same page to possibly retry or show error
+          }
+        }, onError: (error) {
+          isFinished.value = false;
+          overlayController.showOverlay("An error occurred: $error");
+        }, onDone: () {
+          // Handle stream completion if necessary
+        }, cancelOnError: true // Cancel the subscription upon first error
+            );
+      }
+    }
   }
 
   Future<dynamic> sendBTC(BuildContext context) async {
@@ -739,6 +1041,9 @@ class SendsController extends BaseController {
     btcController.dispose();
     satController.dispose();
     currencyController.dispose();
+    bip21InvoiceSatController.dispose();
+    bip21InvoiceBtcController.dispose();
+    bip21InvoiceCurrencyController.dispose();
     foundUsers.clear();
     super.dispose();
   }
@@ -910,6 +1215,7 @@ enum SendType {
   LightningUrl,
   OnChain,
   Invoice,
+  Bip21,
   Unknown,
 }
 

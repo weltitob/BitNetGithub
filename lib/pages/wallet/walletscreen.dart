@@ -1,7 +1,9 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -12,6 +14,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
@@ -26,6 +29,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -36,6 +40,10 @@ class WalletScreen extends GetWidget<WalletsController> {
   Widget build(BuildContext context) {
     WalletsController walletController = Get.find<WalletsController>();
     ProfileController profileController = Get.find<ProfileController>();
+    if (!Get.isRegistered<BitcoinController>()) {
+      return dotProgress(context);
+    }
+    BitcoinController bitcoinController = Get.find<BitcoinController>();
 
     return bitnetScaffold(
       context: context,
@@ -47,7 +55,8 @@ class WalletScreen extends GetWidget<WalletsController> {
             initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
             viewportFraction: 0.8885, // see some of the next/prev card
           );
-          SubServersStatus? subServersStatus; // local variable to store fetched data
+          SubServersStatus?
+              subServersStatus; // local variable to store fetched data
 
           return CustomScrollView(
             controller: controller.scrollController,
@@ -76,53 +85,47 @@ class WalletScreen extends GetWidget<WalletsController> {
                     ),
                     Container(
                       height: 300,
-                      child: SfCartesianChart(
-                        enableAxisAnimation: true,
-                        plotAreaBorderWidth: 0,
-                        primaryXAxis: CategoryAxis(
-                          labelPlacement: LabelPlacement.onTicks,
-                          edgeLabelPlacement: EdgeLabelPlacement.none,
-                          isVisible: false,
-                          majorGridLines: const MajorGridLines(width: 0),
-                          majorTickLines: const MajorTickLines(width: 0),
-                        ),
-                        primaryYAxis: NumericAxis(
-                          plotOffset: 0,
-                          edgeLabelPlacement: EdgeLabelPlacement.none,
-                          isVisible: false,
-                          majorGridLines: const MajorGridLines(width: 0),
-                          majorTickLines: const MajorTickLines(width: 0),
-                        ),
-                        series: <ChartSeries>[
-                          // SplineSeries with a glowing effect
-                          SplineSeries<ChartLine, double>(
-                            dataSource: [
-                              ChartLine(time: 1, price: 12),
-                              ChartLine(time: 4, price: 20),
-                              ChartLine(time: 14, price: 20),
-                              ChartLine(time: 19, price: 29),
-                              ChartLine(time: 20, price: 31),
-                              ChartLine(time: 34, price: 33),
-                              ChartLine(time: 35, price: 32),
-                              ChartLine(time: 40, price: 25),
-                              ChartLine(time: 41, price: 24),
-                              ChartLine(time: 42, price: 23),
-                            ],
-                            animationDuration: 0,
-                            xValueMapper: (ChartLine crypto, _) => crypto.time,
-                            yValueMapper: (ChartLine crypto, _) => crypto.price,
-                            color:
-                            AppTheme.successColor, // Softer line color with glow
-                            width: 4, // Increased line width for a softer curve
-                            // Adding the glow effect underneath
-                            splineType:
-                            SplineType.cardinal, // Smooth line with a curve
-                            // Create a glow effect by adding an area beneath the line
-                            opacity:
-                            0.1, // Slightly more transparent to create a smoother glow effect
-                            // Adding a fill below the curve for a "rounded" look
+                      child: Obx(
+                        () => SfCartesianChart(
+                          enableAxisAnimation: true,
+                          plotAreaBorderWidth: 0,
+                          primaryXAxis: CategoryAxis(
+                            labelPlacement: LabelPlacement.onTicks,
+                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                            isVisible: false,
+                            majorGridLines: const MajorGridLines(width: 0),
+                            majorTickLines: const MajorTickLines(width: 0),
                           ),
-                        ],
+                          primaryYAxis: NumericAxis(
+                            plotOffset: 0,
+                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                            isVisible: false,
+                            majorGridLines: const MajorGridLines(width: 0),
+                            majorTickLines: const MajorTickLines(width: 0),
+                          ),
+                          series: <ChartSeries>[
+                            // SplineSeries with a glowing effect
+                            SplineSeries<ChartLine, double>(
+                              dataSource: bitcoinController.currentline.value,
+                              animationDuration: 0,
+                              xValueMapper: (ChartLine crypto, _) =>
+                                  crypto.time,
+                              yValueMapper: (ChartLine crypto, _) =>
+                                  crypto.price,
+                              color: AppTheme
+                                  .successColor, // Softer line color with glow
+                              width:
+                                  4, // Increased line width for a softer curve
+                              // Adding the glow effect underneath
+                              splineType: SplineType
+                                  .cardinal, // Smooth line with a curve
+                              // Create a glow effect by adding an area beneath the line
+                              opacity:
+                                  0.1, // Slightly more transparent to create a smoother glow effect
+                              // Adding a fill below the curve for a "rounded" look
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Column(
@@ -143,10 +146,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      profileController.isUserLoading == true.obs
+                                      profileController.isUserLoading ==
+                                              true.obs
                                           ? Avatar(
                                               onTap: () async {
-                                                context.go('/profile/${Auth().currentUser?.uid}');
+                                                context.go(
+                                                    '/profile/${Auth().currentUser?.uid}');
                                               },
                                               isNft: false,
                                             )
@@ -158,41 +163,118 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               },
                                               size: AppTheme.cardPadding * 1.5,
                                               mxContent: Uri.parse(
-                                                profileController
-                                                    .userData.value.profileImageUrl,
+                                                profileController.userData.value
+                                                    .profileImageUrl,
                                               ),
-                                              type: profilePictureType.lightning,
-                                              isNft: profileController.userData
-                                                  .value.nft_profile_id.isNotEmpty,
+                                              type:
+                                                  profilePictureType.lightning,
+                                              isNft: profileController
+                                                  .userData
+                                                  .value
+                                                  .nft_profile_id
+                                                  .isNotEmpty,
                                             ),
                                       Row(
                                         children: [
-                                          LongButtonWidget(
-                                            title: "1D",
-                                            buttonType: ButtonType.transparent,
-                                            onTap: () {},
-                                            customHeight:
-                                                AppTheme.cardPadding * 1.25,
-                                            customWidth: AppTheme.cardPadding * 2,
-                                            // leadingIcon:
-                                            //     Icon(Icons.arrow_drop_down_rounded),
+                                          Obx(
+                                            () => LongButtonWidget(
+                                              title: bitcoinController
+                                                  .selectedtimespan.value,
+                                              buttonType:
+                                                  ButtonType.transparent,
+                                              onTap: () {
+                                                int newIndex = bitcoinController
+                                                        .timespans
+                                                        .indexOf(
+                                                            bitcoinController
+                                                                .selectedtimespan
+                                                                .value) +
+                                                    1;
+                                                if (newIndex ==
+                                                    bitcoinController
+                                                        .timespans.length) {
+                                                  newIndex = 0;
+                                                }
+                                                bitcoinController
+                                                        .selectedtimespan
+                                                        .value =
+                                                    bitcoinController
+                                                        .timespans[newIndex];
+
+                                                switch (bitcoinController
+                                                    .selectedtimespan.value) {
+                                                  case "1D":
+                                                    bitcoinController
+                                                            .currentline.value =
+                                                        bitcoinController
+                                                            .onedaychart;
+                                                    break;
+                                                  case "1W":
+                                                    bitcoinController
+                                                            .currentline.value =
+                                                        bitcoinController
+                                                            .oneweekchart;
+                                                    break;
+                                                  case "1M":
+                                                    bitcoinController
+                                                            .currentline.value =
+                                                        bitcoinController
+                                                            .onemonthchart;
+                                                    break;
+                                                  case "1J":
+                                                    bitcoinController
+                                                            .currentline.value =
+                                                        bitcoinController
+                                                            .oneyearchart;
+                                                    break;
+                                                  case "Max":
+                                                    bitcoinController
+                                                            .currentline.value =
+                                                        bitcoinController
+                                                            .maxchart;
+                                                    break;
+                                                }
+                                                bitcoinController.setValues();
+                                                // Update last price
+                                                // Update percent
+                                                double priceChange = (bitcoinController
+                                                            .new_lastpriceexact -
+                                                        bitcoinController
+                                                            .new_firstpriceexact) /
+                                                    bitcoinController
+                                                        .new_firstpriceexact;
+                                                bitcoinController
+                                                        .overallPriceChange
+                                                        .value =
+                                                    toPercent(priceChange);
+                                                // Update date
+                                              },
+                                              customHeight:
+                                                  AppTheme.cardPadding * 1.25,
+                                              customWidth:
+                                                  AppTheme.cardPadding * 2,
+                                              // leadingIcon:
+                                              //     Icon(Icons.arrow_drop_down_rounded),
+                                            ),
                                           ),
                                           SizedBox(
-                                            width: AppTheme.elementSpacing * 0.75.w,
+                                            width: AppTheme.elementSpacing *
+                                                0.75.w,
                                           ),
                                           Obx(
                                             () => RoundedButtonWidget(
                                               size: AppTheme.cardPadding * 1.25,
-                                              buttonType: ButtonType.transparent,
-                                              iconData:
-                                                  controller.hideBalance.value ==
-                                                          false
-                                                      ? FontAwesomeIcons.eyeSlash
-                                                      : FontAwesomeIcons.eye,
+                                              buttonType:
+                                                  ButtonType.transparent,
+                                              iconData: controller
+                                                          .hideBalance.value ==
+                                                      false
+                                                  ? FontAwesomeIcons.eyeSlash
+                                                  : FontAwesomeIcons.eye,
                                               onTap: () {
                                                 controller.setHideBalance(
-                                                  hide:
-                                                      !controller.hideBalance.value,
+                                                  hide: !controller
+                                                      .hideBalance.value,
                                                 );
                                               },
                                             ),
@@ -242,7 +324,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                     horizontal: AppTheme.cardPadding * 1,
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       // Text(
                                       //   L10n.of(context)!.totalWalletBal,
@@ -268,8 +351,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         .displayLarge,
                                                   )
                                                 : Obx(() {
-                                                    final chartLine =
-                                                        controller.chartLines.value;
+                                                    final chartLine = controller
+                                                        .chartLines.value;
                                                     final bitcoinPrice =
                                                         chartLine?.price;
                                                     final currencyEquivalent =
@@ -279,38 +362,42 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                                         .value /
                                                                     100000000 *
                                                                     bitcoinPrice)
-                                                                .toStringAsFixed(2)
+                                                                .toStringAsFixed(
+                                                                    2)
                                                             : "0.00";
 
                                                     final coin = Provider.of<
                                                             CurrencyTypeProvider>(
                                                         context,
                                                         listen: true);
-                                                    final currency = Provider.of<
-                                                            CurrencyChangeProvider>(
-                                                        context,
-                                                        listen: true);
-                                                    controller.coin.value =
-                                                        coin.coin ??
-                                                            controller.coin.value;
+                                                    final currency = Provider
+                                                        .of<CurrencyChangeProvider>(
+                                                            context,
+                                                            listen: true);
+                                                    controller.coin.value = coin
+                                                            .coin ??
+                                                        controller.coin.value;
                                                     controller.selectedCurrency
-                                                            ?.value =
-                                                        currency.selectedCurrency ??
-                                                            controller
-                                                                .selectedCurrency!
-                                                                .value;
+                                                        ?.value = currency
+                                                            .selectedCurrency ??
+                                                        controller
+                                                            .selectedCurrency!
+                                                            .value;
 
                                                     return GestureDetector(
                                                       onTap: () {
-                                                        controller.setCurrencyType(
-                                                          !controller.coin.value,
+                                                        controller
+                                                            .setCurrencyType(
+                                                          !controller
+                                                              .coin.value,
                                                           updateDatabase: false,
                                                         );
                                                         coin.setCurrencyType(
                                                           controller.coin.value,
                                                         );
                                                       },
-                                                      child: (controller.coin.value)
+                                                      child: (controller
+                                                              .coin.value)
                                                           ? Row(
                                                               children: [
                                                                 Text(
@@ -339,10 +426,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                             )
                                                           : Text(
                                                               "$currencyEquivalent${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
-                                                              style:
-                                                                  Theme.of(context)
-                                                                      .textTheme
-                                                                      .displayLarge,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displayLarge,
                                                             ),
                                                     );
                                                   }),
@@ -350,25 +437,52 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         ),
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
                                           Row(
                                             children: [
-                                              Icon(
-                                                Icons.arrow_drop_up_rounded,
-                                                color: AppTheme.successColor,
-                                                size: AppTheme.iconSize * 1,
+                                              Obx(
+                                                () => Icon(
+                                                  bitcoinController
+                                                          .overallPriceChange
+                                                          .value
+                                                          .contains('-')
+                                                      ? Icons
+                                                          .arrow_drop_down_rounded
+                                                      : Icons
+                                                          .arrow_drop_up_rounded,
+                                                  color: bitcoinController
+                                                          .overallPriceChange
+                                                          .value
+                                                          .contains('-')
+                                                      ? AppTheme.errorColor
+                                                      : AppTheme.successColor,
+                                                  size: AppTheme.iconSize * 1,
+                                                ),
                                               ),
-                                              Text(
-                                                "1,848.13\$",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                      color: AppTheme.successColor,
-                                                    ),
+                                              Obx(
+                                                () => Text(
+                                                  bitcoinController
+                                                      .new_lastpricerounded
+                                                      .value
+                                                      .toStringAsFixed(2),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .copyWith(
+                                                        color: bitcoinController
+                                                                .overallPriceChange
+                                                                .value
+                                                                .contains('-')
+                                                            ? AppTheme
+                                                                .errorColor
+                                                            : AppTheme
+                                                                .successColor,
+                                                      ),
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -376,77 +490,99 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               width: AppTheme.elementSpacing *
                                                   0.25), // Add some spacing
                                           Transform.scale(
-                                              child: BitNetPercentWidget(
-                                                  priceChange: "+0.83%"),
+                                              child: Obx(
+                                                () => BitNetPercentWidget(
+                                                    priceChange:
+                                                        bitcoinController
+                                                            .overallPriceChange
+                                                            .value),
+                                              ),
                                               scale: 0.8),
                                         ],
                                       ),
                                       Container(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(height: AppTheme.cardPadding.h * 1.5),
+                                            SizedBox(
+                                                height: AppTheme.cardPadding.h *
+                                                    1.5),
                                             // Text(
                                             //   L10n.of(context)!.actions,
                                             //   style: Theme.of(context).textTheme.titleLarge,
                                             // ),
                                             // SizedBox(height: AppTheme.cardPadding.h),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 BitNetImageWithTextButton(
                                                   L10n.of(context)!.send,
-                                                      () {
+                                                  () {
                                                     context.go('/wallet/send');
                                                   },
                                                   // image: "assets/images/send_image.png",
-                                                  width: AppTheme.cardPadding * 2.5.h,
-                                                  height: AppTheme.cardPadding * 2.5.h,
-                                                  fallbackIcon: Icons.arrow_upward_rounded,
+                                                  width: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  height: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  fallbackIcon: Icons
+                                                      .arrow_upward_rounded,
                                                 ),
                                                 BitNetImageWithTextButton(
                                                   L10n.of(context)!.receive,
-                                                      () {
+                                                  () {
                                                     context.go(
                                                       '/wallet/receive/${controller.selectedCard.value}',
                                                     );
                                                   },
                                                   // image: "assets/images/receive_image.png",
-                                                  width: AppTheme.cardPadding * 2.5.h,
-                                                  height: AppTheme.cardPadding * 2.5.h,
-                                                  fallbackIcon: Icons.arrow_downward_rounded,
+                                                  width: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  height: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  fallbackIcon: Icons
+                                                      .arrow_downward_rounded,
                                                 ),
                                                 BitNetImageWithTextButton(
                                                   "Swap",
-                                                      () {
+                                                  () {
                                                     Get.put(LoopsController());
-                                                    context.go("/wallet/loop_screen");
+                                                    context.go(
+                                                        "/wallet/loop_screen");
                                                   },
                                                   // image: "assets/images/rebalance_image.png",
-                                                  width: AppTheme.cardPadding * 2.5.h,
-                                                  height: AppTheme.cardPadding * 2.5.h,
-                                                  fallbackIcon: Icons.sync_rounded,
+                                                  width: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  height: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  fallbackIcon:
+                                                      Icons.sync_rounded,
                                                 ),
                                                 BitNetImageWithTextButton(
                                                   "Buy",
-                                                      () {
+                                                  () {
                                                     Get.put(LoopsController());
-                                                    context.go("/wallet/loop_screen");
+                                                    context.go(
+                                                        "/wallet/loop_screen");
                                                   },
                                                   // image: "assets/images/send_image.png",
-                                                  width: AppTheme.cardPadding * 2.5.h,
-                                                  height: AppTheme.cardPadding * 2.5.h,
-                                                  fallbackIcon: FontAwesomeIcons.btc,
-                                                  fallbackIconSize: AppTheme.iconSize * 1.5,
-
+                                                  width: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  height: AppTheme.cardPadding *
+                                                      2.5.h,
+                                                  fallbackIcon:
+                                                      FontAwesomeIcons.btc,
+                                                  fallbackIconSize:
+                                                      AppTheme.iconSize * 1.5,
                                                 ),
                                               ],
                                             ),
                                           ],
                                         ),
                                       ),
-
-
                                     ],
                                   ),
                                 ),
@@ -502,8 +638,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             currency: Currency(
                               code: 'BTC',
                               name: 'Bitcoin (Onchain)',
-                              icon:
-                                  Image.asset("assets/images/bitcoin.png"),
+                              icon: Image.asset("assets/images/bitcoin.png"),
                             ),
                             context: context,
                             onTap: () {
@@ -514,8 +649,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       ),
                       SizedBox(height: AppTheme.elementSpacing.h),
                       Obx(() {
-                        final confirmedBalanceStr = walletController
-                            .lightningBalance.value.balance.obs;
+                        final confirmedBalanceStr =
+                            walletController.lightningBalance.value.balance.obs;
 
                         return CryptoInfoItem(
                           balance: confirmedBalanceStr.value,
@@ -524,8 +659,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           currency: Currency(
                             code: 'BTC',
                             name: 'Bitcoin (Lightning)',
-                            icon:
-                                Image.asset("assets/images/lightning.png"),
+                            icon: Image.asset("assets/images/lightning.png"),
                           ),
                           context: context,
                           onTap: () {

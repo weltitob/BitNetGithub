@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -26,8 +27,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:timezone/timezone.dart';
 
 class MempoolHome extends StatefulWidget {
   bool? isFromHome = false;
@@ -149,8 +152,9 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   @override
   Widget build(BuildContext context) {
-
     final overlayController = Get.find<OverlayController>();
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
 
     return PopScope(
       canPop: false,
@@ -180,7 +184,9 @@ class _MempoolHomeState extends State<MempoolHome> {
               () => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: AppTheme.cardPadding.h * 3,),
+                  SizedBox(
+                    height: AppTheme.cardPadding.h * 3,
+                  ),
                   controller.socketLoading.isTrue
                       ? Padding(
                           padding: const EdgeInsets.only(
@@ -473,7 +479,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                             .fromMillisecondsSinceEpoch(
                                                                           (controller.bitcoinData[index].timestamp! *
                                                                               1000),
-                                                                        ),
+                                                                        ).toUtc().add(Duration(
+                                                                            milliseconds:
+                                                                                loc.currentTimeZone.offset)),
                                                                       ),
                                                                       index: controller.selectedIndex ==
                                                                               index
@@ -757,9 +765,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           text: controller
                                                                               .txDetailsConfirmed!
                                                                               .id));
-                                                                      overlayController.showOverlay(
-                                                                          L10n.of(context)!
-                                                                              .copiedToClipboard);
+                                                                      overlayController
+                                                                          .showOverlay(
+                                                                              L10n.of(context)!.copiedToClipboard);
                                                                     },
                                                                     child: Row(
                                                                       children: [
@@ -825,248 +833,213 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           ),
                                         ),
                                         Obx(
-                                          () => controller.txDetailsConfirmed.isNull ? Container() : Visibility(
-                                              visible:
-                                                  controller.showBlock.value,
-                                              child: Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      context.push(
-                                                          "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
-                                                    },
-                                                    //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: AppTheme
-                                                              .cardPadding),
-                                                      child: SearchFieldWidget(
-                                                        isSearchEnabled: false,
-                                                        hintText:
-                                                            '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
-                                                        handleSearch:
-                                                            handleSearch,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: AppTheme
-                                                            .elementSpacing),
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                          () =>
+                                              controller
+                                                      .txDetailsConfirmed.isNull
+                                                  ? Container()
+                                                  : Visibility(
+                                                      visible: controller
+                                                          .showBlock.value,
+                                                      child: Column(
                                                         children: [
-                                                          // SizedBox(
-                                                          //   height: AppTheme
-                                                          //       .cardPadding
-                                                          //       .h,
-                                                          // ),
-                                                          // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
-                                                          const SizedBox(
-                                                            height: AppTheme
-                                                                .elementSpacing,
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              context.push(
+                                                                  "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                                                            },
+                                                            //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                                                            child: Padding(
+                                                              padding: const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      AppTheme
+                                                                          .cardPadding),
+                                                              child:
+                                                                  SearchFieldWidget(
+                                                                isSearchEnabled:
+                                                                    false,
+                                                                hintText:
+                                                                    '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
+                                                                handleSearch:
+                                                                    handleSearch,
+                                                              ),
+                                                            ),
                                                           ),
-                                                          ...onchainTransactions
-                                                              .map(
-                                                            (transaction) =>
-                                                                TransactionItem(
-                                                              data:
-                                                                  TransactionItemData(
-                                                                timestamp:
-                                                                    transaction
-                                                                        .timeStamp,
-                                                                status: transaction
-                                                                            .numConfirmations >
-                                                                        0
-                                                                    ? TransactionStatus
-                                                                        .confirmed
-                                                                    : TransactionStatus
-                                                                        .pending,
-                                                                type:
-                                                                    TransactionType
-                                                                        .onChain,
-                                                                direction: transaction
-                                                                        .amount!
-                                                                        .contains(
-                                                                            "-")
-                                                                    ? TransactionDirection
-                                                                        .sent
-                                                                    : TransactionDirection
-                                                                        .received,
-                                                                receiver: transaction
-                                                                        .amount!
-                                                                        .contains(
-                                                                            "-")
-                                                                    ? transaction
-                                                                        .destAddresses
-                                                                        .last
-                                                                        .toString()
-                                                                    : transaction
-                                                                        .destAddresses
-                                                                        .first
-                                                                        .toString(),
-                                                                txHash: transaction
-                                                                    .txHash
-                                                                    .toString(),
-                                                                fee: 0,
-                                                                amount: transaction
-                                                                        .amount!
-                                                                        .contains(
-                                                                            "-")
-                                                                    ? transaction
-                                                                        .amount
-                                                                        .toString()
-                                                                    : "+" +
-                                                                        transaction
-                                                                            .amount
+                                                          Container(
+                                                            margin: const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: AppTheme
+                                                                    .elementSpacing),
+                                                            child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  // SizedBox(
+                                                                  //   height: AppTheme
+                                                                  //       .cardPadding
+                                                                  //       .h,
+                                                                  // ),
+                                                                  // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
+                                                                  const SizedBox(
+                                                                    height: AppTheme
+                                                                        .elementSpacing,
+                                                                  ),
+                                                                  ...onchainTransactions
+                                                                      .map(
+                                                                    (transaction) =>
+                                                                        TransactionItem(
+                                                                      data:
+                                                                          TransactionItemData(
+                                                                        timestamp:
+                                                                            transaction.timeStamp,
+                                                                        status: transaction.numConfirmations >
+                                                                                0
+                                                                            ? TransactionStatus.confirmed
+                                                                            : TransactionStatus.pending,
+                                                                        type: TransactionType
+                                                                            .onChain,
+                                                                        direction: transaction.amount!.contains("-")
+                                                                            ? TransactionDirection.sent
+                                                                            : TransactionDirection.received,
+                                                                        receiver: transaction.amount!.contains("-")
+                                                                            ? transaction.destAddresses.last.toString()
+                                                                            : transaction.destAddresses.first.toString(),
+                                                                        txHash: transaction
+                                                                            .txHash
                                                                             .toString(),
-                                                              ),
-                                                            ),
-                                                          ), // TransactionItem(
-                                                          //     context: context,
-                                                          //     data: TransactionItemData(
-                                                          //       type: TransactionType.onChain,
-                                                          //       amount: "500",
-                                                          //       timestamp: 38399,
-                                                          //       status: TransactionStatus.confirmed,
-                                                          //       direction: TransactionDirection.received,
-                                                          //       txHash: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                                          //       fee: 321,
-                                                          //       receiver: "dihsdisd",
-                                                          //     )),
-                                                          BitNetListTile(
-                                                            leading: const Icon(
-                                                                Icons
-                                                                    .timelapse),
-                                                            text: L10n.of(
-                                                                    context)!
-                                                                .minedAt,
-                                                            trailing: Container(
-                                                              child: Column(
-                                                                children: [
-                                                                  Text(
-                                                                      DateFormat(
-                                                                              'yyyy-MM-dd hh:mm')
-                                                                          .format(
-                                                                        (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp *
-                                                                            1000)),
+                                                                        fee: 0,
+                                                                        amount: transaction.amount!.contains("-")
+                                                                            ? transaction.amount
+                                                                                .toString()
+                                                                            : "+" +
+                                                                                transaction.amount.toString(),
                                                                       ),
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .bodyMedium!
-                                                                          .copyWith(
-                                                                              fontWeight: FontWeight.bold)),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          BitNetListTile(
-                                                            leading: const Icon(
-                                                                FontAwesomeIcons
-                                                                    .truckPickup),
-                                                            text: L10n.of(
-                                                                    context)!
-                                                                .mined,
-                                                            trailing: Container(
-                                                              child: Column(
-                                                                children: [
-                                                                  Container(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            AppTheme.elementSpacing /
-                                                                                2,
-                                                                        vertical:
-                                                                            AppTheme.elementSpacing /
-                                                                                3),
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            AppTheme
-                                                                                .cardRadiusSmall,
-                                                                        color: AppTheme
-                                                                            .colorBitcoin),
-                                                                    child: Text(
-                                                                      (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
+                                                                    ),
+                                                                  ), // TransactionItem(
+                                                                  //     context: context,
+                                                                  //     data: TransactionItemData(
+                                                                  //       type: TransactionType.onChain,
+                                                                  //       amount: "500",
+                                                                  //       timestamp: 38399,
+                                                                  //       status: TransactionStatus.confirmed,
+                                                                  //       direction: TransactionDirection.received,
+                                                                  //       txHash: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                                                  //       fee: 321,
+                                                                  //       receiver: "dihsdisd",
+                                                                  //     )),
+                                                                  BitNetListTile(
+                                                                    leading:
+                                                                        const Icon(
+                                                                            Icons.timelapse),
+                                                                    text: L10n.of(
+                                                                            context)!
+                                                                        .minedAt,
+                                                                    trailing:
+                                                                        Container(
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Text(
+                                                                              DateFormat('yyyy-MM-dd hh:mm').format(
+                                                                                (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset))),
+                                                                              ),
+                                                                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          BitNetListTile(
-                                                            leading: const Icon(
-                                                                FontAwesomeIcons
-                                                                    .bitcoin),
-                                                            text: L10n.of(
-                                                                    context)!
-                                                                .minerRewardAndFees,
-                                                            trailing: Container(
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-                                                                      // Transform.translate(
-                                                                      //   offset: const Offset(0, 2),
-                                                                      //   child: Text(
-                                                                      //     ' BTC  ',
-                                                                      //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
-                                                                      //   ),
-                                                                      // ),
-                                                                      Text(
-                                                                        '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              AppTheme.successColor,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
+                                                                  BitNetListTile(
+                                                                    leading: const Icon(
+                                                                        FontAwesomeIcons
+                                                                            .truckPickup),
+                                                                    text: L10n.of(
+                                                                            context)!
+                                                                        .mined,
+                                                                    trailing:
+                                                                        Container(
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Container(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 3),
+                                                                            decoration:
+                                                                                BoxDecoration(borderRadius: AppTheme.cardRadiusSmall, color: AppTheme.colorBitcoin),
+                                                                            child:
+                                                                                Text(
+                                                                              (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
+                                                                              style: const TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
+                                                                    ),
+                                                                  ),
+                                                                  BitNetListTile(
+                                                                    leading: const Icon(
+                                                                        FontAwesomeIcons
+                                                                            .bitcoin),
+                                                                    text: L10n.of(
+                                                                            context)!
+                                                                        .minerRewardAndFees,
+                                                                    trailing:
+                                                                        Container(
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Row(
+                                                                            children: [
+                                                                              // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                                                                              // Transform.translate(
+                                                                              //   offset: const Offset(0, 2),
+                                                                              //   child: Text(
+                                                                              //     ' BTC  ',
+                                                                              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
+                                                                              //   ),
+                                                                              // ),
+                                                                              Text(
+                                                                                '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
+                                                                                style: const TextStyle(
+                                                                                  color: AppTheme.successColor,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  feeDistributionAccepted(),
+                                                                  const SizedBox(
+                                                                    height: AppTheme
+                                                                        .elementSpacing,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height: AppTheme
+                                                                          .cardPadding),
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceAround,
+                                                                    children: [
+                                                                      blockSizeAccepted(),
+                                                                      blockHealth(),
                                                                     ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
+                                                                ]),
                                                           ),
-                                                          feeDistributionAccepted(),
-                                                          const SizedBox(
+                                                          Container(
                                                             height: AppTheme
-                                                                .elementSpacing,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: AppTheme
-                                                                  .cardPadding),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceAround,
-                                                            children: [
-                                                              blockSizeAccepted(),
-                                                              blockHealth(),
-                                                            ],
-                                                          ),
-                                                        ]),
-                                                  ),
-                                                  Container(
-                                                    height:
-                                                        AppTheme.cardPadding *
-                                                            3,
-                                                  )
-                                                ],
-                                              )),
+                                                                    .cardPadding *
+                                                                3,
+                                                          )
+                                                        ],
+                                                      )),
                                         ),
                                       ],
                                     ),
@@ -1261,6 +1234,9 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 
   Widget difficultyAdjustment() {
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
+
     return Column(children: [
       const SizedBox(height: AppTheme.cardPadding * 1.5),
       Container(
@@ -1295,17 +1271,27 @@ class _MempoolHomeState extends State<MempoolHome> {
                                   child: Row(
                                     children: [
                                       Text(DateFormat.MMMd().format(DateTime
-                                              .fromMillisecondsSinceEpoch(
-                                                  controller.da!
-                                                      .estimatedRetargetDate!
-                                                      .toInt())) ??
+                                                  .fromMillisecondsSinceEpoch(
+                                                      controller.da!
+                                                          .estimatedRetargetDate!
+                                                          .toInt())
+                                              .toUtc()
+                                              .add(Duration(
+                                                  milliseconds: loc
+                                                      .currentTimeZone
+                                                      .offset))) ??
                                           ''),
                                       const Text(' at '),
                                       Text(DateFormat.jm().format(DateTime
-                                              .fromMillisecondsSinceEpoch(
-                                                  controller.da!
-                                                      .estimatedRetargetDate!
-                                                      .toInt())) ??
+                                                  .fromMillisecondsSinceEpoch(
+                                                      controller.da!
+                                                          .estimatedRetargetDate!
+                                                          .toInt())
+                                              .toUtc()
+                                              .add(Duration(
+                                                  milliseconds: loc
+                                                      .currentTimeZone
+                                                      .offset))) ??
                                           ''),
                                     ],
                                   ),
@@ -1697,7 +1683,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                   ],
                 ),
               ),
-
             ],
           ),
         ),
@@ -1782,11 +1767,15 @@ class _MempoolHomeState extends State<MempoolHome> {
                         end: Alignment.centerRight,
                         stops: [0.1, 0.9],
                         tileMode: TileMode.clamp)),
-                minimum: controller.mempoolBlocks[controller.indexShowBlock.value]
-                    .feeRange!.first
+                minimum: controller
+                    .mempoolBlocks[controller.indexShowBlock.value]
+                    .feeRange!
+                    .first
                     .toDouble(),
                 maximum: controller
-                    .mempoolBlocks[controller.indexShowBlock.value].feeRange!.last
+                    .mempoolBlocks[controller.indexShowBlock.value]
+                    .feeRange!
+                    .last
                     .toDouble(),
                 markerPointers: [
                   LinearWidgetPointer(
