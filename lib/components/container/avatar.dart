@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/coinlogo.dart';
+import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +20,8 @@ class Avatar extends StatelessWidget {
   final double fontSize;
   final bool isNft;
   final Widget? cornerWidget;
+  final bool local;
+  final imageBytes;
 
   const Avatar({
     this.type = profilePictureType.none,
@@ -29,6 +34,8 @@ class Avatar extends StatelessWidget {
     this.profileId,
     required this.isNft,
     this.cornerWidget,
+    this.local = false,
+    this.imageBytes,
   }) : super(key: key);
 
   @override
@@ -42,9 +49,10 @@ class Avatar extends StatelessWidget {
         fallbackLetters = name;
       }
     }
-    final noPic = mxContent == null ||
-        mxContent.toString().isEmpty ||
-        mxContent.toString() == 'null';
+    final noPic = (mxContent == null ||
+            mxContent.toString().isEmpty ||
+            mxContent.toString() == 'null') &&
+        !local;
 
     final textWidget = Center(
       child: Icon(
@@ -83,19 +91,25 @@ class Avatar extends StatelessWidget {
           child: Container(
             width: size - borderPadding * 1.5,
             height: size - borderPadding * 1.5,
-            color: Theme.of(context).brightness == Brightness.dark ?
-            lighten(Theme.of(context).primaryColor, 5) : darken(Theme.of(context).primaryColor, 5), // Default color behind image
+            color: Theme.of(context).brightness == Brightness.dark
+                ? lighten(Theme.of(context).primaryColor, 5)
+                : darken(Theme.of(context).primaryColor,
+                    5), // Default color behind image
             child: noPic
                 ? textWidget
-                : MxcImage(
-                    key: Key(mxContent.toString()),
-                    uri: mxContent,
-                    fit: BoxFit.cover,
-                    width: size,
-                    height: size,
-                    placeholder: (_) => textWidget,
-                    cacheKey: mxContent.toString(),
-                  ),
+                : local
+                    ? imageBytes is String
+                        ? ImageBuilder(encodedData: imageBytes)
+                        : Image.memory(imageBytes!)
+                    : MxcImage(
+                        key: Key(mxContent.toString()),
+                        uri: mxContent,
+                        fit: BoxFit.cover,
+                        width: size,
+                        height: size,
+                        placeholder: (_) => textWidget,
+                        cacheKey: mxContent.toString(),
+                      ),
           ),
         ),
       ),

@@ -19,7 +19,9 @@ import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/bottomnav.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 
@@ -150,8 +152,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               true.obs
                                           ? Avatar(
                                               onTap: () async {
-                                                context.go(
-                                                    '/profile/${Auth().currentUser?.uid}');
+                                                // context.go(
+                                                //     '/profile/${Auth().currentUser?.uid}');
+                                                bottomNavKey.currentState
+                                                    ?.onItemTapped(
+                                                        2,
+                                                        Get.find<
+                                                                ProfileController>()
+                                                            .scrollController);
                                               },
                                               isNft: false,
                                             )
@@ -160,6 +168,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 final profileId =
                                                     Auth().currentUser?.uid;
                                                 // context.go('/profile/$profileId');
+                                                bottomNavKey.currentState
+                                                    ?.onItemTapped(
+                                                        2,
+                                                        Get.find<
+                                                                ProfileController>()
+                                                            .scrollController);
                                               },
                                               size: AppTheme.cardPadding * 1.5,
                                               mxContent: Uri.parse(
@@ -522,6 +536,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   L10n.of(context)!.send,
                                                   () {
                                                     context.go('/wallet/send');
+                                                    WidgetsBinding.instance
+                                                        .addPostFrameCallback(
+                                                            (_) {
+                                                      Get.find<
+                                                              SendsController>()
+                                                          .getClipboardData();
+                                                    });
                                                   },
                                                   // image: "assets/images/send_image.png",
                                                   width: AppTheme.cardPadding *

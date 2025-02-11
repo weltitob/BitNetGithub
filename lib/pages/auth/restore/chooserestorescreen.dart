@@ -92,6 +92,13 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                   () {
                 context.go('/authhome/login/social_recovery');
               }, image: "assets/images/friends.png"),
+              BitNetImageWithTextContainer(
+                "Email Recovery",
+                () {
+                  context.go('/authhome/login/email_recovery');
+                },
+                image: "assets/images/friends.png",
+              )
               // BitNetImageWithTextContainer(L10n.of(context)!.socialRecovery,
               //         () {
               //       context.go('/authhome/login/social_recovery');

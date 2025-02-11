@@ -37,11 +37,14 @@ class _QuotesState extends State<Quotes> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isIntermediateScreen =
+          constraints.maxWidth < AppTheme.isIntermediateScreen;
 
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
@@ -65,8 +68,12 @@ class _QuotesState extends State<Quotes> {
                         top: isIntermediateScreen
                             ? isSmallScreen
                                 ? AppTheme.cardPadding * 16 + 160
-                                : AppTheme.cardPadding * 5 + spacingMultiplier + 180
-                            : AppTheme.cardPadding * 5 + spacingMultiplier + 180,
+                                : AppTheme.cardPadding * 5 +
+                                    spacingMultiplier +
+                                    180
+                            : AppTheme.cardPadding * 5 +
+                                spacingMultiplier +
+                                180,
                         left: isIntermediateScreen
                             ? isSmallScreen
                                 ? 425 - AppTheme.cardPadding * 6
@@ -147,7 +154,8 @@ class _QuotesState extends State<Quotes> {
                                       : 240
                                   : 240,
                               padding: EdgeInsets.symmetric(
-                                horizontal: AppTheme.cardPadding * spacingMultiplier,
+                                horizontal:
+                                    AppTheme.cardPadding * spacingMultiplier,
                                 vertical: AppTheme.cardPadding * 2.25,
                               ),
                               child: _isThirdAnimationCompleted
@@ -158,20 +166,31 @@ class _QuotesState extends State<Quotes> {
                                           isRepeatingAnimation: false,
                                           animatedTexts: [
                                             TypewriterAnimatedText(
-                                              L10n.of(context)!.weEmpowerTomorrow,
+                                              L10n.of(context)!
+                                                  .weEmpowerTomorrow,
                                               textAlign: TextAlign.center,
-                                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                                    color: Colors.white, // This color will be replaced by the gradient effect
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge!
+                                                  .copyWith(
+                                                    color: Colors
+                                                        .white, // This color will be replaced by the gradient effect
                                                   ),
-                                              speed: const Duration(milliseconds: 50),
+                                              speed: const Duration(
+                                                  milliseconds: 50),
                                             ),
                                             TypewriterAnimatedText(
                                               L10n.of(context)!.joinUsToday,
                                               textAlign: TextAlign.center,
-                                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                                    color: Colors.white, // This color will be replaced by the gradient effect
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge!
+                                                  .copyWith(
+                                                    color: Colors
+                                                        .white, // This color will be replaced by the gradient effect
                                                   ),
-                                              speed: const Duration(milliseconds: 50),
+                                              speed: const Duration(
+                                                  milliseconds: 50),
                                             ),
                                           ],
                                         ),
@@ -185,27 +204,51 @@ class _QuotesState extends State<Quotes> {
                                             _selectedindex = index;
                                           });
                                           // Restart the FadeIn animation
-                                          fadeInKey.currentState?.restartAnimation();
+                                          fadeInKey.currentState
+                                              ?.restartAnimation();
                                         },
-                                        itemCount: widget.controller.pageDataList.length,
+                                        itemCount: widget
+                                            .controller.pageDataList.length,
                                         itemBuilder: (context, index) {
                                           return Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.25),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal:
+                                                    AppTheme.cardPadding *
+                                                        1.25),
                                             child: Column(
                                               children: [
                                                 TypewriterTextWidget(
-                                                    text: widget.controller.pageDataList[index].text,
-                                                    selectedIndex: _selectedindex,
-                                                    isThirdAnimationCompleted: () {
-                                                      _isThirdAnimationCompleted = true;
+                                                    text: widget
+                                                        .controller
+                                                        .pageDataList[index]
+                                                        .text,
+                                                    selectedIndex:
+                                                        _selectedindex,
+                                                    isThirdAnimationCompleted:
+                                                        () {
+                                                      _isThirdAnimationCompleted =
+                                                          true;
                                                       setState(() {});
                                                     },
                                                     onCompleted: () {
-                                                      if (index < widget.controller.pageDataList.length - 1) {
-                                                        Future.delayed(const Duration(milliseconds: 2000), () {
-                                                          _pageController.nextPage(
-                                                            duration: const Duration(milliseconds: 400),
-                                                            curve: Curves.easeInOut,
+                                                      if (index <
+                                                          widget
+                                                                  .controller
+                                                                  .pageDataList
+                                                                  .length -
+                                                              1) {
+                                                        Future.delayed(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    2000), () {
+                                                          _pageController
+                                                              .nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        400),
+                                                            curve: Curves
+                                                                .easeInOut,
                                                           );
                                                         });
                                                       }
@@ -222,7 +265,8 @@ class _QuotesState extends State<Quotes> {
                                 : Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                        margin: const EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
+                                        margin: const EdgeInsets.only(
+                                            bottom: AppTheme.cardPadding * 1),
                                         child: CustomIndicator(
                                           dotHeight: AppTheme.elementSpacing,
                                           dotWidth: AppTheme.elementSpacing,
@@ -230,7 +274,9 @@ class _QuotesState extends State<Quotes> {
                                           count: 3,
                                           onClickIndicator: (i) {
                                             _pageController.animateToPage(i,
-                                                duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+                                                duration: const Duration(
+                                                    milliseconds: 400),
+                                                curve: Curves.easeInOut);
                                           },
                                         )),
                                   ),
@@ -307,9 +353,13 @@ class _QuotesState extends State<Quotes> {
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(
-                        bottom: isSmallScreen ? 240 + AppTheme.cardPadding * 10.5 : AppTheme.cardPadding * 10.5,
+                        bottom: isSmallScreen
+                            ? 240 + AppTheme.cardPadding * 10.5
+                            : AppTheme.cardPadding * 10.5,
                       ),
-                      child: UserSearchResultWidget(userData: widget.controller.pageDataList[_selectedindex].userData),
+                      child: UserSearchResultWidget(
+                          userData: widget.controller
+                              .pageDataList[_selectedindex].userData),
                     ),
                   ),
                 ),
@@ -329,7 +379,8 @@ class QuoteTextWidget extends StatelessWidget {
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontSize: 170,
             fontFamily: GoogleFonts.lobster().fontFamily,
-            color: AppTheme.colorBitcoin, // This color will be replaced by the gradient effect
+            color: AppTheme
+                .colorBitcoin, // This color will be replaced by the gradient effect
           ),
     );
   }
@@ -380,7 +431,8 @@ class TypewriterTextWidget extends StatelessWidget {
 class UserSearchResultWidget extends StatelessWidget {
   final UserData userData;
 
-  const UserSearchResultWidget({Key? key, required this.userData}) : super(key: key);
+  const UserSearchResultWidget({Key? key, required this.userData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -391,20 +443,21 @@ class UserSearchResultWidget extends StatelessWidget {
         return null;
       },
       userData: UserData(
-        backgroundImageUrl: userData.backgroundImageUrl,
-        isPrivate: userData.isPrivate,
-        showFollowers: userData.showFollowers,
-        did: userData.did,
-        displayName: userData.displayName,
-        bio: userData.bio,
-        customToken: userData.customToken,
-        username: userData.username,
-        profileImageUrl: userData.profileImageUrl,
-        createdAt: userData.createdAt,
-        updatedAt: userData.updatedAt,
-        isActive: userData.isActive,
-        dob: userData.dob,
-      ),
+          backgroundImageUrl: userData.backgroundImageUrl,
+          isPrivate: userData.isPrivate,
+          showFollowers: userData.showFollowers,
+          did: userData.did,
+          displayName: userData.displayName,
+          bio: userData.bio,
+          customToken: userData.customToken,
+          username: userData.username,
+          profileImageUrl: userData.profileImageUrl,
+          createdAt: userData.createdAt,
+          updatedAt: userData.updatedAt,
+          isActive: userData.isActive,
+          dob: userData.dob,
+          setupQrCodeRecovery: userData.setupQrCodeRecovery,
+          setupWordRecovery: userData.setupWordRecovery),
     );
   }
 }

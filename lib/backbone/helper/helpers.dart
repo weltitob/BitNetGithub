@@ -95,7 +95,7 @@ bool isBip21WithBolt11(String input) {
       String? lightningParam = uri.queryParameters["lightning"];
 
       if (lightningParam != null) {
-        if (lightningParam.startsWith("LNBC") &&
+        if (lightningParam.toUpperCase().startsWith("LNBC") &&
             isBitcoinWalletValid(uri.path)) {
           return true;
         }

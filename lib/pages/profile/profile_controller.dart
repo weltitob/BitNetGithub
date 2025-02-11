@@ -80,7 +80,10 @@ class ProfileController extends BaseController {
   Map<String, AssetMetaResponse> assetMetaMap = {};
   DateTime originalBlockDate = DateTime.now();
   bool get profileReady =>
-      gotIsFollowing.value == true && gotFollowerCount.value == true && gotFollowingCount.value == true && isUserLoading.value == false;
+      gotIsFollowing.value == true &&
+      gotFollowerCount.value == true &&
+      gotFollowingCount.value == true &&
+      isUserLoading.value == false;
 
   @override
   void onInit() {
@@ -127,7 +130,9 @@ class ProfileController extends BaseController {
   Future<void> getUserId() async {
     final logger = Get.find<LoggerService>();
     logger.i("Getting user id for profile page: ${Auth().currentUser!.uid}");
-    QuerySnapshot<Map<String, dynamic>> query = await usersCollection.where('did', isEqualTo: Auth().currentUser!.uid).get();
+    QuerySnapshot<Map<String, dynamic>> query = await usersCollection
+        .where('did', isEqualTo: Auth().currentUser!.uid)
+        .get();
     if (query.docs.isEmpty) {
       profileId = "";
     } else {
@@ -175,8 +180,10 @@ class ProfileController extends BaseController {
     if (assetsLazyLoading.length < assets.length) {
       int nextIndex = assetsLazyLoading.length;
       int endIndex = nextIndex + 10;
-      List<dynamic> nextAssets = assets.sublist(nextIndex, endIndex > assets.length ? assets.length : endIndex);
-      await fetchNext20Metas(nextIndex, 10); // Load metadata for the next 20 assets
+      List<dynamic> nextAssets = assets.sublist(
+          nextIndex, endIndex > assets.length ? assets.length : endIndex);
+      await fetchNext20Metas(
+          nextIndex, 10); // Load metadata for the next 20 assets
       assetsLazyLoading.addAll(nextAssets);
       isLoading.value = false;
     }
@@ -188,6 +195,8 @@ class ProfileController extends BaseController {
     await getUserId();
     await getUser();
     socialRecoveryInit();
+    emailRecoveryInit();
+    wordRecoveryInit();
     getFollowers();
     getFollowing();
     checkIfFollowing();
@@ -298,17 +307,32 @@ class ProfileController extends BaseController {
   void handleUnfollowUser() {
     final myuser = Auth().currentUser!.uid;
     isFollowing!.value = false;
-    followersRef.doc(profileId).collection('userFollowers').doc(myuser).get().then((doc) {
+    followersRef
+        .doc(profileId)
+        .collection('userFollowers')
+        .doc(myuser)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    followingRef.doc(myuser).collection('userFollowing').doc(profileId).get().then((doc) {
+    followingRef
+        .doc(myuser)
+        .collection('userFollowing')
+        .doc(profileId)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    activityFeedRef.doc(profileId).collection('feedItems').doc(myuser).get().then((doc) {
+    activityFeedRef
+        .doc(profileId)
+        .collection('feedItems')
+        .doc(myuser)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
@@ -317,7 +341,8 @@ class ProfileController extends BaseController {
 
   void getFollowers() async {
     try {
-      QuerySnapshot snapshot = await followersRef.doc(profileId).collection('userFollowers').get();
+      QuerySnapshot snapshot =
+          await followersRef.doc(profileId).collection('userFollowers').get();
       followerCount?.value = snapshot.docs.length;
       gotFollowerCount.value = true;
     } catch (e, tr) {
@@ -328,7 +353,8 @@ class ProfileController extends BaseController {
 
   void getFollowing() async {
     try {
-      QuerySnapshot snapshot = await followingRef.doc(profileId).collection('userFollowing').get();
+      QuerySnapshot snapshot =
+          await followingRef.doc(profileId).collection('userFollowing').get();
       followingCount?.value = snapshot.docs.length;
       gotFollowingCount.value = true;
     } catch (e, tr) {
@@ -340,13 +366,29 @@ class ProfileController extends BaseController {
   void checkIfFollowing() async {
     try {
       final myuser = Auth().currentUser!.uid;
-      DocumentSnapshot doc = await followersRef.doc(profileId).collection('userFollowers').doc(myuser).get();
+      DocumentSnapshot doc = await followersRef
+          .doc(profileId)
+          .collection('userFollowers')
+          .doc(myuser)
+          .get();
       isFollowing?.value = doc.exists;
       gotIsFollowing.value = true;
     } catch (e, tr) {
       print(e);
       print(tr);
     }
+  }
+
+  Future<void> setQrCodeRecoverySeen() async {
+    userData.value = userData.value.copyWith(setupQrCodeRecovery: true);
+    await usersCollection
+        .doc(profileId)
+        .update({'setup_qr_code_recovery': true});
+  }
+
+  Future<void> setWordRecoveryConfirmed() async {
+    userData.value = userData.value.copyWith(setupWordRecovery: true);
+    await usersCollection.doc(profileId).update({'setup_word_recovery': true});
   }
 
   Future<void> fetchTaprootAssetsAsync() async {
@@ -366,7 +408,9 @@ class ProfileController extends BaseController {
   Future<void> loadMoreMetaAssets(int amt) async {
     try {
       Map<String, AssetMetaResponse> metas = {};
-      for (int i = assetMetaMap.length, a = 0; i < assets.value.length && a < amt; i++) {
+      for (int i = assetMetaMap.length, a = 0;
+          i < assets.value.length && a < amt;
+          i++) {
         String assetId = assets.value[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {
@@ -398,9 +442,14 @@ class ProfileController extends BaseController {
   Future<void> handleProfileImageSelected(AssetEntity image) async {
     File? file = await image.file;
     if (file == null) return;
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putFile(file);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: '');
-    await usersCollection.doc(profileId).update({'profileImageUrl': userData.value.profileImageUrl, 'nft_profile_id': ''});
+    TaskSnapshot task =
+        await storageRef.child('users/${profileId}/profile.jpg').putFile(file);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: '');
+    await usersCollection.doc(profileId).update({
+      'profileImageUrl': userData.value.profileImageUrl,
+      'nft_profile_id': ''
+    });
   }
 
   Future<void> handleProfileNftSelected(MediaDatePair pair) async {
@@ -408,17 +457,31 @@ class ProfileController extends BaseController {
     final base64String = pair.media!.data.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: pair.assetId);
-    await usersCollection.doc(profileId).update({'profileImageUrl': userData.value.profileImageUrl, 'nft_profile_id': '${pair.assetId}'});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/profile.jpg')
+        .putData(imageBytes);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(),
+        nft_profile_id: pair.assetId);
+    await usersCollection.doc(profileId).update({
+      'profileImageUrl': userData.value.profileImageUrl,
+      'nft_profile_id': '${pair.assetId}'
+    });
   }
 
   Future<void> handleBackgroundImageSelected(AssetEntity image) async {
     File? file = await image.file;
     if (file == null) return;
-    TaskSnapshot task = await storageRef.child('users/${profileId}/background.jpg').putFile(file);
-    userData.value = userData.value.copyWith(backgroundImageUrl: await task.ref.getDownloadURL(), nft_background_id: '');
-    await usersCollection.doc(profileId).update({'backgroundImageUrl': userData.value.backgroundImageUrl, 'nft_background_id': ''});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/background.jpg')
+        .putFile(file);
+    userData.value = userData.value.copyWith(
+        backgroundImageUrl: await task.ref.getDownloadURL(),
+        nft_background_id: '');
+    await usersCollection.doc(profileId).update({
+      'backgroundImageUrl': userData.value.backgroundImageUrl,
+      'nft_background_id': ''
+    });
   }
 
   Future<void> handleBackgroundNftSelected(MediaDatePair pair) async {
@@ -426,29 +489,86 @@ class ProfileController extends BaseController {
     final base64String = pair.media!.data.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: pair.assetId);
-    await usersCollection
-        .doc(profileId)
-        .update({'backgroundImageUrl': userData.value.backgroundImageUrl, 'nft_profile_id': '${pair.assetId}'});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/profile.jpg')
+        .putData(imageBytes);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(),
+        nft_profile_id: pair.assetId);
+    await usersCollection.doc(profileId).update({
+      'backgroundImageUrl': userData.value.backgroundImageUrl,
+      'nft_profile_id': '${pair.assetId}'
+    });
   }
 
   void socialRecoveryInit() {
-    socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).get().then((doc) {
+    socialRecoveryCollection
+        .doc(Get.find<ProfileController>().userData.value.username)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         Get.find<SettingsController>().initiateSocialRecovery.value = 2;
-        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
-            initialPage: 3,
-            onAttach: (pos) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Get.find<SettingsController>().pageControllerSocialRecovery.jumpToPage(3);
-              });
-            });
+        Get.find<SettingsController>().pageControllerSocialRecovery =
+            PageController(
+                initialPage: 3,
+                onAttach: (pos) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Get.find<SettingsController>()
+                        .pageControllerSocialRecovery
+                        .jumpToPage(3);
+                  });
+                });
       } else {
-        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(initialPage: 0);
+        Get.find<SettingsController>().pageControllerSocialRecovery =
+            PageController(initialPage: 0);
       }
     }, onError: (_) {
-      Get.find<SettingsController>().pageControllerSocialRecovery = PageController(initialPage: 0);
+      Get.find<SettingsController>().pageControllerSocialRecovery =
+          PageController(initialPage: 0);
     });
+  }
+
+  void emailRecoveryInit() {
+    emailRecoveryCollection.doc(Auth().currentUser!.uid).get().then((doc) {
+      if (doc.exists &&
+          doc.data() != null &&
+          doc.data()!.containsKey('verified') &&
+          doc.data()!['verified']) {
+        Get.find<SettingsController>().emailRecoveryState.value = 2;
+        Get.find<SettingsController>().pageControllerEmailRecovery =
+            PageController(
+                initialPage: 2,
+                onAttach: (pos) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Get.find<SettingsController>()
+                        .pageControllerEmailRecovery
+                        .jumpToPage(2);
+                  });
+                });
+      } else if (doc.exists) {
+        Get.find<SettingsController>().emailRecoveryState.value = 1;
+        Get.find<SettingsController>().pageControllerEmailRecovery =
+            PageController(
+                initialPage: 1,
+                onAttach: (pos) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Get.find<SettingsController>()
+                        .pageControllerEmailRecovery
+                        .jumpToPage(1);
+                  });
+                });
+      } else {
+        Get.find<SettingsController>().pageControllerEmailRecovery =
+            PageController(initialPage: 0);
+      }
+    }, onError: (_) {
+      Get.find<SettingsController>().pageControllerEmailRecovery =
+          PageController(initialPage: 0);
+    });
+  }
+
+  void wordRecoveryInit() {
+    Get.find<SettingsController>().wordRecoveryState.value =
+        userData.value.setupWordRecovery ? 2 : 0;
   }
 }

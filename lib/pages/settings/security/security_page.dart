@@ -9,7 +9,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
-import 'package:bitnet/pages/settings/social_recovery/social_recovery_view.dart';
+import 'package:bitnet/pages/settings/emergency_recovery/social_recovery/social_recovery_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -295,5 +295,4 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       ),
     );
   }
-
 }

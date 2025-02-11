@@ -28,10 +28,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 int _selectedIndex = 1;
+final GlobalKey<_BottomNavState> bottomNavKey = GlobalKey();
 
 class BottomNav extends StatefulWidget {
   final GoRouterState routerState;
-  const BottomNav({Key? key, required this.routerState}) : super(key: key);
+  BottomNav({Key? key, required this.routerState}) : super(key: bottomNavKey);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
@@ -134,7 +135,7 @@ class _BottomNavState extends State<BottomNav>
     Profile()
   ];
 
-  void _onItemTapped(int index, ScrollController controller) {
+  void onItemTapped(int index, ScrollController controller) {
     setState(() {
       if (index == _selectedIndex) {
         controller.animateTo(0,
@@ -240,15 +241,15 @@ class _BottomNavState extends State<BottomNav>
                       onTap: (i) {
                         switch (i) {
                           case 0:
-                            _onItemTapped(
+                            onItemTapped(
                                 i,
                                 Get.find<FeedController>()
                                     .scrollControllerColumn);
                           case 1:
-                            _onItemTapped(i,
+                            onItemTapped(i,
                                 Get.find<WalletsController>().scrollController);
                           case 2:
-                            _onItemTapped(i,
+                            onItemTapped(i,
                                 Get.find<ProfileController>().scrollController);
                         }
                       },

@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/generate_custom_token.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +40,12 @@ class Matrix extends StatefulWidget {
   MatrixState createState() => MatrixState();
 
   /// Returns the (nearest) Client instance of your application.
-  static MatrixState of(BuildContext context) => Provider.of<MatrixState>(context, listen: false);
+  static MatrixState of(BuildContext context) =>
+      Provider.of<MatrixState>(context, listen: false);
 }
 
 class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   late BuildContext navigatorContext;
-
   @override
   void initState() {
     super.initState();
@@ -50,6 +55,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     });
     initMatrix();
     initLoadingDialog();
+    initAuthListener();
     // InternetPopup().initializeCustomWidget(
     //   context: context,
     //   widget: FutureBuilder(
@@ -69,8 +75,10 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     if (PlatformInfos.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ([TargetPlatform.linux].contains(Theme.of(context).platform)
-                ? SharedPreferences.getInstance().then((prefs) => prefs.getString(SettingKeys.appLockKey))
-                : const FlutterSecureStorage().read(key: SettingKeys.appLockKey))
+                ? SharedPreferences.getInstance()
+                    .then((prefs) => prefs.getString(SettingKeys.appLockKey))
+                : const FlutterSecureStorage()
+                    .read(key: SettingKeys.appLockKey))
             .then((lock) {
           if (lock?.isNotEmpty ?? false) {
             AppLock.of(widget.context)!.enable();
@@ -106,7 +114,8 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   Future<void> initConfig() async {
     LoggerService logger = Get.find();
     try {
-      final configJsonString = utf8.decode((await http.get(Uri.parse('config.json'))).bodyBytes);
+      final configJsonString =
+          utf8.decode((await http.get(Uri.parse('config.json'))).bodyBytes);
       final configJson = json.decode(configJsonString);
       AppTheme.loadFromJson(configJson);
     } on FormatException catch (_) {
@@ -131,13 +140,39 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    bool shouldBeBuilder = kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website');
+    bool shouldBeBuilder = kIsWeb &&
+        !(widget.child as Router)
+            .routeInformationProvider!
+            .value
+            .uri
+            .toString()
+            .contains('website');
     return Provider(
       create: (_) => this,
-      child: (kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website'))
+      child: (kIsWeb &&
+              !(widget.child as Router)
+                  .routeInformationProvider!
+                  .value
+                  .uri
+                  .toString()
+                  .contains('website'))
           ? WebBuilder(widget: widget)
           : widget.child,
     );
+  }
+
+  void initAuthListener() {
+    Auth().authStateChanges.listen((val) async {
+      if (val == null) {
+        String? savedUser = LocalStorage.instance.getString("most_recent_user");
+        if (savedUser != null && savedUser != "") {
+          String? token = await generateCustomToken(savedUser);
+          if (token != null) {
+            Auth().reAuthenticate(customToken: token);
+          }
+        }
+      }
+    });
   }
 }
 
@@ -152,7 +187,8 @@ class WebBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: cloneMediaQueryWithSize(MediaQueryData.fromView(View.of(context)), const Size(375, 812)),
+      data: cloneMediaQueryWithSize(
+          MediaQueryData.fromView(View.of(context)), const Size(375, 812)),
       child: Container(
           width: double.infinity,
           height: double.infinity,
@@ -162,15 +198,20 @@ class WebBuilder extends StatelessWidget {
               end: Alignment.centerRight,
               colors: [
                 Theme.of(context).brightness == Brightness.light
-                    ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
-                    : darken(Theme.of(context).colorScheme.primaryContainer, 80),
+                    ? lighten(
+                        Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.primaryContainer, 80),
                 Theme.of(context).brightness == Brightness.light
-                    ? lighten(Theme.of(context).colorScheme.tertiaryContainer, 50)
-                    : darken(Theme.of(context).colorScheme.tertiaryContainer, 80),
+                    ? lighten(
+                        Theme.of(context).colorScheme.tertiaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.tertiaryContainer, 80),
               ],
             ),
           ),
-          child: ClipRRect(child: Center(child: SizedBox(width: 375, child: widget.child)))),
+          child: ClipRRect(
+              child: Center(child: SizedBox(width: 375, child: widget.child)))),
     );
   }
 

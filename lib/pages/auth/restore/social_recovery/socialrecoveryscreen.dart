@@ -31,14 +31,16 @@ class SocialRecoveryScreen extends StatefulWidget {
 }
 
 class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
-  bool isFinished = false; // a flag indicating whether the send process is finished
+  bool isFinished =
+      false; // a flag indicating whether the send process is finished
   bool readyForLogin = false; // a flag indicating wh
   late PageController controller;
   late Function() nodeListener;
   late FocusNode node;
   List<Map<String, dynamic>> searchUsers = List.empty(growable: true);
   List<Map<String, dynamic>> keyUsers = List.empty(growable: true);
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? socialRecoveryStream;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      socialRecoveryStream;
   Map<String, dynamic>? selectedUser;
   SocialRecoveryDocModel? socialRecoveryModel;
   //0 for failure but initUser exists, 1 for success, 2 for loading
@@ -51,7 +53,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
     node.addListener(nodeListener = () {
       setState(() {});
     });
-    String? initUser = LocalStorage.instance.getString('social_recovery_init_user');
+    String? initUser =
+        LocalStorage.instance.getString('social_recovery_init_user');
     if (initUser != null && initUser.isNotEmpty) {
       setupRecoveryData(initUser, true);
     }
@@ -66,7 +69,10 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
         state = 0;
       } else {
         selectedUser = {...userDoc.data()!, 'doc_id': userDoc.id};
-        DocumentSnapshot<Map<String, dynamic>> socialDoc = await socialRecoveryCollection.doc(userDoc.data()!['username']).get();
+        DocumentSnapshot<Map<String, dynamic>> socialDoc =
+            await socialRecoveryCollection
+                .doc(userDoc.data()!['username'])
+                .get();
 
         if (socialDoc.data() == null) {
           state = -1;
@@ -78,7 +84,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
               if (initUserExists) {
                 controller.jumpToPage(1);
               } else {
-                controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                controller.nextPage(
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.easeIn);
               }
             });
           }
@@ -94,7 +102,11 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           }
 
           if (!allAcceptedInvite ||
-              socialRecoveryModel!.users.where((test) => test.username == selectedUser!['username']).first.openKey.isEmpty) {
+              socialRecoveryModel!.users
+                  .where((test) => test.username == selectedUser!['username'])
+                  .first
+                  .openKey
+                  .isEmpty) {
             if (initUserExists) {
               LocalStorage.instance.prefs.remove('social_recovery_init_user');
             }
@@ -104,7 +116,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                 if (initUserExists) {
                   //controller.jumpToPage(1);
                 } else {
-                  controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                  controller.nextPage(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.easeIn);
                 }
               });
             }
@@ -113,7 +127,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           }
           if (socialRecoveryModel!.requestedRecovery && !initUserExists) {
             final overlayController = Get.find<OverlayController>();
-            overlayController.showOverlay('Someone else is trying to recover this account.', color: AppTheme.errorColor);
+            overlayController.showOverlay(
+                'Someone else is trying to recover this account.',
+                color: AppTheme.errorColor);
             state = 0;
             setState(() {});
             return;
@@ -124,9 +140,12 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
               continue;
             } else {
               QuerySnapshot<Map<String, dynamic>> querySnap =
-                  await usersCollection.where('username', isEqualTo: users[i]['username']).get();
+                  await usersCollection
+                      .where('username', isEqualTo: users[i]['username'])
+                      .get();
               if (querySnap.docs.isEmpty) {
-                keyUsers.add({'username': users[i]['username'], 'exists': false});
+                keyUsers
+                    .add({'username': users[i]['username'], 'exists': false});
               } else {
                 keyUsers.add({
                   'doc_id': querySnap.docs.first.id,
@@ -138,18 +157,27 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
             }
           }
           if (!initUserExists) {
-            await socialDoc.reference.update({'requested_recovery': true, 'request_timestamp': Timestamp.now()});
-            LocalStorage.instance.setString(selectedUser!['doc_id'], 'social_recovery_init_user');
+            await socialDoc.reference.update({
+              'requested_recovery': true,
+              'request_timestamp': Timestamp.now()
+            });
+            LocalStorage.instance.setString(
+                selectedUser!['doc_id'], 'social_recovery_init_user');
           }
           if (socialRecoveryStream == null) {
-            socialRecoveryStream = socialRecoveryCollection.doc(userDoc.data()!['username']).snapshots().listen(streamListener);
+            socialRecoveryStream = socialRecoveryCollection
+                .doc(userDoc.data()!['username'])
+                .snapshots()
+                .listen(streamListener);
           }
           if (controller.page == 0) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (initUserExists) {
                 controller.jumpToPage(1);
               } else {
-                controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                controller.nextPage(
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.easeIn);
               }
             });
           }
@@ -172,17 +200,22 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-          margin: isSuperSmallScreen ? const EdgeInsets.symmetric(horizontal: 0) : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+          margin: isSuperSmallScreen
+              ? const EdgeInsets.symmetric(horizontal: 0)
+              : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
           extendBodyBehindAppBar: true,
           appBar: bitnetAppBar(
               actions: [
                 GestureDetector(
                     onTap: () {
-                      context.go('/authhome/login/social_recovery/info_social_recovery');
+                      context.go(
+                          '/authhome/login/social_recovery/info_social_recovery');
                     },
                     child: const AppBarActionButton(
                       iconData: Icons.info_outline_rounded,
@@ -193,7 +226,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
               context: context,
               onTap: () {
                 if (controller.page == 1) {
-                  controller.previousPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                  controller.previousPage(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.easeIn);
                 }
                 context.pop();
               }),
@@ -204,25 +239,39 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                 children: [
                   SingleChildScrollView(
                       child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding,
+                              vertical: AppTheme.cardPadding),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: AppTheme.cardPadding * 3.h),
-                              Text('Find your account', textAlign: TextAlign.left, style: Theme.of(context).textTheme.titleLarge),
+                              Text('Find your account',
+                                  textAlign: TextAlign.left,
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
                               SizedBox(height: AppTheme.cardPadding.h),
                               SearchFieldWidget(
-                                  hintText: node.hasFocus ? 'type in your username...' : 'Search for your account here',
+                                  hintText: node.hasFocus
+                                      ? 'type in your username...'
+                                      : 'Search for your account here',
                                   isSearchEnabled: true,
                                   node: node,
                                   handleSearch: (query) async {
                                     List<Map<String, dynamic>> users = [];
                                     if (!query.isEmpty) {
-                                      QuerySnapshot<Map<String, dynamic>> queryData = await usersCollection
-                                          .where('username', isGreaterThanOrEqualTo: query)
-                                          .where('username', isLessThanOrEqualTo: query + '\uf8ff')
-                                          .get();
-                                      users = queryData.docs.map((doc) => {'doc_id': doc.id, ...doc.data()}).toList();
+                                      QuerySnapshot<Map<String, dynamic>>
+                                          queryData = await usersCollection
+                                              .where('username',
+                                                  isGreaterThanOrEqualTo: query)
+                                              .where('username',
+                                                  isLessThanOrEqualTo:
+                                                      query + '\uf8ff')
+                                              .get();
+                                      users = queryData.docs
+                                          .map((doc) =>
+                                              {'doc_id': doc.id, ...doc.data()})
+                                          .toList();
                                     }
 
                                     searchUsers.clear();
@@ -234,14 +283,17 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                               Column(
                                   children: searchUsers
                                       .map((user) => Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8.0),
                                             child: UserResult(
                                               userData: UserData.fromMap(user),
                                               onTap: () {
                                                 selectedUser = user;
                                                 setState(() {});
                                               },
-                                              selected: selectedUser != null && selectedUser!['username'] == user['username'],
+                                              selected: selectedUser != null &&
+                                                  selectedUser!['username'] ==
+                                                      user['username'],
                                               onDelete: () {},
                                               model: 2,
                                             ),
@@ -250,25 +302,41 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                             ],
                           ))),
                   state == 2
-                      ? Align(alignment: Alignment.bottomCenter, child: dotProgress(context))
+                      ? Align(
+                          alignment: Alignment.bottomCenter,
+                          child: dotProgress(context))
                       : BottomCenterButton(
-                          buttonState: selectedUser == null ? ButtonState.disabled : ButtonState.idle,
+                          buttonState: selectedUser == null
+                              ? ButtonState.disabled
+                              : ButtonState.idle,
                           buttonTitle: 'Begin Recovery',
                           onButtonTap: () async {
-                            await setupRecoveryData(selectedUser!['doc_id'], false);
+                            await setupRecoveryData(
+                                selectedUser!['doc_id'], false);
                             if (socialRecoveryModel != null) {
-                              for (int i = 0; i < socialRecoveryModel!.users.length; i++) {
-                                if (socialRecoveryModel!.users[i].acceptedInvite &&
-                                    socialRecoveryModel!.users[i].username != selectedUser!['username']) {
+                              for (int i = 0;
+                                  i < socialRecoveryModel!.users.length;
+                                  i++) {
+                                if (socialRecoveryModel!
+                                        .users[i].acceptedInvite &&
+                                    socialRecoveryModel!.users[i].username !=
+                                        selectedUser!['username']) {
                                   //send invitation, (protocol_type: social_recovery_recovery_request)
                                   ProtocolModel model = ProtocolModel(
                                     protocolId: '',
-                                    protocolType: 'social_recovery_recovery_request',
-                                    protocolData: {'inviter_user_doc_id': selectedUser!['doc_id']},
+                                    protocolType:
+                                        'social_recovery_recovery_request',
+                                    protocolData: {
+                                      'inviter_user_doc_id':
+                                          selectedUser!['doc_id']
+                                    },
                                     satisfied: false,
                                   );
                                   String? userDocID = keyUsers
-                                      .where((test) => test['username'] == socialRecoveryModel!.users[i].username)
+                                      .where((test) =>
+                                          test['username'] ==
+                                          socialRecoveryModel!
+                                              .users[i].username)
                                       .firstOrNull?['doc_id'];
                                   if (userDocID != null) {
                                     model.sendProtocol(userDocID);
@@ -278,8 +346,11 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                             }
                           },
                           onButtonTapDisabled: () {
-                            final overlayController = Get.find<OverlayController>();
-                            overlayController.showOverlay('Please find your account first.', color: AppTheme.errorColor);
+                            final overlayController =
+                                Get.find<OverlayController>();
+                            overlayController.showOverlay(
+                                'Please find your account first.',
+                                color: AppTheme.errorColor);
                           })
                 ],
               ),
@@ -302,7 +373,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       children: [
                         SingleChildScrollView(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.cardPadding,
+                                vertical: AppTheme.cardPadding),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -337,48 +410,82 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                   height: AppTheme.cardPadding * 2.h,
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       L10n.of(context)!.friendsKeyIssuers,
                                       textAlign: TextAlign.left,
-                                      style: Theme.of(context).textTheme.titleLarge,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
                                     ),
                                     IconButton(
                                         icon: Icon(Icons.refresh),
                                         onPressed: () {
-                                          if (socialRecoveryModel!.requestTimestamp == null) {
-
-                                            overlayController.showOverlay('something bad happened. please try again later.',
+                                          if (socialRecoveryModel!
+                                                  .requestTimestamp ==
+                                              null) {
+                                            overlayController.showOverlay(
+                                                'something bad happened. please try again later.',
                                                 color: AppTheme.errorColor);
                                           } else {
-                                            if (socialRecoveryModel!.requestTimestamp!
+                                            if (socialRecoveryModel!
+                                                    .requestTimestamp!
                                                     .toDate()
                                                     .difference(DateTime.now())
-                                                    .compareTo(Duration(days: 7)) <
+                                                    .compareTo(
+                                                        Duration(days: 7)) <
                                                 0) {
-                                              overlayController.showOverlay('You can only send recovery requests once every week.',
+                                              overlayController.showOverlay(
+                                                  'You can only send recovery requests once every week.',
                                                   color: AppTheme.errorColor);
                                             } else {
-                                              for (int i = 0; i < socialRecoveryModel!.users.length; i++) {
-                                                if (socialRecoveryModel!.users[i].acceptedInvite &&
-                                                    socialRecoveryModel!.users[i].username != selectedUser!['username']) {
+                                              for (int i = 0;
+                                                  i <
+                                                      socialRecoveryModel!
+                                                          .users.length;
+                                                  i++) {
+                                                if (socialRecoveryModel!
+                                                        .users[i]
+                                                        .acceptedInvite &&
+                                                    socialRecoveryModel!
+                                                            .users[i]
+                                                            .username !=
+                                                        selectedUser![
+                                                            'username']) {
                                                   //send invitation, (protocol_type: social_recovery_recovery_request)
-                                                  ProtocolModel model = ProtocolModel(
+                                                  ProtocolModel model =
+                                                      ProtocolModel(
                                                     protocolId: '',
-                                                    protocolType: 'social_recovery_recovery_request',
-                                                    protocolData: {'inviter_user_doc_id': selectedUser!['doc_id']},
+                                                    protocolType:
+                                                        'social_recovery_recovery_request',
+                                                    protocolData: {
+                                                      'inviter_user_doc_id':
+                                                          selectedUser![
+                                                              'doc_id']
+                                                    },
                                                     satisfied: false,
                                                   );
                                                   model.sendProtocol(keyUsers
-                                                      .where((test) => test['username'] == socialRecoveryModel!.users[i].username)
+                                                      .where((test) =>
+                                                          test['username'] ==
+                                                          socialRecoveryModel!
+                                                              .users[i]
+                                                              .username)
                                                       .first['doc_id']);
                                                 }
                                               }
                                               socialRecoveryCollection
-                                                  .doc(selectedUser!['username'])
-                                                  .update({'request_timestamp': Timestamp.now()});
-                                              overlayController.showOverlay('Successfully sent recovery requests.', color: AppTheme.successColor);
+                                                  .doc(
+                                                      selectedUser!['username'])
+                                                  .update({
+                                                'request_timestamp':
+                                                    Timestamp.now()
+                                              });
+                                              overlayController.showOverlay(
+                                                  'Successfully sent recovery requests.',
+                                                  color: AppTheme.successColor);
                                             }
                                           }
                                         })
@@ -388,10 +495,13 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                     ((socialRecoveryModel!.invitedUsersAmount -
                                             socialRecoveryModel!.users
                                                 .map((user) {
-                                                  return user.requestState == 1 ? 1 : 0;
+                                                  return user.requestState == 1
+                                                      ? 1
+                                                      : 0;
                                                 })
                                                 .toList()
-                                                .reduce((val1, val2) => val1 + val2)) <
+                                                .reduce((val1, val2) =>
+                                                    val1 + val2)) <
                                         3)) ...[
                                   Text(
                                       'Too many users have denied the recovery request, you can send them another request once the week is up.')
@@ -401,7 +511,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                 ),
                                 Column(
                                     children: keyUsers.map((userMap) {
-                                  if (userMap.containsKey('exists') && !userMap['exists']) {
+                                  if (userMap.containsKey('exists') &&
+                                      !userMap['exists']) {
                                     return UserResult(
                                         userData: UserData(
                                             backgroundImageUrl: '',
@@ -416,6 +527,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                             createdAt: Timestamp.now(),
                                             updatedAt: Timestamp.now(),
                                             isActive: false,
+                                            setupQrCodeRecovery: false,
+                                            setupWordRecovery: false,
                                             dob: 0),
                                         onTap: () {},
                                         onDelete: () {},
@@ -425,7 +538,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                     return UserResult(
                                         userData: UserData.fromMap(userMap),
                                         invited: userMap['request_invited'],
-                                        acceptedInvite: userMap['request_state'],
+                                        acceptedInvite:
+                                            userMap['request_state'],
                                         onTap: () {},
                                         onDelete: () {},
                                         obscureUsername: true,
@@ -455,14 +569,19 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           buttonTitle: 'Recover Account',
                           onButtonTap: () async {
                             if (socialRecoveryModel == null) {
-                              overlayController.showOverlay('Something bad happened, please try again later.', color: AppTheme.errorColor);
+                              overlayController.showOverlay(
+                                  'Something bad happened, please try again later.',
+                                  color: AppTheme.errorColor);
                               return;
                             }
-                            QuerySnapshot<Map<String, dynamic>> snap = await protocolCollection
-                                .doc(await getDeviceInfo())
-                                .collection('protocols')
-                                .where('protocol_type', isEqualTo: 'social_recovery_show_mnemonic')
-                                .get();
+                            QuerySnapshot<Map<String, dynamic>> snap =
+                                await protocolCollection
+                                    .doc(await getDeviceInfo())
+                                    .collection('protocols')
+                                    .where('protocol_type',
+                                        isEqualTo:
+                                            'social_recovery_show_mnemonic')
+                                    .get();
                             bool activeProtocol = false;
                             for (int i = 0; i < snap.docs.length; i++) {
                               if (snap.docs[i].data()['satisfied'] == false) {
@@ -471,23 +590,36 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                               }
                             }
                             if (activeProtocol) {
-                              overlayController.showOverlay('Please wait 3 days for your mnemonic to be retrieved.', color: AppTheme.errorColor);
+                              overlayController.showOverlay(
+                                  'Please wait 3 days for your mnemonic to be retrieved.',
+                                  color: AppTheme.errorColor);
                               return;
                             }
-                            int successfulInvites = socialRecoveryModel!.users.where((test) => test.requestState == 2).length;
+                            int successfulInvites = socialRecoveryModel!.users
+                                .where((test) => test.requestState == 2)
+                                .length;
                             if (successfulInvites >= 4) {
                               ProtocolModel model = ProtocolModel(
                                   protocolId: '',
-                                  activateTime: Timestamp.fromDate(DateTime.now().add(Duration(days: 3))),
+                                  activateTime: Timestamp.fromDate(
+                                      DateTime.now().add(Duration(days: 3))),
                                   protocolType: 'social_recovery_show_mnemonic',
-                                  protocolData: {'user_doc_id': selectedUser!['doc_id'], 'user_name': selectedUser!['username']});
+                                  protocolData: {
+                                    'user_doc_id': selectedUser!['doc_id'],
+                                    'user_name': selectedUser!['username']
+                                  });
                               model.sendProtocol(await getDeviceInfo());
-                              ProtocolModel modelAccess =
-                                  ProtocolModel(protocolId: '', protocolType: 'social_recovery_access_attempt', protocolData: {});
+                              ProtocolModel modelAccess = ProtocolModel(
+                                  protocolId: '',
+                                  protocolType:
+                                      'social_recovery_access_attempt',
+                                  protocolData: {});
                               modelAccess.sendProtocol(selectedUser!['doc_id']);
-                              overlayController.showOverlay('Your mnemonic will be retrieved in 3 days');
+                              overlayController.showOverlay(
+                                  'Your mnemonic will be retrieved in 3 days');
                             } else {
-                              overlayController.showOverlay('Not enough people have accepted the social recovery request yet.',
+                              overlayController.showOverlay(
+                                  'Not enough people have accepted the social recovery request yet.',
                                   color: AppTheme.errorColor);
                             }
                           },
@@ -509,7 +641,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
         SocialRecoveryUser user = socialRecoveryModel!.users[i];
         bool reqInvited = user.requestInvited;
         int reqState = user.requestState;
-        int index = keyUsers.indexWhere((test) => test['username'] == user.username);
+        int index =
+            keyUsers.indexWhere((test) => test['username'] == user.username);
         if (index != -1) {
           keyUsers[index]['request_state'] = reqState;
           keyUsers[index]['request_invited'] = reqInvited;

@@ -4,6 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 final usersCollection = FirebaseFirestore.instance.collection("users");
 final socialRecoveryCollection =
     FirebaseFirestore.instance.collection("socialRecovery");
+final emailRecoveryCollection =
+    FirebaseFirestore.instance.collection("emailRecovery");
+
 final protocolCollection = FirebaseFirestore.instance.collection("protocols");
 final transactionCollection =
     FirebaseFirestore.instance.collection("transactions");

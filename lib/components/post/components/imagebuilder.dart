@@ -6,7 +6,6 @@ import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 //USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
 class ImageBuilderLocal extends StatelessWidget {
   final PostFile postFile;
@@ -42,13 +41,15 @@ class ImageBuilder extends StatelessWidget {
   final BorderRadius? radius;
   const ImageBuilder({
     Key? key,
-    required this.encodedData,  this.radius,
+    required this.encodedData,
+    this.radius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Decode the base64 string into bytes
-    final imageType = encodedData.split(',').first.split('/').last.split(';').first;
+    final imageType =
+        encodedData.split(',').first.split('/').last.split(';').first;
     print("Image Builder detected imagetype: $imageType");
     final base64String = encodedData.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
@@ -57,7 +58,7 @@ class ImageBuilder extends StatelessWidget {
       radius: radius,
       child: Image.memory(
         imageBytes,
-        cacheWidth: 50, 
+        cacheWidth: 50,
         cacheHeight: 50,
         filterQuality: FilterQuality.low,
         fit: BoxFit.cover,
@@ -77,7 +78,8 @@ class ImageBox extends StatelessWidget {
   final Widget child;
   final BorderRadius? radius;
   const ImageBox({
-    required this.child, this.radius,
+    required this.child,
+    this.radius,
   });
 
   @override
@@ -98,10 +100,10 @@ class ImageBox extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
+                borderRadius:
+                    BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
                 child: child)),
       ],
     );
   }
 }
-

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -28,14 +30,9 @@ class CreateAccountView extends StatefulWidget {
 
 class _CreateAccountViewState extends State<CreateAccountView>
     with TickerProviderStateMixin {
-
-
   @override
   Widget build(BuildContext context) {
-
-    Get.put(ProfileController());
     final overlayController = Get.find<OverlayController>();
-    final profileController = Get.find<ProfileController>();
 
     return WillPopScope(
       onWillPop: () async {
@@ -90,35 +87,44 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () async {
-                        // Navigator.pop(context);
-                        final PermissionState ps =
-                            await PhotoManager.requestPermissionExtend();
-                        if (!ps.isAuth && !ps.hasAccess) {
-                          overlayController.showOverlay(
-                              'please give the app photo access to continue.',
-                              color: AppTheme.errorColor);
-                          return;
-                        }
-                        ImagePickerNftMixedBottomSheet(context, onImageTap:
-                            (AssetPathEntity? album, AssetEntity? image,
-                                MediaDatePair? pair) async {
-                          if (image != null) {
-                            await profileController.handleProfileImageSelected(image);
-                          } else if (pair != null) {
-                            await profileController.handleProfileNftSelected(pair);
+                        onTap: () async {
+                          // Navigator.pop(context);
+                          final PermissionState ps =
+                              await PhotoManager.requestPermissionExtend();
+                          if (!ps.isAuth && !ps.hasAccess) {
+                            overlayController.showOverlay(
+                                'please give the app photo access to continue.',
+                                color: AppTheme.errorColor);
+                            return;
                           }
-                          Navigator.pop(context);
-                        });
-                      },
-                      child: Obx(() => Avatar(
-                        mxContent: Uri.parse(profileController.userData.value.profileImageUrl),
-                        size: AppTheme.cardPadding * 5.25.h,
-                        type: profilePictureType.lightning,
-                        isNft: profileController.userData.value.nft_profile_id.isNotEmpty,
-                        cornerWidget: ProfileButton(),
-                      )),
-                    ),
+                          ImagePickerNftMixedBottomSheet(context, onImageTap:
+                              (AssetPathEntity? album, AssetEntity? image,
+                                  MediaDatePair? pair) async {
+                            if (image != null) {
+                              //  await profileController.handleProfileImageSelected(image);
+                              widget.controller.image = image;
+                              widget.controller.pair = null;
+                              widget.controller.bytes = await image.originBytes;
+                              setState(() {});
+                            } else if (pair != null) {
+                              //  await profileController.handleProfileNftSelected(pair);
+                              widget.controller.pair = pair;
+                              widget.controller.image = null;
+                              widget.controller.bytes = pair.media?.data;
+                              setState(() {});
+                            }
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Avatar(
+                          local: widget.controller.bytes != null,
+                          imageBytes: widget.controller.bytes,
+                          mxContent: Uri.parse(''),
+                          size: AppTheme.cardPadding * 5.25.h,
+                          type: profilePictureType.lightning,
+                          isNft: widget.controller.pair != null,
+                          cornerWidget: ProfileButton(),
+                        )),
                     SizedBox(
                       height: AppTheme.cardPadding.h * 2,
                     ),
@@ -130,9 +136,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                           ? L10n.of(context)!.pleaseEnterValidUsername
                           : null,
                       onChanged: (val) {
-                        setState(() {
-                          widget.controller.username = val;
-                        });
+                        widget.controller.username = val;
                       },
                       controller: widget.controller.controllerUsername,
                       isObscure: false,

@@ -80,6 +80,24 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: RoundedButtonWidget(
+                  iconData: Icons.sensor_occupied_rounded,
+                  onTap: () {
+                    controller.switchTab('emergency_recovery');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
+                text: "Emergency Recovery",
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('emergency_recovery');
+                },
+              ),
+              BitNetListTile(
+                leading: RoundedButtonWidget(
                   iconData: Icons.key_rounded,
                   onTap: () {
                     controller.switchTab('invite');
@@ -170,6 +188,26 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: RoundedButtonWidget(
+                  iconData: Icons.switch_access_shortcut,
+                  onTap: () {
+                    context.push('/authhome/login');
+                    // controller.switchTab('recover_account');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
+                text: "Recover Account",
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  context.push('/authhome/login');
+                  // controller.switchTab('recover_account');
+                },
+              ),
+              BitNetListTile(
+                leading: RoundedButtonWidget(
                   iconData: Icons.login_rounded,
                   onTap: () async {
                     ThemeController.of(context)
@@ -204,6 +242,31 @@ class SettingsView extends StatelessWidget {
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
+                onTap: () async {
+                  ThemeController.of(context)
+                      .setPrimaryColor(Colors.white, false);
+
+                  // Clear shared preferences if used
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.remove('theme_mode');
+                  await prefs.remove('primary_color');
+                  final profile_controller = Get.put(ProfileController());
+                  final litdController = Get.find<LitdController>();
+                  String username =
+                      '${profile_controller.userData.value.username}';
+
+                  Get.delete<ProfileController>(force: true);
+                  Get.delete<WalletsController>(force: true);
+                  Get.delete<ProtocolController>(force: true);
+
+                  await Auth().signOut();
+
+                  context.pop();
+                  Get.delete<SettingsController>(force: true);
+                  context.go('/authhome');
+                  Get.put(ProtocolController(logIn: false));
+                },
               ),
               const SizedBox(
                 height: AppTheme.cardPadding * 2,

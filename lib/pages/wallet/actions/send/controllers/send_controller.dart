@@ -99,23 +99,45 @@ class SendsController extends BaseController {
     });
     LoggerService logger = Get.find();
     ClipboardData? data = await Clipboard.getData('text/plain');
-    List<ReceivedInvoice> memoVoices =
-        lightningInvoices.invoices.where((inv) => inv.memo.isNotEmpty).toList();
-    bool shouldSearchInvoice = lightningInvoices.invoices
-            .where((invoice) => invoice.paymentRequest == (data?.text ?? ''))
-            .length ==
-        0;
-    String btcAddressToCompare = (data?.text ?? '').startsWith('bitcoin:')
-        ? data!.text!.split(":")[1].split("?")[0]
-        : (data?.text ?? '');
-    List<String> btcAddresses =
-        Get.find<WalletsController>().btcAddresses.toList();
-    bool shouldSearchOnchain = !Get.find<WalletsController>()
-        .btcAddresses
-        .contains(btcAddressToCompare);
-    logger.i('clipboard data ${data?.text}');
-    if (shouldSearchOnchain && shouldSearchInvoice) {
-      handleSearch(data?.text ?? '');
+    bool isBip21 = isBip21WithBolt11(data?.text ?? '');
+    if (isBip21) {
+      Uri uri = Uri.parse(data!.text!);
+      String lightning = uri.queryParameters['lightning'] ?? '';
+      List<ReceivedInvoice> memoVoices = lightningInvoices.invoices
+          .where((inv) => inv.memo.isNotEmpty)
+          .toList();
+      bool shouldSearchInvoice = lightningInvoices.invoices
+              .where((invoice) => invoice.paymentRequest == (lightning))
+              .length ==
+          0;
+      String btc = uri.path;
+      List<String> btcAddresses =
+          Get.find<WalletsController>().btcAddresses.toList();
+      bool shouldSearchOnchain =
+          !Get.find<WalletsController>().btcAddresses.contains(btc);
+      if (shouldSearchOnchain && shouldSearchInvoice) {
+        handleSearch(data.text ?? '');
+      }
+    } else {
+      List<ReceivedInvoice> memoVoices = lightningInvoices.invoices
+          .where((inv) => inv.memo.isNotEmpty)
+          .toList();
+      bool shouldSearchInvoice = lightningInvoices.invoices
+              .where((invoice) => invoice.paymentRequest == (data?.text ?? ''))
+              .length ==
+          0;
+      String btcAddressToCompare = (data?.text ?? '').startsWith('bitcoin:')
+          ? data!.text!.split(":")[1].split("?")[0]
+          : (data?.text ?? '');
+      List<String> btcAddresses =
+          Get.find<WalletsController>().btcAddresses.toList();
+      bool shouldSearchOnchain = !Get.find<WalletsController>()
+          .btcAddresses
+          .contains(btcAddressToCompare);
+      logger.i('clipboard data ${data?.text}');
+      if (shouldSearchOnchain && shouldSearchInvoice) {
+        handleSearch(data?.text ?? '');
+      }
     }
   }
 

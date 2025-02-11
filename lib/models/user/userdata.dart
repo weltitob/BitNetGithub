@@ -20,6 +20,8 @@ class UserData extends Equatable {
   final String backgroundImageUrl;
   final bool isPrivate;
   final bool showFollowers;
+  final bool setupQrCodeRecovery;
+  final bool setupWordRecovery;
   // final List<String> codes;
   //maybe ude Timestamp from cloud_firestore instead of Datetime if it causes issues
   final Timestamp createdAt;
@@ -39,6 +41,8 @@ class UserData extends Equatable {
     required this.customToken,
     required this.username,
     required this.profileImageUrl,
+    required this.setupQrCodeRecovery,
+    required this.setupWordRecovery,
     // required this.codes,
     required this.createdAt,
     required this.updatedAt,
@@ -67,7 +71,9 @@ class UserData extends Equatable {
       isActive,
       dob,
       nft_profile_id,
-      nft_background_id
+      nft_background_id,
+      setupQrCodeRecovery,
+      setupWordRecovery
     ];
   }
 
@@ -87,6 +93,8 @@ class UserData extends Equatable {
       bool? isPrivate,
       bool? showFollowers,
       int? dob,
+      bool? setupQrCodeRecovery,
+      bool? setupWordRecovery,
       String? nft_profile_id,
       String? nft_background_id}) {
     return UserData(
@@ -100,6 +108,8 @@ class UserData extends Equatable {
       backgroundImageUrl: backgroundImageUrl ?? this.backgroundImageUrl,
       isPrivate: isPrivate ?? this.isPrivate,
       showFollowers: showFollowers ?? this.showFollowers,
+      setupQrCodeRecovery: setupQrCodeRecovery ?? this.setupQrCodeRecovery,
+      setupWordRecovery: setupWordRecovery ?? this.setupWordRecovery,
       // codes: codes ?? this.codes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -125,6 +135,8 @@ class UserData extends Equatable {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'isActive': isActive,
+      'setup_qr_code_recovery': setupQrCodeRecovery,
+      'setup_word_recovery': setupWordRecovery,
       'dob': dob,
       'nft_profile_id': nft_profile_id,
       'nft_background_id': nft_background_id
@@ -150,6 +162,8 @@ class UserData extends Equatable {
       dob: map['dob']?.toInt() ?? 0,
       nft_profile_id: map['nft_profile_id'] ?? '',
       nft_background_id: map['nft_background_id'] ?? '',
+      setupQrCodeRecovery: map['setup_qr_code_recovery'] ?? false,
+      setupWordRecovery: map['setup_word_recovery'] ?? false,
       // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
       //     map['wallets']?.map((x) => UserWallet.fromMap(x))),
@@ -172,8 +186,23 @@ class UserData extends Equatable {
       showFollowers: doc['showFollowers'],
       isPrivate: doc['isPrivate'],
       dob: doc['dob'],
-      nft_profile_id: (doc.data() as Map<String, dynamic>).containsKey('nft_profile_id') ? doc['nft_profile_id'] : '',
-      nft_background_id: (doc.data() as Map<String, dynamic>).containsKey('nft_background_id') ? doc['nft_background_id'] : '',
+      setupQrCodeRecovery: (doc.data() as Map<String, dynamic>)
+              .containsKey('setup_qr_code_recovery')
+          ? doc['setup_qr_code_recovery']
+          : false,
+      setupWordRecovery: (doc.data() as Map<String, dynamic>)
+              .containsKey('setup_word_recovery')
+          ? doc['setup_word_recovery']
+          : false,
+
+      nft_profile_id:
+          (doc.data() as Map<String, dynamic>).containsKey('nft_profile_id')
+              ? doc['nft_profile_id']
+              : '',
+      nft_background_id:
+          (doc.data() as Map<String, dynamic>).containsKey('nft_background_id')
+              ? doc['nft_background_id']
+              : '',
       // mainWallet: UserWallet.fromMap(doc['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
       //     doc['wallets'].map((x) => UserWallet.fromMap(x))),
@@ -182,10 +211,11 @@ class UserData extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory UserData.fromJson(String source) => UserData.fromMap(json.decode(source));
+  factory UserData.fromJson(String source) =>
+      UserData.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob)';
+    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob, setupQrCodeRecovery: $setupQrCodeRecovery setupWordRecovery: $setupWordRecovery)';
   }
 }
