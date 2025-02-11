@@ -16,6 +16,7 @@ import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -101,8 +102,20 @@ class Auth {
   }) async {
     fbAuth.UserCredential user =
         await _firebaseAuth.signInWithCustomToken(customToken);
-    final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+    final remoteConfigController =
+        Get.put(RemoteConfigController(), permanent: true);
     await remoteConfigController.fetchRemoteConfigData();
+    LocalStorage.instance
+        .setString(Auth().currentUser!.uid, "most_recent_user");
+    return user;
+  }
+
+  Future<fbAuth.UserCredential?> reAuthenticate({
+    required String customToken,
+  }) async {
+    fbAuth.UserCredential user =
+        await _firebaseAuth.signInWithCustomToken(customToken);
+
     return user;
   }
 
@@ -163,7 +176,8 @@ class Auth {
 
     final currentuser = await signInWithToken(customToken: customAuthToken);
 
-    final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+    final remoteConfigController =
+        Get.put(RemoteConfigController(), permanent: true);
     await remoteConfigController.fetchRemoteConfigData();
 
     // Initialize user settings in the database
@@ -331,7 +345,6 @@ class Auth {
     final logger = Get.find<LoggerService>();
     logger.i("Signing in user...");
 
-
     final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
 
     try {
@@ -407,7 +420,8 @@ class Auth {
       logger.i("Verify message response: ${customAuthToken.toString()}");
       final currentuser = await signInWithToken(customToken: customAuthToken);
 
-      final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+      final remoteConfigController =
+          Get.put(RemoteConfigController(), permanent: true);
       await remoteConfigController.fetchRemoteConfigData();
 
       if (currentuser == null) {
@@ -473,6 +487,7 @@ class Auth {
   }
 
   Future<void> signOut() async {
+    LocalStorage.instance.setString("", "most_recent_user");
     await _firebaseAuth.signOut();
   }
 

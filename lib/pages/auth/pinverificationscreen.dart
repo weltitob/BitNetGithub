@@ -63,7 +63,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _getClipboard() async {
-
     final logger = Get.find<LoggerService>();
 
     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
@@ -99,11 +98,9 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         //     }).toString());
 
         context.go(Uri(
-            path: '/authhome/pinverification/mnemonicgen',
-            queryParameters: {
-              'code': code.code,
-              'issuer': code.issuer,
-            }).toString());
+                path: '/authhome/pinverification/createaccount',
+                queryParameters: {'code': code.code, 'issuer': code.issuer})
+            .toString());
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
@@ -176,9 +173,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     horizontal: AppTheme.cardPadding * 2.w),
                 child: Text(
                   L10n.of(context).platformDemandText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!,
+                  style: Theme.of(context).textTheme.titleMedium!,
                   textAlign: TextAlign.center,
                 ),
               ),

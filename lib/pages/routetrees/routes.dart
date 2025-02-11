@@ -8,6 +8,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:bitnet/pages/auth/persona/personascreen.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
+import 'package:bitnet/pages/auth/restore/email_recovery/email_recovery_screen.dart';
 import 'package:bitnet/pages/auth/restore/other_device/otherdevicescreen.dart';
 import 'package:bitnet/pages/auth/restore/social_recovery/info_social_recovery.dart';
 import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';
@@ -591,6 +592,9 @@ class AppRoutes {
                     ),
                   ],
                 ),
+                GoRoute(
+                    path: 'email_recovery',
+                    builder: (ctx, state) => const EmailRecoveryScreen())
               ],
             ),
 

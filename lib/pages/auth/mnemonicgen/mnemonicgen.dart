@@ -170,22 +170,23 @@ class MnemonicController extends State<MnemonicGen> {
       await (hasFinishedGenWallet == true);
 
       final userdata = UserData(
-        backgroundImageUrl: '',
-        isPrivate: false,
-        showFollowers: false,
-        did: did,
-        displayName: did,
-        bio: L10n.of(context)!.joinedRevolution,
-        customToken: "customToken",
-        username: did,
-        profileImageUrl: '',
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        isActive: true,
-        dob: 0,
-        nft_profile_id: '',
-        nft_background_id: '',
-      );
+          backgroundImageUrl: '',
+          isPrivate: false,
+          showFollowers: false,
+          did: did,
+          displayName: did,
+          bio: L10n.of(context)!.joinedRevolution,
+          customToken: "customToken",
+          username: did,
+          profileImageUrl: '',
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: true,
+          dob: 0,
+          nft_profile_id: '',
+          nft_background_id: '',
+          setupQrCodeRecovery: false,
+          setupWordRecovery: false);
       // Use the did for the verification codes
       VerificationCode verificationCode = VerificationCode(
         used: false,
@@ -196,7 +197,7 @@ class MnemonicController extends State<MnemonicGen> {
 
       final UserData? currentuserwallet =
           await firebaseAuthentication(userdata, verificationCode);
-
+      LocalStorage.instance.setString(userdata.did, "most_recent_user");
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
 

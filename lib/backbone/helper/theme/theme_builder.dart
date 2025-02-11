@@ -121,6 +121,7 @@ class ThemeController extends State<ThemeBuilder> {
       });
 
       Get.put(BitcoinController());
+      Get.find<WalletsController>().ping.value += 1;
       Get.find<BitcoinController>()
           .getChartLine(data.data()?['selected_currency'] ?? "USD");
     } else {

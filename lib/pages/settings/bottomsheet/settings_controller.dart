@@ -21,6 +21,16 @@ class SettingsController extends BaseController {
       RxList<Map<String, dynamic>>([]);
   RxList<Map<String, dynamic>> selectedUsers = RxList<Map<String, dynamic>>([]);
   late PageController pageControllerSocialRecovery;
+
+  late PageController pageControllerEmailRecovery;
+  //0 for default, 1 for awaiting email verification, 2 for success
+  RxInt emailRecoveryState = 0.obs;
+  TextEditingController emailFieldController = TextEditingController();
+  TextEditingController passwordFieldController = TextEditingController();
+  RxBool goBackEmailChange = false.obs;
+
+  //0 for default, 1 for confirming, 2 for confirmed
+  RxInt wordRecoveryState = 0.obs;
   late TextEditingController keyController;
   RxBool keyValid = false.obs;
   //0 stands for loading, 1 stands for failure, 2 stands for success
@@ -71,5 +81,6 @@ class SettingsController extends BaseController {
     super.onClose();
     keyController.dispose();
     pageControllerSocialRecovery.dispose();
+    pageControllerEmailRecovery.dispose();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:bitnet/pages/secondpages/agbs_and_impressum.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
+import 'package:bitnet/pages/settings/emergency_recovery/emergency_recovery_view.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
@@ -44,6 +45,8 @@ class Settings extends StatelessWidget {
                 const Expanded(
                   child: SecuritySettingsPage(),
                 ),
+              if (controller.currentTab.value == "emergency_recovery")
+                const Expanded(child: EmergencyRecoveryView()),
               if (controller.currentTab.value == 'invite')
                 const Expanded(
                   child: InvitationSettingsPage(),
