@@ -74,11 +74,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                           end: Alignment.bottomCenter,
                           stops: [
                             0.0, // Start of the gradient
+                            0.75,
                             1.0, // End of the gradient
                           ],
                           colors: [
                             AppTheme.successColor
                                 .withOpacity(0.15), // Strong color at the top
+                            AppTheme.successColor
+                                .withOpacity(0.04), // Strong color at the top
                             Colors
                                 .transparent, // Ensure the bottom remains fully transparent
                           ],

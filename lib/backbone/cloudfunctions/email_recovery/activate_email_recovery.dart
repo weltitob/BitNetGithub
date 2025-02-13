@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/services/email_recovery_helper.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 

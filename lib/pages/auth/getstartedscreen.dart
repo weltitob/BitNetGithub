@@ -85,7 +85,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               ),
             ),
             SizedBox(
-              height: AppTheme.cardPadding * 5.h,
+              height: AppTheme.cardPadding * 6.h,
             ),
             LongButtonWidget(
               customWidth: AppTheme.cardPadding * 14.h,

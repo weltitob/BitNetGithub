@@ -53,7 +53,7 @@ class _UserResultState extends State<UserResult> {
         blur: 50,
         customColor: widget.selected ? AppTheme.successColor : null,
         opacity: 0.1,
-        borderRadius: AppTheme.cardRadiusMid,
+        borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
         child: InkWell(
           onTap: widget.model == 2 ? widget.onTap : () {},
           borderRadius: AppTheme.cardRadiusBig,
