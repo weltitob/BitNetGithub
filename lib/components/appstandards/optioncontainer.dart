@@ -27,7 +27,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius borderRadius = BorderRadius.circular(width / 4.5);
+    BorderRadius borderRadius = BorderRadius.circular(width / 4);
 
     TextStyle textstyle = width > 100
         ? Theme.of(context).textTheme.titleSmall!.copyWith(
