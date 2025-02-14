@@ -34,15 +34,15 @@ class EmailRecoveryView extends GetWidget<SettingsController> {
         children: [
           MaxWidthBody(
             withScrolling: false,
-            child: EmergencyRecoveryPageOne(),
+            child: EmailRecoveryPageOne(),
           ),
           MaxWidthBody(
             withScrolling: false,
-            child: EmergencyRecoveryPageTwo(),
+            child: EmailRecoveryPageTwo(),
           ),
           MaxWidthBody(
             withScrolling: false,
-            child: EmergencyRecoveryPageThree(),
+            child: EmailRecoveryPageThree(),
           )
         ],
       ),
@@ -50,8 +50,8 @@ class EmailRecoveryView extends GetWidget<SettingsController> {
   }
 }
 
-class EmergencyRecoveryPageThree extends StatelessWidget {
-  const EmergencyRecoveryPageThree({super.key});
+class EmailRecoveryPageThree extends StatelessWidget {
+  const EmailRecoveryPageThree({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +105,14 @@ class EmergencyRecoveryPageThree extends StatelessWidget {
   }
 }
 
-class EmergencyRecoveryPageTwo extends StatefulWidget {
-  const EmergencyRecoveryPageTwo({super.key});
+class EmailRecoveryPageTwo extends StatefulWidget {
+  const EmailRecoveryPageTwo({super.key});
 
   @override
-  State<EmergencyRecoveryPageTwo> createState() =>
-      _EmergencyRecoveryPageTwoState();
+  State<EmailRecoveryPageTwo> createState() => _EmailRecoveryPageTwoState();
 }
 
-class _EmergencyRecoveryPageTwoState extends State<EmergencyRecoveryPageTwo> {
+class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
   bool verified = false;
   bool reloading = false;
   @override
@@ -134,15 +133,11 @@ class _EmergencyRecoveryPageTwoState extends State<EmergencyRecoveryPageTwo> {
   }
 
   void listenForEmailVerification(String? email) {
-    Timer.periodic(Duration(seconds: 3), (timer) async {
-      await Auth().currentUser!.reload();
-
-      if (Auth().currentUser!.emailVerified &&
-          (Auth().currentUser!.email == email || email == null)) {
-        timer.cancel();
-        emailRecoveryCollection
-            .doc(Auth().currentUser!.uid)
-            .update({'verified': true});
+    emailRecoveryCollection
+        .doc(Auth().currentUser!.uid)
+        .snapshots()
+        .listen((data) {
+      if (data.exists && data.data() != null && data.data()!['verified']) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Get.find<SettingsController>().pageControllerEmailRecovery.nextPage(
               duration: Duration(milliseconds: 100), curve: Curves.easeIn);
@@ -229,13 +224,12 @@ class _EmergencyRecoveryPageTwoState extends State<EmergencyRecoveryPageTwo> {
   }
 }
 
-class EmergencyRecoveryPageOne extends StatefulWidget {
+class EmailRecoveryPageOne extends StatefulWidget {
   @override
-  State<EmergencyRecoveryPageOne> createState() =>
-      _EmergencyRecoveryPageOneState();
+  State<EmailRecoveryPageOne> createState() => _EmailRecoveryPageOneState();
 }
 
-class _EmergencyRecoveryPageOneState extends State<EmergencyRecoveryPageOne> {
+class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
   bool obscurePass = true;
   String emailError = "";
   String passwordError = "";
@@ -344,16 +338,15 @@ class _EmergencyRecoveryPageOneState extends State<EmergencyRecoveryPageOne> {
                       Auth().currentUser!.uid,
                       settingsController.emailFieldController.text);
 
-                  String? authToken =
-                      await generateCustomToken(Auth().currentUser!.uid);
-                  if (authToken != null) {
-                    await Auth().reAuthenticate(customToken: authToken);
-                    await Auth().currentUser!.verifyBeforeUpdateEmail(
-                          settingsController.emailFieldController.text,
-                        );
-                  }
-                  // sendEmail(
-                  //     settingsController.emailFieldController.text, token);
+                  String token = generateSecureToken();
+                  emailRecoveryCollection.doc(Auth().currentUser!.uid).update({
+                    'token': token,
+                    'valid_until': Timestamp.fromDate(
+                        DateTime.now().add(Duration(hours: 1))),
+                    'verified': false
+                  });
+                  sendEmail(
+                      settingsController.emailFieldController.text, token, 0);
                   loadingSetupRecovery = false;
                   setState(() {});
                   Get.find<SettingsController>()

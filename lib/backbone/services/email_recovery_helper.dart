@@ -47,19 +47,38 @@ String generateSecureToken({int length = 32}) {
   return base64UrlEncode(hash.bytes).substring(0, length);
 }
 
-Future<void> sendEmail(String email, String token) async {
+String generateCode() {
+  const String chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  Random random = Random();
+  return List.generate(5, (index) => chars[random.nextInt(chars.length)])
+      .join();
+}
+
+Future<bool> sendEmail(String email, String arg, int template) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
     'send_email_http',
   );
-  String url = "$URL?token=${token}";
+  String finalArg = arg;
+  if (template == 0) {
+    finalArg = "$URL?token=${arg}";
+  }
   final logger = Get.find<LoggerService>();
 
   try {
-    final HttpsCallableResult<dynamic> response =
-        await callable.call(<String, dynamic>{
-      'email': email,
-      'url': url,
-    });
+    late final HttpsCallableResult<dynamic> response;
+    if (template == 0) {
+      response = await callable.call(<String, dynamic>{
+        'email': email,
+        'template': template,
+        'url': finalArg
+      });
+    } else {
+      response = await callable.call(<String, dynamic>{
+        'email': email,
+        'template': template,
+        'code': finalArg
+      });
+    }
 
     logger.i("Response: ${response.data}");
 
@@ -67,12 +86,18 @@ Future<void> sendEmail(String email, String token) async {
     if (response.data != null && response.data is Map) {
       final Map<String, dynamic> responseData =
           Map<String, dynamic>.from(response.data as Map);
+      if (responseData.containsKey('error')) {
+        throw Exception("Send email failed");
+      }
+      return true;
     } else {
       logger.i("Response data is null or not a Map.");
     }
   } catch (e, stackTrace) {
     logger.e(
-      "Error during create challenge: $e",
+      "Error during email send: $e",
     );
+    return false;
   }
+  return false;
 }
