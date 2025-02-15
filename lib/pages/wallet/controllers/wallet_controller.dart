@@ -7,10 +7,12 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balan
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/supported_currencies.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
@@ -42,7 +44,6 @@ class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
   RxBool showInfo = false.obs;
   RxBool transactionsLoaded = false.obs;
-  RxInt ping = 0.obs;
   RxBool additionalTransactionsLoaded = false.obs;
   ScrollController scrollController = ScrollController();
 
@@ -184,6 +185,9 @@ class WalletsController extends BaseController {
       }
       if (loadedBalanceFutures == 2) {
         queueErrorOvelay = true;
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
       }
     });
 
@@ -195,6 +199,9 @@ class WalletsController extends BaseController {
       }
       if (loadedBalanceFutures == 2) {
         queueErrorOvelay = true;
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
       }
     });
 
@@ -319,7 +326,7 @@ class WalletsController extends BaseController {
           );
 
           // Update the lightning balance
-          fetchLightingWalletBalance();
+          fetchLightingWalletBalance(balanceUpdate: true);
         } else {
           logger.i("Invoice received but not settled yet: ${model.settled}");
           // Optionally, handle unsettled invoices here
@@ -437,7 +444,7 @@ class WalletsController extends BaseController {
       }
 
       // Update the lightning balance
-      fetchLightingWalletBalance();
+      fetchLightingWalletBalance(balanceUpdate: true);
 
       // Update the latest invoice regardless of settlement status
       latestinternalRebalance.value = model;
@@ -487,7 +494,7 @@ class WalletsController extends BaseController {
           addOrUpdateLightningPayment(model);
 
           // Update the lightning balance
-          fetchLightingWalletBalance();
+          fetchLightingWalletBalance(balanceUpdate: true);
         } else {
           logger.i("Payment received but not settled yet: ${model.status}");
           // Optionally, handle pending payments here
@@ -556,7 +563,7 @@ class WalletsController extends BaseController {
           addOrUpdateOnchainTransaction(model);
 
           // Update the onchain balance
-          fetchOnchainWalletBalance();
+          fetchOnchainWalletBalance(balanceUpdate: true);
         } else {
           logger.i(
               "Transaction received but not confirmed yet: Confirmations = ${model.numConfirmations}");
@@ -1225,10 +1232,15 @@ class WalletsController extends BaseController {
     }
   }
 
-  Future<bool> fetchOnchainWalletBalance() async {
+  Future<bool> fetchOnchainWalletBalance({bool balanceUpdate = false}) async {
     try {
       this.onchainBalance.value = await getOnchainBalance();
       changeTotalBalanceStr();
+      if (balanceUpdate) {
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
+      }
     } on Error catch (_) {
       return false;
     } catch (e) {
@@ -1253,7 +1265,7 @@ class WalletsController extends BaseController {
     coin.value = false;
   }
 
-  Future<bool> fetchLightingWalletBalance() async {
+  Future<bool> fetchLightingWalletBalance({bool balanceUpdate = false}) async {
     logger.i("Fetching Lightning Wallet Balance...");
     try {
       RestResponse lightningBalanceRest = await channelBalance();
@@ -1265,6 +1277,11 @@ class WalletsController extends BaseController {
       }
       logger.i("Lightning Balance: ${lightningBalance.balance.toString()}");
       changeTotalBalanceStr();
+      if (balanceUpdate) {
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
+      }
     } on Error catch (_) {
       return false;
     } catch (e) {
@@ -1290,6 +1307,63 @@ class WalletsController extends BaseController {
 
     totalBalanceStr.value = balance.toString() + " " + unit;
     totalBalance.value = bitcoinUnit;
+  }
+
+  Future<void> updateBalance(DateTime time, double price) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final String userId = Auth().currentUser!.uid;
+
+    int timestamp = time.millisecondsSinceEpoch;
+    WriteBatch batch = firestore.batch();
+
+    for (String currency in supportedCurrencies.keys) {
+      try {
+        // 1️⃣ Fetch Bitcoin price localized to this currency
+        DocumentSnapshot<Map<String, dynamic>> doc = await firestore
+            .collection('chart_data')
+            .doc(currency)
+            .collection('live')
+            .doc('data')
+            .get();
+
+        if (!doc.exists ||
+            doc.data() == null ||
+            !doc.data()!.containsKey('price')) {
+          print("Skipping $currency - No price data found.");
+          continue; // Skip this currency if price data is missing
+        }
+
+        num bitcoinPrice = doc.data()!['price'];
+
+        // 2️⃣ Convert BTC price to this currency
+        double localizedPrice = double.parse(CurrencyConverter.convertCurrency(
+          "BTC",
+          price,
+          currency,
+          bitcoinPrice.toDouble(),
+        ));
+
+        // 3️⃣ Prepare Firestore write batch
+        DocumentReference dataPointRef = firestore
+            .collection("balance_chart")
+            .doc(userId)
+            .collection('data')
+            .doc(currency)
+            .collection('data_points')
+            .doc(timestamp.toString()); // Use timestamp as document ID
+
+        batch.set(dataPointRef, {
+          "price": localizedPrice,
+          "timestamp": timestamp,
+        });
+      } catch (e) {
+        print("Error processing currency $currency: $e"); // Log but continue
+      }
+    }
+
+    // 4️⃣ Commit all writes in a single batch for efficiency
+    await batch.commit();
+    print("Balance data updated successfully.");
   }
 
   @override

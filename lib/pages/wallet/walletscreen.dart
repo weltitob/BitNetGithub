@@ -42,6 +42,10 @@ class WalletScreen extends GetWidget<WalletsController> {
   Widget build(BuildContext context) {
     WalletsController walletController = Get.find<WalletsController>();
     ProfileController profileController = Get.find<ProfileController>();
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
+
     if (!Get.isRegistered<BitcoinController>()) {
       return dotProgress(context);
     }
@@ -87,8 +91,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                     ),
                     Container(
                       height: 300,
-                      child: Obx(
-                        () => SfCartesianChart(
+                      child: Obx(() {
+                        bitcoinController.pbChartPing.value;
+                        return SfCartesianChart(
                           enableAxisAnimation: true,
                           plotAreaBorderWidth: 0,
                           primaryXAxis: CategoryAxis(
@@ -108,7 +113,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           series: <ChartSeries>[
                             // SplineSeries with a glowing effect
                             SplineSeries<ChartLine, double>(
-                              dataSource: bitcoinController.currentline.value,
+                              dataSource: bitcoinController.pbCurrentline.value,
                               animationDuration: 0,
                               xValueMapper: (ChartLine crypto, _) =>
                                   crypto.time,
@@ -117,18 +122,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                               color: AppTheme
                                   .successColor, // Softer line color with glow
                               width:
-                                  4, // Increased line width for a softer curve
+                                  3, // Increased line width for a softer curve
                               // Adding the glow effect underneath
                               splineType: SplineType
-                                  .cardinal, // Smooth line with a curve
+                                  .natural, // Smooth line with a curve
                               // Create a glow effect by adding an area beneath the line
                               opacity:
                                   0.1, // Slightly more transparent to create a smoother glow effect
                               // Adding a fill below the curve for a "rounded" look
                             ),
                           ],
-                        ),
-                      ),
+                        );
+                      }),
                     ),
                     Column(
                       children: [
@@ -193,16 +198,15 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           Obx(
                                             () => LongButtonWidget(
                                               title: bitcoinController
-                                                  .selectedtimespan.value,
+                                                  .pbSelectedtimespan.value,
                                               buttonType:
                                                   ButtonType.transparent,
                                               onTap: () {
                                                 int newIndex = bitcoinController
                                                         .timespans
-                                                        .indexOf(
-                                                            bitcoinController
-                                                                .selectedtimespan
-                                                                .value) +
+                                                        .indexOf(bitcoinController
+                                                            .pbSelectedtimespan
+                                                            .value) +
                                                     1;
                                                 if (newIndex ==
                                                     bitcoinController
@@ -210,55 +214,72 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   newIndex = 0;
                                                 }
                                                 bitcoinController
-                                                        .selectedtimespan
+                                                        .pbSelectedtimespan
                                                         .value =
                                                     bitcoinController
                                                         .timespans[newIndex];
 
                                                 switch (bitcoinController
-                                                    .selectedtimespan.value) {
+                                                    .pbSelectedtimespan.value) {
                                                   case "1D":
                                                     bitcoinController
-                                                            .currentline.value =
+                                                            .pbCurrentline
+                                                            .value =
                                                         bitcoinController
-                                                            .onedaychart;
+                                                            .pbOnedaychart;
                                                     break;
                                                   case "1W":
                                                     bitcoinController
-                                                            .currentline.value =
+                                                            .pbCurrentline
+                                                            .value =
                                                         bitcoinController
-                                                            .oneweekchart;
+                                                            .pbOneweekchart;
                                                     break;
                                                   case "1M":
                                                     bitcoinController
-                                                            .currentline.value =
+                                                            .pbCurrentline
+                                                            .value =
                                                         bitcoinController
-                                                            .onemonthchart;
+                                                            .pbOnemonthchart;
                                                     break;
                                                   case "1J":
                                                     bitcoinController
-                                                            .currentline.value =
+                                                            .pbCurrentline
+                                                            .value =
                                                         bitcoinController
-                                                            .oneyearchart;
+                                                            .pbOneyearchart;
                                                     break;
                                                   case "Max":
                                                     bitcoinController
-                                                            .currentline.value =
+                                                            .pbCurrentline
+                                                            .value =
                                                         bitcoinController
-                                                            .maxchart;
+                                                            .pbMaxchart;
                                                     break;
                                                 }
-                                                bitcoinController.setValues();
+                                                bitcoinController.pbSetValues();
                                                 // Update last price
                                                 // Update percent
-                                                double priceChange = (bitcoinController
-                                                            .new_lastpriceexact -
-                                                        bitcoinController
-                                                            .new_firstpriceexact) /
+                                                double firstPrice =
                                                     bitcoinController
-                                                        .new_firstpriceexact;
+                                                        .pbNew_firstpriceexact;
+                                                double lastPrice =
+                                                    bitcoinController
+                                                        .pbNew_lastpriceexact;
+
+                                                double priceChange;
+                                                if (firstPrice == 0) {
+                                                  priceChange =
+                                                      (lastPrice - firstPrice) /
+                                                          1;
+                                                } else {
+                                                  priceChange =
+                                                      (lastPrice - firstPrice) /
+                                                          firstPrice;
+                                                }
+
                                                 bitcoinController
-                                                        .overallPriceChange
+                                                        .pbOverallPriceChange
                                                         .value =
                                                     toPercent(priceChange);
                                                 // Update date
@@ -461,7 +482,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               Obx(
                                                 () => Icon(
                                                   bitcoinController
-                                                          .overallPriceChange
+                                                          .pbOverallPriceChange
                                                           .value
                                                           .contains('-')
                                                       ? Icons
@@ -469,7 +490,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                       : Icons
                                                           .arrow_drop_up_rounded,
                                                   color: bitcoinController
-                                                          .overallPriceChange
+                                                          .pbOverallPriceChange
                                                           .value
                                                           .contains('-')
                                                       ? AppTheme.errorColor
@@ -479,16 +500,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                                               ),
                                               Obx(
                                                 () => Text(
-                                                  bitcoinController
-                                                      .new_lastpricerounded
-                                                      .value
-                                                      .toStringAsFixed(2),
+                                                  "${bitcoinController.pbNew_lastpricerounded.value.toStringAsFixed(2)} ${getCurrency(currency!)}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge!
                                                       .copyWith(
                                                         color: bitcoinController
-                                                                .overallPriceChange
+                                                                .pbOverallPriceChange
                                                                 .value
                                                                 .contains('-')
                                                             ? AppTheme
@@ -508,7 +526,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 () => BitNetPercentWidget(
                                                     priceChange:
                                                         bitcoinController
-                                                            .overallPriceChange
+                                                            .pbOverallPriceChange
                                                             .value),
                                               ),
                                               scale: 0.8),

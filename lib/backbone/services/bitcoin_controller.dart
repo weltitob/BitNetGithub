@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -53,6 +54,23 @@ class BitcoinController extends GetxController {
   List<String> timespans = ["1D", "1W", "1M", "1J", "Max"];
   ChartSeriesController? chartSeriesController;
 
+//Personal Balance Chart Values
+  Rx<List<ChartLine>> pbCurrentline = Rx([]);
+  RxString pbSelectedtimespan = "1D".obs;
+  late List<ChartLine> pbMaxchart;
+  late List<ChartLine> pbOneyearchart;
+  late List<ChartLine> pbOnemonthchart;
+  late List<ChartLine> pbOneweekchart;
+  late List<ChartLine> pbOnedaychart;
+  late double pbNew_lastpriceexact;
+  late double pbNew_firstpriceexact;
+  late double pbNew_lastimeeexact;
+  RxDouble pbNew_lastpricerounded = 0.0.obs;
+  RxInt pbChartPing = 0.obs;
+
+  RxString pbOverallPriceChange = "+0".obs;
+  StreamSubscription? pbSub;
+
   @override
   void onInit() {
     super.onInit();
@@ -85,6 +103,7 @@ class BitcoinController extends GetxController {
   void onClose() {
     super.onClose();
     sub.cancel();
+    pbSub?.cancel();
   }
 
   void setValues() {
@@ -272,5 +291,173 @@ class BitcoinController extends GetxController {
 
       Get.find<LoggerService>().i("live chart data updated...");
     });
+  }
+
+  //personal balance functions
+  void pbSetValues() {
+    pbNew_lastpriceexact = pbCurrentline.value.last.price;
+    pbNew_lastimeeexact = pbCurrentline.value.last.time;
+    pbNew_lastpricerounded.value =
+        double.parse((pbNew_lastpriceexact).toStringAsFixed(2));
+    pbNew_firstpriceexact = pbCurrentline.value.first.price;
+  }
+
+  Future<void> getpbChartline(String currency) async {
+    try {
+      String userId = Auth().currentUser!.uid;
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Get data from Firestore
+      QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
+          .collection("balance_chart")
+          .doc(userId)
+          .collection("data")
+          .doc(currency)
+          .collection("data_points")
+          .orderBy("timestamp", descending: false)
+          .get();
+
+      List<ChartLine> chartData = snapshot.docs.map((doc) {
+        return ChartLine(
+          price: doc["price"].toDouble(),
+          time: doc["timestamp"].toDouble(), // Ensure timestamp is double
+        );
+      }).toList();
+
+      // Partition data into different timespans
+      _partitionChartData(chartData);
+      pbSetValues();
+
+      // Compute overall price change
+      if (pbCurrentline.value.isNotEmpty) {
+        double firstPrice = pbCurrentline.value.first.price;
+        double lastPrice = pbCurrentline.value.last.price;
+
+        double priceChange;
+        if (firstPrice == 0) {
+          priceChange = (lastPrice - firstPrice) / 1;
+        } else {
+          priceChange = (lastPrice - firstPrice) / firstPrice;
+        }
+
+        pbOverallPriceChange.value = toPercent(priceChange);
+      }
+
+      // Listen for real-time updates
+      _listenForUpdates(currency);
+    } catch (e) {
+      print("Error fetching chart data: $e");
+    }
+  }
+
+  /// Partition chart data into different timeframes
+  void _partitionChartData(List<ChartLine> data) {
+    double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+
+    pbMaxchart = List.from(data);
+    pbOneyearchart = data
+        .where((d) => d.time > now - Duration(days: 365).inMilliseconds)
+        .toList();
+    pbOnemonthchart = data
+        .where((d) => d.time > now - Duration(days: 30).inMilliseconds)
+        .toList();
+    pbOneweekchart = data
+        .where((d) => d.time > now - Duration(days: 7).inMilliseconds)
+        .toList();
+    pbOnedaychart = data
+        .where((d) => d.time > now - Duration(days: 1).inMilliseconds)
+        .toList();
+
+    // Set current chart line to 1D by default
+    pbCurrentline.value = pbOnedaychart;
+  }
+
+  /// Listen for real-time updates in the Firestore collection
+  Future<void> _listenForUpdates(String currency) async {
+    String userId = Auth().currentUser!.uid;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await pbSub?.cancel();
+    pbSub = firestore
+        .collection("balance_chart")
+        .doc(userId)
+        .collection("data")
+        .doc(currency)
+        .collection("data_points")
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.docChanges.isNotEmpty) {
+        Get.find<LoggerService>()
+            .i("listening for updates for pb chart: updating....");
+        updatepbData(snapshot.docChanges);
+      }
+    });
+  }
+
+  /// Ensure charts stay within their correct timespans and add new data while avoiding duplicates
+  void updatepbData(List<DocumentChange> changes) {
+    double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+
+    for (var change in changes) {
+      if (change.type == DocumentChangeType.added) {
+        var newData = ChartLine(
+          price: change.doc["price"].toDouble(),
+          time: change.doc["timestamp"].toDouble(),
+        );
+
+        // Avoid duplicates
+        if (!pbMaxchart.any((d) => d.time == newData.time)) {
+          pbMaxchart.add(newData);
+
+          if (newData.time > now - Duration(days: 365).inMilliseconds)
+            pbOneyearchart.add(newData);
+          if (newData.time > now - Duration(days: 30).inMilliseconds)
+            pbOnemonthchart.add(newData);
+          if (newData.time > now - Duration(days: 7).inMilliseconds)
+            pbOneweekchart.add(newData);
+          if (newData.time > now - Duration(days: 1).inMilliseconds)
+            pbOnedaychart.add(newData);
+        }
+      }
+    }
+    pbOneyearchart
+        .removeWhere((d) => d.time < now - Duration(days: 365).inMilliseconds);
+    pbOnemonthchart
+        .removeWhere((d) => d.time < now - Duration(days: 30).inMilliseconds);
+    pbOneweekchart
+        .removeWhere((d) => d.time < now - Duration(days: 7).inMilliseconds);
+    pbOnedaychart
+        .removeWhere((d) => d.time < now - Duration(days: 1).inMilliseconds);
+    switch (pbSelectedtimespan.value) {
+      case "1D":
+        pbCurrentline.value = pbOnedaychart;
+        break;
+      case "1W":
+        pbCurrentline.value = pbOneweekchart;
+        break;
+      case "1M":
+        pbCurrentline.value = pbOnemonthchart;
+        break;
+      case "1J":
+        pbCurrentline.value = pbOneyearchart;
+        break;
+      case "Max":
+        pbCurrentline.value = pbMaxchart;
+        break;
+    }
+    // Recalculate overall price change
+    if (pbCurrentline.value.isNotEmpty) {
+      double firstPrice = pbCurrentline.value.first.price;
+      double lastPrice = pbCurrentline.value.last.price;
+      pbSetValues();
+      double priceChange;
+      if (firstPrice == 0) {
+        priceChange = (lastPrice - firstPrice) / 1;
+      } else {
+        priceChange = (lastPrice - firstPrice) / firstPrice;
+      }
+
+      pbOverallPriceChange.value = toPercent(priceChange);
+    }
+    pbChartPing.value += 1;
   }
 }

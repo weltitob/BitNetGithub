@@ -636,7 +636,7 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                   .millisecondsSinceEpoch >
               Timestamp.now().millisecondsSinceEpoch) {
         success = true;
-        loading = false;
+        // loading = false;
         widget.onSignInPressed();
         firstDoc.reference.update({"code": ""});
       } else if (firstDoc != null &&

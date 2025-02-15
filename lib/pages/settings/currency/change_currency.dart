@@ -146,6 +146,7 @@ class _DashboardPageState extends State<DashboardPage> {
         );
         if (Get.isRegistered<BitcoinController>()) {
           Get.find<BitcoinController>().getChartLine(key);
+          Get.find<BitcoinController>().getpbChartline(key);
         }
       },
     );
