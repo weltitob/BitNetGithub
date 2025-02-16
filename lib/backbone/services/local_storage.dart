@@ -31,4 +31,16 @@ class LocalStorage {
   List<String>? getStringList(String id) {
     return prefs.getStringList(id);
   }
+
+  void setInt(int val, String id) {
+    prefs.setInt(id, val);
+  }
+
+  int? getInt(String id) {
+    return prefs.getInt(id);
+  }
+
+  void remove(String id) {
+    prefs.remove(id);
+  }
 }
