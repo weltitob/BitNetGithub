@@ -289,13 +289,13 @@ class ProfileHeader extends StatelessWidget {
                             leadingIcon: Icon(
                               Icons.person_add,
                               size: AppTheme.cardPadding * 0.8,
-                              color: Theme.of(context).colorScheme.primary ==
-                                      AppTheme.colorBitcoin
-                                  ? Colors.white
-                                  : Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? AppTheme.white70
-                                      : AppTheme.black60,
+                              // color: Theme.of(context).colorScheme.primary ==
+                              //         AppTheme.colorBitcoin
+                              //     ? Colors.white
+                              //     : Theme.of(context).brightness ==
+                              //             Brightness.light
+                              //         ? AppTheme.white70
+                              //         : AppTheme.black60,
                             ),
                           ),
                           SizedBox(
@@ -312,13 +312,13 @@ class ProfileHeader extends StatelessWidget {
                             leadingIcon: Icon(
                               FontAwesomeIcons.btc,
                               size: AppTheme.cardPadding * 0.75,
-                              color: Theme.of(context).colorScheme.primary ==
-                                      AppTheme.colorBitcoin
-                                  ? Colors.white
-                                  : Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? AppTheme.white70
-                                      : AppTheme.black60,
+                              // color: Theme.of(context).colorScheme.primary ==
+                              //         AppTheme.colorBitcoin
+                              //     ? Colors.white
+                              //     : Theme.of(context).brightness ==
+                              //             Brightness.light
+                              //         ? AppTheme.white70
+                              //         : AppTheme.black60,
                             ),
                           ),
                         ],

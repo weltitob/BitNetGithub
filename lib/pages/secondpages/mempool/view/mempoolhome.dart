@@ -683,10 +683,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         height: AppTheme
                                                             .elementSpacing,
                                                       ),
-                                                      const SizedBox(
-                                                        height: AppTheme
-                                                            .elementSpacing,
-                                                      ),
+
                                                       Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -928,107 +925,45 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   //       fee: 321,
                                                                   //       receiver: "dihsdisd",
                                                                   //     )),
-                                                                  BitNetListTile(
-                                                                    leading:
-                                                                        const Icon(
-                                                                            Icons.timelapse),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .minedAt,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Text(
-                                                                              DateFormat('yyyy-MM-dd hh:mm').format(
-                                                                                (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset))),
-                                                                              ),
-                                                                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                                  const SizedBox(
+                                                                    height: AppTheme
+                                                                        .elementSpacing,
                                                                   ),
-                                                                  BitNetListTile(
-                                                                    leading: const Icon(
-                                                                        FontAwesomeIcons
-                                                                            .truckPickup),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .mined,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Container(
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 3),
-                                                                            decoration:
-                                                                                BoxDecoration(borderRadius: AppTheme.cardRadiusSmall, color: AppTheme.colorBitcoin),
-                                                                            child:
-                                                                                Text(
-                                                                              (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
-                                                                              style: const TextStyle(
-                                                                                color: Colors.white,
-                                                                                fontWeight: FontWeight.bold,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                                  MiningInfoCard(
+                                                                    timestamp: DateTime.fromMillisecondsSinceEpoch(
+                                                                        controller.txDetailsConfirmed!.timestamp * 1000
+                                                                    ).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)),
+                                                                    poolName: controller.txDetailsConfirmed!.extras.pool.name,
+                                                                    rewardAmount: controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value,
                                                                   ),
-                                                                  BitNetListTile(
-                                                                    leading: const Icon(
-                                                                        FontAwesomeIcons
-                                                                            .bitcoin),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .minerRewardAndFees,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-                                                                              // Transform.translate(
-                                                                              //   offset: const Offset(0, 2),
-                                                                              //   child: Text(
-                                                                              //     ' BTC  ',
-                                                                              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
-                                                                              //   ),
-                                                                              // ),
-                                                                              Text(
-                                                                                '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                                                                                style: const TextStyle(
-                                                                                  color: AppTheme.successColor,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                                  const SizedBox(
+                                                                    height: AppTheme
+                                                                        .elementSpacing,
                                                                   ),
                                                                   feeDistributionAccepted(),
                                                                   const SizedBox(
                                                                     height: AppTheme
                                                                         .elementSpacing,
                                                                   ),
-                                                                  const SizedBox(
-                                                                      height: AppTheme
-                                                                          .cardPadding),
+
                                                                   Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceAround,
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                     children: [
-                                                                      blockSizeAccepted(),
-                                                                      blockHealth(),
+                                                                      Expanded(
+                                                                        child: AspectRatio(
+                                                                          aspectRatio: 1, // This ensures a square shape
+                                                                          child: blockSizeAccepted(),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                          width: AppTheme.elementSpacing,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: AspectRatio(
+                                                                          aspectRatio: 1,
+                                                                          child: blockHealth(),
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ]),
@@ -1036,7 +971,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           Container(
                                                             height: AppTheme
                                                                     .cardPadding *
-                                                                3,
+                                                                1.5,
                                                           )
                                                         ],
                                                       )),
@@ -1337,13 +1272,14 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   Widget blockHealth() {
     return GlassContainer(
-      height: AppTheme.cardPadding * 6.h,
-      width: AppTheme.cardPadding * 6.w,
+
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 L10n.of(context)!.health,
@@ -1376,6 +1312,8 @@ class _MempoolHomeState extends State<MempoolHome> {
             height: AppTheme.elementSpacing * 1.25,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 child: Text(
@@ -1401,87 +1339,96 @@ class _MempoolHomeState extends State<MempoolHome> {
     double orangeContainerWidth =
         ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              L10n.of(context)!.blockSize,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(
-              width: AppTheme.elementSpacing / 2,
-            ),
-            Icon(
-              Icons.help_outline_rounded,
-              color: AppTheme.white80,
-              size: AppTheme.cardPadding * 0.75,
-            )
-          ],
-        ),
-        const SizedBox(
-          height: AppTheme.cardPadding * 0.5,
-        ),
-        Stack(
-          children: [
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: AppTheme.cardPadding * 3,
-              decoration: BoxDecoration(
-                borderRadius: AppTheme.cardRadiusSmall,
-                color: Colors.grey,
+    return GlassContainer(
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                L10n.of(context)!.blockSize,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ),
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: orangeContainerWidth, // Adjusted width based on ratio
-              decoration: BoxDecoration(
-                borderRadius: AppTheme.cardRadiusSmall,
-                color: AppTheme.colorBitcoin,
+              const SizedBox(
+                width: AppTheme.elementSpacing / 2,
               ),
-            ),
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: AppTheme.cardPadding * 3,
-              child: Center(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${mbSize.toStringAsFixed(2)} MB',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(color: AppTheme.white90, shadows: [
-                        AppTheme.boxShadowBig,
-                      ]),
-                    ),
-                  ],
+              Icon(
+                Icons.help_outline_rounded,
+                color: AppTheme.white80,
+                size: AppTheme.cardPadding * 0.75,
+              )
+            ],
+          ),
+          const SizedBox(
+            height: AppTheme.cardPadding * 0.5,
+          ),
+          Stack(
+            children: [
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: AppTheme.cardPadding * 3,
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: Colors.grey,
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: AppTheme.elementSpacing * 0.75,
-        ),
-        Row(
-          children: [
-            Text(
-              "of ${mwu.toStringAsFixed(2)} MB",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            // Transform.translate(
-            //   offset: const Offset(0, 2),
-            //   child: Text(
-            //     ' MB  ',
-            //     style: Theme.of(context).textTheme.labelSmall,
-            //   ),
-            // ),
-          ],
-        ),
-      ],
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: orangeContainerWidth, // Adjusted width based on ratio
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: AppTheme.colorBitcoin,
+                ),
+              ),
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: AppTheme.cardPadding * 3,
+                child: Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${mbSize.toStringAsFixed(2)} MB',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(color: AppTheme.white90, shadows: [
+                          AppTheme.boxShadowBig,
+                        ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: AppTheme.elementSpacing * 0.75,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "of ${mwu.toStringAsFixed(2)} MB",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              // Transform.translate(
+              //   offset: const Offset(0, 2),
+              //   child: Text(
+              //     ' MB  ',
+              //     style: Theme.of(context).textTheme.labelSmall,
+              //   ),
+              // ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -1498,87 +1445,97 @@ class _MempoolHomeState extends State<MempoolHome> {
     double orangeContainerWidth =
         ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              L10n.of(context)!.blockSize,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(
-              width: AppTheme.elementSpacing / 2,
-            ),
-            Icon(
-              Icons.help_outline_rounded,
-              color: AppTheme.white80,
-              size: AppTheme.cardPadding * 0.75,
-            )
-          ],
-        ),
-        const SizedBox(
-          height: AppTheme.cardPadding * 0.5,
-        ),
-        Stack(
-          children: [
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: AppTheme.cardPadding * 3,
-              decoration: BoxDecoration(
-                borderRadius: AppTheme.cardRadiusSmall,
-                color: Colors.grey,
+    return GlassContainer(
+      height: AppTheme.cardPadding * 6.5.h,
+      width: AppTheme.cardPadding * 6.5.w,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                L10n.of(context)!.blockSize,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ),
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: orangeContainerWidth,
-              decoration: BoxDecoration(
-                borderRadius: AppTheme.cardRadiusSmall,
-                color: AppTheme.colorBitcoin,
+              const SizedBox(
+                width: AppTheme.elementSpacing / 2,
               ),
-            ),
-            Container(
-              height: AppTheme.cardPadding * 3,
-              width: AppTheme.cardPadding * 3,
-              child: Center(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${mbSize.toStringAsFixed(2)} MB',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: AppTheme.white90,
-                        shadows: [
-                          AppTheme.boxShadowBig,
-                        ],
-                      ),
-                    ),
-                  ],
+              Icon(
+                Icons.help_outline_rounded,
+                color: AppTheme.white80,
+                size: AppTheme.cardPadding * 0.75,
+              )
+            ],
+          ),
+          const SizedBox(
+            height: AppTheme.cardPadding * 0.5,
+          ),
+          Stack(
+            children: [
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: AppTheme.cardPadding * 3,
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: Colors.grey,
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: AppTheme.elementSpacing * 0.75,
-        ),
-        Row(
-          children: [
-            Text(
-              "of ${mwu.toStringAsFixed(2)}",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            Transform.translate(
-              offset: const Offset(0, 2),
-              child: Text(
-                ' MWU  ',
-                style: Theme.of(context).textTheme.labelSmall,
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: orangeContainerWidth,
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: AppTheme.colorBitcoin,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+              Container(
+                height: AppTheme.cardPadding * 3,
+                width: AppTheme.cardPadding * 3,
+                child: Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${mbSize.toStringAsFixed(2)} MB',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: AppTheme.white90,
+                          shadows: [
+                            AppTheme.boxShadowBig,
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: AppTheme.elementSpacing * 0.75,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "of ${mwu.toStringAsFixed(2)}",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Transform.translate(
+                offset: const Offset(0, 2),
+                child: Text(
+                  ' MWU  ',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -1827,3 +1784,126 @@ class _MempoolHomeState extends State<MempoolHome> {
         null;
   }
 }
+
+
+
+class MiningInfoCard extends StatelessWidget {
+  final DateTime timestamp;
+  final String poolName;
+  final double rewardAmount;
+
+  const MiningInfoCard({
+    Key? key,
+    required this.timestamp,
+    required this.poolName,
+    required this.rewardAmount,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+
+
+      child: Container(
+        padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.25),
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with timestamp and pool
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Timestamp
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time,
+                      size: 16,
+                      color: Color(0xFFA1A1AA), // zinc-400
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      DateFormat('yyyy-MM-dd HH:mm').format(timestamp),
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+                // Pool badge
+                Container(
+                  padding:  EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color:  AppTheme.colorBitcoin, // orange-500
+                    borderRadius: AppTheme.cardRadiusSmall,
+                  ),
+                  child: Text(
+                    poolName,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(color: darken(AppTheme.colorBitcoin, 95))
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 0.75),
+
+            // Status indicator
+            Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppTheme.successColor, // green-400
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Mined',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 0.75),
+
+            // Reward amount
+            Row(
+              children: [
+                const Icon(
+                  FontAwesomeIcons.bitcoin,
+                  color: AppTheme.colorBitcoin, // orange-500
+                  size: 24,
+                ),
+                const SizedBox(width: AppTheme.elementSpacing),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                     Text(
+                      'Miner Reward (Subsidy + fees)',
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                    Text(
+                      '\$${NumberFormat('#,##0').format(rewardAmount)}',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppTheme.successColor),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Usage example:
+// Replace your existing BitNetListTiles with:
+/*
+MiningInfoCard(
+  timestamp: DateTime.fromMillisecondsSinceEpoch(
+    controller.txDetailsConfirmed!.timestamp * 1000
+  ).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)),
+  poolName: controller.txDetailsConfirmed!.extras.pool.name,
+  rewardAmount: controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value,
+)
+*/

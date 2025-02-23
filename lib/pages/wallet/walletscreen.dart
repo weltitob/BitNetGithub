@@ -459,6 +459,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                                         .value
                                                                         .bitcoinUnitAsString,
                                                                   ),
+                                                                  size: AppTheme
+                                                                          .iconSize *
+                                                                      2.25,
                                                                 ),
                                                               ],
                                                             )

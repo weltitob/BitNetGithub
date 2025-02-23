@@ -373,26 +373,26 @@ abstract class AppTheme {
       color: AppTheme.black60,
     ),
     bodySmall: GoogleFonts.inter(
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
     labelLarge: GoogleFonts.inter(
       fontSize: 12,
-      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
     labelMedium: GoogleFonts.inter(
       fontSize: 15,
-      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
     labelSmall: GoogleFonts.inter(
-      fontSize: 10,
-      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
+      fontSize: 13,
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),

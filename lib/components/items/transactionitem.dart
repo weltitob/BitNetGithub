@@ -172,7 +172,7 @@ class _TransactionItemState extends State<TransactionItem>
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // LEFT SIDE
                 Row(
@@ -195,15 +195,15 @@ class _TransactionItemState extends State<TransactionItem>
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(Get.context!)
                                 .textTheme
-                                .titleMedium,
+                                .titleSmall!.copyWith(color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white90 : AppTheme.black90),
                           ),
                         ),
                         const SizedBox(
-                          height: AppTheme.elementSpacing,
+                          height: AppTheme.elementSpacing / 2,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -213,15 +213,15 @@ class _TransactionItemState extends State<TransactionItem>
                                   TransactionType.lightning || widget.data.type == TransactionType.internalRebalance
                                   ? Image.asset(
                                 "assets/images/lightning.png",
-                                width: AppTheme.cardPadding * 0.75,
-                                height: AppTheme.cardPadding * 0.75,
+                                width: AppTheme.cardPadding * 0.6,
+                                height: AppTheme.cardPadding * 0.6,
                                 fit: BoxFit.contain,
                               )
                                   : widget.data.type == TransactionType.onChain
                                   ? Image.asset(
                                 "assets/images/bitcoin.png",
-                                width: AppTheme.cardPadding * 0.75,
-                                height: AppTheme.cardPadding * 0.75,
+                                width: AppTheme.cardPadding * 0.6,
+                                height: AppTheme.cardPadding * 0.6,
                                 fit: BoxFit.contain,
                               )
                                   : Row(
@@ -264,7 +264,19 @@ class _TransactionItemState extends State<TransactionItem>
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(Get.context!)
                                   .textTheme
-                                  .bodyMedium,
+                                  .labelSmall,
+                            ),
+                            const SizedBox(
+                              width: AppTheme.elementSpacing / 2,
+                            ),
+                            Icon(
+                              Icons.circle,
+                              color: widget.data.status == TransactionStatus.confirmed
+                                  ? AppTheme.successColor
+                                  : widget.data.status == TransactionStatus.pending
+                                  ? AppTheme.colorBitcoin
+                                  : AppTheme.errorColor,
+                              size: AppTheme.cardPadding * 0.4,
                             ),
                           ],
                         ),
@@ -302,38 +314,22 @@ class _TransactionItemState extends State<TransactionItem>
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(Get.context!)
                                   .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                color: widget.data.direction ==
-                                    TransactionDirection.received
-                                    ? AppTheme.successColor
-                                    : AppTheme.errorColor,
-                              ),
+                                  .titleMedium
                             ),
                           ),
                           (coin.coin ?? true)
                               ? Icon(
                             AppTheme.satoshiIcon,
-                            color: widget.data.direction ==
-                                TransactionDirection.received
-                                ? AppTheme.successColor
-                                : AppTheme.errorColor,
+                            // color: widget.data.direction ==
+                            //     TransactionDirection.received
+                            //     ? AppTheme.successColor
+                            //     : AppTheme.errorColor,
                           )
                               : const SizedBox.shrink(),
+
                         ],
                       ),
-                      const SizedBox(
-                        height: AppTheme.elementSpacing,
-                      ),
-                      Icon(
-                        Icons.circle,
-                        color: widget.data.status == TransactionStatus.confirmed
-                            ? AppTheme.successColor
-                            : widget.data.status == TransactionStatus.pending
-                            ? AppTheme.colorBitcoin
-                            : AppTheme.errorColor,
-                        size: AppTheme.cardPadding * 0.75,
-                      ),
+
                     ],
                   ),
                 ),

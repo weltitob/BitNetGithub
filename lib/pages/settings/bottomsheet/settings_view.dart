@@ -186,26 +186,26 @@ class SettingsView extends StatelessWidget {
                   controller.switchTab('agbs');
                 },
               ),
-              BitNetListTile(
-                leading: RoundedButtonWidget(
-                  iconData: Icons.switch_access_shortcut,
-                  onTap: () {
-                    context.push('/authhome/login');
-                    // controller.switchTab('recover_account');
-                  },
-                  size: AppTheme.iconSize * 1.5,
-                  buttonType: ButtonType.transparent,
-                ),
-                text: "Recover Account",
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: AppTheme.iconSize * 0.75,
-                ),
-                onTap: () {
-                  context.push('/authhome/login');
-                  // controller.switchTab('recover_account');
-                },
-              ),
+              // BitNetListTile(
+              //   leading: RoundedButtonWidget(
+              //     iconData: Icons.switch_access_shortcut,
+              //     onTap: () {
+              //       context.push('/authhome/login');
+              //       // controller.switchTab('recover_account');
+              //     },
+              //     size: AppTheme.iconSize * 1.5,
+              //     buttonType: ButtonType.transparent,
+              //   ),
+              //   text: "Recover Account",
+              //   trailing: const Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     size: AppTheme.iconSize * 0.75,
+              //   ),
+              //   onTap: () {
+              //     context.push('/authhome/login');
+              //     // controller.switchTab('recover_account');
+              //   },
+              // ),
               BitNetListTile(
                 leading: RoundedButtonWidget(
                   iconData: Icons.login_rounded,
