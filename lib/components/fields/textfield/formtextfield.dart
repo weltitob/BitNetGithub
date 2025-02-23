@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -28,7 +27,6 @@ class FormTextField extends StatefulWidget {
   final bool readOnly; // Add read-only property
   final double? width; // Customizable width
   final double? height; // Customizable height
-
 
   const FormTextField({
     Key? key,
@@ -64,6 +62,7 @@ class _FormTextFieldState extends State<FormTextField> {
   bool isInsideList = false;
   bool movedToNext = false;
 
+  @override
   void initState() {
     super.initState();
     widget.controller?.addListener(_isinsideList);
@@ -72,12 +71,17 @@ class _FormTextFieldState extends State<FormTextField> {
   void _isinsideList() {
     if (widget.isBIPField && widget.controller != null) {
       isInsideList = widget.bipwords
-              ?.any((bipword) => (bipword == widget.controller?.text)) ??
+          ?.any((bipword) => (bipword == widget.controller?.text)) ??
           false;
-      List<String> matches = widget.bipwords?.where((s) {return s.startsWith(widget.controller!.text);}).toList() ?? [];
+      List<String> matches = widget.bipwords
+          ?.where((s) => s.startsWith(widget.controller!.text))
+          .toList() ??
+          [];
       List<String> longestMatches = findLongestWords(matches);
       setState(() {
-        if (isInsideList && !movedToNext && (longestMatches.contains(widget.controller!.text))) {
+        if (isInsideList &&
+            !movedToNext &&
+            (longestMatches.contains(widget.controller!.text))) {
           print("should changefocustonext");
           widget.changefocustonext?.call();
           movedToNext = true;
@@ -87,83 +91,93 @@ class _FormTextFieldState extends State<FormTextField> {
       });
     }
   }
-List<String> findLongestWords(List<String> words) {
-  int maxLength = 0;
-  List<String> longestWords = [];
 
-  for (String word in words) {
-    if (word.length > maxLength) {
-      maxLength = word.length;
-      longestWords = [word]; // Reset the list with a single longest word
-    } else if (word.length == maxLength) {
-      longestWords.add(word); // Add another longest word if found
+  List<String> findLongestWords(List<String> words) {
+    int maxLength = 0;
+    List<String> longestWords = [];
+
+    for (String word in words) {
+      if (word.length > maxLength) {
+        maxLength = word.length;
+        longestWords = [word];
+      } else if (word.length == maxLength) {
+        longestWords.add(word);
+      }
     }
+
+    return longestWords;
   }
 
-  return longestWords;
-}
   @override
   Widget build(BuildContext context) {
+    // Use a fallback value if widget.height is null.
+    final double customHeight = widget.height ?? 100.0;
+    final double borderRadiusNum = customHeight / 5.5;
+    final BorderRadius borderRadius = BorderRadius.circular(borderRadiusNum);
+
     return Container(
       width: widget.width, // Use the custom or default width
       height: widget.height, // Use the custom or default height
       margin: const EdgeInsets.only(top: AppTheme.elementSpacing),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusMid,
+        borderRadius: borderRadius,
         child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusMid,
-                  border: Border.all(
-                    color: Colors.transparent,
-                    width: 0.0,
-                  ),
-                  color: Theme.of(context).colorScheme.brightness == Brightness.light ? AppTheme.white60 : AppTheme.colorGlassContainer,
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              border: Border.all(
+                color: Colors.transparent,
+                width: 0.0,
+              ),
+              color: Theme.of(context).colorScheme.brightness == Brightness.light
+                  ? AppTheme.white60
+                  : AppTheme.colorGlassContainer,
+            ),
+            child: TextFormField(
+              readOnly: widget.readOnly,
+              onTapOutside: widget.onTapOutside,
+              maxLength: widget.maxLength,
+              autofocus: widget.autofocus,
+              maxLines: widget.isMultiline ? null : 1,
+              validator: widget.validator,
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              textInputAction: widget.textInputAction,
+              onFieldSubmitted: widget.onFieldSubmitted,
+              inputFormatters: widget.inputFormatters,
+              textAlign: TextAlign.center,
+              style: (widget.isBIPField)
+                  ? Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: (isInsideList)
+                    ? AppTheme.successColor
+                    : AppTheme.errorColor,
+              )
+                  : Theme.of(context).textTheme.titleSmall,
+              obscureText: widget.isObscure,
+              decoration: InputDecoration(
+                labelText: widget.labelText,
+                hintText: widget.hintText,
+                prefixText: widget.prefixText,
+                suffixIcon: widget.suffixIcon,
+                fillColor: AppTheme.white60,
+                counterText: '', // Hides the counter text
+                focusedBorder: GradientOutlineInputBorder(
+                  isFocused: true,
+                  borderRadius: borderRadius,
+                  borderWidth: 3,
                 ),
-                child: TextFormField(
-                  readOnly: widget.readOnly, // Set the read-only property
-                  onTapOutside: widget.onTapOutside,
-                  maxLength: widget.maxLength,
-                  autofocus: widget.autofocus,
-                  maxLines: widget.isMultiline ? null : 1,
-                  validator: widget.validator,
-                  controller: widget.controller,
-                  focusNode: widget.focusNode,
-                  textInputAction: widget.textInputAction,
-                  onFieldSubmitted: widget.onFieldSubmitted,
-                  inputFormatters: widget.inputFormatters,
-                  textAlign: TextAlign.center,
-                  style: (widget.isBIPField)
-                      ? Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: (isInsideList)
-                                ? AppTheme.successColor
-                                : AppTheme.errorColor,
-                          )
-                      : Theme.of(context).textTheme.titleSmall,
-                  obscureText: widget.isObscure,
-                  decoration: InputDecoration(
-                    labelText: widget.labelText,
-                    hintText: widget.hintText,
-                    prefixText: widget.prefixText,
-                    suffixIcon: widget.suffixIcon,
-                    fillColor: AppTheme.white60,
-                    counterText: '', // Hides the counter text
-                    focusedBorder: GradientOutlineInputBorder(
-                      isFocused: true,
-                      borderRadius: AppTheme.cardRadiusMid,
-                      borderWidth: 3,
-                    ),
-                    enabledBorder: GradientOutlineInputBorder(
-                      isFocused: false,
-                      borderRadius: AppTheme.cardRadiusMid,
-                      borderWidth: 1.5,
-                    ),
-                  ),
-                  onChanged: widget.onChanged,
-                ))),
+                enabledBorder: GradientOutlineInputBorder(
+                  isFocused: false,
+                  borderRadius: borderRadius,
+                  borderWidth: 1.5,
+                ),
+              ),
+              onChanged: widget.onChanged,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
-

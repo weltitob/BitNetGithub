@@ -199,7 +199,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                     softWrap: true,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineLarge,
+                                        .displayLarge,
                                   ),
                                   SizedBox(
                                     height: 8,
@@ -209,7 +209,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                     maxLines: 2,
                                     softWrap: true,
                                     style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )
                                 ],
                               ),
@@ -244,9 +244,6 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                       .bodySmall!
                                       .copyWith(color: AppTheme.errorColor),
                                 ),
-                              SizedBox(
-                                height: 32,
-                              ),
                               FormTextField(
                                 prefixText: "         ",
                                 suffixIcon: IconButton(

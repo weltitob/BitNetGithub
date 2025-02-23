@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/coinlogo.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
@@ -116,28 +114,36 @@ class Avatar extends StatelessWidget {
     );
 
     return ClipRRect(
-      child: Stack(children: [
-        InkWell(
-          onTap: onTap ??
-              (profileId != null
-                  ? () => context.go("/showprofile/:$profileId")
-                  : null),
-          borderRadius: borderRadius,
-          child: container,
-        ),
-        if (cornerWidget != null || isNft)
-          Positioned(
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: onTap ??
+                (profileId != null ? () => context.go("/showprofile/:$profileId") : null),
+            borderRadius: borderRadius,
+            child: container,
+          ),
+          if (cornerWidget != null || isNft)
+            Positioned(
               bottom: 0,
               right: 0,
               child: cornerWidget ??
                   (isNft
-                      ? CoinLogoWidgetSmall(
-                          coinid: 1,
-                          width: size / 4,
-                          height: size / 4,
-                        )
-                      : Container()))
-      ]),
+                      ? Container(
+                    width: size / 4,
+                    height: size / 4,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: CoinLogoWidgetSmall(
+                        coinid: 1,
+                        width: size / 4,
+                        height: size / 4,
+                      ),
+                    ),
+                  )
+                      : Container()),
+            ),
+        ],
+      ),
     );
   }
 }
