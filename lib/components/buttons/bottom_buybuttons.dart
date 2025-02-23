@@ -110,15 +110,17 @@ class _BottomButtonsState extends State<BottomButtons> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 6.75.w,
-                    customHeight: AppTheme.cardPadding * 2.5,
+                    buttonType: ButtonType.transparent,
+                    customWidth: AppTheme.cardPadding * 5.5.w,
+                    customHeight: AppTheme.cardPadding * 2.0,
                     title: widget.leftButtonTitle,
                     onTap: widget.onLeftButtonTap,
                   ),
                   LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 6.75.w,
-                    customHeight: AppTheme.cardPadding * 2.5,
                     buttonType: ButtonType.transparent,
+                    customWidth: AppTheme.cardPadding * 5.5.w,
+                    customHeight: AppTheme.cardPadding * 2.0,
+
                     title: widget.rightButtonTitle,
                     onTap: widget.onRightButtonTap,
                   ),

@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -16,8 +19,64 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+
+
+/// A top-level helper to color-code each notification type
+Color _getTypeColor(String type) {
+  switch (type) {
+    case 'bought':
+      return AppTheme.successColor; // e.g., green
+    case 'sold':
+      return AppTheme.errorColor;   // e.g., red
+    case 'offer':
+      return Colors.orangeAccent;   // e.g., orange
+    default:
+      return Colors.grey;           // fallback
+  }
+}
+
+/// A top-level helper to choose an icon based on notification type
+IconData _getTypeIcon(String type) {
+  switch (type) {
+    case 'bought':
+      return Icons.shopping_cart;
+    case 'sold':
+      return Icons.sell;
+    case 'offer':
+      return Icons.local_offer;
+    default:
+      return Icons.notifications;
+  }
+}
+
+/// A top-level helper to build the main title text for each notification
+String _buildNotificationTitle(String type) {
+  switch (type) {
+    case 'bought':
+      return 'Bought from @xxx';
+    case 'sold':
+      return 'Sold to @xxx';
+    case 'offer':
+      return 'Offer from @xxx';
+    default:
+      return 'Transaction';
+  }
+}
+
+/// Model class for your notifications
+class NotificationModel {
+  final String type;
+  final double amount;
+  final DateTime date;
+  const NotificationModel({
+    required this.type,
+    required this.amount,
+    required this.date,
+  });
+}
+
 class NotificationsWidget extends StatefulWidget {
-  NotificationsWidget({super.key});
+  const NotificationsWidget({Key? key}) : super(key: key);
 
   @override
   State<NotificationsWidget> createState() => _NotificationsWidgetState();
@@ -25,18 +84,18 @@ class NotificationsWidget extends StatefulWidget {
 
 class _NotificationsWidgetState extends State<NotificationsWidget> with AutomaticKeepAliveClientMixin {
   final List<NotificationModel> fakeNotifications = [
-    NotificationModel(amount: 500, type: 'sold', date: DateTime(2024, 9, 8)),
-    NotificationModel(amount: 700, type: 'sold', date: DateTime(2024, 9, 7)),
+    NotificationModel(amount: 500,  type: 'sold',   date: DateTime(2024, 9, 8)),
+    NotificationModel(amount: 700,  type: 'sold',   date: DateTime(2024, 9, 7)),
     NotificationModel(amount: -500, type: 'bought', date: DateTime(2024, 9, 6)),
-    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 9, 5)),
-    NotificationModel(amount: 300, type: 'sold', date: DateTime(2024, 7, 8)),
+    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 9, 5)),
+    NotificationModel(amount: 300,  type: 'sold',   date: DateTime(2024, 7, 8)),
     NotificationModel(amount: -500, type: 'bought', date: DateTime(2024, 6, 8)),
-    NotificationModel(amount: 100, type: 'sold', date: DateTime(2024, 6, 7)),
-    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 6, 6)),
-    NotificationModel(amount: 500, type: 'offer', date: DateTime(2024, 9, 8)),
-    NotificationModel(amount: 1500, type: 'sold', date: DateTime(2024, 5, 8)),
-    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 5, 7)),
-    NotificationModel(amount: 900, type: 'sold', date: DateTime(2024, 5, 6)),
+    NotificationModel(amount: 100,  type: 'sold',   date: DateTime(2024, 6, 7)),
+    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 6, 6)),
+    NotificationModel(amount: 500,  type: 'offer',  date: DateTime(2024, 9, 8)),
+    NotificationModel(amount: 1500, type: 'sold',   date: DateTime(2024, 5, 8)),
+    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 5, 7)),
+    NotificationModel(amount: 900,  type: 'sold',   date: DateTime(2024, 5, 6)),
   ];
 
   @override
@@ -47,25 +106,30 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
 
   @override
   Widget build(BuildContext context) {
-    final ProfileController controller = Get.find<ProfileController>();
     super.build(context);
+    final ProfileController controller = Get.find<ProfileController>();
     return controller.isLoadingNotifs
         ? SliverToBoxAdapter(child: dotProgress(context))
-        : SliverList(delegate: SliverChildBuilderDelegate((ctx, index) {
-            if (index == controller.organizedNotifications.length) {
-              return SizedBox(height: 80);
-            } else if (index == controller.organizedNotifications.length + 1) {
-              return null;
-            }
-            return controller.organizedNotifications[index];
-          }));
+        : SliverList(
+      delegate: SliverChildBuilderDelegate(
+            (ctx, index) {
+          // Add some spacing at the bottom
+          if (index == controller.organizedNotifications.length) {
+            return const SizedBox(height: 80);
+          } else if (index == controller.organizedNotifications.length + 1) {
+            return null;
+          }
+          return controller.organizedNotifications[index];
+        },
+        childCount: controller.organizedNotifications.length + 2,
+      ),
+    );
   }
 
   Future<void> getNotifications() async {
-    //loading
     final ProfileController controller = Get.find<ProfileController>();
-
-    await Future.delayed(Duration(seconds: 3));
+    // Simulate loading
+    await Future.delayed(const Duration(seconds: 3));
     organizeNotifications();
     controller.isLoadingNotifs = false;
     if (mounted) {
@@ -76,85 +140,132 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
   void organizeNotifications() {
     final ProfileController controller = Get.find<ProfileController>();
 
+    // Initialize or clear the categorized map
     controller.categorizedNotifications = {
       'Your Pending Offers': [],
       'This Week': [],
       'Last Week': [],
       'This Month': [],
     };
+
+    // Sort notifications by most recent date
     fakeNotifications.sort((a, b) => b.date.compareTo(a.date));
 
     DateTime now = DateTime.now();
-    DateTime startOfThisWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime startOfLastWeek = startOfThisWeek.subtract(const Duration(days: 7));
     DateTime startOfThisMonth = DateTime(now.year, now.month, 1);
 
     for (NotificationModel item in fakeNotifications) {
       DateTime date = item.date;
       if (item.type == 'offer') {
-        controller.categorizedNotifications['Your Pending Offers']!.add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications['Your Pending Offers']!
+            .add(SingleNotificationWidget(model: item));
       } else if (date.isAfter(startOfThisMonth)) {
-        String timeTag = displayTimeAgoFromInt(item.date.millisecondsSinceEpoch ~/ 1000);
-        controller.categorizedNotifications.putIfAbsent(timeTag, () => []).add(SingleNotificationWidget(model: item));
+        // If it's after the start of this month, display time-ago or date
+        String timeTag =
+        displayTimeAgoFromInt(item.date.millisecondsSinceEpoch ~/ 1000);
+        controller.categorizedNotifications
+            .putIfAbsent(timeTag, () => [])
+            .add(SingleNotificationWidget(model: item));
       } else if (date.year == now.year) {
+        // Group by month name
         String monthName = DateFormat('MMMM').format(date);
-        String key = monthName;
-        controller.categorizedNotifications.putIfAbsent(key, () => []).add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications
+            .putIfAbsent(monthName, () => [])
+            .add(SingleNotificationWidget(model: item));
       } else {
-        String yearMonth = '${date.year}, ${DateFormat('MMMM').format(date)}';
-        controller.categorizedNotifications.putIfAbsent(yearMonth, () => []).add(SingleNotificationWidget(model: item));
+        // Group by Year + Month
+        String yearMonth =
+            '${date.year}, ${DateFormat('MMMM').format(date)}';
+        controller.categorizedNotifications
+            .putIfAbsent(yearMonth, () => [])
+            .add(SingleNotificationWidget(model: item));
       }
     }
+
+    // Build the final list of widgets in organizedNotifications
+    controller.organizedNotifications.clear();
+
     controller.categorizedNotifications.forEach((category, notifications) {
       if (notifications.isEmpty) return;
+
+      // Section heading
       if (category == 'Your Pending Offers') {
+        // Special heading for “Your Pending Offers” with a Cancel-all button
         controller.organizedNotifications.add(
-          Builder(builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    category,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  LongButtonWidget(
+          Builder(
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding,
+                  vertical: AppTheme.elementSpacing,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+                    Text(
+                      category,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    LongButtonWidget(
                       title: 'Cancel',
-                      customWidth: AppTheme.cardPadding * 4,
-                      customHeight: AppTheme.cardPadding * 1.5,
+                      buttonType: ButtonType.transparent,
+                      customWidth: AppTheme.cardPadding * 3.5,
+                      customHeight: AppTheme.cardPadding * 1.25,
                       onTap: () {
                         _buildAreYouSureAll(
-                            context,
-                            notifications.length,
-                            NotificationsContainer(
-                                notifications: notifications
-                                    .map((item) => SingleNotificationWidget(
-                                          model: item.model,
-                                          showButtons: false,
-                                        ))
-                                    .toList()));
-                      }),
-                ],
-              ),
-            );
-          }),
+                          context,
+                          notifications.length,
+                          NotificationsContainer(
+                            notifications: notifications
+                                .map(
+                                  (item) => SingleNotificationWidget(
+                                model: item.model,
+                                showButtons: false,
+                              ),
+                            )
+                                .toList(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       } else {
+        // Standard heading
         controller.organizedNotifications.add(
-          Builder(builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
-              child: Text(
-                category,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            );
-          }),
+          Builder(
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding,
+                  vertical: AppTheme.elementSpacing,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: AppTheme.elementSpacing),
+                    Text(
+                      category,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    // Optional divider for a cleaner look:
+                    // const Divider(),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       }
 
-      controller.organizedNotifications.add(NotificationsContainer(notifications: notifications));
+      // Add the container of notifications
+      controller.organizedNotifications
+          .add(NotificationsContainer(notifications: notifications));
     });
   }
 
@@ -162,117 +273,143 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
   bool get wantKeepAlive => true;
 }
 
-class NotificationModel {
-  final String type;
-  final double amount;
-  final DateTime date;
-  const NotificationModel({required this.type, required this.amount, required this.date});
-}
-
+/// Single notification card with improved UI
 class SingleNotificationWidget extends StatelessWidget {
-  const SingleNotificationWidget({super.key, required this.model, this.showButtons = true});
+  const SingleNotificationWidget({
+    Key? key,
+    required this.model,
+    this.showButtons = true,
+  }) : super(key: key);
+
   final NotificationModel model;
   final bool showButtons;
-  @override
-  Widget build(BuildContext context) {
-    BitcoinUnitModel unitModel = BitcoinUnitModel(amount: model.amount.toInt(), bitcoinUnit: BitcoinUnits.SAT);
-    return Material(
-        color: Colors.transparent,
-        child: InkWell(
-            onTap: () {},
-            child: Container(
-                padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: AppTheme.elementSpacing * 0.75,
-                      right: AppTheme.elementSpacing * 1,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    model.type == 'bought'
-                                        ? 'Bought xxxx'
-                                        : model.type == 'sold'
-                                            ? 'Sold To xxx'
-                                            : 'Offer from xxx',
-                                    style: Theme.of(context).textTheme.titleLarge),
-                                SizedBox(height: AppTheme.elementSpacing),
-                                AmountPreviewer(
-                                    unitModel: unitModel,
-                                    textStyle: Theme.of(context).textTheme.titleLarge!,
-                                    textColor: unitModel.amount < 0 ? AppTheme.errorColor : AppTheme.successColor)
-                              ],
-                            ),
-                            Avatar(size: AppTheme.cardPadding * 2, isNft: false)
-                          ],
-                        ),
-                        if (model.type == 'offer' && showButtons) ...[
-                          SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(),
-                              SizedBox(
-                                width: AppTheme.cardPadding * 8.2,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    LongButtonWidget(
-                                        title: 'Cancel',
-                                        customWidth: AppTheme.cardPadding * 4,
-                                        customHeight: AppTheme.cardPadding * 1.5,
-                                        onTap: () {
-                                          _buildAreYouSureSingle(context, model);
-                                        }),
-                                    LongButtonWidget(
-                                        title: 'Accept',
-                                        customWidth: AppTheme.cardPadding * 4,
-                                        customHeight: AppTheme.cardPadding * 1.5,
-                                        onTap: () {})
-                                  ],
-                                ),
-                              )
-                            ],
-                          )
-                        ]
-                      ],
-                    )))));
-  }
-}
 
-class NotificationsContainer extends StatelessWidget {
-  const NotificationsContainer({
-    super.key,
-    required this.notifications,
-  });
-  final List<SingleNotificationWidget> notifications;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: RepaintBoundary(
-        child: GlassContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...notifications.map((item) {
-                return item;
-              }).toList(),
+    final color = _getTypeColor(model.type);
+    final icon = _getTypeIcon(model.type);
+
+    // Example: amount in SAT
+    final BitcoinUnitModel unitModel = BitcoinUnitModel(
+      amount: model.amount.toInt(),
+      bitcoinUnit: BitcoinUnits.SAT,
+    );
+
+    return InkWell(
+      onTap: () {
+        // handle tapping on a single notification
+      },
+      borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Top row: icon + text (title/date) + trailing amount
+            Row(
+              children: [
+                // Leading icon in a tinted circle
+                CircleAvatar(
+                  backgroundColor: color.withOpacity(0.15),
+                  child: Icon(icon, color: color),
+                ),
+                SizedBox(width: AppTheme.elementSpacing),
+                // Title & date
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _buildNotificationTitle(model.type),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        DateFormat('yyyy-MM-dd HH:mm').format(model.date),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+                // Trailing color-coded amount
+                Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: AmountPreviewer(
+                    unitModel: unitModel,
+                    textStyle: Theme.of(context).textTheme.titleMedium!,
+                    textColor: model.amount < 0
+                        ? AppTheme.errorColor
+                        : AppTheme.successColor,
+                  ),
+                ),
+              ],
+            ),
+
+            /// If it's an offer, show Accept/Cancel buttons
+            if (model.type == 'offer' && showButtons) ...[
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+
+                    title: 'Cancel',
+                    customWidth: 80,
+                    customHeight: 30,
+                    onTap: () => _buildAreYouSureSingle(context, model),
+                  ),
+                  const SizedBox(width: AppTheme.elementSpacing / 2),
+                  LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    title: 'Accept',
+                    customWidth: 80,
+                    customHeight: 30,
+                    onTap: () {
+                      // handle accept
+                    },
+                  ),
+                ],
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );
   }
 }
 
+/// Container for a group of notifications
+class NotificationsContainer extends StatelessWidget {
+  const NotificationsContainer({
+    Key? key,
+    required this.notifications,
+  }) : super(key: key);
+
+  final List<SingleNotificationWidget> notifications;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: GlassContainer(
+        child: Column(
+          children: notifications,
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet confirmation for a single offer
 _buildAreYouSureSingle(BuildContext context, NotificationModel model) {
   return BitNetBottomSheet(
     context: context,
@@ -287,58 +424,45 @@ _buildAreYouSureSingle(BuildContext context, NotificationModel model) {
       body: Stack(
         children: [
           Container(
-            child: Padding(
-              padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: AppTheme.elementSpacing * 4,
-                        ),
-                        Wrap(
-                          alignment: WrapAlignment.center,
-                          children: [
-                            Text(
-                              'Would you really like to cancel this offer worth ${model.amount.toInt().toString()}',
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(getCurrencyIcon(BitcoinUnits.SAT.name)),
-                            Text(
-                              'from xxx ?',
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: AppTheme.elementSpacing,
-                        ),
-                        NotificationsContainer(notifications: [
-                          SingleNotificationWidget(
-                            model: model,
-                            showButtons: false,
-                          )
-                        ]),
-                      ],
+            margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  children: [
+                    Text(
+                      'Would you really like to cancel this offer worth '
+                          '${model.amount.toInt()} ',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
+                    Icon(getCurrencyIcon(BitcoinUnits.SAT.name)),
+                    Text(
+                      ' from xxx?',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                NotificationsContainer(
+                  notifications: [
+                    SingleNotificationWidget(
+                      model: model,
+                      showButtons: false,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           BottomButtons(
             leftButtonTitle: "Cancel",
             rightButtonTitle: "Confirm",
-            onLeftButtonTap: () {
-              Navigator.pop(context);
-            },
+            onLeftButtonTap: () => Navigator.pop(context),
             onRightButtonTap: () {
+              // handle confirm
               Navigator.pop(context);
             },
           )
@@ -348,6 +472,7 @@ _buildAreYouSureSingle(BuildContext context, NotificationModel model) {
   );
 }
 
+/// Bottom sheet confirmation for multiple offers
 _buildAreYouSureAll(BuildContext context, int amount, NotificationsContainer widget) {
   return BitNetBottomSheet(
     context: context,
@@ -362,43 +487,30 @@ _buildAreYouSureAll(BuildContext context, int amount, NotificationsContainer wid
       body: Stack(
         children: [
           Container(
-            child: Padding(
-              padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: AppTheme.elementSpacing * 4,
-                          ),
-                          Center(
-                            child: Text(
-                              'Would you really like to cancel all ${amount} pending offers?',
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          widget
-                        ],
-                      ),
+            margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Text(
+                      'Would you really like to cancel all $amount pending offers?',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing),
+                  widget,
+                ],
               ),
             ),
           ),
           BottomButtons(
             leftButtonTitle: "Cancel",
             rightButtonTitle: "Confirm",
-            onLeftButtonTap: () {
-              Navigator.pop(context);
-            },
+            onLeftButtonTap: () => Navigator.pop(context),
             onRightButtonTap: () {
+              // handle confirm
               Navigator.pop(context);
             },
           )

@@ -78,19 +78,22 @@ class _ProfileViewState extends State<ProfileView> {
               ),
         floatingActionButton: Align(
           alignment: Alignment.bottomCenter,
-          child: LongButtonWidget(
-            buttonType: ButtonType.solid,
-            customHeight: AppTheme.cardPadding * 2,
-            customWidth: AppTheme.cardPadding * 5.25,
-            leadingIcon: Icon(
-              FontAwesomeIcons.add,
-              size: AppTheme.cardPadding * 0.75,
-              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.white : Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 0.75),
+            child: LongButtonWidget(
+              buttonType: ButtonType.solid,
+              customHeight: AppTheme.cardPadding * 1.7,
+              customWidth: AppTheme.cardPadding * 4.75,
+              leadingIcon: Icon(
+                FontAwesomeIcons.add,
+                size: AppTheme.cardPadding * 0.75,
+                color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.white : Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
+              ),
+              title: 'Create',
+              onTap: () {
+                context.push('/create');
+              },
             ),
-            title: 'Create',
-            onTap: () {
-              context.push('/create');
-            },
           ),
         ),
       ),
