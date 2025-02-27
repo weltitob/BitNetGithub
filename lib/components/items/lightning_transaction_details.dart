@@ -221,169 +221,187 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                 //     ],
                 //   ),
                 // ),
-                BitNetListTile(
-                    text: 'TransactionID',
-                    trailing: GestureDetector(
-                      onTap: () async {
-                        await Clipboard.setData(ClipboardData(
-                          text: data.txHash,
-                        ));
-                        overlayController.showOverlay(
-                            L10n.of(context)!.copiedToClipboard);
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.copy,
-                            color: AppTheme.white60,
-                            size: AppTheme.cardPadding * 0.75,
-                          ),
-                          const SizedBox(
-                            width: AppTheme.elementSpacing / 2,
-                          ),
-                          Container(
-                            width: AppTheme.cardPadding * 5.w,
-                            child: Text(
-                              data.txHash,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing,
+                  ),
+                  child: GlassContainer(
+                    borderRadius: AppTheme.cardRadiusBiggest,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppTheme.elementSpacing,
+                        horizontal: AppTheme.elementSpacing / 2,
                       ),
-                    )),
+                      child: Column(
+                        children: [
+                          BitNetListTile(
+                              text: 'TransactionID',
+                              trailing: GestureDetector(
+                                onTap: () async {
+                                  await Clipboard.setData(ClipboardData(
+                                    text: data.txHash,
+                                  ));
+                                  overlayController.showOverlay(
+                                      L10n.of(context)!.copiedToClipboard);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.copy,
+                                      color: AppTheme.white60,
+                                      size: AppTheme.cardPadding * 0.75,
+                                    ),
+                                    const SizedBox(
+                                      width: AppTheme.elementSpacing / 2,
+                                    ),
+                                    Container(
+                                      width: AppTheme.cardPadding * 5.w,
+                                      child: Text(
+                                        data.txHash,
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
 
-                BitNetListTile(
-                  text: 'Status',
-                  trailing: Row(
-                    children: [
-                      data.status == TransactionStatus.pending
-                          ? Positioned(
-                              top: 0,
-                              right: 10,
-                              child: Transform.scale(
-                                scale: 1.1,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    controller.showInfo.value =
-                                        !controller.showInfo.value;
-                                    BitNetBottomSheet(
-                                      context: context,
-                                      child: bitnetScaffold(
-                                        extendBodyBehindAppBar: true,
-                                        appBar: bitnetAppBar(
-                                          context: context,
-                                          text: 'Info',
-                                          hasBackButton: false,
-                                        ),
-                                        context: context,
-                                        body: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: AppTheme.cardPaddingBigger *
-                                                  5,
-                                              left: AppTheme.cardPaddingBig,
-                                              right: AppTheme.cardPaddingBig),
-                                          child: Text(
-                                            'When the lightning invoice wont get trough the payment will be canceled and the user will receive the funds back',
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 5,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium!,
+                          BitNetListTile(
+                            text: 'Status',
+                            trailing: Row(
+                              children: [
+                                data.status == TransactionStatus.pending
+                                    ? Positioned(
+                                        top: 0,
+                                        right: 10,
+                                        child: Transform.scale(
+                                          scale: 1.1,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              controller.showInfo.value =
+                                                  !controller.showInfo.value;
+                                              BitNetBottomSheet(
+                                                context: context,
+                                                child: bitnetScaffold(
+                                                  extendBodyBehindAppBar: true,
+                                                  appBar: bitnetAppBar(
+                                                    context: context,
+                                                    text: 'Info',
+                                                    hasBackButton: false,
+                                                  ),
+                                                  context: context,
+                                                  body: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        top: AppTheme.cardPaddingBigger *
+                                                            5,
+                                                        left: AppTheme.cardPaddingBig,
+                                                        right: AppTheme.cardPaddingBig),
+                                                    child: Text(
+                                                      'When the lightning invoice wont get trough the payment will be canceled and the user will receive the funds back',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.center,
+                                                      maxLines: 5,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleMedium!,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.topRight,
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: AppTheme.black60,
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  controller.showInfo.value
+                                                      ? Icons.info
+                                                      : Icons.info_outline,
+                                                  color: AppTheme.white60,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.topRight,
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppTheme.black60,
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        controller.showInfo.value
-                                            ? Icons.info
-                                            : Icons.info_outline,
-                                        color: AppTheme.white60,
-                                      ),
-                                    ),
+                                      )
+                                    : const SizedBox.shrink(),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  data.status == TransactionStatus.confirmed
+                                      ? 'Received'
+                                      : data.status == TransactionStatus.pending
+                                          ? 'Pending'
+                                          : 'Error',
+                                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: data.status == TransactionStatus.confirmed
+                                        ? AppTheme.successColor
+                                        : data.status == TransactionStatus.pending
+                                        ? AppTheme.colorBitcoin
+                                        : AppTheme.errorColor,
                                   ),
                                 ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Text(
-                        data.status == TransactionStatus.confirmed
-                            ? 'Received'
-                            : data.status == TransactionStatus.pending
-                                ? 'Pending'
-                                : 'Error',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: data.status == TransactionStatus.confirmed
-                              ? AppTheme.successColor
-                              : data.status == TransactionStatus.pending
-                              ? AppTheme.colorBitcoin
-                              : AppTheme.errorColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                BitNetListTile(
-                  text: "Payment Network",
-                  trailing: Row(
-                    children: [
-                      Image.asset("assets/images/lightning.png",
-                          width: AppTheme.cardPadding * 1,
-                          height: AppTheme.cardPadding * 1),
-                      const SizedBox(
-                        width: AppTheme.elementSpacing / 2,
-                      ),
-                      Text(
-                        'Lightning',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                ),
-                BitNetListTile(
-                    text: 'Time',
-                    trailing: Text(
-                      "${time} "
-                      '(${formattedDate}) ',
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )),
-                BitNetListTile(
-                    text: 'Fee',
-                    trailing: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            coin.setCurrencyType(
-                                coin.coin != null ? !coin.coin! : false);
-                          },
-                          child: Text(
-                            coin.coin ?? true
-                                ? '${data.fee}'
-                                : "$currencyEquivalentFee ${getCurrency(currency!)}",
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium,
+                              ],
+                            ),
                           ),
-                        ),
-                        coin.coin ?? true
-                            ? Icon(AppTheme.satoshiIcon)
-                            : const SizedBox.shrink(),
-                      ],
-                    )),
+                          BitNetListTile(
+                            text: "Payment Network",
+                            trailing: Row(
+                              children: [
+                                Image.asset("assets/images/lightning.png",
+                                    width: AppTheme.cardPadding * 1,
+                                    height: AppTheme.cardPadding * 1),
+                                const SizedBox(
+                                  width: AppTheme.elementSpacing / 2,
+                                ),
+                                Text(
+                                  'Lightning',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                          BitNetListTile(
+                              text: 'Time',
+                              trailing: Text(
+                                "${time} "
+                                '(${formattedDate}) ',
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              )),
+                          BitNetListTile(
+                              text: 'Fee',
+                              trailing: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      coin.setCurrencyType(
+                                          coin.coin != null ? !coin.coin! : false);
+                                    },
+                                    child: Text(
+                                      coin.coin ?? true
+                                          ? '${data.fee}'
+                                          : "$currencyEquivalentFee ${getCurrency(currency!)}",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                  ),
+                                  coin.coin ?? true
+                                      ? Icon(AppTheme.satoshiIcon)
+                                      : const SizedBox.shrink(),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
