@@ -62,178 +62,148 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
         body: Obx(() {
           Get.find<WalletsController>().chartLines.value;
           return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: AppTheme.cardPadding * 3,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.elementSpacing,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 3,
                   ),
-                  child: GlassContainer(
-                    borderRadius: AppTheme.cardRadiusBiggest,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: AppTheme.cardPadding * 1.25,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  Avatar(
-                                      size: AppTheme.cardPadding * 4,
-                                      isNft: false,
-                                      onTap: () {}),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing * 0.5,
-                                  ),
-                                  const Text("Sender"),
-                                ],
-                              ),
-                              const SizedBox(
-                                width: AppTheme.cardPadding * 0.75,
-                              ),
-                              Icon(
-                                Icons.double_arrow_rounded,
-                                size: AppTheme.cardPadding * 2.5,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? AppTheme.white80
-                                    : AppTheme.black60,
-                              ),
-                              const SizedBox(
-                                width: AppTheme.cardPadding * 0.75,
-                              ),
-                              Column(
-                                children: [
-                                  Avatar(
-                                      size: AppTheme.cardPadding * 4,
-                                      isNft: false,
-                                      onTap: () {}),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing * 0.5,
-                                  ),
-                                  const Text("Receiver"),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppTheme.cardPadding * 0.75),
-                          controller.hideBalance.value
-                              ? Text(
-                                  '*****',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        coin.setCurrencyType(coin.coin != null
-                                            ? !coin.coin!
-                                            : false);
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            coin.coin ?? true
-                                                ? double.parse(data.amount) > 0
-                                                    ? '${data.amount}'
-                                                    : data.amount
-                                                : double.parse(data.amount) > 0
-                                                    ? "+${currencyEquivalent}"
-                                                    : "$currencyEquivalent",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displayMedium!
-                                                .copyWith(
-                                                    color: data.direction ==
-                                                            TransactionDirection
-                                                                .received
-                                                        ? AppTheme.successColor
-                                                        : AppTheme.errorColor),
-                                          ),
-                                          if (!(coin.coin ?? true)) ...[
-                                            Text(
-                                              ' ${getCurrency(currency!)}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displayMedium!
-                                                  .copyWith(
-                                                      color: data.direction ==
-                                                              TransactionDirection
-                                                                  .received
-                                                          ? AppTheme
-                                                              .successColor
-                                                          : AppTheme
-                                                              .errorColor),
-                                            )
-                                          ]
-                                        ],
-                                      ),
-                                    ),
-                                    coin.coin ?? true
-                                        ? Icon(
-                                            AppTheme.satoshiIcon,
-                                            color: data.direction ==
-                                                    TransactionDirection
-                                                        .received
-                                                ? AppTheme.successColor
-                                                : AppTheme.errorColor,
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ],
-                                ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppTheme.elementSpacing),
-                // Text(formattedDate, style: Theme.of(context).textTheme.bodyLarge),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-                //   child: Row(
-                //     children: [
-                //       Flexible(
-                //         child: Text(
-                //           data.txHash,
-                //           style: Theme.of(context).textTheme.bodyMedium,
-                //           overflow: TextOverflow.ellipsis,
-                //         ),
-                //       ),
-                //       IconButton(
-                //           onPressed: () async {
-                //             await Clipboard.setData(ClipboardData(
-                //               text: data.txHash,
-                //             ));
-                //             Get.snackbar('Copied', data.txHash);
-                //           },
-                //           icon: const Icon(Icons.copy))
-                //     ],
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  child: GlassContainer(
+                  GlassContainer(
                     borderRadius: AppTheme.cardRadiusBiggest,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: AppTheme.elementSpacing,
-                        horizontal: AppTheme.elementSpacing / 2,
+                        horizontal: AppTheme.elementSpacing,
                       ),
                       child: Column(
                         children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: AppTheme.cardPadding * 0.75,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Avatar(
+                                            size: AppTheme.cardPadding * 4,
+                                            isNft: false,
+                                            onTap: () {}),
+                                        const SizedBox(
+                                          height: AppTheme.elementSpacing * 0.5,
+                                        ),
+                                        const Text("Sender"),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: AppTheme.cardPadding * 0.75,
+                                    ),
+                                    Icon(
+                                      Icons.double_arrow_rounded,
+                                      size: AppTheme.cardPadding * 2.5,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? AppTheme.white80
+                                          : AppTheme.black60,
+                                    ),
+                                    const SizedBox(
+                                      width: AppTheme.cardPadding * 0.75,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Avatar(
+                                            size: AppTheme.cardPadding * 4,
+                                            isNft: false,
+                                            onTap: () {}),
+                                        const SizedBox(
+                                          height: AppTheme.elementSpacing * 0.5,
+                                        ),
+                                        const Text("Receiver"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppTheme.cardPadding * 0.75),
+                                controller.hideBalance.value
+                                    ? Text(
+                                        '*****',
+                                        style:
+                                            Theme.of(context).textTheme.titleMedium,
+                                      )
+                                    : Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              coin.setCurrencyType(coin.coin != null
+                                                  ? !coin.coin!
+                                                  : false);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  coin.coin ?? true
+                                                      ? double.parse(data.amount) > 0
+                                                          ? '${data.amount}'
+                                                          : data.amount
+                                                      : double.parse(data.amount) > 0
+                                                          ? "+${currencyEquivalent}"
+                                                          : "$currencyEquivalent",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displayMedium!
+                                                      .copyWith(
+                                                          color: data.direction ==
+                                                                  TransactionDirection
+                                                                      .received
+                                                              ? AppTheme.successColor
+                                                              : AppTheme.errorColor),
+                                                ),
+                                                if (!(coin.coin ?? true)) ...[
+                                                  Text(
+                                                    ' ${getCurrency(currency!)}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .displayMedium!
+                                                        .copyWith(
+                                                            color: data.direction ==
+                                                                    TransactionDirection
+                                                                        .received
+                                                                ? AppTheme
+                                                                    .successColor
+                                                                : AppTheme
+                                                                    .errorColor),
+                                                  )
+                                                ]
+                                              ],
+                                            ),
+                                          ),
+                                          coin.coin ?? true
+                                              ? Icon(
+                                                  AppTheme.satoshiIcon,
+                                                  color: data.direction ==
+                                                          TransactionDirection
+                                                              .received
+                                                      ? AppTheme.successColor
+                                                      : AppTheme.errorColor,
+                                                )
+                                              : const SizedBox.shrink(),
+                                        ],
+                                      ),
+                              ],
+                            ),
+                          ),
+                          const Divider(height: AppTheme.elementSpacing * 1.5),
+                          
                           BitNetListTile(
                               text: 'TransactionID',
                               trailing: GestureDetector(
@@ -368,11 +338,23 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                           ),
                           BitNetListTile(
                               text: 'Time',
-                              trailing: Text(
-                                "${time} "
-                                '(${formattedDate}) ',
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                              trailing: Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_time_rounded,
+                                    color: AppTheme.white60,
+                                    size: AppTheme.cardPadding * 0.75,
+                                  ),
+                                  const SizedBox(
+                                    width: AppTheme.elementSpacing / 2,
+                                  ),
+                                  Text(
+                                    "${time} "
+                                    '(${formattedDate}) ',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
                               )),
                           BitNetListTile(
                               text: 'Fee',
@@ -401,7 +383,6 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           );
