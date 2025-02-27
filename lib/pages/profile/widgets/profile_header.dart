@@ -246,7 +246,7 @@ class ProfileHeader extends StatelessWidget {
                                 () => Avatar(
                                   mxContent: Uri.parse(controller
                                       .userData.value.profileImageUrl),
-                                  size: AppTheme.cardPadding * 4.h,
+                                  size: AppTheme.cardPadding * 3.75.h,
                                   type: profilePictureType.lightning,
                                   isNft: controller
                                       .userData.value.nft_profile_id.isNotEmpty,
@@ -276,7 +276,7 @@ class ProfileHeader extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding.w),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           LongButtonWidget(
                             title: "Follow",
@@ -304,7 +304,7 @@ class ProfileHeader extends StatelessWidget {
                           LongButtonWidget(
                             title: "Tip",
                             onTap: () {},
-                            buttonType: ButtonType.transparent,
+                            buttonType: ButtonType.solid,
                             customHeight: AppTheme.cardPadding * 1.75,
                             customWidth: (MediaQuery.of(context).size.width -
                                     AppTheme.cardPadding * 2.5.w) /
@@ -312,6 +312,10 @@ class ProfileHeader extends StatelessWidget {
                             leadingIcon: Icon(
                               FontAwesomeIcons.btc,
                               size: AppTheme.cardPadding * 0.75,
+                              color: Theme.of(context).colorScheme.primary ==
+                                      AppTheme.primaryColor
+                                  ? AppTheme.black70
+                                  : AppTheme.white90,
                               // color: Theme.of(context).colorScheme.primary ==
                               //         AppTheme.colorBitcoin
                               //     ? Colors.white
