@@ -190,7 +190,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                           decoration: BoxDecoration(
                                               border: Border.all(
                                                   width: 4,
-                                                  color: selected_photos.contains(current_photos![i]) ? Colors.blue : Colors.transparent)),
+                                                  color: selected_photos.contains(current_photos![i]) ? Theme.of(context).colorScheme.primary : Colors.transparent)),
                                           child: AssetEntityImage(
                                             current_photos![i],
                                             isOriginal: false,

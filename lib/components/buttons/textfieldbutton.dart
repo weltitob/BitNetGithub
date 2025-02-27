@@ -16,14 +16,14 @@ class TextFieldButton extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: AppTheme.cardRadiusBig,
           ),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Icon(
               iconData,
-              color: Theme.of(context).colorScheme.onSecondary,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         ),
