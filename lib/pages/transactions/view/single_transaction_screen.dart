@@ -32,6 +32,58 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 
+// BlinkingDot for transaction status indication
+class BlinkingDot extends StatefulWidget {
+  final Color color;
+  final double size;
+
+  const BlinkingDot({
+    Key? key,
+    required this.color,
+    this.size = 10.0,
+  }) : super(key: key);
+
+  @override
+  _BlinkingDotState createState() => _BlinkingDotState();
+}
+
+class _BlinkingDotState extends State<BlinkingDot> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+
+    _opacityAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacityAnimation,
+      child: Container(
+        width: widget.size,
+        height: widget.size,
+        decoration: BoxDecoration(
+          color: widget.color,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+}
+
 class SingleTransactionScreen extends StatefulWidget {
   const SingleTransactionScreen({Key? key}) : super(key: key);
 
@@ -220,616 +272,398 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                   horizontal: AppTheme.elementSpacing,
                                 ),
                                 child: GlassContainer(
-                                  borderRadius: AppTheme.cardRadiusBiggest,
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: AppTheme.cardPadding * 1.25,
+                                  borderRadius: AppTheme.cardRadiusBig,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: AppTheme.elementSpacing,
+                                      horizontal: AppTheme.elementSpacing,
                                     ),
                                     child: Column(
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Avatar(
-                                                  size:
-                                                      AppTheme.cardPadding * 4,
-                                                  onTap: () {
-                                                    LeftAvatarBitNetBottomSheet(
-                                                        controller);
-                                                  },
-                                                  isNft: false,
-                                                ),
-                                                const SizedBox(
-                                                  height:
-                                                      AppTheme.elementSpacing *
-                                                          0.5,
-                                                ),
-                                                Text(
-                                                    "Sender (${controller.transactionModel?.vin?.length})"),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              width:
-                                                  AppTheme.cardPadding * 0.75,
-                                            ),
-                                            Icon(
-                                              Icons.double_arrow_rounded,
-                                              size: AppTheme.cardPadding * 2.5,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? AppTheme.white80
-                                                  : AppTheme.black60,
-                                            ),
-                                            const SizedBox(
-                                              width:
-                                                  AppTheme.cardPadding * 0.75,
-                                            ),
-                                            Column(
-                                              children: [
-                                                Avatar(
-                                                  size:
-                                                      AppTheme.cardPadding * 4,
-                                                  isNft: false,
-                                                  onTap: () {
-                                                    RightAvatarBitnetBottomSheet(
-                                                        controller);
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  height:
-                                                      AppTheme.elementSpacing *
-                                                          0.5,
-                                                ),
-                                                Text(
-                                                    "Receiver (${controller.transactionModel?.vout?.length})"),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                            height:
-                                                AppTheme.cardPadding * 0.75),
-                                        if (controller.currentOwnedAddresses
-                                            .isNotEmpty) ...[
-                                          controllerWallet.hideBalance.value
-                                              ? Text(
-                                                  '*****',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium,
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        coin.setCurrencyType(
-                                                            coin.coin != null
-                                                                ? !coin.coin!
-                                                                : false);
-                                                      },
-                                                      child: Text(
-                                                          coin.coin ?? true
-                                                              ? '${controller.transactionModel == null ? '' : amount > 0 ? '+${controller.formatPrice(amount.toString())}' : controller.formatPrice(amount.toString())}'
-                                                              : amount > 0
-                                                                  ? "+${currencyAmount} ${currSymbol}"
-                                                                  : "${currencyAmount} ${currSymbol}",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .displayMedium!
-                                                              .copyWith(
-                                                                  color: amount >
-                                                                          0
-                                                                      ? AppTheme
-                                                                          .successColor
-                                                                      : amount <
-                                                                              0
-                                                                          ? AppTheme
-                                                                              .errorColor
-                                                                          : null)),
-                                                    ),
-                                                    coin.coin ?? true
-                                                        ? Icon(
-                                                            AppTheme
-                                                                .satoshiIcon,
-                                                            color: amount > 0
-                                                                ? AppTheme
-                                                                    .successColor
-                                                                : amount < 0
-                                                                    ? AppTheme
-                                                                        .errorColor
-                                                                    : null)
-                                                        : const SizedBox
-                                                            .shrink(),
-                                                  ],
-                                                ),
-                                        ]
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: AppTheme.elementSpacing * 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing),
-                                child: Column(
-                                  children: [
-                                    BitNetListTile(
-                                      text: 'Transaction Volume',
-                                      trailing: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              coin.setCurrencyType(
-                                                  coin.coin != null
-                                                      ? !coin.coin!
-                                                      : false);
-                                            },
-                                            child: Text(
-                                              coin.coin ?? true
-                                                  ? '$outputTotal'
-                                                  : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, outputTotal.toDouble(), currency!, bitcoinPrice)} ${getCurrency(currency)}',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium,
-                                            ),
+                                        // Transaction header with sender and receiver
+                                        Container(
+                                          margin: const EdgeInsets.symmetric(
+                                            vertical: AppTheme.cardPadding * 0.75,
                                           ),
-                                          coin.coin ?? true
-                                              ? Icon(AppTheme.satoshiIcon)
-                                              : const SizedBox.shrink(),
-                                        ],
-                                      ),
-                                    ),
-                                    BitNetListTile(
-                                        text: 'TransactionID',
-                                        trailing: GestureDetector(
-                                          onTap: () async {
-                                            await Clipboard.setData(
-                                                ClipboardData(
-                                              text: controller.txID!,
-                                            ));
-                                            overlayController.showOverlay(
-                                                L10n.of(context)!
-                                                    .copiedToClipboard);
-                                          },
-                                          child: Row(
+                                          child: Column(
                                             children: [
-                                              Icon(
-                                                Icons.copy,
-                                                color: AppTheme.white60,
-                                                size:
-                                                    AppTheme.cardPadding * 0.75,
-                                              ),
-                                              const SizedBox(
-                                                width:
-                                                    AppTheme.elementSpacing / 2,
-                                              ),
-                                              Container(
-                                                width:
-                                                    AppTheme.cardPadding * 5.w,
-                                                child: Text(
-                                                  controller.txID!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                    BitNetListTile(
-                                      onTap: () {
-                                        if (controller.transactionModel!.status!
-                                                .blockHeight !=
-                                            null)
-                                          controllerHome.blockHeight =
-                                              controller.transactionModel!
-                                                  .status!.blockHeight!;
-                                        context.push(
-                                            '/wallet/bitcoinscreen/mempool');
-                                      },
-                                      text: L10n.of(context)!.block,
-                                      trailing: Row(
-                                        children: [
-                                          Text(
-                                            "${controller.transactionModel!.status!.blockHeight ?? "--"}",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                          ),
-                                          const SizedBox(
-                                            width: AppTheme.elementSpacing / 2,
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: AppTheme.cardPadding * 0.75,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    BitNetListTile(
-                                      text: L10n.of(context)!.status,
-                                      trailing: Center(
-                                        child: Text(
-                                          controllerHome
-                                                      .isRbfTransaction.value ==
-                                                  true
-                                              ? L10n.of(context)!.replaced
-                                              : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
-                                                  controller
-                                                      .statusTransaction.value,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium!
-                                              .copyWith(
-                                                color: controller
-                                                            .transactionModel ==
-                                                        null
-                                                    ? AppTheme.errorColor
-                                                    : controller
-                                                            .transactionModel!
-                                                            .status!
-                                                            .confirmed!
-                                                        ? AppTheme.successColor
-                                                        : controllerHome
-                                                                    .isRbfTransaction
-                                                                    .value ==
-                                                                true
-                                                            ? AppTheme
-                                                                .colorBitcoin
-                                                            : AppTheme
-                                                                .errorColor,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                    BitNetListTile(
-                                      text: L10n.of(context)!.paymentNetwork,
-                                      trailing: Row(
-                                        children: [
-                                          Image.asset(
-                                              "assets/images/bitcoin.png",
-                                              width: AppTheme.cardPadding * 1,
-                                              height: AppTheme.cardPadding * 1),
-                                          const SizedBox(
-                                            width: AppTheme.elementSpacing / 2,
-                                          ),
-                                          Text(
-                                            'Onchain',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    BitNetListTile(
-                                      text: L10n.of(context)!.time,
-                                      trailing: controller.transactionModel!
-                                              .status!.confirmed!
-                                          ? Container(
-                                              child: Column(
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  Text(
-                                                    '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))}'
-                                                    ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))})',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium,
+                                                  Column(
+                                                    children: [
+                                                      Avatar(
+                                                        size: AppTheme.cardPadding * 4,
+                                                        onTap: () {
+                                                          LeftAvatarBitNetBottomSheet(controller);
+                                                        },
+                                                        isNft: false,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: AppTheme.elementSpacing * 0.5,
+                                                      ),
+                                                      Text("Sender (${controller.transactionModel?.vin?.length})"),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    width: AppTheme.cardPadding * 0.75,
+                                                  ),
+                                                  Icon(
+                                                    Icons.double_arrow_rounded,
+                                                    size: AppTheme.cardPadding * 2.5,
+                                                    color: Theme.of(context).brightness == Brightness.dark
+                                                        ? AppTheme.white80
+                                                        : AppTheme.black60,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: AppTheme.cardPadding * 0.75,
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      Avatar(
+                                                        size: AppTheme.cardPadding * 4,
+                                                        isNft: false,
+                                                        onTap: () {
+                                                          RightAvatarBitnetBottomSheet(controller);
+                                                        },
+                                                      ),
+                                                      const SizedBox(
+                                                        height: AppTheme.elementSpacing * 0.5,
+                                                      ),
+                                                      Text("Receiver (${controller.transactionModel?.vout?.length})"),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            )
-                                          : Obx(
-                                              () {
-                                                return Text(
-                                                  controller.timeST.value,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                );
-                                              },
-                                            ),
-                                    ),
-                                    controller.transactionModel!.status!
-                                            .confirmed!
-                                        ? const SizedBox()
-                                        : BitNetListTile(
-                                            text: 'ETA',
-                                            trailing: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 170.w,
-                                                  child: Text(
-                                                    controllerHome.txPosition
-                                                                .value >=
-                                                            7
-                                                        ? L10n.of(context)!
-                                                            .inSeveralHours
-                                                        : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 4,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.purple,
-                                                    borderRadius: AppTheme
-                                                        .cardRadiusCircular,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      L10n.of(context)!
-                                                          .accelerate,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium,
+                                              const SizedBox(height: AppTheme.cardPadding * 0.75),
+                                              // Amount display
+                                              if (controller.currentOwnedAddresses.isNotEmpty) ...[
+                                                controllerWallet.hideBalance.value
+                                                    ? Text(
+                                                        '*****',
+                                                        style: Theme.of(context).textTheme.titleMedium,
+                                                      )
+                                                    : Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                                            },
+                                                            child: Text(
+                                                              coin.coin ?? true
+                                                                  ? '${controller.transactionModel == null ? '' : amount > 0 ? '+${controller.formatPrice(amount.toString())}' : controller.formatPrice(amount.toString())}'
+                                                                  : amount > 0
+                                                                      ? "+${currencyAmount} ${currSymbol}"
+                                                                      : "${currencyAmount} ${currSymbol}",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                                                                  color: amount > 0
+                                                                      ? AppTheme.successColor
+                                                                      : amount < 0
+                                                                          ? AppTheme.errorColor
+                                                                          : null),
+                                                            ),
+                                                          ),
+                                                          coin.coin ?? true
+                                                              ? Icon(
+                                                                  AppTheme.satoshiIcon,
+                                                                  color: amount > 0
+                                                                      ? AppTheme.successColor
+                                                                      : amount < 0
+                                                                          ? AppTheme.errorColor
+                                                                          : null)
+                                                              : const SizedBox.shrink(),
+                                                        ],
+                                                      ),
+                                              ],
+                                            ],
+                                          ),
+                                        ),
+                                        
+                                        // Nested details container with all information
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppTheme.elementSpacing * 0.5,
+                                            vertical: AppTheme.elementSpacing
+                                          ),
+                                          child: GlassContainer(
+                                            opacity: 0.05,
+                                            borderRadius: AppTheme.cardRadiusSmall,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: AppTheme.elementSpacing,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // Transaction Volume
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: 'Transaction Volume',
+                                                    trailing: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                                          },
+                                                          child: Text(
+                                                            coin.coin ?? true
+                                                                ? '$outputTotal'
+                                                                : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, outputTotal.toDouble(), currency!, bitcoinPrice)} ${getCurrency(currency)}',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: Theme.of(context).textTheme.titleMedium,
+                                                          ),
+                                                        ),
+                                                        coin.coin ?? true
+                                                            ? Icon(AppTheme.satoshiIcon)
+                                                            : const SizedBox.shrink(),
+                                                      ],
                                                     ),
                                                   ),
-                                                )
-                                              ],
-                                            )),
-                                    // BitNetListTile(
-                                    //   text: L10n.of(context)!.confirmed,
-                                    //   trailing: Row(
-                                    //     mainAxisAlignment:
-                                    //     MainAxisAlignment
-                                    //         .spaceEvenly,
-                                    //     children: [
-                                    //       Text(
-                                    //           L10n.of(context)!
-                                    //               .confirmed +
-                                    //               " ",
-                                    //           style: Theme.of(context)
-                                    //               .textTheme
-                                    //               .bodyMedium),
-                                    //       Row(
-                                    //         children: [
-                                    //           Text(
-                                    //             L10n.of(context)!
-                                    //                 .afterTx +
-                                    //                 DateTime
-                                    //                     .fromMillisecondsSinceEpoch(
-                                    //                   (controller
-                                    //                       .transactionModel!
-                                    //                       .status!
-                                    //                       .blockTime! *
-                                    //                       1000) -
-                                    //                       (controller
-                                    //                           .txTime *
-                                    //                           1000),
-                                    //                 )
-                                    //                     .minute
-                                    //                     .toString() +
-                                    //                 L10n.of(context)!
-                                    //                     .minutesTx,
-                                    //             style: Theme.of(context)
-                                    //                 .textTheme
-                                    //                 .bodyMedium,
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    // BitNetListTile(
-                                    //     text: L10n.of(context)!.features,
-                                    //     trailing: Row(
-                                    //       mainAxisAlignment:
-                                    //       MainAxisAlignment.spaceBetween,
-                                    //       children: [
-                                    //         if (controller.segwitEnabled.value)
-                                    //           Container(
-                                    //             padding: const EdgeInsets.symmetric(
-                                    //                 horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                    //             margin: const EdgeInsets.symmetric(
-                                    //               horizontal: 4,
-                                    //             ),
-                                    //             decoration: BoxDecoration(
-                                    //               color: controller
-                                    //                   .realizedSegwitGains !=
-                                    //                   0 &&
-                                    //                   controller
-                                    //                       .potentialSegwitGains !=
-                                    //                       0
-                                    //                   ? AppTheme.colorBitcoin
-                                    //                   : controller.potentialP2shSegwitGains !=
-                                    //                   0
-                                    //                   ? AppTheme.errorColor
-                                    //                   : AppTheme.successColor,
-                                    //               borderRadius:
-                                    //               AppTheme.cardRadiusCircular,
-                                    //             ),
-                                    //             child: Text(
-                                    //               'SegWit',
-                                    //               style: Theme.of(context)
-                                    //                   .textTheme
-                                    //                   .bodyMedium
-                                    //                   ?.copyWith(
-                                    //                   color: Colors.white,
-                                    //                   decoration: controller
-                                    //                       .potentialP2shSegwitGains !=
-                                    //                       0
-                                    //                       ? TextDecoration
-                                    //                       .lineThrough
-                                    //                       : TextDecoration.none),
-                                    //             ),
-                                    //           ),
-                                    //         if (controller.taprootEnabled.value)
-                                    //           Container(
-                                    //             padding: const EdgeInsets.symmetric(
-                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                    //             margin: EdgeInsets.symmetric(
-                                    //                 horizontal: 4,),
-                                    //             decoration: BoxDecoration(
-                                    //               color: controller.isTaproot.value
-                                    //                   ? AppTheme.successColor
-                                    //                   : AppTheme.errorColor,
-                                    //               borderRadius:
-                                    //               AppTheme.cardRadiusCircular,
-                                    //             ),
-                                    //             child: Text(
-                                    //               'Taproot',
-                                    //               style: Theme.of(context)
-                                    //                   .textTheme
-                                    //                   .bodyMedium
-                                    //                   ?.copyWith(
-                                    //                   color: Colors.white,
-                                    //                   decoration: controller
-                                    //                       .isTaproot.value
-                                    //                       ? TextDecoration.none
-                                    //                       : TextDecoration
-                                    //                       .lineThrough),
-                                    //             ),
-                                    //           ),
-                                    //         if (controller.rbfEnabled.value)
-                                    //           Container(
-                                    //               padding: const EdgeInsets.symmetric(
-                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                    //               margin: EdgeInsets.symmetric(
-                                    //                   horizontal: 4,),
-                                    //               decoration: BoxDecoration(
-                                    //                 color: controller
-                                    //                     .isRbfTransaction.value
-                                    //                     ? AppTheme.successColor
-                                    //                     : AppTheme.errorColor,
-                                    //                 borderRadius:
-                                    //                 AppTheme.cardRadiusCircular,
-                                    //               ),
-                                    //               child: Text(
-                                    //                 'RBF',
-                                    //                 style: Theme.of(context)
-                                    //                     .textTheme
-                                    //                     .bodyMedium
-                                    //                     ?.copyWith(
-                                    //                   color: Colors.white,
-                                    //                     decoration: controller
-                                    //                         .isRbfTransaction
-                                    //                         .value
-                                    //                         ? TextDecoration.none
-                                    //                         : TextDecoration
-                                    //                         .lineThrough),
-                                    //
-                                    //               )
-                                    //           ),
-                                    //       ],
-                                    //     )),
-                                    BitNetListTile(
-                                        text: 'Fee',
-                                        trailing: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                coin.setCurrencyType(
-                                                    coin.coin != null
-                                                        ? !coin.coin!
-                                                        : false);
-                                              },
-                                              child: Text(
-                                                coin.coin ?? true
-                                                    ? '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel!.fee.toString())}'
-                                                    : controller.transactionModel ==
-                                                            null
-                                                        ? ''
-                                                        : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, controller.transactionModel!.fee?.toDouble() ?? 0, currency!, bitcoinPrice)} ${getCurrency(currency)}',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium,
+                                                  
+                                                  // Transaction ID
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: 'TransactionID',
+                                                    trailing: GestureDetector(
+                                                      onTap: () async {
+                                                        await Clipboard.setData(ClipboardData(
+                                                          text: controller.txID!,
+                                                        ));
+                                                        overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.copy,
+                                                            color: AppTheme.white60,
+                                                            size: AppTheme.cardPadding * 0.75,
+                                                          ),
+                                                          const SizedBox(width: AppTheme.elementSpacing / 2),
+                                                          Container(
+                                                            width: AppTheme.cardPadding * 5.w,
+                                                            child: Text(
+                                                              controller.txID!,
+                                                              style: Theme.of(context).textTheme.bodyMedium,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  
+                                                  // Block information
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    onTap: () {
+                                                      if (controller.transactionModel!.status!.blockHeight != null)
+                                                        controllerHome.blockHeight = controller.transactionModel!.status!.blockHeight!;
+                                                      context.push('/wallet/bitcoinscreen/mempool');
+                                                    },
+                                                    text: L10n.of(context)!.block,
+                                                    trailing: Row(
+                                                      children: [
+                                                        Text(
+                                                          "${controller.transactionModel!.status!.blockHeight ?? "--"}",
+                                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                                            color: Theme.of(context).colorScheme.primary
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: AppTheme.elementSpacing / 2),
+                                                        Icon(
+                                                          Icons.arrow_forward_ios,
+                                                          size: AppTheme.cardPadding * 0.75,
+                                                          color: Theme.of(context).colorScheme.primary,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  
+                                                  // Status
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: L10n.of(context)!.status,
+                                                    trailing: Row(
+                                                      children: [
+                                                        // Added Blinking Dot animation
+                                                        BlinkingDot(
+                                                          color: controller.transactionModel == null
+                                                              ? AppTheme.errorColor
+                                                              : controller.transactionModel!.status!.confirmed!
+                                                                  ? AppTheme.successColor
+                                                                  : controllerHome.isRbfTransaction.value == true
+                                                                      ? AppTheme.colorBitcoin
+                                                                      : AppTheme.errorColor,
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        Text(
+                                                          controllerHome.isRbfTransaction.value == true
+                                                              ? L10n.of(context)!.replaced
+                                                              : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
+                                                                  controller.statusTransaction.value,
+                                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                                            color: controller.transactionModel == null
+                                                                ? AppTheme.errorColor
+                                                                : controller.transactionModel!.status!.confirmed!
+                                                                    ? AppTheme.successColor
+                                                                    : controllerHome.isRbfTransaction.value == true
+                                                                        ? AppTheme.colorBitcoin
+                                                                        : AppTheme.errorColor,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  
+                                                  // Payment Network
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: L10n.of(context)!.paymentNetwork,
+                                                    trailing: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/bitcoin.png",
+                                                          width: AppTheme.cardPadding * 1,
+                                                          height: AppTheme.cardPadding * 1
+                                                        ),
+                                                        const SizedBox(width: AppTheme.elementSpacing / 2),
+                                                        Text(
+                                                          'Onchain',
+                                                          style: Theme.of(context).textTheme.titleMedium,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  
+                                                  // Time with clock icon
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: L10n.of(context)!.time,
+                                                    leading: Icon(
+                                                      Icons.access_time,
+                                                      size: AppTheme.cardPadding * 0.75,
+                                                      color: Theme.of(context).brightness == Brightness.dark
+                                                        ? AppTheme.white60
+                                                        : AppTheme.black60,
+                                                    ),
+                                                    trailing: controller.transactionModel!.status!.confirmed!
+                                                      ? Container(
+                                                          width: AppTheme.cardPadding * 7.w,
+                                                          child: Text(
+                                                            '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))}'
+                                                            ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)))})',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: 2,
+                                                            textAlign: TextAlign.end,
+                                                            style: Theme.of(context).textTheme.bodyMedium,
+                                                          ),
+                                                        )
+                                                      : Obx(
+                                                          () => Text(
+                                                            controller.timeST.value,
+                                                            style: Theme.of(context).textTheme.bodyMedium,
+                                                          ),
+                                                        ),
+                                                  ),
+                                                  
+                                                  // ETA for pending transactions
+                                                  if (!controller.transactionModel!.status!.confirmed!)
+                                                    BitNetListTile(
+                                                      contentPadding: const EdgeInsets.symmetric(
+                                                        horizontal: AppTheme.elementSpacing * 0.75,
+                                                        vertical: AppTheme.elementSpacing * 0.5,
+                                                      ),
+                                                      text: 'ETA',
+                                                      trailing: Row(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 170.w,
+                                                            child: Text(
+                                                              controllerHome.txPosition.value >= 7
+                                                                  ? L10n.of(context)!.inSeveralHours
+                                                                  : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
+                                                              style: Theme.of(context).textTheme.bodyLarge,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 5),
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.purple,
+                                                              borderRadius: AppTheme.cardRadiusCircular,
+                                                            ),
+                                                            child: Center(
+                                                              child: Text(
+                                                                L10n.of(context)!.accelerate,
+                                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  
+                                                  // Fee
+                                                  BitNetListTile(
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: AppTheme.elementSpacing * 0.75,
+                                                      vertical: AppTheme.elementSpacing * 0.5,
+                                                    ),
+                                                    text: 'Fee',
+                                                    trailing: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                                          },
+                                                          child: Text(
+                                                            coin.coin ?? true
+                                                                ? '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel!.fee.toString())}'
+                                                                : controller.transactionModel == null
+                                                                    ? ''
+                                                                    : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, controller.transactionModel!.fee?.toDouble() ?? 0, currency!, bitcoinPrice)} ${getCurrency(currency)}',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: Theme.of(context).textTheme.titleMedium,
+                                                          ),
+                                                        ),
+                                                        coin.coin ?? true
+                                                            ? Icon(AppTheme.satoshiIcon)
+                                                            : const SizedBox.shrink(),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            coin.coin ?? true
-                                                ? Icon(AppTheme.satoshiIcon)
-                                                : const SizedBox.shrink(),
-                                          ],
-                                        )),
-                                    // BitNetListTile(
-                                    //     text: L10n.of(context)!.feeRate,
-                                    //     trailing: Row(
-                                    //       children: [
-                                    //         Text(
-                                    //           '${(controller.feeRate * 4).toStringAsFixed(1)} sat/vB',
-                                    //           style: Theme.of(context)
-                                    //               .textTheme
-                                    //               .bodyLarge,
-                                    //         ),
-                                    //         SizedBox(
-                                    //           width: 10,
-                                    //         ),
-                                    //         controller.transactionModel!.status!
-                                    //             .confirmed!
-                                    //             ? Container(
-                                    //           padding: EdgeInsets.symmetric(
-                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
-                                    //           decoration: BoxDecoration(
-                                    //             color: controller
-                                    //                 .feeRating.value ==
-                                    //                 1
-                                    //                 ? AppTheme.successColor
-                                    //                 : controller.feeRating
-                                    //                 .value ==
-                                    //                 2
-                                    //                 ? AppTheme.colorBitcoin
-                                    //                 : AppTheme.errorColor,
-                                    //             borderRadius:
-                                    //             AppTheme.cardRadiusCircular,
-                                    //           ),
-                                    //           child: Center(
-                                    //             child: Text(
-                                    //               controller.feeRating.value ==
-                                    //                   1
-                                    //                   ? L10n.of(context)!
-                                    //                   .optimal
-                                    //                   : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
-                                    //               style: Theme.of(context)
-                                    //                   .textTheme
-                                    //                   .bodyMedium!.copyWith(color: Colors.white),
-                                    //             ),
-                                    //           ),
-                                    //         )
-                                    //             : SizedBox(),
-                                    //       ],
-                                    //     )
-                                    // ),
-                                    const SizedBox(
-                                      height: AppTheme.cardPadding,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ],
