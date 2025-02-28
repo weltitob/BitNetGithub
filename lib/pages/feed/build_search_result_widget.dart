@@ -419,8 +419,12 @@ class SearchResultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
+    
+    // Check if search is active (if controller.searchresults has filtered results)
+    final bool isSearchActive = controller.searchresults.isNotEmpty && 
+                              controller.searchresults.length != controller.searchresultsMain.length;
 
-    // Create mock data for each category
+    // Create mock data for category display when not searching
     final featuredPeople = getMockUsers('featured');
     final recentContacts = getMockUsers('recent');
     final hypedPeople = getMockUsers('hyped');
@@ -430,49 +434,63 @@ class SearchResultWidget extends StatelessWidget {
     return controller.searchResultsFuture == null
         ? dotProgress(context)
         : GetBuilder<FeedController>(builder: (controller) {
-            return ListView(
-              // Remove the padding from ListView to allow the carousel to extend full width
-              padding: EdgeInsets.zero,
-              children: [
-                // Featured people carousel at the top
-                _buildFeaturedPeopleCarousel(featuredPeople, context),
+            return Padding(
+              padding: const EdgeInsets.only(
 
-                // Regular sections below
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                  child: Column(
-                    children: [
-                      _buildContactSection(
-                        title: 'Recent Contacts',
-                        users: recentContacts,
-                        context: context,
-                        showViewAll: true,
-                      ),
-                      _buildContactSection(
-                        title: 'Hyped People',
-                        users: hypedPeople,
-                        context: context,
-                        showViewAll: true,
-                        showRanking: true,
-                      ),
-                      _buildContactSection(
-                        title: 'Top Buyers',
-                        users: topBuyers,
-                        context: context,
-                        showViewAll: true,
-                        showRanking: true,
-                      ),
-                      _buildContactSection(
-                        title: 'Top Sellers',
-                        users: topSellers,
-                        context: context,
-                        showViewAll: true,
-                        showRanking: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                  top: AppTheme.elementSpacing),
+              child: isSearchActive
+                  // Show search results when active
+                  ? ListView.builder(
+                      itemCount: controller.searchresults.length,
+                      itemBuilder: (context, index) {
+                        return controller.searchresults[index];
+                      },
+                    )
+                  // Show normal UI when not searching
+                  : ListView(
+                      // Remove the padding from ListView to allow the carousel to extend full width
+                      padding: EdgeInsets.zero,
+                      children: [
+                        // Featured people carousel at the top
+                        _buildFeaturedPeopleCarousel(featuredPeople, context),
+                        
+                        // Regular sections below
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          child: Column(
+                            children: [
+                              _buildContactSection(
+                                title: 'Recent Contacts',
+                                users: recentContacts,
+                                context: context,
+                                showViewAll: true,
+                              ),
+                              _buildContactSection(
+                                title: 'Hyped People',
+                                users: hypedPeople,
+                                context: context,
+                                showViewAll: true,
+                                showRanking: true,
+                              ),
+                              _buildContactSection(
+                                title: 'Top Buyers',
+                                users: topBuyers,
+                                context: context,
+                                showViewAll: true,
+                                showRanking: true,
+                              ),
+                              _buildContactSection(
+                                title: 'Top Sellers',
+                                users: topSellers,
+                                context: context,
+                                showViewAll: true,
+                                showRanking: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
             );
           });
   }
