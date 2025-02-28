@@ -1,6 +1,9 @@
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
@@ -10,11 +13,13 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/controller/loop_controller.dart';
-import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LoopScreen extends StatefulWidget {
   const LoopScreen({
@@ -27,8 +32,11 @@ class LoopScreen extends StatefulWidget {
 
 class _LoopScreenState extends State<LoopScreen> {
   final loopGetController = Get.put(LoopGetxController());
-
   WalletsController walletController = Get.find<WalletsController>();
+  
+  // Focus nodes for the editable cards
+  final FocusNode onchainFocusNode = FocusNode();
+  final FocusNode lightningFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -43,14 +51,18 @@ class _LoopScreenState extends State<LoopScreen> {
           walletController.onchainBalance.value.confirmedBalance;
 
       setState(() {});
-      // Add listener to FocusNode
     });
 
-
-    loopGetController.amtNode.addListener(() {
-      if (loopGetController.amtNode.hasFocus) {
+    // Setup amount in controller based on the focus nodes
+    onchainFocusNode.addListener(() {
+      if (onchainFocusNode.hasFocus) {
         loopGetController.scrollToBottom();
-        print('Keyboard is open');
+      }
+    });
+
+    lightningFocusNode.addListener(() {
+      if (lightningFocusNode.hasFocus) {
+        loopGetController.scrollToBottom();
       }
     });
   }
@@ -60,13 +72,31 @@ class _LoopScreenState extends State<LoopScreen> {
     loopGetController.satController.clear();
     loopGetController.btcController.clear();
     loopGetController.currencyController.clear();
-    loopGetController.amtNode.removeListener(() {
-      if (loopGetController.amtNode.hasFocus) {
-        loopGetController.scrollToBottom();
-      }
-    });
-    //loopGetController.dispose();
+    
+    onchainFocusNode.dispose();
+    lightningFocusNode.dispose();
+    
     super.dispose();
+  }
+  
+  // Updates the corresponding balance with the new input value
+  void updateBalance(String text, bool isOnchain) {
+    if (text.isEmpty) text = "0";
+    
+    final double amount = double.tryParse(text) ?? 0.0;
+    
+    if (isOnchain) {
+      // Update onchain balance
+      walletController.predictedBtcBalance.value = amount.toString();
+    } else {
+      // Update lightning balance
+      walletController.predictedLightningBalance.value = amount.toString();
+    }
+    
+    // Update controller values for the swap functions
+    loopGetController.satController.text = amount.toString();
+    
+    setState(() {});
   }
 
   @override
@@ -102,17 +132,16 @@ class _LoopScreenState extends State<LoopScreen> {
                       children: [
                         Column(
                           children: [
+                            // ONCHAIN CARD ("YOU PAY" when animate is true or "YOU RECEIVE" when animate is false)
                             Container(
                                 height: AppTheme.cardPadding * 7.5,
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding),
-                                child:
-                                Obx(() {
+                                child: Obx(() {
                                   final logger = Get.find<LoggerService>();
                                   // Extracting reactive variables from the controller
                                   final predictedBtcBalanceStr = walletController.predictedBtcBalance.value;
                                   final confirmedBalanceStr = walletController.onchainBalance.value.confirmedBalance;
-
                                   final unconfirmedBalanceStr = walletController.onchainBalance.value.unconfirmedBalance;
 
                                   // Safely parse the string balances to doubles
@@ -137,19 +166,25 @@ class _LoopScreenState extends State<LoopScreen> {
                                   // Format the predicted balance to 8 decimal places
                                   final formattedBalance = predictedBtcBalance.toStringAsFixed(8);
 
-                                  return BalanceCardBtc(
+                                  return EditableBalanceCard(
                                     balance: formattedBalance,
                                     confirmedBalance: confirmedBalanceStr,
                                     unconfirmedBalance: unconfirmedBalanceStr,
                                     defaultUnit: BitcoinUnits.SAT,
                                     textColor: textColor,
+                                    cardType: CardType.onchain,
+                                    cardTitle: loopGetController.animate.value 
+                                        ? "You Pay" 
+                                        : "You Receive",
+                                    focusNode: onchainFocusNode,
+                                    onChanged: (value) => updateBalance(value, true),
                                   );
-                                }),
+                                })),
 
-                            ),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
+                            // LIGHTNING CARD ("YOU RECEIVE" when animate is true or "YOU PAY" when animate is false)
                             Container(
                               height: AppTheme.cardPadding * 7.5,
                               margin: const EdgeInsets.symmetric(
@@ -181,19 +216,23 @@ class _LoopScreenState extends State<LoopScreen> {
                                 // Format the predicted balance to 8 decimal places
                                 final formattedBalance = predictedBalance.toStringAsFixed(8);
 
-                                return BalanceCardLightning(
+                                return EditableBalanceCard(
                                   balance: formattedBalance,
                                   confirmedBalance: confirmedBalanceStr,
-                                  defaultUnit: BitcoinUnits.SAT, // You can adjust this as needed
+                                  defaultUnit: BitcoinUnits.SAT,
                                   textColor: textColor,
+                                  cardType: CardType.lightning,
+                                  cardTitle: loopGetController.animate.value 
+                                      ? "You Receive" 
+                                      : "You Pay",
+                                  focusNode: lightningFocusNode,
+                                  onChanged: (value) => updateBalance(value, false),
                                 );
                               }),
-
-
                             ),
-
                           ],
                         ),
+                        // SWAP ARROW BUTTON
                         Align(
                           alignment: Alignment.center,
                           child: Obx(() => AnimatedRotation(
@@ -246,36 +285,6 @@ class _LoopScreenState extends State<LoopScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppTheme.cardPadding * 1),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding),
-                    child: Obx(
-                      () => AmountWidget(
-                        enabled: () => true,
-                        bitcoinUnit: BitcoinUnits.SAT,
-                        btcController: loopGetController.btcController,
-                        currController: loopGetController.currencyController,
-                        satController: loopGetController.satController,
-                        lowerBound: 0,
-                        upperBound: loopGetController.animate.value
-                            ? int.parse(walletController
-                                .onchainBalance.value.confirmedBalance)
-                            : int.parse(walletController
-                                .lightningBalance.value.balance),
-                        boundType: BitcoinUnits.SAT,
-                        focusNode: loopGetController.amtNode,
-                        onAmountChange: (type, currency) {
-                          // Handle amount change
-                          loopGetController
-                              .scrollToBottom(); // Scroll to bottom when amount changes
-                        },
-                        context: context,
-                        autoConvert: true,
-                        swapped: Get.find<WalletsController>().reversed.value,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: AppTheme.cardPadding * 5.5),
                 ],
               ),
@@ -297,6 +306,176 @@ class _LoopScreenState extends State<LoopScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+enum CardType { onchain, lightning }
+
+class EditableBalanceCard extends StatefulWidget {
+  final String balance;
+  final String confirmedBalance; 
+  final String? unconfirmedBalance;
+  final BitcoinUnits defaultUnit;
+  final Color? textColor;
+  final CardType cardType;
+  final String cardTitle;
+  final FocusNode focusNode;
+  final Function(String) onChanged;
+
+  const EditableBalanceCard({
+    Key? key,
+    required this.balance,
+    required this.confirmedBalance,
+    this.unconfirmedBalance,
+    this.defaultUnit = BitcoinUnits.SAT,
+    this.textColor,
+    required this.cardType,
+    required this.cardTitle,
+    required this.focusNode,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  State<EditableBalanceCard> createState() => _EditableBalanceCardState();
+}
+
+class _EditableBalanceCardState extends State<EditableBalanceCard> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.balance);
+  }
+
+  @override
+  void didUpdateWidget(EditableBalanceCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.balance != widget.balance && !widget.focusNode.hasFocus) {
+      _controller.text = widget.balance;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+      double.parse(widget.balance),
+      widget.defaultUnit,
+    );
+
+    final bool isOnchain = widget.cardType == CardType.onchain;
+    
+    return Container(
+      child: Stack(
+        children: [
+          // Background with appropriate style based on card type
+          isOnchain 
+              ? const CardBackgroundOnchain() 
+              : const CardBackgroundLightning(),
+          
+          // Card content
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Card title ("You Pay" or "You Receive")
+                Text(
+                  widget.cardTitle,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                
+                const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                
+                // Editable amount field
+                Container(
+                  width: 180.w,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: widget.focusNode,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                            color: widget.textColor,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true,
+                            hintText: "0.0",
+                            hintStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white60
+                            ),
+                          ),
+                          onChanged: (value) {
+                            widget.onChanged(value);
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        getCurrencyIcon(unitModel.bitcoinUnitAsString),
+                        color: widget.textColor,
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Available balance indicator
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      "Available: ${widget.confirmedBalance}",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black60
+                            : AppTheme.white60,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Card decoration elements
+          isOnchain
+              ? const PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png')
+              : const PaymentNetworkPicture(imageUrl: 'assets/images/lightning.png'),
+              
+          // For onchain cards with unconfirmed balance
+          if (isOnchain && widget.unconfirmedBalance != null && double.parse(widget.unconfirmedBalance!) > 0)
+            Positioned(
+              bottom: -10,
+              left: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.cardPadding * 0.5),
+                child: Text(
+                  "Incoming: ${widget.unconfirmedBalance}",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? AppTheme.black60
+                        : AppTheme.white60,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
