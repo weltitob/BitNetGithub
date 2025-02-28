@@ -35,6 +35,9 @@ class PostComponent extends StatefulWidget {
   final List<dynamic> medias; // Can be either Media or PostFile
   final DateTime timestamp;
   final bool isEditable; // Controls whether the post is in edit or view mode
+  final TextEditingController? titleController; // For editing post title in edit mode
+  final Function(String)? onTitleChanged; // Callback for title changes
+  final Function? onPostSubmit; // Callback when post button is pressed
 
   const PostComponent({
     required this.postId,
@@ -46,6 +49,9 @@ class PostComponent extends StatefulWidget {
     required this.postName,
     required this.displayname,
     this.isEditable = false, // Default to view mode
+    this.titleController,
+    this.onTitleChanged,
+    this.onPostSubmit,
   });
 
   /// Factory constructor to create from a document
@@ -126,6 +132,9 @@ class PostComponent extends StatefulWidget {
         timestamp: this.timestamp,
         postName: this.postName,
         isEditable: this.isEditable,
+        titleController: this.titleController,
+        onTitleChanged: this.onTitleChanged,
+        onPostSubmit: this.onPostSubmit,
       );
 }
 
@@ -140,6 +149,9 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
   int rocketcount;
   Map rockets;
   final List<dynamic> medias;
+  final TextEditingController? titleController;
+  final Function(String)? onTitleChanged;
+  final Function? onPostSubmit;
 
   bool showheart = false;
   late bool isLiked;
@@ -155,6 +167,9 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
     required this.rockets,
     required this.rocketcount,
     required this.isEditable,
+    this.titleController,
+    this.onTitleChanged,
+    this.onPostSubmit,
   });
 
   @override
@@ -187,25 +202,83 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
                   ownerId: ownerId,
                   postId: postId,
                 ),
-                Text(
-                  postName,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                isEditable && titleController != null
+                    ? TextField(
+                        controller: titleController,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        decoration: InputDecoration(
+                          hintText: "Enter title",
+                          border: InputBorder.none,
+                          hintStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (onTitleChanged != null) {
+                            onTitleChanged!(value);
+                          }
+                        },
+                      )
+                    : Text(
+                        postName,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                 const SizedBox(height: AppTheme.elementSpacing * 1.5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _buildMediaWidgets(),
                 ),
-                // Only show like space in view mode
-                if (!isEditable)
-                  buildLikeSpace(
-                    type: likeSpaceType.Post, 
-                    targetId: postId, 
-                    postName: postName, 
-                    username: username, 
-                    ownerId: ownerId, 
-                    rockets: rockets
-                  ),
+                // Show like space in view mode, or submit button in edit mode
+                !isEditable
+                  ? buildLikeSpace(
+                      type: likeSpaceType.Post, 
+                      targetId: postId, 
+                      postName: postName, 
+                      username: username, 
+                      ownerId: ownerId, 
+                      rockets: rockets
+                    )
+                  : onPostSubmit != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                        child: GestureDetector(
+                          onTap: () => onPostSubmit!(),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Theme.of(context).colorScheme.primary,
+                                  Theme.of(context).colorScheme.secondary,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'POST',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),

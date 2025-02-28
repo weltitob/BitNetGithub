@@ -58,9 +58,9 @@ class TransactionStatusIndicator extends StatelessWidget {
         }
         return L10n.of(context)!.confirmed;
       case TransactionStatus.pending:
-        return L10n.of(context)!.pending;
+        return "Pending";
       case TransactionStatus.failed:
-        return L10n.of(context)!.failed;
+        return "Failed";
       default:
         return L10n.of(context)!.unknown;
     }

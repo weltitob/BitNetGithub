@@ -2,6 +2,8 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/transactions/base_transaction_details.dart';
@@ -14,6 +16,7 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 

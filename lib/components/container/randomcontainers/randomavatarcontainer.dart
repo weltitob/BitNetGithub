@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/models/animatedmodels/animatedavatar.dart';
-import 'package:bitnet/pages/website/widgets/webavatar.dart';
 import 'package:flutter/material.dart';
 
 class RandomAvatarWidget extends StatefulWidget {
