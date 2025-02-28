@@ -10,7 +10,7 @@ enum profilePictureType { none, lightning, onchain }
 class Avatar extends StatelessWidget {
   final profilePictureType? type;
   final String? profileId;
-  final Uri? mxContent;
+  final dynamic mxContent; // Can accept either Uri or String
   final String? name;
   final double size;
   final void Function()? onTap;
@@ -30,7 +30,7 @@ class Avatar extends StatelessWidget {
     this.fontSize = 18,
     Key? key,
     this.profileId,
-    required this.isNft,
+    this.isNft = false,
     this.cornerWidget,
     this.local = false,
     this.imageBytes,
@@ -49,7 +49,8 @@ class Avatar extends StatelessWidget {
     }
     final noPic = (mxContent == null ||
             mxContent.toString().isEmpty ||
-            mxContent.toString() == 'null') &&
+            mxContent.toString() == 'null' ||
+            mxContent == 'null') &&
         !local;
 
     final textWidget = Center(
@@ -101,7 +102,7 @@ class Avatar extends StatelessWidget {
                         : Image.memory(imageBytes!)
                     : MxcImage(
                         key: Key(mxContent.toString()),
-                        uri: mxContent,
+                        uri: mxContent is Uri ? mxContent : Uri.parse(mxContent.toString()),
                         fit: BoxFit.cover,
                         width: size,
                         height: size,

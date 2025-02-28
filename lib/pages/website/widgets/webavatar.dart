@@ -45,7 +45,7 @@ class WebAvatar extends StatelessWidget {
         color: Colors.white,
       ),
     );
-    final borderRadius = BorderRadius.circular(size / 2.5);
+    final borderRadius = BorderRadius.circular(size / 3);
 
     final container = ClipRRect(
       borderRadius: borderRadius,

@@ -100,44 +100,44 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  void onQRButtonPressed(BuildContext context) {
-    BitNetBottomSheet(
-      width: MediaQuery.sizeOf(context).width,
-      context: context,
-      child: bitnetScaffold(
-        extendBodyBehindAppBar: false,
-        appBar: bitnetAppBar(
-          hasBackButton: false,
-          context: context,
-          buttonType: ButtonType.transparent,
-          text: L10n.of(context)!.shareQrCode,
-        ),
-        context: context,
-        body: Center(
-          child: RepaintBoundary(
-            key: controller.globalKeyQR,
-            child: Column(
-              children: [
-                const SizedBox(height: AppTheme.cardPadding * 4),
-                Container(
-                  margin: const EdgeInsets.all(AppTheme.cardPadding),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.elementSpacing),
-                    child: PrettyQr(
-                      typeNumber: 5,
-                      size: AppTheme.cardPadding * 10,
-                      data: 'did: ${controller.userData.value.did}',
-                      errorCorrectLevel: QrErrorCorrectLevel.M,
-                      roundEdges: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // void onQRButtonPressed(BuildContext context) {
+  //   BitNetBottomSheet(
+  //     width: MediaQuery.sizeOf(context).width,
+  //     context: context,
+  //     child: bitnetScaffold(
+  //       extendBodyBehindAppBar: false,
+  //       appBar: bitnetAppBar(
+  //         hasBackButton: false,
+  //         context: context,
+  //         buttonType: ButtonType.transparent,
+  //         text: L10n.of(context)!.shareQrCode,
+  //       ),
+  //       context: context,
+  //       body: Center(
+  //         child: RepaintBoundary(
+  //           key: controller.globalKeyQR,
+  //           child: Column(
+  //             children: [
+  //               const SizedBox(height: AppTheme.cardPadding * 4),
+  //               Container(
+  //                 margin: const EdgeInsets.all(AppTheme.cardPadding),
+  //                 decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(AppTheme.elementSpacing),
+  //                   child: PrettyQr(
+  //                     typeNumber: 5,
+  //                     size: AppTheme.cardPadding * 10,
+  //                     data: 'did: ${controller.userData.value.did}',
+  //                     errorCorrectLevel: QrErrorCorrectLevel.M,
+  //                     roundEdges: true,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/website/widgets/webavatar.dart';
 import 'package:flutter/material.dart';
 
 class UserSearchResult extends StatefulWidget {
@@ -29,7 +29,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
   Widget build(BuildContext context) {
     final height = widget.customHeight * widget.scaleRatio;
     final width = widget.customWidth * widget.scaleRatio;
-    final borderRadius = BorderRadius.circular(height / 2.5);
+    final borderRadius = BorderRadius.circular(height / 3);
 
     return Container(
       margin: const EdgeInsets.only(top: AppTheme.elementSpacing),
@@ -39,9 +39,6 @@ class _UserSearchResultState extends State<UserSearchResult> {
           width, // If customWidth is null, Container will take up available width
 
       child: GlassContainer(
-          borderThickness: 1.5,
-          blur: 50,
-          opacity: 0.1,
           borderRadius: borderRadius,
           child: InkWell(
             onTap: widget.onTap,
@@ -51,12 +48,13 @@ class _UserSearchResultState extends State<UserSearchResult> {
                 const SizedBox(
                   width: AppTheme.elementSpacing * 0.75,
                 ),
-                WebAvatar(
+                Avatar(
                   size: AppTheme.cardPadding * 2 * widget.scaleRatio,
                   onTap: widget.onTap,
                   mxContent: widget.userData.profileImageUrl,
                   name: widget.userData.username,
                   profileId: widget.userData.did,
+                  isNft: false,
                 ),
                 const SizedBox(width: AppTheme.elementSpacing),
                 Container(
@@ -72,7 +70,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
                       ),
                       const SizedBox(height: AppTheme.elementSpacing / 4),
                       Text(
-                        widget.userData.did,
+                        widget.userData.displayName,
                         style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
