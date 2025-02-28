@@ -328,19 +328,19 @@ class SearchResultWidget extends StatelessWidget {
       
       // Determine badge color based on rank
       if (rank == 1) {
-        badgeColor = Color(0xFFFFD700); // Gold
+        badgeColor = AppTheme.colorBitcoin; // Gold
       } else if (rank == 2) {
-        badgeColor = Color(0xFFC0C0C0); // Silver
+        badgeColor = Color(0xFFA5A5A5); // Silver
       } else if (rank == 3) {
-        badgeColor = Color(0xFFCD7F32); // Bronze
+        badgeColor = Color(0xFF9C5E20); // Bronze
       } else {
         badgeColor = Colors.grey.shade700;
         textColor = Colors.white70;
       }
       
       rankBadge = Container(
-        width: AppTheme.cardPadding * 0.9,
-        height: AppTheme.cardPadding * 0.9,
+        width: AppTheme.cardPadding * 0.7,
+        height: AppTheme.cardPadding * 0.7,
         decoration: BoxDecoration(
           color: badgeColor,
           shape: BoxShape.circle,
