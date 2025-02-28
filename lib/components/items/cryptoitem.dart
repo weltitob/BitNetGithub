@@ -31,11 +31,13 @@ class Currency {
 class CryptoItem extends StatefulWidget {
   final Currency currency;
   final BuildContext context;
+  final bool hasGlassContainer; // New bool added
 
   const CryptoItem({
     Key? key,
     required this.currency,
     required this.context,
+    this.hasGlassContainer = true, // Default is true
   }) : super(key: key);
 
   @override
@@ -46,30 +48,28 @@ class _CryptoItemState extends State<CryptoItem> {
   final controllerCrypto = Get.find<CryptoItemController>();
   final LoggerService logger = Get.find();
 
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     updateChart();
-    Get.find<WalletsController>().chartLines.listen((a){
+    Get.find<WalletsController>().chartLines.listen((a) {
       logger.i("updated chart");
-      updateChart(); 
-      if(mounted) {
-      setState((){});
-
+      updateChart();
+      if (mounted) {
+        setState(() {});
       }
-      });
+    });
   }
 
-  
   void updateChart() {
-      final chartLine = Get.find<WalletsController>().chartLines.value;
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     if (chartLine != null) {
       controllerCrypto.priceOneTimestampAgo = controllerCrypto.currentPrice;
       controllerCrypto.currentPrice.value = chartLine.price;
       controllerCrypto.currentPriceString.value =
-          "${chartLine.price.toStringAsFixed(2)}";
+      "${chartLine.price.toStringAsFixed(2)}";
       controllerCrypto.priceChange.value =
-          (controllerCrypto.currentPrice.value -
-                  controllerCrypto.firstPrice.value) /
+          (controllerCrypto.currentPrice.value - controllerCrypto.firstPrice.value) /
               controllerCrypto.firstPrice.value;
       controllerCrypto.priceChangeString.value =
           toPercent(controllerCrypto.priceChange.value);
@@ -84,174 +84,164 @@ class _CryptoItemState extends State<CryptoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() =>
-        //controllerCrypto.loading.value
-        //     ? GestureDetector(
-        //   //this also needs to be a cryptoitem
-        //   onTap: () => context.push('/wallet/bitcoinscreen'),
-        //   child: GlassContainer(
-        //     borderThickness: 1,
-        //     height: AppTheme.cardPadding * 2.75,
-        //     borderRadius: AppTheme.cardRadiusBig,
-        //     child: Center(
-        //       child: dotProgress(context),
-        //     ),
-        //   ),
-        // )
-        //     :
-        GlassContainer(
-          borderThickness: 1,
-          height: AppTheme.cardPadding * 2.75,
-          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Obx(() => GlassContainer(
+      opacity:widget.hasGlassContainer ? 0.1 : 0.0,
+      borderThickness: 1,
+      height: AppTheme.cardPadding * 2.75,
+      borderRadius:
+      BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.elementSpacing),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                        height: AppTheme.cardPadding * 1.75,
+                        width: AppTheme.cardPadding * 1.75,
+                        child: ClipOval(child: widget.currency.icon)),
+                    SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.currency.name,
+                            style: Theme.of(widget.context)
+                                .textTheme
+                                .titleLarge),
+                        Row(
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  height: AppTheme.elementSpacing * 0.75,
+                                  width: AppTheme.elementSpacing * 0.75,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(500.0),
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                if (controllerCrypto.isBlinking.value)
+                                  Positioned.fill(
+                                    child: AnimatedBuilder(
+                                      animation: controllerCrypto.animation,
+                                      builder: (context, child) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(500.0),
+                                            color: controllerCrypto
+                                                .animation.value,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(width: 4),
+                            price(),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w / 2),
+                Expanded(
+                  child: Container(
+                    color: Colors.transparent,
+                    child: SfCartesianChart(
+                        enableAxisAnimation: true,
+                        plotAreaBorderWidth: 0,
+                        primaryXAxis: CategoryAxis(
+                            labelPlacement: LabelPlacement.onTicks,
+                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                            isVisible: false,
+                            majorGridLines:
+                            const MajorGridLines(width: 0),
+                            majorTickLines:
+                            const MajorTickLines(width: 0)),
+                        primaryYAxis: NumericAxis(
+                            plotOffset: 0,
+                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                            isVisible: false,
+                            majorGridLines:
+                            const MajorGridLines(width: 0),
+                            majorTickLines:
+                            const MajorTickLines(width: 0)),
+                        series: <ChartSeries>[
+                          LineSeries<ChartLine, double>(
+                            dataSource: controllerCrypto.onedaychart,
+                            animationDuration: 0,
+                            xValueMapper: (ChartLine crypto, _) =>
+                            crypto.time,
+                            yValueMapper: (ChartLine crypto, _) =>
+                            crypto.price,
+                            color: controllerCrypto.priceChange >= 0
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor,
+                          )
+                        ]),
+                  ),
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w / 2),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
                       children: [
+                        Icon(
+                          controllerCrypto.priceChange.value >= 0
+                              ? FontAwesomeIcons.caretUp
+                              : FontAwesomeIcons.caretDown,
+                          size: 16,
+                          color: controllerCrypto.priceChange.value >= 0
+                              ? AppTheme.successColor
+                              : AppTheme.errorColor,
+                        ),
+                        const SizedBox(
+                            width: AppTheme.elementSpacing / 4),
                         Container(
-                            height: AppTheme.cardPadding * 1.75,
-                            width: AppTheme.cardPadding * 1.75,
-
-                            child: ClipOval(child: widget.currency.icon)),
-                        SizedBox(width: AppTheme.elementSpacing.w / 1.5),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.currency.name,
-                                style:
-                                Theme.of(widget.context).textTheme.titleLarge),
-                            Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: AppTheme.elementSpacing * 0.75,
-                                      width: AppTheme.elementSpacing * 0.75,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(500.0),
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    if (controllerCrypto.isBlinking.value)
-                                      Positioned.fill(
-                                        child: AnimatedBuilder(
-                                          animation: controllerCrypto.animation,
-                                          builder: (context, child) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(500.0),
-                                                color: controllerCrypto
-                                                    .animation.value,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(width: 4),
-                                price(),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    //CustomIcon(icon: currency.icon),
-                    SizedBox(width: AppTheme.elementSpacing.w / 2),
-                    Expanded(
-                      child: Container(
-                        color: Colors.transparent,
-                        //width: 70.w,
-                        child: Container(
-                          child: SfCartesianChart(
-                              enableAxisAnimation: true,
-                              plotAreaBorderWidth: 0,
-                              primaryXAxis: CategoryAxis(
-                                  labelPlacement: LabelPlacement.onTicks,
-                                  edgeLabelPlacement: EdgeLabelPlacement.none,
-                                  isVisible: false,
-                                  majorGridLines: const MajorGridLines(width: 0),
-                                  majorTickLines: const MajorTickLines(width: 0)),
-                              primaryYAxis: NumericAxis(
-                                  plotOffset: 0,
-                                  edgeLabelPlacement: EdgeLabelPlacement.none,
-                                  isVisible: false,
-                                  majorGridLines: const MajorGridLines(width: 0),
-                                  majorTickLines: const MajorTickLines(width: 0)),
-                              series: <ChartSeries>[
-                                // Renders line chart
-                                LineSeries<ChartLine, double>(
-                                  dataSource: controllerCrypto.onedaychart,
-                                  animationDuration: 0,
-                                  xValueMapper: (ChartLine crypto, _) =>
-                                  crypto.time,
-                                  yValueMapper: (ChartLine crypto, _) =>
-                                  crypto.price,
-                                  color: controllerCrypto.priceChange >= 0
-                                      ? AppTheme.successColor
-                                      : AppTheme.errorColor,
-                                )
-                              ]),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: AppTheme.elementSpacing.w / 2),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              controllerCrypto.priceChange.value >= 0
-                                  ? FontAwesomeIcons.caretUp
-                                  : FontAwesomeIcons.caretDown,
-                              size: 16,
-                              color: controllerCrypto.priceChange.value >= 0
+                          child: Text(
+                            controllerCrypto.priceChangeString.value,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                              color: controllerCrypto.priceChange.value >=
+                                  0
                                   ? AppTheme.successColor
                                   : AppTheme.errorColor,
                             ),
-                            const SizedBox(width: AppTheme.elementSpacing / 4),
-                            Container(
-                              child: Text(
-                                controllerCrypto.priceChangeString.value,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  color: controllerCrypto.priceChange.value >= 0
-                                      ? AppTheme.successColor
-                                      : AppTheme.errorColor,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-
                   ],
                 ),
-              ),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => context.push('/wallet/bitcoinscreen'),
-                ),
-              )
-            ],
+              ],
+            ),
           ),
-        ));
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => context.push('/wallet/bitcoinscreen'),
+            ),
+          )
+        ],
+      ),
+    ));
   }
 
   Widget price() {
-    //final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context, listen: true);
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -265,19 +255,17 @@ class _CryptoItemState extends State<CryptoItem> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // const SizedBox(width: AppTheme.elementSpacing / 2),
               Text(
                 "${controllerCrypto.currentPriceString}${getCurrency(currency!)}",
-                //bitcoinPrice!.price.toString(),
                 style: controllerCrypto.currentPriceString.value.length > 8
                     ? AppTheme.textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black60
-                            : AppTheme.white60)
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? AppTheme.black60
+                        : AppTheme.white60)
                     : AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black60
-                            : AppTheme.white60),
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? AppTheme.black60
+                        : AppTheme.white60),
               ),
             ],
           ),
