@@ -10,6 +10,7 @@ import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SearchResultWidget extends StatelessWidget {
@@ -228,36 +229,36 @@ class SearchResultWidget extends StatelessWidget {
       return SizedBox();
     }
     
+    final screenWidth = MediaQuery.of(context).size.width;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Carousel without any title/header
-        SizedBox(
-          height: 320,
-          child: Padding(
-            // Use padding with negative values to extend beyond the parent container
-            padding: EdgeInsets.symmetric(
-              horizontal: 0,
+        Container(
+          width: screenWidth,
+          height: 310,
+          child: CarouselSlider.builder(
+            options: CarouselOptions(
+              autoPlay: true,
+              viewportFraction: 0.6, // Smaller viewportFraction to match assets screen
+              enlargeCenterPage: true,
+              enlargeFactor: 0.3, // More pronounced center item
+              height: 300,
+              autoPlayInterval: Duration(seconds: 5),
+              autoPlayAnimationDuration: Duration(milliseconds: 800),
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enableInfiniteScroll: true,
+              pageSnapping: true,
             ),
-            child: CarouselSlider.builder(
-              options: CarouselOptions(
-                autoPlay: true,
-                viewportFraction: 0.8,
-                enlargeCenterPage: true,
-                height: 320,
-                autoPlayInterval: Duration(seconds: 5),
-                // Disable padding at the ends of the carousel
-                padEnds: false,
-              ),
-              itemCount: users.length,
-              itemBuilder: (context, index, realIndex) {
-                return _buildUserCarouselItem(
-                  users[index],
-                  null,
-                  context,
-                );
-              },
-            ),
+            itemCount: users.length,
+            itemBuilder: (context, index, realIndex) {
+              return _buildUserCarouselItem(
+                users[index],
+                null,
+                context,
+              );
+            },
           ),
         ),
         const SizedBox(height: AppTheme.elementSpacing),
@@ -429,54 +430,49 @@ class SearchResultWidget extends StatelessWidget {
     return controller.searchResultsFuture == null
         ? dotProgress(context)
         : GetBuilder<FeedController>(builder: (controller) {
-            return Padding(
-              padding: const EdgeInsets.only(
+            return ListView(
+              // Remove the padding from ListView to allow the carousel to extend full width
+              padding: EdgeInsets.zero,
+              children: [
+                // Featured people carousel at the top
+                _buildFeaturedPeopleCarousel(featuredPeople, context),
 
-                  top: AppTheme.elementSpacing),
-              child: ListView(
-                // Remove the padding from ListView to allow the carousel to extend full width
-                padding: EdgeInsets.zero,
-                children: [
-                  // Featured people carousel at the top
-                  _buildFeaturedPeopleCarousel(featuredPeople, context),
-                  
-                  // Regular sections below
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    child: Column(
-                      children: [
-                        _buildContactSection(
-                          title: 'Recent Contacts',
-                          users: recentContacts,
-                          context: context,
-                          showViewAll: true,
-                        ),
-                        _buildContactSection(
-                          title: 'Hyped People',
-                          users: hypedPeople,
-                          context: context,
-                          showViewAll: true,
-                          showRanking: true,
-                        ),
-                        _buildContactSection(
-                          title: 'Top Buyers',
-                          users: topBuyers,
-                          context: context,
-                          showViewAll: true,
-                          showRanking: true,
-                        ),
-                        _buildContactSection(
-                          title: 'Top Sellers',
-                          users: topSellers,
-                          context: context,
-                          showViewAll: true,
-                          showRanking: true,
-                        ),
-                      ],
-                    ),
+                // Regular sections below
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                  child: Column(
+                    children: [
+                      _buildContactSection(
+                        title: 'Recent Contacts',
+                        users: recentContacts,
+                        context: context,
+                        showViewAll: true,
+                      ),
+                      _buildContactSection(
+                        title: 'Hyped People',
+                        users: hypedPeople,
+                        context: context,
+                        showViewAll: true,
+                        showRanking: true,
+                      ),
+                      _buildContactSection(
+                        title: 'Top Buyers',
+                        users: topBuyers,
+                        context: context,
+                        showViewAll: true,
+                        showRanking: true,
+                      ),
+                      _buildContactSection(
+                        title: 'Top Sellers',
+                        users: topSellers,
+                        context: context,
+                        showViewAll: true,
+                        showRanking: true,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           });
   }

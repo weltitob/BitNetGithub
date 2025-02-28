@@ -130,14 +130,14 @@ class Avatar extends StatelessWidget {
               child: cornerWidget ??
                   (isNft
                       ? Container(
-                    width: size / 4,
-                    height: size / 4,
+                    width: size / 3.5,
+                    height: size / 3.5,
                     child: FittedBox(
                       fit: BoxFit.contain,
                       child: CoinLogoWidgetSmall(
                         coinid: 1,
-                        width: size / 4,
-                        height: size / 4,
+                        width: size / 3.5,
+                        height: size / 3.5,
                       ),
                     ),
                   )
