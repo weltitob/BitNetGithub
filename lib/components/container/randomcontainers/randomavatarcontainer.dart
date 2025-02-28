@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/models/animatedmodels/animatedavatar.dart';
 import 'package:bitnet/pages/website/widgets/webavatar.dart';
 import 'package:flutter/material.dart';
@@ -183,7 +184,7 @@ class AvatarLayout extends StatelessWidget {
           return AnimatedBuilder(
             animation: avatar.controller,
             builder: (context, child) {
-              final avatarWidget = WebAvatar(
+              final avatarWidget = Avatar(
                 mxContent: avatar.uri,
                 size: avatar.size.value,
                 profileId: avatar.uri,
