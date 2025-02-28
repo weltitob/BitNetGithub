@@ -205,11 +205,11 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
                 isEditable && titleController != null
                     ? TextField(
                         controller: titleController,
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleMedium,
                         decoration: InputDecoration(
                           hintText: "Enter title",
                           border: InputBorder.none,
-                          hintStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Theme.of(context).hintColor,
                           ),
                         ),
@@ -221,7 +221,7 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
                       )
                     : Text(
                         postName,
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                 const SizedBox(height: AppTheme.elementSpacing * 1.5),
                 Column(
