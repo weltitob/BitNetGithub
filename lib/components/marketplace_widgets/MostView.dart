@@ -25,6 +25,7 @@ class _MostViewState extends State<MostView> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w, vertical: AppTheme.elementSpacing.h * 0.5),
       margin: EdgeInsets.symmetric(vertical: 4.h),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.cardPadding),
