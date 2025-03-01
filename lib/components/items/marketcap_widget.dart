@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,34 +78,12 @@ class MarketCapWidget extends StatelessWidget {
                   ),
                 ),
                 
-                // Percentage change badge
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 6.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        isPositive ? Icons.arrow_upward : Icons.arrow_downward,
-                        color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-                        size: 14,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        changePercentage,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                // Percentage change badge using reusable component
+                PercentageChangeWidget(
+                  percentage: changePercentage,
+                  isPositive: isPositive,
+                  showIcon: true,
+                  fontSize: 14,
                 ),
               ],
             ),

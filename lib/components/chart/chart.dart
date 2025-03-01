@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -9,7 +8,7 @@ import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/buttons/timechooserbutton.dart';
-import 'package:bitnet/components/items/crypto_item_controller.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -669,37 +668,16 @@ class BitNetPercentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Delegate to the reusable PercentageChangeWidget
     return Container(
       margin: const EdgeInsets.only(
         top: AppTheme.elementSpacing,
         bottom: AppTheme.elementSpacing,
       ),
-      child: InkWell(
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: AppTheme.cardRadiusSmall,
-            color: priceChange.contains("-")
-                ? AppTheme.errorColor
-                : AppTheme.successColor,
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppTheme.elementSpacing * 0.625,
-                horizontal: AppTheme.elementSpacing,
-              ),
-              child: Text(
-                priceChange,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: priceChange.contains("-")
-                          ? darken(AppTheme.errorColor, 90)
-                          : darken(AppTheme.successColor, 90),
-                    ),
-              ),
-            ),
-          ),
-        ),
+      child: PercentageChangeWidget(
+        percentage: priceChange,
+        isPositive: !priceChange.contains("-"),
+        fontSize: 14,
       ),
     );
   }

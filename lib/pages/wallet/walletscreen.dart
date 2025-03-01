@@ -14,6 +14,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -526,16 +527,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
-                                                  0.25), // Add some spacing
-                                          Transform.scale(
-                                              child: Obx(
-                                                () => BitNetPercentWidget(
-                                                    priceChange:
-                                                        bitcoinController
-                                                            .pbOverallPriceChange
-                                                            .value),
-                                              ),
-                                              scale: 0.8),
+                                                  1), // Add some spacing
+                                          Obx(
+                                            () => BitNetPercentWidget(
+                                                priceChange:
+                                                    bitcoinController
+                                                        .pbOverallPriceChange
+                                                        .value),
+                                          ),
                                         ],
                                       ),
                                       Container(

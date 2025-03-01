@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
@@ -195,30 +196,11 @@ class _CryptoItemState extends State<CryptoItem> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing / 2,
-                        vertical: AppTheme.elementSpacing / 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (controllerCrypto.priceChange.value >= 0
-                            ? AppTheme.successColor
-                            : AppTheme.errorColor).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                      ),
-                      child: Text(
-                        controllerCrypto.priceChangeString.value,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: controllerCrypto.priceChange.value >= 0
-                              ? AppTheme.successColor
-                              : AppTheme.errorColor,
-                        ),
-                      ),
+                    // Using reusable PercentageChangeWidget component
+                    PercentageChangeWidget(
+                      percentage: controllerCrypto.priceChangeString.value,
+                      isPositive: controllerCrypto.priceChange.value >= 0,
+                      fontSize: 12,
                     ),
                   ],
                 ),

@@ -3,6 +3,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/items/marketcap_widget.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +109,31 @@ class _TokensTabState extends State<TokensTab> {
       'image': 'assets/images/bitcoin.png',
       'change': '+9.7%',
       'isPositive': true,
+    },
+  ];
+
+  // Top volume data
+  final List<Map<String, dynamic>> topVolumeData = [
+    {
+      'name': 'Ethereum',
+      'symbol': 'ETH',
+      'image': 'assets/tokens/genisisstone.webp',
+      'change': '+7.5%',
+      'isPositive': true,
+    },
+    {
+      'name': 'Lightning',
+      'symbol': 'LN',
+      'image': 'assets/images/lightning.png',
+      'change': '+4.2%',
+      'isPositive': true,
+    },
+    {
+      'name': 'SolDot',
+      'symbol': 'SDT',
+      'image': 'assets/tokens/hotdog.webp',
+      'change': '-2.8%',
+      'isPositive': false,
     },
   ];
 
@@ -254,27 +280,11 @@ class _TokensTabState extends State<TokensTab> {
                       
                       SizedBox(height: 6.h), // Increased from 4.h
                       
-                      // Price change indicator
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            token['isPositive'] 
-                                ? Icons.arrow_upward 
-                                : Icons.arrow_downward,
-                            color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
-                            size: 18, // Increased from 16
-                          ),
-                          SizedBox(width: 6.w), // Increased from 5.w
-                          Text(
-                            token['change'],
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.sp, // Added specific font size
-                              color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
-                            ),
-                          )
-                        ],
+                      // Price change indicator (using reusable component)
+                      PercentageChangeWidget(
+                        percentage: token['change'],
+                        isPositive: token['isPositive'],
+                        fontSize: 14,
                       ),
                     ],
                   ),
@@ -375,34 +385,68 @@ class _TokensTabState extends State<TokensTab> {
           
           SizedBox(height: AppTheme.cardPadding.h),
           
-          // Total Market Cap Today section with CommonHeading
+          // Top Volume Today section with CommonHeading (Added section)
           CommonHeading(
-            headingText: 'Total Market Cap Today',
-            hasButton: false,
+            headingText: 'Top Volume Today',
+            hasButton: true,
+            onPress: 'topvolume',
           ),
           
-          // Using our new MarketCapWidget
+          // Top Volume list
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: MarketCapWidget(
-              marketCap: '\$2.42T',
-              changePercentage: '+5.2%',
-              isPositive: true,
-              tradingVolume: '\$71.2B', 
-              btcDominance: '51.3%',
-              // Sample chart data matching Bitcoin's pattern
-              chartData: [
-                ChartLine(time: 0, price: 2300000000000),
-                ChartLine(time: 1, price: 2320000000000),
-                ChartLine(time: 2, price: 2350000000000),
-                ChartLine(time: 3, price: 2330000000000),
-                ChartLine(time: 4, price: 2370000000000),
-                ChartLine(time: 5, price: 2390000000000),
-                ChartLine(time: 6, price: 2410000000000),
-                ChartLine(time: 7, price: 2420000000000),
-              ],
+            child: GlassContainer(
+              customShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: topVolumeData.map((volume) {
+                    // Use the CryptoItem widget for top volume
+                    return CryptoItem(
+                      hasGlassContainer: false,
+                      currency: Currency(
+                        code: volume['symbol'],
+                        name: volume['name'],
+                        icon: Image.asset(volume['image']),
+                      ),
+                      context: context,
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
+          
+          SizedBox(height: AppTheme.cardPadding.h),
+          
+          // Total Market Cap Today section with CommonHeading (commented out)
+          // CommonHeading(
+          //   headingText: 'Total Market Cap Today',
+          //   hasButton: false,
+          // ),
+          
+          // Using our new MarketCapWidget (commented out)
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+          //   child: MarketCapWidget(
+          //     marketCap: '\$2.42T',
+          //     changePercentage: '+5.2%',
+          //     isPositive: true,
+          //     tradingVolume: '\$71.2B', 
+          //     btcDominance: '51.3%',
+          //     // Sample chart data matching Bitcoin's pattern
+          //     chartData: [
+          //       ChartLine(time: 0, price: 2300000000000),
+          //       ChartLine(time: 1, price: 2320000000000),
+          //       ChartLine(time: 2, price: 2350000000000),
+          //       ChartLine(time: 3, price: 2330000000000),
+          //       ChartLine(time: 4, price: 2370000000000),
+          //       ChartLine(time: 5, price: 2390000000000),
+          //       ChartLine(time: 6, price: 2410000000000),
+          //       ChartLine(time: 7, price: 2420000000000),
+          //     ],
+          //   ),
+          // ),
           
           SizedBox(height: 100.h), // Added extra space at the bottom
         ],

@@ -13,6 +13,7 @@ import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -184,6 +185,9 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding.h,
                 ),
                 CommonHeading(
                   hasButton: true,

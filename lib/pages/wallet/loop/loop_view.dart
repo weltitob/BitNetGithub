@@ -3,17 +3,13 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/controller/loop_controller.dart';
@@ -229,6 +225,7 @@ class _LoopScreenState extends State<LoopScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: GlassContainer(
+                            borderRadius: AppTheme.cardRadiusSmall,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppTheme.elementSpacing * 0.5,
@@ -450,7 +447,6 @@ class CurrencySelector extends StatelessWidget {
     );
   }
 }
-
 class EditableBalanceCard extends StatefulWidget {
   final String balance;
   final String confirmedBalance;
@@ -504,22 +500,22 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
     if (widget.swapped) {
       // If we're in fiat mode, convert from fiat to BTC/SAT
       _alternateValue = CurrencyConverter.convertCurrency(
-        currency,
-        amount,
-        widget.defaultUnit.name,
-        bitcoinPrice
+          currency,
+          amount,
+          widget.defaultUnit.name,
+          bitcoinPrice
       );
     } else {
       // If we're in crypto mode, convert from BTC/SAT to fiat
       _alternateValue = CurrencyConverter.convertCurrency(
-        widget.defaultUnit.name,
-        amount,
-        currency,
-        bitcoinPrice,
-        fixed: true
+          widget.defaultUnit.name,
+          amount,
+          currency,
+          bitcoinPrice,
+          fixed: true
       );
     }
-    
+
     setState(() {});
   }
 
@@ -530,7 +526,7 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
       _controller.text = widget.balance;
       _updateAlternateValue(widget.balance);
     }
-    
+
     if (oldWidget.swapped != widget.swapped) {
       _updateAlternateValue(_controller.text);
     }
@@ -546,159 +542,169 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
   Widget build(BuildContext context) {
     final bool isOnchain = widget.cardType == CardType.onchain;
     final String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency ?? "USD";
-    
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     // Get the appropriate unit and icon based on swapped state
     final IconData currencyIcon = widget.swapped
         ? getCurrencyIcon(currency!)
         : getCurrencyIcon(widget.defaultUnit.name);
-        
+
     final String alternateUnitName = widget.swapped
         ? widget.defaultUnit.name
         : currency!;
-    
+
     return Container(
+      decoration: BoxDecoration(
+        color: isDarkMode
+            ? const Color(0xFF1C1C1E) // Dark card background
+            : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          if (!isDarkMode)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            )
+        ],
+      ),
       child: Stack(
         children: [
-          // Background with appropriate style based on card type
-          isOnchain 
-              ? const CardBackgroundOnchain() 
-              : const CardBackgroundLightning(),
-          
-          // Card content
+          // Main Card Content
           Padding(
-            padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25),
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Available balance at the top
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Available: ${widget.confirmedBalance}",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                      ),
+                    ),
+                  ],
+                ),
+
+                Spacer(),
+
                 // Card title ("You Pay" or "You Receive")
                 Text(
                   widget.cardTitle,
-                  style: Theme.of(context).textTheme.titleSmall,
+                  style: Theme.of(context).textTheme.titleSmall
                 ),
-                
-                const SizedBox(height: AppTheme.elementSpacing * 0.5),
-                
-                // Editable amount field
-                Container(
-                  width: 180.w,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          focusNode: widget.focusNode,
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          style: Theme.of(context).textTheme.headlineLarge,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true,
-                            hintText: "0.0",
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.black60
-                                  : AppTheme.white60
-                            ),
-                          ),
-                          onChanged: (value) {
-                            widget.onChanged(value);
-                            _updateAlternateValue(value);
-                          },
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
-                          ],
+
+                SizedBox(height: AppTheme.elementSpacing * 0.5.h),
+
+                // Editable amount field with currency icon
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        focusNode: widget.focusNode,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                          hintText: "0.0",
+                          hintStyle: TextStyle(
+                            color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          widget.onChanged(value);
+                          _updateAlternateValue(value);
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                        ],
                       ),
-                      Icon(
-                        currencyIcon,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black70
-                            : AppTheme.white90,
-                      ),
-                    ],
-                  ),
+                    ),
+
+                  ],
                 ),
-                
+
                 // Alternative currency value
                 Obx(() {
                   // Listen to chart updates for price changes
                   Get.find<WalletsController>().chartLines.value;
-                  
-                  return Container(
-                    width: 180.w,
-                    margin: const EdgeInsets.only(top: 4),
-                    child: Row(
-                      children: [
-                        Text(
-                          "≈ $_alternateValue",
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? AppTheme.black60
-                                : AppTheme.white60,
-                          ),
+
+                  return Row(
+                    children: [
+                      Text(
+                        "≈ $_alternateValue",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
                         ),
-                        const SizedBox(width: 2),
-                        Icon(
-                          getCurrencyIcon(alternateUnitName),
-                          size: 14,
-                          color: Theme.of(context).brightness == Brightness.light
-                              ? AppTheme.black60
-                              : AppTheme.white60,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        getCurrencyIcon(alternateUnitName),
+                        size: 14,
+                        color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                      ),
+                    ],
                   );
                 }),
-                
-                // Available balance indicator
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Text(
-                      "Available: ${widget.confirmedBalance}",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black60
-                            : AppTheme.white60,
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
-          
-          // Currency Selector - properly positioned at top right
+
+          // Currency Selector - positioned at top right
           Positioned(
-            right: AppTheme.cardPadding * 1,
-            top: AppTheme.cardPadding * 1,
-            child: CurrencySelector(
-              currentType: isOnchain ? CurrencyType.bitcoin : CurrencyType.lightning,
-              onCurrencyChanged: (type) {
-                // This would be implemented if we want to switch between BTC and LN within a card
-                // For now, we're just using it as a visual indicator
-              },
-            ),
-          ),
-          
-          // For onchain cards with unconfirmed balance
-          if (isOnchain && widget.unconfirmedBalance != null && double.parse(widget.unconfirmedBalance!) > 0)
-            Positioned(
-              bottom: -10,
-              left: 0,
+            right: AppTheme.cardPadding.w * 0.75,
+            top: AppTheme.cardPadding.w * 0.75,
+            child: GlassContainer(
+              borderRadius: BorderRadius.circular(500),
               child: Padding(
-                padding: const EdgeInsets.all(AppTheme.cardPadding * 0.5),
-                child: Text(
-                  "Incoming: ${widget.unconfirmedBalance}",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? AppTheme.black60
-                        : AppTheme.white60,
-                  ),
+                padding: const EdgeInsets.all(AppTheme.elementSpacing * 0.5),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: AppTheme.elementSpacing * 0.5),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    const SizedBox(width: AppTheme.elementSpacing * 0.5),
+                    _buildCurrencyIcon(isOnchain),
+                  ],
                 ),
               ),
             ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCurrencyIcon(bool isOnchain) {
+    return Container(
+      width: AppTheme.cardPadding * 1.25.w,
+      height: AppTheme.cardPadding * 1.25.w,
+      decoration: BoxDecoration(
+        color: isOnchain ? const Color(0xFFF7931A) : Colors.blue,
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: isOnchain
+            ? Icon(Icons.currency_bitcoin, color: Colors.white, size: 20)
+            : Icon(Icons.flash_on, color: Colors.white, size: 20),
       ),
     );
   }
