@@ -48,7 +48,7 @@ class _CommonHeadingState extends State<CommonHeading> {
               Expanded(
                 child: Text(
                   widget.headingText,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               widget.hasButton

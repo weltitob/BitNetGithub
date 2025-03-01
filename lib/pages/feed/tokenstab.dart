@@ -288,13 +288,10 @@ class _TokensTabState extends State<TokensTab> {
           SizedBox(height: AppTheme.cardPadding.h * 1.5),
           
           // Top 3 by Market Cap section with CommonHeading
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: CommonHeading(
-              headingText: 'Top 3 by Market Cap',
-              hasButton: true,
-              onPress: 'marketcap',
-            ),
+          CommonHeading(
+            headingText: 'Top 3 by Market Cap',
+            hasButton: true,
+            onPress: 'marketcap',
           ),
           
           // A single GlassContainer containing all crypto items
@@ -347,13 +344,10 @@ class _TokensTabState extends State<TokensTab> {
           SizedBox(height: AppTheme.cardPadding.h),
           
           // Top Movers Today section with CommonHeading
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: CommonHeading(
-              headingText: 'Top Movers Today',
-              hasButton: true,
-              onPress: 'topmovers',
-            ),
+          CommonHeading(
+            headingText: 'Top Movers Today',
+            hasButton: true,
+            onPress: 'topmovers',
           ),
           
           // Top Movers list
@@ -384,12 +378,9 @@ class _TokensTabState extends State<TokensTab> {
           SizedBox(height: AppTheme.cardPadding.h),
           
           // Total Market Cap Today section with CommonHeading
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: CommonHeading(
-              headingText: 'Total Market Cap Today',
-              hasButton: false,
-            ),
+          CommonHeading(
+            headingText: 'Total Market Cap Today',
+            hasButton: false,
           ),
           
           // Using our new MarketCapWidget
