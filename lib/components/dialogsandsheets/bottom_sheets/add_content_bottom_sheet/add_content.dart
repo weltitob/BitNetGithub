@@ -1,3 +1,4 @@
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -160,13 +161,20 @@ class IconCreationWidget extends StatelessWidget {
         child: Column(
           children: [
             RoundedButtonWidget(
+              size: AppTheme.cardPadding * 2.5,
+              buttonType: ButtonType.transparent,
               iconData: icon,
               onTap: () => onTap(mediaType),
             ),
             const SizedBox(height: AppTheme.cardPadding / 2.5),
-            Text(
-              text,
-              style: Theme.of(context).textTheme.labelSmall,
+            Container(
+              width: AppTheme.cardPadding * 3,
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.labelSmall,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
             )
           ],
         ),

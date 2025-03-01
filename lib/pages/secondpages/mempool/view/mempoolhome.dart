@@ -678,7 +678,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         height: AppTheme
                                                             .cardPadding.h,
                                                       ),
-                                                      feeDistributionUnaccepted(),
+                                                      feeDistribution(context, isAccepted: false),
                                                       const SizedBox(
                                                         height: AppTheme
                                                             .elementSpacing,
@@ -691,7 +691,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           controller.txDetailsConfirmed ==
                                                                   null
                                                               ? const SizedBox()
-                                                              : blockSizeUnaccepted()
+                                                              : blockSize(context, isAccepted: false)
                                                         ],
                                                       ),
                                                       const SizedBox(
@@ -953,7 +953,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                     height: AppTheme
                                                                         .elementSpacing,
                                                                   ),
-                                                                  feeDistributionAccepted(),
+                                                                  feeDistribution(context, isAccepted: true),
                                                                   const SizedBox(
                                                                     height: AppTheme
                                                                         .elementSpacing,
@@ -970,7 +970,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           aspectRatio:
                                                                               1, // This ensures a square shape
                                                                           child:
-                                                                              blockSizeAccepted(),
+                                                                              blockSize(context, isAccepted: true),
                                                                         ),
                                                                       ),
                                                                       SizedBox(
@@ -983,7 +983,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           aspectRatio:
                                                                               1,
                                                                           child:
-                                                                              blockHealth(),
+                                                                              blockHealth(context, isAccepted: true),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1292,523 +1292,10 @@ class _MempoolHomeState extends State<MempoolHome> {
     ]);
   }
 
-  Widget blockHealth() {
-    return GlassContainer(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                L10n.of(context)!.health,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(
-                width: AppTheme.elementSpacing / 2,
-              ),
-              Icon(
-                Icons.help_outline_rounded,
-                color: AppTheme.white80,
-                size: AppTheme.cardPadding * 0.75,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 0.75,
-          ),
-          Icon(
-            FontAwesomeIcons.faceSmile,
-            color: controller.txDetailsConfirmed!.extras.matchRate >= 99
-                ? AppTheme.successColor
-                : controller.txDetailsConfirmed!.extras.matchRate >= 75 &&
-                        controller.txDetailsConfirmed!.extras.matchRate < 99
-                    ? AppTheme.colorBitcoin
-                    : AppTheme.errorColor,
-            size: AppTheme.cardPadding * 2.5,
-          ),
-          const SizedBox(
-            height: AppTheme.elementSpacing * 1.25,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                child: Text(
-                  ('${controller.txDetailsConfirmed!.extras.matchRate} %'),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget blockSizeAccepted() {
-    // Assuming controller.txDetailsConfirmed.size and .weight are already in MB and MWU units respectively.
-    double mbSize = controller.txDetailsConfirmed!.size / 1000000;
-    double mwu = controller.txDetailsConfirmed!.weight / 1000000;
 
-    // Calculate the width based on the ratio
-    double maxWidth = AppTheme.cardPadding * 3;
-    double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth =
-        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
-    return GlassContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                L10n.of(context)!.blockSize,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(
-                width: AppTheme.elementSpacing / 2,
-              ),
-              Icon(
-                Icons.help_outline_rounded,
-                color: AppTheme.white80,
-                size: AppTheme.cardPadding * 0.75,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 0.5,
-          ),
-          Stack(
-            children: [
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: AppTheme.cardPadding * 3,
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: Colors.grey,
-                ),
-              ),
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: orangeContainerWidth, // Adjusted width based on ratio
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: AppTheme.colorBitcoin,
-                ),
-              ),
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: AppTheme.cardPadding * 3,
-                child: Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${mbSize.toStringAsFixed(2)} MB',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: AppTheme.white90, shadows: [
-                          AppTheme.boxShadowBig,
-                        ]),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.elementSpacing * 0.75,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "of ${mwu.toStringAsFixed(2)} MB",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              // Transform.translate(
-              //   offset: const Offset(0, 2),
-              //   child: Text(
-              //     ' MB  ',
-              //     style: Theme.of(context).textTheme.labelSmall,
-              //   ),
-              // ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget blockSizeUnaccepted() {
-    // Assuming controller.mempoolBlocks[controller.indexShowBlock.value].blockSize and controller.txDetailsConfirmed!.weight are already in MB and MWU units respectively.
-    double mbSize =
-        controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! /
-            1000000;
-    double mwu = (controller.txDetailsConfirmed?.weight)! / 1000000;
-
-    // Calculate the width based on the ratio
-    double maxWidth = AppTheme.cardPadding * 3;
-    double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth =
-        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
-
-    return GlassContainer(
-      height: AppTheme.cardPadding * 6.5.h,
-      width: AppTheme.cardPadding * 6.5.w,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                L10n.of(context)!.blockSize,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(
-                width: AppTheme.elementSpacing / 2,
-              ),
-              Icon(
-                Icons.help_outline_rounded,
-                color: AppTheme.white80,
-                size: AppTheme.cardPadding * 0.75,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 0.5,
-          ),
-          Stack(
-            children: [
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: AppTheme.cardPadding * 3,
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: Colors.grey,
-                ),
-              ),
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: orangeContainerWidth,
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: AppTheme.colorBitcoin,
-                ),
-              ),
-              Container(
-                height: AppTheme.cardPadding * 3,
-                width: AppTheme.cardPadding * 3,
-                child: Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${mbSize.toStringAsFixed(2)} MB',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: AppTheme.white90,
-                          shadows: [
-                            AppTheme.boxShadowBig,
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.elementSpacing * 0.75,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "of ${mwu.toStringAsFixed(2)}",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Transform.translate(
-                offset: const Offset(0, 2),
-                child: Text(
-                  ' MWU  ',
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget feeDistributionAccepted() {
-    return GlassContainer(
-      child: Column(children: [
-        BitNetListTile(
-          leading: const Icon(
-            FontAwesomeIcons.moneyBill,
-            size: AppTheme.cardPadding * 0.75,
-          ),
-          text: L10n.of(context)!.feeDistribution,
-          trailing: Container(
-            child: Row(
-              children: [
-                // Text(
-                //     (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
-                //         .toStringAsFixed(3),
-                //     style: Theme.of(context)
-                //         .textTheme
-                //         .bodySmall!
-                //         .copyWith(fontWeight: FontWeight.bold)),
-                // Transform.translate(
-                //   offset: const Offset(0, 2),
-                //   child: Text(
-                //     ' BTC  ',
-                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                //         fontWeight: FontWeight.bold,
-                //         color: AppTheme.secondaryColor),
-                //   ),
-                // ),
-                Text(
-                  '\$${controller.formatAmount((controller.txDetailsConfirmed!.extras.totalFees / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                  style: const TextStyle(
-                    color: AppTheme.successColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
-        Text(
-            '${L10n.of(context)!.median}' +
-                '~' +
-                '\$${(((controller.txDetailsConfirmed!.extras.medianFee * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: AppTheme.white90,
-                )),
-        const SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
-        Container(
-          width: AppTheme.cardPadding * 12,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SfLinearGauge(
-                showTicks: false,
-                showLabels: false,
-                useRangeColorForAxis: true,
-                axisTrackStyle: const LinearAxisTrackStyle(
-                    thickness: AppTheme.cardPadding,
-                    color: Colors.grey,
-                    edgeStyle: LinearEdgeStyle.bothCurve,
-                    gradient: LinearGradient(
-                        colors: [AppTheme.errorColor, AppTheme.successColor],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        stops: [0.1, 0.9],
-                        tileMode: TileMode.clamp)),
-                minimum: controller.txDetailsConfirmed!.extras.feeRange.first,
-                maximum: controller.txDetailsConfirmed!.extras.feeRange.last,
-                markerPointers: [
-                  LinearWidgetPointer(
-                      value: controller.txDetailsConfirmed!.extras.medianFee,
-                      child: Container(
-                        height: AppTheme.cardPadding * 1.25,
-                        width: AppTheme.elementSpacing * 0.75,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        ),
-                      ))
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        '\$${(((controller.txDetailsConfirmed!.extras.feeRange.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: AppTheme.errorColor,
-                            )),
-                    Text(
-                        '\$${(((controller.txDetailsConfirmed!.extras.feeRange.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: AppTheme.successColor,
-                            )),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: AppTheme.cardPadding,
-        ),
-      ]),
-    );
-  }
-
-  Widget feeDistributionUnaccepted() {
-    return GlassContainer(
-      child: Column(children: [
-        BitNetListTile(
-          leading: Icon(
-            FontAwesomeIcons.moneyBill,
-            size: AppTheme.cardPadding * 0.75,
-          ),
-          text: L10n.of(context)!.feeDistribution,
-          trailing: Container(
-            child: Row(
-              children: [
-                // Text(
-                //   controller.mempoolBlocks.isNotEmpty
-                //       ? controller.numberFormat.format(controller
-                //               .mempoolBlocks[controller.indexShowBlock.value]
-                //               .totalFees! /
-                //           100000000)
-                //       : '',
-                //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                // ),
-                // Transform.translate(
-                //   offset: const Offset(0, 2),
-                //   child: Text(
-                //     ' BTC  ',
-                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                //         fontWeight: FontWeight.bold,
-                //         color: AppTheme.secondaryColor),
-                //   ),
-                // ),
-                Text(
-                  controller.mempoolBlocks.isNotEmpty
-                      ? ('\$${controller.formatAmount((controller.mempoolBlocks[controller.indexShowBlock.value].totalFees! / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}')
-                      : '',
-                  style: const TextStyle(
-                    color: AppTheme.successColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
-        Text(
-            '${L10n.of(context)!.median}' +
-                '~' +
-                '\$${(((controller.mempoolBlocks.isEmpty ? 0 : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: AppTheme.black60,
-                )),
-        const SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
-        Container(
-          width: AppTheme.cardPadding * 12,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SfLinearGauge(
-                showTicks: false,
-                showLabels: false,
-                useRangeColorForAxis: true,
-                axisTrackStyle: const LinearAxisTrackStyle(
-                    thickness: AppTheme.cardPadding,
-                    color: Colors.grey,
-                    edgeStyle: LinearEdgeStyle.bothCurve,
-                    gradient: LinearGradient(
-                        colors: [AppTheme.errorColor, AppTheme.successColor],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        stops: [0.1, 0.9],
-                        tileMode: TileMode.clamp)),
-                minimum: controller
-                    .mempoolBlocks[controller.indexShowBlock.value]
-                    .feeRange!
-                    .first
-                    .toDouble(),
-                maximum: controller
-                    .mempoolBlocks[controller.indexShowBlock.value]
-                    .feeRange!
-                    .last
-                    .toDouble(),
-                markerPointers: [
-                  LinearWidgetPointer(
-                      value: controller
-                          .mempoolBlocks[controller.indexShowBlock.value]
-                          .medianFee!
-                          .toDouble(),
-                      child: Container(
-                        height: AppTheme.cardPadding * 1.25,
-                        width: AppTheme.elementSpacing * 0.75,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        ),
-                      ))
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: AppTheme.errorColor,
-                            )),
-                    Text(
-                        '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: AppTheme.successColor,
-                            )),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: AppTheme.cardPadding,
-        ),
-      ]),
-    );
-  }
 
   bool hasUserTxs(String blockhash) {
     return onchainTransactionsFull
@@ -1959,3 +1446,293 @@ MiningInfoCard(
   rewardAmount: controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value,
 )
 */
+
+// Unified widgets for both accepted and unaccepted blocks
+Widget blockSize(BuildContext context, {bool isAccepted = true}) {
+  final controller = Get.find<HomeController>();
+  // Get the appropriate size and weight based on whether we're looking at accepted or unaccepted block
+  double mbSize = isAccepted
+      ? controller.txDetailsConfirmed!.size / 1000000
+      : controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! / 1000000;
+      
+  double mwu = controller.txDetailsConfirmed!.weight / 1000000;
+
+  // Calculate the width based on the ratio
+  double maxWidth = AppTheme.cardPadding * 3;
+  double ratio = (mbSize / mwu) * maxWidth;
+  double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+
+  return GlassContainer(
+    height: isAccepted ? null : AppTheme.cardPadding * 6.5.h,
+    width: isAccepted ? null : AppTheme.cardPadding * 6.5.w,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              L10n.of(context)!.blockSize,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(
+              width: AppTheme.elementSpacing / 2,
+            ),
+            Icon(
+              Icons.help_outline_rounded,
+              color: AppTheme.white80,
+              size: AppTheme.cardPadding * 0.75,
+            )
+          ],
+        ),
+        const SizedBox(
+          height: AppTheme.cardPadding * 0.5,
+        ),
+        Stack(
+          children: [
+            Container(
+              height: AppTheme.cardPadding * 3,
+              width: AppTheme.cardPadding * 3,
+              decoration: BoxDecoration(
+                borderRadius: AppTheme.cardRadiusSmall,
+                color: Colors.grey,
+              ),
+            ),
+            Container(
+              height: AppTheme.cardPadding * 3,
+              width: orangeContainerWidth,
+              decoration: BoxDecoration(
+                borderRadius: AppTheme.cardRadiusSmall,
+                color: AppTheme.colorBitcoin,
+              ),
+            ),
+            Container(
+              height: AppTheme.cardPadding * 3,
+              width: AppTheme.cardPadding * 3,
+              child: Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${mbSize.toStringAsFixed(2)} MB',
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: AppTheme.white90,
+                        shadows: [
+                          AppTheme.boxShadowBig,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing * 0.75,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "of ${mwu.toStringAsFixed(2)}",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Transform.translate(
+              offset: const Offset(0, 2),
+              child: Text(
+                isAccepted ? ' MB  ' : ' MWU  ',
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+Widget blockHealth(BuildContext context, {bool isAccepted = true}) {
+  final controller = Get.find<HomeController>();
+  // For unaccepted blocks, assume 100% health since they haven't been mined yet
+  double matchRate = isAccepted
+      ? controller.txDetailsConfirmed!.extras.matchRate
+      : 100.0;
+
+  return GlassContainer(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              L10n.of(context)!.health,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(
+              width: AppTheme.elementSpacing / 2,
+            ),
+            Icon(
+              Icons.help_outline_rounded,
+              color: AppTheme.white80,
+              size: AppTheme.cardPadding * 0.75,
+            )
+          ],
+        ),
+        const SizedBox(
+          height: AppTheme.cardPadding * 0.75,
+        ),
+        Icon(
+          FontAwesomeIcons.faceSmile,
+          color: matchRate >= 99
+              ? AppTheme.successColor
+              : matchRate >= 75 && matchRate < 99
+                  ? AppTheme.colorBitcoin
+                  : AppTheme.errorColor,
+          size: AppTheme.cardPadding * 2.5,
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing * 1.25,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: Text(
+                ('${matchRate} %'),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+Widget feeDistribution(BuildContext context, {bool isAccepted = true}) {
+  final controller = Get.find<HomeController>();
+  // Get the appropriate fee data based on whether we're looking at accepted or unaccepted block
+  num medianFee = isAccepted
+      ? controller.txDetailsConfirmed!.extras.medianFee
+      : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee!;
+      
+  num totalFees = isAccepted
+      ? controller.txDetailsConfirmed!.extras.totalFees
+      : controller.mempoolBlocks[controller.indexShowBlock.value].totalFees!;
+      
+  List<num> feeRange = isAccepted
+      ? controller.txDetailsConfirmed!.extras.feeRange
+      : controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!;
+
+  return GlassContainer(
+    child: Column(children: [
+      BitNetListTile(
+        leading: const Icon(
+          FontAwesomeIcons.moneyBill,
+          size: AppTheme.cardPadding * 0.75,
+        ),
+        text: L10n.of(context)!.feeDistribution,
+        trailing: Container(
+          child: Row(
+            children: [
+              Text(
+                '\$${controller.formatAmount(((totalFees / 100000000) * controller.currentUSD.value).toStringAsFixed(0))}',
+                style: const TextStyle(
+                  color: AppTheme.successColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(
+        height: AppTheme.elementSpacing,
+      ),
+      Text(
+          '${L10n.of(context)!.median}' +
+              '~' +
+              '\$${(((medianFee * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: AppTheme.white90,
+              )),
+      const SizedBox(
+        height: AppTheme.elementSpacing,
+      ),
+      Container(
+        width: AppTheme.cardPadding * 12,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SfLinearGauge(
+              showTicks: false,
+              showLabels: false,
+              useRangeColorForAxis: true,
+              axisTrackStyle: const LinearAxisTrackStyle(
+                  thickness: AppTheme.cardPadding,
+                  color: Colors.grey,
+                  edgeStyle: LinearEdgeStyle.bothCurve,
+                  gradient: LinearGradient(
+                      colors: [AppTheme.errorColor, AppTheme.successColor],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      stops: [0.1, 0.9],
+                      tileMode: TileMode.clamp)),
+              minimum: feeRange.first.toDouble(),
+              maximum: feeRange.last.toDouble(),
+              markerPointers: [
+                LinearWidgetPointer(
+                    value: medianFee.toDouble(),
+                    child: Container(
+                      height: AppTheme.cardPadding * 1.25,
+                      width: AppTheme.elementSpacing * 0.75,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                      ),
+                    ))
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      '\$${(((feeRange.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: AppTheme.errorColor,
+                          )),
+                  Text(
+                      '\$${(((feeRange.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: AppTheme.successColor,
+                          )),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(
+        height: AppTheme.cardPadding,
+      ),
+    ]),
+  );
+}
+

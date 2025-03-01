@@ -307,11 +307,7 @@ class AudioButton extends StatelessWidget {
             child: Icon(
               iconData,
               size: 20,
-              color: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .color!
-                  .withOpacity(0.64),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
@@ -512,4 +508,3 @@ void showSliderDialog({
     ),
   );
 }
-

@@ -109,14 +109,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child:   CommonHeading(
-                      headingText: L10n.of(context)!.priceHistory,
-                      hasButton: false,
-                      collapseBtn: true,
-                      child: const BarChart()
-                    ),
+                  CommonHeading(
+                    headingText: L10n.of(context)!.priceHistory,
+                    hasButton: false,
+                    collapseBtn: true,
+                    child: const BarChart()
                   ),
                   CommonHeading(
                     headingText: L10n.of(context)!.tradingHistory,
