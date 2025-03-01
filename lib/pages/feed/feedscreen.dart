@@ -8,7 +8,7 @@ import 'package:bitnet/pages/feed/build_search_result_widget.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
 import 'package:bitnet/pages/feed/tokenstab.dart';
-import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/feed/assetstab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -143,7 +143,7 @@ class _FeedScreenState extends State<FeedScreen>
               controller: controller.tabController,
               children: [
                 const TokensTab(),
-                HomeScreen(ctrler: homeScrollController),
+                const AssetsTab(),
                 GetBuilder<FeedController>(
                   builder: (controller) {
                     return const SearchResultWidget();
