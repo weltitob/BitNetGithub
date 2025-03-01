@@ -4,6 +4,7 @@ import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ScreenCategoryWidget extends StatelessWidget {
   final String image;
@@ -12,9 +13,29 @@ class ScreenCategoryWidget extends StatelessWidget {
   final int index;
   const ScreenCategoryWidget({required this.image, required this.text, required this.header, required this.index, super.key});
 
+  // Helper method to get the appropriate FontAwesomeIcon
+  IconData _getIconForCategory(String text) {
+    switch (text) {
+      case 'Tokens':
+        return FontAwesomeIcons.coins;
+      case 'Assets':
+        return FontAwesomeIcons.images;
+      case 'People':
+        return FontAwesomeIcons.users;
+      case 'Blockchain':
+        return FontAwesomeIcons.cube;
+      case 'Liked':
+        return FontAwesomeIcons.heart;
+      default:
+        return FontAwesomeIcons.circleQuestion;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: const EdgeInsets.only(
         right: 10,
@@ -38,15 +59,23 @@ class ScreenCategoryWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 5),
-                height: 35.h,
-                width: 35.w,
-                child: Image.asset(image),
+              // Using FontAwesomeIcon instead of Image
+              Icon(
+                _getIconForCategory(text),
+                size: 28.sp,
+                color: index == controller.tabController?.index
+                    ? AppTheme.colorBitcoin
+                    : isDarkMode ? AppTheme.white70 : AppTheme.black70,
               ),
               Container(
-                margin: const EdgeInsets.only(top: 5),
-                child: Text(text, style: Theme.of(context).textTheme.labelLarge),
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(text, 
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    fontWeight: index == controller.tabController?.index 
+                      ? FontWeight.bold 
+                      : FontWeight.normal,
+                  ),
+                ),
               )
             ],
           ),

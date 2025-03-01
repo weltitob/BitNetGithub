@@ -110,6 +110,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
+          hasBackButton: false,
           context: context,
           text: 'Comments',
         ),

@@ -129,28 +129,20 @@ class _FeedScreenState extends State<FeedScreen> with SingleTickerProviderStateM
               physics: const NeverScrollableScrollPhysics(),
               controller: controller.tabController,
               children: [
-                HomeScreen(ctrler: homeScrollController),
                 const TokensTab(),
-                MempoolHome(
-                  isFromHome: true,
-                ),
+                HomeScreen(ctrler: homeScrollController),
                 GetBuilder<FeedController>(
                   builder: (controller) {
                     return const SearchResultWidget();
                   },
                 ),
-                Container(
-                  child: Center(
-                    child: Text(
-                      L10n.of(context)!.groups,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
+                MempoolHome(
+                  isFromHome: true,
                 ),
                 Container(
                   child: Center(
                     child: Text(
-                      L10n.of(context)!.liked,
+                      L10n.of(context)!.groups,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),

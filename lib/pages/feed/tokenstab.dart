@@ -7,6 +7,8 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 
 class TokensTab extends StatefulWidget {
   const TokensTab({super.key});
@@ -16,145 +18,307 @@ class TokensTab extends StatefulWidget {
 }
 
 class _TokensTabState extends State<TokensTab> {
+  // Sample token data
+  final List<Map<String, dynamic>> tokenData = [
+    {
+      'name': 'Bitcoin',
+      'symbol': 'BTC',
+      'image': 'assets/images/bitcoin.png',
+      'price': '48,224.65',
+      'change': '+5.2%',
+      'isPositive': true,
+      'color': AppTheme.colorBitcoin,
+      'chartData': [
+        ChartLine(time: 0, price: 42000),
+        ChartLine(time: 1, price: 42500),
+        ChartLine(time: 2, price: 43100),
+        ChartLine(time: 3, price: 43050),
+        ChartLine(time: 4, price: 44500),
+        ChartLine(time: 5, price: 45200),
+        ChartLine(time: 6, price: 46100),
+        ChartLine(time: 7, price: 45800),
+        ChartLine(time: 8, price: 46750),
+        ChartLine(time: 9, price: 48200),
+      ]
+    },
+    {
+      'name': 'Genesis Stone',
+      'symbol': 'GENST',
+      'image': 'assets/tokens/genisisstone.webp',
+      'price': '0.000142',
+      'change': '+3.7%',
+      'isPositive': true,
+      'color': Colors.blue,
+      'chartData': [
+        ChartLine(time: 0, price: 0.000120),
+        ChartLine(time: 1, price: 0.000125),
+        ChartLine(time: 2, price: 0.000130),
+        ChartLine(time: 3, price: 0.000128),
+        ChartLine(time: 4, price: 0.000133),
+        ChartLine(time: 5, price: 0.000138),
+        ChartLine(time: 6, price: 0.000135),
+        ChartLine(time: 7, price: 0.000140),
+        ChartLine(time: 8, price: 0.000142),
+        ChartLine(time: 9, price: 0.000142),
+      ]
+    },
+    {
+      'name': 'Hotdog',
+      'symbol': 'HTDG',
+      'image': 'assets/tokens/hotdog.webp',
+      'price': '0.000089',
+      'change': '+2.1%',
+      'isPositive': true,
+      'color': Colors.red.shade400,
+      'chartData': [
+        ChartLine(time: 0, price: 0.000075),
+        ChartLine(time: 1, price: 0.000078),
+        ChartLine(time: 2, price: 0.000082),
+        ChartLine(time: 3, price: 0.000080),
+        ChartLine(time: 4, price: 0.000083),
+        ChartLine(time: 5, price: 0.000086),
+        ChartLine(time: 6, price: 0.000084),
+        ChartLine(time: 7, price: 0.000087),
+        ChartLine(time: 8, price: 0.000088),
+        ChartLine(time: 9, price: 0.000089),
+      ]
+    },
+  ];
+
+  // Top movers data
+  final List<Map<String, dynamic>> topMoversData = [
+    {
+      'name': 'Ordinals',
+      'symbol': 'ORD',
+      'image': 'assets/tokens/hotdog.webp',
+      'change': '+15.8%',
+      'isPositive': true,
+    },
+    {
+      'name': 'Lumen',
+      'symbol': 'LUM',
+      'image': 'assets/tokens/genisisstone.webp',
+      'change': '+12.3%',
+      'isPositive': true,
+    },
+    {
+      'name': 'Nebula',
+      'symbol': 'NEB',
+      'image': 'assets/images/bitcoin.png',
+      'change': '+9.7%',
+      'isPositive': true,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return bitnetScaffold(
       body: ListView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
-          const SizedBox(height: AppTheme.cardPadding * 0.1),
+
           
           // Trending section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Text(
-              'Trending',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 14.sp, 
-                fontWeight: FontWeight.bold
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
+
+          const SizedBox(height: AppTheme.cardPadding),
           
-          SizedBox(
-            height: 150.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: GlassContainer(
-                    width: size.width - 200.w,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 10.h,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                height: 30.h,
-                                width: 30.w,
-                                child: Image.asset('assets/images/bitcoin.png'),
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                "btc",
-                                style: AppTheme.textTheme.titleLarge,
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 40.h,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  right: AppTheme.elementSpacing),
-                              width: AppTheme.cardPadding * 3.75.w,
-                              color: Colors.transparent,
-                              child: SfCartesianChart(
-                                enableAxisAnimation: true,
-                                plotAreaBorderWidth: 0,
-                                primaryXAxis: CategoryAxis(
-                                    labelPlacement: LabelPlacement.onTicks,
-                                    edgeLabelPlacement: EdgeLabelPlacement.none,
-                                    isVisible: false,
-                                    majorGridLines: const MajorGridLines(width: 0),
-                                    majorTickLines: const MajorTickLines(width: 0)),
-                                primaryYAxis: NumericAxis(
-                                  plotOffset: 0,
-                                  edgeLabelPlacement: EdgeLabelPlacement.none,
-                                  isVisible: false,
-                                  majorGridLines: const MajorGridLines(width: 0),
-                                  majorTickLines: const MajorTickLines(width: 0),
-                                ),
-                                series: <ChartSeries>[
-                                  LineSeries<ChartLine, double>(
-                                    dataSource: [
-                                      ChartLine(time: 2, price: 3),
-                                      ChartLine(time: 3, price: 24),
-                                      ChartLine(time: 4, price: 5),
-                                      ChartLine(time: 3, price: 34),
-                                      ChartLine(time: 1, price: 4),
-                                      ChartLine(time: 1, price: 14),
-                                    ],
-                                    animationDuration: 0,
-                                    xValueMapper: (ChartLine crypto, _) =>
-                                        crypto.time,
-                                    yValueMapper: (ChartLine crypto, _) =>
-                                        crypto.price,
-                                    color: AppTheme.errorColor,
+          // Carousel Slider for Trending Tokens
+          CarouselSlider.builder(
+            options: CarouselOptions(
+              autoPlay: kDebugMode ? false : true,
+              viewportFraction: 0.70, // Increased from 0.6 to 0.7 to make items larger
+              enlargeCenterPage: true,
+              height: 250.h, // Increased from 225.h
+              autoPlayInterval: const Duration(seconds: 4),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800)
+            ),
+            itemCount: tokenData.length,
+            itemBuilder: (context, index, _) {
+              final token = tokenData[index];
+              final chartData = token['chartData'] as List<ChartLine>;
+              
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.w),
+                child: GlassContainer(
+                  width: size.width - 150.w, // Increased from 200.w
+                  customShadow: isDarkMode ? [] : null,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 18.h, // Increased from 16.h
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Token logo and name
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: token['color'].withOpacity(0.3),
+                                    blurRadius: 12,
+                                    spreadRadius: 2,
                                   )
-                                ],
+                                ]
+                              ),
+                              child: Container(
+                                height: 38.h, // Increased from 34.h
+                                width: 38.w, // Increased from 34.w
+                                padding: const EdgeInsets.all(2),
+                                child: Image.asset(token['image']),
                               ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.arrow_upward,
-                                color: Colors.green,
-                                size: 20,
+                            SizedBox(width: 12.w), // Increased from 10.w
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  token['symbol'],
+                                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp, // Increased font size
+                                  ),
+                                ),
+                                Text(
+                                  token['name'],
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                    fontSize: 12.sp, // Added specific font size
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        
+                        SizedBox(height: 20.h), // Increased from 16.h
+                        
+                        // Chart - Wrapped in Expanded to prevent overflow
+                        Expanded(
+                          child: Container(
+                            color: Colors.transparent,
+                            child: SfCartesianChart(
+                              plotAreaBorderWidth: 0,
+                              margin: EdgeInsets.zero,
+                              primaryXAxis: CategoryAxis(
+                                isVisible: false,
+                                majorGridLines: const MajorGridLines(width: 0),
+                                majorTickLines: const MajorTickLines(width: 0),
                               ),
-                              SizedBox(width: 5.w),
-                              Text(
-                                '5.2%',
-                                style: AppTheme.textTheme.titleMedium,
-                              )
-                            ],
+                              primaryYAxis: NumericAxis(
+                                isVisible: false,
+                                majorGridLines: const MajorGridLines(width: 0),
+                                majorTickLines: const MajorTickLines(width: 0),
+                              ),
+                              series: <ChartSeries>[
+                                // Line series - now using successColor for all cases
+                                AreaSeries<ChartLine, double>(
+                                  dataSource: chartData,
+                                  animationDuration: 1500,
+                                  xValueMapper: (ChartLine data, _) => data.time,
+                                  yValueMapper: (ChartLine data, _) => data.price,
+                                  color: AppTheme.successColor.withOpacity(0.3),
+                                  borderWidth: 2.5,
+                                  borderColor: AppTheme.successColor,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppTheme.successColor.withOpacity(0.3),
+                                      AppTheme.successColor.withOpacity(0.05),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                          Text(
-                            '2.224232',
-                            style: AppTheme.textTheme.titleLarge,
-                          )
-                        ],
-                      ),
+                        ),
+                        
+                        SizedBox(height: 10.h), // Increased from 8.h
+                        
+                        // Price 
+                        Text(
+                          token['price'],
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.sp, // Increased from 20.sp
+                          ),
+                        ),
+                        
+                        SizedBox(height: 6.h), // Increased from 4.h
+                        
+                        // Price change indicator
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              token['isPositive'] 
+                                  ? Icons.arrow_upward 
+                                  : Icons.arrow_downward,
+                              color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
+                              size: 18, // Increased from 16
+                            ),
+                            SizedBox(width: 6.w), // Increased from 5.w
+                            Text(
+                              token['change'],
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.sp, // Added specific font size
+                                color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }
-            ),
+                ),
+              );
+            },
           ),
           
           SizedBox(height: AppTheme.cardPadding.h * 1.5),
           
-          // Top 3 by Market Cap section
+          // Top 3 by Market Cap section with arrow button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Text(
-              'Top 3 by Market Cap',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 14.sp, 
-                fontWeight: FontWeight.bold
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Top 3 by Market Cap',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 14.sp, 
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                GlassContainer(
+                  customShadow: isDarkMode ? [] : null,
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                  child: InkWell(
+                    onTap: () {
+                      // Handle navigation
+                    },
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16.sp,
+                        color: isDarkMode ? AppTheme.white70 : AppTheme.black70,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 15),
@@ -163,48 +327,168 @@ class _TokensTabState extends State<TokensTab> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              child: Column(
-                children: [
-                  // First crypto item
-                  CryptoItem(
-                    hasGlassContainer: false,
-                    currency: Currency(
-                      code: 'Hotdog',
-                      name: 'Hotdog',
-                      icon: Image.asset("./assets/tokens/hotdog.webp"),
+              customShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: [
+                    // First crypto item
+                    CryptoItem(
+                      hasGlassContainer: false,
+                      currency: Currency(
+                        code: 'Hotdog',
+                        name: 'Hotdog',
+                        icon: Image.asset("./assets/tokens/hotdog.webp"),
+                      ),
+                      context: context,
                     ),
-                    context: context,
-                  ),
-                  
-                  // Second crypto item
-                  CryptoItem(
-                    hasGlassContainer: false,
-                    currency: Currency(
-                      code: 'GENST',
-                      name: 'Genisis Stone',
-                      icon: Image.asset("./assets/tokens/genisisstone.webp"),
+
+                    // Second crypto item
+                    CryptoItem(
+                      hasGlassContainer: false,
+                      currency: Currency(
+                        code: 'GENST',
+                        name: 'Genisis Stone',
+                        icon: Image.asset("./assets/tokens/genisisstone.webp"),
+                      ),
+                      context: context,
                     ),
-                    context: context,
-                  ),
-                  
-                  // Third crypto item
-                  CryptoItem(
-                    hasGlassContainer: false,
-                    currency: Currency(
-                      code: 'HTDG',
-                      name: 'Hotdog',
-                      icon: Image.asset("./assets/tokens/hotdog.webp"),
+
+                    // Third crypto item
+                    CryptoItem(
+                      hasGlassContainer: false,
+                      currency: Currency(
+                        code: 'HTDG',
+                        name: 'Hotdog',
+                        icon: Image.asset("./assets/tokens/hotdog.webp"),
+                      ),
+                      context: context,
                     ),
-                    context: context,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
           
-          SizedBox(height: 10.h),
+          SizedBox(height: AppTheme.cardPadding.h),
           
-          // Total Market Cap Today section
+          // Top Movers Today section with arrow button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Top Movers Today',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 14.sp, 
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                GlassContainer(
+                  customShadow: isDarkMode ? [] : null,
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                  child: InkWell(
+                    onTap: () {
+                      // Handle navigation
+                    },
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16.sp,
+                        color: isDarkMode ? AppTheme.white70 : AppTheme.black70,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          
+          // Top Movers list
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              customShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: topMoversData.map((mover) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing,
+                        vertical: AppTheme.elementSpacing * 0.5,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 36.h,
+                            width: 36.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.successColor.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                )
+                              ]
+                            ),
+                            padding: const EdgeInsets.all(2),
+                            child: Image.asset(mover['image']),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${mover['symbol']}',
+                                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  mover['name'],
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppTheme.successColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                            ),
+                            child: Text(
+                              mover['change'],
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.successColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+          
+          SizedBox(height: AppTheme.cardPadding.h),
+          
+          // Total Market Cap Today section - redesigned
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: Text(
@@ -217,109 +501,208 @@ class _TokensTabState extends State<TokensTab> {
           ),
           const SizedBox(height: 15),
           
-          SizedBox(
-            height: 140.h,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: GlassContainer(
-                width: size.width - AppTheme.cardPadding * 2,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 10.h,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '5.24%',
-                        style: AppTheme.textTheme.displaySmall,
-                      ),
-                      SizedBox(
-                        height: 40.h,
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              right: AppTheme.elementSpacing),
-                          width: AppTheme.cardPadding * 3.75.w,
-                          color: Colors.transparent,
-                          child: SfCartesianChart(
-                            enableAxisAnimation: true,
-                            plotAreaBorderWidth: 0,
-                            primaryXAxis: CategoryAxis(
-                                labelPlacement:
-                                    LabelPlacement.onTicks,
-                                edgeLabelPlacement:
-                                    EdgeLabelPlacement.none,
-                                isVisible: false,
-                                majorGridLines:
-                                    const MajorGridLines(
-                                        width: 0),
-                                majorTickLines:
-                                    const MajorTickLines(
-                                        width: 0)),
-                            primaryYAxis: NumericAxis(
-                              plotOffset: 0,
-                              edgeLabelPlacement:
-                                  EdgeLabelPlacement.none,
-                              isVisible: false,
-                              majorGridLines:
-                                  const MajorGridLines(width: 0),
-                              majorTickLines:
-                                  const MajorTickLines(width: 0),
-                            ),
-                            series: <ChartSeries>[
-                              LineSeries<ChartLine, double>(
-                                dataSource: [
-                                  ChartLine(time: 2, price: 3),
-                                  ChartLine(time: 3, price: 24),
-                                  ChartLine(time: 4, price: 5),
-                                  ChartLine(time: 3, price: 34),
-                                  ChartLine(time: 1, price: 4),
-                                  ChartLine(time: 1, price: 14),
-                                  ChartLine(time: 23, price: 23),
-                                  ChartLine(time: 5, price: 40),
-                                  ChartLine(time: 12, price: 13),
-                                  ChartLine(time: 42, price: 14),
-                                  ChartLine(time: 12, price: 34),
-                                  ChartLine(time: 12, price: 23),
-                                ],
-                                animationDuration: 0,
-                                xValueMapper:
-                                    (ChartLine crypto, _) =>
-                                        crypto.time,
-                                yValueMapper:
-                                    (ChartLine crypto, _) =>
-                                        crypto.price,
-                                color: AppTheme.errorColor,
-                              )
+          // Redesigned Total Market Cap widget
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              customShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.cardPadding * 0.75),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header with value and percentage
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Market cap value
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '\$2.42T',
+                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26.sp,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                'Global crypto market cap',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.arrow_upward,
-                            color: Colors.grey,
-                            size: 20,
+                        
+                        // Percentage change badge
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
                           ),
-                          SizedBox(
-                            width: 5.w,
+                          decoration: BoxDecoration(
+                            color: AppTheme.successColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                           ),
-                          Text(
-                            '5.2%',
-                            style: AppTheme.textTheme.titleMedium,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.arrow_upward,
+                                color: AppTheme.successColor,
+                                size: 18,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '5.24%',
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.successColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    SizedBox(height: 24.h),
+                    
+                    // Chart
+                    SizedBox(
+                      height: 100.h,
+                      child: SfCartesianChart(
+                        plotAreaBorderWidth: 0,
+                        margin: EdgeInsets.zero,
+                        primaryXAxis: CategoryAxis(
+                          isVisible: false,
+                          majorGridLines: const MajorGridLines(width: 0),
+                          majorTickLines: const MajorTickLines(width: 0),
+                        ),
+                        primaryYAxis: NumericAxis(
+                          isVisible: false,
+                          majorGridLines: const MajorGridLines(width: 0),
+                          majorTickLines: const MajorTickLines(width: 0),
+                        ),
+                        series: <ChartSeries>[
+                          // Line series
+                          AreaSeries<ChartLine, double>(
+                            dataSource: [
+                              ChartLine(time: 0, price: 42000),
+                              ChartLine(time: 1, price: 42800),
+                              ChartLine(time: 2, price: 43500),
+                              ChartLine(time: 3, price: 43200),
+                              ChartLine(time: 4, price: 45000),
+                              ChartLine(time: 5, price: 44800),
+                              ChartLine(time: 6, price: 46500),
+                              ChartLine(time: 7, price: 47200),
+                              ChartLine(time: 8, price: 46800),
+                              ChartLine(time: 9, price: 48200),
+                            ],
+                            animationDuration: 1500,
+                            xValueMapper: (ChartLine data, _) => data.time,
+                            yValueMapper: (ChartLine data, _) => data.price,
+                            color: AppTheme.successColor.withOpacity(0.3),
+                            borderWidth: 2.5,
+                            borderColor: AppTheme.successColor,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppTheme.successColor.withOpacity(0.3),
+                                AppTheme.successColor.withOpacity(0.05),
+                                Colors.transparent,
+                              ],
+                            ),
                           )
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    
+                    SizedBox(height: 20.h),
+                    
+                    // Additional stats
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 24h Volume
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '24h Volume',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                '\$98.2B',
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        // BTC Dominance
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'BTC Dominance',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                '52.3%',
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        // ETH Dominance
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'ETH Dominance',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                '18.7%',
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+          
+          SizedBox(height: AppTheme.cardPadding.h),
         ],
       ),
       context: context,

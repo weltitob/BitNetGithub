@@ -206,7 +206,9 @@ class Comment extends StatelessWidget {
         ListTile(
           title: RichText(
             text: TextSpan(
-                text: '@$username  ',
+                text:
+                    //avoid duplicate @ symbols
+                    username.startsWith('@') ? '$username  ' : '@$username  ',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -218,7 +220,11 @@ class Comment extends StatelessWidget {
                 ]),
           ),
           leading: Avatar(
-              profileId: userId, mxContent: Uri.parse(avatarUrl), isNft: isNft),
+            profileId: userId,
+            mxContent: Uri.parse(avatarUrl),
+            isNft: isNft,
+            size: AppTheme.cardPadding * 1.75.h,
+          ),
           subtitle: RichText(
             text: TextSpan(
                 style: const TextStyle(

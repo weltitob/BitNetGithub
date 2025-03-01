@@ -100,18 +100,13 @@ class FeedController extends GetxController
   final List<WalletCategory> walletcategorys = [
     WalletCategory(
       'assets/images/paper_wallet.png',
-      'Assets',
-      'Assets',
+      'Tokens',
+      'Tokens',
     ),
     WalletCategory(
       'assets/images/paper_wallet.png',
-      'Tokens',
-      'Tokens',
-    ),
-    WalletCategory(
-      'assets/images/bitcoin.png',
-      'Bitcoin',
-      'Bitcoin',
+      'Assets',
+      'Assets',
     ),
     WalletCategory(
       'assets/images/friends.png',
@@ -119,9 +114,9 @@ class FeedController extends GetxController
       'People',
     ),
     WalletCategory(
-      'assets/marketplace/ActiveHeart.png',
-      'Liked',
-      'Liked',
+      'assets/images/bitcoin.png',
+      'Blockchain',
+      'Blockchain',
     ),
   ];
 
@@ -134,7 +129,7 @@ class FeedController extends GetxController
   void onInit() {
     super.onInit();
     handleSearchPeople('');
-    tabController = TabController(length: 6, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
     scrollControllerColumn = ScrollController();
     scrollController?.value = ScrollController();
     scrollController?.value.addListener(scrollListener);
