@@ -76,23 +76,9 @@ class ScreenCategoryWidget extends StatelessWidget {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GlassContainer(
-      blur: isDarkMode ? 5 : 2,
-      opacity: isDarkMode ? 0.15 : 0.05,
-      borderThickness: 1,
-      borderRadius: BorderRadius.circular(16),
-      customColor: isDarkMode
-          ? AppTheme.black80.withOpacity(0.25)
-          : Colors.white.withOpacity(0.85),
-      customShadow: !isDarkMode ? [
-        BoxShadow(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
-          spreadRadius: 0,
-        )
-      ] : null,
+      opacity: 0,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing  * 0.75, vertical: AppTheme.elementSpacing / 2),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -102,13 +88,13 @@ class ScreenCategoryWidget extends StatelessWidget {
               buttonType: ButtonType.solid,
               size: AppTheme.cardPadding * 1.25,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppTheme.elementSpacing * 0.5),
             Text(
               text,
               style: TextStyle(
                 color: textColor,
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 15,
               ),
             ),
           ],
@@ -119,22 +105,23 @@ class ScreenCategoryWidget extends StatelessWidget {
 
   Widget _buildInactiveTab(BuildContext context, Color textColor) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.75, vertical: AppTheme.elementSpacing / 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getIconForCategory(text),
-            size: 16,
-            color: textColor,
+          RoundedButtonWidget(
+            iconData: _getIconForCategory(text),
+            onTap: () {},
+            buttonType: ButtonType.transparent,
+            size: AppTheme.cardPadding * 1.25,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppTheme.elementSpacing * 0.5),
           Text(
             text,
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.normal,
-              fontSize: 14,
+              fontSize: 15,
             ),
           ),
         ],

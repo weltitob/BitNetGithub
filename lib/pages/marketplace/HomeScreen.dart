@@ -116,56 +116,31 @@ class HomeScreen extends StatelessWidget {
                   headingText: L10n.of(context)!.mostViewed,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
-                  isChild: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    margin: EdgeInsets.only(bottom: 30.h),
-                    child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 15 / 4.2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        crossAxisCount: 2,
+                  isChild: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    child: GlassContainer(
+
+                      child: Padding(
+                        padding: EdgeInsets.all(16.h),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            mostViewListData.length > 5 ? 5 : mostViewListData.length, // Limit to top 5
+                            (index) => Padding(
+                              padding: EdgeInsets.only(bottom: index < 4 ? 10.h : 0),
+                              child: MostView(
+                                nftImg: mostViewListData[index].nftImg,
+                                nftName: mostViewListData[index].nftName,
+                                nftPrice: mostViewListData[index].nftPrice,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: mostViewListData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return MostView(
-                          nftImg: mostViewListData[index].nftImg,
-                          nftName: mostViewListData[index].nftName,
-                          nftPrice: mostViewListData[index].nftPrice,
-                        );
-                      },
                     ),
                   ),
                 ),
-                CommonHeading(
-                  hasButton: true,
-                  customButtonIcon: Icons.info,
-                  headingText: L10n.of(context)!.spotlightProjects,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 170.h,
-                    margin: EdgeInsets.only(bottom: 30.h),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: trendingSellersSliderData.length,
-                      itemBuilder: (context, index) {
-                        return TrendingSellersSlider(
-                          nftImage: trendingSellersSliderData[index].nftImage,
-                          userImage: trendingSellersSliderData[index].userImage,
-                          nftName: trendingSellersSliderData[index].nftName,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+
                 CommonHeading(
                   hasButton: true,
                   headingText: L10n.of(context)!.hotNewItems,

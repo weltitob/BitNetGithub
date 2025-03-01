@@ -101,6 +101,7 @@ class SearchResultWidget extends StatelessWidget {
   }
 
   Widget _buildUserCarouselItem(UserData userData, int? rank, BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Widget? rankBadge;
     
     if (rank != null) {
@@ -120,8 +121,8 @@ class SearchResultWidget extends StatelessWidget {
       }
       
       rankBadge = Container(
-        width: AppTheme.cardPadding * 0.9,
-        height: AppTheme.cardPadding * 0.9,
+        width: AppTheme.cardPadding * 0.8,
+        height: AppTheme.cardPadding * 0.8,
         decoration: BoxDecoration(
           color: badgeColor,
           shape: BoxShape.circle,
@@ -148,6 +149,11 @@ class SearchResultWidget extends StatelessWidget {
 
     return GlassContainer(
       borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+      blur: isDarkMode ? 5 : 2,
+      opacity: isDarkMode ? 0.15 : 0.05,
+      customColor: isDarkMode 
+          ? Colors.grey.shade900.withOpacity(0.6) 
+          : Colors.white.withOpacity(0.9),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.cardPadding),
         child: InkWell(
@@ -175,7 +181,7 @@ class SearchResultWidget extends StatelessWidget {
                       bottom: 0,
                       right: 0,
                       child: Transform.scale(
-                        scale: 1.4,
+                        scale: 1.2,
                         child: rankBadge,
                       ),
                     ),
@@ -241,9 +247,9 @@ class SearchResultWidget extends StatelessWidget {
           child: CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: true,
-              viewportFraction: 0.6, // Smaller viewportFraction to match assets screen
+              viewportFraction: 0.6, 
               enlargeCenterPage: true,
-              enlargeFactor: 0.3, // More pronounced center item
+              enlargeFactor: 0.2,
               height: 300,
               autoPlayInterval: Duration(seconds: 5),
               autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -255,7 +261,7 @@ class SearchResultWidget extends StatelessWidget {
             itemBuilder: (context, index, realIndex) {
               return _buildUserCarouselItem(
                 users[index],
-                null,
+                index + 1, // Add ranks to the featured profiles
                 context,
               );
             },
@@ -436,7 +442,6 @@ class SearchResultWidget extends StatelessWidget {
         : GetBuilder<FeedController>(builder: (controller) {
             return Padding(
               padding: const EdgeInsets.only(
-
                   top: AppTheme.elementSpacing),
               child: isSearchActive
                   // Show search results when active

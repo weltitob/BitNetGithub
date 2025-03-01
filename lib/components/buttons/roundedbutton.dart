@@ -62,8 +62,10 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
                 colorsecondary: Theme.of(context).colorScheme.primary,
                 child: Container(
                   alignment: Alignment.center,
-                  child: AnimatedScale(
-                      duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
+                  child: Center(
+                    child: AnimatedScale(
+                        duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
+                  ),
                 ),
               ),
       ),
@@ -78,7 +80,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
               ? AppTheme.black80
               : AppTheme.white70
           : widget.iconColor ?? AppTheme.white60,
-      size: widget.size * 0.6,
+      size: widget.size * 0.55,
     );
   }
 }

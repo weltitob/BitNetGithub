@@ -82,7 +82,7 @@ class _FeedScreenState extends State<FeedScreen>
                       ),
                       HorizontalFadeListView(
                         child: Container(
-                          height: AppTheme.cardPadding * 2.2.h,
+                          height: AppTheme.cardPadding * 2.h,
                           margin: const EdgeInsets.symmetric(
                               horizontal: AppTheme.elementSpacing),
                           child: ListView.builder(

@@ -573,7 +573,7 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
                 // Card title ("You Pay" or "You Receive")
                 Text(
                   widget.cardTitle,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 
                 const SizedBox(height: AppTheme.elementSpacing * 0.5),

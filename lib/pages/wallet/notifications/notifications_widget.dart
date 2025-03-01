@@ -16,6 +16,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -195,9 +196,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
           Builder(
             builder: (context) {
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding,
-                  vertical: AppTheme.elementSpacing,
+                padding:  EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding.w,
+                  vertical: AppTheme.elementSpacing.w,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
