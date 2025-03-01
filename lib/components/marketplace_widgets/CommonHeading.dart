@@ -39,6 +39,7 @@ class _CommonHeadingState extends State<CommonHeading> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        SizedBox(height: AppTheme.elementSpacing,),
         Container(
           color: Colors.transparent,
           padding: widget.collapseBtn ? EdgeInsets.all(0.w) : EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -109,6 +110,7 @@ class _CommonHeadingState extends State<CommonHeading> {
             ],
           ),
         ),
+        SizedBox(height: AppTheme.elementSpacing * 0.5,),
         widget.collapseBtn
             ? widget.isCollapsed
                 ? widget.child

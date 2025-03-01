@@ -1019,174 +1019,180 @@ class _MempoolHomeState extends State<MempoolHome> {
           ? const SizedBox()
           : Column(
               children: [
-                const SizedBox(
-                  height: AppTheme.elementSpacing * 1,
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: AppTheme.cardPadding),
-                  child: Text(
-                    "${L10n.of(context)!.transactionFees}:",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                const SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
                 Container(
                   margin: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child: Obx(() {
                     return controller.transactionLoading.isTrue
                         ? Center(child: dotProgress(context))
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
+                        : GlassContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppTheme.cardPadding),
+                              child: Column(
                                 children: [
-                                  GlassContainer(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: AppTheme.cardRadiusSmall,
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        FontAwesomeIcons.coins,
+                                        size: AppTheme.cardPadding * 0.75,
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal:
-                                              AppTheme.elementSpacing * 1,
-                                          vertical:
-                                              AppTheme.elementSpacing / 3),
-                                      child: Text(
-                                        L10n.of(context)!.low,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
+                                      SizedBox(width: AppTheme.elementSpacing),
+                                      Text(
+                                        "Current Network Fees",
+                                        style: Theme.of(context).textTheme.titleMedium,
                                       ),
+                                    ],
+                                  ),
+                                  SizedBox(height: AppTheme.cardPadding),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      _buildFeeColumn(
+                                        context: context,
+                                        title: L10n.of(context)!.low,
+                                        feeAmount: controller.fees == null
+                                            ? ''
+                                            : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
+                                        feeColor: lighten(
+                                            getGradientColors(
+                                                (controller.fees!.hourFee!).toDouble(),
+                                                false)
+                                                .first,
+                                            25),
+                                        icon: Icons.speed,
+                                        iconColor: AppTheme.errorColor.withOpacity(0.7),
+                                      ),
+                                      _buildFeeColumn(
+                                        context: context,
+                                        title: L10n.of(context)!.medium,
+                                        feeAmount: controller.fees == null
+                                            ? ''
+                                            : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
+                                        feeColor: lighten(
+                                            getGradientColors(
+                                                (controller.fees!.halfHourFee!).toDouble(),
+                                                false)
+                                                .first,
+                                            25),
+                                        icon: Icons.speed,
+                                        iconColor: AppTheme.colorBitcoin.withOpacity(0.8),
+                                      ),
+                                      _buildFeeColumn(
+                                        context: context,
+                                        title: L10n.of(context)!.high,
+                                        feeAmount: '\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
+                                        feeColor: lighten(
+                                            getGradientColors(
+                                                double.tryParse(controller.highPriority.value)!,
+                                                false)
+                                                .first,
+                                            25),
+                                        icon: Icons.speed,
+                                        iconColor: AppTheme.successColor,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: AppTheme.elementSpacing),
+
+                                  SizedBox(height: AppTheme.elementSpacing),
+                                  Text(
+                                    "Estimated confirmation time",
+                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: Theme.of(context).brightness == Brightness.dark
+                                          ? AppTheme.white60
+                                          : AppTheme.black60,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing / 2,
-                                  ),
-                                  Text(
-                                    controller.fees == null
-                                        ? ''
-                                        : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                          color: lighten(
-                                              getGradientColors(
-                                                      (controller
-                                                              .fees!.hourFee!)
-                                                          .toDouble(),
-                                                      false)
-                                                  .first,
-                                              25),
-                                        ),
+                                  SizedBox(height: AppTheme.elementSpacing),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      _buildTimeEstimate(context, "~60 min", AppTheme.errorColor.withOpacity(0.7)),
+                                      _buildTimeEstimate(context, "~30 min", AppTheme.colorBitcoin.withOpacity(0.8)),
+                                      _buildTimeEstimate(context, "Next block", AppTheme.successColor),
+                                    ],
                                   ),
                                 ],
                               ),
-                              Column(
-                                children: [
-                                  GlassContainer(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: AppTheme.cardRadiusSmall,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal:
-                                              AppTheme.elementSpacing * 1,
-                                          vertical:
-                                              AppTheme.elementSpacing / 3),
-                                      child: Text(
-                                        L10n.of(context)!.medium,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing / 2,
-                                  ),
-                                  Text(
-                                    controller.fees == null
-                                        ? ''
-                                        : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                          color: lighten(
-                                              getGradientColors(
-                                                      (controller.fees!
-                                                              .halfHourFee!)
-                                                          .toDouble(),
-                                                      false)
-                                                  .first,
-                                              25),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  GlassContainer(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal:
-                                              AppTheme.elementSpacing * 1,
-                                          vertical:
-                                              AppTheme.elementSpacing / 3),
-                                      child: Text(
-                                        L10n.of(context)!.high,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing / 2,
-                                  ),
-                                  Text(
-                                      '\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                            color: lighten(
-                                                getGradientColors(
-                                                        double.tryParse(
-                                                            controller
-                                                                .highPriority
-                                                                .value)!,
-                                                        false)
-                                                    .first,
-                                                25),
-                                          )),
-                                ],
-                              ),
-                            ],
+                            ),
                           );
                   }),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding.h * 1,
+                  height: AppTheme.cardPadding.h * 1.5,
                 ),
+
                 difficultyAdjustment(),
                 SizedBox(
-                  height: AppTheme.cardPadding.h * 1.75,
+                  height: AppTheme.cardPadding.h * 1.5,
                 ),
                 LastTransactions(ownedTransactions: onchainTransactionsFull),
-
-                //recentReplacements(),
-                //recentTransactions(),
               ],
             ),
+    );
+  }
+  
+  Widget _buildFeeColumn({
+    required BuildContext context,
+    required String title,
+    required String feeAmount,
+    required Color feeColor,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    return Column(
+      children: [
+        Container(
+          width: 50.w,
+          height: 50.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: iconColor.withOpacity(0.15),
+          ),
+          child: Center(
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 28,
+            ),
+          ),
+        ),
+        SizedBox(height: AppTheme.elementSpacing),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        SizedBox(height: AppTheme.elementSpacing / 2),
+        Text(
+          feeAmount,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            color: feeColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildTimeEstimate(BuildContext context, String time, Color color) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppTheme.elementSpacing,
+        vertical: AppTheme.elementSpacing / 2,
+      ),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: AppTheme.cardRadiusSmall,
+      ),
+      child: Text(
+        time,
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
@@ -1195,18 +1201,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         Provider.of<TimezoneProvider>(context, listen: false).timeZone;
 
     return Column(children: [
-      const SizedBox(height: AppTheme.cardPadding * 1.5),
-      Container(
-        alignment: Alignment.centerLeft,
-        margin: const EdgeInsets.only(left: AppTheme.cardPadding),
-        child: Text(
-          L10n.of(context)!.difficultyAdjustment,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-      ),
-      const SizedBox(
-        height: AppTheme.elementSpacing,
-      ),
+
       Obx(() {
         return controller.transactionLoading.isTrue
             ? Center(child: dotProgress(context))
@@ -1216,18 +1211,44 @@ class _MempoolHomeState extends State<MempoolHome> {
                     : Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: AppTheme.cardPadding),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        child: GlassContainer(
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppTheme.cardPadding),
+                            child: Column(
                               children: [
-                                Text('In ~${controller.days}'),
-                                const SizedBox(height: 5),
-                                FittedBox(
-                                  child: Row(
-                                    children: [
-                                      Text(DateFormat.MMMd().format(DateTime
+                                Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.gear,
+                                      size: AppTheme.cardPadding * 0.75,
+
+                                    ),
+                                    SizedBox(width: AppTheme.elementSpacing),
+                                    Text(
+                                      "Bitcoin Network Difficulty",
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: AppTheme.cardPadding),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Left side - Date information
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildInfoRow(
+                                          context,
+                                          "Next adjustment in:",
+                                          "~${controller.days}",
+                                          Icons.calendar_today,
+                                        ),
+                                        SizedBox(height: AppTheme.elementSpacing * 1.5),
+                                        _buildInfoRow(
+                                          context,
+                                          "Estimated date:",
+                                          DateFormat.yMMMd().format(DateTime
                                                   .fromMillisecondsSinceEpoch(
                                                       controller.da!
                                                           .estimatedRetargetDate!
@@ -1236,10 +1257,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                               .add(Duration(
                                                   milliseconds: loc
                                                       .currentTimeZone
-                                                      .offset))) ??
-                                          ''),
-                                      const Text(' at '),
-                                      Text(DateFormat.jm().format(DateTime
+                                                      .offset))),
+                                          Icons.event,
+                                        ),
+                                        SizedBox(height: AppTheme.elementSpacing * 1.5),
+                                        _buildInfoRow(
+                                          context,
+                                          "Estimated time:",
+                                          DateFormat.jm().format(DateTime
                                                   .fromMillisecondsSinceEpoch(
                                                       controller.da!
                                                           .estimatedRetargetDate!
@@ -1248,48 +1273,119 @@ class _MempoolHomeState extends State<MempoolHome> {
                                               .add(Duration(
                                                   milliseconds: loc
                                                       .currentTimeZone
-                                                      .offset))) ??
-                                          ''),
-                                    ],
+                                                      .offset))),
+                                          Icons.access_time,
+                                        ),
+                                      ],
+                                    ),
+                                    
+                                    // Right side - Difficulty change visualization
+                                    Container(
+                                      width: 120.w,
+                                      height: 120.w,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: controller.da!.difficultyChange!.isNegative
+                                            ? AppTheme.errorColor.withOpacity(0.5)
+                                            : AppTheme.successColor.withOpacity(0.5),
+                                          width: 3,
+                                        ),
+                                        color: controller.da!.difficultyChange!.isNegative
+                                            ? AppTheme.errorColor.withOpacity(0.1)
+                                            : AppTheme.successColor.withOpacity(0.1),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            controller.da!.difficultyChange!.isNegative
+                                                ? Icons.arrow_downward_rounded
+                                                : Icons.arrow_upward_rounded,
+                                            color: controller.da!.difficultyChange!.isNegative
+                                                ? AppTheme.errorColor
+                                                : AppTheme.successColor,
+                                            size: 36,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            controller.da!.difficultyChange!.isNegative
+                                                ? '${controller.da!.difficultyChange!.abs().toStringAsFixed(2)}%'
+                                                : '${controller.da!.difficultyChange!.toStringAsFixed(2)}%',
+                                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                              color: controller.da!.difficultyChange!.isNegative
+                                                  ? AppTheme.errorColor
+                                                  : AppTheme.successColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            controller.da!.difficultyChange!.isNegative 
+                                                ? "Decrease" 
+                                                : "Increase",
+                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                              color: controller.da!.difficultyChange!.isNegative
+                                                  ? AppTheme.errorColor
+                                                  : AppTheme.successColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: AppTheme.elementSpacing),
+
+                                SizedBox(height: AppTheme.elementSpacing),
+                                Text(
+                                  "Difficulty adjusts every 2016 blocks (~2 weeks)",
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context).brightness == Brightness.dark
+                                        ? AppTheme.white60
+                                        : AppTheme.black60,
                                   ),
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Icon(
-                                    controller.da!.difficultyChange!.isNegative
-                                        ? Icons.arrow_downward_rounded
-                                        : Icons.arrow_upward_rounded,
-                                    color: controller
-                                            .da!.difficultyChange!.isNegative
-                                        ? AppTheme.errorColor
-                                        : AppTheme.successColor,
-                                    size: AppTheme.cardPadding * 1.25),
-                                const SizedBox(
-                                  width: AppTheme.elementSpacing / 2,
-                                ),
-                                Text(
-                                    controller.da!.difficultyChange!.isNegative
-                                        ? '${controller.da!.difficultyChange!.abs().toStringAsFixed(2)} %'
-                                        : '${controller.da!.difficultyChange!.toStringAsFixed(2)} %',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                          color: controller.da!
-                                                  .difficultyChange!.isNegative
-                                              ? AppTheme.errorColor
-                                              : AppTheme.successColor,
-                                        )),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       );
               });
       }),
     ]);
+  }
+  
+  Widget _buildInfoRow(BuildContext context, String label, String value, IconData icon) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: AppTheme.white60,
+        ),
+        SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.white60
+                    : AppTheme.black60,
+              ),
+            ),
+            Text(
+              value,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
 

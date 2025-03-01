@@ -129,8 +129,9 @@ class _TokensTabState extends State<TokensTab> {
           CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: kDebugMode ? false : true,
-              viewportFraction: 0.70, // Increased from 0.6 to 0.7 to make items larger
+              viewportFraction: 0.6, // Changed to match people tab
               enlargeCenterPage: true,
+              enlargeFactor: 0.3, // Added to match people tab spacing
               height: 250.h, // Increased from 225.h
               autoPlayInterval: const Duration(seconds: 4),
               autoPlayAnimationDuration: const Duration(milliseconds: 800)
@@ -140,145 +141,142 @@ class _TokensTabState extends State<TokensTab> {
               final token = tokenData[index];
               final chartData = token['chartData'] as List<ChartLine>;
               
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: GlassContainer(
-                  width: size.width - 150.w, // Increased from 200.w
-                  customShadow: isDarkMode ? [] : null,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 18.h, // Increased from 16.h
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Token logo and name
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: token['color'].withOpacity(0.3),
-                                    blurRadius: 12,
-                                    spreadRadius: 2,
-                                  )
-                                ]
-                              ),
-                              child: Container(
-                                height: 38.h, // Increased from 34.h
-                                width: 38.w, // Increased from 34.w
-                                padding: const EdgeInsets.all(2),
-                                child: Image.asset(token['image']),
-                              ),
-                            ),
-                            SizedBox(width: 12.w), // Increased from 10.w
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  token['symbol'],
-                                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.sp, // Increased font size
-                                  ),
-                                ),
-                                Text(
-                                  token['name'],
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                    fontSize: 12.sp, // Added specific font size
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        
-                        SizedBox(height: 20.h), // Increased from 16.h
-                        
-                        // Chart - Wrapped in Expanded to prevent overflow
-                        Expanded(
-                          child: Container(
-                            color: Colors.transparent,
-                            child: SfCartesianChart(
-                              plotAreaBorderWidth: 0,
-                              margin: EdgeInsets.zero,
-                              primaryXAxis: CategoryAxis(
-                                isVisible: false,
-                                majorGridLines: const MajorGridLines(width: 0),
-                                majorTickLines: const MajorTickLines(width: 0),
-                              ),
-                              primaryYAxis: NumericAxis(
-                                isVisible: false,
-                                majorGridLines: const MajorGridLines(width: 0),
-                                majorTickLines: const MajorTickLines(width: 0),
-                              ),
-                              series: <ChartSeries>[
-                                // Line series - now using successColor for all cases
-                                AreaSeries<ChartLine, double>(
-                                  dataSource: chartData,
-                                  animationDuration: 1500,
-                                  xValueMapper: (ChartLine data, _) => data.time,
-                                  yValueMapper: (ChartLine data, _) => data.price,
-                                  color: AppTheme.successColor.withOpacity(0.3),
-                                  borderWidth: 2.5,
-                                  borderColor: AppTheme.successColor,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      AppTheme.successColor.withOpacity(0.3),
-                                      AppTheme.successColor.withOpacity(0.05),
-                                      Colors.transparent,
-                                    ],
-                                  ),
+              return GlassContainer(
+                width: size.width - 150.w, // Increased from 200.w
+                customShadow: isDarkMode ? [] : null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 18.h, // Increased from 16.h
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Token logo and name
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: token['color'].withOpacity(0.3),
+                                  blurRadius: 12,
+                                  spreadRadius: 2,
                                 )
-                              ],
+                              ]
+                            ),
+                            child: Container(
+                              height: 38.h, // Increased from 34.h
+                              width: 38.w, // Increased from 34.w
+                              padding: const EdgeInsets.all(2),
+                              child: Image.asset(token['image']),
                             ),
                           ),
-                        ),
-                        
-                        SizedBox(height: 10.h), // Increased from 8.h
-                        
-                        // Price 
-                        Text(
-                          token['price'],
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22.sp, // Increased from 20.sp
-                          ),
-                        ),
-                        
-                        SizedBox(height: 6.h), // Increased from 4.h
-                        
-                        // Price change indicator
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              token['isPositive'] 
-                                  ? Icons.arrow_upward 
-                                  : Icons.arrow_downward,
-                              color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
-                              size: 18, // Increased from 16
-                            ),
-                            SizedBox(width: 6.w), // Increased from 5.w
-                            Text(
-                              token['change'],
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.sp, // Added specific font size
-                                color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
+                          SizedBox(width: 12.w), // Increased from 10.w
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                token['symbol'],
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.sp, // Increased font size
+                                ),
                               ),
-                            )
-                          ],
+                              Text(
+                                token['name'],
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                  fontSize: 12.sp, // Added specific font size
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      
+                      SizedBox(height: 20.h), // Increased from 16.h
+                      
+                      // Chart - Wrapped in Expanded to prevent overflow
+                      Expanded(
+                        child: Container(
+                          color: Colors.transparent,
+                          child: SfCartesianChart(
+                            plotAreaBorderWidth: 0,
+                            margin: EdgeInsets.zero,
+                            primaryXAxis: CategoryAxis(
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0),
+                            ),
+                            primaryYAxis: NumericAxis(
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0),
+                            ),
+                            series: <ChartSeries>[
+                              // Line series - now using successColor for all cases
+                              AreaSeries<ChartLine, double>(
+                                dataSource: chartData,
+                                animationDuration: 1500,
+                                xValueMapper: (ChartLine data, _) => data.time,
+                                yValueMapper: (ChartLine data, _) => data.price,
+                                color: AppTheme.successColor.withOpacity(0.3),
+                                borderWidth: 2.5,
+                                borderColor: AppTheme.successColor,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    AppTheme.successColor.withOpacity(0.3),
+                                    AppTheme.successColor.withOpacity(0.05),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                      
+                      SizedBox(height: 10.h), // Increased from 8.h
+                      
+                      // Price 
+                      Text(
+                        token['price'],
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.sp, // Increased from 20.sp
+                        ),
+                      ),
+                      
+                      SizedBox(height: 6.h), // Increased from 4.h
+                      
+                      // Price change indicator
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            token['isPositive'] 
+                                ? Icons.arrow_upward 
+                                : Icons.arrow_downward,
+                            color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
+                            size: 18, // Increased from 16
+                          ),
+                          SizedBox(width: 6.w), // Increased from 5.w
+                          Text(
+                            token['change'],
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.sp, // Added specific font size
+                              color: token['isPositive'] ? AppTheme.successColor : AppTheme.errorColor,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               );
