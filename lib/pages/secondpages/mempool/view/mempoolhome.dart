@@ -11,9 +11,16 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/pages/secondpages/fear_and_greed.dart';
+import 'package:bitnet/pages/secondpages/hashrate/hashrate.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
+import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
+import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
+import 'package:dio/dio.dart';
+import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
 import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
@@ -29,6 +36,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:timezone/timezone.dart';
 
@@ -103,6 +111,10 @@ class _MempoolHomeState extends State<MempoolHome> {
   @override
   void initState() {
     super.initState();
+    // Initialize loading states
+    hashrateLoading = true;
+    fearGreedLoading = true;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(
         () {
@@ -113,6 +125,10 @@ class _MempoolHomeState extends State<MempoolHome> {
           controller.selectedIndexData = -1;
         },
       );
+
+      // Fetch data for our widgets
+      getHashrateData();
+      getFearGreedData();
     });
     getDataBlockHeightSearch();
     if (controller.blockHeight == null)
@@ -678,7 +694,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         height: AppTheme
                                                             .cardPadding.h,
                                                       ),
-                                                      feeDistribution(context, isAccepted: false),
+                                                      feeDistribution(context,
+                                                          isAccepted: false),
                                                       const SizedBox(
                                                         height: AppTheme
                                                             .elementSpacing,
@@ -691,7 +708,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           controller.txDetailsConfirmed ==
                                                                   null
                                                               ? const SizedBox()
-                                                              : blockSize(context, isAccepted: false)
+                                                              : blockSize(
+                                                                  context,
+                                                                  isAccepted:
+                                                                      false)
                                                         ],
                                                       ),
                                                       const SizedBox(
@@ -953,7 +973,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                     height: AppTheme
                                                                         .elementSpacing,
                                                                   ),
-                                                                  feeDistribution(context, isAccepted: true),
+                                                                  feeDistribution(
+                                                                      context,
+                                                                      isAccepted:
+                                                                          true),
                                                                   const SizedBox(
                                                                     height: AppTheme
                                                                         .elementSpacing,
@@ -969,8 +992,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                             AspectRatio(
                                                                           aspectRatio:
                                                                               1, // This ensures a square shape
-                                                                          child:
-                                                                              blockSize(context, isAccepted: true),
+                                                                          child: blockSize(
+                                                                              context,
+                                                                              isAccepted: true),
                                                                         ),
                                                                       ),
                                                                       SizedBox(
@@ -982,8 +1006,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                             AspectRatio(
                                                                           aspectRatio:
                                                                               1,
-                                                                          child:
-                                                                              blockHealth(context, isAccepted: true),
+                                                                          child: blockHealth(
+                                                                              context,
+                                                                              isAccepted: true),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1001,7 +1026,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ],
                                     ),
                             ),
+                            // 1. Transaction Fees
                             transactionfees(),
+
+
                           ],
                         )
                 ],
@@ -1027,7 +1055,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                         ? Center(child: dotProgress(context))
                         : GlassContainer(
                             child: Padding(
-                              padding: const EdgeInsets.all(AppTheme.cardPadding),
+                              padding:
+                                  const EdgeInsets.all(AppTheme.cardPadding),
                               child: Column(
                                 children: [
                                   Row(
@@ -1035,18 +1064,24 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       Icon(
                                         FontAwesomeIcons.coins,
                                         size: AppTheme.cardPadding * 0.75,
+                                        color:
+                                            Theme.of(context).iconTheme.color,
                                       ),
                                       SizedBox(width: AppTheme.elementSpacing),
                                       Text(
                                         "Current Network Fees",
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
                                       ),
                                     ],
                                   ),
                                   SizedBox(height: AppTheme.cardPadding),
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                     children: [
                                       _buildFeeColumn(
                                         context: context,
@@ -1056,12 +1091,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                             : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
                                         feeColor: lighten(
                                             getGradientColors(
-                                                (controller.fees!.hourFee!).toDouble(),
-                                                false)
+                                                    (controller.fees!.hourFee!)
+                                                        .toDouble(),
+                                                    false)
                                                 .first,
                                             25),
                                         icon: Icons.speed,
-                                        iconColor: AppTheme.errorColor.withOpacity(0.7),
+                                        iconColor: AppTheme.errorColor
+                                            .withOpacity(0.7),
                                       ),
                                       _buildFeeColumn(
                                         context: context,
@@ -1071,21 +1108,26 @@ class _MempoolHomeState extends State<MempoolHome> {
                                             : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
                                         feeColor: lighten(
                                             getGradientColors(
-                                                (controller.fees!.halfHourFee!).toDouble(),
-                                                false)
+                                                    (controller
+                                                            .fees!.halfHourFee!)
+                                                        .toDouble(),
+                                                    false)
                                                 .first,
                                             25),
                                         icon: Icons.speed,
-                                        iconColor: AppTheme.colorBitcoin.withOpacity(0.8),
+                                        iconColor: AppTheme.colorBitcoin
+                                            .withOpacity(0.8),
                                       ),
                                       _buildFeeColumn(
                                         context: context,
                                         title: L10n.of(context)!.high,
-                                        feeAmount: '\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
+                                        feeAmount:
+                                            '\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
                                         feeColor: lighten(
                                             getGradientColors(
-                                                double.tryParse(controller.highPriority.value)!,
-                                                false)
+                                                    double.tryParse(controller
+                                                        .highPriority.value)!,
+                                                    false)
                                                 .first,
                                             25),
                                         icon: Icons.speed,
@@ -1094,23 +1136,33 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     ],
                                   ),
                                   SizedBox(height: AppTheme.elementSpacing),
-
                                   SizedBox(height: AppTheme.elementSpacing),
                                   Text(
                                     "Estimated confirmation time",
-                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                      color: Theme.of(context).brightness == Brightness.dark
-                                          ? AppTheme.white60
-                                          : AppTheme.black60,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? AppTheme.white60
+                                              : AppTheme.black60,
+                                        ),
                                   ),
                                   SizedBox(height: AppTheme.elementSpacing),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      _buildTimeEstimate(context, "~60 min", AppTheme.errorColor.withOpacity(0.7)),
-                                      _buildTimeEstimate(context, "~30 min", AppTheme.colorBitcoin.withOpacity(0.8)),
-                                      _buildTimeEstimate(context, "Next block", AppTheme.successColor),
+                                      _buildTimeEstimate(context, "~60 min",
+                                          AppTheme.errorColor.withOpacity(0.7)),
+                                      _buildTimeEstimate(
+                                          context,
+                                          "~30 min",
+                                          AppTheme.colorBitcoin
+                                              .withOpacity(0.8)),
+                                      _buildTimeEstimate(context, "Next block",
+                                          AppTheme.successColor),
                                     ],
                                   ),
                                 ],
@@ -1127,12 +1179,570 @@ class _MempoolHomeState extends State<MempoolHome> {
                 SizedBox(
                   height: AppTheme.cardPadding.h * 1.5,
                 ),
+                // Bitcoin Hashrate Widget
+                _buildHashrateWidget(),
+                SizedBox(height: AppTheme.cardPadding.h * 1.5),
+
+                // Fear & Greed Index Widget
+                _buildFearGreedWidget(),
+                SizedBox(height: AppTheme.cardPadding.h * 1.5),
+
                 LastTransactions(ownedTransactions: onchainTransactionsFull),
+                SizedBox(height: AppTheme.cardPadding.h * 2),
               ],
             ),
     );
   }
-  
+
+  // Hashrate Widget
+  // Hashrate data members
+  List<ChartLine> hashrateChartData = [];
+  List<Difficulty> hashrateChartDifficulty = [];
+  bool hashrateLoading = true;
+
+  Future<void> getHashrateData() async {
+    if (!mounted) return;
+
+    try {
+      setState(() {
+        hashrateLoading = true;
+      });
+
+      var dio = Dio();
+      var response =
+          await dio.get('https://mempool.space/api/v1/mining/hashrate/1M');
+
+      if (response.statusCode == 200) {
+        List<ChartLine> line = [];
+        hashrateChartData.clear();
+        hashrateChartDifficulty.clear();
+
+        HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
+        hashrateChartDifficulty.addAll(hashChartModel.difficulty ?? []);
+
+        for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
+          line.add(ChartLine(
+            time:
+                double.parse(hashChartModel.hashrates![i].timestamp.toString()),
+            price: hashChartModel.hashrates![i].avgHashrate!,
+          ));
+        }
+
+        setState(() {
+          hashrateChartData = line;
+          hashrateLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Hashrate error: $e');
+      setState(() {
+        hashrateLoading = false;
+      });
+    }
+  }
+
+  Widget _buildHashrateWidget() {
+    // Data is now fetched in initState, no need to check here
+
+    // Get current hashrate value from the latest data point
+    String currentHashrate = "...";
+    String changePercentage = "";
+    bool isPositive = true;
+
+    if (hashrateChartData.isNotEmpty) {
+      // Get the most recent data point
+      final lastPoint = hashrateChartData.last;
+      // Format hashrate value - convert to EH/s (Exahash per second)
+      final hashrateParsed = double.parse(lastPoint.price.toString().substring(
+          0,
+          lastPoint.price.toString().length > 3
+              ? 3
+              : lastPoint.price.toString().length));
+      currentHashrate = "$hashrateParsed EH/s";
+
+      // Calculate change percentage if we have more than one data point
+      if (hashrateChartData.length > 10) {
+        final previousPoint = hashrateChartData[
+            hashrateChartData.length - 10]; // Compare with point ~10 days ago
+        final change =
+            (lastPoint.price - previousPoint.price) / previousPoint.price * 100;
+        isPositive = change >= 0;
+        changePercentage =
+            "${isPositive ? "+" : ""}${change.toStringAsFixed(1)}%";
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: GlassContainer(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.server,
+                        size: AppTheme.cardPadding * 0.75,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing),
+                      Text(
+                        L10n.of(context)!.hashrate,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 16),
+
+              // Current hashrate display
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      currentHashrate,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    if (hashrateChartData.isNotEmpty &&
+                        changePercentage.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isPositive
+                                  ? Icons.arrow_upward
+                                  : Icons.arrow_downward,
+                              color: isPositive
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                              size: 16,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              changePercentage,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: isPositive
+                                        ? AppTheme.successColor
+                                        : AppTheme.errorColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              // Hashrate chart similar to the hashrate screen
+              hashrateLoading
+                  ? Center(
+                      child: SizedBox(
+                        height: 180,
+                        child: dotProgress(context),
+                      ),
+                    )
+                  : hashrateChartData.isEmpty
+                      ? Center(
+                          child: Text(
+                            "Failed to load hashrate data",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        )
+                      : Container(
+                          height: 180,
+                          padding: EdgeInsets.only(top: 8, right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: AppTheme.cardRadiusSmall,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? AppTheme.black70
+                                    : AppTheme.white70,
+                          ),
+                          child: _buildMiniHashrateChart(),
+                        ),
+
+              SizedBox(height: 16),
+
+              // Hashrate explanation
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: AppTheme.colorBitcoin.withOpacity(0.1),
+                ),
+                child: Text(
+                  "Higher hashrate = stronger network security",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: AppTheme.colorBitcoin,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              // View Details Button
+              Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    context.push('/wallet/hashrate');
+                  },
+                  icon: Icon(
+                    Icons.open_in_new,
+                    size: 16,
+                    color: AppTheme.colorBitcoin,
+                  ),
+                  label: Text(
+                    "Open Detailed View",
+                    style: TextStyle(
+                      color: AppTheme.colorBitcoin,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Mini hashrate chart
+  Widget _buildMiniHashrateChart() {
+    // Similar to HashrateChart in hashratechart.dart
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      margin: EdgeInsets.only(left: 8, bottom: 8),
+      enableAxisAnimation: true,
+      trackballBehavior: TrackballBehavior(
+        lineColor: Colors.grey[400],
+        enable: true,
+        activationMode: ActivationMode.singleTap,
+        lineWidth: 2,
+        lineType: TrackballLineType.horizontal,
+        tooltipSettings: const InteractiveTooltip(enable: false),
+        markerSettings: const TrackballMarkerSettings(
+            color: Colors.white,
+            borderColor: Colors.white,
+            markerVisibility: TrackballVisibilityMode.visible),
+      ),
+      primaryXAxis: DateTimeAxis(
+        intervalType: DateTimeIntervalType.days,
+        edgeLabelPlacement: EdgeLabelPlacement.none,
+        majorGridLines: MajorGridLines(
+          width: 0.5,
+          color: AppTheme.white70,
+          dashArray: [5, 5],
+        ),
+        axisLine: const AxisLine(width: 0),
+        labelStyle: TextStyle(color: AppTheme.white70, fontSize: 10),
+      ),
+      primaryYAxis: NumericAxis(
+        axisLine: const AxisLine(width: 0),
+        plotOffset: 0,
+        edgeLabelPlacement: EdgeLabelPlacement.none,
+        majorGridLines: MajorGridLines(
+          width: 0.5,
+          color: AppTheme.white70,
+          dashArray: [5, 5],
+        ),
+        majorTickLines: const MajorTickLines(width: 0),
+        numberFormat: NumberFormat.compact(),
+        labelStyle: TextStyle(color: AppTheme.white60, fontSize: 10),
+      ),
+      series: <CartesianSeries>[
+        // Hashrate line
+        SplineSeries<ChartLine, DateTime>(
+          name: L10n.of(context)!.hashrate,
+          enableTooltip: true,
+          dataSource: hashrateChartData,
+          splineType: SplineType.cardinal,
+          cardinalSplineTension: 0.7,
+          animationDuration: 1000,
+          width: 2,
+          color: AppTheme.colorBitcoin,
+          xValueMapper: (ChartLine sales, _) =>
+              DateTime.fromMillisecondsSinceEpoch(sales.time.toInt() * 1000,
+                  isUtc: true),
+          yValueMapper: (ChartLine sales, _) => double.parse(sales.price
+              .toString()
+              .substring(
+                  0,
+                  sales.price.toString().length > 3
+                      ? 3
+                      : sales.price.toString().length)),
+        ),
+        // Add difficulty markers as scatter series
+        if (hashrateChartDifficulty.isNotEmpty)
+          ScatterSeries<Difficulty, DateTime>(
+            name: L10n.of(context)!.difficulty,
+            enableTooltip: true,
+            dataSource: hashrateChartDifficulty,
+            color: Colors.white,
+            markerSettings: MarkerSettings(
+              height: 6,
+              width: 6,
+              shape: DataMarkerType.circle,
+              borderColor: AppTheme.colorBitcoin,
+              borderWidth: 1,
+            ),
+            xValueMapper: (Difficulty sales, _) =>
+                DateTime.fromMillisecondsSinceEpoch(sales.time!.toInt() * 1000,
+                    isUtc: true),
+            yValueMapper: (Difficulty sales, _) => double.parse(
+                (sales.difficulty! / 100000000000).toStringAsFixed(2)),
+          ),
+      ],
+    );
+  }
+
+  // Fear & Greed data and state
+  FearGearChartModel fearGreedData = FearGearChartModel();
+  bool fearGreedLoading = true;
+  String formattedFearGreedDate = '';
+
+  Future<void> getFearGreedData() async {
+    if (!mounted) return;
+
+    try {
+      setState(() {
+        fearGreedLoading = true;
+      });
+
+      var dio = Dio();
+      var response =
+          await dio.get('https://fear-and-greed-index.p.rapidapi.com/v1/fgi',
+              options: Options(headers: {
+                'X-RapidAPI-Key':
+                    'd9329ded30msh2e4ed90bed55972p1162f9jsn68d0a91b20ff',
+                'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com'
+              }));
+
+      if (response.statusCode == 200) {
+        Location loc =
+            Provider.of<TimezoneProvider>(context, listen: false).timeZone;
+        setState(() {
+          fearGreedData = FearGearChartModel.fromJson(response.data);
+          if (fearGreedData.lastUpdated != null) {
+            DateTime dateTime =
+                DateTime.parse(fearGreedData.lastUpdated!.humanDate!)
+                    .toUtc()
+                    .add(Duration(milliseconds: loc.currentTimeZone.offset));
+            formattedFearGreedDate = DateFormat('d MMMM yyyy').format(dateTime);
+          }
+          fearGreedLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Fear and Greed error: $e');
+      setState(() {
+        fearGreedLoading = false;
+      });
+    }
+  }
+
+  // Fear & Greed Widget with real data
+  Widget _buildFearGreedWidget() {
+    // Data is now fetched in initState, no need to check here
+
+    // Get current value or use 50 as default
+    int currentValue = 50;
+    if (fearGreedData.fgi != null && fearGreedData.fgi!.now != null) {
+      currentValue = fearGreedData.fgi!.now!.value ?? 50;
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: GlassContainer(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.gaugeHigh,
+                        size: AppTheme.cardPadding * 0.75,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing),
+                      Text(
+                        L10n.of(context)!.fearAndGreedIndex,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+
+              // Gauge visualization
+              fearGreedLoading
+                  ? Center(
+                      child: SizedBox(
+                        height: 100,
+                        child: dotProgress(context),
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        children: [
+                          _buildRadialGauge(currentValue),
+                          SizedBox(height: 16),
+
+                          // Value and sentiment text
+                          Text(
+                            fearGreedData.fgi?.now?.valueText ?? "Neutral",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: _getFearGreedColor(currentValue),
+                                ),
+                          ),
+
+                          if (formattedFearGreedDate.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                "Last updated: $formattedFearGreedDate",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? AppTheme.white60
+                                          : AppTheme.black60,
+                                    ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+
+              SizedBox(height: 16),
+
+              // Explanation
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  color: AppTheme.colorBitcoin.withOpacity(0.1),
+                ),
+                child: Text(
+                  "The Fear & Greed Index measures market sentiment",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: AppTheme.colorBitcoin,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              // View Details Button
+              Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    context.push('/wallet/fear_and_greed');
+                  },
+                  icon: Icon(
+                    Icons.open_in_new,
+                    size: 16,
+                    color: AppTheme.colorBitcoin,
+                  ),
+                  label: Text(
+                    "Open Detailed View",
+                    style: TextStyle(
+                      color: AppTheme.colorBitcoin,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Helper to get color based on value
+  Color _getFearGreedColor(int value) {
+    if (value <= 25) {
+      return AppTheme.errorColor;
+    } else if (value <= 45) {
+      return Colors.orange;
+    } else if (value <= 55) {
+      return AppTheme.colorBitcoin;
+    } else if (value <= 75) {
+      return AppTheme.successColor;
+    } else {
+      return AppTheme.successColor;
+    }
+  }
+
+  // Build a custom radial gauge for fear & greed
+  Widget _buildRadialGauge(int value) {
+    return Container(
+      height: 160,
+      width: 160,
+      child: AnimatedRadialGauge(
+        duration: const Duration(seconds: 1),
+        curve: Curves.elasticOut,
+        radius: 80,
+        value: value.toDouble(),
+        axis: GaugeAxis(
+          min: 0,
+          max: 100,
+          degrees: 180,
+          style: GaugeAxisStyle(
+            thickness: 20,
+            background: Theme.of(context).brightness == Brightness.dark
+                ? AppTheme.white70
+                : AppTheme.black70,
+            segmentSpacing: 4,
+          ),
+          progressBar: GaugeProgressBar.rounded(
+            color: _getFearGreedColor(value),
+          ),
+        ),
+        builder: (context, child, value) => RadialGaugeLabel(
+          value: value,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildFeeColumn({
     required BuildContext context,
     required String title,
@@ -1168,14 +1778,14 @@ class _MempoolHomeState extends State<MempoolHome> {
           feeAmount,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: feeColor,
-            fontWeight: FontWeight.bold,
-          ),
+                color: feeColor,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
   }
-  
+
   Widget _buildTimeEstimate(BuildContext context, String time, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -1189,9 +1799,9 @@ class _MempoolHomeState extends State<MempoolHome> {
       child: Text(
         time,
         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -1201,7 +1811,6 @@ class _MempoolHomeState extends State<MempoolHome> {
         Provider.of<TimezoneProvider>(context, listen: false).timeZone;
 
     return Column(children: [
-
       Obx(() {
         return controller.transactionLoading.isTrue
             ? Center(child: dotProgress(context))
@@ -1221,22 +1830,25 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     Icon(
                                       FontAwesomeIcons.gear,
                                       size: AppTheme.cardPadding * 0.75,
-
                                     ),
                                     SizedBox(width: AppTheme.elementSpacing),
                                     Text(
                                       "Bitcoin Network Difficulty",
-                                      style: Theme.of(context).textTheme.titleMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
                                     ),
                                   ],
                                 ),
                                 SizedBox(height: AppTheme.cardPadding),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     // Left side - Date information
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         _buildInfoRow(
                                           context,
@@ -1244,7 +1856,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           "~${controller.days}",
                                           Icons.calendar_today,
                                         ),
-                                        SizedBox(height: AppTheme.elementSpacing * 1.5),
+                                        SizedBox(
+                                            height:
+                                                AppTheme.elementSpacing * 1.5),
                                         _buildInfoRow(
                                           context,
                                           "Estimated date:",
@@ -1260,7 +1874,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       .offset))),
                                           Icons.event,
                                         ),
-                                        SizedBox(height: AppTheme.elementSpacing * 1.5),
+                                        SizedBox(
+                                            height:
+                                                AppTheme.elementSpacing * 1.5),
                                         _buildInfoRow(
                                           context,
                                           "Estimated time:",
@@ -1278,7 +1894,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         ),
                                       ],
                                     ),
-                                    
+
                                     // Right side - Difficulty change visualization
                                     Container(
                                       width: 120.w,
@@ -1286,49 +1902,74 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color: controller.da!.difficultyChange!.isNegative
-                                            ? AppTheme.errorColor.withOpacity(0.5)
-                                            : AppTheme.successColor.withOpacity(0.5),
+                                          color: controller.da!
+                                                  .difficultyChange!.isNegative
+                                              ? AppTheme.errorColor
+                                                  .withOpacity(0.5)
+                                              : AppTheme.successColor
+                                                  .withOpacity(0.5),
                                           width: 3,
                                         ),
-                                        color: controller.da!.difficultyChange!.isNegative
-                                            ? AppTheme.errorColor.withOpacity(0.1)
-                                            : AppTheme.successColor.withOpacity(0.1),
+                                        color: controller.da!.difficultyChange!
+                                                .isNegative
+                                            ? AppTheme.errorColor
+                                                .withOpacity(0.1)
+                                            : AppTheme.successColor
+                                                .withOpacity(0.1),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Icon(
-                                            controller.da!.difficultyChange!.isNegative
+                                            controller.da!.difficultyChange!
+                                                    .isNegative
                                                 ? Icons.arrow_downward_rounded
                                                 : Icons.arrow_upward_rounded,
-                                            color: controller.da!.difficultyChange!.isNegative
+                                            color: controller
+                                                    .da!
+                                                    .difficultyChange!
+                                                    .isNegative
                                                 ? AppTheme.errorColor
                                                 : AppTheme.successColor,
                                             size: 36,
                                           ),
                                           SizedBox(height: 8),
                                           Text(
-                                            controller.da!.difficultyChange!.isNegative
+                                            controller.da!.difficultyChange!
+                                                    .isNegative
                                                 ? '${controller.da!.difficultyChange!.abs().toStringAsFixed(2)}%'
                                                 : '${controller.da!.difficultyChange!.toStringAsFixed(2)}%',
-                                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                              color: controller.da!.difficultyChange!.isNegative
-                                                  ? AppTheme.errorColor
-                                                  : AppTheme.successColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .copyWith(
+                                                  color: controller
+                                                          .da!
+                                                          .difficultyChange!
+                                                          .isNegative
+                                                      ? AppTheme.errorColor
+                                                      : AppTheme.successColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            controller.da!.difficultyChange!.isNegative 
-                                                ? "Decrease" 
+                                            controller.da!.difficultyChange!
+                                                    .isNegative
+                                                ? "Decrease"
                                                 : "Increase",
-                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                              color: controller.da!.difficultyChange!.isNegative
-                                                  ? AppTheme.errorColor
-                                                  : AppTheme.successColor,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: controller
+                                                          .da!
+                                                          .difficultyChange!
+                                                          .isNegative
+                                                      ? AppTheme.errorColor
+                                                      : AppTheme.successColor,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -1336,15 +1977,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                                   ],
                                 ),
                                 SizedBox(height: AppTheme.elementSpacing),
-
                                 SizedBox(height: AppTheme.elementSpacing),
                                 Text(
                                   "Difficulty adjusts every 2016 blocks (~2 weeks)",
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: Theme.of(context).brightness == Brightness.dark
-                                        ? AppTheme.white60
-                                        : AppTheme.black60,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? AppTheme.white60
+                                            : AppTheme.black60,
+                                      ),
                                 ),
                               ],
                             ),
@@ -1355,8 +1999,9 @@ class _MempoolHomeState extends State<MempoolHome> {
       }),
     ]);
   }
-  
-  Widget _buildInfoRow(BuildContext context, String label, String value, IconData icon) {
+
+  Widget _buildInfoRow(
+      BuildContext context, String label, String value, IconData icon) {
     return Row(
       children: [
         Icon(
@@ -1371,27 +2016,22 @@ class _MempoolHomeState extends State<MempoolHome> {
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.white60
-                    : AppTheme.black60,
-              ),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.white60
+                        : AppTheme.black60,
+                  ),
             ),
             Text(
               value,
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),
       ],
     );
   }
-
-
-
-
-
 
   bool hasUserTxs(String blockhash) {
     return onchainTransactionsFull
@@ -1549,14 +2189,16 @@ Widget blockSize(BuildContext context, {bool isAccepted = true}) {
   // Get the appropriate size and weight based on whether we're looking at accepted or unaccepted block
   double mbSize = isAccepted
       ? controller.txDetailsConfirmed!.size / 1000000
-      : controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! / 1000000;
-      
+      : controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! /
+          1000000;
+
   double mwu = controller.txDetailsConfirmed!.weight / 1000000;
 
   // Calculate the width based on the ratio
   double maxWidth = AppTheme.cardPadding * 3;
   double ratio = (mbSize / mwu) * maxWidth;
-  double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+  double orangeContainerWidth =
+      ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
   return GlassContainer(
     height: isAccepted ? null : AppTheme.cardPadding * 6.5.h,
@@ -1658,9 +2300,8 @@ Widget blockSize(BuildContext context, {bool isAccepted = true}) {
 Widget blockHealth(BuildContext context, {bool isAccepted = true}) {
   final controller = Get.find<HomeController>();
   // For unaccepted blocks, assume 100% health since they haven't been mined yet
-  double matchRate = isAccepted
-      ? controller.txDetailsConfirmed!.extras.matchRate
-      : 100.0;
+  double matchRate =
+      isAccepted ? controller.txDetailsConfirmed!.extras.matchRate : 100.0;
 
   return GlassContainer(
     child: Column(
@@ -1726,11 +2367,11 @@ Widget feeDistribution(BuildContext context, {bool isAccepted = true}) {
   num medianFee = isAccepted
       ? controller.txDetailsConfirmed!.extras.medianFee
       : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee!;
-      
+
   num totalFees = isAccepted
       ? controller.txDetailsConfirmed!.extras.totalFees
       : controller.mempoolBlocks[controller.indexShowBlock.value].totalFees!;
-      
+
   List<num> feeRange = isAccepted
       ? controller.txDetailsConfirmed!.extras.feeRange
       : controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!;
@@ -1831,4 +2472,3 @@ Widget feeDistribution(BuildContext context, {bool isAccepted = true}) {
     ]),
   );
 }
-
