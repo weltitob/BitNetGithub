@@ -1,473 +1,382 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
-import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:bitnet/components/items/percentagechange_widget.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class HomeScreen extends StatelessWidget {
-  final ScrollController? ctrler;
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, this.ctrler}) : super(key: key);
+  final ScrollController? ctrler;
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final double _marginHorizontal = 30.0;
+  final double _marginVertical = 15.0;
+  final controller = Get.put(HomeController());
+  int selectedDayIndex = 0;
+  List<String> days = ['Day', 'Week', 'Month', 'Year'];
+  List<ChartLine> chartData = [];
+  List<Tab> myTabs = [
+    Tab(text: 'Art'),
+    Tab(text: 'Music'),
+    Tab(text: 'Video'),
+    Tab(text: 'Sport'),
+  ];
+  List<PostsDataModel> postsDataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch posts directly
+    controller.fetchPosts().then((value) {
+      if (value != null) {
+        setState(() {
+          postsDataList = value;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final oneWeekAgo =
-        DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
 
-    print("current width is :" + size.width.toString());
-    final controller = Get.find<HomeController>();
-    return bitnetScaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            controller: ctrler,
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                controller.postsDataList!.isEmpty
-                    ? SizedBox(
-                        height: 244.h,
-                        child: const Center(
-                            child: Text(
-                          'No posts',
-                          textAlign: TextAlign.center,
-                        )))
-                    : StreamBuilder<List<PostsDataModel>>(
-                        stream: controller.getPostsDataStream(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
+    List<TradeData> tradeData = [
+      TradeData('0', 2.2),
+      TradeData('1', 3.4),
+      TradeData('2', 2.8),
+      TradeData('3', 1.6),
+      TradeData('4', 2.3),
+      TradeData('5', 2.5),
+      TradeData('6', 2.9),
+      TradeData('7', 3.8),
+      TradeData('8', 3.7),
+    ];
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: dotProgress(context));
-                          }
-
-                          if (snapshot.hasData) {
-                            final postsDataList = snapshot.data;
-                            print(postsDataList!.length);
-                            print('above is post data list lenght');
-
-                            return CommonHeading(
-                              hasButton: false,
-                              headingText: '',
-                              onPress: route.kListScreenRoute,
-                              isNormalChild: true,
-                              isChild: Container(
-                                width: size.width,
-                                height: 244.w,
-                                margin: const EdgeInsets.only(
-                                    bottom: AppTheme.cardPadding),
-                                child: CarouselSlider.builder(
-                                  options: CarouselOptions(
-                                    autoPlay: kDebugMode ? false : true,
-                                    viewportFraction: 0.6,
-                                    enlargeCenterPage: true,
-                                    height: 244.w,
-                                  ),
-                                  itemCount: postsDataList.length,
-                                  itemBuilder: (context, index, index2) {
-                                    return postsDataList.isEmpty
-                                        ? const Center(
-                                            child: Text('No Posts'),
-                                          )
-                                        : FutureBuilder<bool?>(
-                                            future: controller.fetchHasLiked(
-                                              postsDataList[index].postId,
-                                              Auth().currentUser!.uid,
-                                            ),
-                                            builder: (context, snapshot) {
-                                              return NftProductSlider(
-                                                postId:
-                                                    postsDataList[index].postId,
-                                                hasLiked:
-                                                    snapshot.data ?? false,
-                                                hasLikeButton:
-                                                    postsDataList[index]
-                                                        .hasLikeButton,
-                                                hasPrice: postsDataList[index]
-                                                    .hasPrice,
-                                                nftName: postsDataList[index]
-                                                    .nftName,
-                                                nftMainName:
-                                                    postsDataList[index]
-                                                        .nftMainName,
-                                                cryptoText: postsDataList[index]
-                                                    .cryptoText,
-                                              );
-                                            },
-                                          );
-                                  },
-                                ),
-                              ),
-                            );
-                          }
-
-                          return Center(child: dotProgress(context));
-                        }),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: L10n.of(context)!.mostViewed,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding),
-                    child: GlassContainer(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing * 0.5),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            mostViewListData.length > 3
-                                ? 3
-                                : mostViewListData.length, // Limit to top 5
-                            (index) => MostView(
-                              nftImg: mostViewListData[index].nftImg,
-                              nftName: mostViewListData[index].nftName,
-                              nftPrice: mostViewListData[index].nftPrice,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: "Today Trending",
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding),
-                    child: GlassContainer(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing * 0.5),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            mostViewListData.length > 3
-                                ? 3
-                                : mostViewListData.length, // Limit to top 5
-                            (index) => MostView(
-                              nftImg: mostViewListData[index].nftImg,
-                              nftName: mostViewListData[index].nftName,
-                              nftPrice: mostViewListData[index].nftPrice,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: L10n.of(context)!.hotNewItems,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 245.w,
-                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0,
-                          bottom: 0.0,
-                          right: AppTheme.elementSpacing.w,
-                          left: AppTheme.elementSpacing.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nftHotProductSliderData.length,
-                      itemBuilder: (context, index) {
-                        return NftProductSlider(
-                            encodedData:
-                                nftHotProductSliderData[index].nftImage,
-                            nftName: nftHotProductSliderData[index].nftName,
-                            nftMainName:
-                                nftHotProductSliderData[index].nftMainName,
-                            cryptoText:
-                                nftHotProductSliderData[index].cryptoText,
-                            rank:
-                                nftHotProductSliderData[index].rank.toString());
-                      },
-                    ),
-                  ),
-                ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: L10n.of(context)!.forSale,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 245.w,
-                    margin: EdgeInsets.only(
-                      bottom: 30.h,
-                    ),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nftExpireProductSliderData.length,
-                      itemBuilder: (context, index) {
-                        return NftProductSlider(
-                            encodedData:
-                                nftExpireProductSliderData[index].nftImage,
-                            nftName: nftExpireProductSliderData[index].nftName,
-                            nftMainName:
-                                nftExpireProductSliderData[index].nftMainName,
-                            cryptoText:
-                                nftExpireProductSliderData[index].cryptoText,
-                            rank: nftExpireProductSliderData[index]
-                                .rank
-                                .toString());
-                      },
-                    ),
-                  ),
-                ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: L10n.of(context)!.mostHypedNewDeals,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 245.w,
-                    margin: EdgeInsets.only(bottom: 30.h),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nftExpensiveProductSliderData.length,
-                      itemBuilder: (context, index) {
-                        return NftProductSlider(
-                            encodedData:
-                                nftExpensiveProductSliderData[index].nftImage,
-                            nftName:
-                                nftExpensiveProductSliderData[index].nftName,
-                            nftMainName: nftExpensiveProductSliderData[index]
-                                .nftMainName,
-                            cryptoText:
-                                nftExpensiveProductSliderData[index].cryptoText,
-                            rank: nftExpensiveProductSliderData[index]
-                                .rank
-                                .toString());
-                      },
-                    ),
-                  ),
-                ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: L10n.of(context)!.newTopSellers,
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 245.w,
-                    margin: EdgeInsets.only(bottom: 20.h),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nftTopSellersProductSliderData.length,
-                      itemBuilder: (context, index) {
-                        return NftProductSlider(
-                          medias: [],
-                          nftName:
-                              nftTopSellersProductSliderData[index].nftName,
-                          nftMainName:
-                              nftTopSellersProductSliderData[index].nftMainName,
-                          cryptoText:
-                              nftTopSellersProductSliderData[index].cryptoText,
-                          rank: nftTopSellersProductSliderData[index]
-                              .rank
-                              .toString(),
+    return DefaultTabController(
+      length: 4,
+      initialIndex: 0,
+      child: bitnetScaffold(
+        context: context,
+        body: ListView(
+          padding: const EdgeInsets.only(top: 0),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          children: [
+            SizedBox(height: AppTheme.cardPadding * 0.75.h),
+            // ------------------ Banner ------------------
+            CarouselSlider.builder(
+              options: CarouselOptions(
+                height: size.height * 0.32,
+                aspectRatio: 343 / 171,
+                viewportFraction: 0.9,
+                initialPage: 0,
+                enableInfiniteScroll: true,
+                reverse: false,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enlargeCenterPage: true,
+                enlargeFactor: 0.15,
+                scrollDirection: Axis.horizontal,
+              ),
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                return FutureBuilder<List<PostsDataModel>?>(
+                  future: controller.fetchPosts(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data!.isNotEmpty) {
+                      List<PostsDataModel> postsData = snapshot.data!;
+                      if (postsData.isEmpty ||
+                          postsData.length <= index) {
+                        return const Center(
+                          child: Text('No data'),
                         );
-                      },
-                    ),
+                      }
+                      return FutureBuilder<bool?>(
+                        future: controller.fetchHasLiked(
+                          postsData[index].postId,
+                          Auth().currentUser!.uid,
+                        ),
+                        builder: (context, snapshot) {
+                          return AssetCard(
+                            postId: postsData[index].postId,
+                            hasLiked: snapshot.data ?? false,
+                            hasLikeButton: true,
+                            nftName: postsData[index].nftName,
+                            nftMainName: postsData[index].nftMainName,
+                            cryptoText: postsData[index].cryptoText,
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('No data'),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
+
+            SizedBox(height: AppTheme.cardPadding * 0.75.h),
+
+            // ------------------ Most Viewed ------------------
+            CommonHeading(
+              headingText: 'Most Viewed',
+              hasButton: true,
+              onPress: 'most_viewed',
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: MostView(
+                    nftImg: 'assets/marketplace/NftImage1.png',
+                    nftName: 'Cosmic Perspective #1',
+                    nftPrice: '0.45 BTC',
                   ),
-                ),
-                const SizedBox(
-                  height: AppTheme.cardPadding * 3.5,
                 ),
               ],
             ),
-          ),
-          // const StatusBarBg()
-        ],
+            Row(
+              children: [
+                Expanded(
+                  child: MostView(
+                    nftImg: 'assets/marketplace/NftImage2.png',
+                    nftName: 'Cosmic Perspective #2',
+                    nftPrice: '0.35 BTC',
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: AppTheme.cardPadding),
+
+            // ------------------ Trending Sellers ------------------
+            CommonHeading(
+              headingText: 'Trending Sellers',
+              hasButton: true,
+              onPress: 'trending_sellers',
+            ),
+            // Using widget directly instead of function to fix error
+            Container(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 35,
+                          backgroundImage: AssetImage('assets/marketplace/User${index+1}.png'),
+                        ),
+                        SizedBox(height: 8),
+                        Text('User ${index+1}', style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                        Text('0.${index+2} BTC', style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        )),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            SizedBox(height: AppTheme.cardPadding),
+
+            // ------------------ Hot Drops ------------------
+            Container(
+              margin: EdgeInsets.symmetric(vertical: _marginVertical),
+              child: Column(
+                children: [
+                  // Heading with more button
+                  CommonHeading(
+                    headingText: 'Hot Drops',
+                    hasButton: true,
+                    onPress: 'hot_drops',
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    child: Container(
+                      height: 40,
+                      margin: EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black12
+                            : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TabBar(
+                        indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.colorBitcoin.withOpacity(0.3)
+                              : AppTheme.colorBitcoin.withOpacity(0.2),
+                        ),
+                        labelColor: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.colorBitcoin
+                            : AppTheme.colorBitcoin,
+                        unselectedLabelColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : Colors.black,
+                        tabs: myTabs,
+                      ),
+                    ),
+                  ),
+
+                  Container(
+                    height: 280,
+                    child: TabBarView(
+                      children: [
+                        FutureBuilder<List<PostsDataModel>?>(
+                          future: controller.fetchPosts(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              List<PostsDataModel> postsData = snapshot.data!;
+                              return ListView.builder(
+                                itemCount: postsData.length > 10
+                                    ? 10
+                                    : postsData.length,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.all(10),
+                                itemBuilder: (context, index) {
+                                  return FutureBuilder<bool?>(
+                                    future: controller.fetchHasLiked(
+                                      postsData[index].postId,
+                                      Auth().currentUser!.uid,
+                                    ),
+                                    builder: (context, snapshot) {
+                                      return AssetCard(
+                                        postId: postsData[index].postId,
+                                        hasLiked: snapshot.data ?? false,
+                                        hasLikeButton: true,
+                                        nftName: postsData[index].nftName,
+                                        nftMainName: postsData[index].nftMainName,
+                                        cryptoText: postsData[index].cryptoText,
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: Text('No data'),
+                              );
+                            }
+                          },
+                        ),
+                        ListView.builder(
+                          itemCount: 5,
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.all(10),
+                          itemBuilder: (context, index) {
+                            return AssetCard(
+                              postId: 'music-$index',
+                              hasLiked: false,
+                              hasLikeButton: true,
+                              nftName: 'Music NFT',
+                              nftMainName: 'Music Collection',
+                              cryptoText: '0.5',
+                            );
+                          },
+                        ),
+                        ListView.builder(
+                          itemCount: 5,
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.all(10),
+                          itemBuilder: (context, index) {
+                            return AssetCard(
+                              postId: 'video-$index',
+                              hasLiked: false,
+                              hasLikeButton: true,
+                              nftName: 'Video NFT',
+                              nftMainName: 'Video Collection',
+                              cryptoText: '0.8',
+                            );
+                          },
+                        ),
+                        ListView.builder(
+                          itemCount: 5,
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.all(10),
+                          itemBuilder: (context, index) {
+                            return AssetCard(
+                              postId: 'sport-$index',
+                              hasLiked: false,
+                              hasLikeButton: true,
+                              nftName: 'Sport NFT',
+                              nftMainName: 'Sport Collection',
+                              cryptoText: '1.2',
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 200.h),
+          ],
+        ),
       ),
-      context: context,
     );
   }
 }
 
-class TopFiveMarketCapWidget extends StatelessWidget {
-  const TopFiveMarketCapWidget({
-    super.key,
-  });
+class TradeData {
+  final String x;
+  final double y;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-      child: GlassContainer(
-          borderThickness: 1,
-          height: AppTheme.cardPadding * 2.75,
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-            child: Row(
-              children: [
-                Container(
-                  height: AppTheme.cardPadding * 1.75,
-                  width: AppTheme.cardPadding * 1.75,
-                  child: Image.asset("assets/images/bitcoin.png"),
-                ),
-                SizedBox(
-                  width: AppTheme.elementSpacing.w / 1.5,
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(L10n.of(context)!.bitcoin,
-                        style: Theme.of(context).textTheme.titleLarge),
-                    Row(
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: AppTheme.elementSpacing * 0.75,
-                              width: AppTheme.elementSpacing * 0.75,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(500.0),
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(500.0),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          'BTC',
-                          style: AppTheme.textTheme.bodySmall,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                SizedBox(width: AppTheme.elementSpacing.w / .5),
-                SizedBox(
-                  height: 50.h,
-                  child: Container(
-                    margin:
-                        const EdgeInsets.only(right: AppTheme.elementSpacing),
-                    width: AppTheme.cardPadding * 3.75.w,
-                    color: Colors.transparent,
-                    child: SfCartesianChart(
-                      enableAxisAnimation: true,
-                      plotAreaBorderWidth: 0,
-                      primaryXAxis: CategoryAxis(
-                          labelPlacement: LabelPlacement.onTicks,
-                          edgeLabelPlacement: EdgeLabelPlacement.none,
-                          isVisible: false,
-                          majorGridLines: const MajorGridLines(width: 0),
-                          majorTickLines: const MajorTickLines(width: 0)),
-                      primaryYAxis: NumericAxis(
-                        plotOffset: 0,
-                        edgeLabelPlacement: EdgeLabelPlacement.none,
-                        isVisible: false,
-                        majorGridLines: const MajorGridLines(width: 0),
-                        majorTickLines: const MajorTickLines(width: 0),
-                      ),
-                      series: <ChartSeries>[
-                        LineSeries<ChartLine, double>(
-                          dataSource: [
-                            ChartLine(time: 2, price: 3),
-                            ChartLine(time: 3, price: 24),
-                            ChartLine(time: 4, price: 5),
-                            ChartLine(time: 3, price: 34),
-                            ChartLine(time: 1, price: 4),
-                            ChartLine(time: 1, price: 14),
-                            ChartLine(time: 23, price: 23),
-                            ChartLine(time: 5, price: 40),
-                            ChartLine(time: 12, price: 13),
-                            ChartLine(time: 42, price: 14),
-                            ChartLine(time: 12, price: 34),
-                            ChartLine(time: 12, price: 23),
-                          ],
-                          animationDuration: 0,
-                          xValueMapper: (ChartLine crypto, _) => crypto.time,
-                          yValueMapper: (ChartLine crypto, _) => crypto.price,
-                          color: AppTheme.errorColor,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '\$332.32',
-                      style: AppTheme.textTheme.titleMedium,
-                    ),
-                    Text(
-                      '+5.2%',
-                      style: AppTheme.textTheme.titleSmall!
-                          .copyWith(color: Colors.green),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )),
-    );
-  }
+  TradeData(this.x, this.y);
 }

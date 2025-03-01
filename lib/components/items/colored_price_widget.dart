@@ -28,7 +28,7 @@ class ColoredPriceWidget extends StatelessWidget {
           size: AppTheme.iconSize * iconSize,
         ),
         Text(
-          "$price $currencySymbol",
+          "$price$currencySymbol",
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: color,
           ),

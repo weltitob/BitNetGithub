@@ -69,14 +69,14 @@ class _MostViewState extends State<MostView> {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  SizedBox(height: 2.h),
+
                   Text(
                     widget.nftPrice,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 12.sp,
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w600,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+
+                          color: isDarkMode ? AppTheme.white90 : AppTheme.black80,
                         ),
+
                   ),
                 ],
               ),

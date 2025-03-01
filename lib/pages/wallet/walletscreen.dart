@@ -12,9 +12,9 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -484,8 +484,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                          Obx(
                                         children: [
+                                          // Use the Obx directly around the ColoredPriceWidget to react to changes
                                           Obx(
                                             () => ColoredPriceWidget(
                                               price: bitcoinController.pbNew_lastpricerounded.value.toStringAsFixed(2),
@@ -495,7 +495,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
-                                                  0.25), // Add some spacing
+                                                  1), // Add some spacing
+                                          Obx(
+                                            () => BitNetPercentWidget(
                                                 priceChange:
                                                     bitcoinController
                                                         .pbOverallPriceChange

@@ -684,10 +684,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                   ),
                                                 ),
                                                 Container(
-                                                  margin: const EdgeInsets
+                                                  margin:  EdgeInsets
                                                       .symmetric(
                                                       horizontal: AppTheme
-                                                          .elementSpacing),
+                                                          .cardPadding.w),
                                                   child: Column(
                                                     children: [
                                                       SizedBox(
@@ -882,10 +882,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                             ),
                                                           ),
                                                           Container(
-                                                            margin: const EdgeInsets
+                                                            margin:  EdgeInsets
                                                                 .symmetric(
                                                                 horizontal: AppTheme
-                                                                    .elementSpacing),
+                                                                    .cardPadding.w),
                                                             child: Column(
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment

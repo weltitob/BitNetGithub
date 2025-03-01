@@ -1,4 +1,22 @@
-import 'package:bitnet/backbone/helper/helpers.dart';import 'package:bitnet/backbone/helper/theme/theme.dart';import 'package:bitnet/components/appstandards/BitNetScaffold.dart';import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';import 'package:bitnet/pages/feed/build_search_result_widget.dart';import 'package:bitnet/pages/feed/feed_controller.dart';import 'package:bitnet/pages/feed/screen_categories_widget.dart';import 'package:bitnet/pages/feed/tokenstab.dart';import 'package:bitnet/pages/marketplace/HomeScreen.dart';import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';import 'package:flutter/material.dart';import 'package:flutter_gen/gen_l10n/l10n.dart';import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';import 'package:flutter_screenutil/flutter_screenutil.dart';import 'package:get/get.dart';class WalletCategory {
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/pages/feed/build_search_result_widget.dart';
+import 'package:bitnet/pages/feed/feed_controller.dart';
+import 'package:bitnet/pages/feed/screen_categories_widget.dart';
+import 'package:bitnet/pages/feed/tokenstab.dart';
+import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+class WalletCategory {
   final String imageURL;
   final String text;
   final String header;
@@ -59,24 +77,31 @@ class _FeedScreenState extends State<FeedScreen>
                                 }
                                 return child!;
                               },
-                              child: SearchFieldWithNotificationsWidget(
-                                isSearchEnabled: true,
-                                hintText:
-                                    "Paste walletaddress, transactionid or blockid...",
-                                focus: searchNode,
-                                notificationCount:
-                                    3, // You can customize this based on your needs
-                                onChanged: (v) {
-                                  setState(() {});
-                                  if (controller.tabController!.index == 2) {
-                                    controller.searchresults = controller
-                                        .searchresults
-                                        .where((e) => e.userData.username
-                                            .toLowerCase()
-                                            .contains(v))
-                                        .toList();
-                                  }
+                              child: Padding(
+                                padding:  EdgeInsets.only(left: AppTheme.elementSpacing.w, right: AppTheme.elementSpacing.w, top: AppTheme.cardPadding.h, bottom: AppTheme.elementSpacing.h),
+                                child: SearchFieldWidget(
+                                  isSearchEnabled: true,
+                                  hintText:
+                                      "Paste walletaddress, transactionid or blockid...",
+                                  // focus: searchNode,
+                                  // notificationCount:
+                                  //     3, // You can customize this based on your needs
+                                  onChanged: (v) {
+                                    setState(() {});
+                                    if (controller.tabController!.index == 2) {
+                                      controller.searchresults = controller
+                                          .searchresults
+                                          .where((e) => e.userData.username
+                                              .toLowerCase()
+                                              .contains(v))
+                                          .toList();
+                                    }
+                                  }, handleSearch: (text){
+
+
+
                                 },
+                                ),
                               ));
                         },
                       ),
@@ -127,14 +152,7 @@ class _FeedScreenState extends State<FeedScreen>
                 MempoolHome(
                   isFromHome: true,
                 ),
-                Container(
-                  child: Center(
-                    child: Text(
-                      L10n.of(context)!.groups,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
-                ),
+
               ],
             )
             // : SearchResultWidget(),

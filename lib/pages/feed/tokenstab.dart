@@ -4,6 +4,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/items/marketcap_widget.dart';
+import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -201,7 +202,7 @@ class _TokensTabState extends State<TokensTab> {
                               child: Image.asset(token['image']),
                             ),
                           ),
-                          SizedBox(width: 12.w), // Increased from 10.w
+                          SizedBox(width: AppTheme.elementSpacing.w * 0.75), // Increased from 10.w
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -268,33 +269,33 @@ class _TokensTabState extends State<TokensTab> {
                         ),
                       ),
                       
-                      SizedBox(height: 10.h), // Increased from 8.h
+                      SizedBox(height: AppTheme.elementSpacing.h * 0.5), // Increased from 8.h
                       
                       // Price 
                       Text(
-                        token['price'],
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // Increased from 20.sp
-                        ),
+                        "${token['price']}\$",
+                        style: Theme.of(context).textTheme.headlineLarge
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing.h), // Increased from 4.h
+
+                      Row(
+                        children: [
+                          ColoredPriceWidget(
+                            price: (double.parse(token['price'].replaceAll(',', '')) * 0.98).toStringAsFixed(2),
+                            isPositive: token['isPositive'],
+                          ),
+                          SizedBox(width: AppTheme.elementSpacing.w),
+                          PercentageChangeWidget(
+                            percentage: token['change'],
+                            isPositive: token['isPositive'],
+                            fontSize: 14,
+                          ),
+                        ],
                       ),
                       
-                      SizedBox(height: 6.h), // Increased from 4.h
-                      
-                      // Price with colored currency and arrow (wallet style)
-                      ColoredPriceWidget(
-                        price: (double.parse(token['price'].replaceAll(',', '')) * 0.98).toStringAsFixed(2),
-                        isPositive: token['isPositive'],
-                      ),
-                      
-                      SizedBox(height: 6.h),
                       
                       // Price change indicator (using reusable component)
-                      PercentageChangeWidget(
-                        percentage: token['change'],
-                        isPositive: token['isPositive'],
-                        fontSize: 14,
-                      ),
+
                     ],
                   ),
                 ),
@@ -320,37 +321,64 @@ class _TokensTabState extends State<TokensTab> {
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: [
-                    // First crypto item
-                    CryptoItem(
-                      hasGlassContainer: false,
-                      currency: Currency(
-                        code: 'Hotdog',
-                        name: 'Hotdog',
-                        icon: Image.asset("./assets/tokens/hotdog.webp"),
-                      ),
-                      context: context,
+                    // First crypto item with NumberIndicator
+                    Stack(
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: 'Hotdog',
+                            name: 'Hotdog',
+                            icon: Image.asset("./assets/tokens/hotdog.webp"),
+                          ),
+                          context: context,
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 1),
+                        ),
+                      ],
                     ),
 
-                    // Second crypto item
-                    CryptoItem(
-                      hasGlassContainer: false,
-                      currency: Currency(
-                        code: 'GENST',
-                        name: 'Genisis Stone',
-                        icon: Image.asset("./assets/tokens/genisisstone.webp"),
-                      ),
-                      context: context,
+                    // Second crypto item with NumberIndicator
+                    Stack(
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: 'GENST',
+                            name: 'Genisis Stone',
+                            icon: Image.asset("./assets/tokens/genisisstone.webp"),
+                          ),
+                          context: context,
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 2),
+                        ),
+                      ],
                     ),
 
-                    // Third crypto item
-                    CryptoItem(
-                      hasGlassContainer: false,
-                      currency: Currency(
-                        code: 'HTDG',
-                        name: 'Hotdog',
-                        icon: Image.asset("./assets/tokens/hotdog.webp"),
-                      ),
-                      context: context,
+                    // Third crypto item with NumberIndicator
+                    Stack(
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: 'HTDG',
+                            name: 'Hotdog',
+                            icon: Image.asset("./assets/tokens/hotdog.webp"),
+                          ),
+                          context: context,
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 3),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -375,16 +403,26 @@ class _TokensTabState extends State<TokensTab> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
-                  children: topMoversData.map((mover) {
-                    // Use the CryptoItem widget for top movers
-                    return CryptoItem(
-                      hasGlassContainer: false,
-                      currency: Currency(
-                        code: mover['symbol'],
-                        name: mover['name'],
-                        icon: Image.asset(mover['image']),
-                      ),
-                      context: context,
+                  children: topMoversData.asMap().entries.map((entry) {
+                    final int idx = entry.key;
+                    final mover = entry.value;
+                    return Stack(
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: mover['symbol'],
+                            name: mover['name'],
+                            icon: Image.asset(mover['image']),
+                          ),
+                          context: context,
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: idx + 1),
+                        ),
+                      ],
                     );
                   }).toList(),
                 ),
@@ -409,16 +447,26 @@ class _TokensTabState extends State<TokensTab> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
-                  children: topVolumeData.map((volume) {
-                    // Use the CryptoItem widget for top volume
-                    return CryptoItem(
-                      hasGlassContainer: false,
-                      currency: Currency(
-                        code: volume['symbol'],
-                        name: volume['name'],
-                        icon: Image.asset(volume['image']),
-                      ),
-                      context: context,
+                  children: topVolumeData.asMap().entries.map((entry) {
+                    final int idx = entry.key;
+                    final volume = entry.value;
+                    return Stack(
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: volume['symbol'],
+                            name: volume['name'],
+                            icon: Image.asset(volume['image']),
+                          ),
+                          context: context,
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: idx + 1),
+                        ),
+                      ],
                     );
                   }).toList(),
                 ),

@@ -3,6 +3,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -102,51 +103,7 @@ class SearchResultWidget extends StatelessWidget {
 
   Widget _buildUserCarouselItem(UserData userData, int? rank, BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    Widget? rankBadge;
     
-    if (rank != null) {
-      Color badgeColor;
-      Color textColor = Colors.white;
-      
-      // Determine badge color based on rank
-      if (rank == 1) {
-        badgeColor = Color(0xFFFFD700); // Gold
-      } else if (rank == 2) {
-        badgeColor = Color(0xFFC0C0C0); // Silver
-      } else if (rank == 3) {
-        badgeColor = Color(0xFFCD7F32); // Bronze
-      } else {
-        badgeColor = Colors.grey.shade700;
-        textColor = Colors.white70;
-      }
-      
-      rankBadge = Container(
-        width: AppTheme.cardPadding * 0.8,
-        height: AppTheme.cardPadding * 0.8,
-        decoration: BoxDecoration(
-          color: badgeColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 2,
-              offset: Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            rank.toString(),
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      );
-    }
-
     return GlassContainer(
       borderRadius: BorderRadius.circular(AppTheme.cardPadding),
       blur: isDarkMode ? 5 : 2,
@@ -159,13 +116,12 @@ class SearchResultWidget extends StatelessWidget {
         child: InkWell(
           onTap: () async {},
           borderRadius: BorderRadius.circular(AppTheme.cardPadding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              // Avatar in the center
-              Stack(
-                alignment: Alignment.bottomRight,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Avatar in the center
                   Center(
                     child: Avatar(
                       size: AppTheme.cardPadding * 4,
@@ -176,53 +132,50 @@ class SearchResultWidget extends StatelessWidget {
                       isNft: false,
                     ),
                   ),
-                  if (rankBadge != null)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: rankBadge,
-                      ),
+                  
+                  const SizedBox(height: AppTheme.elementSpacing),
+                  
+                  // Username
+                  Text(
+                    "@${userData.username}",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  
+                  const SizedBox(height: AppTheme.elementSpacing / 2),
+                  
+                  // Display name
+                  Text(
+                    userData.displayName,
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  
+                  const SizedBox(height: AppTheme.elementSpacing),
+                  
+                  // Bio
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    child: Text(
+                      userData.bio,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
               ),
-              
-              const SizedBox(height: AppTheme.elementSpacing),
-              
-              // Username
-              Text(
-                "@${userData.username}",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
+              if (rank != null)
+                Positioned(
+                  left: 10,
+                  top: 10,
+                  child: NumberIndicator(number: rank),
                 ),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-              
-              const SizedBox(height: AppTheme.elementSpacing / 2),
-              
-              // Display name
-              Text(
-                userData.displayName,
-                style: Theme.of(context).textTheme.titleSmall,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-              
-              const SizedBox(height: AppTheme.elementSpacing),
-              
-              // Bio
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                child: Text(
-                  userData.bio,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
             ],
           ),
         ),
@@ -243,13 +196,13 @@ class SearchResultWidget extends StatelessWidget {
         // Carousel without any title/header
         Container(
           width: screenWidth,
-          height: 310,
+          height: 300,
           child: CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: true,
               viewportFraction: 0.6, 
               enlargeCenterPage: true,
-              enlargeFactor: 0.2,
+              enlargeFactor: 0.3,
               height: 300,
               autoPlayInterval: Duration(seconds: 5),
               autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -326,62 +279,17 @@ class SearchResultWidget extends StatelessWidget {
   }
   
   Widget _buildUserItem(UserData userData, [int? rank]) {
-    Widget? rankBadge;
-    
-    if (rank != null) {
-      Color badgeColor;
-      Color textColor = Colors.white;
-      
-      // Determine badge color based on rank
-      if (rank == 1) {
-        badgeColor = AppTheme.colorBitcoin; // Gold
-      } else if (rank == 2) {
-        badgeColor = Color(0xFFA5A5A5); // Silver
-      } else if (rank == 3) {
-        badgeColor = Color(0xFF9C5E20); // Bronze
-      } else {
-        badgeColor = Colors.grey.shade700;
-        textColor = Colors.white70;
-      }
-      
-      rankBadge = Container(
-        width: AppTheme.cardPadding * 0.7,
-        height: AppTheme.cardPadding * 0.7,
-        decoration: BoxDecoration(
-          color: badgeColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 2,
-              offset: Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            rank.toString(),
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppTheme.elementSpacing * 0.75,
+            horizontal: AppTheme.elementSpacing,
           ),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppTheme.elementSpacing * 0.75,
-        horizontal: AppTheme.elementSpacing,
-      ),
-      child: InkWell(
-        onTap: () async {},
-        borderRadius: AppTheme.cardRadiusBig,
-        child: Row(
-          children: [
-            Stack(
+          child: InkWell(
+            onTap: () async {},
+            borderRadius: AppTheme.cardRadiusBig,
+            child: Row(
               children: [
                 Avatar(
                   size: AppTheme.cardPadding * 2,
@@ -390,35 +298,40 @@ class SearchResultWidget extends StatelessWidget {
                   name: userData.username,
                   profileId: userData.did,
                   isNft: false,
-                  cornerWidget: rankBadge,
+                ),
+                const SizedBox(width: AppTheme.elementSpacing),
+                Container(
+                  width: AppTheme.cardPadding * 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "@${userData.username}",
+                        style: Theme.of(Get.context!).textTheme.titleSmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppTheme.elementSpacing / 4),
+                      Text(
+                        userData.displayName,
+                        style: Theme.of(Get.context!).textTheme.bodySmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(width: AppTheme.elementSpacing),
-            Container(
-              width: AppTheme.cardPadding * 6,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "@${userData.username}",
-                    style: Theme.of(Get.context!).textTheme.titleSmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppTheme.elementSpacing / 4),
-                  Text(
-                    userData.displayName,
-                    style: Theme.of(Get.context!).textTheme.bodySmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        if (rank != null)
+          Positioned(
+            left: 10,
+            top: 10,
+            child: NumberIndicator(number: rank),
+          ),
+      ],
     );
   }
 

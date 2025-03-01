@@ -6,7 +6,7 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
@@ -142,7 +142,7 @@ class _RowViewTabState extends State<RowViewTab> with SingleTickerProviderStateM
                         final meta = controller.assetMetaMap[asset.assetGenesis!.assetId ?? ''];
 
                         return Container(
-                          child: NftProductSlider(
+                          child: AssetCard(
                             scale: 0.75,
                             medias: meta?.toMedias() ?? [],
                             nftName: meta?.data ?? 'metahash',

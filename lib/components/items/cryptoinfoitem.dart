@@ -92,11 +92,17 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          currencyTypeProvider.coin ?? true
-                              ? widget.balance
-                              : "$currencyEquivalent${getCurrency(selectedCurrency)}",
-                          style: Theme.of(widget.context).textTheme.titleMedium,
+                        Obx(() => Get.find<WalletsController>().hideBalance.value
+                          ? Text(
+                              "******",
+                              style: Theme.of(widget.context).textTheme.titleMedium,
+                            )
+                          : Text(
+                              currencyTypeProvider.coin ?? true
+                                  ? widget.balance
+                                  : "$currencyEquivalent${getCurrency(selectedCurrency)}",
+                              style: Theme.of(widget.context).textTheme.titleMedium,
+                            )
                         ),
                         (currencyTypeProvider.coin ?? true)
                             ? Icon(
