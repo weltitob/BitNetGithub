@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/items/marketcap_widget.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
@@ -158,7 +159,7 @@ class _TokensTabState extends State<TokensTab> {
               viewportFraction: 0.6, // Changed to match people tab
               enlargeCenterPage: true,
               enlargeFactor: 0.3, // Added to match people tab spacing
-              height: 250.h, // Increased from 225.h
+              height: 280.h, // Increased height for new elements
               autoPlayInterval: const Duration(seconds: 4),
               autoPlayAnimationDuration: const Duration(milliseconds: 800)
             ),
@@ -279,6 +280,14 @@ class _TokensTabState extends State<TokensTab> {
                       ),
                       
                       SizedBox(height: 6.h), // Increased from 4.h
+                      
+                      // Price with colored currency and arrow (wallet style)
+                      ColoredPriceWidget(
+                        price: (double.parse(token['price'].replaceAll(',', '')) * 0.98).toStringAsFixed(2),
+                        isPositive: token['isPositive'],
+                      ),
+                      
+                      SizedBox(height: 6.h),
                       
                       // Price change indicator (using reusable component)
                       PercentageChangeWidget(

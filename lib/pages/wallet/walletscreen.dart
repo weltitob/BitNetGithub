@@ -14,6 +14,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -483,53 +484,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
+                                          Obx(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Obx(
-                                                () => Icon(
-                                                  bitcoinController
-                                                          .pbOverallPriceChange
-                                                          .value
-                                                          .contains('-')
-                                                      ? Icons
-                                                          .arrow_drop_down_rounded
-                                                      : Icons
-                                                          .arrow_drop_up_rounded,
-                                                  color: bitcoinController
-                                                          .pbOverallPriceChange
-                                                          .value
-                                                          .contains('-')
-                                                      ? AppTheme.errorColor
-                                                      : AppTheme.successColor,
-                                                  size: AppTheme.iconSize * 1,
-                                                ),
-                                              ),
-                                              Obx(
-                                                () => Text(
-                                                  "${bitcoinController.pbNew_lastpricerounded.value.toStringAsFixed(2)} ${getCurrency(currency!)}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge!
-                                                      .copyWith(
-                                                        color: bitcoinController
-                                                                .pbOverallPriceChange
-                                                                .value
-                                                                .contains('-')
-                                                            ? AppTheme
-                                                                .errorColor
-                                                            : AppTheme
-                                                                .successColor,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
+                                          Obx(
+                                            () => ColoredPriceWidget(
+                                              price: bitcoinController.pbNew_lastpricerounded.value.toStringAsFixed(2),
+                                              isPositive: !bitcoinController.pbOverallPriceChange.value.contains('-'),
+                                              currencySymbol: getCurrency(currency!),
+                                            ),
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
-                                                  1), // Add some spacing
-                                          Obx(
-                                            () => BitNetPercentWidget(
+                                                  0.25), // Add some spacing
                                                 priceChange:
                                                     bitcoinController
                                                         .pbOverallPriceChange

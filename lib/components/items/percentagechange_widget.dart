@@ -22,7 +22,7 @@ class PercentageChangeWidget extends StatelessWidget {
     
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing / 2,
+        horizontal: AppTheme.elementSpacing * 0.5,
         vertical: AppTheme.elementSpacing / 2,
       ),
       decoration: BoxDecoration(
