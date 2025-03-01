@@ -683,7 +683,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         height: AppTheme
                                                             .elementSpacing,
                                                       ),
-
                                                       Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -930,11 +929,25 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                         .elementSpacing,
                                                                   ),
                                                                   MiningInfoCard(
-                                                                    timestamp: DateTime.fromMillisecondsSinceEpoch(
-                                                                        controller.txDetailsConfirmed!.timestamp * 1000
-                                                                    ).toUtc().add(Duration(milliseconds: loc.currentTimeZone.offset)),
-                                                                    poolName: controller.txDetailsConfirmed!.extras.pool.name,
-                                                                    rewardAmount: controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value,
+                                                                    timestamp: DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp *
+                                                                            1000)
+                                                                        .toUtc()
+                                                                        .add(Duration(
+                                                                            milliseconds:
+                                                                                loc.currentTimeZone.offset)),
+                                                                    poolName: controller
+                                                                        .txDetailsConfirmed!
+                                                                        .extras
+                                                                        .pool
+                                                                        .name,
+                                                                    rewardAmount: controller
+                                                                            .txDetailsConfirmed!
+                                                                            .extras
+                                                                            .reward /
+                                                                        100000000 *
+                                                                        controller
+                                                                            .currentUSD
+                                                                            .value,
                                                                   ),
                                                                   const SizedBox(
                                                                     height: AppTheme
@@ -947,21 +960,30 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   ),
 
                                                                   Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceEvenly,
                                                                     children: [
                                                                       Expanded(
-                                                                        child: AspectRatio(
-                                                                          aspectRatio: 1, // This ensures a square shape
-                                                                          child: blockSizeAccepted(),
+                                                                        child:
+                                                                            AspectRatio(
+                                                                          aspectRatio:
+                                                                              1, // This ensures a square shape
+                                                                          child:
+                                                                              blockSizeAccepted(),
                                                                         ),
                                                                       ),
                                                                       SizedBox(
-                                                                          width: AppTheme.elementSpacing,
+                                                                        width: AppTheme
+                                                                            .elementSpacing,
                                                                       ),
                                                                       Expanded(
-                                                                        child: AspectRatio(
-                                                                          aspectRatio: 1,
-                                                                          child: blockHealth(),
+                                                                        child:
+                                                                            AspectRatio(
+                                                                          aspectRatio:
+                                                                              1,
+                                                                          child:
+                                                                              blockHealth(),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1272,7 +1294,6 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   Widget blockHealth() {
     return GlassContainer(
-
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1283,7 +1304,10 @@ class _MempoolHomeState extends State<MempoolHome> {
             children: [
               Text(
                 L10n.of(context)!.health,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(
                 width: AppTheme.elementSpacing / 2,
@@ -1340,7 +1364,6 @@ class _MempoolHomeState extends State<MempoolHome> {
         ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
     return GlassContainer(
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1351,7 +1374,10 @@ class _MempoolHomeState extends State<MempoolHome> {
             children: [
               Text(
                 L10n.of(context)!.blockSize,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(
                 width: AppTheme.elementSpacing / 2,
@@ -1543,7 +1569,10 @@ class _MempoolHomeState extends State<MempoolHome> {
     return GlassContainer(
       child: Column(children: [
         BitNetListTile(
-          leading: const Icon(FontAwesomeIcons.moneyBill),
+          leading: const Icon(
+            FontAwesomeIcons.moneyBill,
+            size: AppTheme.cardPadding * 0.75,
+          ),
           text: L10n.of(context)!.feeDistribution,
           trailing: Container(
             child: Row(
@@ -1602,7 +1631,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     color: Colors.grey,
                     edgeStyle: LinearEdgeStyle.bothCurve,
                     gradient: LinearGradient(
-                        colors: [Colors.redAccent, Colors.greenAccent],
+                        colors: [AppTheme.errorColor, AppTheme.successColor],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                         stops: [0.1, 0.9],
@@ -1630,12 +1659,12 @@ class _MempoolHomeState extends State<MempoolHome> {
                     Text(
                         '\$${(((controller.txDetailsConfirmed!.extras.feeRange.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.redAccent,
+                              color: AppTheme.errorColor,
                             )),
                     Text(
                         '\$${(((controller.txDetailsConfirmed!.extras.feeRange.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.greenAccent,
+                              color: AppTheme.successColor,
                             )),
                   ],
                 ),
@@ -1654,7 +1683,10 @@ class _MempoolHomeState extends State<MempoolHome> {
     return GlassContainer(
       child: Column(children: [
         BitNetListTile(
-          leading: const Icon(FontAwesomeIcons.moneyBill),
+          leading: Icon(
+            FontAwesomeIcons.moneyBill,
+            size: AppTheme.cardPadding * 0.75,
+          ),
           text: L10n.of(context)!.feeDistribution,
           trailing: Container(
             child: Row(
@@ -1719,7 +1751,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     color: Colors.grey,
                     edgeStyle: LinearEdgeStyle.bothCurve,
                     gradient: LinearGradient(
-                        colors: [Colors.redAccent, Colors.greenAccent],
+                        colors: [AppTheme.errorColor, AppTheme.successColor],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                         stops: [0.1, 0.9],
@@ -1758,12 +1790,12 @@ class _MempoolHomeState extends State<MempoolHome> {
                     Text(
                         '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.first * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.redAccent,
+                              color: AppTheme.errorColor,
                             )),
                     Text(
                         '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].feeRange!.last * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.greenAccent,
+                              color: AppTheme.successColor,
                             )),
                   ],
                 ),
@@ -1785,8 +1817,6 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 }
 
-
-
 class MiningInfoCard extends StatelessWidget {
   final DateTime timestamp;
   final String poolName;
@@ -1802,14 +1832,29 @@ class MiningInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassContainer(
-
-
       child: Container(
-        padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.25),
-
+        padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Miner Information text heading
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
+              child: Row(
+                children: [
+                  Icon(
+                    FontAwesomeIcons.truckPickup,
+                    size: AppTheme.cardPadding * 0.75,
+                  ),
+                  SizedBox(
+                    width: AppTheme.elementSpacing,
+                  ),
+                  Text("Miner Information",
+                      style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
+            ),
+
             // Header with timestamp and pool
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1825,21 +1870,25 @@ class MiningInfoCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       DateFormat('yyyy-MM-dd HH:mm').format(timestamp),
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.w500),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
                 // Pool badge
                 Container(
-                  padding:  EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color:  AppTheme.colorBitcoin, // orange-500
+                    color: AppTheme.colorBitcoin, // orange-500
                     borderRadius: AppTheme.cardRadiusSmall,
                   ),
-                  child: Text(
-                    poolName,
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(color: darken(AppTheme.colorBitcoin, 95))
-                  ),
+                  child: Text(poolName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(color: darken(AppTheme.colorBitcoin, 95))),
                 ),
               ],
             ),
@@ -1877,13 +1926,16 @@ class MiningInfoCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Text(
+                    Text(
                       'Miner Reward (Subsidy + fees)',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                     Text(
                       '\$${NumberFormat('#,##0').format(rewardAmount)}',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppTheme.successColor),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: AppTheme.successColor),
                     ),
                   ],
                 ),

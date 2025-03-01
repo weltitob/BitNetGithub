@@ -195,35 +195,30 @@ class _CryptoItemState extends State<CryptoItem> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          controllerCrypto.priceChange.value >= 0
-                              ? FontAwesomeIcons.caretUp
-                              : FontAwesomeIcons.caretDown,
-                          size: 16,
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 3.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: (controllerCrypto.priceChange.value >= 0
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      ),
+                      child: Text(
+                        controllerCrypto.priceChangeString.value,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(
+                          fontWeight: FontWeight.bold,
                           color: controllerCrypto.priceChange.value >= 0
                               ? AppTheme.successColor
                               : AppTheme.errorColor,
                         ),
-                        const SizedBox(
-                            width: AppTheme.elementSpacing / 4),
-                        Container(
-                          child: Text(
-                            controllerCrypto.priceChangeString.value,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .copyWith(
-                              color: controllerCrypto.priceChange.value >=
-                                  0
-                                  ? AppTheme.successColor
-                                  : AppTheme.errorColor,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

@@ -41,8 +41,8 @@ class _CommonHeadingState extends State<CommonHeading> {
       children: [
         Container(
           color: Colors.transparent,
-          padding: widget.collapseBtn ? EdgeInsets.all(0.w) : EdgeInsets.symmetric(horizontal: 20.w),
-          margin: EdgeInsets.only(bottom: 15.h),
+          padding: widget.collapseBtn ? EdgeInsets.all(0.w) : EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+          margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
           child: Row(
             children: [
               Expanded(

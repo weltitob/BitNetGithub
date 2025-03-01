@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/components/items/marketcap_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +120,6 @@ class _TokensTabState extends State<TokensTab> {
       body: ListView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
-
           
           // Trending section
 
@@ -287,41 +287,15 @@ class _TokensTabState extends State<TokensTab> {
           
           SizedBox(height: AppTheme.cardPadding.h * 1.5),
           
-          // Top 3 by Market Cap section with arrow button
+          // Top 3 by Market Cap section with CommonHeading
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Top 3 by Market Cap',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontSize: 14.sp, 
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-                GlassContainer(
-                  customShadow: isDarkMode ? [] : null,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
-                  child: InkWell(
-                    onTap: () {
-                      // Handle navigation
-                    },
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16.sp,
-                        color: isDarkMode ? AppTheme.white70 : AppTheme.black70,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            child: CommonHeading(
+              headingText: 'Top 3 by Market Cap',
+              hasButton: true,
+              onPress: 'marketcap',
             ),
           ),
-          const SizedBox(height: 15),
           
           // A single GlassContainer containing all crypto items
           Padding(
@@ -372,41 +346,15 @@ class _TokensTabState extends State<TokensTab> {
           
           SizedBox(height: AppTheme.cardPadding.h),
           
-          // Top Movers Today section with arrow button
+          // Top Movers Today section with CommonHeading
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Top Movers Today',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontSize: 14.sp, 
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-                GlassContainer(
-                  customShadow: isDarkMode ? [] : null,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
-                  child: InkWell(
-                    onTap: () {
-                      // Handle navigation
-                    },
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16.sp,
-                        color: isDarkMode ? AppTheme.white70 : AppTheme.black70,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            child: CommonHeading(
+              headingText: 'Top Movers Today',
+              hasButton: true,
+              onPress: 'topmovers',
             ),
           ),
-          const SizedBox(height: 15),
           
           // Top Movers list
           Padding(
@@ -417,68 +365,15 @@ class _TokensTabState extends State<TokensTab> {
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: topMoversData.map((mover) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing,
-                        vertical: AppTheme.elementSpacing * 0.5,
+                    // Use the CryptoItem widget for top movers
+                    return CryptoItem(
+                      hasGlassContainer: false,
+                      currency: Currency(
+                        code: mover['symbol'],
+                        name: mover['name'],
+                        icon: Image.asset(mover['image']),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 36.h,
-                            width: 36.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppTheme.successColor.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  spreadRadius: 1,
-                                )
-                              ]
-                            ),
-                            padding: const EdgeInsets.all(2),
-                            child: Image.asset(mover['image']),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${mover['symbol']}',
-                                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  mover['name'],
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.successColor.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                            ),
-                            child: Text(
-                              mover['change'],
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.successColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      context: context,
                     );
                   }).toList(),
                 ),
@@ -488,224 +383,41 @@ class _TokensTabState extends State<TokensTab> {
           
           SizedBox(height: AppTheme.cardPadding.h),
           
-          // Total Market Cap Today section - redesigned
+          // Total Market Cap Today section with CommonHeading
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Text(
-              'Total Market Cap Today',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 14.sp, 
-                fontWeight: FontWeight.bold
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          
-          // Redesigned Total Market Cap widget
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
-              child: Padding(
-                padding: EdgeInsets.all(AppTheme.cardPadding * 0.75),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header with value and percentage
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Market cap value
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '\$2.42T',
-                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 26.sp,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                'Global crypto market cap',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        // Percentage change badge
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 8.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.successColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.arrow_upward,
-                                color: AppTheme.successColor,
-                                size: 18,
-                              ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                '5.24%',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.successColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    SizedBox(height: 24.h),
-                    
-                    // Chart
-                    SizedBox(
-                      height: 100.h,
-                      child: SfCartesianChart(
-                        plotAreaBorderWidth: 0,
-                        margin: EdgeInsets.zero,
-                        primaryXAxis: CategoryAxis(
-                          isVisible: false,
-                          majorGridLines: const MajorGridLines(width: 0),
-                          majorTickLines: const MajorTickLines(width: 0),
-                        ),
-                        primaryYAxis: NumericAxis(
-                          isVisible: false,
-                          majorGridLines: const MajorGridLines(width: 0),
-                          majorTickLines: const MajorTickLines(width: 0),
-                        ),
-                        series: <ChartSeries>[
-                          // Line series
-                          AreaSeries<ChartLine, double>(
-                            dataSource: [
-                              ChartLine(time: 0, price: 42000),
-                              ChartLine(time: 1, price: 42800),
-                              ChartLine(time: 2, price: 43500),
-                              ChartLine(time: 3, price: 43200),
-                              ChartLine(time: 4, price: 45000),
-                              ChartLine(time: 5, price: 44800),
-                              ChartLine(time: 6, price: 46500),
-                              ChartLine(time: 7, price: 47200),
-                              ChartLine(time: 8, price: 46800),
-                              ChartLine(time: 9, price: 48200),
-                            ],
-                            animationDuration: 1500,
-                            xValueMapper: (ChartLine data, _) => data.time,
-                            yValueMapper: (ChartLine data, _) => data.price,
-                            color: AppTheme.successColor.withOpacity(0.3),
-                            borderWidth: 2.5,
-                            borderColor: AppTheme.successColor,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppTheme.successColor.withOpacity(0.3),
-                                AppTheme.successColor.withOpacity(0.05),
-                                Colors.transparent,
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    
-                    SizedBox(height: 20.h),
-                    
-                    // Additional stats
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // 24h Volume
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '24h Volume',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '\$98.2B',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        // BTC Dominance
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'BTC Dominance',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '52.3%',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        // ETH Dominance
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ETH Dominance',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '18.7%',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            child: CommonHeading(
+              headingText: 'Total Market Cap Today',
+              hasButton: false,
             ),
           ),
           
-          SizedBox(height: AppTheme.cardPadding.h),
+          // Using our new MarketCapWidget
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: MarketCapWidget(
+              marketCap: '\$2.42T',
+              changePercentage: '+5.2%',
+              isPositive: true,
+              tradingVolume: '\$71.2B', 
+              btcDominance: '51.3%',
+              // Sample chart data matching Bitcoin's pattern
+              chartData: [
+                ChartLine(time: 0, price: 2300000000000),
+                ChartLine(time: 1, price: 2320000000000),
+                ChartLine(time: 2, price: 2350000000000),
+                ChartLine(time: 3, price: 2330000000000),
+                ChartLine(time: 4, price: 2370000000000),
+                ChartLine(time: 5, price: 2390000000000),
+                ChartLine(time: 6, price: 2410000000000),
+                ChartLine(time: 7, price: 2420000000000),
+              ],
+            ),
+          ),
+          
+          SizedBox(height: 100.h), // Added extra space at the bottom
         ],
-      ),
-      context: context,
+      ), context: context,
     );
   }
 }
