@@ -197,8 +197,8 @@ class _CryptoItemState extends State<CryptoItem> {
                   children: [
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 3.0,
+                        horizontal: AppTheme.elementSpacing / 2,
+                        vertical: AppTheme.elementSpacing / 2,
                       ),
                       decoration: BoxDecoration(
                         color: (controllerCrypto.priceChange.value >= 0

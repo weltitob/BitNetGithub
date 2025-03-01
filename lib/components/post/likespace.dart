@@ -182,7 +182,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     return Center(
       child: GlassContainer(
         borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.75.h / 3),
-        opacity: 0.05,
+        opacity: 0.1,
         child: SizedBox(
           height: AppTheme.cardPadding * 1.75,
           width: AppTheme.cardPadding * 6.w,

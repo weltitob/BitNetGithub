@@ -35,7 +35,7 @@ dependencies:
 
   adaptive_dialog: ^1.9.0-no-macos.2
   #animations: ^2.0.7
-  #badges: ^2.0.3
+  badges: ^3.1.2
   #blurhash_dart: ^1.2.1
   #flutter_blurhash: ^0.8.2
   #callkeep: ^0.3.3
