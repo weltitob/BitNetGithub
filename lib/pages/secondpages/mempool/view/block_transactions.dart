@@ -4,6 +4,8 @@ import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/frostedcolorbackground.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
@@ -27,6 +29,66 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+
+class BlinkingDot extends StatefulWidget {
+  final Color color;
+  final double size;
+
+  const BlinkingDot({
+    Key? key, 
+    required this.color,
+    this.size = 12.0,
+  }) : super(key: key);
+
+  @override
+  State<BlinkingDot> createState() => _BlinkingDotState();
+}
+
+class _BlinkingDotState extends State<BlinkingDot> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+    
+    _opacityAnimation = Tween<double>(begin: 0.4, end: 1.0).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: widget.color.withOpacity(_opacityAnimation.value),
+            boxShadow: [
+              BoxShadow(
+                color: widget.color.withOpacity(0.4 * _opacityAnimation.value),
+                blurRadius: 6,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
 
 class BlockTransactions extends StatefulWidget {
   final bool isConfirmed;
@@ -166,37 +228,6 @@ class _BlockTransactionsState extends State<BlockTransactions> {
               ),
             ),
             
-            // Transaction Status Indicator
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: AppTheme.cardPadding),
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              decoration: BoxDecoration(
-                color: widget.isConfirmed 
-                    ? AppTheme.successColor.withOpacity(0.15) 
-                    : AppTheme.colorBitcoin.withOpacity(0.15),
-                borderRadius: AppTheme.cardRadiusSmall,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    widget.isConfirmed ? Icons.check_circle : Icons.pending_outlined,
-                    color: widget.isConfirmed ? AppTheme.successColor : AppTheme.colorBitcoin,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    widget.isConfirmed 
-                        ? "${L10n.of(context)!.confirmed} ${L10n.of(context)!.transactions}" 
-                        : "${"Pending"} ${L10n.of(context)!.transactions}",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: widget.isConfirmed ? AppTheme.successColor : AppTheme.colorBitcoin,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
             // Content based on transaction type
             widget.isConfirmed
                 ? _buildConfirmedTransactions(context, currency, bitcoinPrice)
@@ -242,11 +273,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                         
                         return Padding(
                           padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: AppTheme.cardRadiusSmall,
-                              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
-                            ),
+                          child: GlassContainer(
+                            borderRadius: AppTheme.cardRadiusSmall,
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Row(
@@ -300,27 +328,37 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            ownedTransaction != null 
-                                                ? Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                    decoration: BoxDecoration(
-                                                      color: AppTheme.colorBitcoin.withOpacity(0.2),
-                                                      borderRadius: BorderRadius.circular(4),
-                                                    ),
-                                                    child: Text(
-                                                      'Your TX',
-                                                      style: TextStyle(
-                                                        color: AppTheme.colorBitcoin,
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : AmountPreviewer(
-                                                    unitModel: BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: volume),
-                                                    textStyle: Theme.of(context).textTheme.bodyMedium!,
-                                                    textColor: null,
-                                                  ),
+                                            Row(
+                                              children: [
+                                                BlinkingDot(
+                                                  color: AppTheme.successColor,
+                                                  size: 10,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                ownedTransaction != null 
+                                                    ? Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                        decoration: BoxDecoration(
+                                                          color: AppTheme.colorBitcoin.withOpacity(0.2),
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                        child: Text(
+                                                          'Your TX',
+                                                          style: TextStyle(
+                                                            color: AppTheme.colorBitcoin,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
+                                              ],
+                                            ),
+                                            AmountPreviewer(
+                                              unitModel: BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: volume),
+                                              textStyle: Theme.of(context).textTheme.bodyMedium!,
+                                              textColor: null,
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -352,11 +390,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                   controller.blockTransactions[index][3];
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: 8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: AppTheme.cardRadiusSmall,
-                        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
-                      ),
+                    child: GlassContainer(
+                      borderRadius: AppTheme.cardRadiusSmall,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(
@@ -370,7 +405,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               ),
                               child: Center(
                                 child: Icon(
-                                  Icons.pending_outlined,
+                                  FontAwesomeIcons.cube,
                                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                                 ),
                               ),
@@ -396,20 +431,25 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       controller.blockTransactions.isEmpty
                                           ? ''
                                           : '${controller.blockTransactions[index][0].substring(0, 10)}...${controller.blockTransactions[index][0].substring(controller.blockTransactions[index][0].length - 10)}',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade400,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: Theme.of(context).textTheme.titleSmall
                                     ),
                                   ),
                                   const SizedBox(height: 4),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        '${(controller.blockTransactions[index][1] / 100000000).toStringAsFixed(8)} BTC',
-                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      Row(
+                                        children: [
+                                          BlinkingDot(
+                                            color: AppTheme.colorBitcoin,
+                                            size: 10,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            '${(controller.blockTransactions[index][1] / 100000000).toStringAsFixed(8)} BTC',
+                                            style: Theme.of(context).textTheme.bodyMedium,
+                                          ),
+                                        ],
                                       ),
                                       Text(
                                         '\$${formatPriceDecimal(btcValue * usdPrice)}',
