@@ -17,12 +17,12 @@ class InfoTabView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Description
+          // Description Section
           Text(
             "Description",
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8.h),
           GlassContainer(
@@ -37,13 +37,13 @@ class InfoTabView extends StatelessWidget {
             ),
           ),
           SizedBox(height: 24.h),
-          
-          // Social Links
+
+          // Social Links Section
           Text(
             "Links",
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8.h),
           Row(
@@ -54,11 +54,13 @@ class InfoTabView extends StatelessWidget {
                 ownerDataTitle: 'Discord',
                 hasImage: true,
               ),
+              SizedBox(width: 16.w),
               const OwnerDataText(
                 ownerDataImg: twitterIcon,
                 ownerDataTitle: 'Twitter',
                 hasImage: true,
               ),
+              SizedBox(width: 16.w),
               GestureDetector(
                 onTap: () {
                   // Navigate to activity screen
@@ -72,13 +74,13 @@ class InfoTabView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 24.h),
-          
-          // Details
+
+          // Details Section
           Text(
             "Details",
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8.h),
           GlassContainer(
@@ -89,13 +91,13 @@ class InfoTabView extends StatelessWidget {
               child: Column(
                 children: [
                   _buildDetailRow(context, "Contract Address", "bc1qwlcazq...k7mtl"),
-                  Divider(height: 24),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, "Token Standard", "BRC-20"),
-                  Divider(height: 24),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, "Creator Fee", "2.5%"),
-                  Divider(height: 24),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, "Chain", "Bitcoin"),
-                  Divider(height: 24),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, "Created", "April 2023"),
                 ],
               ),
@@ -105,7 +107,7 @@ class InfoTabView extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildDetailRow(BuildContext context, String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,8 +115,8 @@ class InfoTabView extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: AppTheme.colorBitcoin,
-              ),
+            color: AppTheme.colorBitcoin,
+          ),
         ),
         Text(
           value,

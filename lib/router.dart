@@ -13,6 +13,7 @@ class AppRouter {
     // supportedLocales: L10n.supportedLocales,
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/loading',
+
     routes: AppRoutes(false).routes,
   );
 

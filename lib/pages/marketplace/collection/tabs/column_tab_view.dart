@@ -1,7 +1,10 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/marketplace/widgets/filter_bottom_sheet.dart';
 import 'package:bitnet/pages/marketplace/widgets/sorting_category_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,39 +31,43 @@ class ColumnTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Filter Row
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppTheme.colorGlassContainer.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, size: 20),
-                        SizedBox(width: 8),
-                        Text("Search...", style: TextStyle(fontSize: 14)),
-                      ],
-                    ),
+          // Filter Row with SearchField
+          SizedBox(height: AppTheme.cardPadding.h,),
+          Row(
+            children: [
+              Expanded(
+                child: SearchFieldWidget(
+                  hintText: "Search...",
+                  isSearchEnabled: true,
+                  handleSearch: (value) {
+                    // Implement search functionality
+                  },
+                  onChanged: (value) {
+                    // Implement onChange functionality
+                  },
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.filter_list),
+                    onPressed: () {
+                      // Show filter bottom sheet
+                      BitNetBottomSheet(
+                        context: context,
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: FilterBottomSheet(
+                          onSortingChanged: onSortingChanged,
+                          currentSortingFilter: currentSortingFilter,
+                        ),
+                      );
+                    },
                   ),
                 ),
-                SizedBox(width: 8),
-                SortingCategoryPopup(
-                  onChanged: (str) => onSortingChanged(str),
-                  currentSortingCategory: currentSortingFilter,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          SizedBox(height: AppTheme.cardPadding.h,),
           
           // Grid of Assets
           GridView.builder(

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -18,7 +19,7 @@ class CollectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 90.h, bottom: 10.h),
+      padding: EdgeInsets.only(top: AppTheme.cardPadding.h * 2, bottom: AppTheme.cardPadding.h),
       child: Column(
         children: [
           Stack(

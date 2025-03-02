@@ -77,7 +77,7 @@ class RowTabView extends StatelessWidget {
                 
                 // Horizontal List of Assets
                 Container(
-                  height: 240.h,
+                  height: 275.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: collectionAssets.length,
