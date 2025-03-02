@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -271,44 +272,89 @@ class ProfileHeader extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          LongButtonWidget(
-                            title: "Follow",
-                            onTap: () {},
-                            buttonType: ButtonType.transparent,
-                            customHeight: AppTheme.cardPadding * 1.75,
-                            customWidth: (MediaQuery.of(context).size.width -
-                                AppTheme.cardPadding * 2.5.w) /
-                                2,
-                            leadingIcon: Icon(
-                              Icons.person_add,
-                              size: AppTheme.cardPadding * 0.8,
+                      child: Obx(
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Auth().currentUser!.uid == controller.userData.value.did
+                            ? LongButtonWidget(
+                                title: "Edit Profile",
+                                onTap: () {
+                                  controller.currentview.value = 4;
+                                },
+                                buttonType: ButtonType.transparent,
+                                customHeight: AppTheme.cardPadding * 1.75,
+                                customWidth: (MediaQuery.of(context).size.width -
+                                    AppTheme.cardPadding * 2.5.w) /
+                                    2,
+                                leadingIcon: Icon(
+                                  Icons.edit,
+                                  size: AppTheme.cardPadding * 0.8,
+                                ),
+                              )
+                            : LongButtonWidget(
+                                title: controller.isFollowing?.value == true ? "Unfollow" : "Follow",
+                                onTap: () {
+                                  controller.isFollowing?.value == true 
+                                      ? controller.handleUnfollowUser() 
+                                      : controller.handleFollowUser();
+                                },
+                                buttonType: ButtonType.transparent,
+                                customHeight: AppTheme.cardPadding * 1.75,
+                                customWidth: (MediaQuery.of(context).size.width -
+                                    AppTheme.cardPadding * 2.5.w) /
+                                    2,
+                                leadingIcon: Icon(
+                                  controller.isFollowing?.value == true 
+                                      ? Icons.person_remove 
+                                      : Icons.person_add,
+                                  size: AppTheme.cardPadding * 0.8,
+                                ),
+                              ),
+                            SizedBox(
+                              width: AppTheme.cardPadding.w / 2,
                             ),
-                          ),
-                          SizedBox(
-                            width: AppTheme.cardPadding.w / 2,
-                          ),
-                          LongButtonWidget(
-                            title: "Tip",
-                            onTap: () {},
-                            buttonType: ButtonType.solid,
-                            customHeight: AppTheme.cardPadding * 1.75,
-                            customWidth: (MediaQuery.of(context).size.width -
-                                AppTheme.cardPadding * 2.5.w) /
-                                2,
-                            leadingIcon: Icon(
-                              FontAwesomeIcons.btc,
-                              size: AppTheme.cardPadding * 0.75,
-                              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
-                                  ? Colors.white 
-                                  : Theme.of(context).brightness == Brightness.light 
-                                      ? AppTheme.white70 
-                                      : AppTheme.black60,
-                            ),
-                          ),
-                        ],
+                            Auth().currentUser!.uid == controller.userData.value.did
+                            ? LongButtonWidget(
+                                title: "Share Profile",
+                                onTap: () {
+                                  // Add share functionality here
+                                },
+                                buttonType: ButtonType.solid,
+                                customHeight: AppTheme.cardPadding * 1.75,
+                                customWidth: (MediaQuery.of(context).size.width -
+                                    AppTheme.cardPadding * 2.5.w) /
+                                    2,
+                                leadingIcon: Icon(
+                                  Icons.share,
+                                  size: AppTheme.cardPadding * 0.75,
+                                  color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
+                                      ? Colors.white 
+                                      : Theme.of(context).brightness == Brightness.light 
+                                          ? AppTheme.white70 
+                                          : AppTheme.black60,
+                                ),
+                              )
+                            : LongButtonWidget(
+                                title: "Tip",
+                                onTap: () {},
+                                buttonType: ButtonType.solid,
+                                customHeight: AppTheme.cardPadding * 1.75,
+                                customWidth: (MediaQuery.of(context).size.width -
+                                    AppTheme.cardPadding * 2.5.w) /
+                                    2,
+                                leadingIcon: Icon(
+                                  FontAwesomeIcons.btc,
+                                  size: AppTheme.cardPadding * 0.75,
+                                  color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
+                                      ? Colors.white 
+                                      : Theme.of(context).brightness == Brightness.light 
+                                          ? AppTheme.white70 
+                                          : AppTheme.black60,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
