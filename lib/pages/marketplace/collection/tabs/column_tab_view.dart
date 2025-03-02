@@ -56,7 +56,7 @@ class ColumnTabView extends StatelessWidget {
                       // Implement onChange functionality
                     },
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.filter_list),
+                      icon: Icon(Icons.filter_alt_rounded),
                       onPressed: () {
                         // Show filter bottom sheet
                         BitNetBottomSheet(
