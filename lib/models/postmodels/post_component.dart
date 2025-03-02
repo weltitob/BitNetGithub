@@ -22,6 +22,7 @@ import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 /// A unified post component that can be used for both editing and viewing posts
@@ -35,7 +36,8 @@ class PostComponent extends StatefulWidget {
   final List<dynamic> medias; // Can be either Media or PostFile
   final DateTime timestamp;
   final bool isEditable; // Controls whether the post is in edit or view mode
-  final TextEditingController? titleController; // For editing post title in edit mode
+  final TextEditingController?
+      titleController; // For editing post title in edit mode
   final Function(String)? onTitleChanged; // Callback for title changes
   final Function? onPostSubmit; // Callback when post button is pressed
 
@@ -87,9 +89,10 @@ class PostComponent extends StatefulWidget {
       mediaData = (medias as List<Media>).map((x) => x.toMap()).toList();
     } else {
       // Convert PostFile objects to Media objects
-      mediaData = PostComponent.convertPostFilesToMedia(medias as List<PostFile>)
-          .map((x) => x.toMap())
-          .toList();
+      mediaData =
+          PostComponent.convertPostFilesToMedia(medias as List<PostFile>)
+              .map((x) => x.toMap())
+              .toList();
     }
 
     return {
@@ -138,7 +141,8 @@ class PostComponent extends StatefulWidget {
       );
 }
 
-class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveClientMixin {
+class _PostComponentState extends State<PostComponent>
+    with AutomaticKeepAliveClientMixin {
   final String postId;
   final String ownerId;
   final String username;
@@ -178,14 +182,19 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
     final String? currentUserId = Auth().currentUser?.uid;
 
     isLiked = currentUserId != null ? (rockets[currentUserId] == true) : false;
-    
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
+      padding: EdgeInsets.only(
+          bottom: AppTheme.elementSpacing,
+          right: AppTheme.elementSpacing.w * 0.75,
+          left: AppTheme.elementSpacing.w * 0.75),
       child: GestureDetector(
-        onTap: isEditable ? null : () {
-          final homeController = Get.find<HomeController>();
-          homeController.createClicks(postId);
-        },
+        onTap: isEditable
+            ? null
+            : () {
+                final homeController = Get.find<HomeController>();
+                homeController.createClicks(postId);
+              },
         child: GlassContainer(
           child: Padding(
             padding: const EdgeInsets.only(
@@ -209,9 +218,10 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
                         decoration: InputDecoration(
                           hintText: "Enter title",
                           border: InputBorder.none,
-                          hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Theme.of(context).hintColor,
-                          ),
+                          hintStyle:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: Theme.of(context).hintColor,
+                                  ),
                         ),
                         onChanged: (value) {
                           if (onTitleChanged != null) {
@@ -230,55 +240,55 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
                 ),
                 // Show like space in view mode, or submit button in edit mode
                 !isEditable
-                  ? buildLikeSpace(
-                      type: likeSpaceType.Post, 
-                      targetId: postId, 
-                      postName: postName, 
-                      username: username, 
-                      ownerId: ownerId, 
-                      rockets: rockets
-                    )
-                  : onPostSubmit != null
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-                        child: GestureDetector(
-                          onTap: () => onPostSubmit!(),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context).colorScheme.primary,
-                                  Theme.of(context).colorScheme.secondary,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    color: Colors.white,
-                                    size: 16,
+                    ? buildLikeSpace(
+                        type: likeSpaceType.Post,
+                        targetId: postId,
+                        postName: postName,
+                        username: username,
+                        ownerId: ownerId,
+                        rockets: rockets)
+                    : onPostSubmit != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                                top: AppTheme.elementSpacing),
+                            child: GestureDetector(
+                              onTap: () => onPostSubmit!(),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.secondary,
+                                    ],
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'POST',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'POST',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      )
-                    : Container(),
+                          )
+                        : Container(),
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),
@@ -304,7 +314,7 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
           return _buildViewableMedia(media);
         }
       }
-      
+
       // Fallback if we somehow get the wrong type
       return Container(margin: const EdgeInsets.only(bottom: 10.0));
     }).toList();
@@ -336,7 +346,8 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
         mediaWidget = Container();
     }
 
-    return Container(margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
+    return Container(
+        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
   }
 
   // Builds non-editable media widgets for viewing posts
@@ -370,7 +381,8 @@ class _PostComponentState extends State<PostComponent> with AutomaticKeepAliveCl
       mediaWidget = TextBuilderNetwork(url: media.data); // Default fallback
     }
 
-    return Container(margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
+    return Container(
+        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
   }
 
   @override

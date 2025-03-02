@@ -1018,7 +1018,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           Container(
                                                             height: AppTheme
                                                                     .cardPadding *
-                                                                1.5,
+                                                                2.5.h,
                                                           )
                                                         ],
                                                       )),
@@ -1200,7 +1200,7 @@ class _MempoolHomeState extends State<MempoolHome> {
   List<Difficulty> hashrateChartDifficulty = [];
   bool hashrateLoading = true;
 
-  Future<void> getHashrateData() async {
+  Future<void> getHashrateData([String period = '1M']) async {
     if (!mounted) return;
 
     try {
@@ -1210,7 +1210,7 @@ class _MempoolHomeState extends State<MempoolHome> {
 
       var dio = Dio();
       var response =
-          await dio.get('https://mempool.space/api/v1/mining/hashrate/1M');
+          await dio.get('https://mempool.space/api/v1/mining/hashrate/$period');
 
       if (response.statusCode == 200) {
         List<ChartLine> line = [];
@@ -1242,8 +1242,6 @@ class _MempoolHomeState extends State<MempoolHome> {
   }
 
   Widget _buildHashrateWidget() {
-    // Data is now fetched in initState, no need to check here
-
     // Get current hashrate value from the latest data point
     String currentHashrate = "...";
     String changePercentage = "";
@@ -1351,6 +1349,24 @@ class _MempoolHomeState extends State<MempoolHome> {
 
               SizedBox(height: 16),
 
+              // Time period selection
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildTimeButton(context, '1D', hashrateLoading),
+                  SizedBox(width: 4),
+                  _buildTimeButton(context, '1W', hashrateLoading),
+                  SizedBox(width: 4),
+                  _buildTimeButton(context, '1M', hashrateLoading),
+                  SizedBox(width: 4),
+                  _buildTimeButton(context, '1Y', hashrateLoading),
+                  SizedBox(width: 4),
+                  _buildTimeButton(context, 'MAX', hashrateLoading),
+                ],
+              ),
+
+              SizedBox(height: 16),
+
               // Hashrate chart similar to the hashrate screen
               hashrateLoading
                   ? Center(
@@ -1396,30 +1412,54 @@ class _MempoolHomeState extends State<MempoolHome> {
                   textAlign: TextAlign.center,
                 ),
               ),
-
-              SizedBox(height: 16),
-
-              // View Details Button
-              Center(
-                child: TextButton.icon(
-                  onPressed: () {
-                    context.push('/wallet/hashrate');
-                  },
-                  icon: Icon(
-                    Icons.open_in_new,
-                    size: 16,
-                    color: AppTheme.colorBitcoin,
-                  ),
-                  label: Text(
-                    "Open Detailed View",
-                    style: TextStyle(
-                      color: AppTheme.colorBitcoin,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Track selected time period
+  String selectedTimePeriod = '1M';
+
+  Widget _buildTimeButton(BuildContext context, String period, bool isLoading, {bool isSelected = false}) {
+    // Use the tracked time period
+    final isActive = period == selectedTimePeriod;
+    return InkWell(
+      onTap: isLoading ? null : () {
+        // Update selected period
+        setState(() {
+          selectedTimePeriod = period;
+        });
+
+        // Handle period selection here
+        if (period == '1D') {
+          getHashrateData('1D');
+        } else if (period == '1W') {
+          getHashrateData('1W');
+        } else if (period == '1M') {
+          getHashrateData('1M');
+        } else if (period == '1Y') {
+          getHashrateData('1Y');
+        } else if (period == 'MAX') {
+          getHashrateData('3Y'); // Maximum available data is 3 years
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isActive ? AppTheme.colorBitcoin.withOpacity(0.2) : Colors.transparent,
+          border: Border.all(
+            color: isActive ? AppTheme.colorBitcoin : AppTheme.white60,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          period,
+          style: TextStyle(
+            color: isActive ? AppTheme.colorBitcoin : null,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
@@ -1562,12 +1602,24 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   // Fear & Greed Widget with real data
   Widget _buildFearGreedWidget() {
-    // Data is now fetched in initState, no need to check here
-
     // Get current value or use 50 as default
     int currentValue = 50;
     if (fearGreedData.fgi != null && fearGreedData.fgi!.now != null) {
       currentValue = fearGreedData.fgi!.now!.value ?? 50;
+    }
+
+    // Get historical values for comparison
+    Map<String, int> historicalValues = {};
+    if (fearGreedData.fgi != null) {
+      if (fearGreedData.fgi!.previousClose != null) {
+        historicalValues['Yesterday'] = fearGreedData.fgi!.previousClose!.value ?? 0;
+      }
+      if (fearGreedData.fgi!.oneWeekAgo != null) {
+        historicalValues['Last Week'] = fearGreedData.fgi!.oneWeekAgo!.value ?? 0;
+      }
+      if (fearGreedData.fgi!.oneMonthAgo != null) {
+        historicalValues['Last Month'] = fearGreedData.fgi!.oneMonthAgo!.value ?? 0;
+      }
     }
 
     return Container(
@@ -1612,8 +1664,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                       child: Column(
                         children: [
                           _buildRadialGauge(currentValue),
-                          SizedBox(height: 16),
-
                           // Value and sentiment text
                           Text(
                             fearGreedData.fgi?.now?.valueText ?? "Neutral",
@@ -1625,67 +1675,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                   color: _getFearGreedColor(currentValue),
                                 ),
                           ),
-
-                          if (formattedFearGreedDate.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                "Last updated: $formattedFearGreedDate",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? AppTheme.white60
-                                          : AppTheme.black60,
-                                    ),
-                              ),
-                            ),
                         ],
                       ),
                     ),
-
-              SizedBox(height: 16),
-
-              // Explanation
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: AppTheme.colorBitcoin.withOpacity(0.1),
-                ),
-                child: Text(
-                  "The Fear & Greed Index measures market sentiment",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: AppTheme.colorBitcoin,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              SizedBox(height: 16),
-
-              // View Details Button
-              Center(
-                child: TextButton.icon(
-                  onPressed: () {
-                    context.push('/wallet/fear_and_greed');
-                  },
-                  icon: Icon(
-                    Icons.open_in_new,
-                    size: 16,
-                    color: AppTheme.colorBitcoin,
-                  ),
-                  label: Text(
-                    "Open Detailed View",
-                    style: TextStyle(
-                      color: AppTheme.colorBitcoin,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
