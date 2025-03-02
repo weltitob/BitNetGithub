@@ -668,22 +668,25 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
           Positioned(
             right: AppTheme.cardPadding.w * 0.75,
             top: AppTheme.cardPadding.w * 0.75,
-            child: GlassContainer(
-              borderRadius: BorderRadius.circular(500),
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.elementSpacing * 0.5),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(width: AppTheme.elementSpacing * 0.5),
-                    Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      size: 16,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    const SizedBox(width: AppTheme.elementSpacing * 0.5),
-                    _buildCurrencyIcon(isOnchain),
-                  ],
+            child: GestureDetector(
+              onTap: () => _showCurrencySelectionSheet(context, isOnchain),
+              child: GlassContainer(
+                borderRadius: BorderRadius.circular(500),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.elementSpacing * 0.5),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: AppTheme.elementSpacing * 0.5),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
+                      const SizedBox(width: AppTheme.elementSpacing * 0.5),
+                      _buildCurrencyIcon(isOnchain),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -705,6 +708,66 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
         child: isOnchain
             ? Icon(Icons.currency_bitcoin, color: Colors.white, size: 20)
             : Icon(Icons.flash_on, color: Colors.white, size: 20),
+      ),
+    );
+  }
+  
+  void _showCurrencySelectionSheet(BuildContext context, bool isOnchain) {
+    BitNetBottomSheet(
+      context: context,
+      child: bitnetScaffold(
+        context: context,
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
+          context: context,
+          text: "Select Currency",
+          hasBackButton: false,
+        ),
+        body: Column(
+          children: [
+            const SizedBox(height: AppTheme.cardPadding * 2),
+            BitNetListTile(
+              text: "Bitcoin",
+              leading: Image.asset(
+                'assets/images/bitcoin.png',
+                width: 32,
+                height: 32,
+              ),
+              selected: isOnchain,
+              isActive: isOnchain,
+              trailing: isOnchain
+                  ? Icon(
+                      Icons.check,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  : null,
+              onTap: () {
+                // Handle currency selection
+                Navigator.pop(context);
+              },
+            ),
+            BitNetListTile(
+              text: "Lightning",
+              leading: Image.asset(
+                'assets/images/lightning.png',
+                width: 32,
+                height: 32,
+              ),
+              selected: !isOnchain,
+              isActive: !isOnchain,
+              trailing: !isOnchain
+                  ? Icon(
+                      Icons.check,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  : null,
+              onTap: () {
+                // Handle currency selection
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
