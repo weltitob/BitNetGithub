@@ -8,11 +8,13 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSliderClickable.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -44,12 +46,41 @@ class _CollectionScreenState extends State<CollectionScreen> {
   PersistentBottomSheetController? sheetCtrler;
   Widget? bottomSheet;
   late PanelController buyPanelController;
+  int currentTabIndex = 0;
+  late List<Widget> tabPages;
+  
   @override
   initState() {
     sorting_filter = L10n.of(widget.context)!.recentlyListed;
     sortList(search_filter, sorting_filter);
     buyPanelController = PanelController();
+    _initTabPages();
     super.initState();
+  }
+  
+  void _initTabPages() {
+    tabPages = [
+      // Column View - Grid layout of assets
+      _buildColumnTabView(),
+      // Row View - Assets organized by collections
+      _buildRowTabView(),
+      // Price/Sales - Price statistics and sales history
+      _buildPriceSalesTabView(),
+      // Owners - List of owners with their assets
+      _buildOwnersTabView(),
+      // Info - Collection information and description
+      _buildInfoTabView(),
+    ];
+  }
+  
+  void showBuyPanel(int id) {
+    setState(() {
+      this.item_buy = id;
+      _buildBuySlidingPanel(context).whenComplete(() {
+        this.item_buy = -1;
+        setState(() {});
+      });
+    });
   }
 
   @override
@@ -65,448 +96,780 @@ class _CollectionScreenState extends State<CollectionScreen> {
       context: context,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 20.h),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 15.h),
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 38.h),
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.r),
-                          child: Image.asset(
-                            nftImage5,
-                            width: size.width,
-                            height: 185.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        child: SizedBox(
-                          width: size.width,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100.r),
-                              child: Image.asset(
-                                user1Image,
-                                width: 75.w,
-                                height: 75.w,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 15.h),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, route.kOwnerDetailScreenRoute);
-                    },
-                    child: Text(
-                      name != null ? name : L10n.of(context)!.unknown,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            decoration: TextDecoration.underline,
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20.h),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Text(
-                      'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(fontSize: 14.sp)),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20.h),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Text(
-                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 15.h),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const OwnerDataText(
-                        ownerDataImg: discordIcon,
-                        ownerDataTitle: 'Discord',
-                        hasImage: true,
-                      ),
-                      const OwnerDataText(
-                        ownerDataImg: twitterIcon,
-                        ownerDataTitle: 'Twitter',
-                        hasImage: true,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, route.kActivityScreenRoute);
-                        },
-                        child: OwnerDataText(
-                          ownerDataImg: activityIcon,
-                          ownerDataTitle: L10n.of(context)!.activity,
-                          hasImage: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.floorPrice,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          Row(children: [
-                            const Text("0.025"),
-                            Image.asset(
-                              bitCoinIcon,
-                              width: 15,
-                              height: 15,
-                            )
-                          ]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.sales,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          const Text("500"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "24H Volume",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          Row(children: [
-                            const Text("0.021"),
-                            Image.asset(
-                              bitCoinIcon,
-                              width: 15,
-                              height: 15,
-                            )
-                          ]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.totalVolume,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          Row(children: [
-                            const Text("1.0235"),
-                            Image.asset(
-                              bitCoinIcon,
-                              width: 15,
-                              height: 15,
-                            )
-                          ]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.listed,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          const Text("52"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.supply,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          const Text("1000"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: GlassContainer(
-                    opacity: 0.05,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 6, horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            L10n.of(context)!.owners,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.colorBitcoin),
-                          ),
-                          const Text("250"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                    child: Text("Inscriptions",
-                        style: Theme.of(context).textTheme.headlineMedium)),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 64.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      LongButtonWidget(
-                        customWidth: 10 * 8,
-                        customHeight: 10 * 2.5,
-                        title: L10n.of(context)!.forSale,
-                        titleStyle: Theme.of(context).textTheme.bodySmall,
-                        onTap: () {
-                          setState(() {
-                            search_filter = 0;
-                            sortList(search_filter, sorting_filter);
-                          });
-                        },
-                        buttonType: search_filter == 0
-                            ? ButtonType.solid
-                            : ButtonType.transparent,
-                      ),
-                      LongButtonWidget(
-                        title: L10n.of(context)!.showAll,
-                        customWidth: 10 * 8,
-                        customHeight: 10 * 2.5,
-                        onTap: () {
-                          setState(() {
-                            search_filter = 1;
-                            sortList(search_filter, sorting_filter);
-                          });
-                        },
-                        buttonType: search_filter == 1
-                            ? ButtonType.solid
-                            : ButtonType.transparent,
-                      ),
-                      LongButtonWidget(
-                        title: L10n.of(context)!.sold,
-                        customWidth: 10 * 8,
-                        customHeight: 10 * 2.5,
-                        onTap: () {
-                          setState(() {
-                            search_filter = 2;
-                            sortList(search_filter, sorting_filter);
-                          });
-                        },
-                        buttonType: search_filter == 2
-                            ? ButtonType.solid
-                            : ButtonType.transparent,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SortingCategoryPopup(
-                      onChanged: (str) {
-                        setState(() {
-                          sorting_filter = str;
-                          sortList(search_filter, sorting_filter);
-                        });
-                      },
-                      currentSortingCategory: sorting_filter,
-                    )
-                  ],
-                ),
-                CommonHeading(
-                  headingText: '',
-                  hasButton: false,
-                  isNormalChild: true,
-                  isChild: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w),
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 4 / 5.7,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        crossAxisCount: 2,
-                      ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: sortedGridList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return NftProductSliderClickable(
-                            id: sortedGridList[index].id,
-                            nftImage: sortedGridList[index].nftImage,
-                            nftName: sortedGridList[index].nftName,
-                            nftMainName: sortedGridList[index].nftMainName,
-                            cryptoImage: sortedGridList[index].cryptoImage,
-                            cryptoText: sortedGridList[index].cryptoText,
-                            columnMargin: sortedGridList[index].columnMargin,
-                            rank: sortedGridList[index].rank,
-                            onTap: (i) {
-                              if (!selected_products.isEmpty) {
-                                handleProductClick(i, context);
-                              } else {
-                                context.goNamed('/asset_screen',
-                                    pathParameters: {
-                                      'nft_id': sortedGridList[index].nftName
-                                    });
-                              }
-                            },
-                            onLongTap: () {
-                              handleProductClick(
-                                  sortedGridList[index].id, context);
-                            },
-                            onTapBuy: () {
-                              setState(() {
-                                this.item_buy = sortedGridList[index].id;
-                                _buildBuySlidingPanel(context).whenComplete(() {
-                                  this.item_buy = -1;
-                                  setState(() {});
-                                });
-                              });
-                            },
-                            selected: selected_products
-                                .contains(sortedGridList[index].id));
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          Column(
+            children: [
+              // Collection Header
+              _buildCollectionHeader(size, name),
+              
+              // Tab Bar
+              _buildTabBar(),
+              
+              // Tab Content
+              Expanded(
+                child: tabPages[currentTabIndex],
+              )
+            ],
           ),
-          //const FilterBtn(),
-          //const StatusBarBg(),
 
           if (showCartBottomSheet && item_buy == -1 && bottomSheet != null)
             bottomSheet!
         ],
       ),
+    );
+  }
+  
+  Widget _buildTabBar() {
+    return Container(
+      height: 60.h,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 2,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildTabButton(0, Icons.view_column_rounded, "Column"),
+          _buildTabButton(1, Icons.table_rows_rounded, "Row"),
+          _buildTabButton(2, Icons.monetization_on, "Price"),
+          _buildTabButton(3, Icons.people, "Owners"),
+          _buildTabButton(4, Icons.info_outline, "Info"),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildTabButton(int index, IconData icon, String label) {
+    bool isSelected = currentTabIndex == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          currentTabIndex = index;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.colorBitcoin : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: isSelected ? Colors.white : Theme.of(context).iconTheme.color,
+            ),
+            if (isSelected) ...[
+              SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildCollectionHeader(Size size, String? name) {
+    return Container(
+      padding: EdgeInsets.only(top: 90.h, bottom: 10.h),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 38.h),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Image.asset(
+                    nftImage5,
+                    width: size.width,
+                    height: 160.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: SizedBox(
+                  width: size.width,
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.r),
+                      child: Image.asset(
+                        user1Image,
+                        width: 75.w,
+                        height: 75.w,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            name != null ? name : L10n.of(context)!.unknown,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          Text(
+            'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Column Tab View Implementation
+  Widget _buildColumnTabView() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filter Row
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.colorGlassContainer.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search, size: 20),
+                        SizedBox(width: 8),
+                        Text("Search...", style: TextStyle(fontSize: 14)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                SortingCategoryPopup(
+                  onChanged: (str) {
+                    setState(() {
+                      sorting_filter = str;
+                      sortList(search_filter, sorting_filter);
+                    });
+                  },
+                  currentSortingCategory: sorting_filter,
+                ),
+              ],
+            ),
+          ),
+          
+          // Grid of Assets
+          GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 4 / 6.5,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              crossAxisCount: 2,
+            ),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemCount: sortedGridList.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = sortedGridList[index];
+              final media = Media(
+                data: item.nftImage,
+                type: "asset_image",
+              );
+              
+              return GestureDetector(
+                onTap: () {
+                  if (!selected_products.isEmpty) {
+                    handleProductClick(item.id, context);
+                  } else {
+                    context.goNamed('/asset_screen',
+                      pathParameters: {
+                        'nft_id': item.nftName
+                      });
+                  }
+                },
+                onLongPress: () {
+                  handleProductClick(item.id, context);
+                },
+                child: Stack(
+                  children: [
+                    AssetCard(
+                      scale: 0.95,
+                      medias: [media],
+                      nftName: item.nftName,
+                      nftMainName: item.nftMainName,
+                      cryptoText: item.cryptoText,
+                      rank: item.rank.toString(),
+                      hasPrice: true,
+                      hasLiked: selected_products.contains(item.id),
+                      hasListForSale: false,
+                      postId: item.id.toString(),
+                      onLikeChanged: (isLiked) {
+                        handleProductClick(item.id, context);
+                      },
+                    ),
+                    // Add Buy button overlay
+                    Positioned(
+                      right: 10,
+                      bottom: 40,
+                      child: GestureDetector(
+                        onTap: () => showBuyPanel(item.id),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppTheme.colorBitcoin,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            "Buy",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+  
+  // Row Tab View Implementation  
+  Widget _buildRowTabView() {
+    // Group assets by their collections
+    final groupedAssets = <String, List<GridListModal>>{};
+    
+    for (var asset in sortedGridList) {
+      final groupName = asset.nftName;
+      if (!groupedAssets.containsKey(groupName)) {
+        groupedAssets[groupName] = [];
+      }
+      groupedAssets[groupName]!.add(asset);
+    }
+    
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: groupedAssets.entries.map((entry) {
+          final collectionName = entry.key;
+          final collectionAssets = entry.value;
+          
+          return Padding(
+            padding: EdgeInsets.only(bottom: 24.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Collection Header
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          user1Image,
+                          width: 40.w,
+                          height: 40.w,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Text(
+                          collectionName,
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward_ios, size: 16),
+                    ],
+                  ),
+                ),
+                
+                // Horizontal List of Assets
+                Container(
+                  height: 240.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: collectionAssets.length,
+                    itemBuilder: (context, index) {
+                      final item = collectionAssets[index];
+                      final media = Media(
+                        data: item.nftImage,
+                        type: "asset_image",
+                      );
+                      
+                      return Padding(
+                        padding: EdgeInsets.only(right: 12.w),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (!selected_products.isEmpty) {
+                              handleProductClick(item.id, context);
+                            } else {
+                              context.goNamed('/asset_screen',
+                                pathParameters: {
+                                  'nft_id': item.nftName
+                                });
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              AssetCard(
+                                scale: 0.9,
+                                medias: [media],
+                                nftName: item.nftName,
+                                nftMainName: item.nftMainName,
+                                cryptoText: item.cryptoText,
+                                rank: item.rank.toString(),
+                                hasPrice: true,
+                                hasLiked: selected_products.contains(item.id),
+                                hasListForSale: false,
+                                postId: item.id.toString(),
+                                onLikeChanged: (isLiked) {
+                                  handleProductClick(item.id, context);
+                                },
+                              ),
+                              // Buy button
+                              Positioned(
+                                right: 10,
+                                bottom: 40,
+                                child: GestureDetector(
+                                  onTap: () => showBuyPanel(item.id),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.colorBitcoin,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      "Buy",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+  
+  // Price/Sales Tab View Implementation
+  Widget _buildPriceSalesTabView() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Price Statistics
+          Text(
+            "Price Statistics",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 12.h),
+          
+          // Statistics Cards
+          _buildStatisticsCard(),
+          SizedBox(height: 24.h),
+          
+          // Recent Sales
+          Text(
+            "Recent Sales",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 12.h),
+          
+          // Sales List
+          _buildRecentSalesList(),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildStatisticsCard() {
+    return GlassContainer(
+      opacity: 0.1,
+      width: double.infinity,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildStatRow("Floor Price", "0.025 BTC"),
+            Divider(height: 24),
+            _buildStatRow("24h Volume", "0.021 BTC"),
+            Divider(height: 24),
+            _buildStatRow("Total Volume", "1.0235 BTC"),
+            Divider(height: 24),
+            _buildStatRow("Listed", "52"),
+            Divider(height: 24),
+            _buildStatRow("Supply", "1000"),
+            Divider(height: 24),
+            _buildStatRow("Owners", "250"),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildStatRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: AppTheme.colorBitcoin,
+              ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildRecentSalesList() {
+    final salesData = [
+      {"id": "#2390", "price": "0.024 BTC", "date": "2 hours ago", "from": "User1", "to": "User2"},
+      {"id": "#1872", "price": "0.031 BTC", "date": "5 hours ago", "from": "User3", "to": "User4"},
+      {"id": "#2103", "price": "0.018 BTC", "date": "1 day ago", "from": "User5", "to": "User6"},
+      {"id": "#1945", "price": "0.027 BTC", "date": "2 days ago", "from": "User7", "to": "User8"},
+      {"id": "#2287", "price": "0.022 BTC", "date": "3 days ago", "from": "User9", "to": "User10"},
+    ];
+    
+    return Column(
+      children: salesData.map((sale) {
+        return GlassContainer(
+          opacity: 0.1,
+          width: double.infinity,
+          child: Container(
+            margin: EdgeInsets.only(bottom: 8),
+            child: Padding(
+              padding: EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  // Asset image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      nftImage1,
+                      width: 50.w,
+                      height: 50.w,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  // Sale details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Inscription ${sale["id"]}",
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "${sale["from"]} → ${sale["to"]}",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Price and time
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        sale["price"]!,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              color: AppTheme.colorBitcoin,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        sale["date"]!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+  
+  // Owners Tab View Implementation
+  Widget _buildOwnersTabView() {
+    final ownersData = [
+      {"name": "User1", "address": "bc1q...3x9f", "assets": 42, "percentage": "4.2%"},
+      {"name": "User2", "address": "bc1q...7t2g", "assets": 38, "percentage": "3.8%"},
+      {"name": "User3", "address": "bc1q...5k1h", "assets": 27, "percentage": "2.7%"},
+      {"name": "User4", "address": "bc1q...9j4d", "assets": 19, "percentage": "1.9%"},
+      {"name": "User5", "address": "bc1q...2m7s", "assets": 15, "percentage": "1.5%"},
+      {"name": "User6", "address": "bc1q...6f3a", "assets": 12, "percentage": "1.2%"},
+      {"name": "User7", "address": "bc1q...8n2v", "assets": 10, "percentage": "1.0%"},
+      {"name": "User8", "address": "bc1q...1p4c", "assets": 8, "percentage": "0.8%"},
+    ];
+    
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Text(
+            "Top Owners",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 12.h),
+          
+          // Owners List
+          Column(
+            children: ownersData.map((owner) {
+              return GlassContainer(
+                opacity: 0.1,
+                width: double.infinity,
+
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        // Owner avatar
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Image.asset(
+                            user1Image,
+                            width: 50.w,
+                            height: 50.w,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        // Owner details
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                owner["name"].toString()!,
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                owner["address"].toString()!,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Assets count
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${owner["assets"]} assets",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              owner["percentage"].toString()!,
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: AppTheme.colorBitcoin,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  // Info Tab View Implementation
+  Widget _buildInfoTabView() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Description
+          Text(
+            "Description",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 8.h),
+          GlassContainer(
+            opacity: 0.1,
+            width: double.infinity,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+          SizedBox(height: 24.h),
+          
+          // Social Links
+          Text(
+            "Links",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 8.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const OwnerDataText(
+                ownerDataImg: discordIcon,
+                ownerDataTitle: 'Discord',
+                hasImage: true,
+              ),
+              const OwnerDataText(
+                ownerDataImg: twitterIcon,
+                ownerDataTitle: 'Twitter',
+                hasImage: true,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                      context, route.kActivityScreenRoute);
+                },
+                child: OwnerDataText(
+                  ownerDataImg: activityIcon,
+                  ownerDataTitle: L10n.of(context)!.activity,
+                  hasImage: true,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 24.h),
+          
+          // Details
+          Text(
+            "Details",
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 8.h),
+          GlassContainer(
+            opacity: 0.1,
+            width: double.infinity,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _buildDetailRow("Contract Address", "bc1qwlcazq...k7mtl"),
+                  Divider(height: 24),
+                  _buildDetailRow("Token Standard", "BRC-20"),
+                  Divider(height: 24),
+                  _buildDetailRow("Creator Fee", "2.5%"),
+                  Divider(height: 24),
+                  _buildDetailRow("Chain", "Bitcoin"),
+                  Divider(height: 24),
+                  _buildDetailRow("Created", "April 2023"),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: AppTheme.colorBitcoin,
+              ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
     );
   }
 
@@ -604,9 +967,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
             boxShadow: [],
             maxHeight: 600,
             minHeight: 100,
-            // initialChildSize: 0.2,
-            // snapSizes: [0.2, 0.6],
-            // shouldCloseOnMinExtent:  false,
             panel: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: CartSheet(
@@ -734,157 +1094,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
         ),
       ),
     );
-    // showGeneralDialog(
-    //     barrierDismissible: true,
-    //     barrierLabel: "buy_dialog",
-    //     context: context,
-    //     pageBuilder: (context, a1, a2) {
-    //       return AlertDialog(
-    //         insetPadding: EdgeInsets.zero,
-    //         backgroundColor: Colors.transparent,
-    //         content: Container(
-    //           decoration: BoxDecoration(
-    //               borderRadius: BorderRadius.circular(8),
-    //               color: AppTheme.colorBackground,
-    //               border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-    //           height: 600,
-    //           child: Padding(
-    //             padding: const EdgeInsets.all(8.0),
-    //             child: Column(
-    //               mainAxisSize: MainAxisSize.min,
-    //               crossAxisAlignment: CrossAxisAlignment.center,
-    //               children: [
-    //                 Text("Buy",
-    //                     style: Theme.of(context)
-    //                         .textTheme
-    //                         .headlineMedium!
-    //                         .copyWith(color: Colors.white)),
-    //                 Divider(
-    //                   color: AppTheme.colorBitcoin,
-    //                   thickness: 2,
-    //                 ),
-    //                 _buildHorizontalProductWithId(item_buy),
-    //                 Spacer(),
-    //                 Container(
-    //                   width: AppTheme.cardPadding * 10,
-    //                   child: Column(
-    //                     children: [
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Text(
-    //                             "Subtotal",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           ),
-    //                           Text(
-    //                             "0.024",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 10),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Text(
-    //                             "Network Fee",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           ),
-    //                           Text(
-    //                             "0.024",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 10),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Text(
-    //                             "Market Fee",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           ),
-    //                           Text(
-    //                             "0.024",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 10),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Text(
-    //                             "Total Price",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           ),
-    //                           Text(
-    //                             "0.024",
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .bodyMedium!
-    //                                 .copyWith(color: Colors.white),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       SizedBox(height: 10),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Padding(
-    //                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-    //                   child: Row(
-    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                     children: [
-    //                       LongButtonWidget(
-    //                         title: "Cancel",
-    //                         onTap: () {
-    //                           Navigator.pop(context);
-    //                         },
-    //                         buttonType: ButtonType.transparent,
-    //                         customWidth: 15 * 10,
-    //                         customHeight: 15 * 2.5,
-    //                       ),
-    //                       LongButtonWidget(
-    //                         title: "Buy Now",
-    //                         onTap: () {},
-    //                         customWidth: 15 * 10,
-    //                         customHeight: 15 * 2.5,
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 )
-    //               ],
-    //             ),
-    //           ),
-    //         ),
-    //       );
-    //     }).whenComplete(() {
-    //   setState(() {
-    //     item_buy = -1;
-    //   });
-    // });
   }
 }
 
@@ -1091,13 +1300,6 @@ class _CartSheetState extends State<CartSheet> {
                     hasBackButton: false,
                   ),
                   body: Container(
-                    // decoration: BoxDecoration(
-                    //     color: AppTheme.colorBackground,
-                    //     borderRadius: BorderRadius.only(
-                    //         topLeft: Radius.circular(8),
-                    //         topRight: Radius.circular(8)),
-                    //     border:
-                    //         Border.all(color: AppTheme.colorBitcoin, width: 2)),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1204,15 +1406,6 @@ class HorizontalProduct extends StatelessWidget {
           rank: item.rank,
           columnMargin: item.columnMargin,
           onDelete: onDelete
-          // () {
-
-          // setState(() {
-          //   selected_products.remove(id);
-          //   if (selected_products.isEmpty) {
-          //     showCartBottomSheet = false;
-          //   }
-          // });
-          // },
           ),
     );
   }

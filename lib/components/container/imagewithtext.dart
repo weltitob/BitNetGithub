@@ -11,6 +11,7 @@ class GlassContainer extends StatelessWidget {
   final double borderThickness;
   final List<BoxShadow>? customShadow;
   final Color? customColor;
+  final EdgeInsetsGeometry? margin;
 
   const GlassContainer({
     Key? key,
@@ -23,11 +24,13 @@ class GlassContainer extends StatelessWidget {
     this.borderThickness = 1,
     this.customShadow,
     this.customColor,
+    this.margin,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       decoration: BoxDecoration(
         boxShadow: customShadow != null
             ? customShadow!
