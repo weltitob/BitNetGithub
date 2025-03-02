@@ -43,7 +43,7 @@ class RowTabView extends StatelessWidget {
           final collectionAssets = entry.value;
           
           return Padding(
-            padding: EdgeInsets.only(bottom: 24.h),
+            padding: EdgeInsets.symmetric(vertical: AppTheme.cardPadding.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -13,7 +13,7 @@ class InfoTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w, vertical: AppTheme.cardPadding.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,31 +45,42 @@ class InfoTabView extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          SizedBox(height: 16.h),
+          Wrap(
+            spacing: 12.w,
+            runSpacing: 12.h,
             children: [
-              const OwnerDataText(
+              OwnerDataText(
                 ownerDataImg: discordIcon,
                 ownerDataTitle: 'Discord',
                 hasImage: true,
+                onTap: () {
+                  // Open Discord link
+                },
               ),
-              SizedBox(width: 16.w),
-              const OwnerDataText(
+              OwnerDataText(
                 ownerDataImg: twitterIcon,
                 ownerDataTitle: 'Twitter',
                 hasImage: true,
-              ),
-              SizedBox(width: 16.w),
-              GestureDetector(
                 onTap: () {
-                  // Navigate to activity screen
+                  // Open Twitter link
                 },
-                child: OwnerDataText(
-                  ownerDataImg: activityIcon,
-                  ownerDataTitle: L10n.of(context)!.activity,
-                  hasImage: true,
-                ),
+              ),
+              OwnerDataText(
+                ownerDataImg: activityIcon,
+                ownerDataTitle: 'Website',
+                hasImage: true,
+                onTap: () {
+                  // Open website
+                },
+              ),
+              OwnerDataText(
+                ownerDataImg: activityIcon,
+                ownerDataTitle: 'Ordinals Explorer',
+                hasImage: true,
+                onTap: () {
+                  // Open Ordinals explorer
+                },
               ),
             ],
           ),
@@ -115,12 +126,18 @@ class InfoTabView extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-            color: AppTheme.colorBitcoin,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).textTheme.bodySmall?.color,
           ),
         ),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleMedium,
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
       ],
     );

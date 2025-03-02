@@ -56,10 +56,11 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Collection Price Chart
+          SizedBox(height: AppTheme.cardPadding * 1.h),
           _buildPriceHeader(),
           SizedBox(height: 8.h),
           _buildPriceChart(),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppTheme.cardPadding * 1.5.h),
           
           // Price Statistics Section
           Text(
@@ -105,7 +106,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              _buildTimeToggle(),
+
             ],
           ),
           SizedBox(height: 12.h),
@@ -134,11 +135,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
 
   Widget _buildPriceHeader() {
     // Calculate price change
-    final firstPrice = chartData.first.price;
-    final lastPrice = chartData.last.price;
-    final priceChange = (lastPrice - firstPrice) / firstPrice;
-    final priceChangeStr = "${(priceChange * 100).toStringAsFixed(2)}%";
-    final isPositive = priceChange >= 0;
+
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,38 +151,19 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "${lastPrice.toStringAsFixed(4)} BTC",
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Icon(
-                  Icons.currency_bitcoin,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 20,
-                ),
-              ],
-            ),
-            PercentageChangeWidget(
-              percentage: priceChangeStr,
-              isPositive: isPositive,
-              fontSize: 14,
-            ),
-          ],
-        ),
+        SizedBox(height: AppTheme.elementSpacing.h),
+
       ],
     );
   }
   
   Widget _buildPriceChart() {
+    final firstPrice = chartData.first.price;
+    final lastPrice = chartData.last.price;
+    final priceChange = (lastPrice - firstPrice) / firstPrice;
+    final priceChangeStr = "${(priceChange * 100).toStringAsFixed(2)}%";
+    final isPositive = priceChange >= 0;
+
     return GlassContainer(
       width: double.infinity,
       opacity: 0.1,
@@ -193,6 +171,27 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${lastPrice.toStringAsFixed(4)} BTC",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                  ],
+                ),
+                PercentageChangeWidget(
+                  percentage: priceChangeStr,
+                  isPositive: isPositive,
+                  fontSize: 14,
+                ),
+              ],
+            ),
             Container(
               height: 200.h,
               child: SfCartesianChart(
@@ -224,8 +223,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         DateTime.fromMillisecondsSinceEpoch(data.time.toInt()),
                     yValueMapper: (ChartLine data, _) => data.price,
                     color: chartData.first.price <= chartData.last.price
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.error,
+                        ? AppTheme.successColor
+                        : AppTheme.errorColor,
                     width: 3,
                   )
                 ],
@@ -257,13 +256,15 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
           },
           child: GlassContainer(
             opacity: isSelected ? 0.3 : 0.1,
-            borderRadius: BorderRadius.circular(12),
-            borderThickness: isSelected ? 1.5 : 0,
-            child: Text(
-              timeframe,
-              style: TextStyle(
-                color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium?.color,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            borderRadius: BorderRadius.circular(10),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing * 0.5),
+              child: Text(
+                timeframe,
+                style: TextStyle(
+                  color: isSelected ? Theme.of(context).textTheme.bodyMedium?.color : Theme.of(context).textTheme.bodyMedium?.color,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ),
           ),
@@ -272,27 +273,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
     );
   }
   
-  Widget _buildTimeToggle() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        children: [
-          Text(
-            selectedTimespan,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          Icon(
-            Icons.keyboard_arrow_down,
-            size: 16,
-          ),
-        ],
-      ),
-    );
-  }
+
   
   Widget _buildStatRow(BuildContext context, String label, String value) {
     return Row(
@@ -302,7 +283,6 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
           label,
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
           ),
         ),
         Text(
@@ -391,10 +371,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   children: [
                     Text(
                       sale["price"].toString(),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: AppTheme.colorBitcoin,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium
                     ),
                     SizedBox(height: 4.h),
                     Text(

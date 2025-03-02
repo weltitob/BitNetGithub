@@ -78,62 +78,65 @@ class ColumnTabView extends StatelessWidget {
           SizedBox(height: AppTheme.cardPadding.h,),
           
           // Grid of Assets
-          GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 items per row
-              mainAxisSpacing: AppTheme.elementSpacing.h,
-              crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-              childAspectRatio: (size.width / 2) / 240.w, // Adjust according to your design
-            ),
-            padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: sortedGridList.length,
-            itemBuilder: (BuildContext context, int index) {
-              final item = sortedGridList[index];
-              final media = Media(
-                data: item.nftImage,
-                type: "asset_image",
-              );
+          Center(
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 items per row
+                mainAxisSpacing: AppTheme.elementSpacing.h,
+                crossAxisSpacing: AppTheme.elementSpacing.w / 6,
+                childAspectRatio: (size.width / 2) / 240.w, // Adjust according to your design
+              ),
+              itemCount: sortedGridList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final item = sortedGridList[index];
+                final media = Media(
+                  data: item.nftImage,
+                  type: "asset_image",
+                );
 
-              return GestureDetector(
-                onTap: () {
-                  if (selectedProducts.isNotEmpty) {
+                return GestureDetector(
+                  onTap: () {
+                    if (selectedProducts.isNotEmpty) {
+                      handleProductClick(item.id, context);
+                    } else {
+                      context.goNamed('/asset_screen',
+                        pathParameters: {
+                          'nft_id': item.nftName
+                        });
+                    }
+                  },
+                  onLongPress: () {
                     handleProductClick(item.id, context);
-                  } else {
-                    context.goNamed('/asset_screen',
-                      pathParameters: {
-                        'nft_id': item.nftName
-                      });
-                  }
-                },
-                onLongPress: () {
-                  handleProductClick(item.id, context);
-                },
-                child: Stack(
-                  children: [
-                    AssetCard(
-                      medias: [media],
-                      scale: 0.75,
-                      nftName: item.nftName,
-                      nftMainName: item.nftMainName,
-                      cryptoText: item.cryptoText,
-                      rank: item.rank.toString(),
-                      hasPrice: true,
-                      hasLiked: selectedProducts.contains(item.id),
-                      hasListForSale: false,
-                      postId: item.id.toString(),
-                      onLikeChanged: (isLiked) {
-                        handleProductClick(item.id, context);
-                      },
-                      onPriceClicked: (id) {
-                        showBuyPanel(id);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+                  },
+                  child: Stack(
+                    children: [
+                      AssetCard(
+                        medias: [media],
+                        scale: 0.75,
+                        nftName: item.nftName,
+                        nftMainName: item.nftMainName,
+                        cryptoText: item.cryptoText,
+                        rank: item.rank.toString(),
+                        hasPrice: true,
+                        hasLiked: selectedProducts.contains(item.id),
+                        hasListForSale: false,
+                        postId: item.id.toString(),
+                        onLikeChanged: (isLiked) {
+                          handleProductClick(item.id, context);
+                        },
+                        onPriceClicked: (id) {
+                          showBuyPanel(id);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
