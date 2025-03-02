@@ -21,6 +21,7 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -251,8 +252,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               child: Row(
                                 children: [
                                   Container(
-                                    width: 56,
-                                    height: 56,
+                                    width: AppTheme.cardPadding * 2.h,
+                                    height: AppTheme.cardPadding * 2.h,
                                     decoration: BoxDecoration(
                                       borderRadius: AppTheme.cardRadiusSmall,
                                       color: Theme.of(context).colorScheme.primaryContainer,
@@ -289,7 +290,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                           child: Text(
                                             '${controller.txDetails[index].txid.substring(0, 10)}...${controller.txDetails[index].txid.substring(controller.txDetails[index].txid.length - 10)}',
                                             style: TextStyle(
-                                              color: Colors.blue.shade400,
+                                              color: Theme.of(context).colorScheme.onPrimaryContainer,
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                             ),
