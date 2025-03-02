@@ -301,17 +301,11 @@ class ProfileHeader extends StatelessWidget {
                             leadingIcon: Icon(
                               FontAwesomeIcons.btc,
                               size: AppTheme.cardPadding * 0.75,
-                              color: Theme.of(context).colorScheme.primary ==
-                                  AppTheme.primaryColor
-                                  ? AppTheme.black70
-                                  : AppTheme.white90,
-                              // color: Theme.of(context).colorScheme.primary ==
-                              //         AppTheme.colorBitcoin
-                              //     ? Colors.white
-                              //     : Theme.of(context).brightness ==
-                              //             Brightness.light
-                              //         ? AppTheme.white70
-                              //         : AppTheme.black60,
+                              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
+                                  ? Colors.white 
+                                  : Theme.of(context).brightness == Brightness.light 
+                                      ? AppTheme.white70 
+                                      : AppTheme.black60,
                             ),
                           ),
                         ],
