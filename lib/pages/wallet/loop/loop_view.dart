@@ -700,14 +700,16 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
     return Container(
       width: AppTheme.cardPadding * 1.25.w,
       height: AppTheme.cardPadding * 1.25.w,
-      decoration: BoxDecoration(
-        color: isOnchain ? const Color(0xFFF7931A) : Colors.blue,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: isOnchain
-            ? Icon(Icons.currency_bitcoin, color: Colors.white, size: 20)
-            : Icon(Icons.flash_on, color: Colors.white, size: 20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: Image.asset(
+          isOnchain
+              ? 'assets/images/bitcoin.png'
+              : 'assets/images/lightning.png',
+          width: AppTheme.cardPadding * 1.25.w,
+          height: AppTheme.cardPadding * 1.25.w,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

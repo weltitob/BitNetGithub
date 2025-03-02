@@ -196,38 +196,15 @@ class _BitcoinScreenState extends State<BitcoinScreen> with SingleTickerProvider
                   ),
                 ) : SizedBox(),
               ),
-              
+
               // Bitcoin Info
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.cardPadding),
-                  child: InformationWidget(
-                    title: L10n.of(context)!.about,
-                    description: L10n.of(context)!.bitcoinDescription,
-                  ),
+                child: InformationWidget(
+                  title: L10n.of(context)!.about,
+                  description: L10n.of(context)!.bitcoinDescription,
                 ),
               ),
-                            
-              
-              // Bitcoin Network Info
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                  child: RoundedContainer(
-                    child: BitNetImageWithTextContainer(
-                      "Bitcoin",
-                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.white.withAlpha(50) : null,
-                      () {
-                        context.push("/wallet/bitcoinscreen/mempool");
-                      },
-                      image: "assets/images/blockchain.png",
-                      fallbackIcon: FontAwesomeIcons.bitcoinSign,
-                      width: AppTheme.cardPadding * 4,
-                      height: AppTheme.cardPadding * 4,
-                    ),
-                  ),
-                ),
-              ),
+
               // Cryptos
               SliverToBoxAdapter(
                 child: Padding(
