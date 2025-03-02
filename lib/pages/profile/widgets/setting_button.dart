@@ -26,7 +26,7 @@ class SettingsButton extends StatelessWidget {
           onTap: () {
             BitNetBottomSheet(
               width: double.infinity,
-              //height: MediaQuery.of(context).size.height * 0.7,
+              height: MediaQuery.of(context).size.height * 0.75,
               context: context,
               borderRadius: AppTheme.borderRadiusBig,
               child: Container(

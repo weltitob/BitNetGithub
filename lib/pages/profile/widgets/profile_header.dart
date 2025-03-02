@@ -297,7 +297,7 @@ class ProfileHeader extends StatelessWidget {
                                     ),
                                   )
                                 : LongButtonWidget(
-                                    title: "Edit Profile",
+                                    title: "Edit",
                                     onTap: () {
                                       controller.currentview.value = 4;
                                     },
@@ -360,7 +360,7 @@ class ProfileHeader extends StatelessWidget {
                                     ),
                                   )
                                 : LongButtonWidget(
-                                    title: "Share Profile",
+                                    title: "Share",
                                     onTap: () {
                                       // Add share functionality here
                                     },
