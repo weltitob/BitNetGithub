@@ -13,7 +13,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
-import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/batch.dart';

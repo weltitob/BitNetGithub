@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
-import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

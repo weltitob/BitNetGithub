@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 
 class AssetsTab extends StatefulWidget {
   const AssetsTab({super.key});
@@ -297,104 +298,112 @@ class _AssetsTabState extends State<AssetsTab> {
                     final int idx = entry.key;
                     final project = entry.value;
                     
-                    return Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                          child: Container(
-                            height: AppTheme.cardPadding * 2.75,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // Project info (left side)
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: AppTheme.cardPadding * 1.75,
-                                      width: AppTheme.cardPadding * 1.75,
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          project['image'],
-                                          fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to the collection screen with the project's collection name
+                        context.go(
+                          '/feed/collection_screen_route/${project['collection']}',
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            child: Container(
+                              height: AppTheme.cardPadding * 2.75,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Project info (left side)
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: AppTheme.cardPadding * 1.75,
+                                        width: AppTheme.cardPadding * 1.75,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            project['image'],
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: AppTheme.elementSpacing.w / 1.5),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          project['name'],
-                                          style: Theme.of(context).textTheme.titleLarge,
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          project['collection'],
-                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                            color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            project['name'],
+                                            style: Theme.of(context).textTheme.titleLarge,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                
-                                // Price and change (right side)
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "${project['price']} BTC",
-                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                            fontWeight: FontWeight.bold,
+                                          SizedBox(height: 2),
+                                          Text(
+                                            project['collection'],
+                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                              color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 2),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: project['isPositive'] 
-                                                ? AppTheme.successColor.withOpacity(0.2)
-                                                : AppTheme.errorColor.withOpacity(0.2),
-                                            borderRadius: BorderRadius.circular(50),
-                                          ),
-                                          child: Text(
-                                            project['change'],
-                                            style: TextStyle(
-                                              color: project['isPositive'] 
-                                                  ? AppTheme.successColor
-                                                  : AppTheme.errorColor,
-                                              fontSize: 12,
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  
+                                  // Price and change (right side)
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${project['price']} BTC",
+                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                        ],
+                                      ),
+                                      SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: project['isPositive'] 
+                                                  ? AppTheme.successColor.withOpacity(0.2)
+                                                  : AppTheme.errorColor.withOpacity(0.2),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            child: Text(
+                                              project['change'],
+                                              style: TextStyle(
+                                                color: project['isPositive'] 
+                                                    ? AppTheme.successColor
+                                                    : AppTheme.errorColor,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        // Number indicator
-                        Positioned(
-                          left: 10,
-                          top: 10,
-                          child: NumberIndicator(number: idx + 1),
-                        ),
-                      ],
+                          // Number indicator
+                          Positioned(
+                            left: 10,
+                            top: 10,
+                            child: NumberIndicator(number: idx + 1),
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
