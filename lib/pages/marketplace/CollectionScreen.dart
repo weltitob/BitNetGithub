@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/pages/marketplace/collection/collection_header.dart';
 import 'package:bitnet/pages/marketplace/collection/collection_tab_bar.dart';
@@ -13,7 +12,6 @@ import 'package:bitnet/pages/marketplace/collection/tabs/price_sales_tab_view.da
 import 'package:bitnet/pages/marketplace/collection/tabs/row_tab_view.dart';
 import 'package:bitnet/pages/marketplace/widgets/buy_sliding_panel.dart';
 import 'package:bitnet/pages/marketplace/widgets/cart_sheet.dart';
-import 'package:bitnet/pages/marketplace/widgets/filter_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

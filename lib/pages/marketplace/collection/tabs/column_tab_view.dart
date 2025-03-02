@@ -30,38 +30,46 @@ class ColumnTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w,),
+
+
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Filter Row with SearchField
           SizedBox(height: AppTheme.cardPadding.h,),
           Row(
             children: [
               Expanded(
-                child: SearchFieldWidget(
-                  hintText: "Search...",
-                  isSearchEnabled: true,
-                  handleSearch: (value) {
-                    // Implement search functionality
-                  },
-                  onChanged: (value) {
-                    // Implement onChange functionality
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.filter_list),
-                    onPressed: () {
-                      // Show filter bottom sheet
-                      BitNetBottomSheet(
-                        context: context,
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: FilterBottomSheet(
-                          onSortingChanged: onSortingChanged,
-                          currentSortingFilter: currentSortingFilter,
-                        ),
-                      );
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w * 1.5,),
+                  child: SearchFieldWidget(
+                    hintText: "Search...",
+                    isSearchEnabled: true,
+                    handleSearch: (value) {
+                      // Implement search functionality
                     },
+                    onChanged: (value) {
+                      // Implement onChange functionality
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.filter_list),
+                      onPressed: () {
+                        // Show filter bottom sheet
+                        BitNetBottomSheet(
+
+                          context: context,
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: FilterBottomSheet(
+                            onSortingChanged: onSortingChanged,
+                            currentSortingFilter: currentSortingFilter,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -71,15 +79,15 @@ class ColumnTabView extends StatelessWidget {
           
           // Grid of Assets
           GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 4 / 6.5,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              crossAxisCount: 2,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // 2 items per row
+              mainAxisSpacing: AppTheme.elementSpacing.h,
+              crossAxisSpacing: AppTheme.elementSpacing.w / 6,
+              childAspectRatio: (size.width / 2) / 240.w, // Adjust according to your design
             ),
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            padding: EdgeInsets.zero,
             itemCount: sortedGridList.length,
             itemBuilder: (BuildContext context, int index) {
               final item = sortedGridList[index];
@@ -87,7 +95,7 @@ class ColumnTabView extends StatelessWidget {
                 data: item.nftImage,
                 type: "asset_image",
               );
-              
+
               return GestureDetector(
                 onTap: () {
                   if (selectedProducts.isNotEmpty) {
@@ -105,8 +113,8 @@ class ColumnTabView extends StatelessWidget {
                 child: Stack(
                   children: [
                     AssetCard(
-                      scale: 0.95,
                       medias: [media],
+                      scale: 0.75,
                       nftName: item.nftName,
                       nftMainName: item.nftMainName,
                       cryptoText: item.cryptoText,
@@ -118,29 +126,9 @@ class ColumnTabView extends StatelessWidget {
                       onLikeChanged: (isLiked) {
                         handleProductClick(item.id, context);
                       },
-                    ),
-                    // Add Buy button overlay
-                    Positioned(
-                      right: 10,
-                      bottom: 40,
-                      child: GestureDetector(
-                        onTap: () => showBuyPanel(item.id),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: AppTheme.colorBitcoin,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            "Buy",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ),
+                      onPriceClicked: (id) {
+                        showBuyPanel(id);
+                      },
                     ),
                   ],
                 ),

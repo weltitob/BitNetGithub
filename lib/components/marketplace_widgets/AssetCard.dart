@@ -30,6 +30,7 @@ class AssetCard extends StatefulWidget {
   bool hasListForSale;
   bool isOwner;
   final Function(bool)? onLikeChanged;
+  final Function(int)? onPriceClicked;
 
   AssetCard({
     Key? key,
@@ -47,6 +48,7 @@ class AssetCard extends StatefulWidget {
     this.hasListForSale = false,
     this.isOwner = false,
     this.onLikeChanged,
+    this.onPriceClicked,
   }) : super(key: key);
 
   @override
@@ -72,7 +74,8 @@ class _AssetCardState extends State<AssetCard> {
   }
 
   Widget build(BuildContext context) {
-    dynamic firstMediaData = widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
+    dynamic firstMediaData =
+        widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
 
     return ClipRRect(
       child: Container(
@@ -85,11 +88,13 @@ class _AssetCardState extends State<AssetCard> {
           child: GlassContainer(
             width: 214.w * widget.scale,
             // No fixed height to allow content to determine size
-            customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
+            customShadow:
+                Theme.of(context).brightness == Brightness.light ? [] : null,
             child: Padding(
               padding: const EdgeInsets.all(AppTheme.elementSpacing),
               child: Column(
-                mainAxisSize: MainAxisSize.min, // Changed to min to prevent overflow
+                mainAxisSize:
+                    MainAxisSize.min, // Changed to min to prevent overflow
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Top section with name and icon
@@ -105,90 +110,106 @@ class _AssetCardState extends State<AssetCard> {
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
-                              .copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                              .copyWith(
+                                  fontSize: 14.sp, fontWeight: FontWeight.bold),
                         ),
                       ),
                       SizedBox(width: 4.w),
                       GlassContainer(
-                        customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Icon(
-                            FontAwesomeIcons.bolt,
-                            size: 16.w,
-                          ),
-                        )
-                      ),
+                          customShadow:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? []
+                                  : null,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(
+                              FontAwesomeIcons.bolt,
+                              size: 16.w,
+                            ),
+                          )),
                     ],
                   ),
-                  
+
                   SizedBox(height: AppTheme.elementSpacing.h),
-                  
+
                   // NFT image/content
                   ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10.r)),
                     child: Container(
-                      height: 175.h * widget.scale, // Increased height for image area
+                      height: 175.h *
+                          widget.scale, // Increased height for image area
                       width: double.infinity,
-                      child: topWidget(firstMediaData?.type ?? '', firstMediaData),
+                      child:
+                          topWidget(firstMediaData?.type ?? '', firstMediaData),
                     ),
                   ),
-                  
+
                   SizedBox(height: AppTheme.elementSpacing.h / 2),
 
                   // Bottom section with either list button (for owner) or price
-                  widget.isOwner 
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        widget.hasListForSale 
-                        ? LongButtonWidget(
-                            buttonType: ButtonType.transparent,
-                            customHeight: 30.h,
-                            customWidth: 140.w * widget.scale,
-                            title: "List",
-                            onTap: () {}
-                          )
-                        : Container(),
-                        widget.hasLikeButton
-                        ? _buildLikeButton()
-                        : Container(),
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        widget.hasPrice
-                        ? GlassContainer(
-                            customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppTheme.elementSpacing / 4,
-                                horizontal: AppTheme.elementSpacing / 2
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    widget.cryptoText,
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontSize: 12.sp
-                                    )
-                                  ),
-                                  Icon(
-                                    Icons.currency_bitcoin,
-                                    size: 16.w,
+                  widget.isOwner
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            widget.hasListForSale
+                                ? LongButtonWidget(
+                                    buttonType: ButtonType.transparent,
+                                    customHeight: 30.h,
+                                    customWidth: 140.w * widget.scale,
+                                    title: "List",
+                                    onTap: () {})
+                                : Container(),
+                            widget.hasLikeButton
+                                ? _buildLikeButton()
+                                : Container(),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            widget.hasPrice
+                                ? GestureDetector(
+                                    onTap: () {
+                                      if (widget.onPriceClicked != null && widget.postId != null) {
+                                        widget.onPriceClicked!(int.parse(widget.postId!));
+                                      }
+                                    },
+                                    child: GlassContainer(
+                                      customShadow:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? []
+                                              : null,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical:
+                                                AppTheme.elementSpacing / 4,
+                                            horizontal:
+                                                AppTheme.elementSpacing / 2),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(widget.cryptoText,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                        fontSize: 12.sp)),
+                                            Icon(
+                                              Icons.currency_bitcoin,
+                                              size: 16.w,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   )
-                                ],
-                              ),
-                            ),
-                          )
-                        : Container(),
-                        widget.hasLikeButton
-                        ? _buildLikeButton()
-                        : Container(),
-                      ],
-                    ),
+                                : Container(),
+                            widget.hasLikeButton
+                                ? _buildLikeButton()
+                                : Container(),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -200,58 +221,64 @@ class _AssetCardState extends State<AssetCard> {
 
   Widget _buildLikeButton() {
     return Obx(() => LikeButton(
-      size: 30.w,
-      isLiked: isLiked.value,
-      circleSize: 40.r,
-      bubblesSize: 50.r,
-      animationDuration: Duration(milliseconds: 600),
-      likeBuilder: (bool isLiked) {
-        return Icon(
-          isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
-          color: isLiked ? Colors.red : Theme.of(context).brightness == Brightness.light
-            ? AppTheme.black70
-            : AppTheme.white90,
-          size: 18.sp,
-        );
-      },
-      onTap: (isLiked) async {
-        try {
-          // Update local state
-          this.isLiked.value = !isLiked;
-          
-          // Call the callback if provided
-          if (widget.onLikeChanged != null) {
-            widget.onLikeChanged!(!isLiked);
-          }
-          
-          // Update backend
-          if (!isLiked) {
-            await controller.toggleLike(widget.postId!);
-          } else {
-            await controller.deleteLikeByPostId(widget.postId!);
-          }
-          
-          return !isLiked;
-        } catch (e) {
-          print("Error toggling like: $e");
-          this.isLiked.value = isLiked; // Revert on error
-          return isLiked;
-        }
-      },
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: AppTheme.colorBitcoin,
-        dotSecondaryColor: Colors.orangeAccent,
-      ),
-    ));
+          size: 30.w,
+          isLiked: isLiked.value,
+          circleSize: 40.r,
+          bubblesSize: 50.r,
+          animationDuration: Duration(milliseconds: 600),
+          likeBuilder: (bool isLiked) {
+            return Icon(
+              isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
+              color: isLiked
+                  ? Colors.red
+                  : Theme.of(context).brightness == Brightness.light
+                      ? AppTheme.black70
+                      : AppTheme.white90,
+              size: 18.sp,
+            );
+          },
+          onTap: (isLiked) async {
+            try {
+              // Update local state
+              this.isLiked.value = !isLiked;
+
+              // Call the callback if provided
+              if (widget.onLikeChanged != null) {
+                widget.onLikeChanged!(!isLiked);
+              }
+
+              // Update backend
+              if (!isLiked) {
+                await controller.toggleLike(widget.postId!);
+              } else {
+                await controller.deleteLikeByPostId(widget.postId!);
+              }
+
+              return !isLiked;
+            } catch (e) {
+              print("Error toggling like: $e");
+              this.isLiked.value = isLiked; // Revert on error
+              return isLiked;
+            }
+          },
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: AppTheme.colorBitcoin,
+            dotSecondaryColor: Colors.orangeAccent,
+          ),
+        ));
   }
 
   Widget topWidget(String? type, Media? e) {
     if (e != null) {
       if (type == "text" || type == "description") {
-        return Container(margin: const EdgeInsets.only(bottom: 10.0), child: TextBuilderNetwork(url: e.data));
+        return Container(
+            margin: const EdgeInsets.only(bottom: 10.0),
+            child: TextBuilderNetwork(url: e.data));
       }
       if (type == "external_link") {
-        return Container(margin: const EdgeInsets.only(bottom: 10.0), child: const LinkBuilder(url: 'haha'));
+        return Container(
+            margin: const EdgeInsets.only(bottom: 10.0),
+            child: const LinkBuilder(url: 'haha'));
       }
       if (type == "asset_image") {
         // Direct asset path handling
@@ -280,9 +307,8 @@ class _AssetCardState extends State<AssetCard> {
       if (type == "image" || type == "camera" || type == "image_data") {
         try {
           return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            child: ClipRect(child: ImageBuilder(encodedData: e.data))
-          );
+              margin: const EdgeInsets.only(bottom: 10.0),
+              child: ClipRect(child: ImageBuilder(encodedData: e.data)));
         } catch (error) {
           print("Error in image builder: $error");
           // Fallback for invalid base64 data
@@ -305,9 +331,13 @@ class _AssetCardState extends State<AssetCard> {
         }
       }
       if (type == "audio") {
-        return Container(margin: const EdgeInsets.only(bottom: 10.0), child: AudioBuilderNetwork(url: e.data));
+        return Container(
+            margin: const EdgeInsets.only(bottom: 10.0),
+            child: AudioBuilderNetwork(url: e.data));
       } else {
-        return Container(margin: const EdgeInsets.only(bottom: 10.0), child: const TextBuilderNetwork(url: "No data found"));
+        return Container(
+            margin: const EdgeInsets.only(bottom: 10.0),
+            child: const TextBuilderNetwork(url: "No data found"));
       }
     } else {
       return Container();

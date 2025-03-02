@@ -1,4 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/pages/marketplace/collection/widgets/collection_tab_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,9 +18,9 @@ class CollectionTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60.h,
+      height: AppTheme.cardPadding * 2.5.h,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
@@ -31,47 +34,42 @@ class CollectionTabBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildTabButton(context, 0, Icons.view_column_rounded, "Column"),
-          _buildTabButton(context, 1, Icons.table_rows_rounded, "Row"),
-          _buildTabButton(context, 2, Icons.monetization_on, "Price"),
-          _buildTabButton(context, 3, Icons.people, "Owners"),
-          _buildTabButton(context, 4, Icons.info_outline, "Info"),
+          CollectionTabIcon(
+            iconData: Icons.view_column_rounded,
+            index: 0,
+            currentIndex: currentTabIndex,
+            label: "Column",
+            onTap: () => onTabChanged(0),
+          ),
+          CollectionTabIcon(
+            iconData: Icons.table_rows_rounded,
+            index: 1,
+            currentIndex: currentTabIndex,
+            label: "Row",
+            onTap: () => onTabChanged(1),
+          ),
+          CollectionTabIcon(
+            iconData: Icons.monetization_on,
+            index: 2,
+            currentIndex: currentTabIndex,
+            label: "Price",
+            onTap: () => onTabChanged(2),
+          ),
+          CollectionTabIcon(
+            iconData: Icons.people,
+            index: 3,
+            currentIndex: currentTabIndex,
+            label: "Owners",
+            onTap: () => onTabChanged(3),
+          ),
+          CollectionTabIcon(
+            iconData: Icons.info_outline,
+            index: 4,
+            currentIndex: currentTabIndex,
+            label: "Info",
+            onTap: () => onTabChanged(4),
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTabButton(BuildContext context, int index, IconData icon, String label) {
-    bool isSelected = currentTabIndex == index;
-    return GestureDetector(
-      onTap: () => onTabChanged(index),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.colorBitcoin : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 20,
-              color: isSelected ? Colors.white : Theme.of(context).iconTheme.color,
-            ),
-            if (isSelected) ...[
-              SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
