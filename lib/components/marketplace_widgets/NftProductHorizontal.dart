@@ -1,3 +1,4 @@
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -75,31 +76,29 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                     ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(255, 255, 255, 0.1),
-                    borderRadius: BorderRadius.circular(100.r),
-                  ),
-                  padding: EdgeInsets.only(top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 6.w),
-                        child: Image.asset(
-                          widget.cryptoImage,
-                          height: 12.w,
-                          fit: BoxFit.contain,
+                GlassContainer(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 6.w),
+                          child: Image.asset(
+                            widget.cryptoImage,
+                            height: 12.w,
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                      ),
-                      Text(
-                        widget.cryptoText,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.7),
-                        ),
-                      )
-                    ],
+                        Text(
+                          widget.cryptoText,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.7),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
