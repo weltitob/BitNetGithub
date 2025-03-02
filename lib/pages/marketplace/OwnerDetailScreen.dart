@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
@@ -234,7 +235,7 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                       padding: EdgeInsets.zero,
                       itemCount: gridListData.length.clamp(0, 2),
                       itemBuilder: (BuildContext context, int index) {
-                        return NftProductSlider(
+                        return AssetCard(
                             encodedData: gridListData[index].nftImage,
                             nftName: gridListData[index].nftName,
                             nftMainName: gridListData[index].nftMainName,

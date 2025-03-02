@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
@@ -133,7 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: EdgeInsets.zero,
                     itemCount: gridListData.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return NftProductSlider(
+                      return AssetCard(
                           encodedData: gridListData[index].nftImage,
                           nftName: gridListData[index].nftName,
                           nftMainName: gridListData[index].nftMainName,

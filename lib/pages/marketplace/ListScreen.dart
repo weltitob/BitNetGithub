@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +42,7 @@ class _ListScreenState extends State<ListScreen> {
               padding: EdgeInsets.zero,
               itemCount: gridListData.length,
               itemBuilder: (BuildContext context, int index) {
-                return NftProductSlider(
+                return AssetCard(
                     encodedData: gridListData[index].nftImage,
                     scale: 0.5,
                     nftName: gridListData[index].nftName,

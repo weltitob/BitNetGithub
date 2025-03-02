@@ -12,6 +12,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
+import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/tapd/asset.dart';
@@ -139,7 +140,7 @@ class _BatchScreenState extends State<BatchScreen> {
                   physics: const BouncingScrollPhysics(),
                   itemCount: assets.length,
                   itemBuilder: (context, index) {
-                    return NftProductSlider(
+                    return AssetCard(
                         //assets[index].assetMeta!.data ?? 'metahash',
                         medias: assets[index].assetMeta?.toMedias(),
                         nftName: assets[index].assetMeta!.data ?? 'metahash',
