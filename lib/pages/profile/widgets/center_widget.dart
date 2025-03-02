@@ -60,12 +60,7 @@ class CenterWidget extends StatelessWidget {
                 index: 3,
                 onTap: () => controller.currentview.value = 3,
               ),
-              CenterWidgetIcon(
-                label: 'Edit',
-                iconData: Icons.edit,
-                index: 4,
-                onTap: () => controller.currentview.value = 4,
-              ),
+              // Edit tab removed - now managed by the Edit Profile button
               // Add more icons if needed
             ],
           ),
