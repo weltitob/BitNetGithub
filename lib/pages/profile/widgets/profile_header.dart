@@ -73,11 +73,8 @@ class ProfileHeader extends StatelessWidget {
                           ),
                           Obx(
                                 () => GestureDetector(
-                              onTap: controller.currentview.value != 3
+                              onTap: controller.currentview.value == 4 && Auth().currentUser!.uid == controller.userData.value.did
                                   ? () {
-                                print('follow dagelassen lol');
-                              }
-                                  : () {
                                 BitNetBottomSheet(
                                   height:
                                   MediaQuery.of(context).size.height *
@@ -201,6 +198,9 @@ class ProfileHeader extends StatelessWidget {
                                     ),
                                   ),
                                 );
+                              }
+                                  : () {
+                                print('Avatar clicked, but not in edit mode');
                               },
                               child: Obx(
                                     () => Avatar(
@@ -211,7 +211,7 @@ class ProfileHeader extends StatelessWidget {
                                   isNft: controller
                                       .userData.value.nft_profile_id.isNotEmpty,
                                   cornerWidget:
-                                  controller.currentview.value == 3
+                                  controller.currentview.value == 4 && Auth().currentUser!.uid == controller.userData.value.did
                                       ? const ProfileButton()
                                       : null,
                                 ),
