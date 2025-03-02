@@ -305,16 +305,16 @@ class _TransactionItemState extends State<TransactionItem>
                               );
                             },
                             child: Text(
-                              coin.coin ?? true
-                                  ? widget.data.amount
-                                  : widget.data.direction ==
-                                  TransactionDirection.received
-                                  ? "+$currencyEquivalent${getCurrency(currency!)}"
-                                  : "$currencyEquivalent${getCurrency(currency!)}",
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .titleMedium
+                                coin.coin ?? true
+                                    ? widget.data.amount
+                                    : widget.data.direction ==
+                                    TransactionDirection.received
+                                    ? "+$currencyEquivalent${getCurrency(currency!)}"
+                                    : "$currencyEquivalent${getCurrency(currency!)}",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .titleMedium
                             ),
                           ),
                           (coin.coin ?? true)

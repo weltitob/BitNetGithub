@@ -34,7 +34,6 @@ import 'package:bitnet/pages/secondpages/hashrate/hashrate.dart';
 import 'package:bitnet/pages/secondpages/keymetrics/keymetricsscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
-import 'package:bitnet/pages/secondpages/mempool/view/unaccepted_block_transactions.dart';
 import 'package:bitnet/pages/secondpages/newsscreen.dart';
 import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
@@ -193,7 +192,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -205,7 +204,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -217,7 +216,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -229,7 +228,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -243,7 +242,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -255,7 +254,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -267,7 +266,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -279,7 +278,7 @@ class AppRoutes {
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey,
-                            child: const BlockTransactions(),
+                            child: const BlockTransactions(isConfirmed: true),
                             transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
@@ -288,12 +287,12 @@ class AppRoutes {
               path: 'block_transactions',
               redirect: webRedirect,
               builder: _dynamicTransition == null
-                  ? (ctx, state) => const BlockTransactions()
+                  ? (ctx, state) => const BlockTransactions(isConfirmed: true)
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: const BlockTransactions(),
+                      child: const BlockTransactions(isConfirmed: true),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
@@ -301,12 +300,12 @@ class AppRoutes {
               path: 'unaccepted_block_transactions',
               redirect: webRedirect,
               builder: _dynamicTransition == null
-                  ? (ctx, state) => const UnacceptedBlockTransactions()
+                  ? (ctx, state) => const BlockTransactions(isConfirmed: false)
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: const UnacceptedBlockTransactions(),
+                      child: const BlockTransactions(isConfirmed: false),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
