@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
   final BuildContext context;

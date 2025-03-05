@@ -9,7 +9,6 @@ import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/profile/profile.dart';
@@ -27,8 +26,10 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+
 int _selectedIndex = 1;
 final GlobalKey<_BottomNavState> bottomNavKey = GlobalKey();
+
 
 class BottomNav extends StatefulWidget {
   final GoRouterState routerState;
