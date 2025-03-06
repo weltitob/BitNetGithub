@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
@@ -41,6 +40,7 @@ import 'package:shake/shake.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'backbone/auth/auth.dart';
 
+
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⢠⣼⣿⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⠀⠈⠙⠿⣿⣷⣄⠀⠀⠀⠀
@@ -55,7 +55,8 @@ import 'backbone/auth/auth.dart';
 // ⠀⠀⠀⠹⣿⣷⣄⠀⠀⠀⠀⠀⣿⡇⠀⢸⣿⡇⠀⠀ ⠀⠀⠀ ⢀⣾⣿⠟⠁⠀⠀
 // ⠀⠀⠀⠀⠘⢻⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀ ⢀⣠⣾⣿⡿⠋⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣶⣤⣤⣤⣤⣤⣤⣴⣾⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
-// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀
+
 
 //██████╗░██╗████████╗███╗░░██╗███████╗████████╗
 //██╔══██╗██║╚══██╔══╝████╗░██║██╔════╝╚══██╔══╝
@@ -63,6 +64,7 @@ import 'backbone/auth/auth.dart';
 //██╔══██╗██║░░░██║░░░██║╚████║██╔══╝░░░░░██║░░░
 //██████╦╝██║░░░██║░░░██║░╚███║███████╗░░░██║░░░
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
+
 
 Future<void> main() async {
   // void onAppLink() {

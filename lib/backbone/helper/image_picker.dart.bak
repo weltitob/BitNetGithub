@@ -85,6 +85,7 @@ class _ImagePickerState extends State<ImagePicker> {
     final logger = Get.find<LoggerService>();
     List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
     logger.i("Loaded Albums... ${loadedAlbums.length}");
+    // assert(false);
     List<AssetEntity> photos = await BitnetPhotoManager.loadImages(loadedAlbums.first, 0, 50);
     albums = loadedAlbums;
     current_album = albums![0];
@@ -163,107 +164,95 @@ class _ImagePickerState extends State<ImagePicker> {
                   child: (current_photos == null)
                       ? Center(child: dotProgress(context))
                       : (selecting_photos)
-                      ? GridView.builder(
-                      controller: imgScrollController,
-                      itemCount: loadingMoreImages
-                          ? ((current_photos!.length % 3) == 0
-                          ? current_photos!.length + 3
-                          : current_photos!.length + 3 + (current_photos!.length % 3))
-                          : current_photos!.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                      itemBuilder: (ctx, i) {
-                        return (i < current_photos!.length)
-                            ? InkWell(
-                          onTap: () {
-                            if (selected_photos.contains(current_photos![i])) {
-                              selected_photos.remove(current_photos![i]);
-                            } else {
-                              selected_photos.add(current_photos![i]);
-                            }
-                            if (widget.onImageTap != null) {
-                              widget.onImageTap!(current_album!, current_photos![i]);
-                            }
-                            setState(() {});
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 4,
-                                    color: selected_photos.contains(current_photos![i])
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Colors.transparent)),
-                            child: AssetEntityImage(
-                              current_photos![i],
-                              isOriginal: false,
-                              thumbnailSize: const ThumbnailSize.square(250),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stacktrace) {
-                                return const Center(child: Icon(Icons.error, color: Colors.red));
-                              },
-                            ),
-                          ),
-                        )
-                            : (i ==
-                            current_photos!.length +
-                                (((current_photos!.length % 3) == 0 ? 3 : 3 + (current_photos!.length % 3)) - 2))
-                            ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-                            : Container(color: Colors.transparent);
-                      })
-                      : (loaded_thumbnails && album_thumbnails != null)
-                      ? GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: albums!.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                    itemBuilder: (ctx, i) {
-                      return Container(
-                          child: InkWell(
-                            onTap: () {
-                              current_album = albums![i];
-                              selecting_photos = true;
-                              setState(() {});
-                            },
-                            child: Container(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 150,
-                                    height: 150,
-                                    child: ClipRRect(
-                                      clipBehavior: Clip.hardEdge,
-                                      borderRadius: AppTheme.cardRadiusMid,
-                                      child: AssetEntityImage(
-                                        album_thumbnails![i],
-                                        isOriginal: false,
-                                        fit: BoxFit.cover,
-                                        thumbnailSize: const ThumbnailSize.square(360),
+                          ? GridView.builder(
+                              controller: imgScrollController,
+                              itemCount: loadingMoreImages
+                                  ? ((current_photos!.length % 3) == 0
+                                      ? current_photos!.length + 3
+                                      : current_photos!.length + 3 + (current_photos!.length % 3))
+                                  : current_photos!.length,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                              itemBuilder: (ctx, i) {
+                                return (i < current_photos!.length)
+                                    ? InkWell(
+                                        onTap: () {
+                                          if (selected_photos.contains(current_photos![i])) {
+                                            selected_photos.remove(current_photos![i]);
+                                          } else {
+                                            selected_photos.add(current_photos![i]);
+                                          }
+                                          if (widget.onImageTap != null) {
+                                            widget.onImageTap!(current_album!, current_photos![i]);
+                                          }
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 4,
+                                                  color: selected_photos.contains(current_photos![i]) ? Theme.of(context).colorScheme.primary : Colors.transparent)),
+                                          child: AssetEntityImage(
+                                            current_photos![i],
+                                            isOriginal: false,
+                                            thumbnailSize: const ThumbnailSize.square(250),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stacktrace) {
+                                              return const Center(child: Icon(Icons.error, color: Colors.red));
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    : (i ==
+                                            current_photos!.length +
+                                                (((current_photos!.length % 3) == 0 ? 3 : 3 + (current_photos!.length % 3)) - 2))
+                                        ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
+                                        : Container(color: Colors.transparent);
+                              })
+                          : (loaded_thumbnails && album_thumbnails != null)
+                              ? GridView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: albums!.length,
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                  itemBuilder: (ctx, i) {
+                                    return Container(
+                                        child: InkWell(
+                                      onTap: () {
+                                        current_album = albums![i];
+                                        selecting_photos = true;
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: 150,
+                                              height: 150,
+                                              child: ClipRRect(
+                                                clipBehavior: Clip.hardEdge,
+                                                borderRadius: AppTheme.cardRadiusMid,
+                                                child: AssetEntityImage(
+                                                  album_thumbnails![i],
+                                                  isOriginal: false,
+                                                  fit: BoxFit.cover,
+                                                  thumbnailSize: const ThumbnailSize.square(360),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: AppTheme.elementSpacing / 2,
+                                            ),
+                                            Text(albums![i].name, style: Theme.of(context).textTheme.titleSmall),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: AppTheme.elementSpacing / 2,
-                                  ),
-                                  // Updated text widget wrapped in a SizedBox to constrain its width
-                                  SizedBox(
-                                    width: 150,
-                                    child: Text(
-                                      albums![i].name,
-                                      style: Theme.of(context).textTheme.titleSmall,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ));
-                    },
-                  )
-                      : Center(
-                    child: dotProgress(context),
-                  ),
+                                    ));
+                                  },
+                                )
+                              : Center(
+                                  child: dotProgress(context),
+                                ),
                 )
               ]
             ],
@@ -332,6 +321,19 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
             ?.setMedia(media);
         current_nfts.where((test) => (test.media == null && test.assetId == pair.assetId)).firstOrNull?.setMedia(media);
       } else {
+        // int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+        // if(removeIndex != -1) {
+        // mixedList.removeAt(removeIndex);
+        // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+        // }
+        // int removeIndexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
+        // if(removeIndexNft != -1) {
+        //   current_nfts.removeAt(removeIndexNft);
+        // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+        // }
+
         if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
           loadingMoreImages = true;
           setState(() {});
@@ -343,6 +345,18 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
     } else {
       AssetMetaResponse? meta = await profileController.loadMetaAsset(assetId);
       if (meta == null) {
+        // int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+        // if(removeIndex != -1) {
+        // mixedList.removeAt(removeIndex);
+        // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+        // }
+        // int removeIndexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
+        // if(removeIndexNft != -1) {
+        //   current_nfts.removeAt(removeIndexNft);
+        // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+        // }
         if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
           loadingMoreImages = true;
           setState(() {});
@@ -366,6 +380,18 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
             current_nfts[indexNft].setMedia(media);
           }
         } else {
+          // int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+          // if(removeIndex != -1) {
+          // mixedList.removeAt(removeIndex);
+          // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+          // }
+          // int removeIndexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
+          // if(removeIndexNft != -1) {
+          //   current_nfts.removeAt(removeIndexNft);
+          // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
+
+          // }
           if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
             loadingMoreImages = true;
             setState(() {});
@@ -388,6 +414,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
       loadedFullList = true;
     }
     List<MediaDatePair> nfts = List.empty(growable: true);
+    //First we will load assets and check if they're loaded for NFTS
     if (profileController.assets.isEmpty) {
       await profileController.fetchTaprootAssetsAsync();
     }
@@ -534,10 +561,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
               child: Row(
                 children: [
                   Text(current_view < 0 ? "Assets" : current_album!.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge!
-                          .copyWith(fontSize: 18, decoration: TextDecoration.underline)),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 18, decoration: TextDecoration.underline)),
                   Icon(selecting_photos ? Icons.arrow_drop_down_rounded : Icons.arrow_drop_up_rounded,
                       color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white)
                 ],
@@ -553,6 +577,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                 setState(() {});
               },
             ),
+
             const SizedBox(
               height: AppTheme.cardPadding / 2,
             ),
@@ -561,193 +586,184 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
               child: (current_photos == null)
                   ? Center(child: dotProgress(context))
                   : (selecting_photos)
-                  ? ((current_view == 0)
-                  ? MixedGridView(
-                  imgScrollController: imgScrollController,
-                  loadingMoreImages: loadingMoreImages,
-                  mixedList: mixedList,
-                  widget: widget,
-                  current_album: current_album,
-                  loadMetaLazyFunc: loadMetaLazy,
-                  forceRemove: (pair) {
-                    int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
-                    if (removeIndex != -1) {
-                      mixedList.removeAt(removeIndex);
-                    }
-                    int removeIndexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
-                    if (removeIndexNft != -1) {
-                      current_nfts.removeAt(removeIndexNft);
-                    }
-                    setState(() {});
-                  },
-                  onImageTap: widget.onImageTap)
-                  : (current_view == -1)
-                  ? NftGridView(
-                  imgScrollController: imgScrollController,
-                  onImageTap: widget.onImageTap,
-                  loadingMoreImages: loadingMoreImages,
-                  nfts: current_nfts,
-                  widget: widget,
-                  loadMetaLazyFunc: loadMetaLazy,
-                  forceRemove: (pair) {
-                    int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
-                    if (removeIndex != -1) {
-                      mixedList.removeAt(removeIndex);
-                    }
-                    int removeIndexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
-                    if (removeIndexNft != -1) {
-                      current_nfts.removeAt(removeIndexNft);
-                      Get.find<LoggerService>().i("${pair.assetId} was removed from current_nfts at ${removeIndexNft}");
-                    } else {
-                      Get.find<LoggerService>().i("${pair.assetId} could not be removed from current_nfts ");
-                    }
-                    setState(() {});
-                  })
-                  : ImgGridView(
-                  imgScrollController: imgScrollController,
-                  onImageTap: widget.onImageTap,
-                  loadingMoreImages: loadingMoreImages,
-                  current_photos: current_photos,
-                  widget: widget,
-                  current_album: current_album))
-                  : (loaded_thumbnails && album_thumbnails != null)
-                  ? SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          selecting_photos = true;
-                          current_photos = List.empty(growable: true);
-                          current_nfts = List.empty(growable: true);
-                          mixedList = List.empty(growable: true);
-                          loading = true;
-                          current_view = -1;
-                          setState(() {});
-                          await loadMoreImages(-1);
-                          loading = false;
-                          setState(() {});
-                        },
-                        child: GlassContainer(
-                            width: MediaQuery.sizeOf(context).width * 0.85,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: AppTheme.elementSpacing),
-                                Text('Your Assets', style: Theme.of(context).textTheme.bodyLarge),
-                                const SizedBox(height: AppTheme.cardPadding),
-                                Row(
+                      ? ((current_view == 0)
+                          ? MixedGridView(
+                              imgScrollController: imgScrollController,
+                              loadingMoreImages: loadingMoreImages,
+                              mixedList: mixedList,
+                              widget: widget,
+                              current_album: current_album,
+                              loadMetaLazyFunc: loadMetaLazy,
+                              forceRemove: (pair) {
+                                int removeIndex = mixedList
+                                    .indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+                                if (removeIndex != -1) {
+                                  mixedList.removeAt(removeIndex);
+                                }
+                                int removeIndexNft =
+                                    current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
+                                if (removeIndexNft != -1) {
+                                  current_nfts.removeAt(removeIndexNft);
+                                }
+                                setState(() {});
+                              },
+                              onImageTap: widget.onImageTap)
+                          : (current_view == -1)
+                              ? NftGridView(
+                                  imgScrollController: imgScrollController,
+                                  onImageTap: widget.onImageTap,
+                                  loadingMoreImages: loadingMoreImages,
+                                  nfts: current_nfts,
+                                  widget: widget,
+                                  loadMetaLazyFunc: loadMetaLazy,
+                                  forceRemove: (pair) {
+                                    int removeIndex = mixedList.indexWhere(
+                                        (test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+                                    if (removeIndex != -1) {
+                                      mixedList.removeAt(removeIndex);
+                                    }
+                                    int removeIndexNft =
+                                        current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
+                                    if (removeIndexNft != -1) {
+                                      current_nfts.removeAt(removeIndexNft);
+                                      Get.find<LoggerService>().i("${pair.assetId} was removed from current_nfts at ${removeIndexNft}");
+                                    } else {
+                                      Get.find<LoggerService>().i("${pair.assetId} could not be removed from current_nfts ");
+                                    }
+                                    setState(() {});
+                                  })
+                              : ImgGridView(
+                                  imgScrollController: imgScrollController,
+                                  onImageTap: widget.onImageTap,
+                                  loadingMoreImages: loadingMoreImages,
+                                  current_photos: current_photos,
+                                  widget: widget,
+                                  current_album: current_album))
+                      : (loaded_thumbnails && album_thumbnails != null)
+                          ? SingleChildScrollView(
+                              child: Container(
+                                child: Column(
                                   children: [
-                                    Expanded(
-                                        child: Container(
-                                          width: AppTheme.cardPadding * 4,
-                                          height: AppTheme.cardPadding * 4,
-                                          color: (current_nfts[0].media == null) ? Colors.grey : Colors.transparent,
-                                          child: (current_nfts[0].media == null)
-                                              ? null
-                                              : ImageBuilder(
-                                            radius: BorderRadius.zero,
-                                            encodedData: current_nfts[0].media!.data,
-                                          ),
-                                        )),
-                                    Expanded(
-                                        child: Container(
-                                          width: AppTheme.cardPadding * 4,
-                                          height: AppTheme.cardPadding * 4,
-                                          color: (current_nfts[1].media == null) ? Colors.grey : Colors.transparent,
-                                          child: (current_nfts[1].media == null)
-                                              ? null
-                                              : ImageBuilder(
-                                            radius: BorderRadius.zero,
-                                            encodedData: current_nfts[1].media!.data,
-                                          ),
-                                        )),
-                                    Expanded(
-                                        child: Container(
-                                          width: AppTheme.cardPadding * 4,
-                                          height: AppTheme.cardPadding * 4,
-                                          color: (current_nfts[2].media == null) ? Colors.grey : Colors.transparent,
-                                          child: (current_nfts[2].media == null)
-                                              ? null
-                                              : ImageBuilder(
-                                            radius: BorderRadius.zero,
-                                            encodedData: current_nfts[2].media!.data,
-                                          ),
-                                        )),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        selecting_photos = true;
+                                        current_photos = List.empty(growable: true);
+                                        current_nfts = List.empty(growable: true);
+                                        mixedList = List.empty(growable: true);
+                                        loading = true;
+                                        current_view = -1;
+                                        setState(() {});
+                                        await loadMoreImages(-1);
+                                        loading = false;
+                                        setState(() {});
+                                      },
+                                      child: GlassContainer(
+                                          width: MediaQuery.sizeOf(context).width * 0.85,
+                                          child: Column(
+                                            children: [
+                                              const SizedBox(height: AppTheme.elementSpacing),
+                                              Text('Your Assets', style: Theme.of(context).textTheme.bodyLarge),
+                                              const SizedBox(height: AppTheme.cardPadding),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                      child: Container(
+                                                    width: AppTheme.cardPadding * 4,
+                                                    height: AppTheme.cardPadding * 4,
+                                                    color: (current_nfts[0].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[0].media == null)
+                                                        ? null
+                                                        : ImageBuilder(
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[0].media!.data,
+                                                          ),
+                                                  )),
+                                                  Expanded(
+                                                      child: Container(
+                                                    width: AppTheme.cardPadding * 4,
+                                                    height: AppTheme.cardPadding * 4,
+                                                    color: (current_nfts[1].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[1].media == null)
+                                                        ? null
+                                                        : ImageBuilder(
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[1].media!.data,
+                                                          ),
+                                                  )),
+                                                  Expanded(
+                                                      child: Container(
+                                                    width: AppTheme.cardPadding * 4,
+                                                    height: AppTheme.cardPadding * 4,
+                                                    color: (current_nfts[2].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[2].media == null)
+                                                        ? null
+                                                        : ImageBuilder(
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[2].media!.data,
+                                                          ),
+                                                  )),
+                                                ],
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                    const SizedBox(height: AppTheme.cardPadding),
+                                    GridView.builder(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: albums!.length,
+                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                      itemBuilder: (ctx, i) {
+                                        return Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                current_album = albums![i];
+                                                selecting_photos = true;
+                                                current_photos = List.empty(growable: true);
+                                                current_nfts = List.empty(growable: true);
+                                                mixedList = List.empty(growable: true);
+                                                current_view = 1;
+                                                loading = true;
+                                                setState(() {});
+                                                await loadMoreImages(1);
+                                                loading = false;
+                                                setState(() {});
+                                              },
+                                              child: Container(
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      width: 180,
+                                                      height: 150,
+                                                      child: ClipRRect(
+                                                        clipBehavior: Clip.hardEdge,
+                                                        borderRadius: BorderRadius.circular(16),
+                                                        child: AssetEntityImage(
+                                                          album_thumbnails![i],
+                                                          isOriginal: false,
+                                                          fit: BoxFit.cover,
+                                                          thumbnailSize: const ThumbnailSize.square(360),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text(albums![i].name, style: Theme.of(context).textTheme.titleSmall)
+                                                  ],
+                                                ),
+                                              ),
+                                            ));
+                                      },
+                                    ),
                                   ],
-                                )
-                              ],
-                            )),
-                      ),
-                      const SizedBox(height: AppTheme.cardPadding),
-                      GridView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: albums!.length,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                        itemBuilder: (ctx, i) {
-                          return Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: InkWell(
-                                onTap: () async {
-                                  current_album = albums![i];
-                                  selecting_photos = true;
-                                  current_photos = List.empty(growable: true);
-                                  current_nfts = List.empty(growable: true);
-                                  mixedList = List.empty(growable: true);
-                                  current_view = 1;
-                                  loading = true;
-                                  setState(() {});
-                                  await loadMoreImages(1);
-                                  loading = false;
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 155,
-                                        height: 155,
-                                        child: ClipRRect(
-                                          clipBehavior: Clip.hardEdge,
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: AssetEntityImage(
-                                            album_thumbnails![i],
-                                            isOriginal: false,
-                                            fit: BoxFit.cover,
-                                            thumbnailSize: const ThumbnailSize.square(360),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: AppTheme.elementSpacing,
-                                      ),
-                                      // Updated text widget wrapped in a SizedBox to constrain its width
-                                      SizedBox(
-                                        width: 155,
-                                        child: Text(
-                                          albums![i].name,
-                                          style: Theme.of(context).textTheme.titleSmall,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
-                              ));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              )
-                  : Center(
-                child: dotProgress(context),
-              ),
+                              ),
+                            )
+                          : Center(
+                              child: dotProgress(context),
+                            ),
             )
           ]
         ],
@@ -785,26 +801,26 @@ class ImgGridView extends StatelessWidget {
         itemBuilder: (ctx, i) {
           return (i < current_photos!.length)
               ? Padding(
-              padding: const EdgeInsets.all(0),
-              child: InkWell(
-                onTap: () {
-                  if (onImageTap != null) {
-                    onImageTap!(current_album!, current_photos![i], null);
-                  }
-                },
-                child: AssetEntityImage(
-                  current_photos![i],
-                  isOriginal: false,
-                  thumbnailSize: const ThumbnailSize.square(250),
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stacktrace) {
-                    return const Center(child: Icon(Icons.error, color: Colors.red));
-                  },
-                ),
-              ))
+                  padding: const EdgeInsets.all(0),
+                  child: InkWell(
+                    onTap: () {
+                      if (onImageTap != null) {
+                        onImageTap!(current_album!, current_photos![i], null);
+                      }
+                    },
+                    child: AssetEntityImage(
+                      current_photos![i],
+                      isOriginal: false,
+                      thumbnailSize: const ThumbnailSize.square(250),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stacktrace) {
+                        return const Center(child: Icon(Icons.error, color: Colors.red));
+                      },
+                    ),
+                  ))
               : (i == current_photos!.length + (((current_photos!.length % 3) == 0 ? 3 : 3 + (current_photos!.length % 3)) - 2))
-              ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-              : Container(width: 50, height: 50, color: Colors.transparent);
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
+                  : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
 }
@@ -812,13 +828,13 @@ class ImgGridView extends StatelessWidget {
 class NftGridView extends StatefulWidget {
   const NftGridView(
       {super.key,
-        required this.imgScrollController,
-        required this.loadingMoreImages,
-        required this.nfts,
-        required this.widget,
-        required this.loadMetaLazyFunc,
-        required this.forceRemove,
-        this.onImageTap});
+      required this.imgScrollController,
+      required this.loadingMoreImages,
+      required this.nfts,
+      required this.widget,
+      required this.loadMetaLazyFunc,
+      required this.forceRemove,
+      this.onImageTap});
 
   final ScrollController imgScrollController;
   final bool loadingMoreImages;
@@ -846,30 +862,30 @@ class _NftGridViewState extends State<NftGridView> {
     return GridView.builder(
         controller: widget.imgScrollController,
         itemCount:
-        widget.loadingMoreImages ? ((nfts.length % 3) == 0 ? nfts.length + 3 : nfts.length + 3 + (nfts.length % 3)) : nfts.length,
+            widget.loadingMoreImages ? ((nfts.length % 3) == 0 ? nfts.length + 3 : nfts.length + 3 + (nfts.length % 3)) : nfts.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (ctx, i) {
           return (i < nfts.length)
               ? Padding(
-              padding: const EdgeInsets.all(0),
-              child: InkWell(
-                onTap: () {
-                  if (widget.onImageTap != null) {
-                    widget.onImageTap!(null, null, nfts[i]);
-                  }
-                },
-                child: LazyImageBuilder(
-                  asset: nfts[i],
-                  loadFunc: widget.loadMetaLazyFunc,
-                  forceRemove: (MediaDatePair pair) {
-                    widget.forceRemove(pair);
-                    setState(() {});
-                  },
-                ),
-              ))
+                  padding: const EdgeInsets.all(0),
+                  child: InkWell(
+                    onTap: () {
+                      if (widget.onImageTap != null) {
+                        widget.onImageTap!(null, null, nfts[i]);
+                      }
+                    },
+                    child: LazyImageBuilder(
+                      asset: nfts[i],
+                      loadFunc: widget.loadMetaLazyFunc,
+                      forceRemove: (MediaDatePair pair) {
+                        widget.forceRemove(pair);
+                        setState(() {});
+                      },
+                    ),
+                  ))
               : (i == nfts.length + (((nfts.length % 3) == 0 ? 3 : 3 + (nfts.length % 3)) - 2))
-              ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-              : Container(width: 50, height: 50, color: Colors.transparent);
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
+                  : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
 }
@@ -907,44 +923,44 @@ class _MixedGridViewState extends State<MixedGridView> {
         controller: widget.imgScrollController,
         itemCount: widget.loadingMoreImages
             ? ((widget.mixedList.length % 3) == 0
-            ? widget.mixedList.length + 3
-            : widget.mixedList.length + 3 + (widget.mixedList.length % 3))
+                ? widget.mixedList.length + 3
+                : widget.mixedList.length + 3 + (widget.mixedList.length % 3))
             : widget.mixedList.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (ctx, i) {
           return (i < widget.mixedList.length)
               ? Padding(
-              padding: const EdgeInsets.all(0),
-              child: InkWell(
-                onTap: () {
-                  if (widget.onImageTap != null) {
-                    widget.onImageTap!(widget.current_album, (widget.mixedList[i] is AssetEntity) ? widget.mixedList[i] : null,
-                        (widget.mixedList[i] is MediaDatePair) ? widget.mixedList[i] : null);
-                  }
-                },
-                child: (widget.mixedList[i] is AssetEntity)
-                    ? AssetEntityImage(
-                  (widget.mixedList[i] as AssetEntity),
-                  isOriginal: false,
-                  thumbnailSize: const ThumbnailSize.square(250),
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stacktrace) {
-                    return const Center(child: Icon(Icons.error, color: Colors.red));
-                  },
-                )
-                    : LazyImageBuilder(
-                  key: ValueKey(widget.mixedList[i].assetId),
-                  asset: widget.mixedList[i],
-                  loadFunc: widget.loadMetaLazyFunc,
-                  forceRemove: (MediaDatePair pair) {
-                    widget.forceRemove(pair);
-                    setState(() {});
-                  },
-                ),
-              ))
+                  padding: const EdgeInsets.all(0),
+                  child: InkWell(
+                    onTap: () {
+                      if (widget.onImageTap != null) {
+                        widget.onImageTap!(widget.current_album, (widget.mixedList[i] is AssetEntity) ? widget.mixedList[i] : null,
+                            (widget.mixedList[i] is MediaDatePair) ? widget.mixedList[i] : null);
+                      }
+                    },
+                    child: (widget.mixedList[i] is AssetEntity)
+                        ? AssetEntityImage(
+                            (widget.mixedList[i] as AssetEntity),
+                            isOriginal: false,
+                            thumbnailSize: const ThumbnailSize.square(250),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stacktrace) {
+                              return const Center(child: Icon(Icons.error, color: Colors.red));
+                            },
+                          )
+                        : LazyImageBuilder(
+                            key: ValueKey(widget.mixedList[i].assetId),
+                            asset: widget.mixedList[i],
+                            loadFunc: widget.loadMetaLazyFunc,
+                            forceRemove: (MediaDatePair pair) {
+                              widget.forceRemove(pair);
+                              setState(() {});
+                            },
+                          ),
+                  ))
               : (i == widget.mixedList.length + (((widget.mixedList.length % 3) == 0 ? 3 : 3 + (widget.mixedList.length % 3)) - 2))
-              ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-              : Container(width: 50, height: 50, color: Colors.transparent);
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
+                  : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
 }
@@ -981,6 +997,7 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
         });
       } catch (e) {
         logger.i("${widget.asset.assetId} has errored");
+        //load();
         widget.asset.loaded = true;
         widget.asset.isLoading = false;
         widget.forceRemove(widget.asset);
@@ -996,7 +1013,9 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
     logger = Get.find<LoggerService>();
     if (!widget.asset.isLoading && !widget.asset.loaded) {
       widget.asset.isLoading = true;
+
       load();
+
       logger.i("asset: ${widget.asset.assetId} is loading");
     } else {
       logger.i("smthn happened asset is either loading or loaded, id: ${widget.asset.assetId}");
@@ -1004,13 +1023,13 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
 
     return (widget.asset.media == null)
         ? GestureDetector(
-        onTap: () async {
-          await load();
-        },
-        child: Container(width: 50, height: 50, decoration: const BoxDecoration(color: Colors.grey)))
+            onTap: () async {
+              await load();
+            },
+            child: Container(width: 50, height: 50, decoration: const BoxDecoration(color: Colors.grey)))
         : ImageBuilder(
-      encodedData: widget.asset.media!.data,
-    );
+            encodedData: widget.asset.media!.data,
+          );
   }
 }
 
@@ -1045,9 +1064,22 @@ class BitnetPhotoManager {
 
       if (permissionState.isAuth) {
         print('Permissions granted.');
+
+        // final FilterOptionGroup filter = FilterOptionGroup(
+        //   imageOption: const FilterOption(
+        //     sizeConstraint: SizeConstraint(ignoreSize: true),
+        //     needTitle: true,
+        //   ),
+        // );
+
         print('Fetching asset path list...');
         List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(type: RequestType.image);
         print(PhotoManager.getAssetPathList(type: RequestType.image).toString());
+        //print('Supported extensions: ${await PhotoManager.}');
+        // List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
+        //   type: RequestType.image,
+        //   filterOption: filter,
+        // );
         print('Number of albums loaded: ${albums.length}');
 
         for (var album in albums) {
@@ -1058,6 +1090,7 @@ class BitnetPhotoManager {
         return albums;
       } else if (permissionState == PermissionState.limited) {
         print("Limited access granted");
+        // Handle limited access scenario
         return PhotoManager.getAssetPathList(type: RequestType.image);
       } else {
         print("No access granted");

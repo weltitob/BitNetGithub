@@ -100,8 +100,6 @@ class ImageBox extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
                 child: child)),
       ],
     );
