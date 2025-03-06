@@ -98,21 +98,27 @@ class QRScannerView extends StatelessWidget {
                             onTap: () async {
                               final PermissionState ps = await PhotoManager.requestPermissionExtend();
                               if (ps.isAuth || ps.hasAccess) {
-                                ImagePickerBottomSheet(context, onImageTap: (album, img) async {
-                                  String? fileUrl = (await img.loadFile())!.path;
-                                  String? fileDir = (await img.loadFile())!.parent.uri.toFilePath();
-                                  BarcodeCapture? capture = await controller.cameraController.analyzeImage(fileUrl);
-                                  if (capture != null) {
-                                    List<Barcode> codes = capture.barcodes;
-                                    for (Barcode code in codes) {
-                                      debugPrint('Barcode found! ${code.rawValue}');
-                                      context.pop();
-                                      controller.onQRCodeScanned(code.rawValue!, context);
+                                ImagePickerCombinedBottomSheet(
+                                  context, 
+                                  includeNFTs: false,
+                                  onImageTap: (album, img, pair) async {
+                                    if (img != null) {
+                                      String? fileUrl = (await img.loadFile())!.path;
+                                      String? fileDir = (await img.loadFile())!.parent.uri.toFilePath();
+                                      BarcodeCapture? capture = await controller.cameraController.analyzeImage(fileUrl);
+                                      if (capture != null) {
+                                        List<Barcode> codes = capture.barcodes;
+                                        for (Barcode code in codes) {
+                                          debugPrint('Barcode found! ${code.rawValue}');
+                                          context.pop();
+                                          controller.onQRCodeScanned(code.rawValue!, context);
+                                        }
+                                      } else {
+                                        overlayController.showOverlay(L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
+                                      }
                                     }
-                                  } else {
-                                    overlayController.showOverlay(L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
                                   }
-                                });
+                                );
                               } else {
                                 overlayController.showOverlay(L10n.of(context)!.pleaseGiveAccess);
                               }

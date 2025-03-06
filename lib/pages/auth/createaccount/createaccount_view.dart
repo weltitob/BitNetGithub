@@ -97,7 +97,10 @@ class _CreateAccountViewState extends State<CreateAccountView>
                                 color: AppTheme.errorColor);
                             return;
                           }
-                          ImagePickerNftMixedBottomSheet(context, onImageTap:
+                          ImagePickerCombinedBottomSheet(
+                            context, 
+                            includeNFTs: true,
+                            onImageTap:
                               (AssetPathEntity? album, AssetEntity? image,
                                   MediaDatePair? pair) async {
                             if (image != null) {
