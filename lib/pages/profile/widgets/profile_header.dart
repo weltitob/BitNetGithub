@@ -141,8 +141,10 @@ class ProfileHeader extends StatelessWidget {
                                                         .errorColor);
                                                 return;
                                               }
-                                              ImagePickerNftMixedBottomSheet(
-                                                  context, onImageTap:
+                                              ImagePickerCombinedBottomSheet(
+                                                  context, 
+                                                  includeNFTs: true,
+                                                  onImageTap:
                                                   (AssetPathEntity?
                                               album,
                                                   AssetEntity?
@@ -174,8 +176,10 @@ class ProfileHeader extends StatelessWidget {
                                                         .errorColor);
                                                 return;
                                               }
-                                              ImagePickerNftMixedBottomSheet(
-                                                  context, onImageTap:
+                                              ImagePickerCombinedBottomSheet(
+                                                  context, 
+                                                  includeNFTs: true,
+                                                  onImageTap:
                                                   (AssetPathEntity?
                                               album,
                                                   AssetEntity?
