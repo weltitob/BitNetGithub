@@ -9,6 +9,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PostHeader extends StatelessWidget {
   final String ownerId;
@@ -94,7 +95,7 @@ class PostHeader extends StatelessWidget {
           RoundedButtonWidget(
             buttonType: ButtonType.transparent,
             size: AppTheme.cardPadding * 1.3.w,
-            iconData:  Icons.delete,
+            iconData: Icons.more_horiz_rounded,
             onTap: () {
               BitNetBottomSheet(
                 height: MediaQuery.of(context).size.height * 0.6,
