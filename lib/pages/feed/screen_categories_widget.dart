@@ -46,24 +46,27 @@ class ScreenCategoryWidget extends StatelessWidget {
                 ? AppTheme.white60
                 : AppTheme.black60;
 
+        // Function to handle tab change - used by both buttons and text container
+        void handleTabChange() {
+          controller.tabController?.animateTo(index);
+          controller.update();
+        }
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                controller.tabController?.animateTo(index);
-                controller.update();
-              },
+              onTap: handleTabChange,
               splashColor:
                   Theme.of(context).colorScheme.primary.withOpacity(0.1),
               highlightColor:
                   Theme.of(context).colorScheme.primary.withOpacity(0.05),
               child: Container(
                 child: isSelected
-                    ? _buildSelectedTab(context, textColor)
-                    : _buildInactiveTab(context, textColor),
+                    ? _buildSelectedTab(context, textColor, handleTabChange)
+                    : _buildInactiveTab(context, textColor, handleTabChange),
               ),
             ),
           ),
@@ -72,7 +75,7 @@ class ScreenCategoryWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSelectedTab(BuildContext context, Color textColor) {
+  Widget _buildSelectedTab(BuildContext context, Color textColor, VoidCallback onTabChange) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GlassContainer(
@@ -84,7 +87,7 @@ class ScreenCategoryWidget extends StatelessWidget {
           children: [
             RoundedButtonWidget(
               iconData: _getIconForCategory(text),
-              onTap: () {},
+              onTap: onTabChange,
               buttonType: ButtonType.solid,
               size: AppTheme.cardPadding * 1.25,
             ),
@@ -103,7 +106,7 @@ class ScreenCategoryWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildInactiveTab(BuildContext context, Color textColor) {
+  Widget _buildInactiveTab(BuildContext context, Color textColor, VoidCallback onTabChange) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.75, vertical: AppTheme.elementSpacing / 2),
       child: Row(
@@ -111,7 +114,7 @@ class ScreenCategoryWidget extends StatelessWidget {
         children: [
           RoundedButtonWidget(
             iconData: _getIconForCategory(text),
-            onTap: () {},
+            onTap: onTabChange,
             buttonType: ButtonType.transparent,
             size: AppTheme.cardPadding * 1.25,
           ),

@@ -567,42 +567,15 @@ class _AssetsTabState extends State<AssetsTab> {
                               ),
                             ),
                           ),
-                          // Custom trending indicator with fire-like colors
+                          // Standard number indicator for trending
                           Positioned(
                             left: 10,
                             top: 10,
-                            child: Container(
-                              width: AppTheme.cardPadding * 0.7,
-                              height: AppTheme.cardPadding * 0.7,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: idx == 0 
-                                      ? [Colors.red, Colors.orange] // #1 trending
-                                      : idx == 1 
-                                          ? [Colors.orange, Colors.amber] // #2 trending
-                                          : [Colors.amber, Colors.yellow], // #3 trending
-                                ),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 2,
-                                    offset: const Offset(0, 1),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  (idx + 1).toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 0.7 * 12,
-                                  ),
-                                ),
-                              ),
+                            child: NumberIndicator(
+                              number: idx + 1,
+                              size: 0.7,
+                              showBorder: true,
+                              useDarkVariant: true,
                             ),
                           ),
                         ],
