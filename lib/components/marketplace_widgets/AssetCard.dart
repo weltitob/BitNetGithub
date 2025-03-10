@@ -91,7 +91,7 @@ class _AssetCardState extends State<AssetCard> {
             customShadow:
                 Theme.of(context).brightness == Brightness.light ? [] : null,
             child: Padding(
-              padding: const EdgeInsets.all(AppTheme.elementSpacing),
+              padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.15),
               child: Column(
                 mainAxisSize:
                     MainAxisSize.min, // Changed to min to prevent overflow
@@ -121,10 +121,10 @@ class _AssetCardState extends State<AssetCard> {
                                   ? []
                                   : null,
                           child: Padding(
-                            padding: const EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(6.0),
                             child: Icon(
                               FontAwesomeIcons.bolt,
-                              size: 16.w,
+                              size: 14.w,
                             ),
                           )),
                     ],
@@ -136,7 +136,7 @@ class _AssetCardState extends State<AssetCard> {
                   ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10.r)),
                     child: Container(
-                      height: 175.h *
+                      height: 170.h *
                           widget.scale, // Increased height for image area
                       width: double.infinity,
                       child:
