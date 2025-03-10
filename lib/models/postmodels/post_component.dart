@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/applemusicbuilder.dart';
 import 'package:bitnet/components/post/components/attributesbuilder.dart';
@@ -23,6 +24,7 @@ import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 /// A unified post component that can be used for both editing and viewing posts
@@ -180,6 +182,7 @@ class _PostComponentState extends State<PostComponent>
   Widget build(BuildContext context) {
     super.build(context);
     final String? currentUserId = Auth().currentUser?.uid;
+    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
 
     isLiked = currentUserId != null ? (rockets[currentUserId] == true) : false;
 
@@ -198,8 +201,10 @@ class _PostComponentState extends State<PostComponent>
         child: GlassContainer(
           child: Padding(
             padding: const EdgeInsets.only(
-              left: AppTheme.elementSpacing,
-              right: AppTheme.elementSpacing,
+              left: AppTheme.elementSpacing * 1.25,
+              right: AppTheme.elementSpacing * 1.25,
+              top: AppTheme.elementSpacing * 0.5,
+              bottom: AppTheme.elementSpacing * 0.5,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,12 +219,12 @@ class _PostComponentState extends State<PostComponent>
                 isEditable && titleController != null
                     ? TextField(
                         controller: titleController,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleSmall,
                         decoration: InputDecoration(
                           hintText: "Enter title",
                           border: InputBorder.none,
                           hintStyle:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
                                     color: Theme.of(context).hintColor,
                                   ),
                         ),
@@ -231,63 +236,112 @@ class _PostComponentState extends State<PostComponent>
                       )
                     : Text(
                         postName,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
-                const SizedBox(height: AppTheme.elementSpacing * 1.5),
+                const SizedBox(height: AppTheme.elementSpacing * 1),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _buildMediaWidgets(),
                 ),
-                // Show like space in view mode, or submit button in edit mode
+                // Bottom row with like space and buttons in view mode, or submit button in edit mode
                 !isEditable
-                    ? buildLikeSpace(
-                        type: likeSpaceType.Post,
-                        targetId: postId,
-                        postName: postName,
-                        username: username,
-                        ownerId: ownerId,
-                        rockets: rockets)
-                    : onPostSubmit != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(
-                                top: AppTheme.elementSpacing),
-                            child: GestureDetector(
-                              onTap: () => onPostSubmit!(),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Theme.of(context).colorScheme.primary,
-                                      Theme.of(context).colorScheme.secondary,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(24),
+                    ? Column(
+                        children: [
+                          // Like space in a single row
+                          Container(
+                            height: AppTheme.cardPadding * 1.5,
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+
+                              children: [
+                                // List button with icon and text
+                                Expanded(
+                                  flex: 3,
+                                  child: LongButtonWidget(
+                                    title: "List",
+                                    buttonType: ButtonType.transparent,
+                                    customHeight: AppTheme.cardPadding * 1.25,
+                                    customWidth: AppTheme.cardPadding * 3.75,
+
+                                    onTap: () {
+                                      final homeController = Get.find<HomeController>();
+                                      homeController.createClicks(postId);
+                                    },
+                                  )
                                 ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'POST',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                Spacer(),
+
+                                
+                                // Like space with full control of width
+                                Expanded(
+                                  flex: 4,
+                                  child: buildLikeSpace(
+                                    type: likeSpaceType.Post,
+                                    targetId: postId,
+                                    postName: postName,
+                                    username: username,
+                                    ownerId: ownerId,
+                                    rockets: rockets),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      )
+                    : onPostSubmit != null
+                        ? Center(
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: AppTheme.elementSpacing),
+                              child: GestureDetector(
+                                onTap: () => onPostSubmit!(),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  height: AppTheme.cardPadding * 1.75,
+                                  decoration: BoxDecoration(
+                                    gradient: useBitcoinGradient
+                                      ? LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            AppTheme.colorBitcoin,
+                                            AppTheme.colorPrimaryGradient,
+                                          ],
+                                        )
+                                      : LinearGradient(
+                                          colors: [
+                                            Theme.of(context).colorScheme.primary,
+                                            Theme.of(context).colorScheme.secondary,
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'POST',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          )
+                        )
                         : Container(),
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
@@ -374,7 +428,9 @@ class _PostComponentState extends State<PostComponent>
     } else if (type == "external_link") {
       mediaWidget = LinkBuilder(url: media.data);
     } else if (type == "image" || type == "camera" || type == "image_data") {
-      mediaWidget = ImageBuilder(encodedData: media.data);
+      mediaWidget = ImageBuilder(
+          radius: AppTheme.cardRadiusMid,
+          encodedData: media.data);
     } else if (type == "audio") {
       mediaWidget = AudioBuilderNetwork(url: media.data);
     } else {

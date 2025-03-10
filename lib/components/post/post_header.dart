@@ -15,13 +15,20 @@ class PostHeader extends StatelessWidget {
   final String username;
   final String displayName;
   final String postId;
+  final String timeAgo; // Hinzufügen eines Parameters für die Zeit
 
-  const PostHeader({required this.ownerId, required this.postId, required this.username, required this.displayName}) : super();
+  const PostHeader({
+    required this.ownerId,
+    required this.postId,
+    required this.username,
+    required this.displayName,
+    this.timeAgo = 'Gerade eben', // Standardwert für die Zeit
+  }) : super();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing / 1.h,),
+      padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing / 1.h, ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -37,34 +44,46 @@ class PostHeader extends StatelessWidget {
 
           SizedBox(width: AppTheme.elementSpacing.w * 0.75),
 
-          // Middle - Title and Subtitle
+          // Middle - Name und Username in einer Zeile, Zeit darunter
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Title - Display Name
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    width: AppTheme.elementSpacing * 8.w,
-                    child: Text(
-                      displayName,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleLarge,
+                // Name und Username in einer Zeile
+                Row(
+                  children: [
+                    // Display Name
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        child: Text(
+                          displayName,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
                     ),
-                  ),
+
+                    SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+
+                    // Username
+                    Flexible(
+                      child: Text(
+                        //avoid duplicate @ symbols
+                        username.startsWith('@') ? username : '@$username',
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
                 ),
 
-                // Subtitle - Username
-                Container(
-                  width: AppTheme.elementSpacing * 6.w,
-                  child: Text(
-                    //avoid duplicate @ symbols
-                    username.startsWith('@') ? username :
-                    '@$username',
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
+                // Zeit als dritte Zeile
+                Text(
+                  timeAgo,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).textTheme.labelSmall?.color?.withOpacity(0.7),
                   ),
                 ),
               ],
@@ -75,45 +94,46 @@ class PostHeader extends StatelessWidget {
           RoundedButtonWidget(
             buttonType: ButtonType.transparent,
             size: AppTheme.cardPadding * 1.3.w,
-            iconData:  Icons.delete, onTap: () {
-            BitNetBottomSheet(
-              height: MediaQuery.of(context).size.height * 0.6,
-              context: context,
-              child: bitnetScaffold(
-                  extendBodyBehindAppBar: true,
-                  appBar: bitnetAppBar(
-                    hasBackButton: false,
-                    text: "Do you want to delete this post?",
-                    context: context,
-                  ),
-                  body: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          height: 220,
-                          width: 220,
-                          child: Image.asset("assets/images/trash.png"),
+            iconData:  Icons.delete,
+            onTap: () {
+              BitNetBottomSheet(
+                height: MediaQuery.of(context).size.height * 0.6,
+                context: context,
+                child: bitnetScaffold(
+                    extendBodyBehindAppBar: true,
+                    appBar: bitnetAppBar(
+                      hasBackButton: false,
+                      text: "Do you want to delete this post?",
+                      context: context,
+                    ),
+                    body: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 220,
+                            width: 220,
+                            child: Image.asset("assets/images/trash.png"),
+                          ),
                         ),
-                      ),
-                      BottomButtons(
-                          leftButtonTitle: "Yes, delete.",
-                          rightButtonTitle: "No, keep.",
-                          onLeftButtonTap: () {
-                            Navigator.pop(context);
-                          },
-                          onRightButtonTap: () {
-                            deletePost(ownerId, postId);
-                            Navigator.pop(context);
-                          }
-                      )
-                    ],
-                  ),
-                  context: context
-              ),
-            );
-          },)
-
+                        BottomButtons(
+                            leftButtonTitle: "Yes, delete.",
+                            rightButtonTitle: "No, keep.",
+                            onLeftButtonTap: () {
+                              Navigator.pop(context);
+                            },
+                            onRightButtonTap: () {
+                              deletePost(ownerId, postId);
+                              Navigator.pop(context);
+                            }
+                        )
+                      ],
+                    ),
+                    context: context
+                ),
+              );
+            },
+          )
         ],
       ),
     );
