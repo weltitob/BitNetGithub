@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,75 +37,90 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
     return GestureDetector(
       onTap: () {},
       child: GlassContainer(
-        width: 300.w,
-        margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.zero,
+        margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
         child: Container(
-          padding: EdgeInsets.all(10.w),
+          padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 15.w),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Stack(children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.w, right: 25.w),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.r),
-                    ),
-                    child: Image.asset(
-                      widget.nftImage,
-                      height: 60.w,
-                      fit: BoxFit.cover,
-                    ),
+              // Asset image - fixed square dimensions and centered
+              ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.r),
+                ),
+                child: Container(
+                  height: 60.w,
+                  width: 60.w,
+                  child: Image.asset(
+                    widget.nftImage,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ]),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 7.h),
-                    child: Text(
+              ),
+              
+              // Spacing between image and text
+              SizedBox(width: 15.w),
+              
+              // Text content column
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // NFT name
+                    Text(
                       widget.nftMainName,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(249, 249, 249, 1),
+                        color: Theme.of(context).brightness == Brightness.light 
+                          ? Colors.black 
+                          : const Color.fromRGBO(249, 249, 249, 1),
                       ),
                     ),
-                  ),
-                  GlassContainer(
-                    child: Container(
-                      padding: EdgeInsets.only(top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 6.w),
-                            child: Image.asset(
+                    
+                    SizedBox(height: 5.h),
+                    
+                    // Crypto price
+                    GlassContainer(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 5.w, horizontal: 10.w),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
                               widget.cryptoImage,
                               height: 12.w,
                               fit: BoxFit.contain,
                             ),
-                          ),
-                          Text(
-                            widget.cryptoText,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.7),
-                            ),
-                          )
-                        ],
+                            SizedBox(width: 6.w),
+                            Text(
+                              widget.cryptoText,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).brightness == Brightness.light 
+                                  ? Colors.black 
+                                  : const Color.fromRGBO(255, 255, 255, 0.7),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const Spacer(),
+              
+              // Delete button if needed
               if (widget.onDelete != null)
                 IconButton(
                   icon: const Icon(Icons.delete_forever),
                   onPressed: widget.onDelete,
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  visualDensity: VisualDensity.compact,
                 )
             ],
           ),
