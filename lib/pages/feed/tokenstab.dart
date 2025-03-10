@@ -310,7 +310,7 @@ class _TokensTabState extends State<TokensTab> {
           
           // Top 3 by Market Cap section with CommonHeading
           CommonHeading(
-            headingText: 'Top 3 by Market Cap',
+            headingText: "💰 Top 3 by Market Cap",
             hasButton: true,
             onPress: 'marketcap',
           ),
@@ -393,7 +393,7 @@ class _TokensTabState extends State<TokensTab> {
           
           // Top Movers Today section with CommonHeading
           CommonHeading(
-            headingText: 'Top Movers Today',
+            headingText: "📈 Top Movers Today",
             hasButton: true,
             onPress: 'topmovers',
           ),
@@ -437,7 +437,7 @@ class _TokensTabState extends State<TokensTab> {
           
           // Top Volume Today section with CommonHeading (Added section)
           CommonHeading(
-            headingText: 'Top Volume Today',
+            headingText: "📊 Top Volume Today",
             hasButton: true,
             onPress: 'topvolume',
           ),
@@ -481,7 +481,7 @@ class _TokensTabState extends State<TokensTab> {
           
           // Total Market Cap Today section with CommonHeading (commented out)
           // CommonHeading(
-          //   headingText: 'Total Market Cap Today',
+          //   headingText: "💲 Total Market Cap Today",
           //   hasButton: false,
           // ),
           

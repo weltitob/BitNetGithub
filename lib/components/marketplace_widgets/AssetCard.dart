@@ -155,7 +155,7 @@ class _AssetCardState extends State<AssetCard> {
                                 ? LongButtonWidget(
                                     buttonType: ButtonType.transparent,
                                     customHeight: 30.h,
-                                    customWidth: 140.w * widget.scale,
+                                    customWidth: 125.w * widget.scale,
                                     title: "List",
                                     onTap: () {})
                                 : Container(),
