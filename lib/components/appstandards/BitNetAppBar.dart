@@ -50,6 +50,9 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
+    
+    // Check if we should use Bitcoin gradient
+    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
 
     double centerSpacing = kIsWeb
         ? AppTheme.columnWidth * 0.075
@@ -101,10 +104,9 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     child: RoundedButtonWidget(
                         buttonType: widget.buttonType ?? ButtonType.solid,
                         iconData: widget.customIcon ?? Icons.arrow_back,
-                        iconColor: Theme.of(context).colorScheme.onPrimary,
-                        // Theme.of(context).brightness == Brightness.light
-                        //     ? AppTheme.black60
-                        //     : AppTheme.white60,
+                        iconColor: useBitcoinGradient
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.onPrimary,
                         onTap: widget.onTap),
                   ),
                 ),
