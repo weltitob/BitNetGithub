@@ -82,8 +82,8 @@ class PostHeader extends StatelessWidget {
                 // Zeit als dritte Zeile
                 Text(
                   timeAgo,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).textTheme.labelSmall?.color?.withOpacity(0.7),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).textTheme.labelLarge?.color?.withOpacity(0.7),
                   ),
                 ),
               ],
