@@ -124,92 +124,98 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   }
 
   Future<bool> handleLikeAction(bool isLiked) async {
-    this.isLiked.value = !this.isLiked.value;
+    // Return the new state immediately for animation
+    bool newState = !isLiked;
+    this.isLiked.value = newState;
     bool _isLiked = rocketsmap['did'] == true;
 
-    // Toggle like in backend
-    await homeController.toggleLike(targetId);
-    await homeController.createPost(
-      targetId,
-      true,
-      true,
-      true,
-      widget.username,
-      widget.postName,
-      '',
-    );
+    // Process backend operations without waiting
+    // so animation can complete smoothly
+    Future.microtask(() async {
+      try {
+        // Toggle like in backend
+        await homeController.toggleLike(targetId);
+        await homeController.createPost(
+          targetId,
+          true,
+          true,
+          true,
+          widget.username,
+          widget.postName,
+          '',
+        );
 
-    setState(() {
-      if (_isLiked) {
-        rocketcount -= 1;
-        rocketsmap['did'] = false;
+        if (mounted) {
+          setState(() {
+            if (_isLiked) {
+              rocketcount -= 1;
+              rocketsmap['did'] = false;
 
-        // Update Firestore
-        postsCollection
-            .doc(ownerId)
-            .collection('userPosts')
-            .doc(targetId)
-            .update({'likes.did': false});
-      } else {
-        rocketcount += 1;
-        rocketsmap['did'] = true;
-        showheart = true;
+              // Update Firestore
+              postsCollection
+                  .doc(ownerId)
+                  .collection('userPosts')
+                  .doc(targetId)
+                  .update({'likes.did': false});
+            } else {
+              rocketcount += 1;
+              rocketsmap['did'] = true;
+              showheart = true;
 
-        // Update Firestore
-        postsCollection
-            .doc(ownerId)
-            .collection('userPosts')
-            .doc(targetId)
-            .update({'likes.did': true});
+              // Update Firestore
+              postsCollection
+                  .doc(ownerId)
+                  .collection('userPosts')
+                  .doc(targetId)
+                  .update({'likes.did': true});
 
-        Timer(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            setState(() {
-              showheart = false;
-            });
-          }
-        });
+              Timer(const Duration(milliseconds: 500), () {
+                if (mounted) {
+                  setState(() {
+                    showheart = false;
+                  });
+                }
+              });
+            }
+          });
+        }
+      } catch (e) {
+        print("Error handling like action: $e");
       }
     });
 
-    return !isLiked;
+    // Return new state immediately for animation
+    return newState;
   }
 
   @override
   Widget build(BuildContext context) {
     final iconColor = Colors.grey.shade700;
 
-    return Center(
-      child: GlassContainer(
-        borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.5.h / 3),
-        opacity: 0.1,
-        child: SizedBox(
-          height: AppTheme.cardPadding * 1.5,
-          width: AppTheme.cardPadding * 5.5.w,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Comment button
-              _buildIconButton(
-                icon: FontAwesomeIcons.comment,
-                onTap: onCommentButtonPressed,
-                color: iconColor,
-              ),
-      
-              // Like button
-              Obx(
-                    () => _buildLikeButton(iconColor),
-              ),
-      
-              // Share button
-              _buildIconButton(
-                icon: FontAwesomeIcons.arrowUpFromBracket,
-                onTap: handleSharePost,
-                color: iconColor,
-              ),
-            ],
+    return Container(
+      width: AppTheme.elementSpacing * 10.w,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          // Comment button
+          _buildIconButton(
+            icon: FontAwesomeIcons.comment,
+            onTap: onCommentButtonPressed,
+            color: iconColor,
           ),
-        ),
+      
+          // Like button
+          Obx(
+                () => _buildLikeButton(iconColor),
+          ),
+      
+          // Share button
+          _buildIconButton(
+            icon: FontAwesomeIcons.arrowUpFromBracket,
+            onTap: handleSharePost,
+            color: iconColor,
+          ),
+        ],
       ),
     );
   }
@@ -219,17 +225,15 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     required VoidCallback onTap,
     required Color color,
   }) {
-    return Expanded(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: Center(
-            child: FaIcon(
-              icon,
-              size: 16.sp,
-              color: color,
-            ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Center(
+          child: FaIcon(
+            icon,
+            size: 18.sp,
+            color: color,
           ),
         ),
       ),
@@ -237,31 +241,43 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   }
 
   Widget _buildLikeButton(Color color) {
-    return Expanded(
-      child: LikeButton(
-        isLiked: isLiked.value,
-        size: 16.sp,
-        circleSize: 35.r,
-        bubblesSize: 40.r,
-        animationDuration: const Duration(milliseconds: 400),
-        bubblesColor: const BubblesColor(
-          dotPrimaryColor: AppTheme.colorBitcoin,
-          dotSecondaryColor: AppTheme.colorBitcoin,
-        ),
-        circleColor: const CircleColor(
-          start: AppTheme.colorBitcoin,
-          end: Color(0xFFF5BB00),
-        ),
-        likeBuilder: (bool isLiked) {
-          return FaIcon(
-            isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
-            color: isLiked ? AppTheme.colorBitcoin : color,
-            size: 16.sp,
-          );
-        },
-        countBuilder: (_, __, ___) => const SizedBox.shrink(),
-        onTap: handleLikeAction,
+    return LikeButton(
+      isLiked: isLiked.value,
+      size: 18.sp,
+      circleSize: 35.r,
+      bubblesSize: 40.r,
+      animationDuration: const Duration(milliseconds: 400),
+      bubblesColor: BubblesColor(
+        dotPrimaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+            ? AppTheme.colorBitcoin
+            : Theme.of(context).colorScheme.primary,
+        dotSecondaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+            ? AppTheme.colorPrimaryGradient
+            : Theme.of(context).colorScheme.secondary,
       ),
+      circleColor: CircleColor(
+        start: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+            ? AppTheme.colorBitcoin
+            : Theme.of(context).colorScheme.primary,
+        end: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+            ? AppTheme.colorPrimaryGradient
+            : Theme.of(context).colorScheme.secondary,
+      ),
+      likeBuilder: (bool isLiked) {
+        return FaIcon(
+          isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
+          color: isLiked
+              ? Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                  ? AppTheme.colorBitcoin
+                  : Theme.of(context).colorScheme.primary
+              : Theme.of(context).brightness == Brightness.light
+                  ? AppTheme.black60
+                  : Colors.grey.shade700,
+          size: 18.sp,
+        );
+      },
+      countBuilder: (_, __, ___) => const SizedBox.shrink(),
+      onTap: handleLikeAction,
     );
   }
 }

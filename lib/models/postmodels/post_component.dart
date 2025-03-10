@@ -257,34 +257,28 @@ class _PostComponentState extends State<PostComponent>
 
                               children: [
                                 // List button with icon and text
-                                Expanded(
-                                  flex: 3,
-                                  child: LongButtonWidget(
-                                    title: "List",
-                                    buttonType: ButtonType.transparent,
-                                    customHeight: AppTheme.cardPadding * 1.25,
-                                    customWidth: AppTheme.cardPadding * 3.75,
+                                LongButtonWidget(
+                                  title: "List",
+                                  buttonType: ButtonType.transparent,
+                                  customHeight: AppTheme.cardPadding * 1.25.h,
+                                  customWidth: AppTheme.cardPadding * 3.5.w,
 
-                                    onTap: () {
-                                      final homeController = Get.find<HomeController>();
-                                      homeController.createClicks(postId);
-                                    },
-                                  )
+                                  onTap: () {
+                                    final homeController = Get.find<HomeController>();
+                                    homeController.createClicks(postId);
+                                  },
                                 ),
                                 Spacer(),
 
                                 
                                 // Like space with full control of width
-                                Expanded(
-                                  flex: 4,
-                                  child: buildLikeSpace(
-                                    type: likeSpaceType.Post,
-                                    targetId: postId,
-                                    postName: postName,
-                                    username: username,
-                                    ownerId: ownerId,
-                                    rockets: rockets),
-                                ),
+                                buildLikeSpace(
+                                  type: likeSpaceType.Post,
+                                  targetId: postId,
+                                  postName: postName,
+                                  username: username,
+                                  ownerId: ownerId,
+                                  rockets: rockets),
                               ],
                             ),
                           )

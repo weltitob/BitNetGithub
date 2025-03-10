@@ -94,7 +94,7 @@ class PostHeader extends StatelessWidget {
           // Trailing - Delete Icon Button
           RoundedButtonWidget(
             buttonType: ButtonType.transparent,
-            size: AppTheme.cardPadding * 1.3.w,
+            size: AppTheme.cardPadding * 1.25.w,
             iconData: Icons.more_horiz_rounded,
             onTap: () {
               BitNetBottomSheet(
