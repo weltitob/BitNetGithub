@@ -57,6 +57,9 @@ class BitNetTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if we should use Bitcoin gradient
+    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+    
     return HorizontalFadeListView(
       child: ButtonsTabBar(
         controller: tabController,
@@ -67,12 +70,28 @@ class BitNetTabBar extends StatelessWidget {
         borderColor: Colors.white.withOpacity(0.2),
         radius: radius,
         physics: physics,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: AppTheme.cardRadiusSmall,
-        ),
+        decoration: useBitcoinGradient
+          ? BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppTheme.colorBitcoin,
+                  AppTheme.colorPrimaryGradient,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(radius),
+            )
+          : BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(radius),
+            ),
         unselectedDecoration: unselectedDecoration,
         tabs: tabs,
+        labelStyle: TextStyle(
+          color: useBitcoinGradient ? Colors.white : null,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
