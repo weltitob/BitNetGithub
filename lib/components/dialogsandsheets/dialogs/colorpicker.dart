@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 Future<bool?> showColorPickerDialouge({
   required BuildContext context,
@@ -36,27 +36,28 @@ Future<bool?> showColorPickerDialouge({
               pickerColor: pickerColor,
               onColorChanged: onColorChanged,
             ),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: actionleft,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(AppTheme.errorColor),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100))),
-                  ),
-                  child: const Icon(Icons.stop_rounded),
+                LongButtonWidget(
+                  title: "Cancel",
+                  onTap: actionleft,
+                  customWidth: AppTheme.cardPadding * 5,
+                  customHeight: AppTheme.cardPadding * 2,
+                  buttonType: ButtonType.transparent,
+                  textColor: AppTheme.errorColor,
+                  leadingIcon: Icon(Icons.stop_rounded, color: AppTheme.errorColor, size: 16),
                 ),
-                ElevatedButton(
-                  onPressed: actionright,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(AppTheme.successColor),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100))),
-                  ),
-                  child: const Icon(Icons.done_rounded),
-                )
+                LongButtonWidget(
+                  title: "Apply",
+                  onTap: actionright,
+                  customWidth: AppTheme.cardPadding * 5,
+                  customHeight: AppTheme.cardPadding * 2,
+                  buttonType: ButtonType.transparent,
+                  textColor: AppTheme.successColor,
+                  leadingIcon: Icon(Icons.done_rounded, color: AppTheme.successColor, size: 16),
+                ),
               ],
             ),
           ],
