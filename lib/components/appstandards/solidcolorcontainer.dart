@@ -36,43 +36,28 @@ class SolidContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool useBitcoinGradient = gradientColors.contains(AppTheme.colorBitcoin) && 
+                                     gradientColors.contains(AppTheme.colorPrimaryGradient);
+    
     return CustomPaint(
-      // painter: normalPainter
-      //     ? GradientBorderPainter(
-      //     borderRadius: BorderRadius.circular(borderRadius),
-      //     borderWidth: borderWidth,
-      //     // gradientColors: [
-      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
-      //     //   Theme.of(context).colorScheme.secondaryContainer,
-      //     //   Theme.of(context).colorScheme.secondaryContainer,
-      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
-      //     // ]
-      // ) // Modify to pass the correct colors
-      //     : null,
-      // foregroundPainter: !normalPainter
-      //     ? GradientBorderPainter(
-      //     borderRadius: BorderRadius.circular(borderRadius),
-      //     borderWidth: borderWidth,
-      //     // gradientColors: [
-      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
-      //     //   Theme.of(context).colorScheme.secondaryContainer,
-      //     //   Theme.of(context).colorScheme.secondaryContainer,
-      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
-      //     // ]
-      // ) // Modify to pass the correct colors
-      //     : null,
+      // Custom painter logic is commented out but kept for reference
+      // painter: normalPainter ? GradientBorderPainter(...) : null,
+      // foregroundPainter: !normalPainter ? GradientBorderPainter(...) : null,
       child: Container(
         height: height,
         width: width,
         alignment: alignment,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          color: Theme.of(context).colorScheme.primary,
-          // gradient: LinearGradient(
-          //   begin: gradientBegin,
-          //   end: gradientEnd,
-          //   colors: gradientColors,
-          // ),
+          // Use gradient if colors include Bitcoin theme colors, otherwise use solid color
+          color: useBitcoinGradient ? null : Theme.of(context).colorScheme.primary,
+          gradient: useBitcoinGradient 
+              ? LinearGradient(
+                  begin: gradientBegin,
+                  end: gradientEnd,
+                  colors: gradientColors,
+                )
+              : null,
         ),
         child: child,
       ),

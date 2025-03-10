@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 // Create a StatefulWidget for the background animation
@@ -33,6 +34,9 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if we should use the Bitcoin gradient
+    final bool useBitcoinGradient = widget.colorprimary == AppTheme.colorBitcoin;
+    
     return Stack(
       children: [
         Container(
@@ -55,14 +59,23 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
             borderRadius: widget.borderRadius,
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomLeft,
-                  end: Alignment.topRight,
-                  colors: [
-                    widget.colorprimary,
-                    widget.colorsecondary,
-                  ],
-                ),
+                gradient: useBitcoinGradient
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppTheme.colorBitcoin,
+                        AppTheme.colorPrimaryGradient,
+                      ],
+                    )
+                  : LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        widget.colorprimary,
+                        widget.colorsecondary,
+                      ],
+                    ),
               ),
             ),
           ),
@@ -72,4 +85,3 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
     );
   }
 }
-
