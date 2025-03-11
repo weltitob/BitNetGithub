@@ -160,6 +160,8 @@ class SendsController extends BaseController {
   late SendType sendType;
   String feesSelected = "Niedrig";
   RxString description = "".obs;
+  RxString bip21Mode = "onchain".obs;
+
   double? feesDouble;
   TextEditingController satController = TextEditingController();
   TextEditingController btcController =
