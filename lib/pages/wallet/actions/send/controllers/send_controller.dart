@@ -160,7 +160,7 @@ class SendsController extends BaseController {
   late SendType sendType;
   String feesSelected = "Niedrig";
   RxString description = "".obs;
-  RxString bip21Mode = "onchain".obs;
+  RxString bip21Mode = "lightning".obs;
 
   double? feesDouble;
   TextEditingController satController = TextEditingController();
@@ -341,8 +341,12 @@ class SendsController extends BaseController {
     //context.go("/wallet/send");
   }
 
-  void giveValuesToOnchainSend(String onchainAdress) async {
-    resetValues();
+  void giveValuesToOnchainSend(String onchainAdress, {bool keepBip21Address = false}) async {
+    // Don't call resetValues() if we're just switching modes while preserving the BIP21 state
+    if (!keepBip21Address) {
+      resetValues();
+    }
+    
     Uri? uri = Uri.tryParse(onchainAdress);
     if (uri == null) {
       throw Exception(
@@ -365,7 +369,16 @@ class SendsController extends BaseController {
     }
 
     {
-      sendType = SendType.OnChain;
+      // If keepBip21Address is true, retain SendType.Bip21, otherwise set to SendType.OnChain
+      if (keepBip21Address) {
+        // Keep SendType.Bip21 but switch to onchain mode
+        logger.i("Preserving BIP21 state while switching to onchain mode");
+        bip21Mode.value = "onchain";
+        // Ensure we retain the BIP21 type
+        sendType = SendType.Bip21;
+      } else {
+        sendType = SendType.OnChain;
+      }
       hasReceiver.value = true;
       bitcoinReceiverAdress = finalAddress;
       description.value = message ?? label ?? '';
@@ -497,20 +510,39 @@ class SendsController extends BaseController {
     return payment;
   }
 
-  void giveValuesToInvoice(String invoiceString) {
+  void giveValuesToInvoice(String invoiceString, {bool keepBip21Address = false}) {
     LoggerService logger = Get.find();
     logger.i("Invoice that is about to be paid for: $invoiceString");
-    sendType = SendType.Invoice;
-    hasReceiver.value = true;
-    bitcoinReceiverAdress = invoiceString;
+    
+    // If keepBip21Address is true, preserve the BIP21 state
+    if (keepBip21Address && sendType == SendType.Bip21) {
+      logger.i("Preserving BIP21 state while switching to lightning mode");
+      // Just update the invoice address and mode but keep sendType as Bip21
+      bip21InvoiceAddress = invoiceString;
+      bip21Mode.value = "lightning";
+    } else {
+      // Normal invoice flow
+      sendType = SendType.Invoice;
+      hasReceiver.value = true;
+      bitcoinReceiverAdress = invoiceString;
+    }
+    
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
     double satoshi =
         CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
     int cleanAmount = satoshi.toInt();
-    satController.text = cleanAmount.toString();
-    // currencyController.text = CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, cleanAmount.toDouble(), outputCurrency, bitcoinPrice);
+    
+    if (sendType == SendType.Bip21) {
+      bip21InvoiceSatController.text = cleanAmount.toString();
+    } else {
+      satController.text = cleanAmount.toString();
+    }
+    
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
+    
+    // Ensure we maintain a consistent state
+    logger.i("Setting type: $sendType, Mode: ${bip21Mode.value}");
   }
 
   Future<void> giveValuesToBip21(String encodedString) async {
@@ -541,6 +573,8 @@ class SendsController extends BaseController {
 
     {
       sendType = SendType.Bip21;
+    // Set lightning as the default mode for Bip21
+    bip21Mode.value = "lightning";
       hasReceiver.value = true;
       bitcoinReceiverAdress = finalAddress;
       description.value = message ?? label ?? '';
@@ -564,8 +598,10 @@ class SendsController extends BaseController {
           CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
       int cleanAmount = satoshi.toInt();
       bip21InvoiceSatController.text = cleanAmount.toString();
-      // currencyController.text = CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, cleanAmount.toDouble(), outputCurrency, bitcoinPrice);
-      // moneyTextFieldIsEnabled.value = false;
+      // Set lightning as default
+      bip21Mode.value = "lightning";
+      // Call giveValuesToInvoice with the invoice
+      giveValuesToInvoice(invoice, keepBip21Address: true);
     }
   }
 
@@ -593,7 +629,7 @@ class SendsController extends BaseController {
   Future<dynamic> sendBip21BTC(BuildContext context, bool onchain) async {
     LoggerService logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();
-    logger.i("sendBTC() called");
+    logger.i("sendBip21BTC() called with onchain=$onchain");
 
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
@@ -822,7 +858,11 @@ class SendsController extends BaseController {
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
-        if (sendType == SendType.LightningUrl) {
+        // Check if this is a BIP21 transaction and handle accordingly
+        if (sendType == SendType.Bip21) {
+          logger.i("Handling Bip21 payment with mode: ${bip21Mode.value}");
+          return await sendBip21BTC(context, bip21Mode.value == "onchain");
+        } else if (sendType == SendType.LightningUrl) {
           logger.i("Amount that is being sent: ${satController.text}");
           logger.i("Satcontroller text: ${satController.text}");
           logger

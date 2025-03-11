@@ -20,13 +20,14 @@ import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dar
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
 /// In your SendsController, add something like:
-/// RxString bip21Mode = "onchain".obs;
+/// RxString bip21Mode = "lightning".obs;
 /// (Possible values: "onchain" or "lightning")
 
 class SendBTCScreen extends GetWidget<SendsController> {
@@ -64,6 +65,9 @@ class SendBTCScreen extends GetWidget<SendsController> {
 
   bool get isOnChainPayment =>
       controller.sendType == SendType.OnChain;
+      
+  bool get isBip21Payment =>
+      controller.sendType == SendType.Bip21;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +146,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
                                 SizedBox(height: AppTheme.cardPadding * 4),
                                 Center(child: _buildBitcoinWidget(context)),
                                 const SizedBox(
-                                    height: AppTheme.cardPadding * 2),
+                                    height: AppTheme.cardPadding * 3.5),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: AppTheme.cardPadding),
@@ -159,16 +163,19 @@ class SendBTCScreen extends GetWidget<SendsController> {
                                     ),
                                   ),
                                 ),
-                                // Always show the network selection tile for Bip21.
-                                if (controller.sendType == SendType.Bip21) ...[
+                                // Only show the network selection tile for BIP21 addresses
+                                if (controller.sendType == SendType.Bip21)
                                   _buildNetworkSelectionTile(context),
+                                
+                                // Show fees if onchain
+                                if (controller.sendType == SendType.Bip21)
                                   Obx(() {
                                     // If bip21Mode is onchain, show fees
                                     return controller.bip21Mode.value == "onchain"
                                         ? _buildFeesWidget(context)
                                         : Container();
-                                  }),
-                                ] else if (isOnChainPayment)
+                                  })
+                                else if (isOnChainPayment)
                                   _buildFeesWidget(context),
                               ],
                             ),
@@ -288,65 +295,66 @@ class SendBTCScreen extends GetWidget<SendsController> {
           : "0.0";
     }
 
-    return Obx(() {
-      Get.find<WalletsController>().chartLines.value;
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            AmountWidget(
-              ctrler: isLightning ? controller : null,
-              bitcoinUnit: controller.bitcoinUnit,
-              init: (isLightning &&
-                  (controller.sendType == SendType.LightningUrl ||
-                      controller.sendType == SendType.Invoice ||
-                      controller.sendType == SendType.Bip21))
-                  ? () {
-                String currencyEquivalent = bitcoinPrice != null
-                    ? CurrencyConverter.convertCurrency(
-                    "SATS",
-                    double.parse(usedSatController.text),
-                    currency,
-                    bitcoinPrice,
-                    fixed: false)
-                    : "0.0";
-                usedCurrencyController.text =
-                    double.parse(currencyEquivalent).toStringAsFixed(2);
-                if (controller.bitcoinUnit == BitcoinUnits.BTC) {
-                  usedBtcController.text =
-                      CurrencyConverter.convertSatoshiToBTC(
-                          double.parse(usedSatController.text))
-                          .toString();
-                }
+    // We'll recreate the widget when chartLines or controller properties change
+    final chartLinesValue = Get.find<WalletsController>().chartLines.value;
+    final reversedValue = Get.find<WalletsController>().reversed.value;
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AmountWidget(
+            ctrler: isLightning ? controller : null,
+            bitcoinUnit: controller.bitcoinUnit,
+            init: (isLightning &&
+                (controller.sendType == SendType.LightningUrl ||
+                    controller.sendType == SendType.Invoice ||
+                    controller.sendType == SendType.Bip21))
+                ? () {
+              String currencyEquivalent = bitcoinPrice != null
+                  ? CurrencyConverter.convertCurrency(
+                  "SATS",
+                  double.parse(usedSatController.text),
+                  currency,
+                  bitcoinPrice,
+                  fixed: false)
+                  : "0.0";
+              usedCurrencyController.text =
+                  double.parse(currencyEquivalent).toStringAsFixed(2);
+              if (controller.bitcoinUnit == BitcoinUnits.BTC) {
+                usedBtcController.text =
+                    CurrencyConverter.convertSatoshiToBTC(
+                        double.parse(usedSatController.text))
+                        .toString();
               }
-                  : null,
-              enabled: () => isLightning
-                  ? (double.parse(usedSatController.text) == 0 ||
-                  controller.sendType == SendType.LightningUrl)
-                  : true,
-              btcController: usedBtcController,
-              satController: usedSatController,
-              currController: usedCurrencyController,
-              focusNode: controller.myFocusNodeMoney,
-              context: context,
-              swapped: Get.find<WalletsController>().reversed.value,
-              lowerBound: isLightning ? controller.lowerBound : null,
-              upperBound: isLightning ? controller.upperBound : null,
-              boundType: isLightning ? controller.boundType : null,
-              autoConvert: isLightning
-                  ? !(controller.sendType == SendType.LightningUrl)
-                  : true,
-              preventConversion: isLightning
-                  ? () => (controller.sendType == SendType.Invoice ||
-                  controller.sendType == SendType.Bip21) &&
-                  double.parse(usedSatController.text) != 0
-                  : null,
-            ),
-          ],
-        ),
-      );
-    });
+            }
+                : null,
+            enabled: () => isLightning
+                ? (double.parse(usedSatController.text) == 0 ||
+                controller.sendType == SendType.LightningUrl)
+                : true,
+            btcController: usedBtcController,
+            satController: usedSatController,
+            currController: usedCurrencyController,
+            focusNode: controller.myFocusNodeMoney,
+            context: context,
+            swapped: reversedValue,
+            lowerBound: isLightning ? controller.lowerBound : null,
+            upperBound: isLightning ? controller.upperBound : null,
+            boundType: isLightning ? controller.boundType : null,
+            autoConvert: isLightning
+                ? !(controller.sendType == SendType.LightningUrl)
+                : true,
+            preventConversion: isLightning
+                ? () => (controller.sendType == SendType.Invoice ||
+                controller.sendType == SendType.Bip21) &&
+                double.parse(usedSatController.text) != 0
+                : null,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildFeesWidget(BuildContext context) {
@@ -401,26 +409,30 @@ class SendBTCScreen extends GetWidget<SendsController> {
       child: BitNetListTile(
         text: "Network",
         margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-        trailing: Obx(() {
-          return Container(
-            constraints: BoxConstraints(maxWidth: AppTheme.cardPadding * 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                LongButtonWidget(
-                  buttonType: ButtonType.transparent,
-                  title: getNetworkTypeLabel(),
-                  leadingIcon: getNetworkTypeIcon(),
-                  onTap: () {
-                    showNetworkTypeSheet(context);
-                  },
-                  customWidth: AppTheme.cardPadding * 6,
-                  customHeight: AppTheme.cardPadding * 1.5,
-                ),
-              ],
-            ),
-          );
-        }),
+        trailing: Container(
+          constraints: BoxConstraints(maxWidth: AppTheme.cardPadding * 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LongButtonWidget(
+                buttonType: ButtonType.transparent,
+                title: controller.sendType == SendType.Bip21 
+                    ? (controller.bip21Mode.value == "lightning" ? 'Lightning' : 'Onchain')
+                    : getNetworkTypeLabel(),
+                leadingIcon: controller.sendType == SendType.Bip21
+                    ? (controller.bip21Mode.value == "lightning" 
+                        ? const Icon(FontAwesomeIcons.bolt, size: AppTheme.cardPadding * 0.75)
+                        : const Icon(FontAwesomeIcons.chain, size: AppTheme.cardPadding * 0.75))
+                    : getNetworkTypeIcon(),
+                onTap: () {
+                  showNetworkTypeSheet(context);
+                },
+                customWidth: AppTheme.cardPadding * 6,
+                customHeight: AppTheme.cardPadding * 1.5,
+              ),
+            ],
+          ),
+        ),
         onTap: () {
           showNetworkTypeSheet(context);
         },
@@ -464,6 +476,10 @@ class SendBTCScreen extends GetWidget<SendsController> {
   }
 
   Future<void> showNetworkTypeSheet(BuildContext context) async {
+    // Only show network selection sheet for BIP21 addresses
+    if (controller.sendType != SendType.Bip21) {
+      return;
+    }
     await BitNetBottomSheet(
       context: context,
       height: MediaQuery.of(context).size.height * 0.3,
@@ -496,11 +512,14 @@ class SendBTCScreen extends GetWidget<SendsController> {
                   onTap: () {
                     if (controller.sendType == SendType.Bip21 &&
                         controller.bitcoinReceiverAdress.isNotEmpty) {
-                      final uri = Uri.parse(controller.bitcoinReceiverAdress);
-                      final lightning = uri.queryParameters['lightning'] ?? '';
-                      if (lightning.isNotEmpty) {
-                        controller.bip21Mode.value = "lightning";
-                        controller.giveValuesToInvoice(lightning);
+                      // Check if the current mode is already lightning before changing it
+                      if (controller.bip21Mode.value != "lightning") {
+                        final uri = Uri.parse(controller.bitcoinReceiverAdress);
+                        final lightning = uri.queryParameters['lightning'] ?? '';
+                        if (lightning.isNotEmpty) {
+                          controller.bip21Mode.value = "lightning";
+                          controller.giveValuesToInvoice(lightning, keepBip21Address: true);
+                        }
                       }
                     }
                     Navigator.of(context).pop();
@@ -521,9 +540,12 @@ class SendBTCScreen extends GetWidget<SendsController> {
                   onTap: () {
                     if (controller.sendType == SendType.Bip21 &&
                         controller.bitcoinReceiverAdress.isNotEmpty) {
-                      final uri = Uri.parse(controller.bitcoinReceiverAdress);
-                      controller.bip21Mode.value = "onchain";
-                      controller.giveValuesToOnchainSend(uri.path);
+                      // Check if the current mode is already onchain before changing it
+                      if (controller.bip21Mode.value != "onchain") {
+                        final uri = Uri.parse(controller.bitcoinReceiverAdress);
+                        controller.bip21Mode.value = "onchain";
+                        controller.giveValuesToOnchainSend(uri.path, keepBip21Address: true);
+                      }
                     }
                     Navigator.of(context).pop();
                   },
