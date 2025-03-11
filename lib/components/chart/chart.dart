@@ -476,7 +476,7 @@ class _ChartCoreState extends State<ChartCore> {
               primaryYAxis: NumericAxis(
                   plotBands: <PlotBand>[
                     PlotBand(
-                        isVisible: true,
+                        isVisible: !bitcoinController.currentline.value.isEmpty,
                         dashArray: const <double>[2, 5],
                         start: bitcoinController.currentline.value.isEmpty
                             ? 0
