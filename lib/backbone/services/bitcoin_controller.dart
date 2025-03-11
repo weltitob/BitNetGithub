@@ -107,6 +107,16 @@ class BitcoinController extends GetxController {
   }
 
   void setValues() {
+    // Check if currentline is empty before accessing elements
+    if (currentline.value.isEmpty) {
+      // Set default values when no data is available
+      new_lastpriceexact = 0;
+      new_lastimeeexact = DateTime.now().millisecondsSinceEpoch.toDouble();
+      new_lastpricerounded.value = 0;
+      new_firstpriceexact = 0;
+      return;
+    }
+    
     new_lastpriceexact = currentline.value.last.price;
     new_lastimeeexact = currentline.value.last.time;
     new_lastpricerounded.value =
@@ -195,7 +205,7 @@ class BitcoinController extends GetxController {
 
     setValues();
     //percent
-    double priceChange =
+    double priceChange = currentline.value.first.price == 0 ? 0 :
         (currentline.value.last.price - currentline.value.first.price) /
             currentline.value.first.price;
     overallPriceChange.value = toPercent(priceChange);
@@ -246,7 +256,7 @@ class BitcoinController extends GetxController {
       // trackBallValueDate = date.toString();
       setValues();
       //percent
-      double priceChange =
+      double priceChange = currentline.value.first.price == 0 ? 0 :
           (currentline.value.last.price - currentline.value.first.price) /
               currentline.value.first.price;
       overallPriceChange.value = toPercent(priceChange);
@@ -295,6 +305,16 @@ class BitcoinController extends GetxController {
 
   //personal balance functions
   void pbSetValues() {
+    // Check if pbCurrentline is empty before accessing elements
+    if (pbCurrentline.value.isEmpty) {
+      // Set default values when no data is available
+      pbNew_lastpriceexact = 0;
+      pbNew_lastimeeexact = DateTime.now().millisecondsSinceEpoch.toDouble();
+      pbNew_lastpricerounded.value = 0;
+      pbNew_firstpriceexact = 0;
+      return;
+    }
+    
     pbNew_lastpriceexact = pbCurrentline.value.last.price;
     pbNew_lastimeeexact = pbCurrentline.value.last.time;
     pbNew_lastpricerounded.value =

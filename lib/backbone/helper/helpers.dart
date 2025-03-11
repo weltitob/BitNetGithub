@@ -163,6 +163,9 @@ int timeNow() {
 
 // Get the average price of a list of items
 getaverage(dynamic currentline) {
+  if (currentline == null || currentline.isEmpty) {
+    return 0;
+  }
   return currentline.map((m) => m.price).reduce((a, b) => a + b) /
       currentline.length;
 }

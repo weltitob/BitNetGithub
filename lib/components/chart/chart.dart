@@ -156,6 +156,16 @@ class _ChartWidgetState extends State<ChartWidget> {
   // }
 
   void setValues(BitcoinController ctrler) {
+    // Check if the currentline is empty before accessing elements
+    if (ctrler.currentline.value.isEmpty) {
+      // Set default values when no data is available
+      ctrler.new_lastpriceexact = 0;
+      ctrler.new_lastimeeexact = DateTime.now().millisecondsSinceEpoch.toDouble();
+      ctrler.new_lastpricerounded.value = 0;
+      ctrler.new_firstpriceexact = 0;
+      return;
+    }
+    
     ctrler.new_lastpriceexact = ctrler.currentline.value.last.price;
     ctrler.new_lastimeeexact = ctrler.currentline.value.last.time;
     ctrler.new_lastpricerounded.value =
@@ -246,7 +256,8 @@ class _ChartWidgetState extends State<ChartWidget> {
               bitcoinController.trackBallValuePrice =
                   bitcoinController.new_lastpricerounded.toString();
               // Update percent
-              double priceChange = (bitcoinController.new_lastpriceexact -
+              double priceChange = bitcoinController.new_firstpriceexact == 0 ? 0 :
+                  (bitcoinController.new_lastpriceexact -
                       bitcoinController.new_firstpriceexact) /
                   bitcoinController.new_firstpriceexact;
               bitcoinController.trackBallValuePricechange =
@@ -285,46 +296,60 @@ class _ChartWidgetState extends State<ChartWidget> {
     Duration monthDuration = Duration(days: 30);
     Duration yearDuration = Duration(days: 365);
     int amt = 0;
-    while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-                bitcoinController.onedaychart[0].time.round())) >
-            dayDuration &&
-        !bitcoinController.onedaychart.isEmpty) {
-      bitcoinController.onedaychart.removeAt(0);
-      amt++;
-      if (bitcoinController.onedaychart.isEmpty) {
-        break;
+    
+    // Check if arrays are empty before processing
+    if (!bitcoinController.onedaychart.isEmpty) {
+      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
+                  bitcoinController.onedaychart[0].time.round())) >
+              dayDuration &&
+          !bitcoinController.onedaychart.isEmpty) {
+        bitcoinController.onedaychart.removeAt(0);
+        amt++;
+        if (bitcoinController.onedaychart.isEmpty) {
+          break;
+        }
       }
     }
-    while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-                bitcoinController.oneweekchart[0].time.round())) >
-            weekDuration &&
-        !bitcoinController.oneweekchart.isEmpty) {
-      bitcoinController.oneweekchart.removeAt(0);
-      amt++;
-      if (bitcoinController.oneweekchart.isEmpty) {
-        break;
+    
+    if (!bitcoinController.oneweekchart.isEmpty) {
+      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
+                  bitcoinController.oneweekchart[0].time.round())) >
+              weekDuration &&
+          !bitcoinController.oneweekchart.isEmpty) {
+        bitcoinController.oneweekchart.removeAt(0);
+        amt++;
+        if (bitcoinController.oneweekchart.isEmpty) {
+          break;
+        }
       }
     }
-    while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-                bitcoinController.onemonthchart[0].time.round())) >
-            monthDuration &&
-        !bitcoinController.onemonthchart.isEmpty) {
-      bitcoinController.onemonthchart.removeAt(0);
-      amt++;
-      if (bitcoinController.onemonthchart.isEmpty) {
-        break;
+    
+    if (!bitcoinController.onemonthchart.isEmpty) {
+      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
+                  bitcoinController.onemonthchart[0].time.round())) >
+              monthDuration &&
+          !bitcoinController.onemonthchart.isEmpty) {
+        bitcoinController.onemonthchart.removeAt(0);
+        amt++;
+        if (bitcoinController.onemonthchart.isEmpty) {
+          break;
+        }
       }
     }
-    while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-                bitcoinController.oneyearchart[0].time.round())) >
-            yearDuration &&
-        !bitcoinController.oneyearchart.isEmpty) {
-      bitcoinController.oneyearchart.removeAt(0);
-      amt++;
-      if (bitcoinController.oneyearchart.isEmpty) {
-        break;
+    
+    if (!bitcoinController.oneyearchart.isEmpty) {
+      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
+                  bitcoinController.oneyearchart[0].time.round())) >
+              yearDuration &&
+          !bitcoinController.oneyearchart.isEmpty) {
+        bitcoinController.oneyearchart.removeAt(0);
+        amt++;
+        if (bitcoinController.oneyearchart.isEmpty) {
+          break;
+        }
       }
     }
+    
     setState(() {});
     logger
         .i("cleaning up old chart-data, successfully removed: ${amt} old data");
@@ -359,7 +384,8 @@ class _ChartCoreState extends State<ChartCore> {
         bitcoinController.trackBallValuePrice =
             bitcoinController.new_lastpricerounded.toString();
         // Update percent
-        double priceChange = (bitcoinController.new_lastpriceexact -
+        double priceChange = bitcoinController.new_firstpriceexact == 0 ? 0 :
+            (bitcoinController.new_lastpriceexact -
                 bitcoinController.new_firstpriceexact) /
             bitcoinController.new_firstpriceexact;
         bitcoinController.trackBallValuePricechange = toPercent(priceChange);
@@ -406,7 +432,7 @@ class _ChartCoreState extends State<ChartCore> {
                   bitcoinController.trackBallValueTime = datetime;
                   // bitcoinController.trackBallValueDate = date.toString();
                   bitcoinController.trackBallValuePrice = pointInfoPrice;
-                  double priceChange =
+                  double priceChange = _firstpriceexact == 0 ? 0 :
                       (double.parse(bitcoinController.trackBallValuePrice) -
                               _firstpriceexact) /
                           _firstpriceexact;
@@ -423,7 +449,7 @@ class _ChartCoreState extends State<ChartCore> {
                 bitcoinController.trackBallValuePrice =
                     _lastpricerounded.toString();
                 //reset to percent of screen
-                double priceChange =
+                double priceChange = _firstpriceexact == 0 ? 0 :
                     (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
                 bitcoinController.trackBallValuePricechange =
                     toPercent(priceChange);
