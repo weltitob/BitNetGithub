@@ -514,7 +514,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
                         controller.bitcoinReceiverAdress.isNotEmpty) {
                       // Check if the current mode is already lightning before changing it
                       if (controller.bip21Mode.value != "lightning") {
-                        final uri = Uri.parse(controller.bitcoinReceiverAdress);
+                        final uri = Uri.parse(controller.originalBip21Uri);
                         final lightning = uri.queryParameters['lightning'] ?? '';
                         if (lightning.isNotEmpty) {
                           controller.bip21Mode.value = "lightning";
@@ -542,7 +542,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
                         controller.bitcoinReceiverAdress.isNotEmpty) {
                       // Check if the current mode is already onchain before changing it
                       if (controller.bip21Mode.value != "onchain") {
-                        final uri = Uri.parse(controller.bitcoinReceiverAdress);
+                        final uri = Uri.parse(controller.originalBip21Uri);
                         controller.bip21Mode.value = "onchain";
                         controller.giveValuesToOnchainSend(uri.path, keepBip21Address: true);
                       }
