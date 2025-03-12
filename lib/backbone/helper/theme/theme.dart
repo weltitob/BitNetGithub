@@ -425,13 +425,13 @@ abstract class AppTheme {
       color: AppTheme.white80,
     ),
     titleSmall: textTheme.titleSmall!.copyWith(
-      color: AppTheme.white70,
+      color: AppTheme.white80,
     ),
     bodyLarge: textTheme.bodyLarge!.copyWith(
-      color: AppTheme.white60,
+      color: AppTheme.white70,
     ),
     bodyMedium: textTheme.bodyMedium!.copyWith(
-      color: AppTheme.white60,
+      color: AppTheme.white70,
     ),
     bodySmall: textTheme.bodySmall!.copyWith(
       color: AppTheme.white60,
