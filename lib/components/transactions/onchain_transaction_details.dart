@@ -22,12 +22,13 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 
 class OnChainTransactionDetails extends BaseTransactionDetails {
   final String txId;
-  
+
   const OnChainTransactionDetails({
     required TransactionItemData data,
     required this.txId,
@@ -35,25 +36,27 @@ class OnChainTransactionDetails extends BaseTransactionDetails {
   }) : super(data: data, key: key);
 
   @override
-  OnChainTransactionDetailsState createState() => OnChainTransactionDetailsState();
+  OnChainTransactionDetailsState createState() =>
+      OnChainTransactionDetailsState();
 }
 
-class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChainTransactionDetails> {
+class OnChainTransactionDetailsState
+    extends BaseTransactionDetailsState<OnChainTransactionDetails> {
   late final TransactionController transactionController;
   late final WalletsController walletController;
   late final HomeController homeController;
-  
+
   @override
   void initState() {
     super.initState();
     transactionController = Get.put(TransactionController());
     transactionController.txID = widget.txId;
-    transactionController.loadTransactionByID();
-    
+    //transactionController.loadTransactionByID();
+
     walletController = Get.find<WalletsController>();
     homeController = Get.put(HomeController());
   }
-  
+
   @override
   void dispose() {
     // Stop tracking transaction when screen is closed
@@ -63,7 +66,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
     homeController.isRbfTransaction.value = false;
     super.dispose();
   }
-  
+
   @override
   String getHeaderTitle() => 'OnChain Transaction';
 
@@ -72,15 +75,17 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
     if (transactionController.transactionModel == null) {
       return const SizedBox.shrink();
     }
-    
+
     return Column(
       children: [
         // Block information (for confirmed transactions)
         TransactionDetailTile(
           text: L10n.of(context)!.block,
           onTap: () {
-            if (transactionController.transactionModel!.status!.blockHeight != null) {
-              homeController.blockHeight = transactionController.transactionModel!.status!.blockHeight!;
+            if (transactionController.transactionModel!.status!.blockHeight !=
+                null) {
+              homeController.blockHeight =
+                  transactionController.transactionModel!.status!.blockHeight!;
               context.push('/wallet/bitcoinscreen/mempool');
             }
           },
@@ -88,9 +93,10 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
             children: [
               Text(
                 "${transactionController.transactionModel!.status!.blockHeight ?? "--"}",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.primary
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(width: AppTheme.elementSpacing / 2),
               Icon(
@@ -101,7 +107,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
             ],
           ),
         ),
-        
+
         // ETA (for pending transactions)
         if (!transactionController.transactionModel!.status!.confirmed!)
           TransactionDetailTile(
@@ -144,11 +150,11 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
       if (transactionController.isLoading.isTrue) {
         return const Center(child: CircularProgressIndicator());
       }
-      
+
       if (transactionController.transactionModel == null) {
         return const Center(child: Text('Something went wrong'));
       }
-      
+
       return Column(
         children: [
           // RBF Transaction notice
@@ -173,7 +179,8 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                       await Clipboard.setData(ClipboardData(
                         text: homeController.replacedTx.value,
                       ));
-                      overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
+                      overlayController
+                          .showOverlay(L10n.of(context)!.copiedToClipboard);
                     },
                     child: Row(
                       children: [
@@ -196,9 +203,9 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                 ],
               ),
             ),
-            
+
           const SizedBox(height: AppTheme.elementSpacing),
-          
+
           // Main transaction card
           TransactionDetailsContainer(
             child: Column(
@@ -206,23 +213,26 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                 // Transaction header with sender/receiver
                 TransactionHeaderWidget(
                   data: widget.data,
-                  senderLabel: "Sender (${transactionController.transactionModel?.vin?.length})",
-                  receiverLabel: "Receiver (${transactionController.transactionModel?.vout?.length})",
+                  senderLabel:
+                      "Sender (${transactionController.transactionModel?.vin?.length})",
+                  receiverLabel:
+                      "Receiver (${transactionController.transactionModel?.vout?.length})",
                   onSenderTap: () => _showInputsBottomSheet(),
                   onReceiverTap: () => _showOutputsBottomSheet(),
                 ),
-                
+
                 // Transaction amount
                 TransactionAmountWidget(
                   data: widget.data,
                   useAmountColor: true,
                 ),
-                
+
                 const SizedBox(height: AppTheme.elementSpacing),
-                
+
                 // Transaction details
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing),
                   child: Column(
                     children: [
                       // Volume information
@@ -230,19 +240,22 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                         text: 'Transaction Volume',
                         trailing: _buildVolumeDisplay(),
                       ),
-                      
+
                       // Transaction ID
                       TransactionDetailTile(
                         text: 'TransactionID',
                         trailing: buildCopyableText(widget.txId),
                       ),
-                      
+
                       // Block information
                       TransactionDetailTile(
                         text: L10n.of(context)!.block,
                         onTap: () {
-                          if (transactionController.transactionModel!.status!.blockHeight != null) {
-                            homeController.blockHeight = transactionController.transactionModel!.status!.blockHeight!;
+                          if (transactionController
+                                  .transactionModel!.status!.blockHeight !=
+                              null) {
+                            homeController.blockHeight = transactionController
+                                .transactionModel!.status!.blockHeight!;
                             context.push('/wallet/bitcoinscreen/mempool');
                           }
                         },
@@ -250,9 +263,13 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                           children: [
                             Text(
                               "${transactionController.transactionModel!.status!.blockHeight ?? "--"}",
-                              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                color: Theme.of(context).colorScheme.primary
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
                             ),
                             const SizedBox(width: AppTheme.elementSpacing / 2),
                             Icon(
@@ -263,7 +280,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                           ],
                         ),
                       ),
-                      
+
                       // Status
                       TransactionDetailTile(
                         text: L10n.of(context)!.status,
@@ -272,20 +289,31 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                             homeController.isRbfTransaction.value == true
                                 ? L10n.of(context)!.replaced
                                 : '${transactionController.confirmations == 0 ? '' : transactionController.confirmations} ' +
-                                    transactionController.statusTransaction.value,
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              color: transactionController.transactionModel == null
-                                  ? AppTheme.errorColor
-                                  : transactionController.transactionModel!.status!.confirmed!
-                                      ? AppTheme.successColor
-                                      : homeController.isRbfTransaction.value == true
-                                          ? AppTheme.colorBitcoin
-                                          : AppTheme.errorColor,
-                            ),
+                                    transactionController
+                                        .statusTransaction.value,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color:
+                                      transactionController.transactionModel ==
+                                              null
+                                          ? AppTheme.errorColor
+                                          : transactionController
+                                                  .transactionModel!
+                                                  .status!
+                                                  .confirmed!
+                                              ? AppTheme.successColor
+                                              : homeController.isRbfTransaction
+                                                          .value ==
+                                                      true
+                                                  ? AppTheme.colorBitcoin
+                                                  : AppTheme.errorColor,
+                                ),
                           ),
                         ),
                       ),
-                      
+
                       // Payment Network
                       TransactionDetailTile(
                         text: L10n.of(context)!.paymentNetwork,
@@ -304,7 +332,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                           ],
                         ),
                       ),
-                      
+
                       // Time
                       TransactionDetailTile(
                         text: L10n.of(context)!.time,
@@ -312,14 +340,15 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                           Icons.access_time,
                           size: AppTheme.cardPadding * 0.75,
                           color: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black60,
+                              ? AppTheme.white60
+                              : AppTheme.black60,
                         ),
                         trailing: _buildTimeDisplay(),
                       ),
-                      
+
                       // ETA for pending transactions
-                      if (!transactionController.transactionModel!.status!.confirmed!)
+                      if (!transactionController
+                          .transactionModel!.status!.confirmed!)
                         TransactionDetailTile(
                           text: 'ETA',
                           trailing: Row(
@@ -335,7 +364,8 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                               ),
                               const SizedBox(width: 5),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 decoration: BoxDecoration(
                                   color: Colors.purple,
                                   borderRadius: AppTheme.cardRadiusCircular,
@@ -343,20 +373,21 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                                 child: Center(
                                   child: Text(
                                     L10n.of(context)!.accelerate,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               )
                             ],
                           ),
                         ),
-                      
+
                       // Fee
                       TransactionDetailTile(
                         text: 'Fee',
                         trailing: _buildFeeDisplay(),
                       ),
-                      
+
                       const SizedBox(height: AppTheme.cardPadding),
                     ],
                   ),
@@ -368,15 +399,16 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
       );
     });
   }
-  
+
   Widget _buildVolumeDisplay() {
     final chartLine = walletController.chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
-    
+
     final bitcoinPrice = chartLine?.price;
-    
+
     num outputTotal = 0;
     if (transactionController.transactionModel != null) {
       for (var vout in transactionController.transactionModel!.vout!) {
@@ -385,7 +417,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
         }
       }
     }
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -396,7 +428,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
           child: Text(
             coin.coin ?? true
                 ? '$outputTotal'
-                : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, outputTotal.toDouble(), currency!, bitcoinPrice)} ${getCurrency(currency)}',
+                : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, outputTotal.toDouble(), currency, bitcoinPrice)} ${getCurrency(currency)}',
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -407,11 +439,12 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
       ],
     );
   }
-  
+
   Widget _buildTimeDisplay() {
     final transactionModel = transactionController.transactionModel!;
-    Location loc = Provider.of<TimezoneProvider>(context, listen: false).timeZone;
-    
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
+
     if (transactionModel.status!.confirmed!) {
       return Container(
         child: Column(
@@ -434,15 +467,16 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
       );
     }
   }
-  
+
   Widget _buildFeeDisplay() {
     final chartLine = walletController.chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
-    
+
     final bitcoinPrice = chartLine?.price;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -455,7 +489,7 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
                 ? '${transactionController.transactionModel == null ? '' : transactionController.formatPrice(transactionController.transactionModel!.fee.toString())}'
                 : transactionController.transactionModel == null
                     ? ''
-                    : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, transactionController.transactionModel!.fee?.toDouble() ?? 0, currency!, bitcoinPrice)} ${getCurrency(currency)}',
+                    : '${CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, transactionController.transactionModel!.fee?.toDouble() ?? 0, currency, bitcoinPrice)} ${getCurrency(currency)}',
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -466,12 +500,12 @@ class OnChainTransactionDetailsState extends BaseTransactionDetailsState<OnChain
       ],
     );
   }
-  
+
   void _showInputsBottomSheet() {
     // Implementation for showing inputs in bottom sheet
     // This would need to be migrated from the original code
   }
-  
+
   void _showOutputsBottomSheet() {
     // Implementation for showing outputs in bottom sheet
     // This would need to be migrated from the original code
