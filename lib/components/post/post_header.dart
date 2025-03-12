@@ -29,7 +29,9 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing / 1.h, ),
+      padding: EdgeInsets.symmetric(
+        vertical: AppTheme.elementSpacing / 1.h,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -40,8 +42,7 @@ class PostHeader extends StatelessWidget {
               size: AppTheme.cardPadding * 1.75.h,
               fontSize: 18,
               onTap: () {},
-              isNft: false
-          ),
+              isNft: false),
 
           SizedBox(width: AppTheme.elementSpacing.w * 0.75),
 
@@ -74,7 +75,10 @@ class PostHeader extends StatelessWidget {
                         //avoid duplicate @ symbols
                         username.startsWith('@') ? username : '@$username',
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: AppTheme.white70,
+                            ),
                       ),
                     ),
                   ],
@@ -83,19 +87,20 @@ class PostHeader extends StatelessWidget {
                 // Zeit als dritte Zeile
                 Text(
                   timeAgo,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).textTheme.labelLarge?.color?.withOpacity(0.7),
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.color
+                            ?.withOpacity(0.7),
+                      ),
                 ),
               ],
             ),
           ),
 
           // Trailing - Delete Icon Button
-          RoundedButtonWidget(
-            buttonType: ButtonType.transparent,
-            size: AppTheme.cardPadding * 1.25.w,
-            iconData: Icons.more_horiz_rounded,
+          GestureDetector(
             onTap: () {
               BitNetBottomSheet(
                 height: MediaQuery.of(context).size.height * 0.6,
@@ -126,14 +131,16 @@ class PostHeader extends StatelessWidget {
                             onRightButtonTap: () {
                               deletePost(ownerId, postId);
                               Navigator.pop(context);
-                            }
-                        )
+                            })
                       ],
                     ),
-                    context: context
-                ),
+                    context: context),
               );
             },
+            child: Icon(
+              size: AppTheme.cardPadding * 0.75.w,
+              Icons.more_horiz_rounded,
+            ),
           )
         ],
       ),
