@@ -229,27 +229,34 @@ class _ChartWidgetState extends State<ChartWidget> {
             setState(() {
               bitcoinController.selectedtimespan.value = newTimeperiod;
               // Update price widget
-              switch (bitcoinController.selectedtimespan.value) {
-                case "1D":
-                  bitcoinController.currentline.value =
-                      bitcoinController.onedaychart;
-                  break;
-                case "1W":
-                  bitcoinController.currentline.value =
-                      bitcoinController.oneweekchart;
-                  break;
-                case "1M":
-                  bitcoinController.currentline.value =
-                      bitcoinController.onemonthchart;
-                  break;
-                case "1J":
-                  bitcoinController.currentline.value =
-                      bitcoinController.oneyearchart;
-                  break;
-                case "Max":
-                  bitcoinController.currentline.value =
-                      bitcoinController.maxchart;
-                  break;
+              // Safely switch to the selected timespan
+              try {
+                switch (bitcoinController.selectedtimespan.value) {
+                  case "1D":
+                    bitcoinController.currentline.value =
+                        bitcoinController.onedaychart;
+                    break;
+                  case "1W":
+                    bitcoinController.currentline.value =
+                        bitcoinController.oneweekchart;
+                    break;
+                  case "1M":
+                    bitcoinController.currentline.value =
+                        bitcoinController.onemonthchart;
+                    break;
+                  case "1J":
+                    bitcoinController.currentline.value =
+                        bitcoinController.oneyearchart;
+                    break;
+                  case "Max":
+                    bitcoinController.currentline.value =
+                        bitcoinController.maxchart;
+                    break;
+                }
+              } catch (e) {
+                // If any error occurs, set to empty list to prevent crashing
+                print("Error switching timespan: $e");
+                bitcoinController.currentline.value = [];
               }
               setValues(bitcoinController);
               // Update last price
@@ -369,6 +376,12 @@ class _ChartCoreState extends State<ChartCore> {
 
     return Obx(() {
       bitcoinController.liveChart.value;
+      
+      // Ensure the values are initialized even if we have empty data
+      if (bitcoinController.currentline.value.isEmpty) {
+        bitcoinController.setValues(); // This will set default values
+      }
+      
       double _lastpriceexact = bitcoinController.currentline.value.isEmpty
           ? 0
           : bitcoinController.currentline.value.last.price;
@@ -384,7 +397,7 @@ class _ChartCoreState extends State<ChartCore> {
         bitcoinController.trackBallValuePrice =
             bitcoinController.new_lastpricerounded.toString();
         // Update percent
-        double priceChange = bitcoinController.new_firstpriceexact == 0 ? 0 :
+        double priceChange = bitcoinController.currentline.value.isEmpty || bitcoinController.new_firstpriceexact == 0 ? 0 :
             (bitcoinController.new_lastpriceexact -
                 bitcoinController.new_firstpriceexact) /
             bitcoinController.new_firstpriceexact;

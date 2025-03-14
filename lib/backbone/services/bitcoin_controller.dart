@@ -81,6 +81,36 @@ class BitcoinController extends GetxController {
     inital_date = dateFormat.format(datetime);
     inital_time = timeFormat.format(datetime);
 
+    // Initialize chart data with empty lists to prevent LateInitializationError
+    chartData = [];
+    maxchart = [];
+    oneyearchart = [];
+    onemonthchart = [];
+    oneweekchart = [];
+    onedaychart = [];
+    currentline.value = [];
+    
+    // Initialize personal balance chart data
+    pbMaxchart = [];
+    pbOneyearchart = [];
+    pbOnemonthchart = [];
+    pbOneweekchart = [];
+    pbOnedaychart = [];
+    pbCurrentline.value = [];
+
+    // Initialize late variables to prevent LateInitializationError
+    lastpriceinit = 0;
+    _firstpriceinit = 0;
+    _latesttimeinit = datetime.millisecondsSinceEpoch.toDouble();
+    
+    new_lastpriceexact = 0;
+    new_lastimeeexact = datetime.millisecondsSinceEpoch.toDouble();
+    new_firstpriceexact = 0;
+    
+    pbNew_lastpriceexact = 0;
+    pbNew_lastimeeexact = datetime.millisecondsSinceEpoch.toDouble();
+    pbNew_firstpriceexact = 0;
+
     trackBallValuePrice = "-----.--";
     trackBallValueTime = datetime;
     // trackBallValueDate = "${inital_date}";

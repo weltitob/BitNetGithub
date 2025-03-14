@@ -264,9 +264,11 @@ class _AssetsTabState extends State<AssetsTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: ListView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        children: [
+      body: RepaintBoundary(
+        child: ListView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          cacheExtent: 1000, // Cache more content for smoother scrolling
+          children: [
           
           // Spacing at the top
           const SizedBox(height: AppTheme.cardPadding),
@@ -720,7 +722,7 @@ class _AssetsTabState extends State<AssetsTab> {
           // Extra space at the bottom for better scrolling
           SizedBox(height: 100.h),
         ],
-      ), 
+      )),
       context: context,
     );
   }

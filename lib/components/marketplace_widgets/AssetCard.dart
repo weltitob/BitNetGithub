@@ -136,11 +136,11 @@ class _AssetCardState extends State<AssetCard> {
                   ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10.r)),
                     child: Container(
-                      height: 170.h *
-                          widget.scale, // Increased height for image area
+                      height: 150.h * widget.scale, // Reduced height for image area
                       width: double.infinity,
-                      child:
-                          topWidget(firstMediaData?.type ?? '', firstMediaData),
+                      child: firstMediaData != null 
+                          ? topWidget(firstMediaData.type, firstMediaData)
+                          : Container(color: Colors.grey.withOpacity(0.3)),
                     ),
                   ),
 
@@ -281,59 +281,44 @@ class _AssetCardState extends State<AssetCard> {
     if (e != null) {
       if (type == "text" || type == "description") {
         return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
             child: TextBuilderNetwork(url: e.data));
       }
       if (type == "external_link") {
         return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
             child: const LinkBuilder(url: 'haha'));
       }
       if (type == "asset_image") {
         // Direct asset path handling
-        return Container(
-          margin: const EdgeInsets.only(bottom: 10.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
-            child: Image.asset(
-              e.data,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                print("Error loading asset image: $error");
-                return Container(
-                  color: Colors.grey.shade200,
-                  child: Icon(
-                    Icons.image_not_supported,
-                    color: Theme.of(context).colorScheme.error,
-                    size: 48,
-                  ),
-                );
-              },
-            ),
-          ),
+        return Image.asset(
+          e.data,
+          fit: BoxFit.cover,
+          cacheWidth: 300, // Add image caching for better performance
+          errorBuilder: (context, error, stackTrace) {
+            print("Error loading asset image: $error");
+            return Container(
+              color: Colors.grey.shade200,
+              child: Icon(
+                Icons.image_not_supported,
+                color: Theme.of(context).colorScheme.error,
+                size: 48,
+              ),
+            );
+          },
         );
       }
       if (type == "image" || type == "camera" || type == "image_data") {
         try {
-          return Container(
-              margin: const EdgeInsets.only(bottom: 10.0),
-              child: ClipRect(child: ImageBuilder(encodedData: e.data)));
+          return ClipRect(child: ImageBuilder(encodedData: e.data));
         } catch (error) {
           print("Error in image builder: $error");
           // Fallback for invalid base64 data
           return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2 / 3),
-              child: Container(
-                color: Colors.grey.shade200,
-                child: Center(
-                  child: Icon(
-                    Icons.image_not_supported,
-                    color: Colors.grey,
-                    size: 48,
-                  ),
-                ),
+            color: Colors.grey.shade200,
+            child: Center(
+              child: Icon(
+                Icons.image_not_supported,
+                color: Colors.grey,
+                size: 48,
               ),
             ),
           );
@@ -341,15 +326,22 @@ class _AssetCardState extends State<AssetCard> {
       }
       if (type == "audio") {
         return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
             child: AudioBuilderNetwork(url: e.data));
       } else {
         return Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
             child: const TextBuilderNetwork(url: "No data found"));
       }
     } else {
-      return Container();
+      return Container(
+        color: Colors.grey.withOpacity(0.3),
+        child: Center(
+          child: Icon(
+            Icons.image_not_supported,
+            color: Colors.grey,
+            size: 48,
+          ),
+        ),
+      );
     }
   }
 }

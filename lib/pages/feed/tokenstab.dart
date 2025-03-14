@@ -147,7 +147,8 @@ class _TokensTabState extends State<TokensTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: ListView(
+      body: RepaintBoundary(
+        child: ListView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
           
@@ -510,7 +511,7 @@ class _TokensTabState extends State<TokensTab> {
           
           SizedBox(height: 100.h), // Added extra space at the bottom
         ],
-      ), context: context,
+      )), context: context,
     );
   }
 }
