@@ -27,7 +27,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -133,10 +133,11 @@ Future<void> main() async {
   // Get.put(FeedController(), permanent: true);
   // Get.put(ProfileController(), permanent: true);
 
-  if (!kIsWeb) {
-    Stripe.publishableKey = remoteConfigController.stripeTestKey.value;
-    await Stripe.instance.applySettings();
-  }
+  // Commented out Stripe initialization to remove dependency
+  // if (!kIsWeb) {
+  //   Stripe.publishableKey = remoteConfigController.stripeTestKey.value;
+  //   await Stripe.instance.applySettings();
+  // }
   if (kIsWeb) {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }

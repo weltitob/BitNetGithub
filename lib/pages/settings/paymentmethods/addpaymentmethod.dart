@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 
 class AddPaymentMethod extends StatefulWidget {
   const AddPaymentMethod({super.key});
@@ -42,10 +42,11 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
           ),
         ),
         const SizedBox(height: 15),
-        CardFormField(
-            style: CardFormStyle(
-                textColor: Colors.white,
-                placeholderColor: Colors.white)),
+        // CardFormField commented out to remove Stripe dependency
+        // CardFormField(
+        //     style: CardFormStyle(
+        //         textColor: Colors.white,
+        //         placeholderColor: Colors.white)),
         const SizedBox(height: 15),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
