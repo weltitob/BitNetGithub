@@ -80,17 +80,51 @@ class _BatchScreenState extends State<BatchScreen> {
 
   void callListBatch(String batchKey) async {
     print("Calling Listing batch with this key: $batchKey");
-    Batch? responeBatch = await fetchMintBatch(batchKey);
-    print("Response Batch: $responeBatch");
-    //now lets get all of the assets to a list
-    setState(() {
-      assets = responeBatch!.assets.reversed.toList();
-      print("Assets: $assets");
-      for (var asset in assets) {
-        print("Assetname ${asset.name}");
+    try {
+      Batch? responseBatch = await fetchMintBatch(batchKey);
+      print("Response Batch: $responseBatch");
+      
+      // Check if response is not null before accessing properties
+      if (responseBatch != null && responseBatch.assets != null) {
+        setState(() {
+          assets = responseBatch.assets.reversed.toList();
+          print("Assets: $assets");
+          for (var asset in assets) {
+            print("Assetname ${asset.name}");
+          }
+        });
+      } else {
+        // Handle null response
+        final overlayController = Get.find<OverlayController>();
+        overlayController.showOverlay(
+          L10n.of(context)!.errorFinalizingBatch, 
+          color: AppTheme.errorColor
+        );
+        
+        // Optional: go back or redirect after showing error
+        Future.delayed(Duration(seconds: 2), () {
+          if (mounted) {
+            context.go("/profile");
+          }
+        });
       }
-    });
-    //now lets put them in the listview
+    } catch (e) {
+      print("Error fetching batch data: $e");
+      
+      // Show error message
+      final overlayController = Get.find<OverlayController>();
+      overlayController.showOverlay(
+        "Error loading batch: $e", 
+        color: AppTheme.errorColor
+      );
+      
+      // Optional: go back after error
+      Future.delayed(Duration(seconds: 2), () {
+        if (mounted) {
+          context.go("/profile");
+        }
+      });
+    }
   }
 
   @override
@@ -99,9 +133,8 @@ class _BatchScreenState extends State<BatchScreen> {
 
     return PopScope(
       onPopInvoked: (bool shouldPop) {
-        if (mounted) {
-          Navigator.pop(context);
-        }
+        // Let the system handle the back navigation
+        // No need to call Navigator.pop manually here
       },
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
@@ -109,9 +142,8 @@ class _BatchScreenState extends State<BatchScreen> {
         appBar: bitnetAppBar(
           hasBackButton: true,
           onTap: () {
-            if (mounted) {
-              Navigator.pop(context);
-            }
+            // Use GoRouter for consistent navigation
+            context.pop();
           },
           context: context,
           text: L10n.of(context)!.fianlizePosts,
@@ -159,7 +191,7 @@ class _BatchScreenState extends State<BatchScreen> {
                     title: L10n.of(context)!.addMore,
                     onTap: () {
                       if (mounted) {
-                        Navigator.pop(context);
+                        context.pop();
                       }
                     }),
               ),

@@ -36,6 +36,7 @@ Future<Batch?> fetchMintBatch(String batchKey) async {
   };
 
   try {
+    logger.i("Requesting batch with key: $batchKey from URL: $url");
     var response = await http.get(
       Uri.parse(url),
       headers: headers,
@@ -50,13 +51,28 @@ Future<Batch?> fetchMintBatch(String batchKey) async {
       FetchBatchResponse fetchBatchResponse =
           FetchBatchResponse.fromJson(responseData);
 
-      // Find the batch with the specified batchKey
-      Batch? batch = fetchBatchResponse.batches.firstWhere(
-        (b) => b.batchKey == batchKey,
-      );
-
-      // Return the parsed Batch object
-      return batch;
+      // Check if batches exists and is not empty
+      if (fetchBatchResponse.batches.isNotEmpty) {
+        try {
+          // Find the batch with the specified batchKey
+          for (var batch in fetchBatchResponse.batches) {
+            if (batch.batchKey == batchKey) {
+              return batch;
+            }
+          }
+          
+          // If no matching batch found
+          logger.e("No batch found with key $batchKey");
+          return null;
+          
+        } catch (e) {
+          logger.e("Error finding batch with key $batchKey: $e");
+          return null;
+        }
+      } else {
+        logger.e("No batches found in the response for key: $batchKey");
+        return null;
+      }
     } else {
       logger.e(
           "Failed to fetch data. Status code: ${response.statusCode} ${response.body}");
