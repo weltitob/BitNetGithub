@@ -9,6 +9,7 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
@@ -23,6 +24,7 @@ import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -252,26 +254,52 @@ class _CreateAssetState extends State<CreateAsset> {
     }
   }
 
+  // This method now adds an empty text field that the user can edit directly in the post
   void _addTextField() {
-    postFiles.add(PostFile(MediaType.text, text: commentController.text));
-    commentController.clear();
+    postFiles.add(PostFile(MediaType.text, text: ""));
     setState(() {});
   }
   
   void _addDescriptionField() {
-    if (!hasDescription) {
-      // Create a new empty description text entry
-      PostFile descriptionFile = PostFile(MediaType.text, text: "");
-      postFiles.add(descriptionFile);
-      hasDescription = true;
-      setState(() {});
+    // If we already have a description, just focus on it
+    if (hasDescription) {
+      // Find the existing description (first text entry)
+      int descriptionIndex = -1;
+      for (int i = 0; i < postFiles.length; i++) {
+        if (postFiles[i].type == MediaType.text) {
+          descriptionIndex = i;
+          break;
+        }
+      }
       
-      // Focus on the description field within the post after it's added
-      // Using a longer delay to ensure the widget is fully built
-      Future.delayed(Duration(milliseconds: 300), () {
-        FocusScope.of(context).requestFocus(descriptionFocusNode);
-      });
+      // If found, focus on it
+      if (descriptionIndex >= 0) {
+        Future.delayed(Duration(milliseconds: 300), () {
+          FocusScope.of(context).requestFocus(descriptionFocusNode);
+        });
+        return;
+      }
     }
+    
+    // Otherwise, create a new empty description text entry
+    PostFile descriptionFile = PostFile(MediaType.text, text: "");
+    
+    // Add it at the beginning of the list for proper ordering
+    if (postFiles.isEmpty) {
+      postFiles.add(descriptionFile);
+    } else {
+      // Insert after the first item (title)
+      postFiles.insert(0, descriptionFile);
+    }
+    
+    hasDescription = true;
+    setState(() {});
+    
+    // Focus on the description field within the post after it's added
+    // Using a longer delay to ensure the widget is fully built
+    Future.delayed(Duration(milliseconds: 300), () {
+      FocusScope.of(context).requestFocus(descriptionFocusNode);
+    });
   }
 
   Future record() async {
@@ -285,6 +313,7 @@ class _CreateAssetState extends State<CreateAsset> {
     final audioFile = File(path!);
     print('Recorded audio: $audioFile');
     postFiles.add(PostFile(MediaType.audio, file: audioFile));
+    setState(() {}); // Update UI to show the added audio
   }
 
   Future initRecorder() async {
@@ -317,53 +346,8 @@ class _CreateAssetState extends State<CreateAsset> {
             // Navigate back using Go Router
             context.pop();
           },
-          actions: [
-            // Post button in the app bar
-            Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (postFiles.isNotEmpty) {
-                    convertToBase64AndMakePushReady(
-                        context, postFiles, nameController.text);
-                  } else {
-                    Get.find<OverlayController>().showOverlay(
-                      L10n.of(context)!.postContentError,
-                      color: AppTheme.errorColor,
-                    );
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-                      ? LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            AppTheme.colorBitcoin,
-                            AppTheme.colorPrimaryGradient,
-                          ],
-                        )
-                      : LinearGradient(
-                          colors: [
-                            Theme.of(context).colorScheme.primary,
-                            Theme.of(context).colorScheme.secondary,
-                          ],
-                        ),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Text(
-                    'POST',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          // No actions in the app bar now
+          actions: [],
         ),
         body: Container(
           child: isLoading
@@ -428,124 +412,163 @@ class _CreateAssetState extends State<CreateAsset> {
       ),
       child: SafeArea(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
-              child: GlassContainer(
-                child: Container(
-                  height: AppTheme.cardPadding * 2,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: AppTheme.cardPadding / 4),
-                      Expanded(
-                        child: recorder.isRecording
-                            ? StreamBuilder<RecordingDisposition>(
-                                stream: recorder.onProgress,
-                                builder: (context, snapshot) {
-                                  final duration = snapshot.hasData
-                                      ? snapshot.data!.duration
-                                      : Duration.zero;
-                                  String twoDigits(int n) =>
-                                      n.toString().padLeft(2, '0');
-                                  final twoDigitMinutes = twoDigits(
-                                      duration.inMinutes.remainder(60));
-                                  final twoDigitSeconds = twoDigits(
-                                      duration.inSeconds.remainder(60));
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 14.0, bottom: 15.0),
-                                    child: Text(
-                                        '$twoDigitMinutes:$twoDigitSeconds',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  );
-                                },
-                              )
-                            : TextField(
-                                style: Theme.of(context).textTheme.bodyLarge,
-                                minLines: 1,
-                                maxLines: 5,
-                                keyboardType: TextInputType.multiline,
-                                controller: commentController,
-                                focusNode: inputFieldFocusNode,
-                                textInputAction: TextInputAction.newline,
-                                decoration: AppTheme.textfieldDecoration(
-                                    L10n.of(context)!.typeMessage, 
-                                    context)),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.elementSpacing / 2),
-                      ),
-                      TextFieldButtonMorph(
-                        iconData: Icons.add_rounded,
-                        onTap: () {
-                          BitNetBottomSheet(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            context: context,
-                            child: bitnetScaffold(
-                              context: context,
-                              extendBodyBehindAppBar: true,
-                              appBar: bitnetAppBar(
-                                hasBackButton: false,
-                                text: L10n.of(context)!.addContent,
-                                context: context,
-                              ),
-                              body: AddContentWidget(
-                                controller: this,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: AppTheme.cardPadding / 3),
-            buildMicrophoneOrTextPushButton(),
+            // Add Content Button
+            buildMicrophoneButton(),
+            buildAddContentButton(),
+            
+            // Microphone Button
+
+            
+            // Post Button
+            buildPostButton(),
           ],
         ),
       ),
     );
   }
+  
+  Widget buildAddContentButton() {
+    return Container(
+      height: AppTheme.cardPadding * 2.h,
+      child: LongButtonWidget(
+        buttonType: ButtonType.transparent,
+        title: "Add Content",
+        leadingIcon: Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+        ),
 
-  Widget buildMicrophoneOrTextPushButton() {
+        customHeight: AppTheme.cardPadding * 2.2,
+        customWidth: AppTheme.cardPadding * 6.5,
+        buttonGradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+          ? LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppTheme.colorBitcoin,
+                AppTheme.colorPrimaryGradient,
+              ],
+            )
+          : LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
+              ],
+            ),
+        onTap: () {
+          // Show bottom sheet with content options
+          BitNetBottomSheet(
+            height: MediaQuery.of(context).size.height * 0.6,
+            context: context,
+            child: bitnetScaffold(
+              context: context,
+              extendBodyBehindAppBar: true,
+              appBar: bitnetAppBar(
+                hasBackButton: false,
+                text: L10n.of(context)!.addContent,
+                context: context,
+              ),
+              body: AddContentWidget(
+                controller: this,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  
+  Widget buildMicrophoneButton() {
     return InkWell(
-      borderRadius: AppTheme.cardRadiusCircular,
-      onTap: commentController.text.isEmpty
-          ? () async {
-              if (recorder.isRecording) {
-                await stop();
-              } else {
-                await record();
-              }
-              setState(() {});
-            }
-          : () {
-              // Normal behavior - always add as a new text field
-              _addTextField();
-              setState(() {});
-            },
-      child: GlassContainer(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Icon(
-              commentController.text.isEmpty
-                  ? recorder.isRecording
-                      ? Icons.stop_rounded
-                      : Icons.mic_rounded
-                  : Icons.arrow_upward_rounded,
-              color: Theme.of(context).colorScheme.primary),
+      borderRadius: BorderRadius.circular(45),
+      onTap: () async {
+        if (recorder.isRecording) {
+          await stop();
+        } else {
+          await record();
+        }
+        setState(() {});
+      },
+      child: Container(
+        width: AppTheme.cardPadding * 2.h,
+        height: AppTheme.cardPadding * 2.h,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+            ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  recorder.isRecording ? Colors.red : AppTheme.colorBitcoin,
+                  recorder.isRecording ? Colors.redAccent : AppTheme.colorPrimaryGradient,
+                ],
+              )
+            : LinearGradient(
+                colors: [
+                  recorder.isRecording ? Colors.red : Theme.of(context).colorScheme.primary,
+                  recorder.isRecording ? Colors.redAccent : Theme.of(context).colorScheme.secondary,
+                ],
+              ),
+        ),
+        child: Center(
+          child: recorder.isRecording
+            ? Icon(
+                Icons.stop_rounded,
+                color: Colors.white,
+              )
+            : Icon(
+                Icons.mic_rounded,
+                color: Colors.white,
+              ),
         ),
       ),
     );
   }
+  
+  Widget buildPostButton() {
+    final bool isValid = postFiles.isNotEmpty && nameController.text.isNotEmpty;
+    
+    return Container(
+      height: AppTheme.cardPadding * 2.2,
+      child: LongButtonWidget(
+        title: "Post",
+        leadingIcon: Icon(
+          Icons.send_rounded,
+          color: Colors.white,
+        ),
+        buttonType: ButtonType.solid,
+        state: isValid ? ButtonState.idle : ButtonState.disabled,
+        customHeight: AppTheme.cardPadding * 2.h,
+        customWidth: AppTheme.cardPadding * 4.5.w,
+        buttonGradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+          ? LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppTheme.colorBitcoin,
+                AppTheme.colorPrimaryGradient,
+              ],
+            )
+          : LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
+              ],
+            ),
+        onTap: () {
+          if (isValid) {
+            convertToBase64AndMakePushReady(
+              context, postFiles, nameController.text);
+          }
+        },
+      ),
+    );
+  }
+
+  // buildMicrophoneOrTextPushButton method removed as we've integrated its functionality
+  // into the new buildAddContentButton method
 }
 
 // Removed _PostItem class - replaced with _buildMediaComponent method
@@ -599,13 +622,17 @@ void convertToBase64AndMakePushReady(
     BuildContext context, postFiles, String assetName) async {
   final overlayController = Get.find<OverlayController>();
   try {
-    //isLoading = true;
     final mediasFormatted = <Media>[];
+    
     // First check if we have a MediaType.text that should be treated as a description
     bool firstTextIsDescription = false;
-    // If the first item is text and we already flagged hasDescription, then treat it as description
-    if (postFiles.isNotEmpty && postFiles[0].type == MediaType.text) {
-      firstTextIsDescription = true;
+    // Find the first text item
+    for (int i = 0; i < postFiles.length; i++) {
+      if (postFiles[i].type == MediaType.text) {
+        // The first text is always our description
+        firstTextIsDescription = true;
+        break;
+      }
     }
     
     await Future.forEach(postFiles, (PostFile file) async {

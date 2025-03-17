@@ -390,9 +390,25 @@ class ImagePickerController extends GetxController {
   
   /// Switch to album selection view
   void switchToAlbumView() {
+    // Force immediate state change
     selectingPhotos.value = false;
+    
+    // Reset thumbnail loading state and load them
     loadedThumbnails.value = false;
-    loadAlbumThumbnails();
+    
+    // Load the thumbnails if they're not already loaded
+    if (albumThumbnails.isEmpty) {
+      // Make sure we have albums loaded
+      if (albums.value.isEmpty) {
+        // This shouldn't happen but just in case
+        loadData();
+      } else {
+        loadAlbumThumbnails();
+      }
+    } else {
+      // If thumbnails are already loaded, just mark them as loaded
+      loadedThumbnails.value = true;
+    }
     
     if (includeNFTs) {
       loads.value = 0;

@@ -91,29 +91,54 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Obx(() => LongButtonWidget(
-              customWidth: AppTheme.cardPadding * 5.w,
-              customHeight: AppTheme.cardPadding * 1.5,
-              title: widget.includeNFTs && controller.currentView.value < 0
+            Obx(() {
+              // Get the album name or default text
+              final String buttonText = widget.includeNFTs && controller.currentView.value < 0
                   ? "Assets"
-                  : controller.currentAlbum.value?.name ?? "Albums",
-              leadingIcon: Icon(
-                controller.selectingPhotos.value
-                    ? Icons.arrow_drop_down_rounded
-                    : Icons.arrow_drop_up_rounded,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black
-                    : Colors.white,
-              ),
-              onTap: () {
-                if (controller.selectingPhotos.value) {
-                  controller.switchToAlbumView();
-                } else {
-                  controller.switchToPhotoView();
-                }
-              },
-              buttonType: ButtonType.transparent,
-            )),
+                  : controller.currentAlbum.value?.name ?? "Albums";
+                  
+              // Calculate a more appropriate width based on text length
+              // Use a minimum width and expand for longer text
+              final double minWidth = AppTheme.cardPadding * 5.w;
+              final double calculatedWidth = MediaQuery.of(context).size.width * 0.6; // 60% of screen width
+              
+              return Container(
+                constraints: BoxConstraints(
+                  maxWidth: calculatedWidth,
+                  minWidth: minWidth,
+                ),
+                child: LongButtonWidget(
+                  customWidth: double.infinity, // Fill the container width
+                  customHeight: AppTheme.cardPadding * 1.5,
+                  title: buttonText,
+                  titleStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  leadingIcon: Icon(
+                    controller.selectingPhotos.value
+                        ? Icons.arrow_drop_down_rounded
+                        : Icons.arrow_drop_up_rounded,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                  ),
+                  onTap: () {
+                    print("Album button tapped, current state: ${controller.selectingPhotos.value ? 'selecting photos' : 'showing albums'}");
+                    if (controller.selectingPhotos.value) {
+                      print("Switching to album view");
+                      controller.switchToAlbumView();
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        print("After delay, selectingPhotos = ${controller.selectingPhotos.value}");
+                      });
+                    } else {
+                      print("Switching to photo view");
+                      controller.switchToPhotoView();
+                    }
+                  },
+                  buttonType: ButtonType.transparent,
+                ),
+              );
+            }),
             SizedBox(height: AppTheme.elementSpacing),
             Expanded(
               child: Obx(() {
@@ -123,21 +148,22 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
                 }
                 
                 // Display the appropriate view based on state
+                // First check if we should show the album selection view
+                if (!controller.selectingPhotos.value) {
+                  // Album view - show even if thumbnails aren't fully loaded yet
+                  // The AlbumViewWidget handles empty thumbnail states
+                  return AlbumViewWidget(controller: controller);
+                }
+                
+                // Photo/asset selection views
                 if (widget.includeNFTs) {
-                  if (controller.selectingPhotos.value) {
-                    if (controller.currentView.value == 0) {
-                      return MixedGridView(controller: controller);
-                    } else if (controller.currentView.value == -1) {
-                      return NftGridView(controller: controller);
-                    } else {
-                      return PhotoGridView(controller: controller);
-                    }
+                  // With NFTs enabled, check the current view type
+                  if (controller.currentView.value == 0) {
+                    return MixedGridView(controller: controller);
+                  } else if (controller.currentView.value == -1) {
+                    return NftGridView(controller: controller);
                   } else {
-                    if (controller.loadedThumbnails.value && controller.albumThumbnails.isNotEmpty) {
-                      return AlbumViewWidget(controller: controller);
-                    } else {
-                      return Center(child: dotProgress(context));
-                    }
+                    return PhotoGridView(controller: controller);
                   }
                 } else {
                   // Normal photo picker without NFTs

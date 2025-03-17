@@ -114,34 +114,43 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                 child: widget.state == ButtonState.loading
                     ? Center(child: Transform.scale(scale: 0.6, child: dotProgress(context, color: AppTheme.white90)))
                     : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (widget.leadingIcon != null)
-                              Padding(
-                                padding:  EdgeInsets.only(right: widget.customWidth * 0.05),
-                                child: widget.leadingIcon,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (widget.leadingIcon != null)
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: widget.leadingIcon,
+                                ),
+                              Flexible(
+                                child: Text(
+                                  widget.title,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: widget.titleStyle != null
+                                      ? widget.titleStyle
+                                      : Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: widget.textColor != null
+                                              ? widget.textColor
+                                              : widget.buttonType == ButtonType.solid
+                                                  ? Theme.of(context).colorScheme.onPrimary
+                                                  : Theme.of(context).brightness == Brightness.light
+                                                      ? AppTheme.black70
+                                                      : AppTheme.white90,
+                                          shadows: [
+                                            //AppTheme.boxShadowBig,
+                                            Theme.of(context).brightness == Brightness.light ? AppTheme.boxShadow : AppTheme.boxShadowButton,
+                                          ],
+                                        ),
+                                ),
                               ),
-                            Text(
-                              widget.title,
-                              style: widget.titleStyle != null
-                                  ? widget.titleStyle
-                                  : Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: widget.textColor != null
-                                          ? widget.textColor
-                                          : widget.buttonType == ButtonType.solid
-                                              ? Theme.of(context).colorScheme.onPrimary
-                                              : Theme.of(context).brightness == Brightness.light
-                                                  ? AppTheme.black70
-                                                  : AppTheme.white90,
-                                      shadows: [
-                                        //AppTheme.boxShadowBig,
-                                        Theme.of(context).brightness == Brightness.light ? AppTheme.boxShadow : AppTheme.boxShadowButton,
-                                      ],
-                                    ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
               ),
