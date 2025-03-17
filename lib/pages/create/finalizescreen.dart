@@ -153,9 +153,7 @@ class _BatchScreenState extends State<BatchScreen> {
           text: L10n.of(context)!.fianlizePosts,
         ),
         body: SingleChildScrollView(
-          child: hasError 
-            ? _buildErrorState(context)
-            : Column(
+          child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -166,36 +164,42 @@ class _BatchScreenState extends State<BatchScreen> {
                     width: size.width,
                     height: 245.w,
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
-                    child: assets.isEmpty
-                      ? _buildLoadingState(context)
-                      : ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(
-                              top: 0.0,
-                              bottom: 0.0,
-                              right: AppTheme.elementSpacing.w,
-                              left: AppTheme.elementSpacing.w),
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: assets.length,
-                          itemBuilder: (context, index) {
-                            return AssetCard(
-                                //assets[index].assetMeta!.data ?? 'metahash',
-                                medias: assets[index].assetMeta?.toMedias(),
-                                nftName: assets[index].assetMeta?.data ?? 'metahash',
-                                nftMainName: assets[index].name ?? 'assetID',
-                                cryptoText: assets[index].groupKey ?? 'price',
-                               );
-                          },
-                        ),
+                    child: hasError
+                      ? _buildInlineErrorState(context)
+                      : assets.isEmpty
+                        ? _buildLoadingState(context)
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.only(
+                                top: 0.0,
+                                bottom: 0.0,
+                                right: AppTheme.elementSpacing.w,
+                                left: AppTheme.elementSpacing.w),
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: assets.length,
+                            itemBuilder: (context, index) {
+                              return AssetCard(
+                                  //assets[index].assetMeta!.data ?? 'metahash',
+                                  medias: assets[index].assetMeta?.toMedias(),
+                                  nftName: assets[index].assetMeta?.data ?? 'metahash',
+                                  nftMainName: assets[index].name ?? 'assetID',
+                                  cryptoText: assets[index].groupKey ?? 'price',
+                                 );
+                            },
+                          ),
                   ),
                   Center(
                     child: LongButtonWidget(
                         customWidth: AppTheme.cardPadding * 6.5,
                         customHeight: AppTheme.cardPadding * 1.75,
                         buttonType: ButtonType.transparent,
-                        leadingIcon: const Icon(Icons.add_rounded),
-                        title: L10n.of(context)!.addMore,
+                        leadingIcon: Icon(
+                          hasError ? Icons.arrow_back : Icons.add_rounded,
+                        ),
+                        title: hasError 
+                            ? "Go back"
+                            : L10n.of(context)!.addMore,
                         onTap: () {
                           if (mounted) {
                             context.pop();
@@ -238,9 +242,11 @@ class _BatchScreenState extends State<BatchScreen> {
                     child: LongButtonWidget(
                       state: isLoading ? ButtonState.loading : ButtonState.idle,
                       title: L10n.of(context)!.uploadToBlockchain,
-                      onTap: () {
-                        finalizeBatch();
-                      },
+                      onTap: hasError || assets.isEmpty
+                          ? null  // Disable tap when there's an error or no assets
+                          : () {
+                              finalizeBatch();
+                            },
                     ),
                   ),
                   SizedBox(
@@ -261,51 +267,82 @@ class _BatchScreenState extends State<BatchScreen> {
     );
   }
   
-  Widget _buildErrorState(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: AppTheme.cardPadding * 4),
-          Icon(
-            Icons.error_outline_rounded,
-            size: 80,
-            color: AppTheme.errorColor,
+  Widget _buildInlineErrorState(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: Center(
+        child: Card(
+          color: Theme.of(context).cardColor,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.cardPadding / 2),
+            side: BorderSide(
+              color: AppTheme.errorColor.withOpacity(0.3),
+              width: 1,
+            ),
           ),
-          SizedBox(height: AppTheme.cardPadding),
-          Text(
-            "Unable to load your post",
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.cardPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 40,
+                  color: AppTheme.errorColor,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                Text(
+                  "Unable to load your asset",
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
+                Text(
+                  errorMessage.isNotEmpty 
+                      ? errorMessage 
+                      : "There was an error loading your post.",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (batchKey.isNotEmpty) {
+                          callListBatch(batchKey);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              size: 16,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Try Again",
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: AppTheme.elementSpacing),
-          Text(
-            errorMessage.isNotEmpty 
-                ? errorMessage 
-                : "There was an error loading your post. Please try again.",
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: AppTheme.cardPadding * 2),
-          LongButtonWidget(
-            title: "Go Back",
-            onTap: () {
-              context.pop();
-            },
-          ),
-          SizedBox(height: AppTheme.cardPadding),
-          LongButtonWidget(
-            title: "Try Again",
-            buttonType: ButtonType.transparent,
-            onTap: () {
-              if (batchKey.isNotEmpty) {
-                callListBatch(batchKey);
-              }
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

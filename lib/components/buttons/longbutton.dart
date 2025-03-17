@@ -36,7 +36,7 @@ class LongButtonWidget extends StatefulWidget {
       this.buttonType = ButtonType.solid,
       this.backgroundPainter = true,
       this.customShadow,
-      this.onTapDisabled});
+      this.onTapDisabled, });
 
   @override
   _LongButtonWidgetState createState() => _LongButtonWidgetState();
