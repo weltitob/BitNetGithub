@@ -66,7 +66,7 @@ class ImageBuilderLocal extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1.0, // Force 1:1 aspect ratio
         child: ImageBox(
-          radius: BorderRadius.circular(AppTheme.cardRadiusMid.r),
+          radius: AppTheme.cardRadiusMid.r,
           child: Image.file(
             postFile.file!,
             fit: BoxFit.cover, // Cover ensures the image fills the space
