@@ -10,6 +10,7 @@ import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
@@ -442,7 +443,7 @@ class _CreateAssetState extends State<CreateAsset> {
               : AppTheme.white90,
         ),
         customHeight: AppTheme.cardPadding * 2.2,
-        customWidth: AppTheme.cardPadding * 6.5,
+        customWidth: AppTheme.cardPadding * 6.w,
         onTap: () {
           // Show bottom sheet with content options
           BitNetBottomSheet(
@@ -467,45 +468,22 @@ class _CreateAssetState extends State<CreateAsset> {
   }
   
   Widget buildMicrophoneButton() {
-    return GlassContainer(
-      borderRadius: BorderRadius.circular(45),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(45),
-        onTap: () async {
-          if (recorder.isRecording) {
-            await stop();
-          } else {
-            await record();
-          }
-          setState(() {});
-        },
-        child: Container(
-          width: AppTheme.cardPadding * 2.2,
-          height: AppTheme.cardPadding * 2.2,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: recorder.isRecording
-              ? LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.red,
-                    Colors.redAccent,
-                  ],
-                )
-              : null,
-          ),
-          child: Center(
-            child: Icon(
-              recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
-              color: recorder.isRecording 
-                ? Colors.white 
-                : Theme.of(context).colorScheme.primary,
-              size: 28,
-            ),
-          ),
-        ),
-      ),
+    return RoundedButtonWidget(
+      size: AppTheme.cardPadding * 2.2,
+      iconData: recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
+      iconColor: recorder.isRecording ? Colors.white : null,
+      buttonType: recorder.isRecording ? ButtonType.solid : ButtonType.transparent,
+      // Use custom red colors when recording
+      customPrimaryColor: recorder.isRecording ? Colors.red : null,
+      customSecondaryColor: recorder.isRecording ? Colors.redAccent : null,
+      onTap: () async {
+        if (recorder.isRecording) {
+          await stop();
+        } else {
+          await record();
+        }
+        setState(() {});
+      },
     );
   }
   
@@ -523,7 +501,7 @@ class _CreateAssetState extends State<CreateAsset> {
         buttonType: ButtonType.solid,
         state: isValid ? ButtonState.idle : ButtonState.disabled,
         customHeight: AppTheme.cardPadding * 2.h,
-        customWidth: AppTheme.cardPadding * 4.5.w,
+        customWidth: AppTheme.cardPadding * 6.w,
         buttonGradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
           ? LinearGradient(
               begin: Alignment.topCenter,
