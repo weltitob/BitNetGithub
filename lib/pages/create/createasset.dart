@@ -497,7 +497,7 @@ class _CreateAssetState extends State<CreateAsset> {
     final bool isValid = postFiles.isNotEmpty && nameController.text.isNotEmpty;
     
     return RoundedButtonWidget(
-      size: AppTheme.cardPadding * 2.2,
+      size: AppTheme.cardPadding * 2.h,
       iconData: Icons.send_rounded,
       iconColor: Colors.white,
       buttonType: isValid ? ButtonType.solid : ButtonType.transparent,
