@@ -48,7 +48,17 @@ class CoinLogoWidgetSmall extends StatelessWidget {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(width * 2)),
         child: CachedNetworkImage(
           imageUrl: ((coinIconUrl + coinid.toString() + ".png").toLowerCase()),
-          placeholder: (context, url) => dotProgress(context),
+          placeholder: (context, url) => SizedBox(
+            width: width,
+            height: height,
+            child: Center(
+              child: SizedBox(
+                width: width * 0.8,
+                height: height * 0.8,
+                child: dotProgress(context, size: width * 0.25),
+              ),
+            ),
+          ),
           errorWidget: (context, url, error) =>
               SvgPicture.asset('assets/icons/dollar.svg'),
         ));
