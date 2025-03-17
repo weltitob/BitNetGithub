@@ -475,7 +475,7 @@ class _CreateAssetState extends State<CreateAsset> {
   
   Widget buildMicrophoneButton() {
     return RoundedButtonWidget(
-      size: AppTheme.cardPadding * 2.2,
+      size: AppTheme.cardPadding * 2.h,
       iconData: recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
       iconColor: recorder.isRecording ? Colors.white : null,
       buttonType: recorder.isRecording ? ButtonType.solid : ButtonType.transparent,
