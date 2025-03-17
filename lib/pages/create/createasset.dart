@@ -66,6 +66,16 @@ class _CreateAssetState extends State<CreateAsset> {
       }
     });
     
+    // Add listener for description focus to update UI state
+    descriptionFocusNode.addListener(() {
+      if (descriptionFocusNode.hasFocus) {
+        // When description gets focus, make sure we have a description field
+        if (postFiles.isEmpty || !postFiles.any((file) => file.type == MediaType.text)) {
+          _addDescriptionField();
+        }
+      }
+    });
+    
     commentController.addListener(() {
       if (commentController.text.isEmpty || commentController.text.isNotEmpty) {
         setState(() {});
@@ -249,7 +259,8 @@ class _CreateAssetState extends State<CreateAsset> {
   
   void _addDescriptionField() {
     if (!hasDescription) {
-      postFiles.add(PostFile(MediaType.description, text: descriptionController.text));
+      // Instead of adding a description with a heading, add a text message
+      postFiles.add(PostFile(MediaType.text, text: descriptionController.text));
       hasDescription = true;
       setState(() {});
       
@@ -460,7 +471,10 @@ class _CreateAssetState extends State<CreateAsset> {
                                 focusNode: descriptionFocusNode,
                                 textInputAction: TextInputAction.newline,
                                 decoration: AppTheme.textfieldDecoration(
-                                    L10n.of(context)!.typeMessage, context)),
+                                    descriptionFocusNode.hasFocus
+                                        ? "Add to description..." 
+                                        : L10n.of(context)!.typeMessage, 
+                                    context)),
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(
@@ -513,7 +527,32 @@ class _CreateAssetState extends State<CreateAsset> {
               setState(() {});
             }
           : () {
-              _addTextField();
+              // If description is in focus, update first text entry or add new one
+              if (descriptionFocusNode?.hasFocus == true) {
+                bool updatedExisting = false;
+                
+                // Find the first text entry
+                for (var i = 0; i < postFiles.length; i++) {
+                  if (postFiles[i].type == MediaType.text && i == 0) {
+                    postFiles[i].text = (postFiles[i].text ?? '') + (postFiles[i].text!.isNotEmpty ? '\n' : '') + commentController.text;
+                    updatedExisting = true;
+                    break;
+                  }
+                }
+                
+                // If no existing text found, add a new one
+                if (!updatedExisting && commentController.text.isNotEmpty) {
+                  _addTextField();
+                }
+                
+                // Clear the input
+                commentController.clear();
+                setState(() {});
+              } else {
+                // Normal behavior for adding text
+                _addTextField();
+              }
+              setState(() {});
             },
       child: GlassContainer(
         child: Padding(
@@ -584,9 +623,25 @@ void convertToBase64AndMakePushReady(
   try {
     //isLoading = true;
     final mediasFormatted = <Media>[];
+    // First check if we have a MediaType.text that should be treated as a description
+    bool firstTextIsDescription = false;
+    // If the first item is text and we already flagged hasDescription, then treat it as description
+    if (postFiles.isNotEmpty && postFiles[0].type == MediaType.text) {
+      firstTextIsDescription = true;
+    }
+    
     await Future.forEach(postFiles, (PostFile file) async {
       if (file.type == MediaType.text) {
-        mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+        // Skip empty text entries
+        if (file.text != null && file.text!.trim().isNotEmpty) {
+          // Check if this is the first text entry and should be treated as description
+          if (postFiles.indexOf(file) == 0 && firstTextIsDescription) {
+            // Save as description type to render properly in view mode
+            mediasFormatted.add(Media(data: file.text ?? '', type: "description"));
+          } else {
+            mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+          }
+        }
       } else if (file.type == MediaType.external_url) {
         //later change url to link url
         mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
@@ -629,14 +684,17 @@ void convertToBase64AndMakePushReady(
               type: file.type.name));
         }
       } else if (file.type == MediaType.description) {
+        // For backward compatibility - existing posts may use this type directly
         mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
       } else {
         LoggerService logger = Get.find();
         logger.e("file type thats not supported was added");
         // medias.add(Media(data: file.text ?? '', type: file.type.name));
       }
-      triggerAssetMinting(context, mediasFormatted, assetName);
     });
+    
+    // Now mint the asset after processing all files
+    triggerAssetMinting(context, mediasFormatted, assetName);
   } catch (e) {
     //isLoading = false;
     overlayController.showOverlay(
