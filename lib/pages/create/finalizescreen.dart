@@ -33,6 +33,8 @@ class BatchScreen extends StatefulWidget {
 
 class _BatchScreenState extends State<BatchScreen> {
   bool isLoading = false;
+  bool hasError = false;
+  String errorMessage = '';
   String batchKey = '';
   double sat_per_vbyte = 0.0;
   List<AssetInBatchList> assets = [];
@@ -88,6 +90,7 @@ class _BatchScreenState extends State<BatchScreen> {
       if (responseBatch != null && responseBatch.assets != null) {
         setState(() {
           assets = responseBatch.assets.reversed.toList();
+          hasError = false;
           print("Assets: $assets");
           for (var asset in assets) {
             print("Assetname ${asset.name}");
@@ -95,21 +98,27 @@ class _BatchScreenState extends State<BatchScreen> {
         });
       } else {
         // Handle null response
+        setState(() {
+          hasError = true;
+          errorMessage = L10n.of(context)!.errorFinalizingBatch;
+        });
+        
         final overlayController = Get.find<OverlayController>();
         overlayController.showOverlay(
           L10n.of(context)!.errorFinalizingBatch, 
           color: AppTheme.errorColor
         );
         
-        // Optional: go back or redirect after showing error
-        Future.delayed(Duration(seconds: 2), () {
-          if (mounted) {
-            context.go("/profile");
-          }
-        });
+        // Stay on the page and let user handle navigation
+        // They can see the error and choose to go back manually
       }
     } catch (e) {
       print("Error fetching batch data: $e");
+      
+      setState(() {
+        hasError = true;
+        errorMessage = "Error loading batch data. Please try again.";
+      });
       
       // Show error message
       final overlayController = Get.find<OverlayController>();
@@ -118,12 +127,7 @@ class _BatchScreenState extends State<BatchScreen> {
         color: AppTheme.errorColor
       );
       
-      // Optional: go back after error
-      Future.delayed(Duration(seconds: 2), () {
-        if (mounted) {
-          context.go("/profile");
-        }
-      });
+      // Stay on the page and let user handle navigation
     }
   }
 
@@ -149,107 +153,178 @@ class _BatchScreenState extends State<BatchScreen> {
           text: L10n.of(context)!.fianlizePosts,
         ),
         body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 4.h,
-              ),
-              Container(
-                width: size.width,
-                height: 245.w,
-                margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(
-                      top: 0.0,
-                      bottom: 0.0,
-                      right: AppTheme.elementSpacing.w,
-                      left: AppTheme.elementSpacing.w),
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: assets.length,
-                  itemBuilder: (context, index) {
-                    return AssetCard(
-                        //assets[index].assetMeta!.data ?? 'metahash',
-                        medias: assets[index].assetMeta?.toMedias(),
-                        nftName: assets[index].assetMeta!.data ?? 'metahash',
-                        nftMainName: assets[index].name ?? 'assetID',
-                        cryptoText: assets[index].groupKey ?? 'price',
-
-                       );
-                  },
-                ),
-              ),
-              Center(
-                child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 6.5,
-                    customHeight: AppTheme.cardPadding * 1.75,
-                    buttonType: ButtonType.transparent,
-                    leadingIcon: const Icon(Icons.add_rounded),
-                    title: L10n.of(context)!.addMore,
+          child: hasError 
+            ? _buildErrorState(context)
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: AppTheme.cardPadding * 4.h,
+                  ),
+                  Container(
+                    width: size.width,
+                    height: 245.w,
+                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
+                    child: assets.isEmpty
+                      ? _buildLoadingState(context)
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(
+                              top: 0.0,
+                              bottom: 0.0,
+                              right: AppTheme.elementSpacing.w,
+                              left: AppTheme.elementSpacing.w),
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: assets.length,
+                          itemBuilder: (context, index) {
+                            return AssetCard(
+                                //assets[index].assetMeta!.data ?? 'metahash',
+                                medias: assets[index].assetMeta?.toMedias(),
+                                nftName: assets[index].assetMeta?.data ?? 'metahash',
+                                nftMainName: assets[index].name ?? 'assetID',
+                                cryptoText: assets[index].groupKey ?? 'price',
+                               );
+                          },
+                        ),
+                  ),
+                  Center(
+                    child: LongButtonWidget(
+                        customWidth: AppTheme.cardPadding * 6.5,
+                        customHeight: AppTheme.cardPadding * 1.75,
+                        buttonType: ButtonType.transparent,
+                        leadingIcon: const Icon(Icons.add_rounded),
+                        title: L10n.of(context)!.addMore,
+                        onTap: () {
+                          if (mounted) {
+                            context.pop();
+                          }
+                        }),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2.5.h,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppTheme.cardPadding),
+                    child: Text(
+                      L10n.of(context)!.costEstimation,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
+                    child: Column(
+                      children: [
+                        BitNetListTile(
+                          text: L10n.of(context)!.transactionFees,
+                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                        ),
+                        BitNetListTile(
+                          text: L10n.of(context)!.bitnetUsageFee,
+                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 2,
+                  ),
+                  Center(
+                    child: LongButtonWidget(
+                      state: isLoading ? ButtonState.loading : ButtonState.idle,
+                      title: L10n.of(context)!.uploadToBlockchain,
+                      onTap: () {
+                        finalizeBatch();
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding.h,
+                  ),
+                  GestureDetector(
                     onTap: () {
-                      if (mounted) {
-                        context.pop();
-                      }
-                    }),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 2.5.h,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: AppTheme.cardPadding),
-                child: Text(
-                  L10n.of(context)!.costEstimation,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(),
-                ),
-              ),
-              const SizedBox(
-                height: AppTheme.elementSpacing,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
-                child: Column(
-                  children: [
-                    BitNetListTile(
-                      text: L10n.of(context)!.transactionFees,
-                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                      cancelBatch();
+                    },
+                    child: Center(
+                      child: Text(L10n.of(context)!.cancelDelete),
                     ),
-                    BitNetListTile(
-                      text: L10n.of(context)!.bitnetUsageFee,
-                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: AppTheme.cardPadding * 2,
-              ),
-              Center(
-                child: LongButtonWidget(
-                  state: isLoading ? ButtonState.loading : ButtonState.idle,
-                  title: L10n.of(context)!.uploadToBlockchain,
-                  onTap: () {
-                    finalizeBatch();
-                  },
-                ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding.h,
-              ),
-              GestureDetector(
-                onTap: () {
-                  cancelBatch();
-                },
-                child: Center(
-                  child: Text(L10n.of(context)!.cancelDelete),
-                ),
-              ),
+                  ),
             ],
           ),
         ),
+      ),
+    );
+  }
+  
+  Widget _buildErrorState(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppTheme.cardPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: AppTheme.cardPadding * 4),
+          Icon(
+            Icons.error_outline_rounded,
+            size: 80,
+            color: AppTheme.errorColor,
+          ),
+          SizedBox(height: AppTheme.cardPadding),
+          Text(
+            "Unable to load your post",
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppTheme.elementSpacing),
+          Text(
+            errorMessage.isNotEmpty 
+                ? errorMessage 
+                : "There was an error loading your post. Please try again.",
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppTheme.cardPadding * 2),
+          LongButtonWidget(
+            title: "Go Back",
+            onTap: () {
+              context.pop();
+            },
+          ),
+          SizedBox(height: AppTheme.cardPadding),
+          LongButtonWidget(
+            title: "Try Again",
+            buttonType: ButtonType.transparent,
+            onTap: () {
+              if (batchKey.isNotEmpty) {
+                callListBatch(batchKey);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildLoadingState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 40),
+          CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+          SizedBox(height: AppTheme.elementSpacing),
+          Text(
+            "Loading your assets...",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
       ),
     );
   }

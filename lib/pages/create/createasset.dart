@@ -337,7 +337,8 @@ class _CreateAssetState extends State<CreateAsset> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool) {
-        context.pop();
+        // Use GoRouter to navigate back to the previous screen
+        Navigator.of(context).maybePop();
       },
       child: bitnetScaffold(
         appBar: bitnetAppBar(
@@ -345,8 +346,8 @@ class _CreateAssetState extends State<CreateAsset> {
           context: context,
           hasBackButton: true,
           onTap: () {
-            // Navigate back using Go Router
-            context.pop();
+            // Use Navigator to ensure we can always go back regardless of route history
+            Navigator.of(context).maybePop();
           },
           // No actions in the app bar now
           actions: [],
@@ -557,8 +558,9 @@ void triggerAssetMinting(
     var batchKeyBytes = utf8.encode(batchKey);
     String base64BatchKey = base64Url.encode(batchKeyBytes);
     print('Navigating to /create/finalize/$base64BatchKey');
-    // Use the batch key for the finalize screen
-    context.go('/create/finalize/$base64BatchKey');
+    // Use the batch key for the finalize screen with push instead of go
+    // This allows the back button to work properly later
+    context.push('/create/finalize/$base64BatchKey');
   } catch (e) {
     overlayController.showOverlay(
       e.toString(),
