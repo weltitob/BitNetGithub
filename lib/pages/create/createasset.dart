@@ -45,6 +45,7 @@ class _CreateAssetState extends State<CreateAsset> {
   TextEditingController descriptionController = TextEditingController();
   final FocusNode titleFocusNode = FocusNode();
   final FocusNode descriptionFocusNode = FocusNode();
+  final FocusNode inputFieldFocusNode = FocusNode();
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
   bool isLoading = false;
@@ -66,15 +67,8 @@ class _CreateAssetState extends State<CreateAsset> {
       }
     });
     
-    // Add listener for description focus to update UI state
-    descriptionFocusNode.addListener(() {
-      if (descriptionFocusNode.hasFocus) {
-        // When description gets focus, make sure we have a description field
-        if (postFiles.isEmpty || !postFiles.any((file) => file.type == MediaType.text)) {
-          _addDescriptionField();
-        }
-      }
-    });
+    // We don't need to add any special handling for the description focus node
+    // since we're now using it correctly for the in-post description field
     
     commentController.addListener(() {
       if (commentController.text.isEmpty || commentController.text.isNotEmpty) {
@@ -88,12 +82,19 @@ class _CreateAssetState extends State<CreateAsset> {
     recorder.closeRecorder();
     titleFocusNode.dispose();
     descriptionFocusNode.dispose();
+    inputFieldFocusNode.dispose();
     super.dispose();
   }
 
   void addMedia(MediaType mediaType) {
     if (mediaType == MediaType.text) {
       _addTextField();
+    } else if (mediaType == MediaType.description) {
+      // Handle description from add content sheet - add and focus on it
+      _addDescriptionField();
+      
+      // Close the bottom sheet first
+      Navigator.of(context).pop();
     } else if (mediaType == MediaType.image_data ||
         mediaType == MediaType.image) {
       _pickImageFiles(mediaType);
@@ -259,13 +260,15 @@ class _CreateAssetState extends State<CreateAsset> {
   
   void _addDescriptionField() {
     if (!hasDescription) {
-      // Instead of adding a description with a heading, add a text message
-      postFiles.add(PostFile(MediaType.text, text: descriptionController.text));
+      // Create a new empty description text entry
+      PostFile descriptionFile = PostFile(MediaType.text, text: "");
+      postFiles.add(descriptionFile);
       hasDescription = true;
       setState(() {});
       
-      // Focus on the description field after it's added
-      Future.delayed(Duration(milliseconds: 100), () {
+      // Focus on the description field within the post after it's added
+      // Using a longer delay to ensure the widget is fully built
+      Future.delayed(Duration(milliseconds: 300), () {
         FocusScope.of(context).requestFocus(descriptionFocusNode);
       });
     }
@@ -468,12 +471,10 @@ class _CreateAssetState extends State<CreateAsset> {
                                 maxLines: 5,
                                 keyboardType: TextInputType.multiline,
                                 controller: commentController,
-                                focusNode: descriptionFocusNode,
+                                focusNode: inputFieldFocusNode,
                                 textInputAction: TextInputAction.newline,
                                 decoration: AppTheme.textfieldDecoration(
-                                    descriptionFocusNode.hasFocus
-                                        ? "Add to description..." 
-                                        : L10n.of(context)!.typeMessage, 
+                                    L10n.of(context)!.typeMessage, 
                                     context)),
                       ),
                       Container(
@@ -527,31 +528,8 @@ class _CreateAssetState extends State<CreateAsset> {
               setState(() {});
             }
           : () {
-              // If description is in focus, update first text entry or add new one
-              if (descriptionFocusNode?.hasFocus == true) {
-                bool updatedExisting = false;
-                
-                // Find the first text entry
-                for (var i = 0; i < postFiles.length; i++) {
-                  if (postFiles[i].type == MediaType.text && i == 0) {
-                    postFiles[i].text = (postFiles[i].text ?? '') + (postFiles[i].text!.isNotEmpty ? '\n' : '') + commentController.text;
-                    updatedExisting = true;
-                    break;
-                  }
-                }
-                
-                // If no existing text found, add a new one
-                if (!updatedExisting && commentController.text.isNotEmpty) {
-                  _addTextField();
-                }
-                
-                // Clear the input
-                commentController.clear();
-                setState(() {});
-              } else {
-                // Normal behavior for adding text
-                _addTextField();
-              }
+              // Normal behavior - always add as a new text field
+              _addTextField();
               setState(() {});
             },
       child: GlassContainer(

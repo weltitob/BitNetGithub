@@ -348,7 +348,17 @@ class _PostComponentState extends State<PostComponent>
         mediaWidget = ImageBuilderLocal(postFile: postFile);
         break;
       case MediaType.text:
-        mediaWidget = TextBuilderLocal(postFile: postFile);
+        // If this is the first text item, it's our description - use the description focus node
+        if (medias.indexOf(postFile) == 0) {
+          mediaWidget = TextBuilderLocal(
+            postFile: postFile, 
+            isDescription: true,
+            focusNode: descriptionFocusNode,
+            controller: descriptionController,
+          );
+        } else {
+          mediaWidget = TextBuilderLocal(postFile: postFile);
+        }
         break;
       case MediaType.description:
         mediaWidget = DescriptionEditorLocal(
