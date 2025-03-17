@@ -42,15 +42,30 @@ class _CreateAssetState extends State<CreateAsset> {
   final postFiles = <PostFile>[];
   TextEditingController commentController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  final FocusNode titleFocusNode = FocusNode();
+  final FocusNode descriptionFocusNode = FocusNode();
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
   bool isLoading = false;
+  bool hasDescription = false;
   String postId = const Uuid().v4();
 
   @override
   void initState() {
     super.initState();
     initRecorder();
+    
+    // Set up focus change listeners to auto-add description when title gets focus
+    titleFocusNode.addListener(() {
+      if (!titleFocusNode.hasFocus && nameController.text.isNotEmpty) {
+        // When user taps away from title and has entered text, add description
+        if (!hasDescription) {
+          _addDescriptionField();
+        }
+      }
+    });
+    
     commentController.addListener(() {
       if (commentController.text.isEmpty || commentController.text.isNotEmpty) {
         setState(() {});
@@ -61,6 +76,8 @@ class _CreateAssetState extends State<CreateAsset> {
   @override
   void dispose() {
     recorder.closeRecorder();
+    titleFocusNode.dispose();
+    descriptionFocusNode.dispose();
     super.dispose();
   }
 
@@ -229,6 +246,19 @@ class _CreateAssetState extends State<CreateAsset> {
     commentController.clear();
     setState(() {});
   }
+  
+  void _addDescriptionField() {
+    if (!hasDescription) {
+      postFiles.add(PostFile(MediaType.description, text: descriptionController.text));
+      hasDescription = true;
+      setState(() {});
+      
+      // Focus on the description field after it's added
+      Future.delayed(Duration(milliseconds: 100), () {
+        FocusScope.of(context).requestFocus(descriptionFocusNode);
+      });
+    }
+  }
 
   Future record() async {
     if (!isRecorderReady) return;
@@ -286,7 +316,14 @@ class _CreateAssetState extends State<CreateAsset> {
                         displayname: controller.userData.value.displayName ?? '',
                         postName: nameController.text,
                         titleController: nameController,
+                        titleFocusNode: titleFocusNode,
+                        descriptionFocusNode: descriptionFocusNode,
+                        descriptionController: descriptionController,
                         onTitleChanged: (value) {
+                          if (value == '__add_description__') {
+                            // Special signal to add description field
+                            _addDescriptionField();
+                          }
                           setState(() {});
                         },
                         rockets: {},
@@ -372,6 +409,8 @@ class _CreateAssetState extends State<CreateAsset> {
                                 maxLines: 5,
                                 keyboardType: TextInputType.multiline,
                                 controller: commentController,
+                                focusNode: descriptionFocusNode,
+                                textInputAction: TextInputAction.newline,
                                 decoration: AppTheme.textfieldDecoration(
                                     L10n.of(context)!.typeMessage, context)),
                       ),

@@ -10,6 +10,7 @@ import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/collectionbuilder.dart';
 import 'package:bitnet/components/post/components/deezerbuilder.dart';
+import 'package:bitnet/components/post/components/description_editor.dart';
 import 'package:bitnet/components/post/components/descriptionbuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -42,6 +43,9 @@ class PostComponent extends StatefulWidget {
       titleController; // For editing post title in edit mode
   final Function(String)? onTitleChanged; // Callback for title changes
   final Function? onPostSubmit; // Callback when post button is pressed
+  final TextEditingController? descriptionController; // For editing description in edit mode
+  final FocusNode? titleFocusNode; // Focus node for the title field
+  final FocusNode? descriptionFocusNode; // Focus node for the description field
 
   const PostComponent({
     required this.postId,
@@ -54,8 +58,11 @@ class PostComponent extends StatefulWidget {
     required this.displayname,
     this.isEditable = false, // Default to view mode
     this.titleController,
+    this.descriptionController,
     this.onTitleChanged,
     this.onPostSubmit,
+    this.titleFocusNode,
+    this.descriptionFocusNode,
   });
 
   /// Factory constructor to create from a document
@@ -138,8 +145,11 @@ class PostComponent extends StatefulWidget {
         postName: this.postName,
         isEditable: this.isEditable,
         titleController: this.titleController,
+        descriptionController: this.descriptionController,
         onTitleChanged: this.onTitleChanged,
         onPostSubmit: this.onPostSubmit,
+        titleFocusNode: this.titleFocusNode,
+        descriptionFocusNode: this.descriptionFocusNode,
       );
 }
 
@@ -156,8 +166,11 @@ class _PostComponentState extends State<PostComponent>
   Map rockets;
   final List<dynamic> medias;
   final TextEditingController? titleController;
+  final TextEditingController? descriptionController;
   final Function(String)? onTitleChanged;
   final Function? onPostSubmit;
+  final FocusNode? titleFocusNode;
+  final FocusNode? descriptionFocusNode;
 
   bool showheart = false;
   late bool isLiked;
@@ -174,8 +187,11 @@ class _PostComponentState extends State<PostComponent>
     required this.rocketcount,
     required this.isEditable,
     this.titleController,
+    this.descriptionController,
     this.onTitleChanged,
     this.onPostSubmit,
+    this.titleFocusNode,
+    this.descriptionFocusNode,
   });
 
   @override
@@ -219,7 +235,9 @@ class _PostComponentState extends State<PostComponent>
                 isEditable && titleController != null
                     ? TextField(
                         controller: titleController,
+                        focusNode: titleFocusNode,
                         style: Theme.of(context).textTheme.titleSmall,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           hintText: "Enter title",
                           border: InputBorder.none,
@@ -228,6 +246,14 @@ class _PostComponentState extends State<PostComponent>
                                     color: Theme.of(context).hintColor,
                                   ),
                         ),
+                        onSubmitted: (_) {
+                          // When the user presses next, notify the parent to add a description field
+                          if (onTitleChanged != null) {
+                            // We use the onTitleChanged callback to notify the parent
+                            // The special '__add_description__' string is a signal to add the description field
+                            onTitleChanged!('__add_description__');
+                          }
+                        },
                         onChanged: (value) {
                           if (onTitleChanged != null) {
                             onTitleChanged!(value);
@@ -378,8 +404,14 @@ class _PostComponentState extends State<PostComponent>
         mediaWidget = ImageBuilderLocal(postFile: postFile);
         break;
       case MediaType.text:
-      case MediaType.description:
         mediaWidget = TextBuilderLocal(postFile: postFile);
+        break;
+      case MediaType.description:
+        mediaWidget = DescriptionEditorLocal(
+          postFile: postFile,
+          focusNode: descriptionFocusNode,
+          controller: descriptionController,
+        );
         break;
       case MediaType.audio:
         mediaWidget = AudioBuilderLocal(postfile: postFile);
