@@ -269,7 +269,7 @@ class _PostComponentState extends State<PostComponent>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _buildMediaWidgets(),
                 ),
-                // Bottom row with like space and buttons in view mode, or submit button in edit mode
+                // Bottom row with like space and buttons in view mode (edit mode has no bottom buttons)
                 !isEditable
                     ? Column(
                         children: [
@@ -279,8 +279,6 @@ class _PostComponentState extends State<PostComponent>
                             width: double.infinity,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-
                               children: [
                                 // List button with icon and text
                                 LongButtonWidget(
@@ -288,14 +286,12 @@ class _PostComponentState extends State<PostComponent>
                                   buttonType: ButtonType.transparent,
                                   customHeight: AppTheme.cardPadding * 1.25.h,
                                   customWidth: AppTheme.cardPadding * 3.5.w,
-
                                   onTap: () {
                                     final homeController = Get.find<HomeController>();
                                     homeController.createClicks(postId);
                                   },
                                 ),
                                 Spacer(),
-
                                 
                                 // Like space with full control of width
                                 buildLikeSpace(
@@ -310,59 +306,7 @@ class _PostComponentState extends State<PostComponent>
                           )
                         ],
                       )
-                    : onPostSubmit != null
-                        ? Center(
-                          child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: AppTheme.elementSpacing),
-                              child: GestureDetector(
-                                onTap: () => onPostSubmit!(),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.4,
-                                  height: AppTheme.cardPadding * 1.75,
-                                  decoration: BoxDecoration(
-                                    gradient: useBitcoinGradient
-                                      ? LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            AppTheme.colorBitcoin,
-                                            AppTheme.colorPrimaryGradient,
-                                          ],
-                                        )
-                                      : LinearGradient(
-                                          colors: [
-                                            Theme.of(context).colorScheme.primary,
-                                            Theme.of(context).colorScheme.secondary,
-                                          ],
-                                        ),
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          'POST',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        )
-                        : Container(),
+                    : Container(), // No button in edit mode - we moved it to the app bar
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),

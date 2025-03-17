@@ -302,6 +302,53 @@ class _CreateAssetState extends State<CreateAsset> {
           onTap: () {
             context.pop();
           },
+          actions: [
+            // Post button in the app bar
+            Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: GestureDetector(
+                onTap: () {
+                  if (postFiles.isNotEmpty) {
+                    convertToBase64AndMakePushReady(
+                        context, postFiles, nameController.text);
+                  } else {
+                    Get.find<OverlayController>().showOverlay(
+                      L10n.of(context)!.postContentError,
+                      color: AppTheme.errorColor,
+                    );
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                      ? LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppTheme.colorBitcoin,
+                            AppTheme.colorPrimaryGradient,
+                          ],
+                        )
+                      : LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.primary,
+                            Theme.of(context).colorScheme.secondary,
+                          ],
+                        ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Text(
+                    'POST',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         body: Container(
           child: isLoading

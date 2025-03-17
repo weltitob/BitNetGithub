@@ -17,16 +17,66 @@ class ImageBuilderLocal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageBox(
-      radius: AppTheme.cardRadiusMid.r,
-      child: Image.file(
-        postFile.file!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          height: AppTheme.cardPadding * 5,
-          child: Icon(
-            Icons.error,
-            color: Theme.of(context).colorScheme.error,
+    return GestureDetector(
+      onTap: () {
+        // Show the image in a dialog when tapped
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.zero,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Fullscreen image
+                InteractiveViewer(
+                  boundaryMargin: EdgeInsets.all(20),
+                  minScale: 0.5,
+                  maxScale: 4.0,
+                  child: Image.file(
+                    postFile.file!,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                // Close button
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: AspectRatio(
+        aspectRatio: 1.0, // Force 1:1 aspect ratio
+        child: ImageBox(
+          radius: BorderRadius.circular(AppTheme.cardRadiusMid.r),
+          child: Image.file(
+            postFile.file!,
+            fit: BoxFit.cover, // Cover ensures the image fills the space
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: AppTheme.cardPadding * 5,
+              child: Icon(
+                Icons.error,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
           ),
         ),
       ),
