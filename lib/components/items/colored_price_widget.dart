@@ -65,25 +65,16 @@ class BitNetPercentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPositive = !priceChange.contains('-');
-    WalletsController controller = Get.find<WalletsController>();
     
     return Container(
       margin: const EdgeInsets.only(
         top: AppTheme.elementSpacing,
         bottom: AppTheme.elementSpacing,
       ),
-      child: Obx(() => controller.hideBalance.value && shouldHideAmount
-        ? Text(
-            "******",
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-            ),
-          )
-        : PercentageChangeWidget(
-            percentage: priceChange,
-            isPositive: isPositive,
-            fontSize: 14,
-          ),
+      child: PercentageChangeWidget(
+        percentage: priceChange,
+        isPositive: isPositive,
+        fontSize: 14,
       ),
     );
   }
