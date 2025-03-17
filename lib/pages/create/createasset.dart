@@ -433,30 +433,16 @@ class _CreateAssetState extends State<CreateAsset> {
     return Container(
       height: AppTheme.cardPadding * 2.h,
       child: LongButtonWidget(
-        buttonType: ButtonType.transparent,
+        buttonType: ButtonType.transparent, // Already transparent
         title: "Add Content",
         leadingIcon: Icon(
           Icons.add_rounded,
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.light 
+              ? AppTheme.black70 
+              : AppTheme.white90,
         ),
-
         customHeight: AppTheme.cardPadding * 2.2,
         customWidth: AppTheme.cardPadding * 6.5,
-        buttonGradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-          ? LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppTheme.colorBitcoin,
-                AppTheme.colorPrimaryGradient,
-              ],
-            )
-          : LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
-              ],
-            ),
         onTap: () {
           // Show bottom sheet with content options
           BitNetBottomSheet(
@@ -481,47 +467,43 @@ class _CreateAssetState extends State<CreateAsset> {
   }
   
   Widget buildMicrophoneButton() {
-    return InkWell(
+    return GlassContainer(
       borderRadius: BorderRadius.circular(45),
-      onTap: () async {
-        if (recorder.isRecording) {
-          await stop();
-        } else {
-          await record();
-        }
-        setState(() {});
-      },
-      child: Container(
-        width: AppTheme.cardPadding * 2.h,
-        height: AppTheme.cardPadding * 2.h,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-            ? LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  recorder.isRecording ? Colors.red : AppTheme.colorBitcoin,
-                  recorder.isRecording ? Colors.redAccent : AppTheme.colorPrimaryGradient,
-                ],
-              )
-            : LinearGradient(
-                colors: [
-                  recorder.isRecording ? Colors.red : Theme.of(context).colorScheme.primary,
-                  recorder.isRecording ? Colors.redAccent : Theme.of(context).colorScheme.secondary,
-                ],
-              ),
-        ),
-        child: Center(
-          child: recorder.isRecording
-            ? Icon(
-                Icons.stop_rounded,
-                color: Colors.white,
-              )
-            : Icon(
-                Icons.mic_rounded,
-                color: Colors.white,
-              ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(45),
+        onTap: () async {
+          if (recorder.isRecording) {
+            await stop();
+          } else {
+            await record();
+          }
+          setState(() {});
+        },
+        child: Container(
+          width: AppTheme.cardPadding * 2.2,
+          height: AppTheme.cardPadding * 2.2,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: recorder.isRecording
+              ? LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.red,
+                    Colors.redAccent,
+                  ],
+                )
+              : null,
+          ),
+          child: Center(
+            child: Icon(
+              recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
+              color: recorder.isRecording 
+                ? Colors.white 
+                : Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
+          ),
         ),
       ),
     );

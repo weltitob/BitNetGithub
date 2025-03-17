@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
@@ -87,53 +89,75 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
     // know where to start to paint inside reordable listview otherwise
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            AudioControlButton(player),
-            AdjustSpeedContainer(
-              child: StreamBuilder<double>(
-                stream: player.speedStream,
-                builder: (context, snapshot) => GestureDetector(
-                  child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  onTap: () {
-                    showSliderDialog(
-                      context: context,
-                      title: "Adjust speed",
-                      divisions: 10,
-                      min: 0.5,
-                      max: 2.0,
-                      value: player.speed,
+      child: GlassContainer(
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.95,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing * 1.25,
+            vertical: AppTheme.elementSpacing * 0.75,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              // Title row with waveform icon
+
+              // Controls row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AudioControlButton(player),
+                  AdjustSpeedContainer(
+                    child: StreamBuilder<double>(
                       stream: player.speedStream,
-                      onChanged: player.setSpeed,
-                    );
-                  },
-                ),
+                      builder: (context, snapshot) => GestureDetector(
+                        child: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        onTap: () {
+                          showSliderDialog(
+                            context: context,
+                            title: "Adjust speed",
+                            divisions: 10,
+                            min: 0.5,
+                            max: 2.0,
+                            value: player.speed,
+                            stream: player.speedStream,
+                            onChanged: player.setSpeed,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  StreamBuilder<PositionData>(
+                    stream: _positionDataStream,
+                    builder: (context, snapshot) {
+                      final positionData = snapshot.data;
+                      return AudioSeekBar(
+                        duration: positionData?.duration ?? Duration.zero,
+                        position: positionData?.position ?? Duration.zero,
+                        bufferedPosition:
+                        positionData?.bufferedPosition ?? Duration.zero,
+                        onChangeEnd: player.seek,
+                      );
+                    },
+                  ),
+                ],
               ),
-            ),
-            StreamBuilder<PositionData>(
-              stream: _positionDataStream,
-              builder: (context, snapshot) {
-                final positionData = snapshot.data;
-                return AudioSeekBar(
-                  duration: positionData?.duration ?? Duration.zero,
-                  position: positionData?.position ?? Duration.zero,
-                  bufferedPosition:
-                  positionData?.bufferedPosition ?? Duration.zero,
-                  onChangeEnd: player.seek,
-                );
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+  
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 
@@ -295,23 +319,11 @@ class AudioButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10.0),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(40.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              iconData,
-              size: 20,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
+      child: RoundedButtonWidget(
+          iconData: iconData, onTap: onTap,
+        size: AppTheme.cardPadding * 1.5,
+
         ),
-      ),
     );
   }
 }
