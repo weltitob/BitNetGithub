@@ -15,6 +15,7 @@ import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/scrollable_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -451,9 +452,9 @@ class _CreateAssetState extends State<CreateAsset> {
         // Width will expand naturally with parent Expanded widget
         customWidth: double.infinity,
         onTap: () {
-          // Show bottom sheet with content options
+          // Show bottom sheet with content options (matching image picker height)
           BitNetBottomSheet(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.7, // Match image picker height
             context: context,
             child: bitnetScaffold(
               context: context,
@@ -463,8 +464,14 @@ class _CreateAssetState extends State<CreateAsset> {
                 text: L10n.of(context)!.addContent,
                 context: context,
               ),
-              body: AddContentWidget(
-                controller: this,
+              body: Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 2),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: AddContentWidget(
+                    controller: this,
+                  ),
+                ),
               ),
             ),
           );

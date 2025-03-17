@@ -3,6 +3,7 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddContentWidget extends StatelessWidget {
   final controller;
@@ -15,6 +16,7 @@ class AddContentWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        SizedBox(height: AppTheme.cardPadding * 3.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
