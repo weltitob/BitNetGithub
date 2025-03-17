@@ -101,13 +101,26 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                       top: AppTheme.elementSpacing,
                       bottom: AppTheme.elementSpacing,
                     ),
-                    child: RoundedButtonWidget(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        // Directly handle the back navigation
+                        if (widget.onTap != null) {
+                          widget.onTap!();
+                        } else {
+                          // Fallback navigation
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: RoundedButtonWidget(
                         buttonType: widget.buttonType ?? ButtonType.solid,
                         iconData: widget.customIcon ?? Icons.arrow_back,
                         iconColor: useBitcoinGradient
                             ? Colors.white
                             : Theme.of(context).colorScheme.onPrimary,
-                        onTap: widget.onTap),
+                        // Pass null to prevent double-handling
+                        onTap: null),
+                    ),
                   ),
                 ),
               )

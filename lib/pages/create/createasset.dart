@@ -300,6 +300,7 @@ class _CreateAssetState extends State<CreateAsset> {
           context: context,
           hasBackButton: true,
           onTap: () {
+            // Navigate back using Go Router
             context.pop();
           },
           actions: [
