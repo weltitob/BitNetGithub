@@ -423,8 +423,10 @@ class _PostComponentState extends State<PostComponent>
       mediaWidget = LinkBuilder(url: media.data);
     } else if (type == "image" || type == "camera" || type == "image_data") {
       mediaWidget = ImageBuilder(
-          radius: AppTheme.cardRadiusMid,
-          encodedData: media.data);
+          radius: AppTheme.cardRadiusMid.r,
+          encodedData: media.data,
+          caption: postName, // Pass the post name as the caption
+      );
     } else if (type == "audio") {
       mediaWidget = AudioBuilderNetwork(url: media.data);
     } else {
