@@ -413,14 +413,18 @@ class _CreateAssetState extends State<CreateAsset> {
       ),
       child: SafeArea(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // Add Content Button
-            buildMicrophoneButton(),
-            buildAddContentButton(),
-            
             // Microphone Button
-
+            buildMicrophoneButton(),
+            
+            // Spacing
+            SizedBox(width: AppTheme.elementSpacing),
+            
+            // Add Content Button - Expanded to fill space
+            Expanded(child: buildAddContentButton()),
+            
+            // Spacing
+            SizedBox(width: AppTheme.elementSpacing),
             
             // Post Button
             buildPostButton(),
@@ -433,8 +437,9 @@ class _CreateAssetState extends State<CreateAsset> {
   Widget buildAddContentButton() {
     return Container(
       height: AppTheme.cardPadding * 2.h,
+      // No fixed width needed since we're in an Expanded widget
       child: LongButtonWidget(
-        buttonType: ButtonType.transparent, // Already transparent
+        buttonType: ButtonType.transparent,
         title: "Add Content",
         leadingIcon: Icon(
           Icons.add_rounded,
@@ -443,7 +448,8 @@ class _CreateAssetState extends State<CreateAsset> {
               : AppTheme.white90,
         ),
         customHeight: AppTheme.cardPadding * 2.2,
-        customWidth: AppTheme.cardPadding * 6.w,
+        // Width will expand naturally with parent Expanded widget
+        customWidth: double.infinity,
         onTap: () {
           // Show bottom sheet with content options
           BitNetBottomSheet(
@@ -490,40 +496,16 @@ class _CreateAssetState extends State<CreateAsset> {
   Widget buildPostButton() {
     final bool isValid = postFiles.isNotEmpty && nameController.text.isNotEmpty;
     
-    return Container(
-      height: AppTheme.cardPadding * 2.2,
-      child: LongButtonWidget(
-        title: "Post",
-        leadingIcon: Icon(
-          Icons.send_rounded,
-          color: Colors.white,
-        ),
-        buttonType: ButtonType.solid,
-        state: isValid ? ButtonState.idle : ButtonState.disabled,
-        customHeight: AppTheme.cardPadding * 2.h,
-        customWidth: AppTheme.cardPadding * 6.w,
-        buttonGradient: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-          ? LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppTheme.colorBitcoin,
-                AppTheme.colorPrimaryGradient,
-              ],
-            )
-          : LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
-              ],
-            ),
-        onTap: () {
-          if (isValid) {
-            convertToBase64AndMakePushReady(
-              context, postFiles, nameController.text);
-          }
-        },
-      ),
+    return RoundedButtonWidget(
+      size: AppTheme.cardPadding * 2.2,
+      iconData: Icons.send_rounded,
+      iconColor: Colors.white,
+      buttonType: isValid ? ButtonType.solid : ButtonType.transparent,
+      // Use null onTap function when disabled to visually indicate it's not clickable
+      onTap: isValid ? () {
+        convertToBase64AndMakePushReady(
+          context, postFiles, nameController.text);
+      } : null,
     );
   }
 
