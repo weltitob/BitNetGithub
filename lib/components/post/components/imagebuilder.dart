@@ -69,7 +69,7 @@ class ImageBuilder extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1.0, // Force 1:1 aspect ratio
         child: ImageBox(
-          radius: radius ?? AppTheme.cardRadiusMid.r,
+          radius: radius ?? AppTheme.cardRadiusSuperSmall.r,
           child: Image.memory(
             imageBytes,
             filterQuality: FilterQuality.medium,

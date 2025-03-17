@@ -423,7 +423,7 @@ class _PostComponentState extends State<PostComponent>
       mediaWidget = LinkBuilder(url: media.data);
     } else if (type == "image" || type == "camera" || type == "image_data") {
       mediaWidget = ImageBuilder(
-          radius: AppTheme.cardRadiusMid.r,
+          radius: AppTheme.cardRadiusSmall.r,
           encodedData: media.data,
           caption: postName, // Pass the post name as the caption
       );
