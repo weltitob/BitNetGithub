@@ -19,6 +19,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:timezone/timezone.dart';
+import 'package:bitnet/components/items/colored_price_widget.dart';
 
 // var datetime = DateTime.now();
 // DateFormat dateFormat = DateFormat("dd.MM.yyyy");
@@ -697,27 +698,5 @@ class _CustomWidgetState extends State<CustomWidget>
         ],
       );
     });
-  }
-}
-
-class BitNetPercentWidget extends StatelessWidget {
-  final String priceChange;
-
-  const BitNetPercentWidget({super.key, required this.priceChange});
-
-  @override
-  Widget build(BuildContext context) {
-    // Delegate to the reusable PercentageChangeWidget
-    return Container(
-      margin: const EdgeInsets.only(
-        top: AppTheme.elementSpacing,
-        bottom: AppTheme.elementSpacing,
-      ),
-      child: PercentageChangeWidget(
-        percentage: priceChange,
-        isPositive: !priceChange.contains("-"),
-        fontSize: 14,
-      ),
-    );
   }
 }
