@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -25,7 +23,6 @@ import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 /// A unified post component that can be used for both editing and viewing posts
