@@ -8,7 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  moonpay_flutter:
+    path: moonpay_flutter/
   intl: any
   flutter_localized_locales: ^2.0.5
   get:

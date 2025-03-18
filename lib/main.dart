@@ -40,7 +40,6 @@ import 'package:shake/shake.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'backbone/auth/auth.dart';
 
-
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⢠⣼⣿⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⠀⠈⠙⠿⣿⣷⣄⠀⠀⠀⠀
@@ -57,7 +56,6 @@ import 'backbone/auth/auth.dart';
 // ⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣶⣤⣤⣤⣤⣤⣤⣴⣾⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀
 
-
 //██████╗░██╗████████╗███╗░░██╗███████╗████████╗
 //██╔══██╗██║╚══██╔══╝████╗░██║██╔════╝╚══██╔══╝
 //██████╦╝██║░░░██║░░░██╔██╗██║█████╗░░░░░██║░░░
@@ -65,13 +63,11 @@ import 'backbone/auth/auth.dart';
 //██████╦╝██║░░░██║░░░██║░╚███║███████╗░░░██║░░░
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
-
 Future<void> main() async {
   // void onAppLink() {
   //   print("APPLINK WAS TRIGGERED");
   // }
   // Ensure that Flutter binding is initialized
-
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();

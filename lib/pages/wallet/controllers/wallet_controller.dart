@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoice
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
+import 'package:bitnet/backbone/cloudfunctions/moonpay/moonpay_sign_url.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/supported_currencies.dart';
@@ -35,7 +36,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:moonpay_flutter/moonpay_flutter.dart';
 
 import '../../../backbone/auth/auth.dart';
 
@@ -268,7 +271,12 @@ class WalletsController extends BaseController {
         }
       });
     }
-
+    MoonpayFlutter().setOnUrlGenerated((url) async {
+      String? signature = await moonpaySignUrl(url);
+      if (signature != null) {
+        MoonpayFlutter().sendSignature(signature);
+      }
+    });
     //---------------------------------------------------
 
     //----------------------SUBSCRIPTIONS----------------------

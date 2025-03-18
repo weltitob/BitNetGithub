@@ -21,7 +21,8 @@ class CryptoChartLine {
   Future<void> getChartData() async {
     // Retrieve the logger instance
     LoggerService logger = Get.find<LoggerService>();
-    logger.d("Fetching chart data for $crypto... $days days, $currency currency");
+    logger
+        .d("Fetching chart data for $crypto... $days days, $currency currency");
 
     try {
       // Initialize Firestore instance
@@ -31,47 +32,62 @@ class CryptoChartLine {
       String timeframe = _mapDaysToTimeframe(days);
 
       // Reference to the specific document in Firestore
-      DocumentReference dataRef = firestore
-          .collection('chart_data')
-          .doc(currency.toUpperCase())
-          .collection(timeframe)
-          .doc('data');
 
-      // Fetch the document
-      DocumentSnapshot docSnapshot = await dataRef.get();
+      if (timeframe.toLowerCase() == 'live') {
+        DocumentReference dataRef = firestore
+            .collection('chart_data')
+            .doc(currency.toUpperCase())
+            .collection(timeframe)
+            .doc('data');
 
-      if (docSnapshot.exists) {
-        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        // Fetch the document
+        DocumentSnapshot docSnapshot = await dataRef.get();
+        if (docSnapshot.exists) {
+          Map<String, dynamic> data =
+              docSnapshot.data() as Map<String, dynamic>;
 
-        if (timeframe.toLowerCase() == 'live') {
           // Handle live data which contains a single price point
           double? price = data['price']?.toDouble();
           if (price != null) {
             // Use the current timestamp as the time value
-            double currentTime = DateTime.now().millisecondsSinceEpoch.toDouble();
+            double currentTime =
+                DateTime.now().millisecondsSinceEpoch.toDouble();
             chartLine.add(ChartLine(time: currentTime, price: price));
           } else {
-            logger.e("Price data is missing in Firestore for $currency > $timeframe");
+            logger.e(
+                "Price data is missing in Firestore for $currency > $timeframe");
           }
         } else {
-          // Handle historical chart data
-          List<dynamic>? chartDataList = data['chart_line'];
-          if (chartDataList != null) {
-            for (var element in chartDataList) {
-              double? time = element['time']?.toDouble();
-              double? price = element['price']?.toDouble();
-              if (time != null && price != null) {
-                chartLine.add(ChartLine(time: time, price: price));
-              } else {
-                logger.i("Incomplete chart data point: $element");
-              }
-            }
-          } else {
-            logger.e("Chart line data is missing in Firestore for $currency > $timeframe");
-          }
+          logger
+              .e("No chart data found in Firestore for $currency > $timeframe");
         }
       } else {
-        logger.e("No chart data found in Firestore for $currency > $timeframe");
+        // Handle historical chart data
+        CollectionReference<Map<String, dynamic>> dataRef = firestore
+            .collection('chart_data')
+            .doc(currency.toUpperCase())
+            .collection(timeframe)
+            .doc('data')
+            .collection("data_points");
+
+        // Fetch the document
+        QuerySnapshot<Map<String, dynamic>> docSnapshot = await dataRef.get();
+        if (docSnapshot.docs.isNotEmpty) {
+          List<dynamic>? chartDataList =
+              docSnapshot.docs.map((doc) => doc.data()).toList();
+          for (var element in chartDataList) {
+            double? time = element['time']?.toDouble();
+            double? price = element['price']?.toDouble();
+            if (time != null && price != null) {
+              chartLine.add(ChartLine(time: time, price: price));
+            } else {
+              logger.i("Incomplete chart data point: $element");
+            }
+          }
+        } else {
+          logger.e(
+              "Chart line data is missing in Firestore for $currency > $timeframe");
+        }
       }
     } catch (e) {
       logger.e("Error fetching chart data from Firestore: $e");
