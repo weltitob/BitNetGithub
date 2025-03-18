@@ -188,93 +188,98 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   Widget build(BuildContext context) {
     BitcoinController bitcoinController = Get.find<BitcoinController>();
-
-    return Column(
-      children: [
-        Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: CustomWidget(key: chartInfoKey)),
-        Column(
-          children: [
-            Container(
-              child: _loading
-                  ? Center(
-                      child: Container(
-                        height: AppTheme.cardPadding * 16,
-                        child: avatarGlow(
-                          context,
-                          Icons.currency_bitcoin,
-                        ),
-                      ),
-                    )
-                  : ChartCore(),
-            ),
-          ],
-        ),
-        CustomizableTimeChooser(
-          timePeriods: ['1D', '1W', '1M', '1J', 'Max'],
-          initialSelectedPeriod: bitcoinController.selectedtimespan.value,
-          onTimePeriodSelected: (String newTimeperiod) {
-            setState(() {
-              bitcoinController.selectedtimespan.value = newTimeperiod;
-              // Update price widget
-              switch (bitcoinController.selectedtimespan.value) {
-                case "1D":
-                  bitcoinController.currentline.value =
-                      bitcoinController.onedaychart;
-                  break;
-                case "1W":
-                  bitcoinController.currentline.value =
-                      bitcoinController.oneweekchart;
-                  break;
-                case "1M":
-                  bitcoinController.currentline.value =
-                      bitcoinController.onemonthchart;
-                  break;
-                case "1J":
-                  bitcoinController.currentline.value =
-                      bitcoinController.oneyearchart;
-                  break;
-                case "Max":
-                  bitcoinController.currentline.value =
-                      bitcoinController.maxchart;
-                  break;
-              }
-              setValues(bitcoinController);
-              // Update last price
-              bitcoinController.trackBallValuePrice =
-                  bitcoinController.new_lastpricerounded.toString();
-              // Update percent
-              double priceChange = (bitcoinController.new_lastpriceexact -
-                      bitcoinController.new_firstpriceexact) /
-                  bitcoinController.new_firstpriceexact;
-              bitcoinController.trackBallValuePricechange =
-                  toPercent(priceChange);
-              // Update date
-              var datetime = DateTime.fromMillisecondsSinceEpoch(
-                  bitcoinController.new_lastimeeexact.round(),
-                  isUtc: false);
-              DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-              DateFormat timeFormat = DateFormat("HH:mm");
-              String date = dateFormat.format(datetime);
-              String time = timeFormat.format(datetime);
-              bitcoinController.trackBallValueTime = datetime;
-              //bitcoinController.trackBallValueDate = date.toString();
-              // Update the entire information widget
-              chartInfoKey.currentState!.refresh();
-            });
-          },
-          buttonBuilder: (context, period, isSelected, onPressed) {
-            return TimeChooserButton(
-              timeperiod: period,
-              timespan: isSelected ? period : null,
-              onPressed: onPressed,
+    return Obx(() {
+      return bitcoinController.loading.value
+          ? dotProgress(context)
+          : Column(
+              children: [
+                Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: CustomWidget(key: chartInfoKey)),
+                Column(
+                  children: [
+                    Container(
+                      child: _loading
+                          ? Center(
+                              child: Container(
+                                height: AppTheme.cardPadding * 16,
+                                child: avatarGlow(
+                                  context,
+                                  Icons.currency_bitcoin,
+                                ),
+                              ),
+                            )
+                          : ChartCore(),
+                    ),
+                  ],
+                ),
+                CustomizableTimeChooser(
+                  timePeriods: ['1D', '1W', '1M', '1J', 'Max'],
+                  initialSelectedPeriod:
+                      bitcoinController.selectedtimespan.value,
+                  onTimePeriodSelected: (String newTimeperiod) {
+                    setState(() {
+                      bitcoinController.selectedtimespan.value = newTimeperiod;
+                      // Update price widget
+                      switch (bitcoinController.selectedtimespan.value) {
+                        case "1D":
+                          bitcoinController.currentline.value =
+                              bitcoinController.onedaychart;
+                          break;
+                        case "1W":
+                          bitcoinController.currentline.value =
+                              bitcoinController.oneweekchart;
+                          break;
+                        case "1M":
+                          bitcoinController.currentline.value =
+                              bitcoinController.onemonthchart;
+                          break;
+                        case "1J":
+                          bitcoinController.currentline.value =
+                              bitcoinController.oneyearchart;
+                          break;
+                        case "Max":
+                          bitcoinController.currentline.value =
+                              bitcoinController.maxchart;
+                          break;
+                      }
+                      setValues(bitcoinController);
+                      // Update last price
+                      bitcoinController.trackBallValuePrice =
+                          bitcoinController.new_lastpricerounded.toString();
+                      // Update percent
+                      double priceChange =
+                          (bitcoinController.new_lastpriceexact -
+                                  bitcoinController.new_firstpriceexact) /
+                              bitcoinController.new_firstpriceexact;
+                      bitcoinController.trackBallValuePricechange =
+                          toPercent(priceChange);
+                      // Update date
+                      var datetime = DateTime.fromMillisecondsSinceEpoch(
+                          bitcoinController.new_lastimeeexact.round(),
+                          isUtc: false);
+                      DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                      DateFormat timeFormat = DateFormat("HH:mm");
+                      String date = dateFormat.format(datetime);
+                      String time = timeFormat.format(datetime);
+                      bitcoinController.trackBallValueTime = datetime;
+                      //bitcoinController.trackBallValueDate = date.toString();
+                      // Update the entire information widget
+                      chartInfoKey.currentState!.refresh();
+                    });
+                  },
+                  buttonBuilder: (context, period, isSelected, onPressed) {
+                    return TimeChooserButton(
+                      timeperiod: period,
+                      timespan: isSelected ? period : null,
+                      onPressed: onPressed,
+                    );
+                  },
+                ),
+              ],
             );
-          },
-        ),
-      ],
-    );
+    });
   }
 
   void periodicCleanUp(Timer timer) {
