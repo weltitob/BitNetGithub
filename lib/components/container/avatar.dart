@@ -129,20 +129,20 @@ class Avatar extends StatelessWidget {
               right: 0,
               child: cornerWidget ??
                   (isNft
-                      ? Container(
-                    width: size / 3.5,
-                    height: size / 3.5,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: CoinLogoWidgetSmall(
-                        coinid: 1,
-                        width: size / 3.5,
-                        height: size / 3.5,
-                      ),
-                    ),
-                  )
+                      ? SizedBox(
+                          width: size / 3.5,
+                          height: size / 3.5,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(size / 3.5),
+                            child: CoinLogoWidgetSmall(
+                              coinid: 1,
+                              width: size / 3.5,
+                              height: size / 3.5,
+                            ),
+                          ),
+                        )
                       : Container()),
-            ),
+            )
         ],
       ),
     );

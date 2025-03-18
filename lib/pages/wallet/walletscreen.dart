@@ -20,14 +20,12 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -68,6 +66,11 @@ class WalletScreen extends GetWidget<WalletsController> {
     }
     BitcoinController bitcoinController = Get.find<BitcoinController>();
 
+    bool _isPriceChangePositive(BitcoinController controller) {
+      return controller.pbNew_firstpriceexact <=
+          controller.pbNew_lastpricerounded.value;
+    }
+
     return bitnetScaffold(
       context: context,
       body: StatefulBuilder(
@@ -87,28 +90,30 @@ class WalletScreen extends GetWidget<WalletsController> {
               SliverToBoxAdapter(
                 child: Stack(
                   children: [
-                    Container(
-                      height: 300,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [
-                            0.0, // Start of the gradient
-                            0.75,
-                            1.0, // End of the gradient
-                          ],
-                          colors: [
-                            AppTheme.successColor
-                                .withOpacity(0.15), // Strong color at the top
-                            AppTheme.successColor
-                                .withOpacity(0.04), // Strong color at the top
-                            Colors
-                                .transparent, // Ensure the bottom remains fully transparent
-                          ],
-                        ),
-                      ),
-                    ),
+                    Obx(() => Container(
+                          height: 300,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: const [
+                                0.0, // Start of the gradient
+                                0.75,
+                                1.0, // End of the gradient
+                              ],
+                              colors: [
+                                _isPriceChangePositive(bitcoinController)
+                                    ? AppTheme.successColor.withOpacity(0.15)
+                                    : AppTheme.errorColor.withOpacity(0.1),
+                                _isPriceChangePositive(bitcoinController)
+                                    ? AppTheme.successColor.withOpacity(0.04)
+                                    : AppTheme.errorColor.withOpacity(0.03),
+                                Colors
+                                    .transparent, // Ensure the bottom remains fully transparent
+                              ],
+                            ),
+                          ),
+                        )),
                     Container(
                       height: 300,
                       child: Obx(() {
@@ -139,8 +144,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                                   crypto.time,
                               yValueMapper: (ChartLine crypto, _) =>
                                   crypto.price,
-                              color: AppTheme
-                                  .successColor, // Softer line color with glow
+                              color: !bitcoinController
+                                      .pbOverallPriceChange.value
+                                      .contains('-')
+                                  ? AppTheme.successColor
+                                  : AppTheme
+                                      .errorColor, // Softer line color with glow
                               width:
                                   3, // Increased line width for a softer curve
                               // Adding the glow effect underneath
@@ -502,25 +511,48 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         children: [
                                           // Use the Obx directly around the ColoredPriceWidget to react to changes
                                           Obx(
-                                            () => ColoredPriceWidget(
-                                              price: bitcoinController
-                                                  .pbNew_lastpricerounded.value
-                                                  .toStringAsFixed(2),
-                                              isPositive: !bitcoinController
-                                                  .pbOverallPriceChange.value
-                                                  .contains('-'),
-                                              currencySymbol:
-                                                  getCurrency(currency!),
-                                            ),
+                                            () {
+                                              // Calculate the difference between current balance and start of timeframe
+                                              double firstPrice =
+                                                  bitcoinController
+                                                      .pbNew_firstpriceexact;
+                                              double currentPrice =
+                                                  bitcoinController
+                                                      .pbNew_lastpricerounded
+                                                      .value;
+                                              double diff =
+                                                  currentPrice - firstPrice;
+
+                                              // Format the difference with proper decimal places and limit length
+                                              String formattedDiff;
+                                              if (diff.abs() > 9999) {
+                                                // For large numbers, use K notation
+                                                formattedDiff = (diff / 1000)
+                                                        .toStringAsFixed(1) +
+                                                    'K';
+                                              } else {
+                                                formattedDiff =
+                                                    diff.toStringAsFixed(2);
+                                              }
+
+                                              return ColoredPriceWidget(
+                                                shouldHideAmount: true,
+                                                price: formattedDiff,
+                                                isPositive: diff >= 0,
+                                                currencySymbol:
+                                                    getCurrency(currency!),
+                                              );
+                                            },
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
                                                   1), // Add some spacing
                                           Obx(
                                             () => BitNetPercentWidget(
-                                                priceChange: bitcoinController
-                                                    .pbOverallPriceChange
-                                                    .value),
+                                              shouldHideAmount: true,
+                                              priceChange: bitcoinController
+                                                  .pbOverallPriceChange.value,
+                                            ),
                                           ),
                                         ],
                                       ),

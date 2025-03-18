@@ -9,10 +9,13 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/scrollable_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -23,6 +26,7 @@ import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -42,15 +46,34 @@ class _CreateAssetState extends State<CreateAsset> {
   final postFiles = <PostFile>[];
   TextEditingController commentController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  final FocusNode titleFocusNode = FocusNode();
+  final FocusNode descriptionFocusNode = FocusNode();
+  final FocusNode inputFieldFocusNode = FocusNode();
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
   bool isLoading = false;
+  bool hasDescription = false;
   String postId = const Uuid().v4();
 
   @override
   void initState() {
     super.initState();
     initRecorder();
+    
+    // Set up focus change listeners to auto-add description when title gets focus
+    titleFocusNode.addListener(() {
+      if (!titleFocusNode.hasFocus && nameController.text.isNotEmpty) {
+        // When user taps away from title and has entered text, add description
+        if (!hasDescription) {
+          _addDescriptionField();
+        }
+      }
+    });
+    
+    // We don't need to add any special handling for the description focus node
+    // since we're now using it correctly for the in-post description field
+    
     commentController.addListener(() {
       if (commentController.text.isEmpty || commentController.text.isNotEmpty) {
         setState(() {});
@@ -61,12 +84,21 @@ class _CreateAssetState extends State<CreateAsset> {
   @override
   void dispose() {
     recorder.closeRecorder();
+    titleFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    inputFieldFocusNode.dispose();
     super.dispose();
   }
 
   void addMedia(MediaType mediaType) {
     if (mediaType == MediaType.text) {
       _addTextField();
+    } else if (mediaType == MediaType.description) {
+      // Handle description from add content sheet - add and focus on it
+      _addDescriptionField();
+      
+      // Close the bottom sheet first
+      Navigator.of(context).pop();
     } else if (mediaType == MediaType.image_data ||
         mediaType == MediaType.image) {
       _pickImageFiles(mediaType);
@@ -224,10 +256,52 @@ class _CreateAssetState extends State<CreateAsset> {
     }
   }
 
+  // This method now adds an empty text field that the user can edit directly in the post
   void _addTextField() {
-    postFiles.add(PostFile(MediaType.text, text: commentController.text));
-    commentController.clear();
+    postFiles.add(PostFile(MediaType.text, text: ""));
     setState(() {});
+  }
+  
+  void _addDescriptionField() {
+    // If we already have a description, just focus on it
+    if (hasDescription) {
+      // Find the existing description (first text entry)
+      int descriptionIndex = -1;
+      for (int i = 0; i < postFiles.length; i++) {
+        if (postFiles[i].type == MediaType.text) {
+          descriptionIndex = i;
+          break;
+        }
+      }
+      
+      // If found, focus on it
+      if (descriptionIndex >= 0) {
+        Future.delayed(Duration(milliseconds: 300), () {
+          FocusScope.of(context).requestFocus(descriptionFocusNode);
+        });
+        return;
+      }
+    }
+    
+    // Otherwise, create a new empty description text entry
+    PostFile descriptionFile = PostFile(MediaType.text, text: "");
+    
+    // Add it at the beginning of the list for proper ordering
+    if (postFiles.isEmpty) {
+      postFiles.add(descriptionFile);
+    } else {
+      // Insert after the first item (title)
+      postFiles.insert(0, descriptionFile);
+    }
+    
+    hasDescription = true;
+    setState(() {});
+    
+    // Focus on the description field within the post after it's added
+    // Using a longer delay to ensure the widget is fully built
+    Future.delayed(Duration(milliseconds: 300), () {
+      FocusScope.of(context).requestFocus(descriptionFocusNode);
+    });
   }
 
   Future record() async {
@@ -241,6 +315,7 @@ class _CreateAssetState extends State<CreateAsset> {
     final audioFile = File(path!);
     print('Recorded audio: $audioFile');
     postFiles.add(PostFile(MediaType.audio, file: audioFile));
+    setState(() {}); // Update UI to show the added audio
   }
 
   Future initRecorder() async {
@@ -262,7 +337,8 @@ class _CreateAssetState extends State<CreateAsset> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool) {
-        context.pop();
+        // Use GoRouter to navigate back to the previous screen
+        Navigator.of(context).maybePop();
       },
       child: bitnetScaffold(
         appBar: bitnetAppBar(
@@ -270,8 +346,11 @@ class _CreateAssetState extends State<CreateAsset> {
           context: context,
           hasBackButton: true,
           onTap: () {
-            context.pop();
+            // Use Navigator to ensure we can always go back regardless of route history
+            Navigator.of(context).maybePop();
           },
+          // No actions in the app bar now
+          actions: [],
         ),
         body: Container(
           child: isLoading
@@ -286,7 +365,14 @@ class _CreateAssetState extends State<CreateAsset> {
                         displayname: controller.userData.value.displayName ?? '',
                         postName: nameController.text,
                         titleController: nameController,
+                        titleFocusNode: titleFocusNode,
+                        descriptionFocusNode: descriptionFocusNode,
+                        descriptionController: descriptionController,
                         onTitleChanged: (value) {
+                          if (value == '__add_description__') {
+                            // Special signal to add description field
+                            _addDescriptionField();
+                          }
                           setState(() {});
                         },
                         rockets: {},
@@ -330,118 +416,109 @@ class _CreateAssetState extends State<CreateAsset> {
       child: SafeArea(
         child: Row(
           children: [
-            Expanded(
-              child: GlassContainer(
-                child: Container(
-                  height: AppTheme.cardPadding * 2,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: AppTheme.cardPadding / 4),
-                      Expanded(
-                        child: recorder.isRecording
-                            ? StreamBuilder<RecordingDisposition>(
-                                stream: recorder.onProgress,
-                                builder: (context, snapshot) {
-                                  final duration = snapshot.hasData
-                                      ? snapshot.data!.duration
-                                      : Duration.zero;
-                                  String twoDigits(int n) =>
-                                      n.toString().padLeft(2, '0');
-                                  final twoDigitMinutes = twoDigits(
-                                      duration.inMinutes.remainder(60));
-                                  final twoDigitSeconds = twoDigits(
-                                      duration.inSeconds.remainder(60));
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 14.0, bottom: 15.0),
-                                    child: Text(
-                                        '$twoDigitMinutes:$twoDigitSeconds',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  );
-                                },
-                              )
-                            : TextField(
-                                style: Theme.of(context).textTheme.bodyLarge,
-                                minLines: 1,
-                                maxLines: 5,
-                                keyboardType: TextInputType.multiline,
-                                controller: commentController,
-                                decoration: AppTheme.textfieldDecoration(
-                                    L10n.of(context)!.typeMessage, context)),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.elementSpacing / 2),
-                      ),
-                      TextFieldButtonMorph(
-                        iconData: Icons.add_rounded,
-                        onTap: () {
-                          BitNetBottomSheet(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            context: context,
-                            child: bitnetScaffold(
-                              context: context,
-                              extendBodyBehindAppBar: true,
-                              appBar: bitnetAppBar(
-                                hasBackButton: false,
-                                text: L10n.of(context)!.addContent,
-                                context: context,
-                              ),
-                              body: AddContentWidget(
-                                controller: this,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: AppTheme.cardPadding / 3),
-            buildMicrophoneOrTextPushButton(),
+            // Microphone Button
+            buildMicrophoneButton(),
+            
+            // Spacing
+            SizedBox(width: AppTheme.elementSpacing),
+            
+            // Add Content Button - Expanded to fill space
+            Expanded(child: buildAddContentButton()),
+            
+            // Spacing
+            SizedBox(width: AppTheme.elementSpacing),
+            
+            // Post Button
+            buildPostButton(),
           ],
         ),
       ),
     );
   }
-
-  Widget buildMicrophoneOrTextPushButton() {
-    return InkWell(
-      borderRadius: AppTheme.cardRadiusCircular,
-      onTap: commentController.text.isEmpty
-          ? () async {
-              if (recorder.isRecording) {
-                await stop();
-              } else {
-                await record();
-              }
-              setState(() {});
-            }
-          : () {
-              _addTextField();
-            },
-      child: GlassContainer(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Icon(
-              commentController.text.isEmpty
-                  ? recorder.isRecording
-                      ? Icons.stop_rounded
-                      : Icons.mic_rounded
-                  : Icons.arrow_upward_rounded,
-              color: Theme.of(context).colorScheme.primary),
+  
+  Widget buildAddContentButton() {
+    return Container(
+      height: AppTheme.cardPadding * 2.h,
+      // No fixed width needed since we're in an Expanded widget
+      child: LongButtonWidget(
+        buttonType: ButtonType.transparent,
+        title: "Add Content",
+        leadingIcon: Icon(
+          Icons.add_rounded,
+          color: Theme.of(context).brightness == Brightness.light 
+              ? AppTheme.black70 
+              : AppTheme.white90,
         ),
+        customHeight: AppTheme.cardPadding * 2.2,
+        // Width will expand naturally with parent Expanded widget
+        customWidth: double.infinity,
+        onTap: () {
+          // Show bottom sheet with content options (matching image picker height)
+          BitNetBottomSheet(
+            height: MediaQuery.of(context).size.height * 0.7, // Match image picker height
+            context: context,
+            child: bitnetScaffold(
+              context: context,
+              extendBodyBehindAppBar: true,
+              appBar: bitnetAppBar(
+                hasBackButton: false,
+                text: L10n.of(context)!.addContent,
+                context: context,
+              ),
+              body: Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 2),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: AddContentWidget(
+                    controller: this,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
+  
+  Widget buildMicrophoneButton() {
+    return RoundedButtonWidget(
+      size: AppTheme.cardPadding * 2.h,
+      iconData: recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
+      iconColor: recorder.isRecording ? Colors.white : null,
+      buttonType: recorder.isRecording ? ButtonType.solid : ButtonType.transparent,
+      // Use custom red colors when recording
+      customPrimaryColor: recorder.isRecording ? Colors.red : null,
+      customSecondaryColor: recorder.isRecording ? Colors.redAccent : null,
+      onTap: () async {
+        if (recorder.isRecording) {
+          await stop();
+        } else {
+          await record();
+        }
+        setState(() {});
+      },
+    );
+  }
+  
+  Widget buildPostButton() {
+    final bool isValid = postFiles.isNotEmpty && nameController.text.isNotEmpty;
+    
+    return RoundedButtonWidget(
+      size: AppTheme.cardPadding * 2.h,
+      iconData: Icons.send_rounded,
+      iconColor: Colors.white,
+      buttonType: isValid ? ButtonType.solid : ButtonType.transparent,
+      // Use null onTap function when disabled to visually indicate it's not clickable
+      onTap: isValid ? () {
+        convertToBase64AndMakePushReady(
+          context, postFiles, nameController.text);
+      } : null,
+    );
+  }
+
+  // buildMicrophoneOrTextPushButton method removed as we've integrated its functionality
+  // into the new buildAddContentButton method
 }
 
 // Removed _PostItem class - replaced with _buildMediaComponent method
@@ -481,8 +558,9 @@ void triggerAssetMinting(
     var batchKeyBytes = utf8.encode(batchKey);
     String base64BatchKey = base64Url.encode(batchKeyBytes);
     print('Navigating to /create/finalize/$base64BatchKey');
-    // Use the batch key for the finalize screen
-    context.go('/create/finalize/$base64BatchKey');
+    // Use the batch key for the finalize screen with push instead of go
+    // This allows the back button to work properly later
+    context.push('/create/finalize/$base64BatchKey');
   } catch (e) {
     overlayController.showOverlay(
       e.toString(),
@@ -495,11 +573,31 @@ void convertToBase64AndMakePushReady(
     BuildContext context, postFiles, String assetName) async {
   final overlayController = Get.find<OverlayController>();
   try {
-    //isLoading = true;
     final mediasFormatted = <Media>[];
+    
+    // First check if we have a MediaType.text that should be treated as a description
+    bool firstTextIsDescription = false;
+    // Find the first text item
+    for (int i = 0; i < postFiles.length; i++) {
+      if (postFiles[i].type == MediaType.text) {
+        // The first text is always our description
+        firstTextIsDescription = true;
+        break;
+      }
+    }
+    
     await Future.forEach(postFiles, (PostFile file) async {
       if (file.type == MediaType.text) {
-        mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+        // Skip empty text entries
+        if (file.text != null && file.text!.trim().isNotEmpty) {
+          // Check if this is the first text entry and should be treated as description
+          if (postFiles.indexOf(file) == 0 && firstTextIsDescription) {
+            // Save as description type to render properly in view mode
+            mediasFormatted.add(Media(data: file.text ?? '', type: "description"));
+          } else {
+            mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+          }
+        }
       } else if (file.type == MediaType.external_url) {
         //later change url to link url
         mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
@@ -542,14 +640,17 @@ void convertToBase64AndMakePushReady(
               type: file.type.name));
         }
       } else if (file.type == MediaType.description) {
+        // For backward compatibility - existing posts may use this type directly
         mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
       } else {
         LoggerService logger = Get.find();
         logger.e("file type thats not supported was added");
         // medias.add(Media(data: file.text ?? '', type: file.type.name));
       }
-      triggerAssetMinting(context, mediasFormatted, assetName);
     });
+    
+    // Now mint the asset after processing all files
+    triggerAssetMinting(context, mediasFormatted, assetName);
   } catch (e) {
     //isLoading = false;
     overlayController.showOverlay(

@@ -33,6 +33,8 @@ class BatchScreen extends StatefulWidget {
 
 class _BatchScreenState extends State<BatchScreen> {
   bool isLoading = false;
+  bool hasError = false;
+  String errorMessage = '';
   String batchKey = '';
   double sat_per_vbyte = 0.0;
   List<AssetInBatchList> assets = [];
@@ -80,17 +82,53 @@ class _BatchScreenState extends State<BatchScreen> {
 
   void callListBatch(String batchKey) async {
     print("Calling Listing batch with this key: $batchKey");
-    Batch? responeBatch = await fetchMintBatch(batchKey);
-    print("Response Batch: $responeBatch");
-    //now lets get all of the assets to a list
-    setState(() {
-      assets = responeBatch!.assets.reversed.toList();
-      print("Assets: $assets");
-      for (var asset in assets) {
-        print("Assetname ${asset.name}");
+    try {
+      Batch? responseBatch = await fetchMintBatch(batchKey);
+      print("Response Batch: $responseBatch");
+      
+      // Check if response is not null before accessing properties
+      if (responseBatch != null && responseBatch.assets != null) {
+        setState(() {
+          assets = responseBatch.assets.reversed.toList();
+          hasError = false;
+          print("Assets: $assets");
+          for (var asset in assets) {
+            print("Assetname ${asset.name}");
+          }
+        });
+      } else {
+        // Handle null response
+        setState(() {
+          hasError = true;
+          errorMessage = L10n.of(context)!.errorFinalizingBatch;
+        });
+        
+        final overlayController = Get.find<OverlayController>();
+        overlayController.showOverlay(
+          L10n.of(context)!.errorFinalizingBatch, 
+          color: AppTheme.errorColor
+        );
+        
+        // Stay on the page and let user handle navigation
+        // They can see the error and choose to go back manually
       }
-    });
-    //now lets put them in the listview
+    } catch (e) {
+      print("Error fetching batch data: $e");
+      
+      setState(() {
+        hasError = true;
+        errorMessage = "Error loading batch data. Please try again.";
+      });
+      
+      // Show error message
+      final overlayController = Get.find<OverlayController>();
+      overlayController.showOverlay(
+        "Error loading batch: $e", 
+        color: AppTheme.errorColor
+      );
+      
+      // Stay on the page and let user handle navigation
+    }
   }
 
   @override
@@ -99,9 +137,8 @@ class _BatchScreenState extends State<BatchScreen> {
 
     return PopScope(
       onPopInvoked: (bool shouldPop) {
-        if (mounted) {
-          Navigator.pop(context);
-        }
+        // Let the system handle the back navigation
+        // No need to call Navigator.pop manually here
       },
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
@@ -109,115 +146,222 @@ class _BatchScreenState extends State<BatchScreen> {
         appBar: bitnetAppBar(
           hasBackButton: true,
           onTap: () {
-            if (mounted) {
-              Navigator.pop(context);
-            }
+            // Use GoRouter for consistent navigation
+            context.pop();
           },
           context: context,
           text: L10n.of(context)!.fianlizePosts,
         ),
         body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 4.h,
-              ),
-              Container(
-                width: size.width,
-                height: 245.w,
-                margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(
-                      top: 0.0,
-                      bottom: 0.0,
-                      right: AppTheme.elementSpacing.w,
-                      left: AppTheme.elementSpacing.w),
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: assets.length,
-                  itemBuilder: (context, index) {
-                    return AssetCard(
-                        //assets[index].assetMeta!.data ?? 'metahash',
-                        medias: assets[index].assetMeta?.toMedias(),
-                        nftName: assets[index].assetMeta!.data ?? 'metahash',
-                        nftMainName: assets[index].name ?? 'assetID',
-                        cryptoText: assets[index].groupKey ?? 'price',
-
-                       );
-                  },
-                ),
-              ),
-              Center(
-                child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 6.5,
-                    customHeight: AppTheme.cardPadding * 1.75,
-                    buttonType: ButtonType.transparent,
-                    leadingIcon: const Icon(Icons.add_rounded),
-                    title: L10n.of(context)!.addMore,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: AppTheme.cardPadding * 4.h,
+                  ),
+                  Container(
+                    width: size.width,
+                    height: 245.w,
+                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
+                    child: hasError
+                      ? _buildInlineErrorState(context)
+                      : assets.isEmpty
+                        ? _buildLoadingState(context)
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.only(
+                                top: 0.0,
+                                bottom: 0.0,
+                                right: AppTheme.elementSpacing.w,
+                                left: AppTheme.elementSpacing.w),
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: assets.length,
+                            itemBuilder: (context, index) {
+                              return AssetCard(
+                                  //assets[index].assetMeta!.data ?? 'metahash',
+                                  medias: assets[index].assetMeta?.toMedias(),
+                                  nftName: assets[index].assetMeta?.data ?? 'metahash',
+                                  nftMainName: assets[index].name ?? 'assetID',
+                                  cryptoText: assets[index].groupKey ?? 'price',
+                                 );
+                            },
+                          ),
+                  ),
+                  Center(
+                    child: LongButtonWidget(
+                        customWidth: AppTheme.cardPadding * 6.5,
+                        customHeight: AppTheme.cardPadding * 1.75,
+                        buttonType: ButtonType.transparent,
+                        leadingIcon: Icon(
+                          hasError ? Icons.arrow_back : Icons.add_rounded,
+                        ),
+                        title: hasError 
+                            ? "Go back"
+                            : L10n.of(context)!.addMore,
+                        onTap: () {
+                          if (mounted) {
+                            context.pop();
+                          }
+                        }),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2.5.h,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppTheme.cardPadding),
+                    child: Text(
+                      L10n.of(context)!.costEstimation,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
+                    child: Column(
+                      children: [
+                        BitNetListTile(
+                          text: L10n.of(context)!.transactionFees,
+                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                        ),
+                        BitNetListTile(
+                          text: L10n.of(context)!.bitnetUsageFee,
+                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 2,
+                  ),
+                  Center(
+                    child: LongButtonWidget(
+                      state: isLoading ? ButtonState.loading : ButtonState.idle,
+                      title: L10n.of(context)!.uploadToBlockchain,
+                      onTap: hasError || assets.isEmpty
+                          ? null  // Disable tap when there's an error or no assets
+                          : () {
+                              finalizeBatch();
+                            },
+                    ),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding.h,
+                  ),
+                  GestureDetector(
                     onTap: () {
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                    }),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 2.5.h,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: AppTheme.cardPadding),
-                child: Text(
-                  L10n.of(context)!.costEstimation,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(),
-                ),
-              ),
-              const SizedBox(
-                height: AppTheme.elementSpacing,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
-                child: Column(
-                  children: [
-                    BitNetListTile(
-                      text: L10n.of(context)!.transactionFees,
-                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
+                      cancelBatch();
+                    },
+                    child: Center(
+                      child: Text(L10n.of(context)!.cancelDelete),
                     ),
-                    BitNetListTile(
-                      text: L10n.of(context)!.bitnetUsageFee,
-                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: AppTheme.cardPadding * 2,
-              ),
-              Center(
-                child: LongButtonWidget(
-                  state: isLoading ? ButtonState.loading : ButtonState.idle,
-                  title: L10n.of(context)!.uploadToBlockchain,
-                  onTap: () {
-                    finalizeBatch();
-                  },
-                ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding.h,
-              ),
-              GestureDetector(
-                onTap: () {
-                  cancelBatch();
-                },
-                child: Center(
-                  child: Text(L10n.of(context)!.cancelDelete),
-                ),
-              ),
+                  ),
             ],
           ),
         ),
+      ),
+    );
+  }
+  
+  Widget _buildInlineErrorState(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: Center(
+        child: Card(
+          color: Theme.of(context).cardColor,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.cardPadding / 2),
+            side: BorderSide(
+              color: AppTheme.errorColor.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.cardPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 40,
+                  color: AppTheme.errorColor,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                Text(
+                  "Unable to load your asset",
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
+                Text(
+                  errorMessage.isNotEmpty 
+                      ? errorMessage 
+                      : "There was an error loading your post.",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppTheme.elementSpacing),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (batchKey.isNotEmpty) {
+                          callListBatch(batchKey);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              size: 16,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Try Again",
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildLoadingState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 40),
+          CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+          SizedBox(height: AppTheme.elementSpacing),
+          Text(
+            "Loading your assets...",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
       ),
     );
   }

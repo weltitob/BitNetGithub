@@ -17,6 +17,78 @@ import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vibration/vibration.dart';
 
+// Vibration helper class for consistent haptic feedback across the app
+class HapticFeedback {
+  // Standard feedback for UI interactions
+  static Future<void> lightImpact() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(duration: 20, amplitude: 40);
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+  
+  // Medium feedback for confirmations
+  static Future<void> mediumImpact() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(duration: 40, amplitude: 120);
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+  
+  // Strong feedback for important events
+  static Future<void> heavyImpact() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(duration: 80, amplitude: 255);
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+  
+  // Success feedback pattern
+  static Future<void> successNotification() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(
+          pattern: [0, 30, 20, 60, 20, 100], 
+          intensities: [0, 50, 100, 150, 100, 50],
+        );
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+  
+  // Warning feedback pattern
+  static Future<void> warningNotification() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(pattern: [0, 100, 100, 100]);
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+  
+  // Error feedback pattern
+  static Future<void> errorNotification() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasCustomVibrationsSupport() ?? false) {
+        Vibration.vibrate(pattern: [0, 50, 100, 50, 100, 150]);
+      } else {
+        Vibration.vibrate();
+      }
+    }
+  }
+}
+
 //camera, image_png, image_jpeg, gif, webp, audio_wav, audio_mp3, text, description, document, pdf, extenal_url, link, sticker, location, wallet
 enum MediaType {
   youtube_url,
@@ -163,6 +235,9 @@ int timeNow() {
 
 // Get the average price of a list of items
 getaverage(dynamic currentline) {
+  if (currentline == null || currentline.isEmpty) {
+    return 0;
+  }
   return currentline.map((m) => m.price).reduce((a, b) => a + b) /
       currentline.length;
 }
@@ -260,7 +335,7 @@ void scrollToSearchFunc(ScrollController ctrl, FocusNode node) {
   if (ctrl.position.pixels <= -100 && !node.hasFocus) {
     ctrl.jumpTo(0);
     node.requestFocus();
-    Vibration.vibrate();
+    HapticFeedback.mediumImpact();
   }
 }
 

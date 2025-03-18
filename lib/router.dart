@@ -1,3 +1,4 @@
+import 'package:bitnet/pages/detail/image_detail_screen.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,23 @@ class AppRouter {
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/loading',
 
-    routes: AppRoutes(false).routes,
+    routes: [
+      // Add image detail route directly
+      GoRoute(
+        path: '/image_detail',
+        builder: (ctx, state) {
+          final Map<String, String> params = state.uri.queryParameters;
+          final encodedData = params['data'] ?? '';
+          final caption = params['caption'];
+          return ImageDetailScreen(
+            encodedData: encodedData,
+            caption: caption,
+          );
+        },
+      ),
+      // Add all other routes
+      ...AppRoutes(false).routes,
+    ],
   );
 
   static GoRouter get router => _router;

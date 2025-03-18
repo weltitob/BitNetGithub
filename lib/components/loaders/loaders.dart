@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 Container dotProgress(BuildContext context, {Color? color, double? size}) {
   return Container(
+    constraints: BoxConstraints.tightFor(),
     child: Center(
       child: SpinKitThreeBounce(
         color: color ?? Theme.of(context).colorScheme.primary, // Set the color of the dots

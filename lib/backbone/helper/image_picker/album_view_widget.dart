@@ -83,12 +83,34 @@ class AlbumViewWidget extends StatelessWidget {
                         child: ClipRRect(
                           clipBehavior: Clip.hardEdge,
                           borderRadius: BorderRadius.circular(16),
-                          child: AssetEntityImage(
-                            controller.albumThumbnails[i],
-                            isOriginal: false,
-                            fit: BoxFit.cover,
-                            thumbnailSize: const ThumbnailSize(360, 360),
-                          ),
+                          child: i < controller.albumThumbnails.length && controller.albumThumbnails[i] != null
+                            ? Builder(
+                                builder: (context) {
+                                  try {
+                                    return AssetEntityImage(
+                                      controller.albumThumbnails[i],
+                                      isOriginal: false,
+                                      fit: BoxFit.cover,
+                                      thumbnailSize: const ThumbnailSize(360, 360),
+                                    );
+                                  } catch (e) {
+                                    print("Error loading thumbnail: $e");
+                                    // Fallback UI in case of error
+                                    return Container(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      child: const Center(
+                                        child: Icon(Icons.broken_image, color: Colors.white),
+                                      ),
+                                    );
+                                  }
+                                },
+                              )
+                            : Container(
+                                color: Colors.grey.withOpacity(0.3),
+                                child: const Center(
+                                  child: Icon(Icons.photo_album, color: Colors.white),
+                                ),
+                              ),
                         ),
                       ),
                       const SizedBox(

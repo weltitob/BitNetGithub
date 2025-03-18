@@ -16,6 +16,27 @@ import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+/// A wrapper widget that keeps its child alive in a [TabBarView]
+class KeepAliveWrapper extends StatefulWidget {
+  final Widget child;
+
+  const KeepAliveWrapper({Key? key, required this.child}) : super(key: key);
+
+  @override
+  _KeepAliveWrapperState createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<KeepAliveWrapper> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
 class WalletCategory {
   final String imageURL;
   final String text;
@@ -135,24 +156,23 @@ class _FeedScreenState extends State<FeedScreen>
                 ),
               ];
             },
-            body:
-                //  controller.searchResultsFuture?.value == null
-                //     ?
-                TabBarView(
+            body: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
               controller: controller.tabController,
               children: [
-                const TokensTab(),
-                const AssetsTab(),
+                // Use KeepAlive to prevent rebuilding tabs when switching
+                KeepAliveWrapper(child: const TokensTab()),
+                KeepAliveWrapper(child: const AssetsTab()),
                 GetBuilder<FeedController>(
                   builder: (controller) {
                     return const SearchResultWidget();
                   },
                 ),
-                MempoolHome(
-                  isFromHome: true,
+                KeepAliveWrapper(
+                  child: MempoolHome(
+                    isFromHome: true,
+                  ),
                 ),
-
               ],
             )
             // : SearchResultWidget(),

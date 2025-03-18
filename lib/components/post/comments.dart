@@ -42,15 +42,13 @@ class CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Column(
-        children: [
-          Expanded(
-            child: buildComments(),
-          ),
-          buildTextField(),
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: buildComments(),
+        ),
+        buildTextField(),
+      ],
     );
   }
 

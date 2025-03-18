@@ -36,7 +36,7 @@ class LongButtonWidget extends StatefulWidget {
       this.buttonType = ButtonType.solid,
       this.backgroundPainter = true,
       this.customShadow,
-      this.onTapDisabled});
+      this.onTapDisabled, });
 
   @override
   _LongButtonWidgetState createState() => _LongButtonWidgetState();
@@ -67,10 +67,15 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                               darken(Theme.of(context).colorScheme.secondaryContainer, 10),
                               darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
                             ]
-                          : [
-                              Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.secondary,
-                            ],
+                          : Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                              ? [
+                                  AppTheme.colorBitcoin,
+                                  AppTheme.colorPrimaryGradient,
+                                ]
+                              : [
+                                  Theme.of(context).colorScheme.primary,
+                                  Theme.of(context).colorScheme.secondary,
+                                ],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
                   borderRadius: borderRadiusNum,
@@ -109,34 +114,43 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                 child: widget.state == ButtonState.loading
                     ? Center(child: Transform.scale(scale: 0.6, child: dotProgress(context, color: AppTheme.white90)))
                     : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (widget.leadingIcon != null)
-                              Padding(
-                                padding:  EdgeInsets.only(right: widget.customWidth * 0.05),
-                                child: widget.leadingIcon,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (widget.leadingIcon != null)
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: widget.leadingIcon,
+                                ),
+                              Flexible(
+                                child: Text(
+                                  widget.title,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: widget.titleStyle != null
+                                      ? widget.titleStyle
+                                      : Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: widget.textColor != null
+                                              ? widget.textColor
+                                              : widget.buttonType == ButtonType.solid
+                                                  ? Theme.of(context).colorScheme.onPrimary
+                                                  : Theme.of(context).brightness == Brightness.light
+                                                      ? AppTheme.black70
+                                                      : AppTheme.white90,
+                                          shadows: [
+                                            //AppTheme.boxShadowBig,
+                                            Theme.of(context).brightness == Brightness.light ? AppTheme.boxShadow : AppTheme.boxShadowButton,
+                                          ],
+                                        ),
+                                ),
                               ),
-                            Text(
-                              widget.title,
-                              style: widget.titleStyle != null
-                                  ? widget.titleStyle
-                                  : Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: widget.textColor != null
-                                          ? widget.textColor
-                                          : widget.buttonType == ButtonType.solid
-                                              ? Theme.of(context).colorScheme.onPrimary
-                                              : Theme.of(context).brightness == Brightness.light
-                                                  ? AppTheme.black70
-                                                  : AppTheme.white90,
-                                      shadows: [
-                                        //AppTheme.boxShadowBig,
-                                        Theme.of(context).brightness == Brightness.light ? AppTheme.boxShadow : AppTheme.boxShadowButton,
-                                      ],
-                                    ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
               ),

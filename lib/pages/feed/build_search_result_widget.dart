@@ -378,27 +378,27 @@ class SearchResultWidget extends StatelessWidget {
                           child: Column(
                             children: [
                               _buildContactSection(
-                                title: 'Recent Contacts',
+                                title: '🔄 Recent Contacts',
                                 users: recentContacts,
                                 context: context,
                                 showViewAll: true,
                               ),
                               _buildContactSection(
-                                title: 'Hyped People',
+                                title: '🌟 Hyped People',
                                 users: hypedPeople,
                                 context: context,
                                 showViewAll: true,
                                 showRanking: true,
                               ),
                               _buildContactSection(
-                                title: 'Top Buyers',
+                                title: '💎 Top Buyers',
                                 users: topBuyers,
                                 context: context,
                                 showViewAll: true,
                                 showRanking: true,
                               ),
                               _buildContactSection(
-                                title: 'Top Sellers',
+                                title: '💼 Top Sellers',
                                 users: topSellers,
                                 context: context,
                                 showViewAll: true,

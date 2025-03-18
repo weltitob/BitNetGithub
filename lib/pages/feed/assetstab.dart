@@ -78,6 +78,37 @@ class _AssetsTabState extends State<AssetsTab> {
       'isPositive': true,
     },
   ];
+  
+  // Trending projects data
+  final List<Map<String, dynamic>> trendingProjects = [
+    {
+      'id': 'trending-001',
+      'name': 'Ordinal Punks',
+      'collection': 'Bitcoin Punks',
+      'image': 'assets/marketplace/NftImage7.png',
+      'price': '0.067',
+      'change': '+25.8%',
+      'isPositive': true,
+    },
+    {
+      'id': 'trending-002',
+      'name': 'Taproot Wizards',
+      'collection': 'Magic Collection',
+      'image': 'assets/marketplace/NftImage8.png',
+      'price': '0.103',
+      'change': '+19.2%',
+      'isPositive': true,
+    },
+    {
+      'id': 'trending-003',
+      'name': 'Bitcoin Frens',
+      'collection': 'Frens Club',
+      'image': 'assets/marketplace/NftImage9.png',
+      'price': '0.058',
+      'change': '+14.7%',
+      'isPositive': true,
+    },
+  ];
 
   // Featured collections data
   final List<Map<String, dynamic>> featuredCollections = [
@@ -233,9 +264,11 @@ class _AssetsTabState extends State<AssetsTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: ListView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        children: [
+      body: RepaintBoundary(
+        child: ListView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          cacheExtent: 1000, // Cache more content for smoother scrolling
+          children: [
           
           // Spacing at the top
           const SizedBox(height: AppTheme.cardPadding),
@@ -281,7 +314,7 @@ class _AssetsTabState extends State<AssetsTab> {
           
           // Top Projects Today section with CommonHeading
           CommonHeading(
-            headingText: 'Top Projects Today',
+            headingText: '🏆 Top Projects Today',
             hasButton: true,
             onPress: 'top_projects',
           ),
@@ -413,9 +446,154 @@ class _AssetsTabState extends State<AssetsTab> {
           
           SizedBox(height: AppTheme.cardPadding.h),
           
+          // Trending section with CommonHeading
+          CommonHeading(
+            headingText: '🔥 Trending',
+            hasButton: true,
+            onPress: 'trending_projects',
+          ),
+          
+          // A single GlassContainer containing all trending projects with number indicators
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              customShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: trendingProjects.asMap().entries.map((entry) {
+                    final int idx = entry.key;
+                    final project = entry.value;
+                    
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to the collection screen with the project's collection name
+                        context.go(
+                          '/feed/collection_screen_route/${project['collection']}',
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            child: Container(
+                              height: AppTheme.cardPadding * 2.75,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Project info (left side)
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: AppTheme.cardPadding * 1.75,
+                                        width: AppTheme.cardPadding * 1.75,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            project['image'],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                project['name'],
+                                                style: Theme.of(context).textTheme.titleLarge,
+                                              ),
+                                              SizedBox(width: 5),
+                                              Icon(
+                                                Icons.trending_up,
+                                                color: Colors.orange,
+                                                size: 16,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            project['collection'],
+                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                              color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  
+                                  // Price and change (right side)
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${project['price']} BTC",
+                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.orange.withOpacity(0.2),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            child: Text(
+                                              project['change'],
+                                              style: TextStyle(
+                                                color: Colors.orange,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Standard number indicator for trending
+                          Positioned(
+                            left: 10,
+                            top: 10,
+                            child: NumberIndicator(
+                              number: idx + 1,
+                              size: 0.7,
+                              showBorder: true,
+                              useDarkVariant: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+          
+          SizedBox(height: AppTheme.cardPadding.h),
+          
           // Featured Collections
           CommonHeading(
-            headingText: 'Featured Collections',
+            headingText: '✨ Featured Collections',
             hasButton: true,
             onPress: 'featured_collections',
           ),
@@ -479,7 +657,7 @@ class _AssetsTabState extends State<AssetsTab> {
           
           // Top Collections
           CommonHeading(
-            headingText: 'Top Collections',
+            headingText: '🔝 Top Collections',
             hasButton: true,
             onPress: 'top_collections',
           ),
@@ -544,7 +722,7 @@ class _AssetsTabState extends State<AssetsTab> {
           // Extra space at the bottom for better scrolling
           SizedBox(height: 100.h),
         ],
-      ), 
+      )),
       context: context,
     );
   }

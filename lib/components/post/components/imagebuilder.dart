@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 //USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
 class ImageBuilderLocal extends StatelessWidget {
@@ -16,18 +17,66 @@ class ImageBuilderLocal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageBox(
-      child: Image.file(
-        postFile.file!,
-        // height: size.height * 0.4,
-        // width: double.infinity,
-        // fit: BoxFit.cover,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          height: AppTheme.cardPadding * 5,
-          child: Icon(
-            Icons.error,
-            color: Theme.of(context).colorScheme.error,
+    return GestureDetector(
+      onTap: () {
+        // Show the image in a dialog when tapped
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.zero,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Fullscreen image
+                InteractiveViewer(
+                  boundaryMargin: EdgeInsets.all(20),
+                  minScale: 0.5,
+                  maxScale: 4.0,
+                  child: Image.file(
+                    postFile.file!,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                // Close button
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: AspectRatio(
+        aspectRatio: 1.0, // Force 1:1 aspect ratio
+        child: ImageBox(
+          radius: AppTheme.cardRadiusMid.r,
+          child: Image.file(
+            postFile.file!,
+            fit: BoxFit.cover, // Cover ensures the image fills the space
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: AppTheme.cardPadding * 5,
+              child: Icon(
+                Icons.error,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
           ),
         ),
       ),
@@ -39,10 +88,12 @@ class ImageBuilderLocal extends StatelessWidget {
 class ImageBuilder extends StatelessWidget {
   final String encodedData;
   final BorderRadius? radius;
+  final String? caption;
   const ImageBuilder({
     Key? key,
     required this.encodedData,
     this.radius,
+    this.caption,
   }) : super(key: key);
 
   @override
@@ -50,23 +101,36 @@ class ImageBuilder extends StatelessWidget {
     // Decode the base64 string into bytes
     final imageType =
         encodedData.split(',').first.split('/').last.split(';').first;
-    print("Image Builder detected imagetype: $imageType");
     final base64String = encodedData.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 
-    return ImageBox(
-      radius: radius,
-      child: Image.memory(
-        imageBytes,
-        cacheWidth: 50,
-        cacheHeight: 50,
-        filterQuality: FilterQuality.low,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          height: 50,
-          child: Icon(
-            Icons.error,
-            color: Theme.of(context).colorScheme.error,
+    return GestureDetector(
+      onTap: () {
+        // Navigate to detail view when image is tapped
+        final uri = Uri(
+          path: '/image_detail',
+          queryParameters: {
+            'data': encodedData,
+            if (caption != null) 'caption': caption,
+          },
+        );
+        context.go(uri.toString());
+      },
+      child: AspectRatio(
+        aspectRatio: 1.0, // Force 1:1 aspect ratio
+        child: ImageBox(
+          radius: radius ?? AppTheme.cardRadiusSuperSmall.r,
+          child: Image.memory(
+            imageBytes,
+            filterQuality: FilterQuality.medium,
+            fit: BoxFit.cover, // Cover ensures the image fills the space
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: 50,
+              child: Icon(
+                Icons.error,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
           ),
         ),
       ),
@@ -76,10 +140,10 @@ class ImageBuilder extends StatelessWidget {
 
 class ImageBox extends StatelessWidget {
   final Widget child;
-  final BorderRadius? radius;
+  final BorderRadius radius;
   const ImageBox({
     required this.child,
-    this.radius,
+    required this.radius,
   });
 
   @override
@@ -88,19 +152,22 @@ class ImageBox extends StatelessWidget {
       alignment: Alignment.center,
       children: <Widget>[
         Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: radius ?? AppTheme.cardRadiusMid.r,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  offset: const Offset(0, 2.5),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-                child: child)),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                offset: const Offset(0, 2.5),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: radius,
+            child: child,
+          ),
+        ),
       ],
     );
   }

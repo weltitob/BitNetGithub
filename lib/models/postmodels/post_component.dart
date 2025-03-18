@@ -1,14 +1,14 @@
-import 'dart:io';
-
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/applemusicbuilder.dart';
 import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/collectionbuilder.dart';
 import 'package:bitnet/components/post/components/deezerbuilder.dart';
+import 'package:bitnet/components/post/components/description_editor.dart';
 import 'package:bitnet/components/post/components/descriptionbuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -40,6 +40,9 @@ class PostComponent extends StatefulWidget {
       titleController; // For editing post title in edit mode
   final Function(String)? onTitleChanged; // Callback for title changes
   final Function? onPostSubmit; // Callback when post button is pressed
+  final TextEditingController? descriptionController; // For editing description in edit mode
+  final FocusNode? titleFocusNode; // Focus node for the title field
+  final FocusNode? descriptionFocusNode; // Focus node for the description field
 
   const PostComponent({
     required this.postId,
@@ -52,8 +55,11 @@ class PostComponent extends StatefulWidget {
     required this.displayname,
     this.isEditable = false, // Default to view mode
     this.titleController,
+    this.descriptionController,
     this.onTitleChanged,
     this.onPostSubmit,
+    this.titleFocusNode,
+    this.descriptionFocusNode,
   });
 
   /// Factory constructor to create from a document
@@ -136,8 +142,11 @@ class PostComponent extends StatefulWidget {
         postName: this.postName,
         isEditable: this.isEditable,
         titleController: this.titleController,
+        descriptionController: this.descriptionController,
         onTitleChanged: this.onTitleChanged,
         onPostSubmit: this.onPostSubmit,
+        titleFocusNode: this.titleFocusNode,
+        descriptionFocusNode: this.descriptionFocusNode,
       );
 }
 
@@ -154,8 +163,11 @@ class _PostComponentState extends State<PostComponent>
   Map rockets;
   final List<dynamic> medias;
   final TextEditingController? titleController;
+  final TextEditingController? descriptionController;
   final Function(String)? onTitleChanged;
   final Function? onPostSubmit;
+  final FocusNode? titleFocusNode;
+  final FocusNode? descriptionFocusNode;
 
   bool showheart = false;
   late bool isLiked;
@@ -172,14 +184,18 @@ class _PostComponentState extends State<PostComponent>
     required this.rocketcount,
     required this.isEditable,
     this.titleController,
+    this.descriptionController,
     this.onTitleChanged,
     this.onPostSubmit,
+    this.titleFocusNode,
+    this.descriptionFocusNode,
   });
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final String? currentUserId = Auth().currentUser?.uid;
+    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
 
     isLiked = currentUserId != null ? (rockets[currentUserId] == true) : false;
 
@@ -198,8 +214,10 @@ class _PostComponentState extends State<PostComponent>
         child: GlassContainer(
           child: Padding(
             padding: const EdgeInsets.only(
-              left: AppTheme.elementSpacing,
-              right: AppTheme.elementSpacing,
+              left: AppTheme.elementSpacing * 1.25,
+              right: AppTheme.elementSpacing * 1.25,
+              top: AppTheme.elementSpacing * 0.5,
+              bottom: AppTheme.elementSpacing * 0.5,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,15 +232,25 @@ class _PostComponentState extends State<PostComponent>
                 isEditable && titleController != null
                     ? TextField(
                         controller: titleController,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        focusNode: titleFocusNode,
+                        style: Theme.of(context).textTheme.titleSmall,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           hintText: "Enter title",
                           border: InputBorder.none,
                           hintStyle:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
                                     color: Theme.of(context).hintColor,
                                   ),
                         ),
+                        onSubmitted: (_) {
+                          // When the user presses next, notify the parent to add a description field
+                          if (onTitleChanged != null) {
+                            // We use the onTitleChanged callback to notify the parent
+                            // The special '__add_description__' string is a signal to add the description field
+                            onTitleChanged!('__add_description__');
+                          }
+                        },
                         onChanged: (value) {
                           if (onTitleChanged != null) {
                             onTitleChanged!(value);
@@ -231,64 +259,51 @@ class _PostComponentState extends State<PostComponent>
                       )
                     : Text(
                         postName,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
-                const SizedBox(height: AppTheme.elementSpacing * 1.5),
+                const SizedBox(height: AppTheme.elementSpacing * 1),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _buildMediaWidgets(),
                 ),
-                // Show like space in view mode, or submit button in edit mode
+                // Bottom row with like space and buttons in view mode (edit mode has no bottom buttons)
                 !isEditable
-                    ? buildLikeSpace(
-                        type: likeSpaceType.Post,
-                        targetId: postId,
-                        postName: postName,
-                        username: username,
-                        ownerId: ownerId,
-                        rockets: rockets)
-                    : onPostSubmit != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(
-                                top: AppTheme.elementSpacing),
-                            child: GestureDetector(
-                              onTap: () => onPostSubmit!(),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Theme.of(context).colorScheme.primary,
-                                      Theme.of(context).colorScheme.secondary,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(24),
+                    ? Column(
+                        children: [
+                          // Like space in a single row
+                          Container(
+                            height: AppTheme.cardPadding * 1.5,
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // List button with icon and text
+                                LongButtonWidget(
+                                  title: "List",
+                                  buttonType: ButtonType.transparent,
+                                  customHeight: AppTheme.cardPadding * 1.25.h,
+                                  customWidth: AppTheme.cardPadding * 3.5.w,
+                                  onTap: () {
+                                    final homeController = Get.find<HomeController>();
+                                    homeController.createClicks(postId);
+                                  },
                                 ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'POST',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                Spacer(),
+                                
+                                // Like space with full control of width
+                                buildLikeSpace(
+                                  type: likeSpaceType.Post,
+                                  targetId: postId,
+                                  postName: postName,
+                                  username: username,
+                                  ownerId: ownerId,
+                                  rockets: rockets),
+                              ],
                             ),
                           )
-                        : Container(),
+                        ],
+                      )
+                    : Container(), // No button in edit mode - we moved it to the app bar
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),
@@ -330,8 +345,24 @@ class _PostComponentState extends State<PostComponent>
         mediaWidget = ImageBuilderLocal(postFile: postFile);
         break;
       case MediaType.text:
+        // If this is the first text item, it's our description - use the description focus node
+        if (medias.indexOf(postFile) == 0) {
+          mediaWidget = TextBuilderLocal(
+            postFile: postFile, 
+            isDescription: true,
+            focusNode: descriptionFocusNode,
+            controller: descriptionController,
+          );
+        } else {
+          mediaWidget = TextBuilderLocal(postFile: postFile);
+        }
+        break;
       case MediaType.description:
-        mediaWidget = TextBuilderLocal(postFile: postFile);
+        mediaWidget = DescriptionEditorLocal(
+          postFile: postFile,
+          focusNode: descriptionFocusNode,
+          controller: descriptionController,
+        );
         break;
       case MediaType.audio:
         mediaWidget = AudioBuilderLocal(postfile: postFile);
@@ -374,7 +405,11 @@ class _PostComponentState extends State<PostComponent>
     } else if (type == "external_link") {
       mediaWidget = LinkBuilder(url: media.data);
     } else if (type == "image" || type == "camera" || type == "image_data") {
-      mediaWidget = ImageBuilder(encodedData: media.data);
+      mediaWidget = ImageBuilder(
+          radius: AppTheme.cardRadiusSmall.r,
+          encodedData: media.data,
+          caption: postName, // Pass the post name as the caption
+      );
     } else if (type == "audio") {
       mediaWidget = AudioBuilderNetwork(url: media.data);
     } else {

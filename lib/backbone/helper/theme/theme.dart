@@ -385,13 +385,13 @@ abstract class AppTheme {
       color: AppTheme.black60,
     ),
     labelMedium: GoogleFonts.inter(
-      fontSize: 15,
+      fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
     labelSmall: GoogleFonts.inter(
-      fontSize: 13,
+      fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
@@ -425,13 +425,13 @@ abstract class AppTheme {
       color: AppTheme.white80,
     ),
     titleSmall: textTheme.titleSmall!.copyWith(
-      color: AppTheme.white70,
+      color: AppTheme.white80,
     ),
     bodyLarge: textTheme.bodyLarge!.copyWith(
-      color: AppTheme.white60,
+      color: AppTheme.white70,
     ),
     bodyMedium: textTheme.bodyMedium!.copyWith(
-      color: AppTheme.white60,
+      color: AppTheme.white70,
     ),
     bodySmall: textTheme.bodySmall!.copyWith(
       color: AppTheme.white60,

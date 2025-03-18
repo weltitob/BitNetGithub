@@ -10,6 +10,8 @@ class RoundedButtonWidget extends StatefulWidget {
   final ButtonType buttonType;
   final double size;
   final Color? iconColor;
+  final Color? customPrimaryColor;   // Added customPrimaryColor parameter
+  final Color? customSecondaryColor; // Added customSecondaryColor parameter
 
   const RoundedButtonWidget({
     super.key,
@@ -18,6 +20,8 @@ class RoundedButtonWidget extends StatefulWidget {
     this.iconColor,
     this.buttonType = ButtonType.solid,
     this.size = AppTheme.cardPadding * 2,
+    this.customPrimaryColor,        // New optional parameter
+    this.customSecondaryColor,      // New optional parameter
   });
 
   @override
@@ -32,6 +36,14 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
     final containerHeight = widget.size;
     final containerWidth = widget.size;
     final borderRadius = BorderRadius.circular(widget.size / 3);
+
+    // Get primary and secondary colors based on custom colors or theme defaults
+    final Color primaryColor = widget.customPrimaryColor ?? Theme.of(context).colorScheme.primary;
+    final Color secondaryColor = widget.customSecondaryColor ?? (
+      Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
+        ? AppTheme.colorPrimaryGradient 
+        : Theme.of(context).colorScheme.primary
+    );
 
     return InkWell(
       borderRadius: borderRadius,
@@ -54,17 +66,23 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
                 opacity: 0.1,
                 borderRadius: borderRadius,
                 child: AnimatedScale(
-                    duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
+                    duration: const Duration(milliseconds: 200), 
+                    scale: isHovered ? 1.0 : 0.9, 
+                    child: icon(context, widget.buttonType)
+                ),
               )
             : BackgroundGradient(
                 borderRadius: borderRadius,
-                colorprimary: Theme.of(context).colorScheme.primary,
-                colorsecondary: Theme.of(context).colorScheme.primary,
+                colorprimary: primaryColor,
+                colorsecondary: secondaryColor,
                 child: Container(
                   alignment: Alignment.center,
                   child: Center(
                     child: AnimatedScale(
-                        duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
+                        duration: const Duration(milliseconds: 200), 
+                        scale: isHovered ? 1.0 : 0.9, 
+                        child: icon(context, widget.buttonType)
+                    ),
                   ),
                 ),
               ),
@@ -73,13 +91,20 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
   }
 
   Widget icon(BuildContext context, ButtonType buttonType) {
+    // Determine if we should use the Bitcoin gradient text color
+    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+    
     return Icon(
       widget.iconData,
       color: widget.buttonType == ButtonType.transparent
           ? Theme.of(context).brightness == Brightness.light
               ? AppTheme.black80
               : AppTheme.white70
-          : widget.iconColor ?? AppTheme.white60,
+          : widget.iconColor ?? (useBitcoinGradient 
+              ? Colors.white 
+              : Theme.of(context).brightness == Brightness.light 
+                  ? AppTheme.white70 
+                  : AppTheme.black60),
       size: widget.size * 0.55,
     );
   }

@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vibration/vibration.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 
 class OverlayController extends GetxController
     with SingleGetTickerProviderMixin {
@@ -22,10 +22,8 @@ class OverlayController extends GetxController
       return;
     }
 
-    // Trigger vibration
-    if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate();
-    }
+    // Use consistent haptic feedback from helper class
+    await HapticFeedback.lightImpact();
 
     final animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -90,10 +88,8 @@ class OverlayController extends GetxController
       return;
     }
 
-    // Trigger vibration
-    if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate();
-    }
+    // Use warning haptic feedback from helper class
+    await HapticFeedback.warningNotification();
 
     final animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -161,10 +157,8 @@ class OverlayController extends GetxController
       return;
     }
 
-    // Trigger vibration
-    if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate();
-    }
+    // Use success haptic feedback from helper class
+    await HapticFeedback.successNotification();
 
     final animationController = AnimationController(
       duration: const Duration(milliseconds: 300),

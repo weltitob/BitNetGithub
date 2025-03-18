@@ -98,8 +98,8 @@ class _RowViewTabState extends State<RowViewTab> with SingleTickerProviderStateM
                           children: [
                             Row(
                               children: [
-                                const Avatar(
-                                  size: AppTheme.cardPadding * 2,
+                                Avatar(
+                                  size: AppTheme.cardPadding * 1.75.h,
                                   isNft: false,
                                 ),
                                 SizedBox(
