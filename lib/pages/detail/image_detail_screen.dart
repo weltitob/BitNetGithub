@@ -27,11 +27,12 @@ class ImageDetailScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        onTap: () => context.pop(),
+        text: caption != null ? "Image" : "",
+        onTap: () => Navigator.of(context).pop(),
       ),
       context: context,
       body: GestureDetector(
-        onTap: () => context.pop(), // Tap anywhere to close
+        onTap: () => Navigator.of(context).pop(), // Tap anywhere to close
         child: Container(
           width: double.infinity,
           height: double.infinity,

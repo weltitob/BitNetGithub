@@ -114,7 +114,8 @@ class ImageBuilder extends StatelessWidget {
             if (caption != null) 'caption': caption,
           },
         );
-        context.go(uri.toString());
+        // Use push instead of go to maintain navigation stack
+        context.push(uri.toString());
       },
       child: AspectRatio(
         aspectRatio: 1.0, // Force 1:1 aspect ratio
