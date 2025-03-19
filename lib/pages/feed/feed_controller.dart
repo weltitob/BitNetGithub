@@ -118,6 +118,7 @@ class FeedController extends GetxController
       'Blockchain',
       'Blockchain',
     ),
+    WalletCategory('assets/images/bitcoin.png', "Websites", "Websites")
   ];
 
   TabController? tabController;
@@ -129,7 +130,7 @@ class FeedController extends GetxController
   void onInit() {
     super.onInit();
     handleSearchPeople('');
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
     scrollControllerColumn = ScrollController();
     scrollController?.value = ScrollController();
     scrollController?.value.addListener(scrollListener);
