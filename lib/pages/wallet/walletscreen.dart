@@ -311,6 +311,21 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         .pbOverallPriceChange
                                                         .value =
                                                     toPercent(priceChange);
+                                                    
+                                                // Update wallet amount based on timeframe
+                                                // Get current BTC value and adjust it based on the timeframe's price change
+                                                // This gives us the "value" of our wallet at different points in time
+                                                final chartLine = controller.chartLines.value;
+                                                if (chartLine != null) {
+                                                  // Adjust the Bitcoin value based on the selected timeframe
+                                                  double adjustedBtcValue = chartLine.price * (firstPrice / lastPrice);
+                                                  
+                                                  // Only update the display value, not the actual balance
+                                                  if (controller.coin.value == false) {
+                                                    // Only update if showing in fiat currency (not in BTC/SAT)
+                                                    controller.changeTotalBalanceStr();
+                                                  }
+                                                }
                                                 // Update date
                                               },
                                               customHeight:
@@ -447,6 +462,26 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         controller
                                                             .selectedCurrency!
                                                             .value;
+                                                    
+                                                    // Consider timeframe price changes for display
+                                                    double currentPrice = bitcoinController.pbNew_lastpriceexact;
+                                                    double historicalPrice = bitcoinController.pbNew_firstpriceexact;
+                                                    double displayValue = currencyEquivalent != null 
+                                                        ? double.parse(currencyEquivalent)
+                                                        : 0.0;
+                                                    
+                                                    // If showing in fiat and not in day view, adjust the displayed amount
+                                                    if (!controller.coin.value && 
+                                                        bitcoinController.pbSelectedtimespan.value != "1D" &&
+                                                        historicalPrice > 0) {
+                                                        
+                                                        // Calculate the ratio between historical and current price
+                                                        double ratio = currentPrice / historicalPrice;
+                                                        // Apply the ratio to get the current equivalent value
+                                                        if (ratio != 1.0) {
+                                                            displayValue = displayValue / ratio;
+                                                        }
+                                                    }
 
                                                     return GestureDetector(
                                                       onTap: () {
@@ -492,7 +527,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                               ],
                                                             )
                                                           : Text(
-                                                              "$currencyEquivalent${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
+                                                              "${displayValue.toStringAsFixed(2)}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -522,26 +557,59 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                       .value;
                                               double diff =
                                                   currentPrice - firstPrice;
-
-                                              // Format the difference with proper decimal places and limit length
-                                              String formattedDiff;
-                                              if (diff.abs() > 9999) {
-                                                // For large numbers, use K notation
-                                                formattedDiff = (diff / 1000)
-                                                        .toStringAsFixed(1) +
-                                                    'K';
+                                                  
+                                              // Calculate wallet value difference based on timeframe
+                                              double priceDiffPercentage = firstPrice != 0 ? 
+                                                  (currentPrice - firstPrice) / firstPrice : 0;
+                                                  
+                                              // Get current wallet value to calculate the absolute change
+                                              final chartLine = controller.chartLines.value;
+                                              if (chartLine != null && !controller.coin.value) {
+                                                // Calculate adjusted value difference (in currency)
+                                                double walletValueDiff = 
+                                                    (controller.totalBalanceSAT.value / 100000000) * 
+                                                    chartLine.price * priceDiffPercentage;
+                                                
+                                                // Format the difference with proper decimal places and limit length
+                                                String formattedDiff;
+                                                if (walletValueDiff.abs() > 9999) {
+                                                  // For large numbers, use K notation
+                                                  formattedDiff = (walletValueDiff / 1000)
+                                                          .toStringAsFixed(1) +
+                                                      'K';
+                                                } else {
+                                                  formattedDiff =
+                                                      walletValueDiff.toStringAsFixed(2);
+                                                }
+                                                
+                                                return ColoredPriceWidget(
+                                                  shouldHideAmount: true,
+                                                  price: formattedDiff,
+                                                  isPositive: walletValueDiff >= 0,
+                                                  currencySymbol:
+                                                      getCurrency(currency!),
+                                                );
                                               } else {
-                                                formattedDiff =
-                                                    diff.toStringAsFixed(2);
+                                                // Format the price difference (not wallet value)
+                                                String formattedDiff;
+                                                if (diff.abs() > 9999) {
+                                                  // For large numbers, use K notation
+                                                  formattedDiff = (diff / 1000)
+                                                          .toStringAsFixed(1) +
+                                                      'K';
+                                                } else {
+                                                  formattedDiff =
+                                                      diff.toStringAsFixed(2);
+                                                }
+                                                
+                                                return ColoredPriceWidget(
+                                                  shouldHideAmount: true,
+                                                  price: formattedDiff,
+                                                  isPositive: diff >= 0,
+                                                  currencySymbol:
+                                                      getCurrency(currency!),
+                                                );
                                               }
-
-                                              return ColoredPriceWidget(
-                                                shouldHideAmount: true,
-                                                price: formattedDiff,
-                                                isPositive: diff >= 0,
-                                                currencySymbol:
-                                                    getCurrency(currency!),
-                                              );
                                             },
                                           ),
                                           SizedBox(

@@ -1316,6 +1316,27 @@ class WalletsController extends BaseController {
     totalBalanceStr.value = balance.toString() + " " + unit;
     totalBalance.value = bitcoinUnit;
   }
+  
+  // Calculate what the balance would be if converted at a specific historical price point
+  // This allows showing the user what their balance "would have been worth" at different timeframes
+  BitcoinUnitModel getTimeAdjustedBalance(double currentPrice, double historicalPrice, BitcoinUnits unit) {
+    // Get current balance in SAT
+    double currentBalanceSAT = totalBalanceSAT.value;
+    
+    // If prices are the same or historical price is 0, just return regular balance
+    if (historicalPrice <= 0 || currentPrice == historicalPrice) {
+      return CurrencyConverter.convertToBitcoinUnit(currentBalanceSAT, unit);
+    }
+    
+    // Calculate adjustment factor (how much the price has changed since historical point)
+    double priceRatio = historicalPrice / currentPrice;
+    
+    // Calculate what the value would have been at that historical price point
+    double adjustedBalanceSAT = currentBalanceSAT * priceRatio;
+    
+    // Convert to requested unit
+    return CurrencyConverter.convertToBitcoinUnit(adjustedBalanceSAT, unit);
+  }
 
   Future<void> updateBalance(DateTime time, double price) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
