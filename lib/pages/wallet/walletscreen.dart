@@ -320,11 +320,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   // Adjust the Bitcoin value based on the selected timeframe
                                                   double adjustedBtcValue = chartLine.price * (firstPrice / lastPrice);
                                                   
-                                                  // Only update the display value, not the actual balance
-                                                  if (controller.coin.value == false) {
-                                                    // Only update if showing in fiat currency (not in BTC/SAT)
-                                                    controller.changeTotalBalanceStr();
-                                                  }
+                                                  // Force update the wallet display by updating a reactive variable
+                                                  controller.timeframeChangeCounter.value += 1;
                                                 }
                                                 // Update date
                                               },
@@ -483,57 +480,62 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         }
                                                     }
 
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        controller
-                                                            .setCurrencyType(
-                                                          !controller
-                                                              .coin.value,
-                                                          updateDatabase: false,
-                                                        );
-                                                        coin.setCurrencyType(
-                                                          controller.coin.value,
-                                                        );
-                                                      },
-                                                      child: (controller
-                                                              .coin.value)
-                                                          ? Row(
-                                                              children: [
-                                                                Text(
-                                                                  controller
-                                                                      .totalBalance
-                                                                      .value
-                                                                      .amount
-                                                                      .toString(),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .displayLarge,
-                                                                ),
-                                                                Icon(
-                                                                  getCurrencyIcon(
+                                                    return Obx(() {
+                                                      // Force rebuild on timeframe change
+                                                      controller.timeframeChangeCounter.value;
+                                                      
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          controller
+                                                              .setCurrencyType(
+                                                            !controller
+                                                                .coin.value,
+                                                            updateDatabase: false,
+                                                          );
+                                                          coin.setCurrencyType(
+                                                            controller.coin.value,
+                                                          );
+                                                        },
+                                                        child: (controller
+                                                                .coin.value)
+                                                            ? Row(
+                                                                children: [
+                                                                  Text(
                                                                     controller
                                                                         .totalBalance
                                                                         .value
-                                                                        .bitcoinUnitAsString,
+                                                                        .amount
+                                                                        .toString(),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .displayLarge,
                                                                   ),
-                                                                  size: AppTheme
-                                                                          .iconSize *
-                                                                      2.25,
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Text(
-                                                              "${displayValue.toStringAsFixed(2)}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displayLarge,
-                                                            ),
-                                                    );
+                                                                  Icon(
+                                                                    getCurrencyIcon(
+                                                                      controller
+                                                                          .totalBalance
+                                                                          .value
+                                                                          .bitcoinUnitAsString,
+                                                                    ),
+                                                                    size: AppTheme
+                                                                            .iconSize *
+                                                                        2.25,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Text(
+                                                                "${displayValue.toStringAsFixed(2)}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .displayLarge,
+                                                              ),
+                                                      );
+                                                    });
                                                   }),
                                           ],
                                         ),
@@ -547,6 +549,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           // Use the Obx directly around the ColoredPriceWidget to react to changes
                                           Obx(
                                             () {
+                                              // Force rebuild when timeframe changes
+                                              controller.timeframeChangeCounter.value;
+                                              
                                               // Calculate the difference between current balance and start of timeframe
                                               double firstPrice =
                                                   bitcoinController

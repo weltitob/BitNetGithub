@@ -49,6 +49,9 @@ class WalletsController extends BaseController {
   RxBool transactionsLoaded = false.obs;
   RxBool additionalTransactionsLoaded = false.obs;
   ScrollController scrollController = ScrollController();
+  
+  // Counter to force UI updates when timeframe changes
+  RxInt timeframeChangeCounter = 0.obs;
 
   RxInt currentView = 0.obs;
   Rx<OnchainBalance> onchainBalance = OnchainBalance(
