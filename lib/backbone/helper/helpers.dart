@@ -276,45 +276,91 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   } else if (difference.inSeconds >= 3) {
     return 'vor ${difference.inSeconds} Sekunden';
   } else {
-    return 'Gerade eben';
+    return 'Just now';
   }
 }
 
-String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
-  // Convert the string timestamp to an integer and then to milliseconds
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+String displayTimeAgoFromInt(int time, {bool numericDates = true, String language = 'de'}) {
+  // The time is already in milliseconds, so use it directly
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
   final DateTime date2 = DateTime.now();
   final Duration difference = date2.difference(date);
 
-  // The rest of your logic remains the same
-  if ((difference.inDays / 365).floor() >= 2) {
-    return 'vor ${(difference.inDays / 365).floor()} Jahren';
-  } else if ((difference.inDays / 365).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
-  } else if ((difference.inDays / 30).floor() >= 2) {
-    return 'vor ${(difference.inDays / 30).floor()} Monaten';
-  } else if ((difference.inDays / 30).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
-  } else if ((difference.inDays / 7).floor() >= 2) {
-    return 'vor ${(difference.inDays / 7).floor()} Wochen';
-  } else if ((difference.inDays / 7).floor() >= 1) {
-    return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
-  } else if (difference.inDays >= 2) {
-    return 'vor ${difference.inDays} Tagen';
-  } else if (difference.inDays >= 1) {
-    return (numericDates) ? 'vor 1 Tag' : 'Gestern';
-  } else if (difference.inHours >= 2) {
-    return 'vor ${difference.inHours} Stunden';
-  } else if (difference.inHours >= 1) {
-    return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
-  } else if (difference.inMinutes >= 2) {
-    return 'vor ${difference.inMinutes} Minuten';
-  } else if (difference.inMinutes >= 1) {
-    return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
-  } else if (difference.inSeconds >= 3) {
-    return 'vor ${difference.inSeconds} Sekunden';
+  // Validate the date (handle future dates or very old dates)
+  if (date.isAfter(date2)) {
+    // Future date (invalid) - show current time instead
+    return language == 'en' ? 'Just now' : 'Gerade eben';
+  }
+  
+  // If more than 5 years ago, it's likely a timestamp mistake
+  if ((difference.inDays / 365).floor() > 5) {
+    // Show a reasonable fallback
+    return language == 'en' ? 'Recently' : 'Kürzlich';
+  }
+
+  // Language-based formatting
+  if (language == 'en') {
+    // English format
+    if ((difference.inDays / 365).floor() >= 2) {
+      return '${(difference.inDays / 365).floor()} years ago';
+    } else if ((difference.inDays / 365).floor() >= 1) {
+      return (numericDates) ? '1 year ago' : 'Last year';
+    } else if ((difference.inDays / 30).floor() >= 2) {
+      return '${(difference.inDays / 30).floor()} months ago';
+    } else if ((difference.inDays / 30).floor() >= 1) {
+      return (numericDates) ? '1 month ago' : 'Last month';
+    } else if ((difference.inDays / 7).floor() >= 2) {
+      return '${(difference.inDays / 7).floor()} weeks ago';
+    } else if ((difference.inDays / 7).floor() >= 1) {
+      return (numericDates) ? '1 week ago' : 'Last week';
+    } else if (difference.inDays >= 2) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inDays >= 1) {
+      return (numericDates) ? '1 day ago' : 'Yesterday';
+    } else if (difference.inHours >= 2) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inHours >= 1) {
+      return (numericDates) ? '1 hour ago' : 'An hour ago';
+    } else if (difference.inMinutes >= 2) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inMinutes >= 1) {
+      return (numericDates) ? '1 minute ago' : 'A minute ago';
+    } else if (difference.inSeconds >= 3) {
+      return '${difference.inSeconds} seconds ago';
+    } else {
+      return 'Just now';
+    }
   } else {
-    return 'Gerade eben';
+    // German format (default)
+    if ((difference.inDays / 365).floor() >= 2) {
+      return 'vor ${(difference.inDays / 365).floor()} Jahren';
+    } else if ((difference.inDays / 365).floor() >= 1) {
+      return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
+    } else if ((difference.inDays / 30).floor() >= 2) {
+      return 'vor ${(difference.inDays / 30).floor()} Monaten';
+    } else if ((difference.inDays / 30).floor() >= 1) {
+      return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
+    } else if ((difference.inDays / 7).floor() >= 2) {
+      return 'vor ${(difference.inDays / 7).floor()} Wochen';
+    } else if ((difference.inDays / 7).floor() >= 1) {
+      return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
+    } else if (difference.inDays >= 2) {
+      return 'vor ${difference.inDays} Tagen';
+    } else if (difference.inDays >= 1) {
+      return (numericDates) ? 'vor 1 Tag' : 'Gestern';
+    } else if (difference.inHours >= 2) {
+      return 'vor ${difference.inHours} Stunden';
+    } else if (difference.inHours >= 1) {
+      return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
+    } else if (difference.inMinutes >= 2) {
+      return 'vor ${difference.inMinutes} Minuten';
+    } else if (difference.inMinutes >= 1) {
+      return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
+    } else if (difference.inSeconds >= 3) {
+      return 'vor ${difference.inSeconds} Sekunden';
+    } else {
+      return 'Gerade eben';
+    }
   }
 }
 

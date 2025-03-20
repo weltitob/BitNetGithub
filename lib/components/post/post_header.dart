@@ -16,14 +16,14 @@ class PostHeader extends StatelessWidget {
   final String username;
   final String displayName;
   final String postId;
-  final String timeAgo; // Hinzufügen eines Parameters für die Zeit
+  final String timeAgo; // Time ago parameter
 
   const PostHeader({
     required this.ownerId,
     required this.postId,
     required this.username,
     required this.displayName,
-    this.timeAgo = 'Gerade eben', // Standardwert für die Zeit
+    this.timeAgo = 'Just now', // Default value in English
   }) : super();
 
   @override

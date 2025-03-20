@@ -97,6 +97,9 @@ import 'package:bitnet/pages/wallet/btc_address_screen.dart';
 
 import 'package:bitnet/pages/wallet/cardinfo/fiat_card_info_screen.dart';
 
+import 'package:bitnet/pages/wallet/buy/buy_screen.dart';
+import 'package:bitnet/pages/wallet/buy/payment_methods_screen.dart';
+import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
@@ -435,6 +438,25 @@ class AppRoutes {
                       child: const Loop(),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
+            ),
+            
+            // Buy Bitcoin routes
+            GoRoute(
+              path: 'buy',
+              builder: (ctx, state) => const BuyScreen(),
+              redirect: webRedirect,
+              routes: [
+                GoRoute(
+                  path: 'payment_methods',
+                  builder: (ctx, state) => const PaymentMethodsScreen(),
+                  redirect: webRedirect,
+                ),
+                GoRoute(
+                  path: 'providers',
+                  builder: (ctx, state) => const ProvidersScreen(),
+                  redirect: webRedirect,
+                ),
+              ],
             ),
 
             GoRoute(

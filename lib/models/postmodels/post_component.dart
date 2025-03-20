@@ -228,6 +228,7 @@ class _PostComponentState extends State<PostComponent>
                   displayName: displayname,
                   ownerId: ownerId,
                   postId: postId,
+                  timeAgo: displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en'),
                 ),
                 isEditable && titleController != null
                     ? TextField(

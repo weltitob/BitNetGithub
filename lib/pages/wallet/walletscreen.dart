@@ -700,13 +700,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 BitNetImageWithTextButton(
                                                   "Buy",
                                                   () {
-                                                    // Get.put(LoopsController());
-                                                    // context.go(
-                                                    //     "/wallet/loop_screen");
-
-                                                    BitNetBottomSheet(
-                                                        context: context,
-                                                        child: BuyBtcSheet());
+                                                    // Use pushNamed to maintain the navigation stack properly
+                                                    context.push("/wallet/buy");
                                                   },
                                                   // image: "assets/images/send_image.png",
                                                   width: AppTheme.cardPadding *
