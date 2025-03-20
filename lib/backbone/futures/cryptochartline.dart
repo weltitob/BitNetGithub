@@ -63,15 +63,43 @@ class CryptoChartLine {
         }
       } else {
         // Handle historical chart data
-        CollectionReference<Map<String, dynamic>> dataRef = firestore
-            .collection('chart_data')
-            .doc(currency.toUpperCase())
-            .collection(timeframe)
-            .doc('data')
-            .collection("data_points");
-
+        int? count = (await firestore
+                .collection('chart_data')
+                .doc(currency.toUpperCase())
+                .collection(timeframe)
+                .doc('data')
+                .collection("data_points")
+                .count()
+                .get())
+            .count;
+        late Query<Map<String, dynamic>> dataRef;
+        print("docs count for ${days} and ${currency} is ${count}");
+        if (count != null && count > 500) {
+          dataRef = firestore
+              .collection('chart_data')
+              .doc(currency.toUpperCase())
+              .collection(timeframe)
+              .doc('data')
+              .collection("data_points")
+              .where("index", isEqualTo: 1);
+          logger.i(
+              "retrieving chart data for ${days} and ${currency} only when index == 1");
+        } else {
+          dataRef = firestore
+              .collection('chart_data')
+              .doc(currency.toUpperCase())
+              .collection(timeframe)
+              .doc('data')
+              .collection("data_points");
+          logger.i("retrieving all chart data for ${days} and ${currency}");
+        }
         // Fetch the document
-        QuerySnapshot<Map<String, dynamic>> docSnapshot = await dataRef.get();
+        late QuerySnapshot<Map<String, dynamic>> docSnapshot;
+        await dataRef.get().then((val) {
+          docSnapshot = val;
+        }, onError: (e) {
+          logger.e(e);
+        });
         if (docSnapshot.docs.isNotEmpty) {
           List<dynamic>? chartDataList =
               docSnapshot.docs.map((doc) => doc.data()).toList();
