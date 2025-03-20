@@ -115,7 +115,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   //     3, // You can customize this based on your needs
                                   onChanged: (v) {
                                     setState(() {});
-                                    if (controller.tabController!.index == 2) {
+                                    if (controller.tabController!.index == 3) { // Updated from 2 to 3 (People)
                                       controller.searchresults = controller
                                           .searchresults
                                           .where((e) => e.userData.username
@@ -164,6 +164,7 @@ class _FeedScreenState extends State<FeedScreen>
               controller: controller.tabController,
               children: [
                 // Use KeepAlive to prevent rebuilding tabs when switching
+                KeepAliveWrapper(child: const WebsitesTab()),
                 KeepAliveWrapper(child: const TokensTab()),
                 KeepAliveWrapper(child: const AssetsTab()),
                 GetBuilder<FeedController>(
@@ -176,7 +177,6 @@ class _FeedScreenState extends State<FeedScreen>
                     isFromHome: true,
                   ),
                 ),
-                KeepAliveWrapper(child: const WebsitesTab()),
               ],
             )
             // : SearchResultWidget(),

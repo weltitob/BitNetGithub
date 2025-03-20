@@ -48,7 +48,7 @@ class FeedController extends GetxController
       final controllerTransaction = Get.find<TransactionController>();
       final homeController = Get.find<HomeController>();
       if (query.isNotEmpty &&
-          tabController!.index == 0 &&
+          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           !query.startsWith('00') &&
           isValidBitcoinTransactionID(query)) {
         controllerTransaction.txID = query.toString();
@@ -64,13 +64,13 @@ class FeedController extends GetxController
         context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
-          tabController!.index == 0 &&
+          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           containsSixIntegers(query)) {
         homeController.blockHeight = int.parse(query);
         context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
-          tabController!.index == 0 &&
+          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           isValidBitcoinAddressHash(query)) {
         controllerTransaction.getAddressComponent(query);
         controllerTransaction.addressId = query;
@@ -81,7 +81,7 @@ class FeedController extends GetxController
           ),
         );
       }
-      if (tabController!.index == 2) {
+      if (tabController!.index == 3) { // Updated from 2 to 3 (People)
         searchresults = searchresultsMain;
         update();
       }
@@ -98,6 +98,7 @@ class FeedController extends GetxController
   ];
 
   final List<WalletCategory> walletcategorys = [
+    WalletCategory('assets/images/bitcoin.png', "Websites", "Websites"),
     WalletCategory(
       'assets/images/paper_wallet.png',
       'Tokens',
@@ -117,8 +118,7 @@ class FeedController extends GetxController
       'assets/images/bitcoin.png',
       'Blockchain',
       'Blockchain',
-    ),
-    WalletCategory('assets/images/bitcoin.png', "Websites", "Websites")
+    )
   ];
 
   TabController? tabController;
