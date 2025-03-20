@@ -168,6 +168,30 @@ class FeedController extends GetxController
   RxBool fixedScroll = false.obs;
   RxBool isTabSwitching = false.obs;
   
+  // Method to explicitly switch tabs that updates both the TabController and reactive state
+  void switchToTab(int index) {
+    if (tabController == null || index < 0 || index >= tabController!.length) {
+      return;
+    }
+    
+    // First update our reactive state directly
+    currentTabIndex.value = index;
+    
+    // Then update the actual TabController if needed
+    if (tabController!.index != index) {
+      try {
+        tabController!.animateTo(index);
+      } catch (e) {
+        print("Error animating tab: $e");
+        // Fallback approach - force the tab selection
+        tabController!.index = index;
+      }
+    }
+    
+    // Save the current scroll position before switching
+    saveScrollPosition(currentTabIndex.value);
+  }
+  
   // Save tab scroll position when changing tabs
   void saveScrollPosition(int tabIndex) {
     if (scrollController?.value.hasClients == true) {
@@ -190,21 +214,44 @@ class FeedController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 5, vsync: this);
-    tabController!.addListener(() {
-      // Update observable index for reactive UI
-      currentTabIndex.value = tabController!.index;
-      // Scroll to top on tab change
-      smoothScrollToTop();
-    });
     
-    // Initialize scroll controllers with optimized listeners
+    // Initialize scroll controllers first
     scrollControllerColumn = ScrollController();
     scrollController = ScrollController().obs;
     
     // Set up optimized scroll listeners
-    scrollController!.value.addListener(_optimizedScrollListener);
+    if (scrollController != null) {
+      scrollController!.value.addListener(_optimizedScrollListener);
+    }
+    
+    // Initialize tab controller with listener for reactive updates
+    tabController = TabController(length: 5, vsync: this);
+    
+    // Enhanced tab controller listener with better error handling
+    tabController!.addListener(() {
+      if (tabController != null && tabController!.indexIsChanging == false) {
+        // Only update if this is a settled index, not during animation
+        int newIndex = tabController!.index;
+        
+        // Update our reactive state
+        if (currentTabIndex.value != newIndex) {
+          print("Tab changed to: $newIndex");
+          currentTabIndex.value = newIndex;
+          
+          // Save scroll position and scroll to top
+          saveScrollPosition(currentTabIndex.value);
+          Future.microtask(() => smoothScrollToTop());
+        }
+      }
+    });
+    
+    // Add a reaction to ensure tab state and controller stay in sync
+    ever(currentTabIndex, (int index) {
+      print("currentTabIndex changed to: $index");
+      if (tabController != null && tabController!.index != index) {
+        tabController!.animateTo(index);
+      }
+    });
     
     // Load initial data - lazy load for better performance
     Future.microtask(() => handleSearchPeople(''));
@@ -231,16 +278,26 @@ class FeedController extends GetxController
 
   // Improved scroll to top with proper animation duration
   void smoothScrollToTop() {
-    if (scrollController!.value.hasClients) {
-      scrollController!.value.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-      );
+    try {
+      // More robust check to ensure the controller is properly attached
+      if (scrollController?.value != null && 
+          scrollController!.value.hasClients && 
+          scrollController!.value.position != null) {
+        
+        scrollController!.value.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      } else {
+        print("ScrollController not attached yet - skipping scroll to top");
+      }
+      
+      // Only fix scroll for specific tabs
+      fixedScroll.value = tabController?.index == 0;
+    } catch (e) {
+      print("Error in smoothScrollToTop: $e");
     }
-    
-    // Only fix scroll for specific tabs
-    fixedScroll.value = tabController?.index == 0;
   }
 
   Future<void> initNFC(BuildContext context) async {

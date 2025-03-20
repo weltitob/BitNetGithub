@@ -6,7 +6,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
@@ -518,4 +520,25 @@ double getStandardizedCardWidth() {
 // Function to get standardized horizontal margin for carousel items
 double getStandardizedCardMargin() {
   return AppTheme.elementSpacing / 4;
+}
+
+// Function to get standardized carousel options
+CarouselOptions getStandardizedCarouselOptions({
+  bool enableAutoPlay = true,
+  double? customHeight,
+  int autoPlayIntervalSeconds = 5,
+}) {
+  return CarouselOptions(
+    // Enable autoPlay in release mode and when explicitly requested
+    autoPlay: (kDebugMode ? false : true) && enableAutoPlay,
+    viewportFraction: getStandardizedViewportFraction(),
+    enlargeCenterPage: true,
+    enlargeFactor: getStandardizedEnlargeFactor(),
+    height: customHeight ?? getStandardizedCarouselHeight(),
+    autoPlayInterval: Duration(seconds: autoPlayIntervalSeconds),
+    autoPlayAnimationDuration: const Duration(milliseconds: 800),
+    autoPlayCurve: Curves.easeInOutCubic,
+    pauseAutoPlayOnTouch: true,
+    scrollPhysics: const BouncingScrollPhysics(),
+  );
 }

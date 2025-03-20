@@ -1,5 +1,7 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
@@ -264,7 +266,9 @@ class _AssetsTabState extends State<AssetsTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: RepaintBoundary(
+      body: VerticalFadeListView(
+        fadeTop: false,
+        bottomFadeStrength: 0.15,
         child: ListView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           cacheExtent: 1000, // Cache more content for smoother scrolling
@@ -275,14 +279,8 @@ class _AssetsTabState extends State<AssetsTab> {
           
           // Carousel Slider for Trending Assets
           CarouselSlider.builder(
-            options: CarouselOptions(
-              autoPlay: kDebugMode ? false : true,
-              viewportFraction: 0.7, // Standardized across all tabs
-              enlargeCenterPage: true,
-              enlargeFactor: 0.25, // Standardized across all tabs
-              height: 300.h, // Standardized across all tabs
-              autoPlayInterval: const Duration(seconds: 4),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800)
+            options: getStandardizedCarouselOptions(
+              autoPlayIntervalSeconds: 4
             ),
             itemCount: assetData.length,
             itemBuilder: (context, index, _) {

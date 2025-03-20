@@ -92,6 +92,12 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
+    
+    // Ensure the controller is ready
+    if (controller.scrollController?.value == null) {
+      controller.scrollController = ScrollController().obs;
+    }
+    
     return KeyboardSizeProvider(
       child: bitnetScaffold(
         body: CustomScrollView(
@@ -139,20 +145,24 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             ),
             
-            // Tab content - rendering only active tab content
+            // Tab content - rendering only active tab content using Obx for reactive updates
             SliverFillRemaining(
-              child: IndexedStack(
-                index: controller.tabController!.index,
-                sizing: StackFit.expand,
-                children: [
-                  // Lazy-loading tabs for better performance
-                  const WebsitesTab(),
-                  const TokensTab(),
-                  const AssetsTab(),
-                  const SearchResultWidget(),
-                  MempoolHome(isFromHome: true),
-                ],
-              ),
+              child: Obx(() {
+                final int currentIndex = controller.currentTabIndex.value;
+                print("Rendering tab index: $currentIndex");
+                return IndexedStack(
+                  index: currentIndex,
+                  sizing: StackFit.expand,
+                  children: [
+                    // Lazy-loading tabs for better performance
+                    const WebsitesTab(),
+                    const TokensTab(),
+                    const AssetsTab(),
+                    const SearchResultWidget(),
+                    MempoolHome(isFromHome: true),
+                  ],
+                );
+              }),
             ),
           ],
         ),

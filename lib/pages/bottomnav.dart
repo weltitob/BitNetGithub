@@ -139,9 +139,18 @@ class _BottomNavState extends State<BottomNav>
   void onItemTapped(int index, ScrollController controller) {
     setState(() {
       if (index == _selectedIndex) {
-        controller.animateTo(0,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut);
+        // Only scroll if the controller is attached to a position
+        if (controller.hasClients) {
+          try {
+            controller.animateTo(0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut);
+          } catch (e) {
+            print("Error scrolling in BottomNav: $e");
+          }
+        } else {
+          print("ScrollController not attached to any scroll views in BottomNav");
+        }
       } else {
         _selectedIndex = index;
       }
@@ -240,18 +249,44 @@ class _BottomNavState extends State<BottomNav>
                       showSelectedLabels: false,
                       showUnselectedLabels: false,
                       onTap: (i) {
-                        switch (i) {
-                          case 0:
-                            onItemTapped(
-                                i,
-                                Get.find<FeedController>()
-                                    .scrollControllerColumn);
-                          case 1:
-                            onItemTapped(i,
-                                Get.find<WalletsController>().scrollController);
-                          case 2:
-                            onItemTapped(i,
-                                Get.find<ProfileController>().scrollController);
+                        try {
+                          switch (i) {
+                            case 0:
+                              // Safely get the controller, check if it exists first
+                              final feedController = Get.isRegistered<FeedController>() 
+                                  ? Get.find<FeedController>() 
+                                  : null;
+                              if (feedController != null) {
+                                onItemTapped(i, feedController.scrollControllerColumn);
+                              } else {
+                                // Fallback if controller not found
+                                setState(() => _selectedIndex = i);
+                              }
+                            case 1:
+                              // Safely get the controller with null check
+                              final walletController = Get.isRegistered<WalletsController>() 
+                                  ? Get.find<WalletsController>() 
+                                  : null;
+                              if (walletController != null) {
+                                onItemTapped(i, walletController.scrollController);
+                              } else {
+                                setState(() => _selectedIndex = i);
+                              }
+                            case 2:
+                              // Safely get the controller with null check
+                              final profileController = Get.isRegistered<ProfileController>() 
+                                  ? Get.find<ProfileController>() 
+                                  : null;
+                              if (profileController != null) {
+                                onItemTapped(i, profileController.scrollController);
+                              } else {
+                                setState(() => _selectedIndex = i);
+                              }
+                          }
+                        } catch (e) {
+                          print("Error in bottom nav tap: $e");
+                          // Fallback - just update the selected index
+                          setState(() => _selectedIndex = i);
                         }
                       },
                       elevation: 0, // Box-Shadow entfernen
