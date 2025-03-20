@@ -16,10 +16,12 @@ Map<String, WidgetBuilder> allRoutes = {
   kMainScreenRoute: (BuildContext context) => const HomeScreen(),
   kNotificationScreenRoute: (BuildContext context) =>
       const NotificationScreen(),
-
   kListScreenRoute: (BuildContext context) => const ListScreen(),
   kFilterScreenRoute: (BuildContext context) => const FilterScreen(),
-  kOwnerScreenRoute: (BuildContext context) =>  CollectionScreen(routerState: null, context: context,),
+  kOwnerScreenRoute: (BuildContext context) => CollectionScreen(
+        routerState: null,
+        context: context,
+      ),
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
   kActivityScreenRoute: (BuildContext context) => const ActivityScreen(),
@@ -50,3 +52,4 @@ const kProfileEditScreenRoute = 'profile_edit_screen_route';
 const kFavouriteScreenRoute = 'favourite_screen_route';
 const kAboutScreenRoute = 'about_screen_route';
 const kCollectionScreenRoute = 'collection_screen_route';
+const kWebViewScreenRoute = 'webview_screen_route';

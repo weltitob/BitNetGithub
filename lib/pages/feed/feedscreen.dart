@@ -9,6 +9,7 @@ import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
 import 'package:bitnet/pages/feed/tokenstab.dart';
 import 'package:bitnet/pages/feed/assetstab.dart';
+import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -26,7 +27,8 @@ class KeepAliveWrapper extends StatefulWidget {
   _KeepAliveWrapperState createState() => _KeepAliveWrapperState();
 }
 
-class _KeepAliveWrapperState extends State<KeepAliveWrapper> with AutomaticKeepAliveClientMixin {
+class _KeepAliveWrapperState extends State<KeepAliveWrapper>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -99,7 +101,11 @@ class _FeedScreenState extends State<FeedScreen>
                                 return child!;
                               },
                               child: Padding(
-                                padding:  EdgeInsets.only(left: AppTheme.elementSpacing.w, right: AppTheme.elementSpacing.w, top: AppTheme.cardPadding.h, bottom: AppTheme.elementSpacing.h),
+                                padding: EdgeInsets.only(
+                                    left: AppTheme.elementSpacing.w,
+                                    right: AppTheme.elementSpacing.w,
+                                    top: AppTheme.cardPadding.h,
+                                    bottom: AppTheme.elementSpacing.h),
                                 child: SearchFieldWidget(
                                   isSearchEnabled: true,
                                   hintText:
@@ -117,11 +123,8 @@ class _FeedScreenState extends State<FeedScreen>
                                               .contains(v))
                                           .toList();
                                     }
-                                  }, handleSearch: (text){
-
-
-
-                                },
+                                  },
+                                  handleSearch: (text) {},
                                 ),
                               ));
                         },
@@ -173,6 +176,7 @@ class _FeedScreenState extends State<FeedScreen>
                     isFromHome: true,
                   ),
                 ),
+                KeepAliveWrapper(child: const WebsitesTab()),
               ],
             )
             // : SearchResultWidget(),
