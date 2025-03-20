@@ -509,7 +509,17 @@ double getStandardizedEnlargeFactor() {
 
 // Function to get consistent carousel height across feed tabs
 double getStandardizedCarouselHeight() {
-  return AppTheme.cardPadding * 12;
+  return AppTheme.cardPadding * 12.5;
+}
+
+// Debugging helper to print carousel dimensions (add to feed tab files for troubleshooting)
+void debugPrintCarouselDimensions() {
+  print("Carousel standardized dimensions:");
+  print("- Height: ${getStandardizedCarouselHeight()}");
+  print("- Card width: ${getStandardizedCardWidth()}");
+  print("- Card margin: ${getStandardizedCardMargin()}");
+  print("- Viewport fraction: ${getStandardizedViewportFraction()}");
+  print("- Enlarge factor: ${getStandardizedEnlargeFactor()}");
 }
 
 // Function to get standard card width for carousels
@@ -528,9 +538,12 @@ CarouselOptions getStandardizedCarouselOptions({
   double? customHeight,
   int autoPlayIntervalSeconds = 5,
 }) {
+  // Print debug info to help diagnose carousel autoplay issues
+  print("Creating carousel options with autoPlay: true (interval: ${autoPlayIntervalSeconds}s)");
+  
   return CarouselOptions(
-    // Enable autoPlay in release mode and when explicitly requested
-    autoPlay: (kDebugMode ? false : true) && enableAutoPlay,
+    // Always enable autoPlay regardless of debug mode to ensure consistent behavior
+    autoPlay: true,
     viewportFraction: getStandardizedViewportFraction(),
     enlargeCenterPage: true,
     enlargeFactor: getStandardizedEnlargeFactor(),

@@ -266,16 +266,14 @@ class _AssetsTabState extends State<AssetsTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: VerticalFadeListView(
-        fadeTop: false,
-        bottomFadeStrength: 0.15,
+      body: VerticalFadeListView.standardTab(
         child: ListView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           cacheExtent: 1000, // Cache more content for smoother scrolling
           children: [
           
           // Spacing at the top - consistent with other tabs
-          const SizedBox(height: AppTheme.cardPadding),
+          SizedBox(height: AppTheme.cardPadding * 1.5.h),
           
           // Carousel Slider for Trending Assets
           CarouselSlider.builder(
@@ -294,16 +292,19 @@ class _AssetsTabState extends State<AssetsTab> {
                 )
               ];
               
-              return AssetCard(
-                nftName: asset['name'],
-                nftMainName: asset['collection'],
-                cryptoText: asset['price'],
-                medias: assetMedia,
-                hasPrice: true,
-                hasLikeButton: true,
-                hasLiked: false,
-                postId: 'trending-$index',
-                scale: 1.0,
+              // Wrap in RepaintBoundary for better performance
+              return RepaintBoundary(
+                child: AssetCard(
+                  nftName: asset['name'],
+                  nftMainName: asset['collection'],
+                  cryptoText: asset['price'],
+                  medias: assetMedia,
+                  hasPrice: true,
+                  hasLikeButton: true,
+                  hasLiked: false,
+                  postId: 'trending-$index',
+                  scale: 1.0,
+                ),
               );
             },
           ),

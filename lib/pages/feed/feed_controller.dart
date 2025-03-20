@@ -295,6 +295,15 @@ class FeedController extends GetxController
       
       // Only fix scroll for specific tabs
       fixedScroll.value = tabController?.index == 0;
+      
+      // Make sure current tab is properly initialized
+      int currentIndex = currentTabIndex.value;
+      if (currentIndex >= 0 && currentIndex < walletcategorys.length) {
+        // Ensure tab controllers are in sync
+        if (tabController != null && tabController!.index != currentIndex) {
+          tabController!.index = currentIndex;
+        }
+      }
     } catch (e) {
       print("Error in smoothScrollToTop: $e");
     }

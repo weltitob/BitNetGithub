@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -197,23 +198,14 @@ class SearchResultWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Consistent spacing at the top
-        const SizedBox(height: AppTheme.elementSpacing),
+        SizedBox(height: AppTheme.cardPadding * 1.5.h),
         // Carousel without any title/header
         Container(
           width: screenWidth,
           height: 300.h, // Use ScreenUtil for consistent sizing
           child: CarouselSlider.builder(
-            options: CarouselOptions(
-              autoPlay: true,
-              viewportFraction: 0.7, // Standardized across all tabs
-              enlargeCenterPage: true,
-              enlargeFactor: 0.25, // Standardized across all tabs
-              height: 300.h, // Standardized across all tabs
-              autoPlayInterval: Duration(seconds: 5),
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enableInfiniteScroll: true,
-              pageSnapping: true,
+            options: getStandardizedCarouselOptions(
+              autoPlayIntervalSeconds: 5
             ),
             itemCount: users.length,
             itemBuilder: (context, index, realIndex) {
@@ -370,12 +362,14 @@ class SearchResultWidget extends StatelessWidget {
                       },
                     )
                   // Show normal UI when not searching
-                  : ListView(
-                      // Remove the padding from ListView to allow the carousel to extend full width
-                      padding: EdgeInsets.zero,
-                      children: [
-                        // Featured people carousel at the top
-                        _buildFeaturedPeopleCarousel(featuredPeople, context),
+                  : VerticalFadeListView.standardTab(
+                      child: ListView(
+                        // Remove the padding from ListView to allow the carousel to extend full width
+                        padding: EdgeInsets.zero,
+                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        children: [
+                          // Featured people carousel at the top
+                          _buildFeaturedPeopleCarousel(featuredPeople, context),
                         
                         // Regular sections below
                         Padding(
@@ -414,6 +408,7 @@ class SearchResultWidget extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
             );
           });
   }

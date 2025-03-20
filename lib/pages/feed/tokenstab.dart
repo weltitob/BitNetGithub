@@ -149,15 +149,13 @@ class _TokensTabState extends State<TokensTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: VerticalFadeListView(
-        fadeTop: false,
-        fadeBottom: true,
+      body: VerticalFadeListView.standardTab(
         child: ListView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
         
           // Trending section
-          const SizedBox(height: AppTheme.cardPadding),
+          SizedBox(height: AppTheme.cardPadding * 1.5.h),
           
           // Carousel Slider for Trending Tokens
           CarouselSlider.builder(
@@ -169,17 +167,19 @@ class _TokensTabState extends State<TokensTab> {
               final token = tokenData[index];
               final chartData = token['chartData'] as List<ChartLine>;
               
-              return GlassContainer(
-                width: getStandardizedCardWidth().w,
-                margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
-                customShadow: isDarkMode ? [] : null,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 18.h, // Increased from 16.h
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              // Wrap in RepaintBoundary for better performance
+              return RepaintBoundary(
+                child: GlassContainer(
+                  width: getStandardizedCardWidth().w,
+                  margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                  customShadow: isDarkMode ? [] : null,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 18.h, // Increased from 16.h
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Token logo and name
                       Row(
@@ -295,7 +295,8 @@ class _TokensTabState extends State<TokensTab> {
                       
                       
                       // Price change indicator (using reusable component)
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

@@ -117,16 +117,14 @@ class _WebsitesTabState extends State<WebsitesTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return bitnetScaffold(
-      body: VerticalFadeListView(
-          fadeTop: false,
-          bottomFadeStrength: 0.15,
+      body: VerticalFadeListView.standardTab(
           child: ListView(
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
         children: [
           // Trending section
 
-          const SizedBox(height: AppTheme.cardPadding),
+          SizedBox(height: AppTheme.cardPadding * 1.5.h),
 
           // Carousel Slider for Trending Tokens
 
@@ -138,14 +136,15 @@ class _WebsitesTabState extends State<WebsitesTab> {
             itemBuilder: (context, index, _) {
               final website = websites[index];
 
-              return GestureDetector(
-                onTap: () {
-                  context.pushNamed(kWebViewScreenRoute, pathParameters: {
-                    'url': website.url,
-                    'name': website.name
-                  });
-                },
-                child: GlassContainer(
+              return RepaintBoundary(
+                child: GestureDetector(
+                  onTap: () {
+                    context.pushNamed(kWebViewScreenRoute, pathParameters: {
+                      'url': website.url,
+                      'name': website.name
+                    });
+                  },
+                  child: GlassContainer(
                   width: getStandardizedCardWidth().w,
                   margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
                   customShadow: isDarkMode ? [] : null,
@@ -374,7 +373,8 @@ class _WebsitesTabState extends State<WebsitesTab> {
                     ),
                   ),
                 ),
-              );
+              ),
+            );
             },
           ),
 

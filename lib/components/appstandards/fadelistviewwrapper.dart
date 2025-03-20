@@ -35,6 +35,25 @@ class HorizontalFadeListView extends StatelessWidget {
   }
 }
 
+/// A widget that applies vertical fade effects to its child.
+/// 
+/// Used primarily for scrollable content to create a smooth fade transition at the top
+/// and optionally at the bottom.
+///
+/// For tab screens, use the [VerticalFadeListView.standardTab] factory constructor
+/// to ensure consistent fade behavior across the app. The standard configuration 
+/// includes a top fade but disables the bottom fade for a cleaner UI.
+/// 
+/// Example usage:
+/// ```dart
+/// VerticalFadeListView.standardTab(
+///   child: ListView(
+///     children: [
+///       // Your list items
+///     ],
+///   ),
+/// )
+/// ```
 class VerticalFadeListView extends StatelessWidget {
   final Widget child;
   final bool fadeTop;
@@ -42,14 +61,30 @@ class VerticalFadeListView extends StatelessWidget {
   final double topFadeStrength;
   final double bottomFadeStrength;
 
+  /// Standard constructor with flexible parameters
   const VerticalFadeListView({
     super.key,
     required this.child,
     this.fadeTop = true,
-    this.fadeBottom = true,
-    this.topFadeStrength = 0.05, // More subtle fade at the top
-    this.bottomFadeStrength = 0.1, // Stronger fade at the bottom
+    this.fadeBottom = false, // Default to no bottom fade for cleaner UI
+    this.topFadeStrength = 0.1, // Subtle but visible fade at the top
+    this.bottomFadeStrength = 0.15, // Only used when fadeBottom is true
   });
+  
+  /// Factory constructor for standardized tabs configuration
+  /// This ensures consistent fade behavior across all main tabs
+  factory VerticalFadeListView.standardTab({
+    required Widget child,
+    bool enableBottomFade = false, // Control bottom fade with a simple flag
+  }) {
+    return VerticalFadeListView(
+      child: child,
+      fadeTop: true,
+      fadeBottom: enableBottomFade,
+      topFadeStrength: 0.1,
+      bottomFadeStrength: 0.15,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +97,7 @@ class VerticalFadeListView extends StatelessWidget {
     List<Color> colors = [];
     
     if (fadeTop && fadeBottom) {
+      // Stronger fade effect for better visibility
       stops = [0.0, topFadeStrength, 1.0 - bottomFadeStrength, 1.0];
       colors = [fadeColor, Colors.transparent, Colors.transparent, fadeColor];
     } else if (fadeTop) {
@@ -74,6 +110,10 @@ class VerticalFadeListView extends StatelessWidget {
       // No fading needed
       return child;
     }
+    
+    // Print the fade settings for debugging
+    print("Fade settings - Top: $fadeTop ($topFadeStrength), Bottom: $fadeBottom ($bottomFadeStrength)");
+    print("Using stops: $stops");
     
     return RepaintBoundary(
       child: ShaderMask(
