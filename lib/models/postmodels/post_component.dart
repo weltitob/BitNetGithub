@@ -43,6 +43,7 @@ class PostComponent extends StatefulWidget {
   final TextEditingController? descriptionController; // For editing description in edit mode
   final FocusNode? titleFocusNode; // Focus node for the title field
   final FocusNode? descriptionFocusNode; // Focus node for the description field
+  final int? debugLockTime; // Original lockTime value for debugging purposes
 
   const PostComponent({
     required this.postId,
@@ -60,6 +61,7 @@ class PostComponent extends StatefulWidget {
     this.onPostSubmit,
     this.titleFocusNode,
     this.descriptionFocusNode,
+    this.debugLockTime,
   });
 
   /// Factory constructor to create from a document
@@ -147,6 +149,7 @@ class PostComponent extends StatefulWidget {
         onPostSubmit: this.onPostSubmit,
         titleFocusNode: this.titleFocusNode,
         descriptionFocusNode: this.descriptionFocusNode,
+        debugLockTime: this.debugLockTime,
       );
 }
 
@@ -168,6 +171,7 @@ class _PostComponentState extends State<PostComponent>
   final Function? onPostSubmit;
   final FocusNode? titleFocusNode;
   final FocusNode? descriptionFocusNode;
+  final int? debugLockTime; // Store original lockTime value for debugging
 
   bool showheart = false;
   late bool isLiked;
@@ -189,6 +193,7 @@ class _PostComponentState extends State<PostComponent>
     this.onPostSubmit,
     this.titleFocusNode,
     this.descriptionFocusNode,
+    this.debugLockTime,
   });
 
   @override
@@ -199,19 +204,20 @@ class _PostComponentState extends State<PostComponent>
 
     isLiked = currentUserId != null ? (rockets[currentUserId] == true) : false;
 
-    return Padding(
-      padding: EdgeInsets.only(
-          bottom: AppTheme.elementSpacing,
-          right: AppTheme.elementSpacing.w * 0.75,
-          left: AppTheme.elementSpacing.w * 0.75),
-      child: GestureDetector(
-        onTap: isEditable
-            ? null
-            : () {
-                final homeController = Get.find<HomeController>();
-                homeController.createClicks(postId);
-              },
-        child: GlassContainer(
+    return RepaintBoundary(
+      child: Padding(
+        padding: EdgeInsets.only(
+            bottom: AppTheme.elementSpacing,
+            right: AppTheme.elementSpacing.w * 0.75,
+            left: AppTheme.elementSpacing.w * 0.75),
+        child: GestureDetector(
+          onTap: isEditable
+              ? null
+              : () {
+                  final homeController = Get.find<HomeController>();
+                  homeController.createClicks(postId);
+                },
+          child: GlassContainer(
           child: Padding(
             padding: const EdgeInsets.only(
               left: AppTheme.elementSpacing * 1.25,
@@ -228,6 +234,10 @@ class _PostComponentState extends State<PostComponent>
                   displayName: displayname,
                   ownerId: ownerId,
                   postId: postId,
+                  // Debug mode: show lockTime value for troubleshooting
+                  timeAgo: debugLockTime != null 
+                      ? "${displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en')} [$debugLockTime]"
+                      : displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en'),
                 ),
                 isEditable && titleController != null
                     ? TextField(
@@ -262,9 +272,11 @@ class _PostComponentState extends State<PostComponent>
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                 const SizedBox(height: AppTheme.elementSpacing * 1),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildMediaWidgets(),
+                RepaintBoundary(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildMediaWidgets(),
+                  ),
                 ),
                 // Bottom row with like space and buttons in view mode (edit mode has no bottom buttons)
                 !isEditable
@@ -310,6 +322,7 @@ class _PostComponentState extends State<PostComponent>
           ),
         ),
       ),
+     ),
     );
   }
 

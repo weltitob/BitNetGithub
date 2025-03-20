@@ -311,6 +311,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         .pbOverallPriceChange
                                                         .value =
                                                     toPercent(priceChange);
+                                                    
+                                                // Update wallet amount based on timeframe
+                                                // Get current BTC value and adjust it based on the timeframe's price change
+                                                // This gives us the "value" of our wallet at different points in time
+                                                final chartLine = controller.chartLines.value;
+                                                if (chartLine != null) {
+                                                  // Adjust the Bitcoin value based on the selected timeframe
+                                                  double adjustedBtcValue = chartLine.price * (firstPrice / lastPrice);
+                                                  
+                                                  // Force update the wallet display by updating a reactive variable
+                                                  controller.timeframeChangeCounter.value += 1;
+                                                }
                                                 // Update date
                                               },
                                               customHeight:
@@ -447,58 +459,83 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                         controller
                                                             .selectedCurrency!
                                                             .value;
+                                                    
+                                                    // Consider timeframe price changes for display
+                                                    double currentPrice = bitcoinController.pbNew_lastpriceexact;
+                                                    double historicalPrice = bitcoinController.pbNew_firstpriceexact;
+                                                    double displayValue = currencyEquivalent != null 
+                                                        ? double.parse(currencyEquivalent)
+                                                        : 0.0;
+                                                    
+                                                    // If showing in fiat and not in day view, adjust the displayed amount
+                                                    if (!controller.coin.value && 
+                                                        bitcoinController.pbSelectedtimespan.value != "1D" &&
+                                                        historicalPrice > 0) {
+                                                        
+                                                        // Calculate the ratio between historical and current price
+                                                        double ratio = currentPrice / historicalPrice;
+                                                        // Apply the ratio to get the current equivalent value
+                                                        if (ratio != 1.0) {
+                                                            displayValue = displayValue / ratio;
+                                                        }
+                                                    }
 
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        controller
-                                                            .setCurrencyType(
-                                                          !controller
-                                                              .coin.value,
-                                                          updateDatabase: false,
-                                                        );
-                                                        coin.setCurrencyType(
-                                                          controller.coin.value,
-                                                        );
-                                                      },
-                                                      child: (controller
-                                                              .coin.value)
-                                                          ? Row(
-                                                              children: [
-                                                                Text(
-                                                                  controller
-                                                                      .totalBalance
-                                                                      .value
-                                                                      .amount
-                                                                      .toString(),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .displayLarge,
-                                                                ),
-                                                                Icon(
-                                                                  getCurrencyIcon(
+                                                    return Obx(() {
+                                                      // Force rebuild on timeframe change
+                                                      controller.timeframeChangeCounter.value;
+                                                      
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          controller
+                                                              .setCurrencyType(
+                                                            !controller
+                                                                .coin.value,
+                                                            updateDatabase: false,
+                                                          );
+                                                          coin.setCurrencyType(
+                                                            controller.coin.value,
+                                                          );
+                                                        },
+                                                        child: (controller
+                                                                .coin.value)
+                                                            ? Row(
+                                                                children: [
+                                                                  Text(
                                                                     controller
                                                                         .totalBalance
                                                                         .value
-                                                                        .bitcoinUnitAsString,
+                                                                        .amount
+                                                                        .toString(),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .displayLarge,
                                                                   ),
-                                                                  size: AppTheme
-                                                                          .iconSize *
-                                                                      2.25,
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Text(
-                                                              "$currencyEquivalent${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displayLarge,
-                                                            ),
-                                                    );
+                                                                  Icon(
+                                                                    getCurrencyIcon(
+                                                                      controller
+                                                                          .totalBalance
+                                                                          .value
+                                                                          .bitcoinUnitAsString,
+                                                                    ),
+                                                                    size: AppTheme
+                                                                            .iconSize *
+                                                                        2.25,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Text(
+                                                                "${displayValue.toStringAsFixed(2)}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .displayLarge,
+                                                              ),
+                                                      );
+                                                    });
                                                   }),
                                           ],
                                         ),
@@ -512,6 +549,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                                           // Use the Obx directly around the ColoredPriceWidget to react to changes
                                           Obx(
                                             () {
+                                              // Force rebuild when timeframe changes
+                                              controller.timeframeChangeCounter.value;
+                                              
                                               // Calculate the difference between current balance and start of timeframe
                                               double firstPrice =
                                                   bitcoinController
@@ -522,26 +562,59 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                       .value;
                                               double diff =
                                                   currentPrice - firstPrice;
-
-                                              // Format the difference with proper decimal places and limit length
-                                              String formattedDiff;
-                                              if (diff.abs() > 9999) {
-                                                // For large numbers, use K notation
-                                                formattedDiff = (diff / 1000)
-                                                        .toStringAsFixed(1) +
-                                                    'K';
+                                                  
+                                              // Calculate wallet value difference based on timeframe
+                                              double priceDiffPercentage = firstPrice != 0 ? 
+                                                  (currentPrice - firstPrice) / firstPrice : 0;
+                                                  
+                                              // Get current wallet value to calculate the absolute change
+                                              final chartLine = controller.chartLines.value;
+                                              if (chartLine != null && !controller.coin.value) {
+                                                // Calculate adjusted value difference (in currency)
+                                                double walletValueDiff = 
+                                                    (controller.totalBalanceSAT.value / 100000000) * 
+                                                    chartLine.price * priceDiffPercentage;
+                                                
+                                                // Format the difference with proper decimal places and limit length
+                                                String formattedDiff;
+                                                if (walletValueDiff.abs() > 9999) {
+                                                  // For large numbers, use K notation
+                                                  formattedDiff = (walletValueDiff / 1000)
+                                                          .toStringAsFixed(1) +
+                                                      'K';
+                                                } else {
+                                                  formattedDiff =
+                                                      walletValueDiff.toStringAsFixed(2);
+                                                }
+                                                
+                                                return ColoredPriceWidget(
+                                                  shouldHideAmount: true,
+                                                  price: formattedDiff,
+                                                  isPositive: walletValueDiff >= 0,
+                                                  currencySymbol:
+                                                      getCurrency(currency!),
+                                                );
                                               } else {
-                                                formattedDiff =
-                                                    diff.toStringAsFixed(2);
+                                                // Format the price difference (not wallet value)
+                                                String formattedDiff;
+                                                if (diff.abs() > 9999) {
+                                                  // For large numbers, use K notation
+                                                  formattedDiff = (diff / 1000)
+                                                          .toStringAsFixed(1) +
+                                                      'K';
+                                                } else {
+                                                  formattedDiff =
+                                                      diff.toStringAsFixed(2);
+                                                }
+                                                
+                                                return ColoredPriceWidget(
+                                                  shouldHideAmount: true,
+                                                  price: formattedDiff,
+                                                  isPositive: diff >= 0,
+                                                  currencySymbol:
+                                                      getCurrency(currency!),
+                                                );
                                               }
-
-                                              return ColoredPriceWidget(
-                                                shouldHideAmount: true,
-                                                price: formattedDiff,
-                                                isPositive: diff >= 0,
-                                                currencySymbol:
-                                                    getCurrency(currency!),
-                                              );
                                             },
                                           ),
                                           SizedBox(
@@ -627,13 +700,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 BitNetImageWithTextButton(
                                                   "Buy",
                                                   () {
-                                                    // Get.put(LoopsController());
-                                                    // context.go(
-                                                    //     "/wallet/loop_screen");
-
-                                                    BitNetBottomSheet(
-                                                        context: context,
-                                                        child: BuyBtcSheet());
+                                                    // Use pushNamed to maintain the navigation stack properly
+                                                    context.push("/wallet/buy");
                                                   },
                                                   // image: "assets/images/send_image.png",
                                                   width: AppTheme.cardPadding *
@@ -878,14 +946,17 @@ class _BuyBtcSheetState extends State<BuyBtcSheet> {
                   SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),
-                  AmountWidget(
-                      enabled: () => true,
-                      btcController: btcController,
-                      satController: satController,
-                      currController: currController,
-                      focusNode: focusNode,
-                      context: context,
-                      autoConvert: true),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    child: AmountWidget(
+                        enabled: () => true,
+                        btcController: btcController,
+                        satController: satController,
+                        currController: currController,
+                        focusNode: focusNode,
+                        context: context,
+                        autoConvert: true),
+                  ),
                   SizedBox(
                     height: 30,
                   )

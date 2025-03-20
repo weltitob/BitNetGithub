@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart'; // Import the helpers file for HapticFeedback
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -34,45 +35,52 @@ class ScreenCategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get controller only once - no need to use GetBuilder
     final controller = Get.find<FeedController>();
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    return GetBuilder<FeedController>(
-      builder: (controller) {
-        final bool isSelected = index == controller.tabController?.index;
-        final Color textColor = isSelected
-            ? Theme.of(context).colorScheme.primary
-            : isDarkMode
-                ? AppTheme.white60
-                : AppTheme.black60;
-
-        // Function to handle tab change - used by both buttons and text container
-        void handleTabChange() {
-          controller.tabController?.animateTo(index);
-          controller.update();
-        }
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: handleTabChange,
-              splashColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              highlightColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.05),
-              child: Container(
-                child: isSelected
-                    ? _buildSelectedTab(context, textColor, handleTabChange)
-                    : _buildInactiveTab(context, textColor, handleTabChange),
-              ),
+    
+    // Function to handle tab change
+    void handleTabChange() {
+      print("Tab pressed: $index");
+      
+      // Use the direct tab switching method instead of manipulating the controller
+      controller.switchToTab(index);
+      
+      // Add haptic feedback for better user experience using our custom HapticFeedback class
+      HapticFeedback.lightImpact();
+    }
+    
+    // Use Obx for more efficient reactive updates
+    return Obx(() {
+      // Reactive isSelected check
+      final bool isSelected = index == controller.currentTabIndex.value;
+      final Color textColor = isSelected
+          ? Theme.of(context).colorScheme.primary
+          : isDarkMode
+              ? AppTheme.white60
+              : AppTheme.black60;
+      
+      // Performance improvement: use const padding
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: handleTabChange,
+            // Simplified tap colors
+            splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+            // Cache child widget based on selection state
+            child: Container(
+              child: isSelected
+                  ? _buildSelectedTab(context, textColor, handleTabChange)
+                  : _buildInactiveTab(context, textColor, handleTabChange),
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildSelectedTab(BuildContext context, Color textColor, VoidCallback onTabChange) {

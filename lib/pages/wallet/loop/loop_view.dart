@@ -865,21 +865,15 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
               ? widget.defaultUnit.name
               : currency!;
 
-      return Container(
-        decoration: BoxDecoration(
-          color: isDarkMode
-              ? const Color(0xFF1C1C1E) // Dark card background
-              : Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            if (!isDarkMode)
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              )
-          ],
-        ),
+      return GlassContainer(
+        borderRadius: BorderRadius.circular(24),
+        customShadow: isDarkMode ? [] : [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          )
+        ],
         child: Stack(
           children: [
             // Main Card Content

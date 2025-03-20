@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:bip39/bip39.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
@@ -276,45 +279,85 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   } else if (difference.inSeconds >= 3) {
     return 'vor ${difference.inSeconds} Sekunden';
   } else {
-    return 'Gerade eben';
+    return 'Just now';
   }
 }
 
-String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
-  // Convert the string timestamp to an integer and then to milliseconds
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+String displayTimeAgoFromInt(int time, {bool numericDates = true, String language = 'de'}) {
+  // The time is already in milliseconds, so use it directly
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
   final DateTime date2 = DateTime.now();
   final Duration difference = date2.difference(date);
 
-  // The rest of your logic remains the same
-  if ((difference.inDays / 365).floor() >= 2) {
-    return 'vor ${(difference.inDays / 365).floor()} Jahren';
-  } else if ((difference.inDays / 365).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
-  } else if ((difference.inDays / 30).floor() >= 2) {
-    return 'vor ${(difference.inDays / 30).floor()} Monaten';
-  } else if ((difference.inDays / 30).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
-  } else if ((difference.inDays / 7).floor() >= 2) {
-    return 'vor ${(difference.inDays / 7).floor()} Wochen';
-  } else if ((difference.inDays / 7).floor() >= 1) {
-    return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
-  } else if (difference.inDays >= 2) {
-    return 'vor ${difference.inDays} Tagen';
-  } else if (difference.inDays >= 1) {
-    return (numericDates) ? 'vor 1 Tag' : 'Gestern';
-  } else if (difference.inHours >= 2) {
-    return 'vor ${difference.inHours} Stunden';
-  } else if (difference.inHours >= 1) {
-    return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
-  } else if (difference.inMinutes >= 2) {
-    return 'vor ${difference.inMinutes} Minuten';
-  } else if (difference.inMinutes >= 1) {
-    return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
-  } else if (difference.inSeconds >= 3) {
-    return 'vor ${difference.inSeconds} Sekunden';
+  // Validate the date (handle future dates)
+  if (date.isAfter(date2)) {
+    // Future date (invalid) - show current time instead
+    return language == 'en' ? 'Just now' : 'Gerade eben';
+  }
+
+  // Language-based formatting
+  if (language == 'en') {
+    // English format
+    if ((difference.inDays / 365).floor() >= 2) {
+      return '${(difference.inDays / 365).floor()} years ago';
+    } else if ((difference.inDays / 365).floor() >= 1) {
+      return (numericDates) ? '1 year ago' : 'Last year';
+    } else if ((difference.inDays / 30).floor() >= 2) {
+      return '${(difference.inDays / 30).floor()} months ago';
+    } else if ((difference.inDays / 30).floor() >= 1) {
+      return (numericDates) ? '1 month ago' : 'Last month';
+    } else if ((difference.inDays / 7).floor() >= 2) {
+      return '${(difference.inDays / 7).floor()} weeks ago';
+    } else if ((difference.inDays / 7).floor() >= 1) {
+      return (numericDates) ? '1 week ago' : 'Last week';
+    } else if (difference.inDays >= 2) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inDays >= 1) {
+      return (numericDates) ? '1 day ago' : 'Yesterday';
+    } else if (difference.inHours >= 2) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inHours >= 1) {
+      return (numericDates) ? '1 hour ago' : 'An hour ago';
+    } else if (difference.inMinutes >= 2) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inMinutes >= 1) {
+      return (numericDates) ? '1 minute ago' : 'A minute ago';
+    } else if (difference.inSeconds >= 3) {
+      return '${difference.inSeconds} seconds ago';
+    } else {
+      return 'Just now';
+    }
   } else {
-    return 'Gerade eben';
+    // German format (default)
+    if ((difference.inDays / 365).floor() >= 2) {
+      return 'vor ${(difference.inDays / 365).floor()} Jahren';
+    } else if ((difference.inDays / 365).floor() >= 1) {
+      return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
+    } else if ((difference.inDays / 30).floor() >= 2) {
+      return 'vor ${(difference.inDays / 30).floor()} Monaten';
+    } else if ((difference.inDays / 30).floor() >= 1) {
+      return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
+    } else if ((difference.inDays / 7).floor() >= 2) {
+      return 'vor ${(difference.inDays / 7).floor()} Wochen';
+    } else if ((difference.inDays / 7).floor() >= 1) {
+      return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
+    } else if (difference.inDays >= 2) {
+      return 'vor ${difference.inDays} Tagen';
+    } else if (difference.inDays >= 1) {
+      return (numericDates) ? 'vor 1 Tag' : 'Gestern';
+    } else if (difference.inHours >= 2) {
+      return 'vor ${difference.inHours} Stunden';
+    } else if (difference.inHours >= 1) {
+      return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
+    } else if (difference.inMinutes >= 2) {
+      return 'vor ${difference.inMinutes} Minuten';
+    } else if (difference.inMinutes >= 1) {
+      return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
+    } else if (difference.inSeconds >= 3) {
+      return 'vor ${difference.inSeconds} Sekunden';
+    } else {
+      return 'Gerade eben';
+    }
   }
 }
 
@@ -452,4 +495,63 @@ class MyBehavior extends ScrollBehavior {
       BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
+}
+
+// Function to get consistent viewport fraction across feed tabs
+double getStandardizedViewportFraction() {
+  return 0.7;
+}
+
+// Function to get consistent enlargeFactor across feed tabs
+double getStandardizedEnlargeFactor() {
+  return 0.25;
+}
+
+// Function to get consistent carousel height across feed tabs
+double getStandardizedCarouselHeight() {
+  return AppTheme.cardPadding * 13;
+}
+
+// Debugging helper to print carousel dimensions (add to feed tab files for troubleshooting)
+void debugPrintCarouselDimensions() {
+  print("Carousel standardized dimensions:");
+  print("- Height: ${getStandardizedCarouselHeight()}");
+  print("- Card width: ${getStandardizedCardWidth()}");
+  print("- Card margin: ${getStandardizedCardMargin()}");
+  print("- Viewport fraction: ${getStandardizedViewportFraction()}");
+  print("- Enlarge factor: ${getStandardizedEnlargeFactor()}");
+}
+
+// Function to get standard card width for carousels
+double getStandardizedCardWidth() {
+  return AppTheme.cardPadding * 10;
+}
+
+// Function to get standardized horizontal margin for carousel items
+double getStandardizedCardMargin() {
+  return AppTheme.elementSpacing / 4;
+}
+
+// Function to get standardized carousel options
+CarouselOptions getStandardizedCarouselOptions({
+  bool enableAutoPlay = true,
+  double? customHeight,
+  int autoPlayIntervalSeconds = 5,
+}) {
+  // Print debug info to help diagnose carousel autoplay issues
+  print("Creating carousel options with autoPlay: true (interval: ${autoPlayIntervalSeconds}s)");
+  
+  return CarouselOptions(
+    // Always enable autoPlay regardless of debug mode to ensure consistent behavior
+    autoPlay: true,
+    viewportFraction: getStandardizedViewportFraction(),
+    enlargeCenterPage: true,
+    enlargeFactor: getStandardizedEnlargeFactor(),
+    height: customHeight ?? getStandardizedCarouselHeight(),
+    autoPlayInterval: Duration(seconds: autoPlayIntervalSeconds),
+    autoPlayAnimationDuration: const Duration(milliseconds: 800),
+    autoPlayCurve: Curves.easeInOutCubic,
+    pauseAutoPlayOnTouch: true,
+    scrollPhysics: const BouncingScrollPhysics(),
+  );
 }

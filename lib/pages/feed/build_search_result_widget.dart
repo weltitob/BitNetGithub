@@ -1,4 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -105,7 +107,9 @@ class SearchResultWidget extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return GlassContainer(
-      borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+      width: getStandardizedCardWidth().w, // Standardized width across all carousels
+      margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w), // Standardized margin across all carousels
+      borderRadius: AppTheme.cardRadiusMid.r,
       blur: isDarkMode ? 5 : 2,
       opacity: isDarkMode ? 0.15 : 0.05,
       customColor: isDarkMode 
@@ -193,22 +197,15 @@ class SearchResultWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Consistent spacing at the top
+        SizedBox(height: AppTheme.cardPadding * 1.5.h),
         // Carousel without any title/header
         Container(
           width: screenWidth,
-          height: 300,
+          height: 300.h, // Use ScreenUtil for consistent sizing
           child: CarouselSlider.builder(
-            options: CarouselOptions(
-              autoPlay: true,
-              viewportFraction: 0.6, 
-              enlargeCenterPage: true,
-              enlargeFactor: 0.3,
-              height: 300,
-              autoPlayInterval: Duration(seconds: 5),
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enableInfiniteScroll: true,
-              pageSnapping: true,
+            options: getStandardizedCarouselOptions(
+              autoPlayIntervalSeconds: 5
             ),
             itemCount: users.length,
             itemBuilder: (context, index, realIndex) {
@@ -365,12 +362,14 @@ class SearchResultWidget extends StatelessWidget {
                       },
                     )
                   // Show normal UI when not searching
-                  : ListView(
-                      // Remove the padding from ListView to allow the carousel to extend full width
-                      padding: EdgeInsets.zero,
-                      children: [
-                        // Featured people carousel at the top
-                        _buildFeaturedPeopleCarousel(featuredPeople, context),
+                  : VerticalFadeListView.standardTab(
+                      child: ListView(
+                        // Remove the padding from ListView to allow the carousel to extend full width
+                        padding: EdgeInsets.zero,
+                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        children: [
+                          // Featured people carousel at the top
+                          _buildFeaturedPeopleCarousel(featuredPeople, context),
                         
                         // Regular sections below
                         Padding(
@@ -409,6 +408,7 @@ class SearchResultWidget extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
             );
           });
   }

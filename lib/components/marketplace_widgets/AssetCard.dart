@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
@@ -77,16 +78,18 @@ class _AssetCardState extends State<AssetCard> {
     dynamic firstMediaData =
         widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
 
-    return ClipRRect(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
-        child: GestureDetector(
-          onTap: () {
-            controller.createClicks(widget.postId!);
-            context.push("/asset_screen/${widget.nftName}");
-          },
-          child: GlassContainer(
-            width: 214.w * widget.scale,
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: AppTheme.cardRadiusMid.r,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w * widget.scale),
+          child: GestureDetector(
+            onTap: () {
+              controller.createClicks(widget.postId!);
+              context.push("/asset_screen/${widget.nftName}");
+            },
+            child: GlassContainer(
+            width: getStandardizedCardWidth().w * widget.scale,
             // No fixed height to allow content to determine size
             customShadow:
                 Theme.of(context).brightness == Brightness.light ? [] : null,
@@ -132,15 +135,17 @@ class _AssetCardState extends State<AssetCard> {
 
                   SizedBox(height: AppTheme.elementSpacing.h),
 
-                  // NFT image/content
-                  ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                    child: Container(
-                      height: 150.h * widget.scale, // Reduced height for image area
-                      width: double.infinity,
-                      child: firstMediaData != null 
-                          ? topWidget(firstMediaData.type, firstMediaData)
-                          : Container(color: Colors.grey.withOpacity(0.3)),
+                  // NFT image/content with RepaintBoundary for better performance
+                  RepaintBoundary(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                      child: Container(
+                        height: 160.h * widget.scale, // Increased height for better proportion
+                        width: double.infinity,
+                        child: firstMediaData != null 
+                            ? topWidget(firstMediaData.type, firstMediaData)
+                            : Container(color: Colors.grey.withOpacity(0.3)),
+                      ),
                     ),
                   ),
 
@@ -216,6 +221,7 @@ class _AssetCardState extends State<AssetCard> {
           ),
         ),
       ),
+     ),
     );
   }
 

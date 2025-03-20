@@ -1,5 +1,7 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
@@ -264,25 +266,19 @@ class _AssetsTabState extends State<AssetsTab> {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return bitnetScaffold(
-      body: RepaintBoundary(
+      body: VerticalFadeListView.standardTab(
         child: ListView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           cacheExtent: 1000, // Cache more content for smoother scrolling
           children: [
           
-          // Spacing at the top
-          const SizedBox(height: AppTheme.cardPadding),
+          // Spacing at the top - consistent with other tabs
+          SizedBox(height: AppTheme.cardPadding * 1.5.h),
           
           // Carousel Slider for Trending Assets
           CarouselSlider.builder(
-            options: CarouselOptions(
-              autoPlay: kDebugMode ? false : true,
-              viewportFraction: 0.6, // Match TokensTab settings
-              enlargeCenterPage: true,
-              enlargeFactor: 0.3, // Match TokensTab settings
-              height: 280.h, // Match TokensTab settings
-              autoPlayInterval: const Duration(seconds: 4),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800)
+            options: getStandardizedCarouselOptions(
+              autoPlayIntervalSeconds: 4
             ),
             itemCount: assetData.length,
             itemBuilder: (context, index, _) {
@@ -296,16 +292,19 @@ class _AssetsTabState extends State<AssetsTab> {
                 )
               ];
               
-              return AssetCard(
-                nftName: asset['name'],
-                nftMainName: asset['collection'],
-                cryptoText: asset['price'],
-                medias: assetMedia,
-                hasPrice: true,
-                hasLikeButton: true,
-                hasLiked: false,
-                postId: 'trending-$index',
-                scale: 1.0,
+              // Wrap in RepaintBoundary for better performance
+              return RepaintBoundary(
+                child: AssetCard(
+                  nftName: asset['name'],
+                  nftMainName: asset['collection'],
+                  cryptoText: asset['price'],
+                  medias: assetMedia,
+                  hasPrice: true,
+                  hasLikeButton: true,
+                  hasLiked: false,
+                  postId: 'trending-$index',
+                  scale: 1.0,
+                ),
               );
             },
           ),
