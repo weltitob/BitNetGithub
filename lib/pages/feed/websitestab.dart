@@ -27,6 +27,18 @@ class WebsitesTab extends StatefulWidget {
 }
 
 class _WebsitesTabState extends State<WebsitesTab> {
+  // Simple, non-animated placeholder for favicon/image loading
+  // Much more efficient than animated progress indicators
+  Widget _buildImagePlaceholder({double size = 24.0}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.2),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
   List<WebsiteData> websites = [
     WebsiteData(
         name: "BitreFill",
@@ -221,7 +233,7 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                               fit: BoxFit.fill,
                                               placeholderBuilder:
                                                   (BuildContext context) =>
-                                                      dotProgress(context),
+                                                      _buildImagePlaceholder(size: 24.0),
                                             );
                                           } else {
                                             return Image.network(
@@ -236,12 +248,12 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                                   loadingProgress) {
                                                 if (loadingProgress == null)
                                                   return child;
-                                                return dotProgress(context);
+                                                return _buildImagePlaceholder();
                                               },
                                             );
                                           }
                                         } else {
-                                          return dotProgress(context);
+                                          return _buildImagePlaceholder(size: 24.0);
                                         }
                                       },
                                     );
@@ -273,7 +285,7 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                             );
                                           }
                                         } else {
-                                          return dotProgress(context);
+                                          return _buildImagePlaceholder(size: 24.0);
                                         }
                                       },
                                     );
@@ -452,7 +464,7 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                         fit: BoxFit.fill,
                                         placeholderBuilder:
                                             (BuildContext context) =>
-                                                dotProgress(context),
+                                                _buildImagePlaceholder(size: 24.0),
                                       );
                                     } else {
                                       return Image.network(
@@ -466,12 +478,12 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                             (context, child, loadingProgress) {
                                           if (loadingProgress == null)
                                             return child;
-                                          return dotProgress(context);
+                                          return _buildImagePlaceholder(size: 24.0);
                                         },
                                       );
                                     }
                                   } else {
-                                    return dotProgress(context);
+                                    return _buildImagePlaceholder(size: 24.0);
                                   }
                                 },
                               );
@@ -502,7 +514,7 @@ class _WebsitesTabState extends State<WebsitesTab> {
                                       );
                                     }
                                   } else {
-                                    return dotProgress(context);
+                                    return _buildImagePlaceholder(size: 20.0);
                                   }
                                 },
                               );
