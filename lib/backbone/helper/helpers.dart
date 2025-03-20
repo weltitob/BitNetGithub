@@ -509,7 +509,7 @@ double getStandardizedEnlargeFactor() {
 
 // Function to get consistent carousel height across feed tabs
 double getStandardizedCarouselHeight() {
-  return AppTheme.cardPadding * 12.5;
+  return AppTheme.cardPadding * 13;
 }
 
 // Debugging helper to print carousel dimensions (add to feed tab files for troubleshooting)
