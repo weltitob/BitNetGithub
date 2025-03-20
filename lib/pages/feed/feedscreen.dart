@@ -115,7 +115,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   //     3, // You can customize this based on your needs
                                   onChanged: (v) {
                                     setState(() {});
-                                    if (controller.tabController!.index == 3) { // Updated from 2 to 3 (People)
+                                    if (controller.tabController!.index == 3) { // People
                                       controller.searchresults = controller
                                           .searchresults
                                           .where((e) => e.userData.username

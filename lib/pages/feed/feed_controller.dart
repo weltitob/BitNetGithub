@@ -48,7 +48,6 @@ class FeedController extends GetxController
       final controllerTransaction = Get.find<TransactionController>();
       final homeController = Get.find<HomeController>();
       if (query.isNotEmpty &&
-          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           !query.startsWith('00') &&
           isValidBitcoinTransactionID(query)) {
         controllerTransaction.txID = query.toString();
@@ -64,13 +63,11 @@ class FeedController extends GetxController
         context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
-          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           containsSixIntegers(query)) {
         homeController.blockHeight = int.parse(query);
         context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
-          tabController!.index == 1 && // Updated from 0 to 1 (Tokens)
           isValidBitcoinAddressHash(query)) {
         controllerTransaction.getAddressComponent(query);
         controllerTransaction.addressId = query;
@@ -81,7 +78,7 @@ class FeedController extends GetxController
           ),
         );
       }
-      if (tabController!.index == 3) { // Updated from 2 to 3 (People)
+      if (tabController!.index == 3) { // People
         searchresults = searchresultsMain;
         update();
       }

@@ -951,14 +951,17 @@ class _BuyBtcSheetState extends State<BuyBtcSheet> {
                   SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),
-                  AmountWidget(
-                      enabled: () => true,
-                      btcController: btcController,
-                      satController: satController,
-                      currController: currController,
-                      focusNode: focusNode,
-                      context: context,
-                      autoConvert: true),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    child: AmountWidget(
+                        enabled: () => true,
+                        btcController: btcController,
+                        satController: satController,
+                        currController: currController,
+                        focusNode: focusNode,
+                        context: context,
+                        autoConvert: true),
+                  ),
                   SizedBox(
                     height: 30,
                   )
