@@ -44,13 +44,27 @@ class ColoredPriceWidget extends StatelessWidget {
         priceValue = 0;
       }
       
+      // Force dependency on timeframe changes for proper updates
+      controller.timeframeChangeCounter.value;
+      
       // Get Bitcoin price from controller
       final chartLine = controller.chartLines.value;
       final bitcoinPrice = chartLine?.price ?? 0;
       
       // Calculate satoshi value (if price is in fiat)
       int satoshiValue = 0;
-      if (bitcoinPrice > 0 && currencySymbol != 'sat') {
+      
+      // Initialize with a default non-zero value if we're showing BTC and price is missing
+      if (controller.coin.value && priceValue <= 0) {
+        // If we're in satoshi mode but don't have the price yet, show a placeholder
+        if (controller.totalBalanceSAT.value > 0) {
+          // If we have the total balance, use a proportion of it as placeholder
+          satoshiValue = (controller.totalBalanceSAT.value * 0.01).round();
+          satoshiValue = satoshiValue > 0 ? satoshiValue : 1; // Ensure at least 1 sat shows
+        } else {
+          satoshiValue = 1; // Default to 1 sat if nothing else is available
+        }
+      } else if (bitcoinPrice > 0 && currencySymbol != 'sat') {
         // Convert fiat amount to BTC then to satoshis
         double btcAmount = priceValue / bitcoinPrice;
         satoshiValue = (btcAmount * 100000000).round();
@@ -58,8 +72,8 @@ class ColoredPriceWidget extends StatelessWidget {
         // If it's a fiat currency but we don't have a bitcoin price
         satoshiValue = 0;
       } else {
-        // If it's already in sats
-        satoshiValue = priceValue.round();
+        // If it's already in sats or other cases
+        satoshiValue = priceValue > 0 ? priceValue.round() : 0;
       }
       
       String satoshiText = satoshiValue.toString();
