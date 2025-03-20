@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -129,10 +130,10 @@ class _WebsitesTabState extends State<WebsitesTab> {
           CarouselSlider.builder(
             options: CarouselOptions(
                 autoPlay: kDebugMode ? false : true,
-                viewportFraction: 0.85, // Wider cards for better readability
+                viewportFraction: 0.7, // Standardized across all tabs
                 enlargeCenterPage: true,
-                enlargeFactor: 0.2,
-                height: 320.h, // Increased height for description
+                enlargeFactor: 0.25, // Standardized across all tabs
+                height: 300.h, // Standardized across all tabs
                 autoPlayInterval: const Duration(seconds: 5),
                 autoPlayAnimationDuration: const Duration(milliseconds: 800)),
             itemCount: 3,
@@ -147,7 +148,8 @@ class _WebsitesTabState extends State<WebsitesTab> {
                   });
                 },
                 child: GlassContainer(
-                  width: size.width - 100.w,
+                  width: getStandardizedCardWidth().w,
+                  margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
                   customShadow: isDarkMode ? [] : null,
                   borderRadius:AppTheme.cardRadiusMid.r,
                   child: Padding(

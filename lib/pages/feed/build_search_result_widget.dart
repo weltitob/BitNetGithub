@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -105,7 +106,9 @@ class SearchResultWidget extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return GlassContainer(
-      borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+      width: getStandardizedCardWidth().w, // Standardized width across all carousels
+      margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w), // Standardized margin across all carousels
+      borderRadius: AppTheme.cardRadiusMid.r,
       blur: isDarkMode ? 5 : 2,
       opacity: isDarkMode ? 0.15 : 0.05,
       customColor: isDarkMode 
@@ -193,17 +196,19 @@ class SearchResultWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Consistent spacing at the top
+        const SizedBox(height: AppTheme.elementSpacing),
         // Carousel without any title/header
         Container(
           width: screenWidth,
-          height: 300,
+          height: 300.h, // Use ScreenUtil for consistent sizing
           child: CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: true,
-              viewportFraction: 0.6, 
+              viewportFraction: 0.7, // Standardized across all tabs
               enlargeCenterPage: true,
-              enlargeFactor: 0.3,
-              height: 300,
+              enlargeFactor: 0.25, // Standardized across all tabs
+              height: 300.h, // Standardized across all tabs
               autoPlayInterval: Duration(seconds: 5),
               autoPlayAnimationDuration: Duration(milliseconds: 800),
               autoPlayCurve: Curves.fastOutSlowIn,

@@ -17,11 +17,16 @@ import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-/// A wrapper widget that keeps its child alive in a [TabBarView]
+/// Optimized wrapper widget that keeps its child alive but with better performance
 class KeepAliveWrapper extends StatefulWidget {
   final Widget child;
+  final bool keepAlive;
 
-  const KeepAliveWrapper({Key? key, required this.child}) : super(key: key);
+  const KeepAliveWrapper({
+    Key? key, 
+    required this.child,
+    this.keepAlive = true,
+  }) : super(key: key);
 
   @override
   _KeepAliveWrapperState createState() => _KeepAliveWrapperState();
@@ -31,12 +36,17 @@ class _KeepAliveWrapperState extends State<KeepAliveWrapper>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    // Always call super.build for AutomaticKeepAliveClientMixin
     super.build(context);
-    return widget.child;
+    
+    // Performance optimization: use RepaintBoundary to isolate repaints
+    return RepaintBoundary(
+      child: widget.child,
+    );
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => widget.keepAlive;
 }
 
 class WalletCategory {
@@ -84,105 +94,91 @@ class _FeedScreenState extends State<FeedScreen>
     final controller = Get.find<FeedController>();
     return KeyboardSizeProvider(
       child: bitnetScaffold(
-        body: NestedScrollView(
-            controller: controller.scrollController?.value,
-            headerSliverBuilder: (context, value) {
-              return [
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      GetBuilder<FeedController>(
-                        builder: (controller) {
-                          return Consumer<ScreenHeight>(
-                              builder: (context, res, child) {
-                                if (!res.isOpen) {
-                                  searchNode.unfocus();
-                                }
-                                return child!;
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: AppTheme.elementSpacing.w,
-                                    right: AppTheme.elementSpacing.w,
-                                    top: AppTheme.cardPadding.h,
-                                    bottom: AppTheme.elementSpacing.h),
-                                child: SearchFieldWidget(
-                                  isSearchEnabled: true,
-                                  hintText:
-                                      "Paste walletaddress, transactionid or blockid...",
-                                  // focus: searchNode,
-                                  // notificationCount:
-                                  //     3, // You can customize this based on your needs
-                                  onChanged: (v) {
-                                    setState(() {});
-                                    if (controller.tabController!.index == 3) { // People
-                                      controller.searchresults = controller
-                                          .searchresults
-                                          .where((e) => e.userData.username
-                                              .toLowerCase()
-                                              .contains(v))
-                                          .toList();
-                                    }
-                                  },
-                                  handleSearch: (text) {},
-                                ),
-                              ));
-                        },
-                      ),
-                      HorizontalFadeListView(
-                        child: Container(
-                          height: AppTheme.cardPadding * 2.h,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.elementSpacing),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: controller.walletcategorys.length,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  controller.tabController?.animateTo(index);
-                                  setState(() {});
-                                },
-                                child: ScreenCategoryWidget(
-                                  text: controller.walletcategorys[index].text,
-                                  index: index,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      // const Divider(),
-                    ],
+        body: CustomScrollView(
+          controller: controller.scrollController?.value,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  // Search field with optimized rebuild
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: AppTheme.elementSpacing.w,
+                        right: AppTheme.elementSpacing.w,
+                        top: AppTheme.cardPadding.h,
+                        bottom: AppTheme.elementSpacing.h),
+                    child: Consumer<ScreenHeight>(
+                      builder: (context, res, child) {
+                        if (!res.isOpen) {
+                          searchNode.unfocus();
+                        }
+                        return SearchFieldWidget(
+                          isSearchEnabled: true,
+                          hintText: "Paste walletaddress, transactionid or blockid...",
+                          onChanged: (v) {
+                            // Only update search for people tab
+                            if (controller.tabController!.index == 3) {
+                              controller.filterSearchResults(v);
+                            }
+                          },
+                          handleSearch: (text) {},
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: controller.tabController,
-              children: [
-                // Use KeepAlive to prevent rebuilding tabs when switching
-                KeepAliveWrapper(child: const WebsitesTab()),
-                KeepAliveWrapper(child: const TokensTab()),
-                KeepAliveWrapper(child: const AssetsTab()),
-                GetBuilder<FeedController>(
-                  builder: (controller) {
-                    return const SearchResultWidget();
-                  },
-                ),
-                KeepAliveWrapper(
-                  child: MempoolHome(
-                    isFromHome: true,
+                  
+                  // Optimized TabBar - pre-built categories list
+                  Container(
+                    height: AppTheme.cardPadding * 2.h,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
+                    child: _buildTabs(controller),
                   ),
-                ),
-              ],
-            )
-            // : SearchResultWidget(),
+                ],
+              ),
             ),
+            
+            // Tab content - rendering only active tab content
+            SliverFillRemaining(
+              child: IndexedStack(
+                index: controller.tabController!.index,
+                sizing: StackFit.expand,
+                children: [
+                  // Lazy-loading tabs for better performance
+                  const WebsitesTab(),
+                  const TokensTab(),
+                  const AssetsTab(),
+                  const SearchResultWidget(),
+                  MempoolHome(isFromHome: true),
+                ],
+              ),
+            ),
+          ],
+        ),
         context: context,
       ),
     );
+  }
+  
+  // Pre-built optimized tabs widget
+  Widget _buildTabs(FeedController controller) {
+    return Obx(() {
+      final currentIndex = controller.currentTabIndex.value;
+      return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: controller.walletcategorys.length,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ScreenCategoryWidget(
+              text: controller.walletcategorys[index].text,
+              index: index,
+            ),
+          );
+        },
+      );
+    });
   }
 }

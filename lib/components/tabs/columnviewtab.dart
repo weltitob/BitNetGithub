@@ -37,29 +37,30 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
   
   // Helper method to decide if a value is a block height or Unix timestamp
   DateTime _convertLockTimeToDateTime(int lockTime) {
+    // Special case for zero or very small values (likely uninitialized)
+    if (lockTime <= 1) {
+      return DateTime.now();
+    }
+    
     // Current timestamp in seconds
     final int nowInSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     
-    // If lockTime is close to current timestamp (within 10 years), treat as Unix timestamp
-    if (nowInSeconds - lockTime < 315360000) { // 10 years in seconds
+    // If lockTime is within a reasonable range for a recent Unix timestamp
+    // (from 2015 to present)
+    if (lockTime > 1420070400 && lockTime <= nowInSeconds) { // Jan 1, 2015 to now
       return DateTime.fromMillisecondsSinceEpoch(lockTime * 1000);
     }
     
-    // Handle very recent block heights (last 2 years)
-    // Current estimated block height (~830,000 as of early 2025)
-    if (lockTime > 750000 && lockTime < 900000) {
+    // Handle Bitcoin block heights in the expected range
+    // Modern Bitcoin blocks are >750,000 as of early 2025
+    if (lockTime >= 1 && lockTime < 1000000) {
       return _convertBlockHeightToDateTime(lockTime);
     }
     
-    // If lockTime is very small, it's likely a block height from early days
-    if (lockTime < 100000) {
-      return _convertBlockHeightToDateTime(lockTime);
-    }
-    
-    // For other values, use a more recent reference point
-    // This handles newer assets with more recent timestamps
-    final DateTime recentReferenceDate = DateTime.now().subtract(const Duration(days: 90));
-    return recentReferenceDate;
+    // For any other values that don't make sense as either a timestamp or block height
+    // Return a recent time as fallback
+    // This handles edge cases without showing an unreasonable date
+    return DateTime.now().subtract(const Duration(hours: 2));
   }
   
   @override
@@ -115,6 +116,8 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                           rockets: {},
                           medias: meta != null ? meta.toMedias() : [],
                           timestamp: _convertLockTimeToDateTime(asset.lockTime ?? 0),
+                          // Add original lockTime for debugging
+                          debugLockTime: asset.lockTime ?? 0,
                         ),
                       );
                     } else {

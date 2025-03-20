@@ -270,17 +270,17 @@ class _AssetsTabState extends State<AssetsTab> {
           cacheExtent: 1000, // Cache more content for smoother scrolling
           children: [
           
-          // Spacing at the top
+          // Spacing at the top - consistent with other tabs
           const SizedBox(height: AppTheme.cardPadding),
           
           // Carousel Slider for Trending Assets
           CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: kDebugMode ? false : true,
-              viewportFraction: 0.6, // Match TokensTab settings
+              viewportFraction: 0.7, // Standardized across all tabs
               enlargeCenterPage: true,
-              enlargeFactor: 0.3, // Match TokensTab settings
-              height: 280.h, // Match TokensTab settings
+              enlargeFactor: 0.25, // Standardized across all tabs
+              height: 300.h, // Standardized across all tabs
               autoPlayInterval: const Duration(seconds: 4),
               autoPlayAnimationDuration: const Duration(milliseconds: 800)
             ),

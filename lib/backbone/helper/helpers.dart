@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:bip39/bip39.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
@@ -286,16 +287,10 @@ String displayTimeAgoFromInt(int time, {bool numericDates = true, String languag
   final DateTime date2 = DateTime.now();
   final Duration difference = date2.difference(date);
 
-  // Validate the date (handle future dates or very old dates)
+  // Validate the date (handle future dates)
   if (date.isAfter(date2)) {
     // Future date (invalid) - show current time instead
     return language == 'en' ? 'Just now' : 'Gerade eben';
-  }
-  
-  // If more than 5 years ago, it's likely a timestamp mistake
-  if ((difference.inDays / 365).floor() > 5) {
-    // Show a reasonable fallback
-    return language == 'en' ? 'Recently' : 'Kürzlich';
   }
 
   // Language-based formatting
@@ -498,4 +493,29 @@ class MyBehavior extends ScrollBehavior {
       BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
+}
+
+// Function to get consistent viewport fraction across feed tabs
+double getStandardizedViewportFraction() {
+  return 0.7;
+}
+
+// Function to get consistent enlargeFactor across feed tabs
+double getStandardizedEnlargeFactor() {
+  return 0.25;
+}
+
+// Function to get consistent carousel height across feed tabs
+double getStandardizedCarouselHeight() {
+  return AppTheme.cardPadding * 12;
+}
+
+// Function to get standard card width for carousels
+double getStandardizedCardWidth() {
+  return AppTheme.cardPadding * 10;
+}
+
+// Function to get standardized horizontal margin for carousel items
+double getStandardizedCardMargin() {
+  return AppTheme.elementSpacing / 4;
 }

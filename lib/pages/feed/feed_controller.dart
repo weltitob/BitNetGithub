@@ -16,30 +16,69 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  // Observable properties for reactive UI updates
+  RxInt currentTabIndex = 0.obs;
+  RxBool isLoading = false.obs;
+  RxBool isSearching = false.obs;
+  RxString searchQuery = ''.obs;
+  
+  // Cached data
   QuerySnapshot? searchResultsFuture;
-  List<UserSearchResult> searchresults = [];
+  RxList<UserSearchResult> searchresults = <UserSearchResult>[].obs;
   List<UserSearchResult> searchresultsMain = [];
-  UserSearchResult? searchResult;
-  handleSearchPeople(String query) async {
+  
+  // Filter search results without rebuilding entire widget tree
+  void filterSearchResults(String query) {
+    searchQuery.value = query.toLowerCase();
+    if (query.isEmpty) {
+      searchresults.value = List.from(searchresultsMain);
+    } else {
+      searchresults.value = searchresultsMain
+          .where((result) => result.userData.username
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+  
+  // Optimized search people with proper loading states
+  Future<void> handleSearchPeople(String query) async {
+    if (searchresultsMain.isNotEmpty && query.isEmpty) {
+      // Use cached results if available
+      searchresults.value = searchresultsMain;
+      return;
+    }
+    
     try {
-      QuerySnapshot users = await usersCollection.get();
-      searchResultsFuture = users;
-      searchResultsFuture!.docs.forEach(
-        (doc) {
-          UserData user = UserData.fromDocument(doc);
-          searchResult = UserSearchResult(
-            onTap: () async {},
-            userData: user,
-          );
-          searchresults.add(searchResult!);
-          searchresultsMain = searchresults;
-        },
-      );
-      update();
+      isLoading.value = true;
+      
+      // Clear existing results for a fresh search
+      searchresults.clear();
+      
+      // Fetch data if not already cached
+      if (searchResultsFuture == null) {
+        searchResultsFuture = await usersCollection.get();
+      }
+      
+      // Process results
+      final results = <UserSearchResult>[];
+      for (var doc in searchResultsFuture!.docs) {
+        UserData user = UserData.fromDocument(doc);
+        results.add(UserSearchResult(
+          onTap: () async {},
+          userData: user,
+        ));
+      }
+      
+      // Store and filter results
+      searchresultsMain = results;
+      filterSearchResults(query);
+      
     } catch (e) {
       searchResultsFuture = null;
-      update();
       print("Error searching for user: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -79,8 +118,7 @@ class FeedController extends GetxController
         );
       }
       if (tabController!.index == 3) { // People
-        searchresults = searchresultsMain;
-        update();
+        searchresults.value = List.from(searchresultsMain);
       }
     } catch (e) {
       searchResultsFuture = null;
@@ -118,43 +156,90 @@ class FeedController extends GetxController
     )
   ];
 
+  // Properly typed controllers for better performance
   TabController? tabController;
   Rx<ScrollController>? scrollController;
   late final ScrollController scrollControllerColumn;
+  
+  // Per-tab scroll position cache to maintain scroll positions
+  final Map<int, double> tabScrollPositions = {};
+  
+  // Observable states
   RxBool fixedScroll = false.obs;
+  RxBool isTabSwitching = false.obs;
+  
+  // Save tab scroll position when changing tabs
+  void saveScrollPosition(int tabIndex) {
+    if (scrollController?.value.hasClients == true) {
+      tabScrollPositions[tabIndex] = scrollController!.value.position.pixels;
+    }
+  }
+  
+  // Restore scroll position when returning to a tab
+  void restoreScrollPosition(int tabIndex) {
+    if (scrollController?.value.hasClients == true) {
+      final savedPosition = tabScrollPositions[tabIndex] ?? 0.0;
+      if (savedPosition > 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController!.value.jumpTo(savedPosition);
+        });
+      }
+    }
+  }
 
   @override
   void onInit() {
     super.onInit();
-    handleSearchPeople('');
+    // Initialize tab controller with listener for reactive updates
     tabController = TabController(length: 5, vsync: this);
+    tabController!.addListener(() {
+      // Update observable index for reactive UI
+      currentTabIndex.value = tabController!.index;
+      // Scroll to top on tab change
+      smoothScrollToTop();
+    });
+    
+    // Initialize scroll controllers with optimized listeners
     scrollControllerColumn = ScrollController();
-    scrollController?.value = ScrollController();
-    scrollController?.value.addListener(scrollListener);
-    tabController?.addListener(smoothScrollToTop);
-    getData();
+    scrollController = ScrollController().obs;
+    
+    // Set up optimized scroll listeners
+    scrollController!.value.addListener(_optimizedScrollListener);
+    
+    // Load initial data - lazy load for better performance
+    Future.microtask(() => handleSearchPeople(''));
+    Future.microtask(() => getData());
   }
 
   @override
   void dispose() {
-    super.dispose();
+    // Clean up resources properly
     scrollControllerColumn.dispose();
+    tabController?.removeListener(() {});
     tabController?.dispose();
+    scrollController?.value.removeListener(_optimizedScrollListener);
     scrollController?.value.dispose();
+    super.dispose();
   }
 
-  scrollListener() {
-    if (fixedScroll.value) {
-      scrollController?.value.jumpTo(0);
+  // Optimized scroll listener - only perform work when needed
+  void _optimizedScrollListener() {
+    if (fixedScroll.value && scrollController!.value.position.pixels > 0) {
+      scrollController!.value.jumpTo(0);
     }
   }
 
-  smoothScrollToTop() {
-    scrollController?.value.animateTo(
-      0,
-      duration: const Duration(microseconds: 300),
-      curve: Curves.ease,
-    );
+  // Improved scroll to top with proper animation duration
+  void smoothScrollToTop() {
+    if (scrollController!.value.hasClients) {
+      scrollController!.value.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+    
+    // Only fix scroll for specific tabs
     fixedScroll.value = tabController?.index == 0;
   }
 

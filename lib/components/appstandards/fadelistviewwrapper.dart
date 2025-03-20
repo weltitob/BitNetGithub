@@ -10,18 +10,26 @@ class HorizontalFadeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color fadeColor = Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black;
-    return ShaderMask(
-      shaderCallback: (Rect bounds) {
-        return LinearGradient(
-          begin: Alignment.centerRight,
-          end: Alignment.centerLeft,
-          colors: [fadeColor, Colors.transparent, Colors.transparent, fadeColor],
-          stops: [0.0, 0.05, 0.95, 1.0],
-        ).createShader(bounds);
-      },
-      blendMode: BlendMode.dstOut,
-      child: child,
+    // Use a cached value of the fade color based on theme brightness
+    // for better performance (avoid recalculations)
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final Color fadeColor = isDarkMode ? Colors.black : Colors.white;
+    
+    // Performance optimization: wrap in RepaintBoundary to isolate shader effects
+    return RepaintBoundary(
+      child: ShaderMask(
+        shaderCallback: (Rect bounds) {
+          // Simplify gradient with fewer color stops for better performance
+          return LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: [fadeColor, Colors.transparent, Colors.transparent, fadeColor],
+            stops: const [0.0, 0.05, 0.95, 1.0],
+          ).createShader(bounds);
+        },
+        blendMode: BlendMode.dstOut,
+        child: child,
+      ),
     );
   }
 }

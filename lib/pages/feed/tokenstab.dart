@@ -1,4 +1,5 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
@@ -160,10 +161,10 @@ class _TokensTabState extends State<TokensTab> {
           CarouselSlider.builder(
             options: CarouselOptions(
               autoPlay: kDebugMode ? false : true,
-              viewportFraction: 0.6, // Changed to match people tab
+              viewportFraction: 0.7, // Changed to match people tab
               enlargeCenterPage: true,
-              enlargeFactor: 0.3, // Added to match people tab spacing
-              height: 280.h, // Increased height for new elements
+              enlargeFactor: 0.25, // Added to match people tab spacing
+              height: 300.h, // Increased height for new elements
               autoPlayInterval: const Duration(seconds: 4),
               autoPlayAnimationDuration: const Duration(milliseconds: 800)
             ),
@@ -173,7 +174,8 @@ class _TokensTabState extends State<TokensTab> {
               final chartData = token['chartData'] as List<ChartLine>;
               
               return GlassContainer(
-                width: size.width - 150.w, // Increased from 200.w
+                width: getStandardizedCardWidth().w,
+                margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
                 customShadow: isDarkMode ? [] : null,
                 child: Padding(
                   padding: EdgeInsets.symmetric(

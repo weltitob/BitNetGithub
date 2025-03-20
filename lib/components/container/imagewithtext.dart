@@ -29,40 +29,33 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: margin,
-      decoration: BoxDecoration(
-        boxShadow: customShadow != null
-            ? customShadow!
-            : Theme.of(context).brightness == Brightness.light
-                ? [] // Define this boxShadow in your AppTheme
-                : [AppTheme.boxShadowSuperSmall], // Optionally, define a different shadow for dark mode
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Container(
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-            color: customColor ??
-                ( Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Colors.white.withOpacity(opacity)),
-            //went back to old approch
-            //color:  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.4),
-            // gradient: LinearGradient(
-            //   begin: Alignment.topRight,
-            //   end: Alignment.bottomRight,
-            //   colors: [
-            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
-            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
-            //   ],
-            // ),
-            borderRadius: borderRadius,
-            // border: GradientBoxBorder(
-            //   borderRadius: borderRadius,
-            //   borderWidth: borderThickness,
-            // ),
+    // Performance optimization: use RepaintBoundary to isolate repaints
+    return RepaintBoundary(
+      child: Container(
+        margin: margin,
+        decoration: BoxDecoration(
+          // Performance optimization: only apply shadows when needed
+          boxShadow: customShadow != null
+              ? customShadow!
+              : Theme.of(context).brightness == Brightness.light
+                  ? [] // No shadows in light mode
+                  : [AppTheme.boxShadowSuperSmall], // Minimal shadow in dark mode
+        ),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              // Simplified color calculation for better performance
+              color: customColor ??
+                  (Theme.of(context).brightness == Brightness.light 
+                      ? Colors.white.withOpacity(0.9) 
+                      : Colors.white.withOpacity(opacity)),
+              borderRadius: borderRadius,
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
