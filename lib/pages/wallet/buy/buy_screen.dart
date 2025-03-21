@@ -28,7 +28,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:moonpay_flutter/moonpay_flutter.dart';
+import 'package:bitnet/services/moonpay.dart'
+  if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
 import 'package:provider/provider.dart';
 
 class BuyScreen extends StatefulWidget {

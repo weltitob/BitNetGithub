@@ -38,7 +38,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:moonpay_flutter/moonpay_flutter.dart';
+import 'package:bitnet/services/moonpay.dart'
+  if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
 
 import '../../../backbone/auth/auth.dart';
 

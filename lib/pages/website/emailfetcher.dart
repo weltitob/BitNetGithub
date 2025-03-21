@@ -11,9 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seo/seo.dart';
 
 class EmailFetcherLandingPage extends StatefulWidget {
-  final WebsiteLandingPageController controller;
+  final WebsiteLandingPageController? controller;
 
-  const EmailFetcherLandingPage({super.key, required this.controller});
+  const EmailFetcherLandingPage({super.key, this.controller});
 
   @override
   State<EmailFetcherLandingPage> createState() => _EmailFetcherLandingPageState();

@@ -8,6 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # Include moonpay_flutter only for mobile platforms
   moonpay_flutter:
     path: moonpay_flutter/
   intl: any
