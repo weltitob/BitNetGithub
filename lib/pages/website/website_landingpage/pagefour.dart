@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/pages/website/emailfetcher.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -198,7 +199,33 @@ class _PageFourState extends State<PageFour> {
               title: "${L10n.of(context)!.download} .apk",
               buttonType: ButtonType.solid,
               onTap: () async {
-                context.go('/authhome/pinverification');
+                // Original redirect commented out
+                // context.go('/authhome/pinverification');
+                
+                // Show early bird dialog instead
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                    return Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: EdgeInsets.symmetric(
+                        horizontal: isSuperSmallScreen ? 20 : 40,
+                        vertical: isSuperSmallScreen ? 24 : 40,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                          child: const EmailFetcherLandingPage(),
+                        ),
+                      ),
+                    );
+                  },
+                );
               }),
         ),
       ],
@@ -300,7 +327,33 @@ class _PageFourState extends State<PageFour> {
                   title: "Google Play",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    context.go('/authhome/pinverification');
+                    // Original redirect commented out
+                    // context.go('/authhome/pinverification');
+                    
+                    // Show early bird dialog instead
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: EdgeInsets.symmetric(
+                            horizontal: isSuperSmallScreen ? 20 : 40,
+                            vertical: isSuperSmallScreen ? 24 : 40,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                              child: const EmailFetcherLandingPage(),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   }),
             ),
       const SizedBox(
@@ -320,7 +373,33 @@ class _PageFourState extends State<PageFour> {
                   title: "Apple Store",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    context.go('/authhome/pinverification');
+                    // Original redirect commented out
+                    // context.go('/authhome/pinverification');
+                    
+                    // Show early bird dialog instead
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: EdgeInsets.symmetric(
+                            horizontal: isSuperSmallScreen ? 20 : 40,
+                            vertical: isSuperSmallScreen ? 24 : 40,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                              child: const EmailFetcherLandingPage(),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   }),
             ),
       isIntermediateScreen
@@ -407,7 +486,33 @@ class DownloadAPKButton extends StatelessWidget {
             title: "${L10n.of(context)!.download} .apk",
             buttonType: ButtonType.solid,
             onTap: () async {
-              context.go('/authhome/pinverification');
+              // Original redirect commented out
+              // context.go('/authhome/pinverification');
+              
+              // Show early bird dialog instead
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                  return Dialog(
+                    backgroundColor: Colors.transparent,
+                    insetPadding: EdgeInsets.symmetric(
+                      horizontal: isSuperSmallScreen ? 20 : 40,
+                      vertical: isSuperSmallScreen ? 24 : 40,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                        child: const EmailFetcherLandingPage(),
+                      ),
+                    ),
+                  );
+                },
+              );
             },
           ),
         ),
@@ -541,7 +646,33 @@ class DownloadFromStores extends StatelessWidget {
                   title: "Google Play",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    context.go('/authhome/pinverification');
+                    // Original redirect commented out
+                    // context.go('/authhome/pinverification');
+                    
+                    // Show early bird dialog instead
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: EdgeInsets.symmetric(
+                            horizontal: isSuperSmallScreen ? 20 : 40,
+                            vertical: isSuperSmallScreen ? 24 : 40,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                              child: const EmailFetcherLandingPage(),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ),
@@ -559,7 +690,33 @@ class DownloadFromStores extends StatelessWidget {
                   title: "Apple Store",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    context.go('/authhome/pinverification');
+                    // Original redirect commented out
+                    // context.go('/authhome/pinverification');
+                    
+                    // Show early bird dialog instead
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: EdgeInsets.symmetric(
+                            horizontal: isSuperSmallScreen ? 20 : 40,
+                            vertical: isSuperSmallScreen ? 24 : 40,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                              child: const EmailFetcherLandingPage(),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ),

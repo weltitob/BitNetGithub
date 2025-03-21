@@ -4010,10 +4010,10 @@ class S {
     );
   }
 
-  /// `We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.`
+  /// `Let's bring Bitcoin to the future.`
   String get weAreGrowingBitcoin {
     return Intl.message(
-      'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      'Let\'s bring Bitcoin to the future.',
       name: 'weAreGrowingBitcoin',
       desc: '',
       args: [],

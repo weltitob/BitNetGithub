@@ -90,7 +90,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: bigtextWidth + AppTheme.cardPadding,
                       child: SeoText(
-                        "Don’t get fucked. Get ahead with BitNet.", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
+                        "Bitcoin for Everyone, Everywhere", // Updated headline
                         tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,

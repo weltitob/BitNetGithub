@@ -1480,7 +1480,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Warning!"),
         "wasDirectChatDisplayName": m76,
         "weAreGrowingBitcoin": MessageLookupByLibrary.simpleMessage(
-            "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future."),
+            "Let\'s bring Bitcoin to the future."),
         "weAreLight": MessageLookupByLibrary.simpleMessage(
             "We are the light that helps others see Bitcoin."),
         "weBelieve": MessageLookupByLibrary.simpleMessage(

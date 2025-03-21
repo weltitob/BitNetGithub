@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/pages/website/emailfetcher.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -99,7 +100,33 @@ class bitnetWebsiteAppBar extends StatelessWidget
                         color: AppTheme.white90,
                       ),
                       onTap: () {
-                        context.go('/authhome');
+                        // Original redirect to app commented out
+                        // context.go('/authhome');
+                        
+                        // Show early bird dialog instead
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                            return Dialog(
+                              backgroundColor: Colors.transparent,
+                              insetPadding: EdgeInsets.symmetric(
+                                horizontal: isSuperSmallScreen ? 20 : 40,
+                                vertical: isSuperSmallScreen ? 24 : 40,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                  child: const EmailFetcherLandingPage(),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                   ),

@@ -6,6 +6,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/emailfetcher.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,33 @@ class _PageTwoState extends State<PageTwo> {
                         child: LongButtonWidget(
                             title: L10n.of(context)!.register,
                             onTap: () async {
-                              context.go('/authhome/pinverification');
+                              // Original redirect commented out
+                              // context.go('/authhome/pinverification');
+                              
+                              // Show early bird dialog instead
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
+                                  return Dialog(
+                                    backgroundColor: Colors.transparent,
+                                    insetPadding: EdgeInsets.symmetric(
+                                      horizontal: isSuperSmallScreen ? 20 : 40,
+                                      vertical: isSuperSmallScreen ? 24 : 40,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                        child: const EmailFetcherLandingPage(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
                             }),
                       ),
                     ],
