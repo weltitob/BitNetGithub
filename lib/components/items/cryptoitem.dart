@@ -210,7 +210,7 @@ class _CryptoItemState extends State<CryptoItem> {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => context.go('/wallet/bitcoinscreen'),
+              onTap: () => context.push('/wallet/bitcoinscreen'),
             ),
           )
         ],
