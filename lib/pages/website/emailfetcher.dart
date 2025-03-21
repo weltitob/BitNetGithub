@@ -55,6 +55,9 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if shown as dialog by examining parent widget
+    final bool isDialog = ModalRoute.of(context)?.settings.name == null;
+    
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Screen size handling
@@ -102,6 +105,16 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
 
         return Stack(
           children: [
+            // Close button for dialog mode
+            if (isDialog)
+              Positioned(
+                top: 16,
+                right: 16,
+                child: IconButton(
+                  icon: Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
             BackgroundWithContent(
               backgroundType: BackgroundType.asset,
               withGradientBottomBig: true,

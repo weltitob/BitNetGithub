@@ -2,6 +2,7 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/pages/website/emailfetcher.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,31 @@ class _PageOneState extends State<PageOne> {
                       buttonType: ButtonType.solid,
                       title: L10n.of(context)!.register,
                       onTap: () async {
-                        context.go('/authhome/pinverification');
+                        // Show the early bird email submission page
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              backgroundColor: Colors.transparent,
+                              insetPadding: EdgeInsets.symmetric(
+                                horizontal: isSuperSmallScreen ? 20 : 40,
+                                vertical: isSuperSmallScreen ? 24 : 40,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                  child: EmailFetcherLandingPage(
+                                    controller: widget.controller,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                     SizedBox(

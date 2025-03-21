@@ -30,92 +30,90 @@ class WebsiteLandingPageView extends StatelessWidget {
     //seo
     //main view
     return bitnetScaffold(
-      // floatingActionButton: ValueListenableBuilder<bool>(
-      //     valueListenable: controller.showFab,
-      //     builder: (context, showFab, child) {
-      //       return AnimatedOpacity(
-      //         opacity: showFab ? 1 : 0,
-      //         duration: const Duration(milliseconds: 200),
-      //         child: BitNetFAB(
-      //           onPressed: () {
-      //             if (controller.pageController.hasClients) {
-      //               var nextPage = controller.pageController.page!.toInt() + 1;
-      //               if (nextPage < 5) {
-      //                 controller.pageController.animateToPage(
-      //                   nextPage,
-      //                   duration: const Duration(milliseconds: 400),
-      //                   curve: Curves.easeInOut,
-      //                 );
-      //               } else {}
-      //             }
-      //           },
-      //         ),
-      //       );
-      //     }),
+      floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: controller.showFab,
+          builder: (context, showFab, child) {
+            return AnimatedOpacity(
+              opacity: showFab ? 1 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: BitNetFAB(
+                onPressed: () {
+                  if (controller.pageController.hasClients) {
+                    var nextPage = controller.pageController.page!.toInt() + 1;
+                    if (nextPage < 5) {
+                      controller.pageController.animateToPage(
+                        nextPage,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      );
+                    } else {}
+                  }
+                },
+              ),
+            );
+          }),
       extendBodyBehindAppBar: true,
-      // appBar: bitnetWebsiteAppBar(
-      //   centerWidget: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      //     // Check if the screen width is less than 600 pixels.
-      //     bool isSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSmallScreen;
-      //
-      //     List<UserData> all_userresults = lastRegisteredUsers;
-      //     List<String> firstFourUsernames = all_userresults.reversed
-      //         .take(4) // Take the last 4
-      //         .map((user) => user.username)
-      //         .toList();
-      //
-      //     return isSmallScreen
-      //         ? Container()
-      //         : Container(
-      //             width: AppTheme.cardPadding * 17,
-      //             child: all_userresults.isEmpty
-      //                 ? SizedBox(height: AppTheme.cardPadding * 4, child: Center(child: dotProgress(context)))
-      //                 : AnimatedTextKit(
-      //                     repeatForever: true,
-      //                     pause: const Duration(milliseconds: 1000),
-      //                     animatedTexts: [
-      //                       RotateAnimatedText(
-      //                         L10n.of(context)!.weHaveBetaLiftOff,
-      //                         duration: const Duration(milliseconds: 2400),
-      //                         textStyle: Theme.of(context).textTheme.titleSmall,
-      //                       ),
-      //                       RotateAnimatedText(
-      //                         '+${percentagechange.toStringAsFixed(1)}%${L10n.of(context)!.userCharged}',
-      //                         duration: const Duration(milliseconds: 2400),
-      //                         textStyle: Theme.of(context).textTheme.titleSmall,
-      //                       ),
-      //                       RotateAnimatedText(
-      //                         '@${firstFourUsernames[0]}${L10n.of(context)!.justJoinedBitnet}',
-      //                         duration: const Duration(milliseconds: 2400),
-      //                         textStyle: Theme.of(context).textTheme.titleSmall,
-      //                       ),
-      //                     ], //texts
-      //                   ),
-      //           );
-      //   }),
-      // ),
+      appBar: bitnetWebsiteAppBar(
+        centerWidget: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+          // Check if the screen width is less than 600 pixels.
+          bool isSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSmallScreen;
+
+          List<UserData> all_userresults = lastRegisteredUsers;
+          List<String> firstFourUsernames = all_userresults.isEmpty 
+              ? ["user1", "user2", "user3", "user4"]  // Default usernames if empty
+              : all_userresults.reversed
+                  .take(4) // Take the last 4
+                  .map((user) => user.username)
+                  .toList();
+
+          return isSmallScreen
+              ? Container()
+              : Container(
+                  width: AppTheme.cardPadding * 17,
+                  child: all_userresults.isEmpty
+                      ? SizedBox(height: AppTheme.cardPadding * 4, child: Center(child: dotProgress(context)))
+                      : AnimatedTextKit(
+                          repeatForever: true,
+                          pause: const Duration(milliseconds: 1000),
+                          animatedTexts: [
+                            RotateAnimatedText(
+                              L10n.of(context)!.weHaveBetaLiftOff,
+                              duration: const Duration(milliseconds: 2400),
+                              textStyle: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            RotateAnimatedText(
+                              '+${percentagechange.toStringAsFixed(1)}%${L10n.of(context)!.userCharged}',
+                              duration: const Duration(milliseconds: 2400),
+                              textStyle: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            RotateAnimatedText(
+                              '@${firstFourUsernames[0]}${L10n.of(context)!.justJoinedBitnet}',
+                              duration: const Duration(milliseconds: 2400),
+                              textStyle: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ], //texts
+                        ),
+                );
+        }),
+      ),
       context: context,
       body: PageView(
         padEnds: false,
         scrollDirection: Axis.vertical,
         controller: controller.pageController,
         children: [
-          EmailFetcherLandingPage(
+          // Show actual website pages by default
+          PageOne(
             controller: controller,
           ),
-
-
-          // PageOne(
-          //   controller: controller,
-          // ),
-          // PageTwo(
-          //   controller: controller,
-          // ),
-          // const PageThree(),
-          // const PageFour(),
-          // PageFooter(
-          //   controller: controller,
-          // ),
+          PageTwo(
+            controller: controller,
+          ),
+          const PageThree(),
+          const PageFour(),
+          PageFooter(
+            controller: controller,
+          ),
         ],
       ),
     );
