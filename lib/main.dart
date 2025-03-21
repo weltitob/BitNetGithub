@@ -21,6 +21,7 @@ import 'package:bitnet/pages/transactions/controller/transaction_controller.dart
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -70,6 +71,7 @@ Future<void> main() async {
   // Ensure that Flutter binding is initialized
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
+
   await initializeDateFormatting();
   tz.initializeTimeZones();
   await LocalStorage.instance.initStorage();
@@ -103,6 +105,11 @@ Future<void> main() async {
     appleProvider: AppleProvider.debug,
   );
 
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  firestore.settings = Settings(cacheSizeBytes: 20971520);
+
+  ; // Disable Firestore cache entirely
   // Initialize Remote Config Controller and fetch data
   final remoteConfigController =
       Get.put(RemoteConfigController(), permanent: true);

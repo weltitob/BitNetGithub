@@ -74,14 +74,14 @@ class CryptoChartLine {
             .count;
         late Query<Map<String, dynamic>> dataRef;
         print("docs count for ${days} and ${currency} is ${count}");
-        if (count != null && count > 500) {
+        if (count != null && count > 1000) {
           dataRef = firestore
               .collection('chart_data')
               .doc(currency.toUpperCase())
               .collection(timeframe)
               .doc('data')
               .collection("data_points")
-              .where("index", isEqualTo: 1);
+              .where("index", whereIn: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90]);
           logger.i(
               "retrieving chart data for ${days} and ${currency} only when index == 1");
         } else {
