@@ -15,7 +15,7 @@
   "@acceptedTheInvitation": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "account": "الحساب",
@@ -27,7 +27,7 @@
   "@activatedEndToEndEncryption": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "addGroupDescription": "أضف وصف للمجموعة",
@@ -81,7 +81,7 @@
   "@askVerificationRequest": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "banFromChat": "حظر من المحادثة",
@@ -98,8 +98,8 @@
   "@bannedUser": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "blockDevice": "أُحظر الجهاز",
@@ -116,82 +116,82 @@
   "@changedTheChatAvatar": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheChatDescriptionTo": "غيَّر {username} وصف المحادثة الى: '{description}'",
   "@changedTheChatDescriptionTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "description": {}
+      "username": {"type": "Object"},
+      "description": {"type": "Object"}
     }
   },
   "changedTheChatNameTo": "غيَّر {username} اسم المحادثة الى: '{chatname}'",
   "@changedTheChatNameTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "chatname": {}
+      "username": {"type": "Object"},
+      "chatname": {"type": "Object"}
     }
   },
   "changedTheChatPermissions": "غيَّر {username} أذون المحادثة",
   "@changedTheChatPermissions": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheDisplaynameTo": "{username} غير إسمه العلني إلى: '{displayname}'",
   "@changedTheDisplaynameTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "displayname": {}
+      "username": {"type": "Object"},
+      "displayname": {"type": "Object"}
     }
   },
   "changedTheGuestAccessRules": "غيّر {username} قواعد وصول الزوار",
   "@changedTheGuestAccessRules": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheGuestAccessRulesTo": "غيّر {username} قواعد وصول الزوار الى: {rules}",
   "@changedTheGuestAccessRulesTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "rules": {}
+      "username": {"type": "Object"},
+      "rules": {"type": "Object"}
     }
   },
   "changedTheHistoryVisibility": "غيَّر {username} مرئية التأريخ",
   "@changedTheHistoryVisibility": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheHistoryVisibilityTo": "غيَّر {username} مرئية التأريخ الى: {rules}",
   "@changedTheHistoryVisibilityTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "rules": {}
+      "username": {"type": "Object"},
+      "rules": {"type": "Object"}
     }
   },
   "changedTheJoinRules": "غيَّر {username} قواعد الانضمام",
   "@changedTheJoinRules": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheJoinRulesTo": "غيَّر {username} قواعد الانضمام الى: {joinRules}",
   "@changedTheJoinRulesTo": {
     "type": "text",
     "placeholders": {
-      "username": {},
+      "username": {"type": "Object"},
       "joinRules": {}
     }
   },
@@ -199,21 +199,21 @@
   "@changedTheProfileAvatar": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheRoomAliases": "غيّر {username} ألقاب الغرف",
   "@changedTheRoomAliases": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changedTheRoomInvitationLink": "غيّر {username} رابط الدعوة",
   "@changedTheRoomInvitationLink": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "changeTheHomeserver": "غيّر الخادم",
@@ -312,7 +312,7 @@
   "@countParticipants": {
     "type": "text",
     "placeholders": {
-      "count": {}
+      "count": {"type": "Object"}
     }
   },
   "create": "أنشئ",
@@ -324,7 +324,7 @@
   "@createdTheChat": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "createNewGroup": "أنشئ مجموعة جديدة",
@@ -346,7 +346,7 @@
   "@dateAndTimeOfDay": {
     "type": "text",
     "placeholders": {
-      "date": {},
+      "date": {"type": "Object"},
       "timeOfDay": {}
     }
   },
@@ -528,7 +528,7 @@
   "@groupWith": {
     "type": "text",
     "placeholders": {
-      "displayname": {}
+      "displayname": {"type": "Object"}
     }
   },
   "guestsAreForbidden": "يمنع الزوار",
@@ -545,8 +545,8 @@
   "@hasWithdrawnTheInvitationFor": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "help": "المساعدة",
@@ -605,8 +605,8 @@
   "@invitedUser": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "invitedUsersOnly": "المستخدمون المدعوون فقط",
@@ -618,7 +618,7 @@
   "@inviteText": {
     "type": "text",
     "placeholders": {
-      "username": {},
+      "username": {"type": "Object"},
       "link": {}
     }
   },
@@ -631,7 +631,7 @@
   "@joinedTheChat": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "joinRoom": "انضم للمحادثة",
@@ -643,16 +643,16 @@
   "@kicked": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "kickedAndBanned": "🙅 {username} ركل وحظر {targetName}",
   "@kickedAndBanned": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "kickFromChat": "طرد من المحادثة",
@@ -696,7 +696,7 @@
   "@loadCountMoreParticipants": {
     "type": "text",
     "placeholders": {
-      "count": {}
+      "count": {"type": "Object"}
     }
   },
   "loadingPleaseWait": "يحمّل… يرجى الانتظار.",
@@ -892,7 +892,7 @@
   "@redactedAnEvent": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "reject": "رفض",
@@ -904,7 +904,7 @@
   "@rejectedTheInvitation": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "rejoin": "أعد الانضمام",
@@ -926,7 +926,7 @@
   "@removedBy": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "removeDevice": "أزل جهازا",
@@ -963,22 +963,22 @@
   "@seenByUser": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "seenByUserAndCountOthers": "{count, plural, other{رآه {username} و {count} أخرون}}",
   "@seenByUserAndCountOthers": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "count": {}
+      "username": {"type": "Object"},
+      "count": {"type": "Object"}
     }
   },
   "seenByUserAndUser": "رآه {username} و {username2}",
   "@seenByUserAndUser": {
     "type": "text",
     "placeholders": {
-      "username": {},
+      "username": {"type": "Object"},
       "username2": {}
     }
   },
@@ -1021,35 +1021,35 @@
   "@sentAFile": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "sentAnAudio": "🎤 أرسل {username} ملفا صوتيا",
   "@sentAnAudio": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "sentAPicture": "🖼️ {username} أرسل صورة",
   "@sentAPicture": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "sentASticker": "😊 أرسل {username} ملصقا",
   "@sentASticker": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "sentAVideo": "🎥 أرسل {username} مقطع فيديو",
   "@sentAVideo": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "sentCallInformations": "أرسل {senderName} معلومات مكالمة",
@@ -1088,7 +1088,7 @@
   "@sharedTheLocation": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "signUp": "سجّل",
@@ -1153,8 +1153,8 @@
   "@unbannedUser": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "targetName": {}
+      "username": {"type": "Object"},
+      "targetName": {"type": "Object"}
     }
   },
   "unblockDevice": "ألغ حظر الجهاز",
@@ -1200,15 +1200,15 @@
   "@userAndOthersAreTyping": {
     "type": "text",
     "placeholders": {
-      "username": {},
-      "count": {}
+      "username": {"type": "Object"},
+      "count": {"type": "Object"}
     }
   },
   "userAndUserAreTyping": "{username} و {username2} يكتبان…",
   "@userAndUserAreTyping": {
     "type": "text",
     "placeholders": {
-      "username": {},
+      "username": {"type": "Object"},
       "username2": {}
     }
   },
@@ -1216,14 +1216,14 @@
   "@userIsTyping": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "userLeftTheChat": "🚪 {username} غادر الدردشة",
   "@userLeftTheChat": {
     "type": "text",
     "placeholders": {
-      "username": {}
+      "username": {"type": "Object"}
     }
   },
   "username": "اسم المستخدم",
@@ -1235,7 +1235,7 @@
   "@userSentUnknownEvent": {
     "type": "text",
     "placeholders": {
-      "username": {},
+      "username": {"type": "Object"},
       "type": {}
     }
   },
@@ -1801,7 +1801,7 @@
   "@numUsersTyping": {
     "type": "text",
     "placeholders": {
-      "count": {}
+      "count": {"type": "Object"}
     }
   },
   "notificationsEnabledForThisAccount": "الإشعارات مفعلة لهذا الحساب",
@@ -2140,7 +2140,7 @@
   "@storyFrom": {
     "type": "text",
     "placeholders": {
-      "date": {},
+      "date": {"type": "Object"},
       "body": {}
     }
   },
@@ -2315,19 +2315,19 @@
   "youBannedUser": "لقد حظرت {user}",
   "@youBannedUser": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "youHaveWithdrawnTheInvitationFor": "لقد سحبت الدعوة لـ {user}",
   "@youHaveWithdrawnTheInvitationFor": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "youInvitedBy": "📩 لقد تمت دعوتك من قبل {user}",
   "@youInvitedBy": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "storeInAndroidKeystore": "تخزين في سجل مفاتيح اندرويد",
@@ -2339,7 +2339,7 @@
   "countFiles": "ملفات {count}",
   "@countFiles": {
     "placeholders": {
-      "count": {}
+      "count": {"type": "Object"}
     }
   },
   "foregroundServiceRunning": "يظهر هذا الإشعار عند تشغيل الخدمة الأمامية.",
@@ -2377,7 +2377,7 @@
   "youKicked": "👞 لقد ركلت {user}",
   "@youKicked": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "newSpace": "مساحة جديدة",
@@ -2422,13 +2422,13 @@
   "youKickedAndBanned": "🙅 لقد ركلت وحظرت {user}",
   "@youKickedAndBanned": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "youUnbannedUser": "قمت بإلغاء الحظر {user}",
   "@youUnbannedUser": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "saveKeyManuallyDescription": "احفظ هذا المفتاح يدويا عن طريق تشغيل مربع حوار مشاركة النظام أو الحافظة.",
@@ -2438,7 +2438,7 @@
   "youInvitedUser": "📩 قمت بدعوة {user}",
   "@youInvitedUser": {
     "placeholders": {
-      "user": {}
+      "user": {"type": "Object"}
     }
   },
   "noEmailWarning": "الرجاء إدخال عنوان بريد إلكتروني صالح. وإلا فلن تتمكن من إعادة تعيين كلمة المرور الخاصة بك. إذا كنت لا ترغب في ذلك ، فانقر مرة أخرى على الزر للمتابعة.",
