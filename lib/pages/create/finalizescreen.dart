@@ -418,32 +418,50 @@ class _BatchScreenState extends State<BatchScreen> {
   void showDeleteConfirmationSheet() {
     BitNetBottomSheet(
       context: context,
-      height: AppTheme.cardPadding * 16,
-      child: Padding(
-        padding: EdgeInsets.all(AppTheme.cardPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      height: AppTheme.cardPadding * 18,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
+        context: context,
+        appBar: bitnetAppBar(
+          hasBackButton: false,
+          context: context,
+          text: "Delete Batch",
+        ),
+        body: Stack(
           children: [
-            Icon(
-              Icons.warning_amber_rounded,
-              size: AppTheme.cardPadding * 2.5,
-            ),
-            SizedBox(height: AppTheme.cardPadding),
-            Text(
-              "Delete Entire Batch?",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.bold,
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.cardPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: AppTheme.cardPadding),
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: Colors.orange,
+                      size: AppTheme.cardPadding * 2.5,
+                    ),
+                    SizedBox(height: AppTheme.cardPadding),
+                    Text(
+                      "Are you sure?",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: AppTheme.elementSpacing),
+                    Text(
+                      "This action is not reversible and you will lose all of your beautiful assets.",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    // Add extra space at bottom for the buttons
+                    SizedBox(height: AppTheme.cardPadding * 6),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
-            SizedBox(height: AppTheme.elementSpacing),
-            Text(
-              "This action is not reversible and you will lose all of your beautiful assets.",
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: AppTheme.cardPadding * 1.5),
             BottomButtons(
               leftButtonTitle: "No, Keep",
               rightButtonTitle: "Yes, Delete",
