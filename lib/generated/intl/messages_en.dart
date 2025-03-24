@@ -1492,7 +1492,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "weDigitizeAllSorts": MessageLookupByLibrary.simpleMessage(
             "We digitize all sorts of assets on top of the Bitcoin Network."),
         "weEmpowerTomorrow":
-            MessageLookupByLibrary.simpleMessage("We empower Our Tomorrow!"),
+            MessageLookupByLibrary.simpleMessage("Building Bitcoin, Together."),
         "weHaveBetaLiftOff": MessageLookupByLibrary.simpleMessage(
             "We have Beta liftoff! Exclusive Early Access for Invited Users."),
         "weOfferEasiest": MessageLookupByLibrary.simpleMessage(

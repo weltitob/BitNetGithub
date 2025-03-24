@@ -92,16 +92,16 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
   List<PageData> pageDataList = [
     PageData(
-      '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
+      '"BitNet has completely changed how I use Bitcoin day-to-day. The speed of transactions and clean design make it so easy to use."',
       UserData(
         backgroundImageUrl: "",
         isPrivate: false,
         showFollowers: false,
         did: "whattheheck",
-        displayName: "Display Name",
-        bio: "jddjskd",
+        displayName: "Mark Johnson",
+        bio: "Tech enthusiast",
         customToken: "dsd",
-        username: "brianbelt",
+        username: "mjohnson84",
         profileImageUrl:
             //"https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
             "pfptest.jpg",
@@ -114,16 +114,16 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
       ),
     ),
     PageData(
-      '"So happy to be part of the club 1 million! Lightning is the future."',
+      '"So happy I found BitNet! The Lightning integration makes sending Bitcoin actually practical for everyday purchases."',
       UserData(
           backgroundImageUrl: "",
           isPrivate: false,
           showFollowers: false,
           did: "djskdj",
-          displayName: "Display Name",
-          bio: "jddjskd",
+          displayName: "Sarah Chen",
+          bio: "Software developer",
           customToken: "dsd",
-          username: "username",
+          username: "schen_dev",
           profileImageUrl:
               //"https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
               "pfptest.jpg",
@@ -135,16 +135,16 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           setupQrCodeRecovery: false),
     ),
     PageData(
-      '"Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption."',
+      '"BitNet is exactly what Bitcoin needed. It is fast, secure, and actually makes sense for small transactions. Really impressed!"',
       UserData(
         backgroundImageUrl: "",
         isPrivate: false,
         showFollowers: false,
         did: "djskdj",
-        displayName: "Display Name",
-        bio: "jddjskd",
+        displayName: "James Wilson",
+        bio: "Finance professional",
         customToken: "dsd",
-        username: "fakeusername",
+        username: "jwilson_fin",
         profileImageUrl:
             //"https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
             "pfptest.jpg",

@@ -3850,10 +3850,10 @@ class S {
     );
   }
 
-  /// `We empower Our Tomorrow!`
+  /// `Building Bitcoin, Together.`
   String get weEmpowerTomorrow {
     return Intl.message(
-      'We empower Our Tomorrow!',
+      'Building Bitcoin, Together.',
       name: 'weEmpowerTomorrow',
       desc: '',
       args: [],
