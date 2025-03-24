@@ -4,9 +4,12 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
@@ -404,153 +407,92 @@ class _NftProductScreenState extends State<NftProductScreen> {
   }
 
   void _buildBuySlidingPanel() {
-    showGeneralDialog(
-        barrierDismissible: true,
-        barrierLabel: "buy_dialog",
+    BitNetBottomSheet(
+      context: context,
+      height: MediaQuery.of(context).size.height * 0.75,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
         context: context,
-        pageBuilder: (context, a1, a2) {
-          return AlertDialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppTheme.colorBackground,
-                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-              height: 600,
+        appBar: bitnetAppBar(
+          hasBackButton: false,
+          context: context,
+          text: "Purchase NFT",
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Buy",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.white)),
-                    const Divider(
-                      color: AppTheme.colorBitcoin,
-                      thickness: 2,
-                    ),
-                    _buildHorizontalProductWithId(),
-                    const Spacer(),
-                    Container(
-                      width: AppTheme.cardPadding * 10,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Subtotal",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Network Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Market Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Total Price",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                        ],
+                    SizedBox(height: AppTheme.cardPadding * 2),
+                    // Asset display in a GlassContainer
+                    GlassContainer(
+                      borderThickness: 1.5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTheme.elementSpacing),
+                        child: _buildHorizontalProductWithId(),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LongButtonWidget(
-                            title: "Cancel",
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            buttonType: ButtonType.transparent,
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                          LongButtonWidget(
-                            title: "Buy Now",
-                            onTap: () {},
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                        ],
+                    SizedBox(height: AppTheme.cardPadding * 1.5),
+                    
+                    // Cost details using BitNetListTile
+                    BitNetListTile(
+                      text: "Subtotal",
+                      trailing: Text(
+                        "0.024 BTC",
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    )
+                    ),
+                    BitNetListTile(
+                      text: "Network Fee",
+                      trailing: Text(
+                        "0.001 BTC",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    BitNetListTile(
+                      text: "Market Fee",
+                      trailing: Text(
+                        "0.002 BTC",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      thickness: 1,
+                    ),
+                    BitNetListTile(
+                      text: "Total Price",
+                      trailing: Text(
+                        "0.027 BTC",
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    
+                    // Extra space at bottom for the button
+                    SizedBox(height: AppTheme.cardPadding * 6),
                   ],
                 ),
               ),
             ),
-          );
-        });
+            
+            // Bottom centered button
+            BottomCenterButton(
+              buttonState: ButtonState.idle,
+              buttonTitle: "Buy Now",
+              onButtonTap: () {
+                // Handle purchase
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildHorizontalProductWithId() {
