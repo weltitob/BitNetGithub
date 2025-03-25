@@ -120,7 +120,10 @@ class WidgetTree extends StatelessWidget {
               
               // Avoid unnecessary Flutter tree rebuilds by using microtask
               Future.microtask(() {
-                controller.initialUrl!.value = "/loading";
+                // Only set initialUrl if it's empty to prevent duplicate router initialization
+                if (controller.initialUrl!.value.isEmpty) {
+                  controller.initialUrl!.value = "/loading";
+                }
                 controller.columnMode!.value = isColumnMode;
               });
             }

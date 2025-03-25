@@ -84,14 +84,21 @@ class AppRouter {
     }
   }
 
-  // Public router accessor
+  // Public router accessor with cached instance to prevent multiple initializations
+  static GoRouter? _cachedRouter;
   static GoRouter get router {
+    // Return cached router if available to prevent multiple initializations
+    if (_cachedRouter != null) {
+      return _cachedRouter!;
+    }
+    
     try {
-      return _router;
+      _cachedRouter = _router;
+      return _cachedRouter!;
     } catch (e) {
       print('Error getting router (safe to ignore in web preview): $e');
       // Fallback minimal router
-      return GoRouter(
+      _cachedRouter = GoRouter(
         navigatorKey: _rootNavigatorKey,
         initialLocation: kIsWeb ? '/website' : '/loading',
         routes: [
@@ -107,6 +114,7 @@ class AppRouter {
           ),
         ],
       );
+      return _cachedRouter!;
     }
   }
   

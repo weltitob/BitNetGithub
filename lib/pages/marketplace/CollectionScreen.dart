@@ -102,7 +102,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
             body: IndexedStack(
               index: currentTabIndex,
               children: [
-                // Column View Tab
+                // Row View Tab (now first)
+                RowTabView(
+                  sortedGridList: sortedGridList,
+                  selectedProducts: selectedProducts,
+                  handleProductClick: handleProductClick,
+                  showBuyPanel: showBuyPanel,
+                ),
+                // Column View Tab (now second)
                 ColumnTabView(
                   sortedGridList: sortedGridList,
                   selectedProducts: selectedProducts,
@@ -115,13 +122,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     });
                   },
                   currentSortingFilter: sortingFilter,
-                ),
-                // Row View Tab
-                RowTabView(
-                  sortedGridList: sortedGridList,
-                  selectedProducts: selectedProducts,
-                  handleProductClick: handleProductClick,
-                  showBuyPanel: showBuyPanel,
                 ),
                 // Price/Sales Tab
                 PriceSalesTabView(),

@@ -35,17 +35,17 @@ class CollectionTabBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           CollectionTabIcon(
-            iconData: Icons.view_column_rounded,
+            iconData: Icons.table_rows_rounded,
             index: 0,
             currentIndex: currentTabIndex,
-            label: "Column",
+            label: "Row",
             onTap: () => onTabChanged(0),
           ),
           CollectionTabIcon(
-            iconData: Icons.table_rows_rounded,
+            iconData: Icons.view_column_rounded,
             index: 1,
             currentIndex: currentTabIndex,
-            label: "Row",
+            label: "Column",
             onTap: () => onTabChanged(1),
           ),
           CollectionTabIcon(
