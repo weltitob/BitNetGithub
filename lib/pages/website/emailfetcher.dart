@@ -53,6 +53,81 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
     });
   }
 
+  // Cached dimensions map to avoid recalculating responsive values on every rebuild
+  final Map<String, Map<String, double>> _cachedDimensions = {};
+  
+  // Calculate responsive dimensions based on screen size, with caching
+  Map<String, double> _getResponsiveDimensions(BoxConstraints constraints) {
+    // Create a key based on the screen width to use for caching
+    final String cacheKey = constraints.maxWidth.toStringAsFixed(0);
+    
+    // Return cached values if available
+    if (_cachedDimensions.containsKey(cacheKey)) {
+      return _cachedDimensions[cacheKey]!;
+    }
+    
+    // Screen size handling
+    bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+    bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+    bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+    bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+
+    // Calculate the dimensions
+    double bigtextWidth = isMidScreen
+        ? (isSmallScreen 
+          ? (isSuperSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 28)
+          : AppTheme.cardPadding * 30)
+        : AppTheme.cardPadding * 33;
+        
+    double textWidth = isMidScreen
+        ? (isSmallScreen
+          ? (isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16)
+          : AppTheme.cardPadding * 22)
+        : AppTheme.cardPadding * 24;
+        
+    double subtitleWidth = isMidScreen
+        ? (isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18)
+        : AppTheme.cardPadding * 22;
+        
+    double spacingMultiplier = isMidScreen
+        ? (isSmallScreen ? (isSuperSmallScreen ? 0.5 : 0.5) : 0.75)
+        : 1;
+        
+    double centerSpacing = isMidScreen
+        ? (isIntermediateScreen
+          ? (isSmallScreen
+            ? (isSuperSmallScreen ? AppTheme.columnWidth * 0.075 : AppTheme.columnWidth * 0.15)
+            : AppTheme.columnWidth * 0.35)
+          : AppTheme.columnWidth * 0.65)
+        : AppTheme.columnWidth;
+    
+    // For very large screens, increase width proportionally
+    if (constraints.maxWidth > 1440) {
+      // Scale up dimensions for large screens
+      bigtextWidth = bigtextWidth * 1.5;
+      textWidth = textWidth * 1.5;
+      subtitleWidth = subtitleWidth * 1.5;
+      
+      // On very large screens, increase spacing more
+      if (constraints.maxWidth > 2000) {
+        centerSpacing = centerSpacing * 1.5;
+      }
+    }
+    
+    // Cache the results
+    _cachedDimensions[cacheKey] = {
+      'bigtextWidth': bigtextWidth,
+      'textWidth': textWidth,
+      'subtitleWidth': subtitleWidth,
+      'spacingMultiplier': spacingMultiplier,
+      'centerSpacing': centerSpacing,
+      'isSmallScreen': isSmallScreen ? 1.0 : 0.0,
+      'isSuperSmallScreen': isSuperSmallScreen ? 1.0 : 0.0,
+    };
+    
+    return _cachedDimensions[cacheKey]!;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Check if shown as dialog by examining parent widget
@@ -60,48 +135,15 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
     
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        // Screen size handling
-        bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-        bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
-
-        // Calculate responsive widths and spacing
-        double bigtextWidth = isMidScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.cardPadding * 14
-            : AppTheme.cardPadding * 28
-            : AppTheme.cardPadding * 30
-            : AppTheme.cardPadding * 33;
-        double textWidth = isMidScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.cardPadding * 12
-            : AppTheme.cardPadding * 16
-            : AppTheme.cardPadding * 22
-            : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen
-            ? isSmallScreen
-            ? AppTheme.cardPadding * 14
-            : AppTheme.cardPadding * 18
-            : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? 0.5
-            : 0.5
-            : 0.75
-            : 1;
-        double centerSpacing = isMidScreen
-            ? isIntermediateScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.columnWidth * 0.075
-            : AppTheme.columnWidth * 0.15
-            : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
-            : AppTheme.columnWidth;
+        // Get memoized responsive dimensions
+        final dimensions = _getResponsiveDimensions(constraints);
+        
+        final double bigtextWidth = dimensions['bigtextWidth']!;
+        final double subtitleWidth = dimensions['subtitleWidth']!;
+        final double spacingMultiplier = dimensions['spacingMultiplier']!;
+        final double centerSpacing = dimensions['centerSpacing']!;
+        final bool isSmallScreen = dimensions['isSmallScreen']! > 0;
+        final bool isSuperSmallScreen = dimensions['isSuperSmallScreen']! > 0;
 
         return Stack(
           children: [

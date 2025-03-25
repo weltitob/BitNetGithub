@@ -1,10 +1,11 @@
 /**
-* This function creates a delay of 500 milliseconds.
+* This function is now just a placeholder and returns immediately
+* for faster app loading.
 *
-* @returns {Promise} A Promise that resolves after the delay.
+* @returns {Promise} A Promise that resolves immediately.
 */
 function addDelay() {
-    return new Promise((resolve) => setTimeout(resolve, 500));
+    return Promise.resolve();
 }
 
 // Get the progress and progressBar elements from the DOM

@@ -1,4 +1,4 @@
-/* Styles for the body element */
+/* Styles for the body element with hardware acceleration */
 body {
     display: flex;
     justify-content: center;
@@ -6,44 +6,67 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Optimize for high performance rendering */
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
-/* Styles for the progress bar container */
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+    }
+}
+
+/* Styles for the progress bar container - optimized transitions */
 .progress-container {
     width: 300px;
     height: 8px;
     background-color: #e0e0e0;
     border-radius: 10px;
     overflow: hidden;
-    transition: opacity 0.25s ease-out;
+    transition: opacity 0.2s linear;
+    will-change: opacity;
+    transform: translateZ(0);
 }
 
-/* Styles for the progress bar */
+/* Styles for the progress bar - optimized transitions */
 .progress-bar {
     display: block;
     height: 100%;
     background-color: #f7931a;
     width: 0;
-    transition: width 0.5s ease;
+    transition: width 0.2s linear;
+    will-change: width;
+    transform: translateZ(0);
 }
 
-/* CSS for a fade-in animation */
+/* Optimized fade-in animation */
 .fade-in {
     opacity: 0;
-    animation: fadeIn 1s ease-in-out forwards;
+    animation: fadeIn 0.5s ease-out forwards;
+    will-change: opacity;
+    transform: translateZ(0);
 }
 
-/* Keyframes for the fadeIn animation */
+/* Optimized keyframes for the fadeIn animation */
 @keyframes fadeIn {
     0% {
         opacity: 0;
     }
-
-    60% {
-        opacity: 0;
-    }
-
     100% {
         opacity: 1;
     }
+}
+
+/* Optimize rendering performance */
+flutter-view {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }

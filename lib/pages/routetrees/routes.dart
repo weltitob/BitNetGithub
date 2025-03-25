@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/auth/auth.dart';
-
 import 'package:bitnet/components/loaders/loading_view.dart';
+import 'package:bitnet/pages/website/emailfetcher.dart';
+import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 
@@ -128,6 +131,16 @@ class AppRoutes {
   final bool columnMode;
 
   AppRoutes(this.columnMode);
+  
+  // Safe redirect for web to prevent Firebase-related errors
+  String? webSafeRedirect(BuildContext context, GoRouterState state) {
+    // If we're on web, redirect most routes to /website
+    if (kIsWeb && !state.uri.path.startsWith('/website')) {
+      print('Web safe redirect: ${state.uri.path} -> /website');
+      return '/website';
+    }
+    return null; // No redirect for mobile or already on website route
+  }
 
   List<RouteBase> get routes => [
         ...bottomnav_routes,
@@ -139,14 +152,57 @@ class AppRoutes {
 
   //if currentUserUID cant be fetched nothing is used this might cause bugs but when this is the case you shouldnt even get to the VRouter anyways
 
-  final currentUserUID = Auth().currentUser?.uid ?? '';
+  // Safely get current user ID with error handling for web
+  String get currentUserUID {
+    try {
+      return Auth().currentUser?.uid ?? '';
+    } catch (e) {
+      print('Error accessing currentUser (safe to ignore in web preview): $e');
+      return '';
+    }
+  }
 
   // Define your routes like this
 
   List<dynamic> get bottomnav_routes => [
+        // Loading route with fallback for web
         GoRoute(
             path: '/loading',
-            builder: (ctx, state) => const LoadingViewAppStart()),
+            builder: (ctx, state) {
+              if (kIsWeb) {
+                // For web, directly return a simple loading screen that will redirect to website
+                return Scaffold(
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 24),
+                        Text('Loading BitNet...'),
+                        SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () => GoRouter.of(ctx).go('/website'),
+                          child: Text('Go to website'),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                // Normal LoadingViewAppStart for mobile
+                return const LoadingViewAppStart();
+              }
+            }),
+            
+        // Main website landing page route
+        GoRoute(
+            path: '/website',
+            builder: (ctx, state) => const WebsiteLandingPage()),
+            
+        // Early bird signup page as a separate route
+        GoRoute(
+            path: '/website/earlybird',
+            builder: (ctx, state) => const EmailFetcherLandingPage()),
 
         GoRoute(
           path: '/report',

@@ -16,6 +16,73 @@ class bitnetWebsiteAppBar extends StatelessWidget
     this.centerWidget,
   });
 
+  // Static cache to share values across instances
+  static final Map<String, Map<String, dynamic>> _cache = {};
+  
+  // Get cached responsive values based on constraints
+  Map<String, dynamic> _getResponsiveValues(BoxConstraints constraints) {
+    final String key = constraints.maxWidth.toStringAsFixed(0);
+    
+    // Check static cache for better performance across instances
+    if (_cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+    
+    // Calculate values only once for this width
+    bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+    bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+    bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+    bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+
+    double bigtextWidth = isMidScreen 
+        ? (isSmallScreen 
+          ? (isSuperSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 24) 
+          : AppTheme.cardPadding * 28) 
+        : AppTheme.cardPadding * 30;
+        
+    double textWidth = isMidScreen 
+        ? (isSmallScreen 
+          ? (isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16) 
+          : AppTheme.cardPadding * 22) 
+        : AppTheme.cardPadding * 24;
+        
+    double subtitleWidth = isMidScreen 
+        ? (isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18) 
+        : AppTheme.cardPadding * 22;
+        
+    double spacingMultiplier = isMidScreen 
+        ? (isSmallScreen 
+          ? (isSuperSmallScreen ? 0.25 : 0.5) 
+          : 0.75) 
+        : 1;
+
+    double centerSpacing = isMidScreen 
+        ? (isIntermediateScreen
+          ? (isSmallScreen
+            ? (isSuperSmallScreen ? AppTheme.columnWidth * 0.075 : AppTheme.columnWidth * 0.15)
+            : AppTheme.columnWidth * 0.35)
+          : AppTheme.columnWidth * 0.65)
+        : AppTheme.columnWidth;
+        
+    // Create result map and cache it
+    final Map<String, dynamic> resultMap = <String, dynamic>{
+      'isSmallScreen': isSmallScreen,
+      'isMidScreen': isMidScreen,
+      'isSuperSmallScreen': isSuperSmallScreen,
+      'isIntermediateScreen': isIntermediateScreen,
+      'bigtextWidth': bigtextWidth,
+      'textWidth': textWidth,
+      'subtitleWidth': subtitleWidth,
+      'spacingMultiplier': spacingMultiplier,
+      'centerSpacing': centerSpacing,
+    };
+    
+    // Cache the results in the static cache only
+    _cache[key] = resultMap;
+    
+    return resultMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return bitnetAppBar(
@@ -23,26 +90,10 @@ class bitnetWebsiteAppBar extends StatelessWidget
         hasBackButton: false,
         customTitle: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            // Check if the screen width is less than 600 pixels.
-            bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-            bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-            bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-            bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
-
-
-            double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
-            double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-            double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-            double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
-
-            double centerSpacing = isMidScreen ? isIntermediateScreen
-                ? isSmallScreen
-                ? isSuperSmallScreen
-                ? AppTheme.columnWidth * 0.075
-                : AppTheme.columnWidth * 0.15
-                : AppTheme.columnWidth * 0.35
-                : AppTheme.columnWidth * 0.65
-                : AppTheme.columnWidth;
+            // Get cached responsive values
+            final responsive = _getResponsiveValues(constraints);
+            final bool isSmallScreen = responsive['isSmallScreen'];
+            final double centerSpacing = responsive['centerSpacing'];
 
             return Container(
               margin: isSmallScreen ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: centerSpacing),
@@ -100,33 +151,8 @@ class bitnetWebsiteAppBar extends StatelessWidget
                         color: AppTheme.white90,
                       ),
                       onTap: () {
-                        // Original redirect to app commented out
-                        // context.go('/authhome');
-                        
-                        // Show early bird dialog instead
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            bool isSuperSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSuperSmallScreen;
-                            return Dialog(
-                              backgroundColor: Colors.transparent,
-                              insetPadding: EdgeInsets.symmetric(
-                                horizontal: isSuperSmallScreen ? 20 : 40,
-                                vertical: isSuperSmallScreen ? 24 : 40,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-                                  child: const EmailFetcherLandingPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        );
+                        // Navigate to early bird page
+                        context.go('/website/earlybird');
                       },
                     ),
                   ),

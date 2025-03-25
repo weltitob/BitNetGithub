@@ -114,33 +114,7 @@ class _PageOneState extends State<PageOne> {
                       backgroundPainter: false,
                       buttonType: ButtonType.solid,
                       title: L10n.of(context)!.register,
-                      onTap: () async {
-                        // Show the early bird email submission page
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              backgroundColor: Colors.transparent,
-                              insetPadding: EdgeInsets.symmetric(
-                                horizontal: isSuperSmallScreen ? 20 : 40,
-                                vertical: isSuperSmallScreen ? 24 : 40,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-                                  child: EmailFetcherLandingPage(
-                                    controller: widget.controller,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                      onTap: () => context.go('/website/earlybird'),
                     ),
                     SizedBox(
                       height: AppTheme.cardPadding * 10 * spacingMultiplier,

@@ -38,11 +38,23 @@ Authentication and Cloud Firestore.
  */
 
 class Auth {
-  // initialzie FirebaseAuth instance
-  final fbAuth.FirebaseAuth _firebaseAuth = fbAuth.FirebaseAuth.instance;
+  // Initialize FirebaseAuth instance with web safety
+  final fbAuth.FirebaseAuth _firebaseAuth;
+  
+  // Safe constructor for web
+  Auth() : _firebaseAuth = fbAuth.FirebaseAuth.instance {
+    // No additional initialization needed
+  }
 
-  // currentUser getter returns the current authentical user
-  fbAuth.User? get currentUser => _firebaseAuth.currentUser;
+  // currentUser getter returns the current authentical user with error handling
+  fbAuth.User? get currentUser {
+    try {
+      return _firebaseAuth.currentUser;
+    } catch (e) {
+      print('Error accessing currentUser (safe to ignore in web preview): $e');
+      return null;
+    }
+  }
 
   // authSateChanges getter returns a stream of authentication state changes
   Stream<fbAuth.User?> get authStateChanges => _firebaseAuth.authStateChanges();
