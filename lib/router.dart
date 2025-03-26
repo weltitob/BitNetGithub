@@ -25,9 +25,13 @@ class AppRouter {
                 final Map<String, String> params = state.uri.queryParameters;
                 final encodedData = params['data'] ?? '';
                 final caption = params['caption'];
+                final isAssetStr = params['isAsset'] ?? 'false';
+                final isAsset = isAssetStr.toLowerCase() == 'true';
+                
                 return ImageDetailScreen(
                   encodedData: encodedData,
                   caption: caption,
+                  isAsset: isAsset,
                 );
               } catch (e) {
                 print('Error in image_detail route (safe to ignore in web preview): $e');
