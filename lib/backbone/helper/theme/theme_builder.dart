@@ -21,6 +21,7 @@ import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:get/get.dart';
@@ -65,92 +66,167 @@ class ThemeController extends State<ThemeBuilder> {
         listen: false,
       );
 
-  void loadData(_) async {
-    QuerySnapshot querySnapshot = await settingsCollection.get();
-    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    if (FirebaseAuth.instance.currentUser != null &&
-        allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
-      var data = await settingsCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      final rawThemeMode = data.data()?['theme_mode'];
-      final rawColor = data.data()?['primary_color'];
-      final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false)
-          .setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CountryProvider>(context, listen: false)
-          .setCountryInDatabase(data.data()?['country']);
-      Provider.of<CardChangeProvider>(context, listen: false)
-          .setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
-      Provider.of<CurrencyChangeProvider>(context, listen: false)
-          .setFirstCurrencyInDatabase(
-              data.data()?['selected_currency'] ?? "USD");
-      Provider.of<TimezoneProvider>(context, listen: false)
-          .setTimezoneInDatabase(
-              getLocation(data.data()?['timezone'] ?? "UTC"));
+  // Set default values for web preview to avoid Firebase errors
+  void _setWebDefaultValues() {
+    if (!mounted) return;
+    
+    // Set default values for providers
+    final localeProvider = Provider.of<LocalProvider>(context, listen: false);
+    localeProvider.setLocaleInDatabase('en', const Locale('en'));
+    
+    Provider.of<CountryProvider>(context, listen: false)
+        .setCountryInDatabase('US');
+    
+    Provider.of<CardChangeProvider>(context, listen: false)
+        .setCardInDatabase('lightning');
+    
+    Provider.of<CurrencyChangeProvider>(context, listen: false)
+        .setFirstCurrencyInDatabase("USD");
+    
+    Provider.of<TimezoneProvider>(context, listen: false)
+        .setTimezoneInDatabase(getLocation("UTC"));
 
-      Provider.of<BitcoinPriceStream>(context, listen: false)
-        ..updateCurrency(data.data()?['selected_currency'] ?? "USD");
-      Provider.of<CurrencyTypeProvider>(context, listen: false)
-          .setCurrencyType(data.data()?['showCoin'] ?? false);
-      if (!Get.isRegistered<WalletsController>()) {
-        Get.put(WalletsController())
-            .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
+    Provider.of<BitcoinPriceStream>(context, listen: false)
+        .updateCurrency("USD");
+    
+    Provider.of<CurrencyTypeProvider>(context, listen: false)
+        .setCurrencyType(false);
+    
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController())
+          .setHideBalance(hide: false);
+    }
+    
+    setState(() {
+      _themeMode = ThemeMode.system;
+      if (Get.isRegistered<SettingsController>()) {
+        Get.find<SettingsController>().selectedTheme.value = ThemeMode.system;
       }
-      setState(() {
-        _themeMode = ThemeMode.values
-            .singleWhereOrNull((value) => value.name == rawThemeMode);
-        Get.find<SettingsController>().selectedTheme.value =
-            _themeMode ?? ThemeMode.system;
-        if (rawColor != null) {
-          print('${Color(rawColor).value}');
-        }
-        _primaryColor = rawColor == null ? Colors.white : Color(rawColor);
-      });
-
-      getBTCAddresses().then((data) {
-        LocalStorage.instance.setStringList(
-            data, "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
-
-        Get.find<WalletsController>().btcAddresses = data;
-      }, onError: (err) {
-        Get.find<WalletsController>()
-            .btcAddresses = LocalStorage.instance.getStringList(
-                "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}") ??
-            [];
-      });
-
+      _primaryColor = Colors.white;
+    });
+    
+    // Initialize Bitcoin controller with default values for web
+    if (!Get.isRegistered<BitcoinController>()) {
       Get.put(BitcoinController());
-      Get.find<BitcoinController>()
-          .getChartLine(data.data()?['selected_currency'] ?? "USD");
-      Get.find<BitcoinController>()
-          .getpbChartline(data.data()?['selected_currency'] ?? "USD");
-    } else {
-      Map<String, dynamic> data = {
-        "theme_mode": "system",
-        "lang": "en",
-        "primary_color": Colors.white.value,
-        "selected_currency": "USD",
-        "selected_card": "lightning",
-        "hide_balance": false
-      };
-      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
+      // Use mock data for web preview
+      Get.find<BitcoinController>().getChartLine("USD");
+      Get.find<BitcoinController>().getpbChartline("USD");
+    }
+  }
+
+  void loadData(_) async {
+    try {
+      // For web, use default values to avoid Firebase errors
+      if (kIsWeb) {
+        print('Running in web mode - using default theme values');
+        _setWebDefaultValues();
+        return;
+      }
+      
+      // Continue with normal Firebase implementation for mobile
+      QuerySnapshot querySnapshot = await Databaserefs.settingsCollection.get();
+      final allData = querySnapshot.docs.map((doc) => doc.id).toList();
+      
+      if (FirebaseAuth.instance.currentUser != null &&
+          allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
+        var data = await Databaserefs.settingsCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get();
+        final rawThemeMode = data.data()?['theme_mode'];
+        final rawColor = data.data()?['primary_color'];
+        final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
+        Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(data.data()?['lang'], locale);
+        Provider.of<CountryProvider>(context, listen: false)
+            .setCountryInDatabase(data.data()?['country']);
+        Provider.of<CardChangeProvider>(context, listen: false)
+            .setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
+        Provider.of<CurrencyChangeProvider>(context, listen: false)
+            .setFirstCurrencyInDatabase(
+                data.data()?['selected_currency'] ?? "USD");
+        Provider.of<TimezoneProvider>(context, listen: false)
+            .setTimezoneInDatabase(
+                getLocation(data.data()?['timezone'] ?? "UTC"));
+
+        Provider.of<BitcoinPriceStream>(context, listen: false)
+          ..updateCurrency(data.data()?['selected_currency'] ?? "USD");
+        Provider.of<CurrencyTypeProvider>(context, listen: false)
+            .setCurrencyType(data.data()?['showCoin'] ?? false);
+        if (!Get.isRegistered<WalletsController>()) {
+          Get.put(WalletsController())
+              .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
+        }
+        setState(() {
+          _themeMode = ThemeMode.values
+              .singleWhereOrNull((value) => value.name == rawThemeMode);
+          if (Get.isRegistered<SettingsController>()) {
+            Get.find<SettingsController>().selectedTheme.value =
+                _themeMode ?? ThemeMode.system;
+          }
+          if (rawColor != null) {
+            print('${Color(rawColor).value}');
+          }
+          _primaryColor = rawColor == null ? Colors.white : Color(rawColor);
+        });
+
+        getBTCAddresses().then((data) {
+          LocalStorage.instance.setStringList(
+              data, "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
+
+          Get.find<WalletsController>().btcAddresses = data;
+        }, onError: (err) {
+          Get.find<WalletsController>()
+              .btcAddresses = LocalStorage.instance.getStringList(
+                  "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}") ??
+              [];
+        });
+
+        Get.put(BitcoinController());
+        Get.find<BitcoinController>()
+            .getChartLine(data.data()?['selected_currency'] ?? "USD");
+        Get.find<BitcoinController>()
+            .getpbChartline(data.data()?['selected_currency'] ?? "USD");
+      } else {
+        Map<String, dynamic> data = {
+          "theme_mode": "system",
+          "lang": "en",
+          "primary_color": Colors.white.value,
+          "selected_currency": "USD",
+          "selected_card": "lightning",
+          "hide_balance": false
+        };
+        Databaserefs.settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
+      }
+    } catch (e) {
+      print('Error loading theme settings (safe to ignore in web preview): $e');
+      // Use fallback theme settings
+      _setWebDefaultValues();
     }
   }
 
   Future<List<String>> getBTCAddresses() async {
-    final receivePort = ReceivePort();
-    LinkedHashMap<String, int> response = await listBtcAddresses();
+    if (kIsWeb) {
+      // Return mock addresses for web preview
+      return ['mock_address_for_web_preview'];
+    }
+    
+    try {
+      final receivePort = ReceivePort();
+      LinkedHashMap<String, int> response = await listBtcAddresses();
 
-    List<String> localAddresses = LocalStorage.instance.getStringList(
-            'btc_addresses:${FirebaseAuth.instance.currentUser!.uid}') ??
-        [];
-    await Isolate.spawn(
-        loadAddresses, [receivePort.sendPort, response, localAddresses]);
+      List<String> localAddresses = LocalStorage.instance.getStringList(
+              'btc_addresses:${FirebaseAuth.instance.currentUser!.uid}') ??
+          [];
+      await Isolate.spawn(
+          loadAddresses, [receivePort.sendPort, response, localAddresses]);
 
-    final data =
-        await receivePort.first as List<String>; // Wait for isolate result
-    return data;
+      final data =
+          await receivePort.first as List<String>; // Wait for isolate result
+      return data;
+    } catch (e) {
+      print('Error getting BTC addresses (safe to ignore in web preview): $e');
+      return [];
+    }
   }
 
   static void loadAddresses(List<dynamic> args) async {
@@ -167,46 +243,69 @@ class ThemeController extends State<ThemeBuilder> {
   }
 
   Future<void> setThemeMode(ThemeMode newThemeMode) async {
-    LoggerService logger = Get.find();
-    logger.d('setThemeMode: $newThemeMode');
-    await settingsCollection
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({widget.themeModeSettingsKey: newThemeMode.name});
-    _themeMode = newThemeMode;
-    Get.find<SettingsController>().selectedTheme.value = newThemeMode;
-    setState(() {});
+    try {
+      LoggerService logger = Get.find();
+      logger.d('setThemeMode: $newThemeMode');
+      
+      // Skip DB update in web mode
+      if (!kIsWeb && FirebaseAuth.instance.currentUser != null) {
+        await Databaserefs.settingsCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({widget.themeModeSettingsKey: newThemeMode.name});
+      }
+      
+      _themeMode = newThemeMode;
+      if (Get.isRegistered<SettingsController>()) {
+        Get.find<SettingsController>().selectedTheme.value = newThemeMode;
+      }
+      setState(() {});
+    } catch (e) {
+      print('Error setting theme mode (safe to ignore in web preview): $e');
+      // Still update locally even if Firebase fails
+      setState(() {
+        _themeMode = newThemeMode;
+      });
+    }
   }
 
   Future<void> setPrimaryColor(Color? newPrimaryColor, bool updateDB) async {
-    if (newPrimaryColor == Colors.white || newPrimaryColor == Colors.black) {
-      newPrimaryColor = AppTheme.immutableColorSchemeSeed;
-      setState(() {
-        _primaryColor = newPrimaryColor;
-      });
-      if (updateDB) {
-        await settingsCollection
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
-      }
-    } else if (newPrimaryColor == null) {
-      setState(() {
-        _primaryColor = newPrimaryColor;
-      });
-      if (updateDB) {
-        await settingsCollection
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .update({widget.primaryColorSettingsKey: Colors.white.value});
-      }
-    } else {
-      setState(() {
-        _primaryColor = newPrimaryColor;
-      });
+    try {
+      if (newPrimaryColor == Colors.white || newPrimaryColor == Colors.black) {
+        newPrimaryColor = AppTheme.immutableColorSchemeSeed;
+        setState(() {
+          _primaryColor = newPrimaryColor;
+        });
+        if (updateDB && !kIsWeb && FirebaseAuth.instance.currentUser != null) {
+          await Databaserefs.settingsCollection
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+        }
+      } else if (newPrimaryColor == null) {
+        setState(() {
+          _primaryColor = newPrimaryColor;
+        });
+        if (updateDB && !kIsWeb && FirebaseAuth.instance.currentUser != null) {
+          await Databaserefs.settingsCollection
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .update({widget.primaryColorSettingsKey: Colors.white.value});
+        }
+      } else {
+        setState(() {
+          _primaryColor = newPrimaryColor;
+        });
 
-      if (updateDB) {
-        await settingsCollection
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+        if (updateDB && !kIsWeb && FirebaseAuth.instance.currentUser != null) {
+          await Databaserefs.settingsCollection
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+        }
       }
+    } catch (e) {
+      print('Error setting primary color (safe to ignore in web preview): $e');
+      // Still update locally even if Firebase fails
+      setState(() {
+        _primaryColor = newPrimaryColor;
+      });
     }
   }
 
