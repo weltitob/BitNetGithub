@@ -195,7 +195,8 @@ class ThemeController extends State<ThemeBuilder> {
           "selected_card": "lightning",
           "hide_balance": false
         };
-        Databaserefs.settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
+        if(FirebaseAuth.instance.currentUser != null)
+          Databaserefs.settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
       }
     } catch (e) {
       print('Error loading theme settings (safe to ignore in web preview): $e');
