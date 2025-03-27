@@ -167,7 +167,7 @@ Future<void> _initializeFirebaseServices() async {
   );
 
   await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    // For older versions of firebase_app_check
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.debug,
   );

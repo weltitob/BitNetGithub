@@ -11,15 +11,15 @@ dependencies:
   # Include moonpay_flutter only for mobile platforms
   moonpay_flutter:
     path: moonpay_flutter/
-  intl: any
+  intl: ^0.19.0
   flutter_localized_locales: ^2.0.5
-  get:
+  get: ^4.6.6
   animate_do: ^3.1.2
   web_socket_channel: ^2.4.0
   number_paginator: ^0.4.0
   vector_math: ^2.1.0
   #android_id: ^0.3.6
-  firebase_remote_config: ^4.4.7
+  firebase_remote_config: ^3.0.15
   screenshot: ^3.0.0
 
   flutter_sound: ^9.2.13
@@ -43,11 +43,11 @@ dependencies:
   #callkeep: ^0.3.3
   #chewie: ^1.3.6
   collection: ^1.16.0
-  connectivity_plus:  any
+  connectivity_plus: ^4.0.2
   #desktop_drop: ^0.4.0
   #desktop_lifecycle: ^0.1.0
   #desktop_notifications: ^0.6.3
-  device_info_plus: ^10.1.2
+  device_info_plus: ^9.0.3
   dynamic_color: ^1.6.0
   #emoji_picker_flutter: ^1.5.1
   #emoji_proposal: ^0.0.1
@@ -106,14 +106,14 @@ dependencies:
 #  persona_flutter: ^3.2.8
   animated_text_kit: ^4.2.2
   animated_flip_counter: ^0.2.6
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^8.0.0
   mockito: ^5.3.2
   #flash: ^2.0.5+1
   local_auth: ^2.1.6
   flutter_multi_formatter: ^2.11.2
   bolt11_decoder: ^1.0.2
   #rive: ^0.10.0
-  mobile_scanner: ^5.1.1
+  mobile_scanner: ^2.1.0
   english_words: ^4.0.0
   #page_transition: ^2.0.9
   buttons_tabbar: ^1.3.6
@@ -130,14 +130,16 @@ dependencies:
   flutter_screenutil: ^5.9.0
   animated_theme_switcher: ^2.0.6
   pretty_qr_code: ^3.1.0
-  cloud_firestore: ^4.3.0
-  firebase_core: ^2.9.0
-  firebase_storage: ^11.0.9
-  cloud_functions: ^4.0.6
-  #firebase_dynamic_links: ^5.4.8
+  cloud_firestore: ^4.3.2
+  firebase_core: ^2.7.1
+  firebase_storage: ^11.0.15
+  cloud_functions: ^4.0.12
+  #firebase_dynamic_links: ^5.0.16
   #injectable: ^1.5.3
-  firebase_auth: ^4.2.3
-  firebase_app_check: ^0.2.1+8
+  firebase_auth: ^4.2.2
+  firebase_app_check: ^0.1.1+14
+  firebase_analytics: ^10.1.5
+  firebase_crashlytics: ^3.0.16
   uuid: ^3.0.7
   #google_sign_in: ^5.4.0
   #animator: ^3.3.0
@@ -154,7 +156,7 @@ dependencies:
   equatable: ^2.0.3
   #model_viewer_plus: ^1.3.0
   timeago: ^3.1.0
-  permission_handler: ^10.1.0
+  permission_handler: ^10.4.5
   #random_string: ^2.3.1
   #curved_navigation_bar: ^1.0.3
   #bubble_tab_indicator: ^0.1.6
@@ -173,10 +175,10 @@ dependencies:
   cached_network_image: ^3.3.1
   http: ^0.13.3
   file_picker: ^5.2.1
-  image_picker: ^0.8.4+4
-  path_provider: ^2.0.5
+  image_picker: ^1.0.7
+  path_provider: ^2.1.2
   google_fonts: ^4.0.4
-  lottie: ^1.4.3
+  lottie: ^2.6.0
   image: ^4.0.17
   #extended_image: ^6.2.1
   font_awesome_flutter: ^10.2.1
@@ -188,21 +190,21 @@ dependencies:
   build_runner: ^2.4.8
   gauge_indicator: ^0.4.3
   nfc_manager: ^3.4.0
-  go_router: ^13.2.2
+  go_router: ^12.1.3
   # flutter_stripe: ^11.4.0 # Commented out to remove Stripe dependency
   dart_lnurl: ^0.2.1
-  logger: ^1.4.0
+  logger: ^2.0.2
   photo_manager: ^3.6.3
   photo_manager_image_provider: ^2.1.1
   dio_smart_retry: ^6.0.0
 
   #flutter_gen: any CAUSES ISSUES TO FIND l10N
   #keyboard_shortcuts: any
-  rxdart: any
+  rxdart: ^0.27.7
   flutter_localizations:
     sdk: flutter
   country_state_city: ^0.1.6
-  geolocator: ^7.7.1
+  geolocator: ^9.0.2
   geocoding: ^3.0.0
   carousel_slider: ^5.0.0
   scrollable_positioned_list: ^0.3.8
@@ -210,8 +212,8 @@ dependencies:
   shake: ^2.2.0
   #internet_popup: ^1.0.8+5
 
-  mime: any
-  html: any
+  mime: ^1.0.4
+  html: ^0.15.4
   flutter_native_splash: ^2.3.7
   encrypt: ^5.0.3
   crypto: ^3.0.5
@@ -225,12 +227,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.3
   intl_utils: ^2.4.0
   msix: ^3.6.2
   translations_cleaner: ^0.0.5
   flutter_gen_runner: ^5.4.0
-  dependency_validator: ^3.0.0
+  dependency_validator: ^4.1.3
 
 flutter_launcher_icons:
   android: true
@@ -260,17 +262,13 @@ msix_config:
   install_certificate: false
 
 dependency_overrides:
-  analyzer: ^6.0.0
+  analyzer: ^6.2.0
   flutter_secure_storage_windows:
     git:
       url: https://gitlab.com/TheOneWithTheBraid/flutter_secure_storage_windows.git
       ref: main
   flutter_webrtc:
     git: https://github.com/krille-chan/flutter-webrtc.git
-  geolocator_android:
-    hosted:
-      name: geolocator_android
-      url: https://hanntech-gmbh.gitlab.io/free2pass/flutter-geolocator-floss
   keyboard_shortcuts:
     git:
       url: https://github.com/TheOneWithTheBraid/keyboard_shortcuts.git

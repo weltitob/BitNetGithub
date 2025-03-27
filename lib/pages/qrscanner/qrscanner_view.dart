@@ -48,10 +48,8 @@ class QRScannerView extends StatelessWidget {
             MobileScanner(
               //allowDuplicates: false,
               controller: controller.cameraController,
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
-                final Uint8List? image = capture.image;
-                for (final barcode in barcodes) {
+              onDetect: (barcode, args) {
+                if (barcode.rawValue != null) {
                   debugPrint('Barcode found! ${barcode.rawValue}');
                   //final String code = barcode.rawValue.toString();
                   //var encodedString = jsonDecode(codeinjson);
@@ -83,7 +81,7 @@ class QRScannerView extends StatelessWidget {
                           onTap: () => controller.cameraController.switchCamera(),
                         ),
                         GestureDetector(
-                          child: !controller.cameraController.torchEnabled
+                          child: !(controller.cameraController.torchEnabled ?? false)
                               ? Icon(
                                   Icons.flash_off,
                                   color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
@@ -105,14 +103,11 @@ class QRScannerView extends StatelessWidget {
                                     if (img != null) {
                                       String? fileUrl = (await img.loadFile())!.path;
                                       String? fileDir = (await img.loadFile())!.parent.uri.toFilePath();
-                                      BarcodeCapture? capture = await controller.cameraController.analyzeImage(fileUrl);
-                                      if (capture != null) {
-                                        List<Barcode> codes = capture.barcodes;
-                                        for (Barcode code in codes) {
-                                          debugPrint('Barcode found! ${code.rawValue}');
-                                          context.pop();
-                                          controller.onQRCodeScanned(code.rawValue!, context);
-                                        }
+                                      bool scanSuccess = await controller.cameraController.analyzeImage(fileUrl);
+                                      if (scanSuccess) {
+                                        // The barcode will be processed by the controller's onDetect callback
+                                        debugPrint('Image analyzed successfully');
+                                        context.pop();
                                       } else {
                                         overlayController.showOverlay(L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
                                       }
