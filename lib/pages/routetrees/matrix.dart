@@ -235,12 +235,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   }
 
   void initAuthListener() {
-    // Skip auth listener on web to avoid Firebase errors
-    if (kIsWeb) {
-      print('Skipping auth listener on web to avoid Firebase errors');
-      return;
-    }
-    
     try {
       Auth().authStateChanges.listen((val) async {
         try {
