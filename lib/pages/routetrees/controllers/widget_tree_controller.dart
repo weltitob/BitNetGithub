@@ -27,29 +27,31 @@ class WidgetTreeController extends BaseController {
     super.onInit();
     
     try {
-      // Only attempt biometrics on non-web platforms
-      if (!kIsWeb) {
-        isBiometricsAvailable();
-      } else {
-        // For web, set default values
+      // Set defaults for web immediately to ensure UI can render
+      if (kIsWeb) {
         hasBiometrics.value = false;
         isSecurityChecked.value = false;
         isBioAuthenticated.value = true; // Skip authentication on web
-      }
-      
-      // Only initialize app links on non-web platforms
-      if (!kIsWeb) {
-        appLinks = AppLinks().uriLinkStream.listen(onListenStream);
-      } else {
+        initialUrl!.value = initialUrl!.value.isEmpty ? "/" : initialUrl!.value; // Use root path for web
+        
         // Create a dummy subscription for web
         appLinks = StreamController<Uri>().stream.listen((uri) {});
+        
+        print('WidgetTreeController initialized for web with default values');
+        return; // Skip the rest for web
       }
+      
+      // Only for non-web platforms:
+      isBiometricsAvailable();
+      appLinks = AppLinks().uriLinkStream.listen(onListenStream);
+      
     } catch (e) {
       print('Error in WidgetTreeController.onInit() (safe to ignore in web preview): $e');
       // Set default values for error cases
       hasBiometrics.value = false;
       isSecurityChecked.value = false;
       isBioAuthenticated.value = true;
+      initialUrl!.value = initialUrl!.value.isEmpty ? "/" : initialUrl!.value; // Use root path for web
       
       // Create a dummy subscription for error cases
       appLinks = StreamController<Uri>().stream.listen((uri) {});

@@ -49,18 +49,23 @@ class WidgetTree extends StatelessWidget {
     try {
       // Check if Firebase is available and initialized
       if (kIsWeb && !Firebase.apps.isNotEmpty) {
-        await Firebase.initializeApp(
-          options: const FirebaseOptions(
-            apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
-            appId: '466393582939',
-            messagingSenderId: '01',
-            projectId: 'bitnet-cb34f',
-            storageBucket: 'bitnet-cb34f.appspot.com'
-          ),
-        );
+        try {
+          await Firebase.initializeApp(
+            options: const FirebaseOptions(
+              apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
+              appId: '466393582939',
+              messagingSenderId: '01',
+              projectId: 'bitnet-cb34f',
+              storageBucket: 'bitnet-cb34f.appspot.com'
+            ),
+          );
+          print('Firebase successfully initialized in web mode');
+        } catch (e) {
+          print('Firebase initialization error (safe to ignore in web preview): $e');
+        }
       }
     } catch (e) {
-      print('Firebase initialization error (safe to ignore in web preview): $e');
+      print('Firebase availability check error (safe to ignore in web preview): $e');
     }
     
     _safeFirebaseInitialized = true;
@@ -120,8 +125,13 @@ class WidgetTree extends StatelessWidget {
               
               // Avoid unnecessary Flutter tree rebuilds by using microtask
               Future.microtask(() {
-                // Only set initialUrl if it's empty to prevent duplicate router initialization
-                if (controller.initialUrl!.value.isEmpty) {
+                // In web mode, ensure we have a default route that works
+                if (kIsWeb) {
+                  // Force a web-safe route for initial loading (use root path)
+                  controller.initialUrl!.value = "/";
+                } 
+                // For non-web, use loading only if empty
+                else if (controller.initialUrl!.value.isEmpty) {
                   controller.initialUrl!.value = "/loading";
                 }
                 controller.columnMode!.value = isColumnMode;

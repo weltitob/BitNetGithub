@@ -91,6 +91,32 @@ class AppRouter {
   // Public router accessor with cached instance to prevent multiple initializations
   static GoRouter? _cachedRouter;
   static GoRouter get router {
+    // For web mode, use a simpler router to avoid Firebase dependencies
+    if (kIsWeb && _cachedRouter == null) {
+      print('Creating simplified web router');
+      _cachedRouter = GoRouter(
+        navigatorKey: _rootNavigatorKey,
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const WebsiteLandingPage(),
+          ),
+          GoRoute(
+            path: '/website',
+            builder: (context, state) => const WebsiteLandingPage(),
+          ),
+          GoRoute(
+            path: '/loading',
+            builder: (context, state) => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          ),
+        ],
+      );
+      return _cachedRouter!;
+    }
+    
     // Return cached router if available to prevent multiple initializations
     if (_cachedRouter != null) {
       return _cachedRouter!;
@@ -104,8 +130,12 @@ class AppRouter {
       // Fallback minimal router
       _cachedRouter = GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: kIsWeb ? '/website' : '/loading',
+        initialLocation: '/',
         routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const WebsiteLandingPage(),
+          ),
           GoRoute(
             path: '/loading',
             builder: (context, state) => const Scaffold(

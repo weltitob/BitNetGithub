@@ -69,7 +69,9 @@ import 'backbone/auth/auth.dart';
 Future<void> main() async {
   // Set up error handler to catch Firebase initialization errors first
   FlutterError.onError = (FlutterErrorDetails details) {
-    if (details.exception.toString().contains('Firebase')) {
+    if (kIsWeb && (details.exception.toString().contains('Firebase') || 
+        details.exception.toString().contains('core/not-initialized'))) {
+      // Only log to console, don't show on screen
       print('Suppressed Firebase error in web: ${details.exception}');
     } else {
       FlutterError.presentError(details);
@@ -88,9 +90,13 @@ Future<void> main() async {
     // Initialize splash screen
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
     
-    // Error handling for Firebase errors, but without zones
+    // For web, initialize minimal services first before running the app
     try {
-      // Run the app immediately
+      // Pre-initialize critical services to prevent blank screen
+      Get.put(LoggerService(), permanent: true);
+      Get.put(DioClient(), permanent: true);
+      
+      // Run the app with minimal dependencies
       runApp(const MyApp());
       
       // Delay initialization of non-critical services
@@ -99,12 +105,12 @@ Future<void> main() async {
         FlutterNativeSplash.remove();
       });
     } catch (error) {
-      if (error.toString().contains('Firebase')) {
-        print('Caught Firebase error in web: $error');
-      } else {
-        print('Error: $error');
-        rethrow; // Rethrow if not Firebase related
-      }
+      // Handle all errors gracefully in web mode
+      print('Caught error in web initialization: $error');
+      
+      // Run app even if initialization fails
+      runApp(const MyApp());
+      FlutterNativeSplash.remove();
     }
   } else {
     // For mobile, initialize all services before launching UI
@@ -122,7 +128,7 @@ Future<void> _initializeWebServices() async {
     Get.put(LoggerService(), permanent: true);
     Get.put(DioClient(), permanent: true);
     
-    // Try to initialize remote config if possible
+    // Try to initialize remote config if possible, but catch errors
     try {
       final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
       remoteConfigController.fetchRemoteConfigData().catchError((e) {
