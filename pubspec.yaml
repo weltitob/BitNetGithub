@@ -183,7 +183,7 @@ dependencies:
   #extended_image: ^6.2.1
   font_awesome_flutter: ^10.2.1
   #floating_frosted_bottom_bar: ^0.0.1
-  seo: ^0.0.6
+  seo: ^0.0.10
   popover: ^0.2.8+2
   sliding_up_panel: ^2.0.0+1
   intl_generator: ^0.4.1

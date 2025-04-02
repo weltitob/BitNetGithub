@@ -313,8 +313,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return kIsWeb
         ? SeoController(
             tree: WidgetTree(context: context),
-            enabled: true, // Ensure SEO is enabled for web
-            defaultLocale: 'en', // Default language
             child: MultiProvider(
               providers: [
                 ...providers,

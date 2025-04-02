@@ -77,26 +77,10 @@ class SeoText extends StatelessWidget {
       return textWidget;
     }
     
-    // Enhanced SEO options for web
-    Map<String, String> attributes = {};
-    
-    // Add accessibility attributes
-    if (id != null) attributes['id'] = id!;
-    if (ariaLabel != null) attributes['aria-label'] = ariaLabel!;
-    if (role != null) attributes['role'] = role!;
-    
-    // Add structured data if provided
-    if (structuredData != null && structuredData!.isNotEmpty) {
-      structuredData!.forEach((key, value) {
-        attributes[key] = value;
-      });
-    }
-    
-    // For performance optimization, use Seo.text with enhanced attributes
+    // For performance optimization, use Seo.text
     return Seo.text(
       style: tagStyle ?? TextTagStyle.p,
       text: text,
-      attributes: attributes,
       child: textWidget,
     );
   }

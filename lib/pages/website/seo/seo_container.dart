@@ -42,19 +42,6 @@ class SeoContainer extends StatelessWidget {
       return child;
     }
 
-    // Create HTML attributes map
-    final Map<String, String> attributes = {};
-    
-    // Add accessibility attributes
-    if (id != null) attributes['id'] = id!;
-    if (role != null) attributes['role'] = role!;
-    if (ariaLabel != null) attributes['aria-label'] = ariaLabel!;
-    
-    // Add custom HTML attributes if provided
-    if (htmlAttributes != null) {
-      attributes.addAll(htmlAttributes!);
-    }
-
     // Create the base container with Seo.head metadata
     Widget seoWidget = Seo.head(
       tags: [
@@ -71,31 +58,8 @@ class SeoContainer extends StatelessWidget {
         // Canonical URL meta tag if provided  
         if (canonicalUrl != null)
           LinkTag(rel: 'canonical', href: canonicalUrl!),
-        
-        // Open Graph tags for social sharing  
-        MetaTag(property: 'og:title', content: title),
-        MetaTag(property: 'og:description', content: description),
-        if (image != null) 
-          MetaTag(property: 'og:image', content: image!),
-        if (canonicalUrl != null)
-          MetaTag(property: 'og:url', content: canonicalUrl!),
-        MetaTag(property: 'og:type', content: 'website'),
-        
-        // Twitter Card tags
-        MetaTag(name: 'twitter:card', content: 'summary_large_image'),
-        MetaTag(name: 'twitter:title', content: title),
-        MetaTag(name: 'twitter:description', content: description),
-        if (image != null)
-          MetaTag(name: 'twitter:image', content: image!),
       ],
-      child: Seo.data(
-        // Use semantic HTML for the main content
-        data: '<main${_attributesToString(attributes)}>',
-        child: Seo.data(
-          data: '</main>',
-          child: child,
-        ),
-      ),
+      child: child,
     );
 
     // Add structured data if provided
@@ -121,14 +85,5 @@ class SeoContainer extends StatelessWidget {
     }
 
     return seoWidget;
-  }
-
-  /// Converts a map of attributes to an HTML attribute string
-  String _attributesToString(Map<String, String> attributes) {
-    if (attributes.isEmpty) return '';
-    
-    return attributes.entries
-        .map((entry) => ' ${entry.key}="${entry.value}"')
-        .join();
   }
 }

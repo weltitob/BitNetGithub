@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:seo/seo.dart';
 
 /// A helper class for implementing JSON-LD structured data in the BitNet app
 class StructuredData extends StatelessWidget {
@@ -20,14 +19,9 @@ class StructuredData extends StatelessWidget {
       return child;
     }
 
-    // Format the JSON-LD data with proper escaping
-    final String jsonLdString = _formatJsonLd(jsonLdData);
-
-    // Use the SEO package to inject the structured data
-    return Seo.data(
-      data: jsonLdString,
-      child: child,
-    );
+    // For the older version of seo package, we can't directly inject JSON-LD
+    // So we'll just return the child for now
+    return child;
   }
 
   /// Formats a Map into a valid JSON-LD string

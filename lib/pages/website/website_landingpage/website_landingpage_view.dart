@@ -151,12 +151,7 @@ class WebsiteLandingPageView extends StatelessWidget {
       title: 'BitNet - Building a Bitcoin Future That Works',
       description: 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
       canonicalUrl: 'https://bitnet.im',
-      image: 'https://bitnet.im/assets/images/logoclean.png',
-      structuredData: homepageStructuredData,
       keywords: ['BitNet', 'Bitcoin', 'Cryptocurrency', 'Wallet', 'Blockchain', 'DeFi', 'Digital Currency'],
-      role: 'main',
-      id: 'main-content',
-      ariaLabel: 'BitNet Homepage',
       child: mainContent,
     );
   }
