@@ -91,8 +91,14 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         text: L10n.of(context)!.bitcoinChart,
         context: context,
         onTap: () {
-          // Use context.pop() to properly go back to the previous screen
-          context.pop();
+          // Use context.canPop() to determine if we can safely go back in history
+          if (context.canPop()) {
+            // If we have a navigation history, use pop() to go back to previous screen
+            context.pop();
+          } else {
+            // If no navigation history (e.g., deep linked), default to feed screen
+            context.go('/feed');
+          }
         },
       ),
       body: Stack(
@@ -207,7 +213,13 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                             ),
                             context: context,
                             onTap: () {
-                              context.go('/wallet/bitcoinscreen');
+                              // No need to navigate when already on this screen
+                              // Just scroll to top if needed
+                              scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
                             },
                           );
                         },
@@ -227,7 +239,13 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           ),
                           context: context,
                           onTap: () {
-                            context.go('/wallet/bitcoinscreen');
+                            // No need to navigate when already on this screen
+                            // Just scroll to top if needed
+                            scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
                           },
                           // unconfirmedBalance: '',
                         );

@@ -10,11 +10,13 @@ import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bitnet/pages/feed/widgets/fear_and_greed_widget.dart';
 import 'package:bitnet/pages/feed/widgets/hashrate_widget.dart';
 
@@ -168,12 +170,20 @@ class _TokensTabState extends State<TokensTab> {
               final chartData = token['chartData'] as List<ChartLine>;
               
               // Wrap in RepaintBoundary for better performance
-              return RepaintBoundary(
-                child: GlassContainer(
-                  width: getStandardizedCardWidth().w,
-                  margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
-                  customShadow: isDarkMode ? [] : null,
-                  child: Padding(
+              return GestureDetector(
+                onTap: () {
+                  // Navigate to Bitcoin screen when clicking on tokens
+                  // Use push to maintain navigation history
+                  if (token['symbol'] == 'BTC') {
+                    context.push('/wallet/bitcoinscreen');
+                  }
+                },
+                child: RepaintBoundary(
+                  child: GlassContainer(
+                    width: getStandardizedCardWidth().w,
+                    margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                    customShadow: isDarkMode ? [] : null,
+                    child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 20.w,
                       vertical: 18.h, // Increased from 16.h
@@ -324,14 +334,17 @@ class _TokensTabState extends State<TokensTab> {
                     // First crypto item with NumberIndicator
                     Stack(
                       children: [
-                        CryptoItem(
-                          hasGlassContainer: false,
-                          currency: Currency(
-                            code: 'Hotdog',
-                            name: 'Hotdog',
-                            icon: Image.asset("./assets/tokens/hotdog.webp"),
+                        GestureDetector(
+                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: 'Hotdog',
+                              name: 'Hotdog',
+                              icon: Image.asset("./assets/tokens/hotdog.webp"),
+                            ),
+                            context: context,
                           ),
-                          context: context,
                         ),
                         Positioned(
                           left: 10,
@@ -343,14 +356,17 @@ class _TokensTabState extends State<TokensTab> {
                     // Second crypto item with NumberIndicator
                     Stack(
                       children: [
-                        CryptoItem(
-                          hasGlassContainer: false,
-                          currency: Currency(
-                            code: 'GENST',
-                            name: 'Genisis Stone',
-                            icon: Image.asset("./assets/tokens/genisisstone.webp"),
+                        GestureDetector(
+                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: 'GENST',
+                              name: 'Genisis Stone',
+                              icon: Image.asset("./assets/tokens/genisisstone.webp"),
+                            ),
+                            context: context,
                           ),
-                          context: context,
                         ),
                         Positioned(
                           left: 10,
@@ -362,14 +378,17 @@ class _TokensTabState extends State<TokensTab> {
                     // Third crypto item with NumberIndicator
                     Stack(
                       children: [
-                        CryptoItem(
-                          hasGlassContainer: false,
-                          currency: Currency(
-                            code: 'HTDG',
-                            name: 'Hotdog',
-                            icon: Image.asset("./assets/tokens/hotdog.webp"),
+                        GestureDetector(
+                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: 'HTDG',
+                              name: 'Hotdog',
+                              icon: Image.asset("./assets/tokens/hotdog.webp"),
+                            ),
+                            context: context,
                           ),
-                          context: context,
                         ),
                         Positioned(
                           left: 10,

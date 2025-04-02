@@ -777,7 +777,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ),
                             context: context,
                             onTap: () {
-                              context.go('/wallet/bitcoinscreen');
+                              // Use push to maintain navigation history
+                              context.push('/wallet/bitcoinscreen');
                             },
                           );
                         },
@@ -798,7 +799,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                           ),
                           context: context,
                           onTap: () {
-                            context.go('/wallet/bitcoinscreen');
+                            // Use push to maintain navigation history
+                            context.push('/wallet/bitcoinscreen');
                           },
                           // unconfirmedBalance: '',
                         );
