@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seo/seo.dart';
+import 'package:flutter/foundation.dart';
 
 class SeoText extends StatelessWidget {
   final String? data;
@@ -17,6 +18,11 @@ class SeoText extends StatelessWidget {
   final TextWidthBasis? textWidthBasis;
   final TextHeightBehavior? textHeightBehavior;
   final Color? selectionColor;
+  final bool richText;
+  final Map<String, String>? structuredData;
+  final String? id;
+  final String? ariaLabel;
+  final String? role;
 
   const SeoText(
     this.data, {
@@ -35,6 +41,11 @@ class SeoText extends StatelessWidget {
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
+    this.richText = false,
+    this.structuredData,
+    this.id,
+    this.ariaLabel,
+    this.role,
   }) : super(key: key);
 
   @override
@@ -43,26 +54,126 @@ class SeoText extends StatelessWidget {
     final String text = data ?? "";
     final bool isBigText = tagStyle == TextTagStyle.h1 || tagStyle == TextTagStyle.h2 || tagStyle == TextTagStyle.h3;
     
-    // For performance optimization, implement shouldRebuild check
+    // Base widget that will be enhanced with SEO if on web
+    final Widget textWidget = Text(
+      text,
+      style: style,
+      strutStyle: strutStyle,
+      textAlign: textAlign,
+      textDirection: textDirection,
+      locale: locale,
+      softWrap: softWrap,
+      overflow: overflow,
+      textScaleFactor: textScaleFactor,
+      maxLines: maxLines,
+      semanticsLabel: semanticsLabel ?? ariaLabel,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+      selectionColor: selectionColor,
+    );
+    
+    // If not on web, return the basic widget to avoid overhead
+    if (!kIsWeb) {
+      return textWidget;
+    }
+    
+    // Enhanced SEO options for web
+    Map<String, String> attributes = {};
+    
+    // Add accessibility attributes
+    if (id != null) attributes['id'] = id!;
+    if (ariaLabel != null) attributes['aria-label'] = ariaLabel!;
+    if (role != null) attributes['role'] = role!;
+    
+    // Add structured data if provided
+    if (structuredData != null && structuredData!.isNotEmpty) {
+      structuredData!.forEach((key, value) {
+        attributes[key] = value;
+      });
+    }
+    
+    // For performance optimization, use Seo.text with enhanced attributes
     return Seo.text(
       style: tagStyle ?? TextTagStyle.p,
       text: text,
-      child: Text(
-        text,
-        style: style,
-        strutStyle: strutStyle,
-        textAlign: textAlign,
-        textDirection: textDirection,
-        locale: locale,
-        softWrap: softWrap,
-        overflow: overflow,
-        textScaleFactor: textScaleFactor,
-        maxLines: maxLines,
-        semanticsLabel: semanticsLabel,
-        textWidthBasis: textWidthBasis,
-        textHeightBehavior: textHeightBehavior,
-        selectionColor: selectionColor,
-      ),
+      attributes: attributes,
+      child: textWidget,
+    );
+  }
+  
+  /// Creates an SEO heading (h1) with appropriate semantic markup
+  static Widget h1(String text, {
+    TextStyle? style,
+    TextAlign? textAlign,
+    Map<String, String>? structuredData,
+    String? id,
+    String? ariaLabel,
+  }) {
+    return SeoText(
+      text,
+      tagStyle: TextTagStyle.h1,
+      style: style,
+      textAlign: textAlign,
+      structuredData: structuredData,
+      id: id,
+      ariaLabel: ariaLabel,
+    );
+  }
+  
+  /// Creates an SEO heading (h2) with appropriate semantic markup
+  static Widget h2(String text, {
+    TextStyle? style,
+    TextAlign? textAlign,
+    Map<String, String>? structuredData,
+    String? id,
+    String? ariaLabel,
+  }) {
+    return SeoText(
+      text,
+      tagStyle: TextTagStyle.h2,
+      style: style,
+      textAlign: textAlign,
+      structuredData: structuredData,
+      id: id,
+      ariaLabel: ariaLabel,
+    );
+  }
+  
+  /// Creates an SEO heading (h3) with appropriate semantic markup
+  static Widget h3(String text, {
+    TextStyle? style,
+    TextAlign? textAlign,
+    Map<String, String>? structuredData,
+    String? id,
+    String? ariaLabel,
+  }) {
+    return SeoText(
+      text,
+      tagStyle: TextTagStyle.h3,
+      style: style,
+      textAlign: textAlign,
+      structuredData: structuredData,
+      id: id,
+      ariaLabel: ariaLabel,
+    );
+  }
+  
+  /// Creates an SEO paragraph with appropriate semantic markup
+  static Widget paragraph(String text, {
+    TextStyle? style,
+    TextAlign? textAlign,
+    Map<String, String>? structuredData,
+    String? id,
+    String? ariaLabel,
+  }) {
+    return SeoText(
+      text,
+      tagStyle: TextTagStyle.p,
+      style: style,
+      textAlign: textAlign,
+      structuredData: structuredData,
+      id: id,
+      ariaLabel: ariaLabel,
     );
   }
   
@@ -73,7 +184,10 @@ class SeoText extends StatelessWidget {
       other.data == data &&
       other.style == style &&
       other.tagStyle == tagStyle &&
-      other.textAlign == textAlign;
+      other.textAlign == textAlign &&
+      other.id == id &&
+      other.ariaLabel == ariaLabel &&
+      other.role == role;
   }
 
   @override
@@ -81,5 +195,8 @@ class SeoText extends StatelessWidget {
     data.hashCode ^ 
     tagStyle.hashCode ^ 
     style.hashCode ^ 
-    textAlign.hashCode;
+    textAlign.hashCode ^
+    (id?.hashCode ?? 0) ^
+    (ariaLabel?.hashCode ?? 0) ^
+    (role?.hashCode ?? 0);
 }

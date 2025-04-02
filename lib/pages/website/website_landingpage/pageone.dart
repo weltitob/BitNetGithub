@@ -3,9 +3,12 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/emailfetcher.dart';
+import 'package:bitnet/pages/website/seo/seo_container.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
+import 'package:bitnet/pages/website/seo/structured_data.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -89,11 +92,14 @@ class _PageOneState extends State<PageOne> {
                     ),
                     Container(
                       width: bigtextWidth + AppTheme.cardPadding,
-                      child: SeoText(
+                      child: SeoText.h1(
                         "Building a Bitcoin Future That Works", // Updated headline
-                        tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
+                        id: 'main-headline',
+                        structuredData: {
+                          'itemprop': 'headline',
+                        },
                       ),
                     ),
                     SizedBox(
@@ -101,10 +107,14 @@ class _PageOneState extends State<PageOne> {
                     ),
                     Container(
                       width: subtitleWidth + AppTheme.cardPadding,
-                      child: SeoText(
+                      child: SeoText.paragraph(
                         L10n.of(context)!.weAreGrowingBitcoin,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
+                        id: 'main-subtitle',
+                        structuredData: {
+                          'itemprop': 'description',
+                        },
                       ),
                     ),
                     SizedBox(
@@ -138,9 +148,11 @@ class _PageOneState extends State<PageOne> {
                     SizedBox(
                       height: AppTheme.cardPadding * spacingMultiplier,
                     ),
-                    SeoText(
+                    SeoText.paragraph(
                       L10n.of(context)!.limitedSpotsLeft,
                       style: Theme.of(context).textTheme.bodyLarge,
+                      id: 'spots-counter',
+                      ariaLabel: 'Limited spots remaining',
                     ),
                     Row(
                       children: [Container()],

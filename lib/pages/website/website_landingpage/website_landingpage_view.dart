@@ -6,6 +6,8 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/emailfetcher.dart';
+import 'package:bitnet/pages/website/seo/seo_container.dart';
+import 'package:bitnet/pages/website/seo/structured_data.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/website/website_landingpage/pageone.dart';
@@ -13,9 +15,9 @@ import 'package:bitnet/pages/website/website_landingpage/pagethree.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagetwo.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
-import '';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;
@@ -27,9 +29,30 @@ class WebsiteLandingPageView extends StatelessWidget {
     final percentagechange = Provider.of<double>(context);
     final lastRegisteredUsers = Provider.of<List<UserData>>(context);
 
-    //seo
-    //main view
-    return bitnetScaffold(
+    // Create structured data for the homepage
+    final Map<String, dynamic> homepageStructuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'BitNet - Building a Bitcoin Future That Works',
+      'description': 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      'url': 'https://bitnet.im',
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': 'https://bitnet.im/search?q={search_term_string}',
+        'query-input': 'required name=search_term_string'
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'BitNet',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://bitnet.im/assets/images/logoclean.png'
+        }
+      }
+    };
+
+    // Main scaffold content
+    final Widget mainContent = bitnetScaffold(
       floatingActionButton: ValueListenableBuilder<bool>(
           valueListenable: controller.showFab,
           builder: (context, showFab, child) {
@@ -91,7 +114,7 @@ class WebsiteLandingPageView extends StatelessWidget {
                               duration: const Duration(milliseconds: 2400),
                               textStyle: Theme.of(context).textTheme.titleSmall,
                             ),
-                          ], //texts
+                          ],
                         ),
                 );
         }),
@@ -116,6 +139,25 @@ class WebsiteLandingPageView extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    // Apply SEO wrapper only on web
+    if (!kIsWeb) {
+      return mainContent;
+    }
+
+    // Enhanced with SEO metadata for web
+    return SeoContainer(
+      title: 'BitNet - Building a Bitcoin Future That Works',
+      description: 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      canonicalUrl: 'https://bitnet.im',
+      image: 'https://bitnet.im/assets/images/logoclean.png',
+      structuredData: homepageStructuredData,
+      keywords: ['BitNet', 'Bitcoin', 'Cryptocurrency', 'Wallet', 'Blockchain', 'DeFi', 'Digital Currency'],
+      role: 'main',
+      id: 'main-content',
+      ariaLabel: 'BitNet Homepage',
+      child: mainContent,
     );
   }
 }
