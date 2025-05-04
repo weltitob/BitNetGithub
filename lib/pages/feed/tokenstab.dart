@@ -309,7 +309,7 @@ class _TokensTabState extends State<TokensTab> {
                     ),
                   ),
                 ),
-              );
+              ));
             },
           ),
           

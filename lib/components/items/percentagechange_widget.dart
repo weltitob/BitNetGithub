@@ -18,7 +18,9 @@ class PercentageChangeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isPositive ? AppTheme.successColor : AppTheme.errorColor;
+    // Treat 0% as positive (green)
+    final isZeroOrPositive = isPositive || percentage.trim() == "0%" || percentage.trim() == "+0%" || percentage.trim() == "-0%";
+    final color = isZeroOrPositive ? AppTheme.successColor : AppTheme.errorColor;
     
     return Container(
       padding: EdgeInsets.symmetric(
@@ -41,6 +43,9 @@ class PercentageChangeWidget extends StatelessWidget {
             SizedBox(width: 4.w),
           ],
           Text(
+            // Fix -0% display: always show 0% as positive
+            percentage.trim() == "-0%" ? "0%" : 
+            percentage.trim() == "0%" ? "0%" : 
             percentage,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
