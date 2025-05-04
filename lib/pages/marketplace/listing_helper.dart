@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -21,7 +23,7 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
   
   BitNetBottomSheet(
     context: context,
-    height: MediaQuery.of(context).size.height * 0.7,
+    height: MediaQuery.of(context).size.height * 0.85, // Increased height to take up more screen
     backgroundColor: Theme.of(context).colorScheme.surface,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,7 +241,7 @@ void _showListingConfirmation(
 ) {
   BitNetBottomSheet(
     context: context,
-    height: MediaQuery.of(context).size.height * 0.55,
+    height: MediaQuery.of(context).size.height * 0.85, // Increased height to match first sheet
     backgroundColor: Theme.of(context).colorScheme.surface,
     child: Column(
       children: [
@@ -451,11 +453,11 @@ void _handleListingConfirmation(
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (BuildContext context) {
+    builder: (BuildContext dialogContext) {
       return Center(
         child: Container(
-          width: 100,
-          height: 100,
+          width: 120,
+          height: 90,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
@@ -470,12 +472,15 @@ void _handleListingConfirmation(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.primary,
+              // DotProgress indicator
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  3,
+                  (index) => _buildAnimatedDot(context, index * 0.3),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 12),
               Text(
                 "Listing NFT...",
                 style: Theme.of(context).textTheme.bodyMedium,
@@ -507,22 +512,30 @@ void _handleListingConfirmation(
     'is_sold': false,
   };
 
-  // Simulate network request with a slight delay
-  Future.delayed(Duration(seconds: 1), () {
-    // Write to Firestore
+  // Store BuildContext for later use
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final navigatorState = Navigator.of(context);
+  
+  // Execute Firestore operation
+  Future(() async {
     try {
-      // Get Firestore instance and create a reference to the 'listed_assets' collection
+      // Write to Firestore
       final firestore = FirebaseFirestore.instance;
       final listingsCollection = firestore.collection('listed_assets');
       
-      // Add the listing data to get a new document with auto-generated ID
-      listingsCollection.add(listingData);
+      // Add the listing data
+      await listingsCollection.add(listingData);
       
-      // Close loading dialog
-      Navigator.of(context).pop();
+      // Delay to show loading indicator (at least 1 second)
+      await Future.delayed(Duration(seconds: 1));
+      
+      // Close loading dialog first
+      if (navigatorState.canPop()) {
+        navigatorState.pop();
+      }
       
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text("NFT listed successfully for \$${listingPrice.toStringAsFixed(2)}!"),
           backgroundColor: AppTheme.successColor,
@@ -540,14 +553,18 @@ void _handleListingConfirmation(
       );
       
       // Close the confirmation sheet
-      Navigator.of(context).pop();
+      if (navigatorState.canPop()) {
+        navigatorState.pop();
+      }
       
     } catch (e) {
-      // Close loading dialog
-      Navigator.of(context).pop();
+      // Close loading dialog first
+      if (navigatorState.canPop()) {
+        navigatorState.pop();
+      }
       
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text("Error listing NFT: ${e.toString()}"),
           backgroundColor: AppTheme.errorColor,
@@ -565,6 +582,31 @@ void _handleListingConfirmation(
       );
     }
   });
+}
+
+/// Builds an animated dot for the loading indicator
+Widget _buildAnimatedDot(BuildContext context, double delay) {
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 4),
+    child: TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: 600),
+      curve: Curves.easeInOut,
+      builder: (context, double value, child) {
+        return Opacity(
+          opacity: sin(value * 3.14 * 2) * 0.7 + 0.3, // Pulsating opacity
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              shape: BoxShape.circle,
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }
 
 /// Extension method to make it easy to call from any NFT asset card
