@@ -173,14 +173,14 @@ class _AssetCardState extends State<AssetCard> {
                                       customWidth: 125.w * widget.scale,
                                       title: "List",
                                       onTap: () {
-                                        // Create an NFTAsset from the current asset
-                                        final asset = NFTAsset(
-                                          id: widget.assetId ?? '',
-                                          name: widget.nftName ?? 'Asset',
-                                          collection: widget.nftMainName ?? 'Collection',
-                                          imageUrl: firstMediaData?.data ?? '',
-                                          isListed: false,
-                                          owner: 'You'
+                                        // Create an NFTAsset from the current asset using the factory method
+                                        final asset = NFTAsset.fromAssetCard(
+                                          assetId: widget.assetId,
+                                          nftName: widget.nftName,
+                                          nftMainName: widget.nftMainName,
+                                          imageUrl: firstMediaData?.data,
+                                          owner: 'You',
+                                          isListed: false
                                         );
                                         
                                         // Show the listing bottom sheet

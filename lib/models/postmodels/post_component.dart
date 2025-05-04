@@ -321,13 +321,14 @@ class _PostComponentState extends State<PostComponent>
                                         }
                                       }
                                       
-                                      final asset = NFTAsset(
-                                        id: postId,
-                                        name: postName,
+                                      // Use the factory method for consistent asset creation
+                                      final asset = NFTAsset.fromPost(
+                                        postId: postId,
+                                        postName: postName,
                                         collection: displayname,
                                         imageUrl: imageUrl,
-                                        isListed: false,
-                                        owner: Auth().currentUser?.uid ?? ''
+                                        owner: Auth().currentUser?.uid ?? '',
+                                        isListed: false
                                       );
                                       
                                       // Show the listing bottom sheet

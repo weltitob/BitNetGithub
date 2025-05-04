@@ -10,6 +10,7 @@ Future<T?> BitNetBottomSheet<T>({
   Color backgroundColor = Colors.transparent,
   bool isDismissible = true,
   bool isScrollControlled = true,
+  bool extendBehindAppBar = false,
   bool goBack = false,
 }) {
   // this should use the appbar for bottomsheets by deafult and the appbar should be build in a way wher eit can have 3 values backbutton, centertext and right a action
@@ -40,6 +41,7 @@ Future<T?> BitNetBottomSheet<T>({
             backgroundColor: backgroundColor,
             isDismissible: isDismissible,
             isScrollControlled: isScrollControlled,
+            extendBehindAppBar: extendBehindAppBar,
             goBack: goBack,
             child: child,
           ),
@@ -93,6 +95,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.isDismissible = true,
     this.isScrollControlled = true,
+    this.extendBehindAppBar = false,
     this.goBack = false,
     required this.child,
   });
@@ -102,6 +105,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
   final Color backgroundColor;
   final bool isDismissible;
   final bool isScrollControlled;
+  final bool extendBehindAppBar;
   final bool goBack;
   final Widget child;
   @override
@@ -113,7 +117,9 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           height: AppTheme.elementSpacing / 1.375,
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.grey.shade300
+                : Colors.grey.shade700,
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
