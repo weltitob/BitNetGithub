@@ -31,15 +31,18 @@ Future<T?> BitNetBottomSheet<T>({
         ),
       ),
       builder: (context) {
-        return BitnetBottomSheetWidget(
-          height: height,
-          width: width,
-          borderRadius: borderRadius,
-          backgroundColor: backgroundColor,
-          isDismissible: isDismissible,
-          isScrollControlled: isScrollControlled,
-          goBack: goBack,
-          child: child,
+        return Material(
+          color: Colors.transparent,
+          child: BitnetBottomSheetWidget(
+            height: height,
+            width: width,
+            borderRadius: borderRadius,
+            backgroundColor: backgroundColor,
+            isDismissible: isDismissible,
+            isScrollControlled: isScrollControlled,
+            goBack: goBack,
+            child: child,
+          ),
         );
       });
 }
@@ -110,7 +113,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           height: AppTheme.elementSpacing / 1.375,
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.grey :  Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) : darken(Theme.of(context).colorScheme.primaryContainer, 70),
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
@@ -119,32 +122,22 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           child: Container(
             height: height != null ? (height! - AppTheme.cardPadding * 3) : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                colors:
-                Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? [Colors.grey, Colors.grey ,Colors.grey, Colors.grey, Colors.grey] :
-                Theme.of(context).brightness == Brightness.light
-                    ? [
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.9),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.7),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.4),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.0001),
-                      ]
-                    : [
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.9),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.7),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.4),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.0001),
-                      ],
-              ),
+              // Use the provided backgroundColor or fall back to theme colors
+              color: backgroundColor != Colors.transparent 
+                ? backgroundColor 
+                : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(borderRadius),
                 topRight: Radius.circular(borderRadius),
               ),
+              // Add a subtle shadow for depth
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 0,
+                ),
+              ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(borderRadius), topRight: Radius.circular(borderRadius)),
