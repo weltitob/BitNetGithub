@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:seo/seo.dart';
 
 class CustomCard extends StatefulWidget {
   final String lottieAssetPath;
@@ -132,15 +131,15 @@ class _CustomCardState extends State<CustomCard>
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: AppTheme.elementSpacing),
-                      child: kIsWeb
-                          ? SeoText(
-                              tagStyle: TextTagStyle.h3,
-                              widget.mainTitle,
-                              style: Theme.of(context).textTheme.headlineLarge)
-                          : Text(
-                              widget.mainTitle,
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
+                      // child: kIsWeb
+                      //     ? SeoText(
+                      //         tagStyle: TextTagStyle.h3,
+                      //         widget.mainTitle,
+                      //         style: Theme.of(context).textTheme.headlineLarge)
+                      child: Text(
+                        widget.mainTitle,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
                     ),
                     SizedBox(
                       height: height * 0.015,
@@ -148,15 +147,15 @@ class _CustomCardState extends State<CustomCard>
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: AppTheme.elementSpacing),
-                      child: kIsWeb
-                          ? SeoText(
-                              widget.subTitle,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            )
-                          : Text(
-                              widget.subTitle,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                      // child: kIsWeb
+                      //     ? SeoText(
+                      //         widget.subTitle,
+                      //         style: Theme.of(context).textTheme.bodyMedium,
+                      //       )
+                      child: Text(
+                        widget.subTitle,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
                   ],
                 ),

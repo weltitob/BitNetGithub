@@ -29,10 +29,6 @@ class CollectionHeader extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(bottom: 0.h),
                 padding: EdgeInsets.symmetric(horizontal: 0.w),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14.r),
-                    border: Border(
-                        bottom: BorderSide(color: primaryColor, width: 5))),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
                   child: Image.asset(
@@ -43,13 +39,13 @@ class CollectionHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                left: (size.width - 100.w) / 2,
-                child: Container(
-                  color: primaryColor,
-                  width: 100.w,
-                  height: 50.w,
+              // Custom Outline
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: BannerOutlinePainter(
+                    profileCenter: Offset(200, 250), // adjust this
+                    radius: 50.w,
+                  ),
                 ),
               ),
               Positioned(
@@ -58,18 +54,13 @@ class CollectionHeader extends StatelessWidget {
                 child: SizedBox(
                   width: size.width,
                   child: Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: primaryColor, width: 5),
-                          borderRadius: BorderRadius.circular(100.r)),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100.r),
-                        child: Image.asset(
-                          user1Image,
-                          width: 100.w,
-                          height: 100.w,
-                          fit: BoxFit.cover,
-                        ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.r),
+                      child: Image.asset(
+                        user1Image,
+                        width: 100.w,
+                        height: 100.w,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -94,4 +85,42 @@ class CollectionHeader extends StatelessWidget {
       ),
     );
   }
+}
+
+class BannerOutlinePainter extends CustomPainter {
+  final Offset profileCenter;
+  final double radius;
+
+  BannerOutlinePainter({required this.profileCenter, required this.radius});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = primaryColor
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+
+    // Start at bottom-left of the banner
+    path.moveTo(0, profileCenter.dy);
+
+    // Line toward the profile picture (left side)
+    path.lineTo(profileCenter.dx - radius, profileCenter.dy);
+
+    // Arc over the top of the profile picture
+    path.arcToPoint(
+      Offset(profileCenter.dx + radius, profileCenter.dy),
+      radius: Radius.circular(radius),
+      clockwise: false,
+    );
+
+    // Line to bottom-right of the banner
+    path.lineTo(size.width, profileCenter.dy);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

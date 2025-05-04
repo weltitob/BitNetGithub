@@ -195,14 +195,14 @@ class AppRoutes {
             }),
 
         // Main website landing page route
-        GoRoute(
-            path: '/website',
-            builder: (ctx, state) => const WebsiteLandingPage()),
+        // GoRoute(
+        //     path: '/website',
+        //     builder: (ctx, state) => const WebsiteLandingPage()),
 
-        // Early bird signup page as a separate route
-        GoRoute(
-            path: '/website/earlybird',
-            builder: (ctx, state) => const EmailFetcherLandingPage()),
+        // // Early bird signup page as a separate route
+        // GoRoute(
+        //     path: '/website/earlybird',
+        //     builder: (ctx, state) => const EmailFetcherLandingPage()),
 
         GoRoute(
           path: '/report',
@@ -675,34 +675,34 @@ class AppRoutes {
           path: '/',
           builder: (ctx, state) => const LoadingViewAppStart(),
         ),
-        GoRoute(
-            path: '/website',
-            builder: (ctx, state) => const WebsiteLandingPage(),
-            routes: [
-              GoRoute(
-                path: 'report',
-                builder: (ctx, state) => const Report(),
-              ),
-              GoRoute(
-                path: 'aboutus',
-                builder: (ctx, state) => const AboutUs(),
-              ),
-              GoRoute(
-                path: 'redirect',
-                builder: (ctx, state) => const RedirectToApp(),
-              ),
-              GoRoute(
-                path: 'ourteam',
-                builder: (ctx, state) => const OurTeam(),
-              ),
-              GoRoute(path: 'agbs', builder: (ctx, state) => const AGBScreen()),
-              GoRoute(
-                  path: 'impressum',
-                  builder: (ctx, state) => const ImpressumScreen()),
-              GoRoute(
-                  path: 'submitidea',
-                  builder: (ctx, state) => const SubmitIdea()),
-            ]),
+        // GoRoute(
+        //     path: '/website',
+        //     builder: (ctx, state) => const WebsiteLandingPage(),
+        //     routes: [
+        //       GoRoute(
+        //         path: 'report',
+        //         builder: (ctx, state) => const Report(),
+        //       ),
+        //       GoRoute(
+        //         path: 'aboutus',
+        //         builder: (ctx, state) => const AboutUs(),
+        //       ),
+        //       GoRoute(
+        //         path: 'redirect',
+        //         builder: (ctx, state) => const RedirectToApp(),
+        //       ),
+        //       GoRoute(
+        //         path: 'ourteam',
+        //         builder: (ctx, state) => const OurTeam(),
+        //       ),
+        //       GoRoute(path: 'agbs', builder: (ctx, state) => const AGBScreen()),
+        //       GoRoute(
+        //           path: 'impressum',
+        //           builder: (ctx, state) => const ImpressumScreen()),
+        //       GoRoute(
+        //           path: 'submitidea',
+        //           builder: (ctx, state) => const SubmitIdea()),
+        //     ]),
         GoRoute(
           path: '/authhome',
           builder: (ctx, state) => const GetStartedScreen(),

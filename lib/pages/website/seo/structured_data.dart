@@ -23,10 +23,11 @@ class StructuredData extends StatelessWidget {
     final String jsonLdString = _formatJsonLd(jsonLdData);
 
     // Use the SEO package to inject the structured data
-    return Seo.html(
-      html: jsonLdString,
-      child: child,
-    );
+    // return Seo.html(
+    //   html: jsonLdString,
+    //   child: child,
+    // );
+    return Container();
   }
 
   /// Formats a Map into a valid JSON-LD string

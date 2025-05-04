@@ -38,7 +38,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:seo/seo.dart';
 import 'package:shake/shake.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'backbone/auth/auth.dart';
@@ -315,130 +314,128 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // Get memoized providers
     final providers = _getWebProviders();
 
-    return kIsWeb
-        ? SeoController(
-            tree: WidgetTree(context: context),
-            enabled: true, // Ensure SEO is enabled for web
-            //defaultLocale: 'en', // Default language
-            child: MultiProvider(
-              providers: [
-                ...providers,
-                // Stream providers are created with lazily to prevent
-                // unnecessary data flow until needed
-                StreamProvider<UserData?>(
-                  create: (_) => Auth().userWalletStream,
-                  initialData: null,
-                  lazy: true, // Only subscribe when listened to
-                ),
-                StreamProvider<UserData?>(
-                  create: (_) => Auth().userWalletStreamForAuthChanges,
-                  initialData: null,
-                  lazy: true, // Only subscribe when listened to
-                ),
-                ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-                  // Debounce updates to avoid excessive stream creation
-                  update:
-                      (context, currencyChangeProvider, bitcoinPriceStream) {
-                    // Skip unnecessary updates if the app isn't fully initialized
-                    if (!Get.isRegistered<WalletsController>()) {
-                      return bitcoinPriceStream ?? BitcoinPriceStream()
-                        ..updateCurrency(
-                            currencyChangeProvider.selectedCurrency ?? 'usd');
-                    }
+    // return kIsWeb
+    //     ? SeoController(
+    //         tree: WidgetTree(context: context),
+    //         enabled: true, // Ensure SEO is enabled for web
+    //         //defaultLocale: 'en', // Default language
+    //         child: MultiProvider(
+    //           providers: [
+    //             ...providers,
+    //             // Stream providers are created with lazily to prevent
+    //             // unnecessary data flow until needed
+    //             StreamProvider<UserData?>(
+    //               create: (_) => Auth().userWalletStream,
+    //               initialData: null,
+    //               lazy: true, // Only subscribe when listened to
+    //             ),
+    //             StreamProvider<UserData?>(
+    //               create: (_) => Auth().userWalletStreamForAuthChanges,
+    //               initialData: null,
+    //               lazy: true, // Only subscribe when listened to
+    //             ),
+    //             ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
+    //               // Debounce updates to avoid excessive stream creation
+    //               update:
+    //                   (context, currencyChangeProvider, bitcoinPriceStream) {
+    //                 // Skip unnecessary updates if the app isn't fully initialized
+    //                 if (!Get.isRegistered<WalletsController>()) {
+    //                   return bitcoinPriceStream ?? BitcoinPriceStream()
+    //                     ..updateCurrency(
+    //                         currencyChangeProvider.selectedCurrency ?? 'usd');
+    //                 }
 
-                    if (bitcoinPriceStream == null ||
-                        bitcoinPriceStream.localCurrency !=
-                            currencyChangeProvider.selectedCurrency) {
-                      bitcoinPriceStream?.dispose();
-                      final newStream = BitcoinPriceStream();
-                      newStream.updateCurrency(
-                          currencyChangeProvider.selectedCurrency ?? 'usd');
+    //                 if (bitcoinPriceStream == null ||
+    //                     bitcoinPriceStream.localCurrency !=
+    //                         currencyChangeProvider.selectedCurrency) {
+    //                   bitcoinPriceStream?.dispose();
+    //                   final newStream = BitcoinPriceStream();
+    //                   newStream.updateCurrency(
+    //                       currencyChangeProvider.selectedCurrency ?? 'usd');
 
-                      if (Auth().currentUser != null) {
-                        // Use a single subscription to avoid memory leaks
-                        newStream.priceStream
-                            .asBroadcastStream()
-                            .listen((data) {
-                          Get.find<WalletsController>().chartLines.value = data;
-                        });
-                      }
-                      return newStream;
-                    }
+    //                   if (Auth().currentUser != null) {
+    //                     // Use a single subscription to avoid memory leaks
+    //                     newStream.priceStream
+    //                         .asBroadcastStream()
+    //                         .listen((data) {
+    //                       Get.find<WalletsController>().chartLines.value = data;
+    //                     });
+    //                   }
+    //                   return newStream;
+    //                 }
 
-                    return bitcoinPriceStream;
-                  },
-                  dispose: (context, bitcoinPriceStream) =>
-                      bitcoinPriceStream.dispose(),
-                  lazy: true, // Only create when needed
-                ),
-              ],
-              child: bTree.WidgetTree(),
-            ),
-          )
-        : MultiProvider(
-            providers: [
-              ChangeNotifierProvider<CardChangeProvider>(
-                  create: (context) => CardChangeProvider()),
-              ChangeNotifierProvider<CurrencyTypeProvider>(
-                  create: (context) => CurrencyTypeProvider()),
-              ChangeNotifierProvider<LocalProvider>(
-                create: (context) => LocalProvider(),
-              ),
-              ChangeNotifierProvider<TimezoneProvider>(
-                create: (context) => TimezoneProvider(),
-              ),
-              ChangeNotifierProvider<CountryProvider>(
-                create: (context) => CountryProvider(),
-              ),
-              ChangeNotifierProvider<CurrencyChangeProvider>(
-                create: (context) => CurrencyChangeProvider(),
-              ),
+    //                 return bitcoinPriceStream;
+    //               },
+    //               dispose: (context, bitcoinPriceStream) =>
+    //                   bitcoinPriceStream.dispose(),
+    //               lazy: true, // Only create when needed
+    //             ),
+    //           ],
+    //           child: bTree.WidgetTree(),
+    //         ),
+    //       )
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CardChangeProvider>(
+            create: (context) => CardChangeProvider()),
+        ChangeNotifierProvider<CurrencyTypeProvider>(
+            create: (context) => CurrencyTypeProvider()),
+        ChangeNotifierProvider<LocalProvider>(
+          create: (context) => LocalProvider(),
+        ),
+        ChangeNotifierProvider<TimezoneProvider>(
+          create: (context) => TimezoneProvider(),
+        ),
+        ChangeNotifierProvider<CountryProvider>(
+          create: (context) => CountryProvider(),
+        ),
+        ChangeNotifierProvider<CurrencyChangeProvider>(
+          create: (context) => CurrencyChangeProvider(),
+        ),
 
-              ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-                update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null ||
-                      bitcoinPriceStream.localCurrency !=
-                          currencyChangeProvider.selectedCurrency) {
-                    bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(
-                        currencyChangeProvider.selectedCurrency ?? 'usd');
-                    if (Auth().currentUser != null) {
-                      newStream.priceStream.asBroadcastStream().listen((data) {
-                        // Get.put(WalletsController());
-                        Get.find<WalletsController>().chartLines.value = data;
-                      });
-                    }
-                    return newStream;
-                  }
-                  bitcoinPriceStream.priceStream
-                      .asBroadcastStream()
-                      .listen((data) {
-                    Get.find<WalletsController>().chartLines.value = data;
-                  });
-                  return bitcoinPriceStream;
-                },
-                dispose: (context, bitcoinPriceStream) =>
-                    bitcoinPriceStream.dispose(),
-              ),
-              // This provider is now made redundant, use WalletsController.chartlines and
-              //Obx if you need to listen for changes.
-              // StreamProvider<ChartLine?>(
-              //   key: _streamKey,
-              //   create: (context) =>
-              //       Provider.of<BitcoinPriceStream>(context,listen:false).priceStream,
-              //   initialData: ChartLine(time: 0, price: 0),
-              // ),
-              StreamProvider<UserData?>(
-                create: (_) => Auth().userWalletStream,
-                initialData: null,
-              ),
-              StreamProvider<UserData?>(
-                create: (_) => Auth().userWalletStreamForAuthChanges,
-                initialData: null,
-              ),
-            ],
-            child: bTree.WidgetTree(),
-          );
+        ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
+          update: (context, currencyChangeProvider, bitcoinPriceStream) {
+            if (bitcoinPriceStream == null ||
+                bitcoinPriceStream.localCurrency !=
+                    currencyChangeProvider.selectedCurrency) {
+              bitcoinPriceStream?.dispose();
+              final newStream = BitcoinPriceStream();
+              newStream.updateCurrency(
+                  currencyChangeProvider.selectedCurrency ?? 'usd');
+              if (Auth().currentUser != null) {
+                newStream.priceStream.asBroadcastStream().listen((data) {
+                  // Get.put(WalletsController());
+                  Get.find<WalletsController>().chartLines.value = data;
+                });
+              }
+              return newStream;
+            }
+            bitcoinPriceStream.priceStream.asBroadcastStream().listen((data) {
+              Get.find<WalletsController>().chartLines.value = data;
+            });
+            return bitcoinPriceStream;
+          },
+          dispose: (context, bitcoinPriceStream) =>
+              bitcoinPriceStream.dispose(),
+        ),
+        // This provider is now made redundant, use WalletsController.chartlines and
+        //Obx if you need to listen for changes.
+        // StreamProvider<ChartLine?>(
+        //   key: _streamKey,
+        //   create: (context) =>
+        //       Provider.of<BitcoinPriceStream>(context,listen:false).priceStream,
+        //   initialData: ChartLine(time: 0, price: 0),
+        // ),
+        StreamProvider<UserData?>(
+          create: (_) => Auth().userWalletStream,
+          initialData: null,
+        ),
+        StreamProvider<UserData?>(
+          create: (_) => Auth().userWalletStreamForAuthChanges,
+          initialData: null,
+        ),
+      ],
+      child: bTree.WidgetTree(),
+    );
   }
 }
