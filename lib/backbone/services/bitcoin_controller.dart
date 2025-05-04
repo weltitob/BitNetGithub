@@ -44,7 +44,9 @@ class BitcoinController extends GetxController {
   RxString overallPriceChange = "+0".obs;
   late String trackBallValuePricechange;
 
-  late StreamSubscription sub;
+  // List to track all subscriptions for proper memory management
+  final List<StreamSubscription> _subscriptions = [];
+  StreamSubscription? sub;
 
   Rx<ChartLine?> liveChart = Rx<ChartLine?>(null);
   RxBool loading = true.obs;
@@ -69,6 +71,10 @@ class BitcoinController extends GetxController {
   RxInt pbChartPing = 0.obs;
 
   RxString pbOverallPriceChange = "+0".obs;
+  // Add reactive variables for UI calculations to avoid re-computing in build methods
+  RxBool isPriceChangePositive = true.obs;
+  RxString formattedPriceChange = "0.00".obs;
+  RxString formattedPricePercentage = "0%".obs;
   StreamSubscription? pbSub;
 
   @override
@@ -132,7 +138,15 @@ class BitcoinController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    sub.cancel();
+    
+    // Cancel all tracked subscriptions to prevent memory leaks
+    for (var subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    
+    // Cancel individual subscriptions as well for safety
+    sub?.cancel();
     pbSub?.cancel();
   }
 
@@ -213,7 +227,13 @@ class BitcoinController extends GetxController {
     //standard current line should be onedaychart
     currentline.value = onedaychart;
     liveChart.value = onedaychart.last;
+    
+    // Cancel existing subscription if any
+    sub?.cancel();
+    // Create new subscription and add to tracked list
     sub = listenToLiveChartData(currency);
+    _subscriptions.add(sub!);
+    
     _latesttimeinit = currentline.value.last.time;
     lastpriceinit =
         double.parse((currentline.value.last.price).toStringAsFixed(2));
@@ -342,6 +362,12 @@ class BitcoinController extends GetxController {
       pbNew_lastimeeexact = DateTime.now().millisecondsSinceEpoch.toDouble();
       pbNew_lastpricerounded.value = 0;
       pbNew_firstpriceexact = 0;
+      
+      // Also reset derived values
+      isPriceChangePositive.value = true;
+      formattedPriceChange.value = "0.00";
+      formattedPricePercentage.value = "0%";
+      pbOverallPriceChange.value = "0%";
       return;
     }
     
@@ -350,6 +376,49 @@ class BitcoinController extends GetxController {
     pbNew_lastpricerounded.value =
         double.parse((pbNew_lastpriceexact).toStringAsFixed(2));
     pbNew_firstpriceexact = pbCurrentline.value.first.price;
+    
+    // Calculate derived values for UI
+    updateDerivedValues();
+  }
+  
+  // Calculate all derived values in one place to avoid redundant calculations in UI
+  void updateDerivedValues() {
+    // Calculate price difference
+    double diff = pbNew_lastpricerounded.value - pbNew_firstpriceexact;
+    
+    // Check if the price change is positive or near zero
+    isPriceChangePositive.value = diff >= 0 || diff.abs() < 0.001;
+    
+    // Format the price change
+    if (diff.abs() < 0.01) {
+      // Treat very small changes as zero
+      formattedPriceChange.value = "0.00";
+    } else if (diff.abs() > 9999) {
+      // For large numbers, use K notation
+      formattedPriceChange.value = (diff / 1000).toStringAsFixed(1) + 'K';
+    } else {
+      formattedPriceChange.value = diff.toStringAsFixed(2);
+    }
+    
+    // Calculate percentage change
+    double priceChange;
+    if (pbNew_firstpriceexact == 0) {
+      priceChange = (pbNew_lastpriceexact - pbNew_firstpriceexact) / 1;
+    } else {
+      priceChange = (pbNew_lastpriceexact - pbNew_firstpriceexact) / pbNew_firstpriceexact;
+    }
+    
+    // Format percentage change
+    pbOverallPriceChange.value = toPercent(priceChange);
+    
+    // Ensure consistency - if value is -0%, treat as positive
+    if (pbOverallPriceChange.value.trim() == "-0%" || 
+        pbOverallPriceChange.value.trim() == "0%") {
+      pbOverallPriceChange.value = "0%";
+      isPriceChangePositive.value = true;
+    }
+    
+    formattedPricePercentage.value = pbOverallPriceChange.value;
   }
 
   Future<void> getpbChartline(String currency) async {
@@ -451,7 +520,14 @@ class BitcoinController extends GetxController {
   Future<void> _listenForUpdates(String currency) async {
     String userId = Auth().currentUser!.uid;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await pbSub?.cancel();
+    
+    // Cancel existing subscription to avoid memory leaks
+    if (pbSub != null) {
+      pbSub!.cancel();
+      _subscriptions.remove(pbSub);
+    }
+    
+    // Create new subscription
     pbSub = firestore
         .collection("balance_chart")
         .doc(userId)
@@ -466,11 +542,19 @@ class BitcoinController extends GetxController {
         updatepbData(snapshot.docChanges);
       }
     });
+    
+    // Add to tracked subscriptions
+    _subscriptions.add(pbSub!);
   }
 
   /// Ensure charts stay within their correct timespans and add new data while avoiding duplicates
+  /// Also implements data point optimization to prevent memory bloat
   void updatepbData(List<DocumentChange> changes) {
     double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+
+    // Define maximum data points for each timeframe to prevent memory bloat
+    const int maxPointsPerTimeframe = 300;
+    bool dataChanged = false;
 
     for (var change in changes) {
       if (change.type == DocumentChangeType.added) {
@@ -481,6 +565,7 @@ class BitcoinController extends GetxController {
 
         // Avoid duplicates
         if (!pbMaxchart.any((d) => d.time == newData.time)) {
+          dataChanged = true;
           pbMaxchart.add(newData);
 
           if (newData.time > now - Duration(days: 365).inMilliseconds)
@@ -494,6 +579,8 @@ class BitcoinController extends GetxController {
         }
       }
     }
+    
+    // Remove outdated data points
     pbOneyearchart
         .removeWhere((d) => d.time < now - Duration(days: 365).inMilliseconds);
     pbOnemonthchart
@@ -502,6 +589,27 @@ class BitcoinController extends GetxController {
         .removeWhere((d) => d.time < now - Duration(days: 7).inMilliseconds);
     pbOnedaychart
         .removeWhere((d) => d.time < now - Duration(days: 1).inMilliseconds);
+        
+    // Optimize chart data point count to prevent memory bloat
+    if (dataChanged) {
+      // Downsample data if we have too many points
+      if (pbMaxchart.length > maxPointsPerTimeframe * 2) {
+        pbMaxchart = _downsampleChartData(pbMaxchart, maxPointsPerTimeframe);
+      }
+      if (pbOneyearchart.length > maxPointsPerTimeframe) {
+        pbOneyearchart = _downsampleChartData(pbOneyearchart, maxPointsPerTimeframe);
+      }
+      if (pbOnemonthchart.length > maxPointsPerTimeframe) {
+        pbOnemonthchart = _downsampleChartData(pbOnemonthchart, maxPointsPerTimeframe);
+      }
+      if (pbOneweekchart.length > maxPointsPerTimeframe / 2) {
+        pbOneweekchart = _downsampleChartData(pbOneweekchart, maxPointsPerTimeframe ~/ 2);
+      }
+      // Keep more points for 1D chart for better detail
+      if (pbOnedaychart.length > maxPointsPerTimeframe / 4) {
+        pbOnedaychart = _downsampleChartData(pbOnedaychart, maxPointsPerTimeframe ~/ 4);
+      }
+    }
     switch (pbSelectedtimespan.value) {
       case "1D":
         pbCurrentline.value = pbOnedaychart;
@@ -534,5 +642,64 @@ class BitcoinController extends GetxController {
       pbOverallPriceChange.value = toPercent(priceChange);
     }
     pbChartPing.value += 1;
+  }
+  
+  /// Downsample chart data to reduce memory usage and improve performance
+  /// Uses Douglas-Peucker algorithm-inspired approach to maintain visual fidelity
+  List<ChartLine> _downsampleChartData(List<ChartLine> data, int targetPointCount) {
+    if (data.length <= targetPointCount) return data;
+    
+    // Always keep first and last points for accurate price change calculation
+    List<ChartLine> result = [data.first];
+    
+    // For very few points, just use regular interval sampling
+    if (data.length < targetPointCount * 3) {
+      // Simple interval-based sampling
+      double interval = data.length / (targetPointCount - 2);
+      for (int i = 1; i < targetPointCount - 1; i++) {
+        int index = (i * interval).round();
+        if (index < data.length - 1) {
+          result.add(data[index]);
+        }
+      }
+    } else {
+      // For more points, use a more sophisticated approach that preserves important features
+      // Divide data into segments and for each segment, keep the min, max and middle points
+      int segmentCount = (targetPointCount - 2) ~/ 3;
+      int pointsPerSegment = data.length ~/ segmentCount;
+      
+      for (int i = 0; i < segmentCount; i++) {
+        int startIdx = 1 + i * pointsPerSegment;
+        int endIdx = (i == segmentCount - 1) ? data.length - 1 : startIdx + pointsPerSegment;
+        
+        if (startIdx >= endIdx) continue;
+        
+        List<ChartLine> segment = data.sublist(startIdx, endIdx);
+        
+        // Find min and max points in segment
+        ChartLine minPoint = segment.reduce((a, b) => a.price < b.price ? a : b);
+        ChartLine maxPoint = segment.reduce((a, b) => a.price > b.price ? a : b);
+        
+        // Add middle point for time perspective
+        ChartLine midPoint = segment[(segment.length / 2).floor()];
+        
+        // Add the points, ensuring no duplicates
+        if (!result.contains(minPoint)) result.add(minPoint);
+        if (!result.contains(midPoint) && midPoint != minPoint && midPoint != maxPoint) 
+          result.add(midPoint);
+        if (!result.contains(maxPoint) && maxPoint != minPoint) 
+          result.add(maxPoint);
+      }
+    }
+    
+    // Add last point if not already present
+    if (result.last != data.last) {
+      result.add(data.last);
+    }
+    
+    // Sort by time to ensure proper order
+    result.sort((a, b) => a.time.compareTo(b.time));
+    
+    return result;
   }
 }

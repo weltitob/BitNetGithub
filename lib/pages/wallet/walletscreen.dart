@@ -132,64 +132,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ),
                           ),
                         )),
-                    Container(
-                      height: 300,
-                      child: Obx(() {
-                        bitcoinController.pbChartPing.value;
-                        // Ensure we have data to display
-                        if (bitcoinController.pbCurrentline.value.isEmpty) {
-                          // If no data is available, create a dummy chart line
-                          double now = DateTime.now().millisecondsSinceEpoch.toDouble();
-                          bitcoinController.pbCurrentline.value = [
-                            ChartLine(price: 0, time: now - Duration(hours: 24).inMilliseconds.toDouble()),
-                            ChartLine(price: 0, time: now),
-                          ];
-                        }
-                        return SfCartesianChart(
-                          enableAxisAnimation: true,
-                          plotAreaBorderWidth: 0,
-                          primaryXAxis: CategoryAxis(
-                            labelPlacement: LabelPlacement.onTicks,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0),
-                          ),
-                          primaryYAxis: NumericAxis(
-                            plotOffset: 0,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0),
-                          ),
-                          series: <ChartSeries>[
-                            // SplineSeries with a glowing effect
-                            SplineSeries<ChartLine, double>(
-                              dataSource: bitcoinController.pbCurrentline.value,
-                              animationDuration: 0,
-                              xValueMapper: (ChartLine crypto, _) =>
-                                  crypto.time,
-                              yValueMapper: (ChartLine crypto, _) =>
-                                  crypto.price,
-                              color: (!bitcoinController.pbOverallPriceChange.value.contains('-') || 
-                                      bitcoinController.pbOverallPriceChange.value.trim() == "-0%" ||
-                                      bitcoinController.pbOverallPriceChange.value.trim() == "0%")
-                                  ? AppTheme.successColor
-                                  : AppTheme.errorColor, // Softer line color with glow
-                              width:
-                                  3, // Increased line width for a softer curve
-                              // Adding the glow effect underneath
-                              splineType: SplineType
-                                  .natural, // Smooth line with a curve
-                              // Create a glow effect by adding an area beneath the line
-                              opacity:
-                                  0.1, // Slightly more transparent to create a smoother glow effect
-                              // Adding a fill below the curve for a "rounded" look
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
+                    WalletChartWidget(bitcoinController: bitcoinController),
                     Column(
                       children: [
                         Obx(
@@ -475,102 +418,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Use the Obx directly around the ColoredPriceWidget to react to changes
-                                          Obx(
-                                            () {
-                                              // Force rebuild when timeframe changes
-                                              controller.timeframeChangeCounter.value;
-                                              
-                                              // Calculate the difference between current balance and start of timeframe
-                                              double firstPrice =
-                                                  bitcoinController
-                                                      .pbNew_firstpriceexact;
-                                              double currentPrice =
-                                                  bitcoinController
-                                                      .pbNew_lastpricerounded
-                                                      .value;
-                                              double diff =
-                                                  currentPrice - firstPrice;
-                                                  
-                                              // Calculate wallet value difference based on timeframe
-                                              double priceDiffPercentage = firstPrice != 0 ? 
-                                                  (currentPrice - firstPrice) / firstPrice : 0;
-                                                  
-                                              // Get current wallet value to calculate the absolute change
-                                              final chartLine = controller.chartLines.value;
-                                              if (chartLine != null && !controller.coin.value) {
-                                                // Calculate adjusted value difference (in currency)
-                                                double walletValueDiff = 
-                                                    (controller.totalBalanceSAT.value / 100000000) * 
-                                                    chartLine.price * priceDiffPercentage;
-                                                
-                                                // Format the difference with proper decimal places and limit length
-                                                String formattedDiff;
-                                                if (walletValueDiff.abs() > 9999) {
-                                                  // For large numbers, use K notation
-                                                  formattedDiff = (walletValueDiff / 1000)
-                                                          .toStringAsFixed(1) +
-                                                      'K';
-                                                } else {
-                                                  formattedDiff =
-                                                      walletValueDiff.toStringAsFixed(2);
-                                                }
-                                                
-                                                // Treat 0.00 as positive - always show green
-                                                bool isZeroOrPositive = walletValueDiff >= 0 || walletValueDiff.abs() < 0.01;
-                                                
-                                                // Force 0.00 to be displayed without negative sign
-                                                if (walletValueDiff.abs() < 0.01) {
-                                                  formattedDiff = "0.00";
-                                                }
-                                                
-                                                return ColoredPriceWidget(
-                                                  shouldHideAmount: true,
-                                                  price: formattedDiff,
-                                                  isPositive: isZeroOrPositive, // Force positive for zero values
-                                                  currencySymbol:
-                                                      getCurrency(currency!),
-                                                );
-                                              } else {
-                                                // Format the price difference (not wallet value)
-                                                String formattedDiff;
-                                                if (diff.abs() > 9999) {
-                                                  // For large numbers, use K notation
-                                                  formattedDiff = (diff / 1000)
-                                                          .toStringAsFixed(1) +
-                                                      'K';
-                                                } else {
-                                                  formattedDiff =
-                                                      diff.toStringAsFixed(2);
-                                                }
-                                                
-                                                // Treat 0.00 as positive - always show green
-                                                bool isZeroOrPositive = diff >= 0 || diff.abs() < 0.01;
-                                                
-                                                // Force 0.00 to be displayed without negative sign
-                                                if (diff.abs() < 0.01) {
-                                                  formattedDiff = "0.00";
-                                                }
-                                                
-                                                return ColoredPriceWidget(
-                                                  shouldHideAmount: true,
-                                                  price: formattedDiff,
-                                                  isPositive: isZeroOrPositive, // Force positive for zero values
-                                                  currencySymbol:
-                                                      getCurrency(currency!),
-                                                );
-                                              }
-                                            },
+                                          // Use a dedicated widget for price change to reduce rebuild scope
+                                          WalletPriceChangeWidget(
+                                            controller: controller,
+                                            bitcoinController: bitcoinController,
+                                            currency: currency!,
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
                                                   1), // Add some spacing
-                                          Obx(
-                                            () => BitNetPercentWidget(
-                                              shouldHideAmount: true,
-                                              priceChange: bitcoinController
-                                                  .pbOverallPriceChange.value,
-                                            ),
+                                          // Use a dedicated widget for percentage display
+                                          WalletPercentageWidget(
+                                            bitcoinController: bitcoinController,
                                           ),
                                         ],
                                       ),
@@ -1152,6 +1011,140 @@ class _BuyBtcSheetState extends State<BuyBtcSheet> {
         Get.find<WalletsController>().btcAddresses,
         "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
     return address.addr;
+  }
+}
+
+/// Widget for displaying price change in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletPriceChangeWidget extends StatelessWidget {
+  final WalletsController controller;
+  final BitcoinController bitcoinController;
+  final String currency;
+
+  const WalletPriceChangeWidget({
+    Key? key,
+    required this.controller,
+    required this.bitcoinController,
+    required this.currency,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      // Force rebuild when timeframe changes
+      controller.timeframeChangeCounter.value;
+      
+      // Use values pre-calculated in the controller where possible
+      bool isPositive = bitcoinController.isPriceChangePositive.value;
+      
+      // Get current wallet value to calculate the absolute change if needed
+      final chartLine = controller.chartLines.value;
+      if (chartLine != null && !controller.coin.value) {
+        // Calculate adjusted value difference (in currency) using pre-calculated percentage
+        String formattedDiff = bitcoinController.formattedPriceChange.value;
+        
+        return ColoredPriceWidget(
+          shouldHideAmount: true,
+          price: formattedDiff,
+          isPositive: isPositive,
+          currencySymbol: getCurrency(currency),
+        );
+      } else {
+        // Use pre-calculated price change
+        String formattedDiff = bitcoinController.formattedPriceChange.value;
+        
+        return ColoredPriceWidget(
+          shouldHideAmount: true,
+          price: formattedDiff,
+          isPositive: isPositive,
+          currencySymbol: getCurrency(currency),
+        );
+      }
+    });
+  }
+}
+
+/// Widget for displaying percentage change in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletPercentageWidget extends StatelessWidget {
+  final BitcoinController bitcoinController;
+
+  const WalletPercentageWidget({
+    Key? key,
+    required this.bitcoinController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => BitNetPercentWidget(
+      shouldHideAmount: true,
+      priceChange: bitcoinController.pbOverallPriceChange.value,
+    ));
+  }
+}
+
+/// Widget for displaying the price chart in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletChartWidget extends StatelessWidget {
+  final BitcoinController bitcoinController;
+
+  const WalletChartWidget({
+    Key? key,
+    required this.bitcoinController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      child: Obx(() {
+        bitcoinController.pbChartPing.value;
+        // Ensure we have data to display
+        if (bitcoinController.pbCurrentline.value.isEmpty) {
+          // If no data is available, create a dummy chart line
+          double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+          bitcoinController.pbCurrentline.value = [
+            ChartLine(price: 0, time: now - Duration(hours: 24).inMilliseconds.toDouble()),
+            ChartLine(price: 0, time: now),
+          ];
+        }
+        
+        // Use pre-calculated values from the controller
+        bool isPositive = bitcoinController.isPriceChangePositive.value;
+        
+        return SfCartesianChart(
+          enableAxisAnimation: true,
+          plotAreaBorderWidth: 0,
+          primaryXAxis: CategoryAxis(
+            labelPlacement: LabelPlacement.onTicks,
+            edgeLabelPlacement: EdgeLabelPlacement.none,
+            isVisible: false,
+            majorGridLines: const MajorGridLines(width: 0),
+            majorTickLines: const MajorTickLines(width: 0),
+          ),
+          primaryYAxis: NumericAxis(
+            plotOffset: 0,
+            edgeLabelPlacement: EdgeLabelPlacement.none,
+            isVisible: false,
+            majorGridLines: const MajorGridLines(width: 0),
+            majorTickLines: const MajorTickLines(width: 0),
+          ),
+          series: <ChartSeries>[
+            // SplineSeries with a glowing effect
+            SplineSeries<ChartLine, double>(
+              dataSource: bitcoinController.pbCurrentline.value,
+              animationDuration: 0,
+              xValueMapper: (ChartLine crypto, _) => crypto.time,
+              yValueMapper: (ChartLine crypto, _) => crypto.price,
+              color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+              width: 3,
+              splineType: SplineType.natural,
+              opacity: 0.1,
+            ),
+          ],
+        );
+      }),
+    );
   }
 }
 
