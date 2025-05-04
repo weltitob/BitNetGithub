@@ -25,7 +25,18 @@ class ColoredPriceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isPositive ? AppTheme.successColor : AppTheme.errorColor;
+    // Handle zero values as positive (always show green)
+    bool isZeroValue = false;
+    try {
+      // Check if the price is 0 or -0 after removing currency symbols
+      String cleanPrice = price.replaceAll(RegExp(r'[^\d.-]'), '');
+      double numValue = double.tryParse(cleanPrice) ?? 0;
+      isZeroValue = numValue.abs() < 0.01; // Treat anything close to zero as zero
+    } catch (e) {
+      // If parsing fails, continue with original isPositive value
+    }
+    
+    final color = (isPositive || isZeroValue) ? AppTheme.successColor : AppTheme.errorColor;
     WalletsController controller = Get.find<WalletsController>();
     
     return Obx(() {
@@ -111,7 +122,8 @@ class ColoredPriceWidget extends StatelessWidget {
                   ],
                 )
               : Text(
-                  "$price$currencySymbol",
+                  // Convert -0.00 to 0.00 for display
+                  (isZeroValue && price.contains('-')) ? price.replaceAll('-', '') + currencySymbol : "$price$currencySymbol",
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     color: color,
                   ),

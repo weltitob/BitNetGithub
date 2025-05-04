@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /user/
+Disallow: /settings/
+Disallow: /wallet/
+Disallow: /transactions/
+Disallow: /feed/
+Disallow: /qrscanner/
+Disallow: /report/
+
+# Allow search engines to access crucial website pages
+Allow: /website/
+Allow: /website/landingpage
+Allow: /website/about
+Allow: /website/contact
+Allow: /website/features
+Allow: /website/products
+Allow: /website/faq
+Allow: /website/terms
+Allow: /website/privacy
+
+# Sitemap
+Sitemap: https://bitnet.im/sitemap.xml

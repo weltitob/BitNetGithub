@@ -304,93 +304,93 @@ abstract class AppTheme {
             ),
       );
 
-  //.inter
+  //.poppins
   static final textTheme = TextTheme(
-    displayLarge: GoogleFonts.inter(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 52,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
-    displayMedium: GoogleFonts.inter(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 40,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
-    displaySmall: GoogleFonts.inter(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 28,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
       color: AppTheme.black90,
     ),
-    headlineLarge: GoogleFonts.inter(
+    headlineLarge: GoogleFonts.poppins(
       fontSize: 24,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
-    headlineMedium: GoogleFonts.inter(
+    headlineMedium: GoogleFonts.poppins(
       fontSize: 22,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
-    headlineSmall: GoogleFonts.inter(
+    headlineSmall: GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black80,
     ),
-    titleLarge: GoogleFonts.inter(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 17,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black70,
     ),
-    titleMedium: GoogleFonts.inter(
+    titleMedium: GoogleFonts.poppins(
       fontSize: 17,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
       color: AppTheme.black70,
     ),
-    titleSmall: GoogleFonts.inter(
+    titleSmall: GoogleFonts.poppins(
       fontSize: 15,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
       color: AppTheme.black70,
     ),
-    bodyLarge: GoogleFonts.inter(
+    bodyLarge: GoogleFonts.poppins(
       fontSize: 17,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
       color: AppTheme.black60,
     ),
-    bodyMedium: GoogleFonts.inter(
+    bodyMedium: GoogleFonts.poppins(
       fontSize: 15,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
       color: AppTheme.black60,
     ),
-    bodySmall: GoogleFonts.inter(
+    bodySmall: GoogleFonts.poppins(
       fontSize: 13,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelLarge: GoogleFonts.inter(
+    labelLarge: GoogleFonts.poppins(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelMedium: GoogleFonts.inter(
+    labelMedium: GoogleFonts.poppins(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
       color: AppTheme.black60,
     ),
-    labelSmall: GoogleFonts.inter(
+    labelSmall: GoogleFonts.poppins(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
@@ -448,7 +448,7 @@ abstract class AppTheme {
   );
 
   static const fallbackTextStyle = TextStyle(
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
     fontFamilyFallback: ['NotoEmoji'],
   );
 

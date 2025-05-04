@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:seo/seo.dart';
 
 /// A helper class for implementing JSON-LD structured data in the BitNet app
 class StructuredData extends StatelessWidget {

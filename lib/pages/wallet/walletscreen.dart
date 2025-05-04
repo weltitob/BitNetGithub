@@ -22,6 +22,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
@@ -66,9 +67,23 @@ class WalletScreen extends GetWidget<WalletsController> {
     }
     BitcoinController bitcoinController = Get.find<BitcoinController>();
 
+    // Debug function to help diagnose background gradient issues
     bool _isPriceChangePositive(BitcoinController controller) {
-      return controller.pbNew_firstpriceexact <=
-          controller.pbNew_lastpricerounded.value;
+      // Get the price difference
+      double lastPrice = controller.pbNew_lastpricerounded.value;
+      double firstPrice = controller.pbNew_firstpriceexact;
+      double diff = lastPrice - firstPrice;
+      
+      // Always consider zero or very small differences as positive
+      bool isZeroOrPositive = diff >= 0 || diff.abs() < 0.001;
+      
+      // Added safeguard: If the percentChange is "-0%" or "0%", always return true
+      String percentChange = controller.pbOverallPriceChange.value;
+      if (percentChange.trim() == "-0%" || percentChange.trim() == "0%") {
+        return true;
+      }
+      
+      return isZeroOrPositive;
     }
 
     return bitnetScaffold(
@@ -102,10 +117,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 1.0, // End of the gradient
                               ],
                               colors: [
-                                _isPriceChangePositive(bitcoinController)
+                                // Force green (positive) color if price change is 0 or very small
+                                (_isPriceChangePositive(bitcoinController) || 
+                                 bitcoinController.pbOverallPriceChange.value.contains("0%"))
                                     ? AppTheme.successColor.withOpacity(0.15)
                                     : AppTheme.errorColor.withOpacity(0.1),
-                                _isPriceChangePositive(bitcoinController)
+                                (_isPriceChangePositive(bitcoinController) || 
+                                 bitcoinController.pbOverallPriceChange.value.contains("0%"))
                                     ? AppTheme.successColor.withOpacity(0.04)
                                     : AppTheme.errorColor.withOpacity(0.03),
                                 Colors
@@ -114,56 +132,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ),
                           ),
                         )),
-                    Container(
-                      height: 300,
-                      child: Obx(() {
-                        bitcoinController.pbChartPing.value;
-                        return SfCartesianChart(
-                          enableAxisAnimation: true,
-                          plotAreaBorderWidth: 0,
-                          primaryXAxis: CategoryAxis(
-                            labelPlacement: LabelPlacement.onTicks,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0),
-                          ),
-                          primaryYAxis: NumericAxis(
-                            plotOffset: 0,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0),
-                          ),
-                          series: <ChartSeries>[
-                            // SplineSeries with a glowing effect
-                            SplineSeries<ChartLine, double>(
-                              dataSource: bitcoinController.pbCurrentline.value,
-                              animationDuration: 0,
-                              xValueMapper: (ChartLine crypto, _) =>
-                                  crypto.time,
-                              yValueMapper: (ChartLine crypto, _) =>
-                                  crypto.price,
-                              color: !bitcoinController
-                                      .pbOverallPriceChange.value
-                                      .contains('-')
-                                  ? AppTheme.successColor
-                                  : AppTheme
-                                      .errorColor, // Softer line color with glow
-                              width:
-                                  3, // Increased line width for a softer curve
-                              // Adding the glow effect underneath
-                              splineType: SplineType
-                                  .natural, // Smooth line with a curve
-                              // Create a glow effect by adding an area beneath the line
-                              opacity:
-                                  0.1, // Slightly more transparent to create a smoother glow effect
-                              // Adding a fill below the curve for a "rounded" look
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
+                    WalletChartWidget(bitcoinController: bitcoinController),
                     Column(
                       children: [
                         Obx(
@@ -226,111 +195,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         children: [
                                           Obx(
                                             () => LongButtonWidget(
-                                              title: bitcoinController
-                                                  .pbSelectedtimespan.value,
-                                              buttonType:
-                                                  ButtonType.transparent,
+                                              title: bitcoinController.pbSelectedtimespan.value,
+                                              buttonType: ButtonType.transparent,
                                               onTap: () {
-                                                int newIndex = bitcoinController
-                                                        .timespans
-                                                        .indexOf(bitcoinController
-                                                            .pbSelectedtimespan
-                                                            .value) +
-                                                    1;
-                                                if (newIndex ==
-                                                    bitcoinController
-                                                        .timespans.length) {
-                                                  newIndex = 0;
-                                                }
-                                                bitcoinController
-                                                        .pbSelectedtimespan
-                                                        .value =
-                                                    bitcoinController
-                                                        .timespans[newIndex];
-
-                                                switch (bitcoinController
-                                                    .pbSelectedtimespan.value) {
-                                                  case "1D":
-                                                    bitcoinController
-                                                            .pbCurrentline
-                                                            .value =
-                                                        bitcoinController
-                                                            .pbOnedaychart;
-                                                    break;
-                                                  case "1W":
-                                                    bitcoinController
-                                                            .pbCurrentline
-                                                            .value =
-                                                        bitcoinController
-                                                            .pbOneweekchart;
-                                                    break;
-                                                  case "1M":
-                                                    bitcoinController
-                                                            .pbCurrentline
-                                                            .value =
-                                                        bitcoinController
-                                                            .pbOnemonthchart;
-                                                    break;
-                                                  case "1J":
-                                                    bitcoinController
-                                                            .pbCurrentline
-                                                            .value =
-                                                        bitcoinController
-                                                            .pbOneyearchart;
-                                                    break;
-                                                  case "Max":
-                                                    bitcoinController
-                                                            .pbCurrentline
-                                                            .value =
-                                                        bitcoinController
-                                                            .pbMaxchart;
-                                                    break;
-                                                }
-                                                bitcoinController.pbSetValues();
-                                                // Update last price
-                                                // Update percent
-                                                double firstPrice =
-                                                    bitcoinController
-                                                        .pbNew_firstpriceexact;
-                                                double lastPrice =
-                                                    bitcoinController
-                                                        .pbNew_lastpriceexact;
-
-                                                double priceChange;
-                                                if (firstPrice == 0) {
-                                                  priceChange =
-                                                      (lastPrice - firstPrice) /
-                                                          1;
-                                                } else {
-                                                  priceChange =
-                                                      (lastPrice - firstPrice) /
-                                                          firstPrice;
-                                                }
-
-                                                bitcoinController
-                                                        .pbOverallPriceChange
-                                                        .value =
-                                                    toPercent(priceChange);
-                                                    
-                                                // Update wallet amount based on timeframe
-                                                // Get current BTC value and adjust it based on the timeframe's price change
-                                                // This gives us the "value" of our wallet at different points in time
-                                                final chartLine = controller.chartLines.value;
-                                                if (chartLine != null) {
-                                                  // Adjust the Bitcoin value based on the selected timeframe
-                                                  double adjustedBtcValue = chartLine.price * (firstPrice / lastPrice);
-                                                  
-                                                  // Force update the wallet display by updating a reactive variable
-                                                  controller.timeframeChangeCounter.value += 1;
-                                                }
-                                                // Update date
+                                                _showTimeframeBottomSheet(context, bitcoinController, controller);
                                               },
-                                              customHeight:
-                                                  AppTheme.cardPadding * 1.25,
-                                              customWidth:
-                                                  AppTheme.cardPadding * 2,
-                                              // leadingIcon:
-                                              //     Icon(Icons.arrow_drop_down_rounded),
+                                              customHeight: AppTheme.cardPadding * 1.25,
+                                              customWidth: AppTheme.cardPadding * 3, // Width that balances visibility and compactness
+                                              leadingIcon: Icon(Icons.arrow_drop_down_rounded),
                                             ),
                                           ),
                                           SizedBox(
@@ -546,86 +418,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Use the Obx directly around the ColoredPriceWidget to react to changes
-                                          Obx(
-                                            () {
-                                              // Force rebuild when timeframe changes
-                                              controller.timeframeChangeCounter.value;
-                                              
-                                              // Calculate the difference between current balance and start of timeframe
-                                              double firstPrice =
-                                                  bitcoinController
-                                                      .pbNew_firstpriceexact;
-                                              double currentPrice =
-                                                  bitcoinController
-                                                      .pbNew_lastpricerounded
-                                                      .value;
-                                              double diff =
-                                                  currentPrice - firstPrice;
-                                                  
-                                              // Calculate wallet value difference based on timeframe
-                                              double priceDiffPercentage = firstPrice != 0 ? 
-                                                  (currentPrice - firstPrice) / firstPrice : 0;
-                                                  
-                                              // Get current wallet value to calculate the absolute change
-                                              final chartLine = controller.chartLines.value;
-                                              if (chartLine != null && !controller.coin.value) {
-                                                // Calculate adjusted value difference (in currency)
-                                                double walletValueDiff = 
-                                                    (controller.totalBalanceSAT.value / 100000000) * 
-                                                    chartLine.price * priceDiffPercentage;
-                                                
-                                                // Format the difference with proper decimal places and limit length
-                                                String formattedDiff;
-                                                if (walletValueDiff.abs() > 9999) {
-                                                  // For large numbers, use K notation
-                                                  formattedDiff = (walletValueDiff / 1000)
-                                                          .toStringAsFixed(1) +
-                                                      'K';
-                                                } else {
-                                                  formattedDiff =
-                                                      walletValueDiff.toStringAsFixed(2);
-                                                }
-                                                
-                                                return ColoredPriceWidget(
-                                                  shouldHideAmount: true,
-                                                  price: formattedDiff,
-                                                  isPositive: walletValueDiff >= 0,
-                                                  currencySymbol:
-                                                      getCurrency(currency!),
-                                                );
-                                              } else {
-                                                // Format the price difference (not wallet value)
-                                                String formattedDiff;
-                                                if (diff.abs() > 9999) {
-                                                  // For large numbers, use K notation
-                                                  formattedDiff = (diff / 1000)
-                                                          .toStringAsFixed(1) +
-                                                      'K';
-                                                } else {
-                                                  formattedDiff =
-                                                      diff.toStringAsFixed(2);
-                                                }
-                                                
-                                                return ColoredPriceWidget(
-                                                  shouldHideAmount: true,
-                                                  price: formattedDiff,
-                                                  isPositive: diff >= 0,
-                                                  currencySymbol:
-                                                      getCurrency(currency!),
-                                                );
-                                              }
-                                            },
+                                          // Use a dedicated widget for price change to reduce rebuild scope
+                                          WalletPriceChangeWidget(
+                                            controller: controller,
+                                            bitcoinController: bitcoinController,
+                                            currency: currency!,
                                           ),
                                           SizedBox(
                                               width: AppTheme.elementSpacing *
                                                   1), // Add some spacing
-                                          Obx(
-                                            () => BitNetPercentWidget(
-                                              shouldHideAmount: true,
-                                              priceChange: bitcoinController
-                                                  .pbOverallPriceChange.value,
-                                            ),
+                                          // Use a dedicated widget for percentage display
+                                          WalletPercentageWidget(
+                                            bitcoinController: bitcoinController,
                                           ),
                                         ],
                                       ),
@@ -777,7 +581,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ),
                             context: context,
                             onTap: () {
-                              context.go('/wallet/bitcoinscreen');
+                              // Use push to maintain navigation history
+                              context.push('/wallet/bitcoinscreen');
                             },
                           );
                         },
@@ -798,7 +603,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                           ),
                           context: context,
                           onTap: () {
-                            context.go('/wallet/bitcoinscreen');
+                            // Use push to maintain navigation history
+                            context.push('/wallet/bitcoinscreen');
                           },
                           // unconfirmedBalance: '',
                         );
@@ -1206,4 +1012,261 @@ class _BuyBtcSheetState extends State<BuyBtcSheet> {
         "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
     return address.addr;
   }
+}
+
+/// Widget for displaying price change in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletPriceChangeWidget extends StatelessWidget {
+  final WalletsController controller;
+  final BitcoinController bitcoinController;
+  final String currency;
+
+  const WalletPriceChangeWidget({
+    Key? key,
+    required this.controller,
+    required this.bitcoinController,
+    required this.currency,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      // Force rebuild when timeframe changes
+      controller.timeframeChangeCounter.value;
+      
+      // Use values pre-calculated in the controller where possible
+      bool isPositive = bitcoinController.isPriceChangePositive.value;
+      
+      // Get current wallet value to calculate the absolute change if needed
+      final chartLine = controller.chartLines.value;
+      if (chartLine != null && !controller.coin.value) {
+        // Calculate adjusted value difference (in currency) using pre-calculated percentage
+        String formattedDiff = bitcoinController.formattedPriceChange.value;
+        
+        return ColoredPriceWidget(
+          shouldHideAmount: true,
+          price: formattedDiff,
+          isPositive: isPositive,
+          currencySymbol: getCurrency(currency),
+        );
+      } else {
+        // Use pre-calculated price change
+        String formattedDiff = bitcoinController.formattedPriceChange.value;
+        
+        return ColoredPriceWidget(
+          shouldHideAmount: true,
+          price: formattedDiff,
+          isPositive: isPositive,
+          currencySymbol: getCurrency(currency),
+        );
+      }
+    });
+  }
+}
+
+/// Widget for displaying percentage change in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletPercentageWidget extends StatelessWidget {
+  final BitcoinController bitcoinController;
+
+  const WalletPercentageWidget({
+    Key? key,
+    required this.bitcoinController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => BitNetPercentWidget(
+      shouldHideAmount: true,
+      priceChange: bitcoinController.pbOverallPriceChange.value,
+    ));
+  }
+}
+
+/// Widget for displaying the price chart in the wallet
+/// Extracted to reduce rebuild scope and improve performance
+class WalletChartWidget extends StatelessWidget {
+  final BitcoinController bitcoinController;
+
+  const WalletChartWidget({
+    Key? key,
+    required this.bitcoinController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      child: Obx(() {
+        bitcoinController.pbChartPing.value;
+        // Ensure we have data to display
+        if (bitcoinController.pbCurrentline.value.isEmpty) {
+          // If no data is available, create a dummy chart line
+          double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+          bitcoinController.pbCurrentline.value = [
+            ChartLine(price: 0, time: now - Duration(hours: 24).inMilliseconds.toDouble()),
+            ChartLine(price: 0, time: now),
+          ];
+        }
+        
+        // Use pre-calculated values from the controller
+        bool isPositive = bitcoinController.isPriceChangePositive.value;
+        
+        return SfCartesianChart(
+          enableAxisAnimation: true,
+          plotAreaBorderWidth: 0,
+          primaryXAxis: CategoryAxis(
+            labelPlacement: LabelPlacement.onTicks,
+            edgeLabelPlacement: EdgeLabelPlacement.none,
+            isVisible: false,
+            majorGridLines: const MajorGridLines(width: 0),
+            majorTickLines: const MajorTickLines(width: 0),
+          ),
+          primaryYAxis: NumericAxis(
+            plotOffset: 0,
+            edgeLabelPlacement: EdgeLabelPlacement.none,
+            isVisible: false,
+            majorGridLines: const MajorGridLines(width: 0),
+            majorTickLines: const MajorTickLines(width: 0),
+          ),
+          series: <ChartSeries>[
+            // SplineSeries with a glowing effect
+            SplineSeries<ChartLine, double>(
+              dataSource: bitcoinController.pbCurrentline.value,
+              animationDuration: 0,
+              xValueMapper: (ChartLine crypto, _) => crypto.time,
+              yValueMapper: (ChartLine crypto, _) => crypto.price,
+              color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+              width: 3,
+              splineType: SplineType.natural,
+              opacity: 0.1,
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// Helper method to show timeframe bottom sheet
+void _showTimeframeBottomSheet(BuildContext context, BitcoinController bitcoinController, WalletsController controller) {
+  showModalBottomSheet(
+    context: context,
+    elevation: 0.0,
+    backgroundColor: Colors.transparent,
+    isDismissible: true,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(AppTheme.borderRadiusBig),
+        topRight: Radius.circular(AppTheme.borderRadiusBig),
+      ),
+    ),
+    builder: (context) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(AppTheme.borderRadiusBig),
+            topRight: Radius.circular(AppTheme.borderRadiusBig),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: AppTheme.elementSpacing),
+            Container(
+              height: AppTheme.elementSpacing / 1.375,
+              width: AppTheme.cardPadding * 2.25,
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.withOpacity(0.3)
+                    : Colors.grey.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+              ),
+            ),
+            bitnetAppBar(
+              context: context, 
+              text: "Select Timeframe",
+              hasBackButton: false,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...bitcoinController.timespans.map((timespan) {
+                    bool isSelected = bitcoinController.pbSelectedtimespan.value == timespan;
+                    return BitNetListTile(
+                      text: timespan,
+                      selected: isSelected,
+                      onTap: () {
+                        // Set the selected timespan
+                        bitcoinController.pbSelectedtimespan.value = timespan;
+                        
+                        // Update chart based on selected timespan
+                        switch (timespan) {
+                          case "1D":
+                            bitcoinController.pbCurrentline.value = bitcoinController.pbOnedaychart;
+                            break;
+                          case "1W":
+                            bitcoinController.pbCurrentline.value = bitcoinController.pbOneweekchart;
+                            break;
+                          case "1M":
+                            bitcoinController.pbCurrentline.value = bitcoinController.pbOnemonthchart;
+                            break;
+                          case "1J":
+                            bitcoinController.pbCurrentline.value = bitcoinController.pbOneyearchart;
+                            break;
+                          case "Max":
+                            bitcoinController.pbCurrentline.value = bitcoinController.pbMaxchart;
+                            break;
+                        }
+                        
+                        // Update values for display
+                        bitcoinController.pbSetValues();
+                        
+                        // Update price change percentage
+                        double firstPrice = bitcoinController.pbNew_firstpriceexact;
+                        double lastPrice = bitcoinController.pbNew_lastpriceexact;
+                        double priceChange;
+                        if (firstPrice == 0) {
+                          priceChange = (lastPrice - firstPrice) / 1;
+                        } else {
+                          priceChange = (lastPrice - firstPrice) / firstPrice;
+                        }
+                        bitcoinController.pbOverallPriceChange.value = toPercent(priceChange);
+                        
+                        // Update wallet amount based on timeframe
+                        final chartLine = controller.chartLines.value;
+                        if (chartLine != null) {
+                          // Adjust the Bitcoin value based on the selected timeframe
+                          double adjustedBtcValue = chartLine.price * (firstPrice / lastPrice);
+                          
+                          // Force update the wallet display by updating a reactive variable
+                          controller.timeframeChangeCounter.value += 1;
+                        }
+                        
+                        // Close the bottom sheet
+                        Navigator.of(context).pop();
+                      },
+                      trailing: isSelected
+                          ? Icon(
+                              Icons.check_circle,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                    );
+                  }).toList(),
+                  SizedBox(height: AppTheme.cardPadding),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
