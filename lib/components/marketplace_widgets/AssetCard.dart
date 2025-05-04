@@ -6,7 +6,9 @@ import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
+import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/marketplace/listing_helper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -170,7 +172,20 @@ class _AssetCardState extends State<AssetCard> {
                                       customHeight: 30.h,
                                       customWidth: 125.w * widget.scale,
                                       title: "List",
-                                      onTap: () {})
+                                      onTap: () {
+                                        // Create an NFTAsset from the current asset
+                                        final asset = NFTAsset(
+                                          id: widget.assetId ?? '',
+                                          name: widget.nftName ?? 'Asset',
+                                          collection: widget.nftMainName ?? 'Collection',
+                                          imageUrl: firstMediaData?.data ?? '',
+                                          isListed: false,
+                                          owner: 'You'
+                                        );
+                                        
+                                        // Show the listing bottom sheet
+                                        showListingBottomSheet(context, asset);
+                                      })
                                   : Container(),
                               widget.hasLikeButton
                                   ? _buildLikeButton()

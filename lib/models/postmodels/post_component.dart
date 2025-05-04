@@ -18,7 +18,9 @@ import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/components/post/components/youtubemusicbuilder.dart';
 import 'package:bitnet/components/post/likespace.dart';
 import 'package:bitnet/components/post/post_header.dart';
+import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/marketplace/listing_helper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -307,6 +309,29 @@ class _PostComponentState extends State<PostComponent>
                                       final homeController =
                                           Get.find<HomeController>();
                                       homeController.createClicks(postId);
+                                      
+                                      // Create an NFTAsset from the post data
+                                      String imageUrl = '';
+                                      // Try to find an image in the medias
+                                      for (var media in medias) {
+                                        if (media is Media && 
+                                            (media.type == 'image' || media.type == 'image_data' || media.type == 'camera')) {
+                                          imageUrl = media.data;
+                                          break;
+                                        }
+                                      }
+                                      
+                                      final asset = NFTAsset(
+                                        id: postId,
+                                        name: postName,
+                                        collection: displayname,
+                                        imageUrl: imageUrl,
+                                        isListed: false,
+                                        owner: Auth().currentUser?.uid ?? ''
+                                      );
+                                      
+                                      // Show the listing bottom sheet
+                                      showListingBottomSheet(context, asset);
                                     },
                                   ),
                                   Spacer(),

@@ -157,3 +157,25 @@ class CategoriesListModal {
     required this.categoriesText,
   });
 }
+
+class NFTAsset {
+  final String id;
+  final String name;
+  final String collection;
+  final String imageUrl;
+  final String? description;
+  final double? currentPrice;
+  final String? owner;
+  final bool isListed;
+
+  NFTAsset({
+    required this.id,
+    required this.name,
+    required this.collection,
+    required this.imageUrl,
+    this.description,
+    this.currentPrice,
+    this.owner,
+    this.isListed = false,
+  });
+}
