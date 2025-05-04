@@ -404,6 +404,16 @@ class BitcoinController extends GetxController {
   void _partitionChartData(List<ChartLine> data) {
     double now = DateTime.now().millisecondsSinceEpoch.toDouble();
 
+    // Make sure we have data to work with
+    if (data.isEmpty) {
+      // Create a fallback data point if there's no data
+      ChartLine fallbackPoint = ChartLine(
+        price: 0, 
+        time: now
+      );
+      data = [fallbackPoint];
+    }
+
     pbMaxchart = List.from(data);
     pbOneyearchart = data
         .where((d) => d.time > now - Duration(days: 365).inMilliseconds)
@@ -417,6 +427,21 @@ class BitcoinController extends GetxController {
     pbOnedaychart = data
         .where((d) => d.time > now - Duration(days: 1).inMilliseconds)
         .toList();
+        
+    // For timeframes with no data, use at least the most recent data point
+    // This ensures charts always have at least one point
+    if (pbOnedaychart.isEmpty && !data.isEmpty) {
+      pbOnedaychart = [data.last]; // Use most recent data point
+    }
+    if (pbOneweekchart.isEmpty && !data.isEmpty) {
+      pbOneweekchart = [data.last];
+    }
+    if (pbOnemonthchart.isEmpty && !data.isEmpty) {
+      pbOnemonthchart = [data.last];
+    }
+    if (pbOneyearchart.isEmpty && !data.isEmpty) {
+      pbOneyearchart = [data.last];
+    }
 
     // Set current chart line to 1D by default
     pbCurrentline.value = pbOnedaychart;

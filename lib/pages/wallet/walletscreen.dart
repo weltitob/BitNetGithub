@@ -136,6 +136,15 @@ class WalletScreen extends GetWidget<WalletsController> {
                       height: 300,
                       child: Obx(() {
                         bitcoinController.pbChartPing.value;
+                        // Ensure we have data to display
+                        if (bitcoinController.pbCurrentline.value.isEmpty) {
+                          // If no data is available, create a dummy chart line
+                          double now = DateTime.now().millisecondsSinceEpoch.toDouble();
+                          bitcoinController.pbCurrentline.value = [
+                            ChartLine(price: 0, time: now - Duration(hours: 24).inMilliseconds.toDouble()),
+                            ChartLine(price: 0, time: now),
+                          ];
+                        }
                         return SfCartesianChart(
                           enableAxisAnimation: true,
                           plotAreaBorderWidth: 0,
