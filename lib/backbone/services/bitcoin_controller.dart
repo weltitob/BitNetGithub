@@ -279,11 +279,37 @@ class BitcoinController extends GetxController {
               ? double.parse(data['price'].toString())
               : data['price']);
 
+      // Only add data to the timeframes where it belongs
+      // This prevents excessive memory usage from duplication
+      DateTime currentTime = DateTime.now();
+      DateTime dataTime = DateTime.fromMillisecondsSinceEpoch(
+          liveChart.value!.time.round());
+      
+      // Add to all timeframes but limit their sizes
       maxchart.add(liveChart.value!);
-      oneyearchart.add(liveChart.value!);
-      onemonthchart.add(liveChart.value!);
-      oneweekchart.add(liveChart.value!);
-      onedaychart.add(liveChart.value!);
+      
+      if (currentTime.difference(dataTime) <= Duration(days: 365)) {
+        oneyearchart.add(liveChart.value!);
+      }
+      
+      if (currentTime.difference(dataTime) <= Duration(days: 30)) {
+        onemonthchart.add(liveChart.value!);
+      }
+      
+      if (currentTime.difference(dataTime) <= Duration(days: 7)) {
+        oneweekchart.add(liveChart.value!);
+      }
+      
+      if (currentTime.difference(dataTime) <= Duration(days: 1)) {
+        onedaychart.add(liveChart.value!);
+      }
+
+      // Limit chart sizes to prevent memory bloat
+      _limitChartSize(maxchart, 500);
+      _limitChartSize(oneyearchart, 365);
+      _limitChartSize(onemonthchart, 200);
+      _limitChartSize(oneweekchart, 168); // 24*7 hours
+      _limitChartSize(onedaychart, 96);  // 24*4 data points per day
 
       _latesttimeinit = currentline.value.last.time;
       lastpriceinit =
@@ -294,63 +320,62 @@ class BitcoinController extends GetxController {
       // for custom widget define default value
       //price
       trackBallValuePrice = lastpriceinit.toString();
-      //date
-      // var datetime = DateTime.fromMillisecondsSinceEpoch(
-      //     _latesttimeinit.round(),
-      //     isUtc: false);
-      // DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-      // DateFormat timeFormat = DateFormat("HH:mm");
-      // String date = dateFormat.format(datetime);
-      // String time = timeFormat.format(datetime);
-      // trackBallValueTime = time.toString();
-      // trackBallValueDate = date.toString();
       setValues();
+      
       //percent
       double priceChange = currentline.value.first.price == 0 ? 0 :
           (currentline.value.last.price - currentline.value.first.price) /
               currentline.value.first.price;
       overallPriceChange.value = toPercent(priceChange);
 
+      // Clean up old data points that are outside their timeframe
       Duration dayDuration = Duration(days: 1);
       Duration weekDuration = Duration(days: 7);
       Duration monthDuration = Duration(days: 30);
       Duration yearDuration = Duration(days: 365);
       int index = 0;
-      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-              onedaychart[index].time.round())) >
-          dayDuration) {
+      
+      // Process one-day chart
+      while (onedaychart.isNotEmpty && index < onedaychart.length && 
+             currentTime.difference(DateTime.fromMillisecondsSinceEpoch(
+                onedaychart[index].time.round())) > dayDuration) {
         onedaychart.removeAt(index);
-        if (onedaychart.isEmpty) {
-          break;
-        }
       }
-      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-              oneweekchart[index].time.round())) >
-          weekDuration) {
+      
+      // Process one-week chart
+      index = 0;
+      while (oneweekchart.isNotEmpty && index < oneweekchart.length &&
+             currentTime.difference(DateTime.fromMillisecondsSinceEpoch(
+                oneweekchart[index].time.round())) > weekDuration) {
         oneweekchart.removeAt(index);
-        if (oneweekchart.isEmpty) {
-          break;
-        }
       }
-      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-              onemonthchart[index].time.round())) >
-          monthDuration) {
+      
+      // Process one-month chart
+      index = 0;
+      while (onemonthchart.isNotEmpty && index < onemonthchart.length &&
+             currentTime.difference(DateTime.fromMillisecondsSinceEpoch(
+                onemonthchart[index].time.round())) > monthDuration) {
         onemonthchart.removeAt(index);
-        if (onemonthchart.isEmpty) {
-          break;
-        }
       }
-      while (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(
-              oneyearchart[index].time.round())) >
-          yearDuration) {
-        if (oneyearchart.isEmpty) {
-          break;
-        }
+      
+      // Process one-year chart
+      index = 0;
+      while (oneyearchart.isNotEmpty && index < oneyearchart.length &&
+             currentTime.difference(DateTime.fromMillisecondsSinceEpoch(
+                oneyearchart[index].time.round())) > yearDuration) {
         oneyearchart.removeAt(index);
       }
 
       Get.find<LoggerService>().i("live chart data updated...");
     });
+  }
+  
+  /// Helper method to limit chart size and prevent memory bloat
+  void _limitChartSize(List<ChartLine> chart, int maxSize) {
+    if (chart.length <= maxSize) return;
+    
+    // Use downsample algorithm if chart has too many points
+    chart = _downsampleChartData(chart, maxSize);
   }
 
   //personal balance functions

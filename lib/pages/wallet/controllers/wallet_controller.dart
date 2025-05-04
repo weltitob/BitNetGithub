@@ -81,9 +81,12 @@ class WalletsController extends BaseController {
   RxBool visible = false.obs;
 
   dynamic subscribeToOnchainBalance() {
-    subscribeToOnchainTransactions().listen((val) {
+    var subscription = subscribeToOnchainTransactions().listen((val) {
       getOnchainBalance();
     });
+    // Track subscription for cleanup
+    _allSubscriptions.add(subscription);
+    return subscription;
   }
 
   Stream<BitcoinTransaction?> subscribeToOnchainTransactions() {
@@ -161,6 +164,9 @@ class WalletsController extends BaseController {
     super.onInit();
     final logger = Get.find<LoggerService>();
     logger.i("Calling onInit in wallet_controller");
+    
+    // Reset the subscription list to ensure clean state
+    _allSubscriptions.clear();
 
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
@@ -287,7 +293,7 @@ class WalletsController extends BaseController {
     logger.i("Subscribing to streams in wallet_controller");
 
     // --- Invoices Stream Listener ---
-    backendRef
+    var invoicesSubscription = backendRef
         .doc(Auth().currentUser!.uid)
         .collection('invoices')
         .orderBy('settle_date', descending: true)
@@ -355,7 +361,7 @@ class WalletsController extends BaseController {
     });
 
     // --- Internal Rebalances Stream Listener ---
-    backendRef
+    var rebalancesSubscription = backendRef
         .doc(Auth().currentUser!.uid)
         .collection('internalRebalances')
         .orderBy('timestamp', descending: true)
@@ -463,7 +469,7 @@ class WalletsController extends BaseController {
     });
 
     // --- Payments Stream Listener ---
-    backendRef
+    var paymentsSubscription = backendRef
         .doc(Auth().currentUser!.uid)
         .collection('payments')
         .orderBy('creation_date', descending: true)
@@ -523,7 +529,7 @@ class WalletsController extends BaseController {
     });
 
     // --- Transactions Stream Listener ---
-    backendRef
+    var transactionsSubscription = backendRef
         .doc(Auth().currentUser!.uid)
         .collection('transactions')
         .orderBy('time_stamp', descending: true)
@@ -593,6 +599,13 @@ class WalletsController extends BaseController {
     });
 
     //---------------------------------------------------
+    // Track all subscriptions for proper cleanup
+    _allSubscriptions.add(invoicesSubscription);
+    _allSubscriptions.add(rebalancesSubscription);
+    _allSubscriptions.add(paymentsSubscription);
+    _allSubscriptions.add(transactionsSubscription);
+    
+    // Subscribe to balance and transaction updates
     subscribeToOnchainBalance();
     subscribeToInvoices();
     subscribeToLightningPayments();
@@ -1399,9 +1412,19 @@ class WalletsController extends BaseController {
     print("Balance data updated successfully.");
   }
 
+  // List to track all active subscriptions
+  final List<StreamSubscription> _allSubscriptions = [];
+  
   @override
   void dispose() {
+    // Cancel all tracked subscriptions to prevent memory leaks
+    for (var subscription in _allSubscriptions) {
+      subscription.cancel();
+    }
+    _allSubscriptions.clear();
+    
     scrollController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
