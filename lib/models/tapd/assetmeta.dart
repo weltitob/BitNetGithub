@@ -51,7 +51,6 @@ class AssetMetaResponse {
   }
 
   List<Media> toMedias() {
-
     String decodedData = decodeData();
     print("Decoding data: $decodedData");
     Map<String, dynamic> jsonMap;
@@ -66,16 +65,11 @@ class AssetMetaResponse {
             data: jsonEncode(value), // Keep the attributes as JSON string
           ));
         } else {
-
           medias.add(Media(type: key, data: value.toString()));
         }
       });
     } catch (e) {
-      medias = [
-        Media(
-            data: "Decoded data is not a valid JSON: $decodedData",
-            type: "text")
-      ];
+      medias = [Media(data: decodedData, type: "text")];
     }
 
     return medias;

@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/emailfetcher.dart';
-import 'package:bitnet/pages/website/seo/seo_container.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/seo/structured_data.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
@@ -36,8 +35,10 @@ class _PageOneState extends State<PageOne> {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -95,7 +96,9 @@ class _PageOneState extends State<PageOne> {
                       child: SeoText.h1(
                         "Building a Bitcoin Future That Works", // Updated headline
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
+                        style: isSuperSmallScreen
+                            ? Theme.of(context).textTheme.displayMedium
+                            : Theme.of(context).textTheme.displayLarge,
                         id: 'main-headline',
                         structuredData: {
                           'itemprop': 'headline',
@@ -110,7 +113,9 @@ class _PageOneState extends State<PageOne> {
                       child: SeoText.paragraph(
                         L10n.of(context)!.weAreGrowingBitcoin,
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
+                        style: isSuperSmallScreen
+                            ? Theme.of(context).textTheme.bodyLarge
+                            : Theme.of(context).textTheme.bodyLarge,
                         id: 'main-subtitle',
                         structuredData: {
                           'itemprop': 'description',
@@ -130,16 +135,22 @@ class _PageOneState extends State<PageOne> {
                       height: AppTheme.cardPadding * 10 * spacingMultiplier,
                     ),
                     TweenAnimationBuilder<num>(
-                      duration: const Duration(seconds: 3), // Adjust the duration according to your need
+                      duration: const Duration(
+                          seconds:
+                              3), // Adjust the duration according to your need
                       tween: Tween(begin: startvalue, end: endvalue),
                       builder: (context, value, child) {
                         return AnimatedFlipCounter(
                           value: value, // Animated value
-                          duration: const Duration(milliseconds: 500), // Adjust the flip duration
+                          duration: const Duration(
+                              milliseconds: 500), // Adjust the flip duration
                           curve: Curves.easeOut, // Adjust the animation curve
                           thousandSeparator: ".",
                           decimalSeparator: ",",
-                          textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .displayLarge!
+                              .copyWith(
                                 fontSize: isSuperSmallScreen ? 74 : 84,
                               ),
                         );

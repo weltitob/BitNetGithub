@@ -18,16 +18,13 @@ import 'package:go_router/go_router.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
   final BuildContext context;
-  const CollectionScreen({
-    Key? key, 
-    required this.routerState, 
-    required this.context
-  }) : super(key: key);
-  
+  const CollectionScreen(
+      {Key? key, required this.routerState, required this.context})
+      : super(key: key);
+
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
 }
@@ -44,7 +41,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget? bottomSheet;
   late PanelController buyPanelController;
   int currentTabIndex = 0;
-  
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +49,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
     sortList(searchFilter, sortingFilter);
     buyPanelController = PanelController();
   }
-  
+
   void showBuyPanel(int id) {
     setState(() {
       itemBuy = id;
@@ -67,7 +64,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final name = widget.routerState!.pathParameters['collection_id'];
-    
+
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
@@ -160,7 +157,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
           }
         }
     }
-    
+
     switch (sortFilter) {
       case "Recently Listed":
         newList.sort((a, b) {
@@ -211,7 +208,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
           },
         );
     }
-    
+
     setState(() {
       sortedGridList = newList;
     });
@@ -224,7 +221,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       } else {
         selectedProducts.add(id);
       }
-      
+
       if (selectedProducts.isEmpty) {
         showCartBottomSheet = false;
         if (sheetController != null) {
@@ -235,35 +232,32 @@ class _CollectionScreenState extends State<CollectionScreen> {
         showCartBottomSheet = true;
 
         bottomSheet = SlidingUpPanel(
-          color: Colors.transparent,
-          boxShadow: [],
-          maxHeight: 600,
-          minHeight: 100,
-          panel: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: CartSheet(
-              selected_products: selectedProducts,
-              sortedGridList: sortedGridList,
-              onClear: () {
-                setState(() {
-                  selectedProducts.clear();
-                  showCartBottomSheet = false;
-                });
-              },
-              onDeleteItem: (i) {
-                setState(() {
-                  Get.find<LoggerService>().i(
-                    "about to delete item with id: ${i}"
-                  );
-                  selectedProducts.remove(i);
-                  if (selectedProducts.isEmpty) {
-                    showCartBottomSheet = false;
-                  }
-                });
-              }
-            ),
-          )
-        );
+            color: Colors.transparent,
+            boxShadow: [],
+            maxHeight: 600,
+            minHeight: 100,
+            panel: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: CartSheet(
+                  selected_products: selectedProducts,
+                  sortedGridList: sortedGridList,
+                  onClear: () {
+                    setState(() {
+                      selectedProducts.clear();
+                      showCartBottomSheet = false;
+                    });
+                  },
+                  onDeleteItem: (i) {
+                    setState(() {
+                      Get.find<LoggerService>()
+                          .i("about to delete item with id: ${i}");
+                      selectedProducts.remove(i);
+                      if (selectedProducts.isEmpty) {
+                        showCartBottomSheet = false;
+                      }
+                    });
+                  }),
+            ));
       }
     });
   }

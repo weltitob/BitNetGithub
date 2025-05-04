@@ -69,8 +69,9 @@ import 'backbone/auth/auth.dart';
 Future<void> main() async {
   // Set up error handler to catch Firebase initialization errors first
   FlutterError.onError = (FlutterErrorDetails details) {
-    if (kIsWeb && (details.exception.toString().contains('Firebase') || 
-        details.exception.toString().contains('core/not-initialized'))) {
+    if (kIsWeb &&
+        (details.exception.toString().contains('Firebase') ||
+            details.exception.toString().contains('core/not-initialized'))) {
       // Only log to console, don't show on screen
       print('Suppressed Firebase error in web: ${details.exception}');
     } else {
@@ -80,25 +81,25 @@ Future<void> main() async {
 
   // Ensure that Flutter binding is initialized in the same zone as runApp
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize only the critical services needed for startup
   await initializeDateFormatting();
   tz.initializeTimeZones();
-  
+
   // Special handling for web to prevent Firebase initialization issues
   if (kIsWeb) {
     // Initialize splash screen
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-    
+
     // For web, initialize minimal services first before running the app
     try {
       // Pre-initialize critical services to prevent blank screen
       Get.put(LoggerService(), permanent: true);
       Get.put(DioClient(), permanent: true);
-      
+
       // Run the app with minimal dependencies
       runApp(const MyApp());
-      
+
       // Delay initialization of non-critical services
       Future.delayed(const Duration(milliseconds: 100), () {
         _initializeWebServices();
@@ -107,7 +108,7 @@ Future<void> main() async {
     } catch (error) {
       // Handle all errors gracefully in web mode
       print('Caught error in web initialization: $error');
-      
+
       // Run app even if initialization fails
       runApp(const MyApp());
       FlutterNativeSplash.remove();
@@ -115,7 +116,7 @@ Future<void> main() async {
   } else {
     // For mobile, initialize all services before launching UI
     await _initializeAllServices();
-    
+
     // Run the app
     runApp(const MyApp());
   }
@@ -127,25 +128,28 @@ Future<void> _initializeWebServices() async {
     // Initialize only minimal services needed for web
     Get.put(LoggerService(), permanent: true);
     Get.put(DioClient(), permanent: true);
-    
+
     // Try to initialize remote config if possible, but catch errors
     try {
-      final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+      final remoteConfigController =
+          Get.put(RemoteConfigController(), permanent: true);
       remoteConfigController.fetchRemoteConfigData().catchError((e) {
         print('Remote config error (safe to ignore in web preview): $e');
       });
     } catch (e) {
-      print('Remote config initialization error (safe to ignore in web preview): $e');
+      print(
+          'Remote config initialization error (safe to ignore in web preview): $e');
     }
   } catch (e) {
-    print('Web services initialization error (safe to ignore in web preview): $e');
+    print(
+        'Web services initialization error (safe to ignore in web preview): $e');
   }
 }
 
 // Separate function to initialize all services for mobile platforms
 Future<void> _initializeAllServices() async {
   await LocalStorage.instance.initStorage();
-  
+
   ShakeDetector.autoStart(
     onPhoneShake: () {
       if (AppRouter.navigatorKey.currentContext != null) {
@@ -168,8 +172,7 @@ Future<void> _initializeFirebaseServices() async {
         appId: '466393582939',
         messagingSenderId: '01',
         projectId: 'bitnet-cb34f',
-        storageBucket: 'bitnet-cb34f.appspot.com'
-    ),
+        storageBucket: 'bitnet-cb34f.appspot.com'),
   );
 
   await FirebaseAppCheck.instance.activate(
@@ -190,11 +193,12 @@ Future<void> _initializeControllers() async {
   // Initialize essential controllers first
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
-  
+
   // Initialize and fetch remote config
-  final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+  final remoteConfigController =
+      Get.put(RemoteConfigController(), permanent: true);
   await remoteConfigController.fetchRemoteConfigData();
-  
+
   // Initialize remaining controllers
   Get.put(SettingsController());
   Get.put(TransactionController());
@@ -206,7 +210,8 @@ Future<void> _initializeControllers() async {
 
 // Asynchronously initialize remaining services for web after UI is rendered
 void _initializeRemainingServices() async {
-  await Future.delayed(const Duration(milliseconds: 100)); // Tiny delay to ensure UI is prioritized
+  await Future.delayed(const Duration(
+      milliseconds: 100)); // Tiny delay to ensure UI is prioritized
   await LocalStorage.instance.initStorage();
   await _initializeFirebaseServices();
   await _initializeControllers();
@@ -307,14 +312,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // Get memoized providers 
+    // Get memoized providers
     final providers = _getWebProviders();
-    
+
     return kIsWeb
         ? SeoController(
             tree: WidgetTree(context: context),
             enabled: true, // Ensure SEO is enabled for web
-            defaultLocale: 'en', // Default language
+            //defaultLocale: 'en', // Default language
             child: MultiProvider(
               providers: [
                 ...providers,
@@ -332,13 +337,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ),
                 ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                   // Debounce updates to avoid excessive stream creation
-                  update: (context, currencyChangeProvider, bitcoinPriceStream) {
+                  update:
+                      (context, currencyChangeProvider, bitcoinPriceStream) {
                     // Skip unnecessary updates if the app isn't fully initialized
                     if (!Get.isRegistered<WalletsController>()) {
                       return bitcoinPriceStream ?? BitcoinPriceStream()
-                        ..updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                        ..updateCurrency(
+                            currencyChangeProvider.selectedCurrency ?? 'usd');
                     }
-                    
+
                     if (bitcoinPriceStream == null ||
                         bitcoinPriceStream.localCurrency !=
                             currencyChangeProvider.selectedCurrency) {
@@ -346,7 +353,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       final newStream = BitcoinPriceStream();
                       newStream.updateCurrency(
                           currencyChangeProvider.selectedCurrency ?? 'usd');
-                      
+
                       if (Auth().currentUser != null) {
                         // Use a single subscription to avoid memory leaks
                         newStream.priceStream
@@ -357,7 +364,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       }
                       return newStream;
                     }
-                    
+
                     return bitcoinPriceStream;
                   },
                   dispose: (context, bitcoinPriceStream) =>

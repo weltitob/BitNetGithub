@@ -13,8 +13,10 @@ Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -26,12 +28,12 @@ Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
   };
 
   List<int> decodedBytes = base64Decode(asset_id);
-  String hexStr =
-      decodedBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+  String hexStr = bytesToHex(decodedBytes);
   print("Hex string: $hexStr");
 
   // Make the GET request
-  String url = 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
+  String url =
+      'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
   // String url = kDebugMode
   //     ? ''
   //     : 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';

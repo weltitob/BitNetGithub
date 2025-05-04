@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -19,22 +20,36 @@ class CollectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: AppTheme.cardPadding.h * 2, bottom: AppTheme.cardPadding.h),
+      padding: EdgeInsets.only(
+          top: AppTheme.cardPadding.h / 4, bottom: AppTheme.cardPadding.h),
       child: Column(
         children: [
           Stack(
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 38.h),
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                margin: EdgeInsets.only(bottom: 0.h),
+                padding: EdgeInsets.symmetric(horizontal: 0.w),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border(
+                        bottom: BorderSide(color: primaryColor, width: 5))),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
                   child: Image.asset(
                     nftImage5,
                     width: size.width,
-                    height: 160.h,
+                    height: 240.h,
                     fit: BoxFit.cover,
                   ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: (size.width - 100.w) / 2,
+                child: Container(
+                  color: primaryColor,
+                  width: 100.w,
+                  height: 50.w,
                 ),
               ),
               Positioned(
@@ -43,13 +58,18 @@ class CollectionHeader extends StatelessWidget {
                 child: SizedBox(
                   width: size.width,
                   child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100.r),
-                      child: Image.asset(
-                        user1Image,
-                        width: 75.w,
-                        height: 75.w,
-                        fit: BoxFit.cover,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: primaryColor, width: 5),
+                          borderRadius: BorderRadius.circular(100.r)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100.r),
+                        child: Image.asset(
+                          user1Image,
+                          width: 100.w,
+                          height: 100.w,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

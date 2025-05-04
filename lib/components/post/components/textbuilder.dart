@@ -1,3 +1,4 @@
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class TextBuilderLocal extends StatelessWidget {
   final bool isDescription;
   final FocusNode? focusNode;
   final TextEditingController? controller;
-  
+
   const TextBuilderLocal({
     Key? key,
     required this.postFile,
@@ -21,12 +22,15 @@ class TextBuilderLocal extends StatelessWidget {
     // For a description field with controller
     if (isDescription && controller != null) {
       // Sync controller with PostFile on first build
-      if (controller!.text.isEmpty && postFile.text != null && postFile.text!.isNotEmpty) {
+      if (controller!.text.isEmpty &&
+          postFile.text != null &&
+          postFile.text!.isNotEmpty) {
         controller!.text = postFile.text!;
-      } else if (controller!.text.isNotEmpty && (postFile.text == null || postFile.text!.isEmpty)) {
+      } else if (controller!.text.isNotEmpty &&
+          (postFile.text == null || postFile.text!.isEmpty)) {
         postFile.text = controller!.text;
       }
-      
+
       return Container(
         child: TextField(
           minLines: 3,
@@ -47,7 +51,7 @@ class TextBuilderLocal extends StatelessWidget {
         ),
       );
     }
-    
+
     // Standard implementation for non-description fields
     return Container(
       child: TextFormField(
@@ -58,7 +62,8 @@ class TextBuilderLocal extends StatelessWidget {
         initialValue: postFile.text,
         focusNode: focusNode,
         decoration: InputDecoration(
-          hintText: isDescription ? "Enter description here..." : "Enter Text Here",
+          hintText:
+              isDescription ? "Enter description here..." : "Enter Text Here",
           border: InputBorder.none,
           hintStyle: Theme.of(context).textTheme.bodyMedium,
         ),
@@ -80,10 +85,16 @@ class TextBuilderNetwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(url,
-      style: Theme.of(context).textTheme.bodyMedium,),
+    return GlassContainer(
+      width: MediaQuery.of(context).size.width,
+      height: 200,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          url,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ),
     );
   }
 }
-

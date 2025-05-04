@@ -6,7 +6,6 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/emailfetcher.dart';
-import 'package:bitnet/pages/website/seo/seo_container.dart';
 import 'package:bitnet/pages/website/seo/structured_data.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
@@ -18,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
+import 'package:seo/seo.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;
@@ -34,7 +34,8 @@ class WebsiteLandingPageView extends StatelessWidget {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       'name': 'BitNet - Building a Bitcoin Future That Works',
-      'description': 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      'description':
+          'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
       'url': 'https://bitnet.im',
       'potentialAction': {
         '@type': 'SearchAction',
@@ -77,13 +78,20 @@ class WebsiteLandingPageView extends StatelessWidget {
           }),
       extendBodyBehindAppBar: true,
       appBar: bitnetWebsiteAppBar(
-        centerWidget: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        centerWidget: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
           // Check if the screen width is less than 600 pixels.
-          bool isSmallScreen = MediaQuery.of(context).size.width < AppTheme.isSmallScreen;
+          bool isSmallScreen =
+              MediaQuery.of(context).size.width < AppTheme.isSmallScreen;
 
           List<UserData> all_userresults = lastRegisteredUsers;
-          List<String> firstFourUsernames = all_userresults.isEmpty 
-              ? ["user1", "user2", "user3", "user4"]  // Default usernames if empty
+          List<String> firstFourUsernames = all_userresults.isEmpty
+              ? [
+                  "user1",
+                  "user2",
+                  "user3",
+                  "user4"
+                ] // Default usernames if empty
               : all_userresults.reversed
                   .take(4) // Take the last 4
                   .map((user) => user.username)
@@ -94,7 +102,9 @@ class WebsiteLandingPageView extends StatelessWidget {
               : Container(
                   width: AppTheme.cardPadding * 17,
                   child: all_userresults.isEmpty
-                      ? SizedBox(height: AppTheme.cardPadding * 4, child: Center(child: dotProgress(context)))
+                      ? SizedBox(
+                          height: AppTheme.cardPadding * 4,
+                          child: Center(child: dotProgress(context)))
                       : AnimatedTextKit(
                           repeatForever: true,
                           pause: const Duration(milliseconds: 1000),
@@ -147,16 +157,17 @@ class WebsiteLandingPageView extends StatelessWidget {
     }
 
     // Enhanced with SEO metadata for web
-    return SeoContainer(
-      title: 'BitNet - Building a Bitcoin Future That Works',
-      description: 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
-      canonicalUrl: 'https://bitnet.im',
-      image: 'https://bitnet.im/assets/images/logoclean.png',
-      structuredData: homepageStructuredData,
-      keywords: ['BitNet', 'Bitcoin', 'Cryptocurrency', 'Wallet', 'Blockchain', 'DeFi', 'Digital Currency'],
-      role: 'main',
-      id: 'main-content',
-      ariaLabel: 'BitNet Homepage',
+    return Seo.image(
+      // title: 'BitNet - Building a Bitcoin Future That Works',
+      // description: 'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      // canonicalUrl: 'https://bitnet.im',
+      // image: 'https://bitnet.im/assets/images/logoclean.png',
+      // structuredData: homepageStructuredData,
+      // keywords: ['BitNet', 'Bitcoin', 'Cryptocurrency', 'Wallet', 'Blockchain', 'DeFi', 'Digital Currency'],
+      // role: 'main',
+      // id: 'main-content',
+      // ariaLabel: 'BitNet Homepage',
+      alt: '', src: '',
       child: mainContent,
     );
   }

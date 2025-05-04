@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class RowTabView extends StatelessWidget {
   final List<GridListModal> sortedGridList;
   final List<dynamic> selectedProducts;
@@ -27,7 +26,7 @@ class RowTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Group assets by their collections
     final Map<String, List<GridListModal>> groupedAssets = {};
-    
+
     for (var asset in sortedGridList) {
       final groupName = asset.nftName;
       if (!groupedAssets.containsKey(groupName)) {
@@ -35,7 +34,7 @@ class RowTabView extends StatelessWidget {
       }
       groupedAssets[groupName]!.add(asset);
     }
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Column(
@@ -43,42 +42,42 @@ class RowTabView extends StatelessWidget {
         children: groupedAssets.entries.map((entry) {
           final collectionName = entry.key;
           final collectionAssets = entry.value;
-          
+
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.w / 2),
-            child: Container(
-              height: 450.h, // Increased height to accommodate PostComponent
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: collectionAssets.length,
-                itemBuilder: (context, index) {
-                  final item = collectionAssets[index];
+            padding:
+                EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.w / 2),
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: collectionAssets.length,
+              itemBuilder: (context, index) {
+                final item = collectionAssets[index];
 
-                  // Create Media object for the post component
-                  final media = Media(
-                    data: item.nftImage,
-                    type: "image", // Changed from asset_image to image to match PostComponent format
-                  );
+                // Create Media object for the post component
+                final media = Media(
+                  data: item.nftImage,
+                  type:
+                      "image", // Changed from asset_image to image to match PostComponent format
+                );
 
-                  // Create fake rockets map with current user state
-                  Map<String, bool> rockets = {};
-                  if (selectedProducts.contains(item.id)) {
-                    rockets["current_user"] = true;
-                  }
+                // Create fake rockets map with current user state
+                Map<String, bool> rockets = {};
+                if (selectedProducts.contains(item.id)) {
+                  rockets["current_user"] = true;
+                }
 
-                  return PostComponent(
-                    postId: item.id.toString(),
-                    ownerId: "marketplace_owner", // Placeholder owner ID
-                    username: "marketplace", // Placeholder username
-                    displayname: item.nftMainName,
-                    rockets: rockets,
-                    medias: [media],
-                    timestamp: DateTime.now(), // Use current time as placeholder
-                    postName: item.nftName,
-                  );
-
-                },
-              ),
+                return PostComponent(
+                  postId: item.id.toString(),
+                  ownerId: "marketplace_owner", // Placeholder owner ID
+                  username: "marketplace", // Placeholder username
+                  displayname: item.nftMainName,
+                  rockets: rockets,
+                  medias: [media],
+                  timestamp: DateTime.now(), // Use current time as placeholder
+                  postName: item.nftName,
+                );
+              },
             ),
           );
         }).toList(),

@@ -131,7 +131,7 @@ class AppRoutes {
   final bool columnMode;
 
   AppRoutes(this.columnMode);
-  
+
   // Safe redirect for web to prevent Firebase-related errors
   String? webSafeRedirect(BuildContext context, GoRouterState state) {
     // If we're on web, redirect most routes to /website
@@ -193,12 +193,12 @@ class AppRoutes {
                 return const LoadingViewAppStart();
               }
             }),
-            
+
         // Main website landing page route
         GoRoute(
             path: '/website',
             builder: (ctx, state) => const WebsiteLandingPage()),
-            
+
         // Early bird signup page as a separate route
         GoRoute(
             path: '/website/earlybird',
@@ -253,13 +253,9 @@ class AppRoutes {
         ),
 
         GoRoute(
-          path: '/asset_screen/:nft_id',
+          path: '/asset_screen',
           redirect: webRedirect,
           builder: (ctx, state) {
-            final batchKey = state.pathParameters['nft_id'];
-
-            print('Batch key in route: $batchKey');
-
             return NftProductScreen(routerState: state);
           },
         ),
@@ -495,7 +491,7 @@ class AppRoutes {
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
-            
+
             // Buy Bitcoin routes
             GoRoute(
               path: 'buy',

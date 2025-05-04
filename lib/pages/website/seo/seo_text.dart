@@ -52,8 +52,10 @@ class SeoText extends StatelessWidget {
   Widget build(BuildContext context) {
     // Only use SEO wrapper for web environment to avoid unnecessary overhead on mobile
     final String text = data ?? "";
-    final bool isBigText = tagStyle == TextTagStyle.h1 || tagStyle == TextTagStyle.h2 || tagStyle == TextTagStyle.h3;
-    
+    final bool isBigText = tagStyle == TextTagStyle.h1 ||
+        tagStyle == TextTagStyle.h2 ||
+        tagStyle == TextTagStyle.h3;
+
     // Base widget that will be enhanced with SEO if on web
     final Widget textWidget = Text(
       text,
@@ -71,38 +73,39 @@ class SeoText extends StatelessWidget {
       textHeightBehavior: textHeightBehavior,
       selectionColor: selectionColor,
     );
-    
+
     // If not on web, return the basic widget to avoid overhead
     if (!kIsWeb) {
       return textWidget;
     }
-    
+
     // Enhanced SEO options for web
     Map<String, String> attributes = {};
-    
+
     // Add accessibility attributes
     if (id != null) attributes['id'] = id!;
     if (ariaLabel != null) attributes['aria-label'] = ariaLabel!;
     if (role != null) attributes['role'] = role!;
-    
+
     // Add structured data if provided
     if (structuredData != null && structuredData!.isNotEmpty) {
       structuredData!.forEach((key, value) {
         attributes[key] = value;
       });
     }
-    
+
     // For performance optimization, use Seo.text with enhanced attributes
     return Seo.text(
       style: tagStyle ?? TextTagStyle.p,
       text: text,
-      attributes: attributes,
+      //attributes: attributes,
       child: textWidget,
     );
   }
-  
+
   /// Creates an SEO heading (h1) with appropriate semantic markup
-  static Widget h1(String text, {
+  static Widget h1(
+    String text, {
     TextStyle? style,
     TextAlign? textAlign,
     Map<String, String>? structuredData,
@@ -119,9 +122,10 @@ class SeoText extends StatelessWidget {
       ariaLabel: ariaLabel,
     );
   }
-  
+
   /// Creates an SEO heading (h2) with appropriate semantic markup
-  static Widget h2(String text, {
+  static Widget h2(
+    String text, {
     TextStyle? style,
     TextAlign? textAlign,
     Map<String, String>? structuredData,
@@ -138,9 +142,10 @@ class SeoText extends StatelessWidget {
       ariaLabel: ariaLabel,
     );
   }
-  
+
   /// Creates an SEO heading (h3) with appropriate semantic markup
-  static Widget h3(String text, {
+  static Widget h3(
+    String text, {
     TextStyle? style,
     TextAlign? textAlign,
     Map<String, String>? structuredData,
@@ -157,9 +162,10 @@ class SeoText extends StatelessWidget {
       ariaLabel: ariaLabel,
     );
   }
-  
+
   /// Creates an SEO paragraph with appropriate semantic markup
-  static Widget paragraph(String text, {
+  static Widget paragraph(
+    String text, {
     TextStyle? style,
     TextAlign? textAlign,
     Map<String, String>? structuredData,
@@ -176,27 +182,27 @@ class SeoText extends StatelessWidget {
       ariaLabel: ariaLabel,
     );
   }
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is SeoText &&
-      other.data == data &&
-      other.style == style &&
-      other.tagStyle == tagStyle &&
-      other.textAlign == textAlign &&
-      other.id == id &&
-      other.ariaLabel == ariaLabel &&
-      other.role == role;
+        other.data == data &&
+        other.style == style &&
+        other.tagStyle == tagStyle &&
+        other.textAlign == textAlign &&
+        other.id == id &&
+        other.ariaLabel == ariaLabel &&
+        other.role == role;
   }
 
   @override
-  int get hashCode => 
-    data.hashCode ^ 
-    tagStyle.hashCode ^ 
-    style.hashCode ^ 
-    textAlign.hashCode ^
-    (id?.hashCode ?? 0) ^
-    (ariaLabel?.hashCode ?? 0) ^
-    (role?.hashCode ?? 0);
+  int get hashCode =>
+      data.hashCode ^
+      tagStyle.hashCode ^
+      style.hashCode ^
+      textAlign.hashCode ^
+      (id?.hashCode ?? 0) ^
+      (ariaLabel?.hashCode ?? 0) ^
+      (role?.hashCode ?? 0);
 }

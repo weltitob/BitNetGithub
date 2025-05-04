@@ -40,11 +40,12 @@ class PostComponent extends StatefulWidget {
       titleController; // For editing post title in edit mode
   final Function(String)? onTitleChanged; // Callback for title changes
   final Function? onPostSubmit; // Callback when post button is pressed
-  final TextEditingController? descriptionController; // For editing description in edit mode
+  final TextEditingController?
+      descriptionController; // For editing description in edit mode
   final FocusNode? titleFocusNode; // Focus node for the title field
   final FocusNode? descriptionFocusNode; // Focus node for the description field
   final int? debugLockTime; // Original lockTime value for debugging purposes
-
+  final VoidCallback? onTap;
   const PostComponent({
     required this.postId,
     required this.ownerId,
@@ -62,6 +63,7 @@ class PostComponent extends StatefulWidget {
     this.titleFocusNode,
     this.descriptionFocusNode,
     this.debugLockTime,
+    this.onTap,
   });
 
   /// Factory constructor to create from a document
@@ -172,7 +174,6 @@ class _PostComponentState extends State<PostComponent>
   final FocusNode? titleFocusNode;
   final FocusNode? descriptionFocusNode;
   final int? debugLockTime; // Store original lockTime value for debugging
-
   bool showheart = false;
   late bool isLiked;
 
@@ -200,7 +201,8 @@ class _PostComponentState extends State<PostComponent>
   Widget build(BuildContext context) {
     super.build(context);
     final String? currentUserId = Auth().currentUser?.uid;
-    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+    final bool useBitcoinGradient =
+        Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
 
     isLiked = currentUserId != null ? (rockets[currentUserId] == true) : false;
 
@@ -211,118 +213,125 @@ class _PostComponentState extends State<PostComponent>
             right: AppTheme.elementSpacing.w * 0.75,
             left: AppTheme.elementSpacing.w * 0.75),
         child: GestureDetector(
-          onTap: isEditable
-              ? null
-              : () {
-                  final homeController = Get.find<HomeController>();
-                  homeController.createClicks(postId);
-                },
+          onTap: widget.onTap ??
+              (isEditable
+                  ? null
+                  : () {
+                      final homeController = Get.find<HomeController>();
+                      homeController.createClicks(postId);
+                    }),
           child: GlassContainer(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: AppTheme.elementSpacing * 1.25,
-              right: AppTheme.elementSpacing * 1.25,
-              top: AppTheme.elementSpacing * 0.5,
-              bottom: AppTheme.elementSpacing * 0.5,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                PostHeader(
-                  username: username,
-                  displayName: displayname,
-                  ownerId: ownerId,
-                  postId: postId,
-                  // Debug mode: show lockTime value for troubleshooting
-                  timeAgo: debugLockTime != null 
-                      ? "${displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en')} [$debugLockTime]"
-                      : displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en'),
-                ),
-                isEditable && titleController != null
-                    ? TextField(
-                        controller: titleController,
-                        focusNode: titleFocusNode,
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: "Enter title",
-                          border: InputBorder.none,
-                          hintStyle:
-                              Theme.of(context).textTheme.titleSmall!.copyWith(
-                                    color: Theme.of(context).hintColor,
-                                  ),
-                        ),
-                        onSubmitted: (_) {
-                          // When the user presses next, notify the parent to add a description field
-                          if (onTitleChanged != null) {
-                            // We use the onTitleChanged callback to notify the parent
-                            // The special '__add_description__' string is a signal to add the description field
-                            onTitleChanged!('__add_description__');
-                          }
-                        },
-                        onChanged: (value) {
-                          if (onTitleChanged != null) {
-                            onTitleChanged!(value);
-                          }
-                        },
-                      )
-                    : Text(
-                        postName,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                const SizedBox(height: AppTheme.elementSpacing * 1),
-                RepaintBoundary(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildMediaWidgets(),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: AppTheme.elementSpacing * 1.25,
+                right: AppTheme.elementSpacing * 1.25,
+                top: AppTheme.elementSpacing * 0.5,
+                bottom: AppTheme.elementSpacing * 0.5,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  PostHeader(
+                    username: username,
+                    displayName: displayname,
+                    ownerId: ownerId,
+                    postId: postId,
+                    // Debug mode: show lockTime value for troubleshooting
+                    timeAgo: debugLockTime != null
+                        ? "${displayTimeAgoFromInt(timestamp.millisecondsSinceEpoch, language: 'en')} [$debugLockTime]"
+                        : displayTimeAgoFromInt(
+                            timestamp.millisecondsSinceEpoch,
+                            language: 'en'),
                   ),
-                ),
-                // Bottom row with like space and buttons in view mode (edit mode has no bottom buttons)
-                !isEditable
-                    ? Column(
-                        children: [
-                          // Like space in a single row
-                          Container(
-                            height: AppTheme.cardPadding * 1.5,
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // List button with icon and text
-                                LongButtonWidget(
-                                  title: "List",
-                                  buttonType: ButtonType.transparent,
-                                  customHeight: AppTheme.cardPadding * 1.25.h,
-                                  customWidth: AppTheme.cardPadding * 3.5.w,
-                                  onTap: () {
-                                    final homeController = Get.find<HomeController>();
-                                    homeController.createClicks(postId);
-                                  },
+                  isEditable && titleController != null
+                      ? TextField(
+                          controller: titleController,
+                          focusNode: titleFocusNode,
+                          style: Theme.of(context).textTheme.titleSmall,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            hintText: "Enter title",
+                            border: InputBorder.none,
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  color: Theme.of(context).hintColor,
                                 ),
-                                Spacer(),
-                                
-                                // Like space with full control of width
-                                buildLikeSpace(
-                                  type: likeSpaceType.Post,
-                                  targetId: postId,
-                                  postName: postName,
-                                  username: username,
-                                  ownerId: ownerId,
-                                  rockets: rockets),
-                              ],
-                            ),
-                          )
-                        ],
-                      )
-                    : Container(), // No button in edit mode - we moved it to the app bar
-                const SizedBox(height: AppTheme.elementSpacing),
-              ],
+                          ),
+                          onSubmitted: (_) {
+                            // When the user presses next, notify the parent to add a description field
+                            if (onTitleChanged != null) {
+                              // We use the onTitleChanged callback to notify the parent
+                              // The special '__add_description__' string is a signal to add the description field
+                              onTitleChanged!('__add_description__');
+                            }
+                          },
+                          onChanged: (value) {
+                            if (onTitleChanged != null) {
+                              onTitleChanged!(value);
+                            }
+                          },
+                        )
+                      : Text(
+                          postName,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                  const SizedBox(height: AppTheme.elementSpacing * 1),
+                  RepaintBoundary(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildMediaWidgets(),
+                    ),
+                  ),
+                  // Bottom row with like space and buttons in view mode (edit mode has no bottom buttons)
+                  !isEditable
+                      ? Column(
+                          children: [
+                            // Like space in a single row
+                            Container(
+                              height: AppTheme.cardPadding * 1.5,
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // List button with icon and text
+                                  LongButtonWidget(
+                                    title: "List",
+                                    buttonType: ButtonType.transparent,
+                                    customHeight: AppTheme.cardPadding * 1.25.h,
+                                    customWidth: AppTheme.cardPadding * 3.5.w,
+                                    onTap: () {
+                                      final homeController =
+                                          Get.find<HomeController>();
+                                      homeController.createClicks(postId);
+                                    },
+                                  ),
+                                  Spacer(),
+
+                                  // Like space with full control of width
+                                  buildLikeSpace(
+                                      type: likeSpaceType.Post,
+                                      targetId: postId,
+                                      postName: postName,
+                                      username: username,
+                                      ownerId: ownerId,
+                                      rockets: rockets),
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      : Container(), // No button in edit mode - we moved it to the app bar
+                  const SizedBox(height: AppTheme.elementSpacing),
+                ],
+              ),
             ),
           ),
         ),
       ),
-     ),
     );
   }
 
@@ -361,7 +370,7 @@ class _PostComponentState extends State<PostComponent>
         // If this is the first text item, it's our description - use the description focus node
         if (medias.indexOf(postFile) == 0) {
           mediaWidget = TextBuilderLocal(
-            postFile: postFile, 
+            postFile: postFile,
             isDescription: true,
             focusNode: descriptionFocusNode,
             controller: descriptionController,
@@ -419,9 +428,9 @@ class _PostComponentState extends State<PostComponent>
       mediaWidget = LinkBuilder(url: media.data);
     } else if (type == "image" || type == "camera" || type == "image_data") {
       mediaWidget = ImageBuilder(
-          radius: AppTheme.cardRadiusSmall.r,
-          encodedData: media.data,
-          caption: postName, // Pass the post name as the caption
+        radius: AppTheme.cardRadiusSmall.r,
+        encodedData: media.data,
+        caption: postName, // Pass the post name as the caption
       );
     } else if (type == "audio") {
       mediaWidget = AudioBuilderNetwork(url: media.data);
