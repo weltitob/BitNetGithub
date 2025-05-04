@@ -27,14 +27,15 @@ class AppRouter {
                 final caption = params['caption'];
                 final isAssetStr = params['isAsset'] ?? 'false';
                 final isAsset = isAssetStr.toLowerCase() == 'true';
-                
+
                 return ImageDetailScreen(
                   encodedData: encodedData,
                   caption: caption,
                   isAsset: isAsset,
                 );
               } catch (e) {
-                print('Error in image_detail route (safe to ignore in web preview): $e');
+                print(
+                    'Error in image_detail route (safe to ignore in web preview): $e');
                 return const Scaffold(
                   body: Center(child: Text('Image detail not available')),
                 );
@@ -58,15 +59,15 @@ class AppRouter {
               body: Center(child: CircularProgressIndicator()),
             ),
           ),
-          GoRoute(
-            path: '/website',
-            builder: (context, state) => const WebsiteLandingPage(),
-          ),
+          // GoRoute(
+          //   path: '/website',
+          //   builder: (context, state) => const WebsiteLandingPage(),
+          // ),
         ],
       );
     }
   }
-  
+
   // Helper method to get routes safely
   static List<RouteBase> getSafeRoutes() {
     try {
@@ -80,10 +81,10 @@ class AppRouter {
             body: Center(child: CircularProgressIndicator()),
           ),
         ),
-        GoRoute(
-          path: '/website',
-          builder: (context, state) => const WebsiteLandingPage(),
-        ),
+        // GoRoute(
+        //   path: '/website',
+        //   builder: (context, state) => const WebsiteLandingPage(),
+        // ),
       ];
     }
   }
@@ -98,30 +99,30 @@ class AppRouter {
         navigatorKey: _rootNavigatorKey,
         initialLocation: '/',
         routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const WebsiteLandingPage(),
-          ),
-          GoRoute(
-            path: '/website',
-            builder: (context, state) => const WebsiteLandingPage(),
-          ),
-          GoRoute(
-            path: '/loading',
-            builder: (context, state) => const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-          ),
+          // GoRoute(
+          //   path: '/',
+          //   builder: (context, state) => const WebsiteLandingPage(),
+          // ),
+          // GoRoute(
+          //   path: '/website',
+          //   builder: (context, state) => const WebsiteLandingPage(),
+          // ),
+          // GoRoute(
+          //   path: '/loading',
+          //   builder: (context, state) => const Scaffold(
+          //     body: Center(child: CircularProgressIndicator()),
+          //   ),
+          // ),
         ],
       );
       return _cachedRouter!;
     }
-    
+
     // Return cached router if available to prevent multiple initializations
     if (_cachedRouter != null) {
       return _cachedRouter!;
     }
-    
+
     try {
       _cachedRouter = _router;
       return _cachedRouter!;
@@ -132,25 +133,25 @@ class AppRouter {
         navigatorKey: _rootNavigatorKey,
         initialLocation: '/',
         routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const WebsiteLandingPage(),
-          ),
-          GoRoute(
-            path: '/loading',
-            builder: (context, state) => const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-          ),
-          GoRoute(
-            path: '/website',
-            builder: (context, state) => const WebsiteLandingPage(),
-          ),
+          // GoRoute(
+          //   path: '/',
+          //   builder: (context, state) => const WebsiteLandingPage(),
+          // ),
+          // GoRoute(
+          //   path: '/loading',
+          //   builder: (context, state) => const Scaffold(
+          //     body: Center(child: CircularProgressIndicator()),
+          //   ),
+          // ),
+          // GoRoute(
+          //   path: '/website',
+          //   builder: (context, state) => const WebsiteLandingPage(),
+          // ),
         ],
       );
       return _cachedRouter!;
     }
   }
-  
+
   static GlobalKey<NavigatorState> get navigatorKey => _rootNavigatorKey;
 }

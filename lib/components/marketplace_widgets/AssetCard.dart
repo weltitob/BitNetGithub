@@ -33,6 +33,9 @@ class AssetCard extends StatefulWidget {
   final Function(bool)? onLikeChanged;
   final Function(int)? onPriceClicked;
 
+  //for getting metadata
+  final String? assetId;
+
   AssetCard({
     Key? key,
     this.medias,
@@ -50,6 +53,7 @@ class AssetCard extends StatefulWidget {
     this.isOwner = false,
     this.onLikeChanged,
     this.onPriceClicked,
+    this.assetId,
   }) : super(key: key);
 
   @override
@@ -82,146 +86,152 @@ class _AssetCardState extends State<AssetCard> {
       child: ClipRRect(
         borderRadius: AppTheme.cardRadiusMid.r,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w * widget.scale),
+          margin: EdgeInsets.symmetric(
+              horizontal: getStandardizedCardMargin().w * widget.scale),
           child: GestureDetector(
             onTap: () {
               controller.createClicks(widget.postId!);
-              context.push("/asset_screen/${widget.nftName}");
+              context.push("/asset_screen", extra: {"nft_id": widget.assetId});
             },
             child: GlassContainer(
-            width: getStandardizedCardWidth().w * widget.scale,
-            // No fixed height to allow content to determine size
-            customShadow:
-                Theme.of(context).brightness == Brightness.light ? [] : null,
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.15),
-              child: Column(
-                mainAxisSize:
-                    MainAxisSize.min, // Changed to min to prevent overflow
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Top section with name and icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.nftMainName,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  fontSize: 14.sp, fontWeight: FontWeight.bold),
+              width: getStandardizedCardWidth().w * widget.scale,
+              // No fixed height to allow content to determine size
+              customShadow:
+                  Theme.of(context).brightness == Brightness.light ? [] : null,
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.15),
+                child: Column(
+                  mainAxisSize:
+                      MainAxisSize.min, // Changed to min to prevent overflow
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top section with name and icon
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.nftMainName,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 4.w),
-                      GlassContainer(
-                          customShadow:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? []
-                                  : null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Icon(
-                              FontAwesomeIcons.bolt,
-                              size: 14.w,
-                            ),
-                          )),
-                    ],
-                  ),
+                        SizedBox(width: 4.w),
+                        GlassContainer(
+                            customShadow:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? []
+                                    : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                FontAwesomeIcons.bolt,
+                                size: 14.w,
+                              ),
+                            )),
+                      ],
+                    ),
 
-                  SizedBox(height: AppTheme.elementSpacing.h),
+                    SizedBox(height: AppTheme.elementSpacing.h),
 
-                  // NFT image/content with RepaintBoundary for better performance
-                  RepaintBoundary(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                      child: Container(
-                        height: 160.h * widget.scale, // Increased height for better proportion
-                        width: double.infinity,
-                        child: firstMediaData != null 
-                            ? topWidget(firstMediaData.type, firstMediaData)
-                            : Container(color: Colors.grey.withOpacity(0.3)),
+                    // NFT image/content with RepaintBoundary for better performance
+                    RepaintBoundary(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        child: Container(
+                          height: 160.h *
+                              widget
+                                  .scale, // Increased height for better proportion
+                          width: double.infinity,
+                          child: firstMediaData != null
+                              ? topWidget(firstMediaData.type, firstMediaData)
+                              : Container(color: Colors.grey.withOpacity(0.3)),
+                        ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(height: AppTheme.elementSpacing.h / 2),
+                    SizedBox(height: AppTheme.elementSpacing.h / 2),
 
-                  // Bottom section with either list button (for owner) or price
-                  widget.isOwner
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            widget.hasListForSale
-                                ? LongButtonWidget(
-                                    buttonType: ButtonType.transparent,
-                                    customHeight: 30.h,
-                                    customWidth: 125.w * widget.scale,
-                                    title: "List",
-                                    onTap: () {})
-                                : Container(),
-                            widget.hasLikeButton
-                                ? _buildLikeButton()
-                                : Container(),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            widget.hasPrice
-                                ? GestureDetector(
-                                    onTap: () {
-                                      if (widget.onPriceClicked != null && widget.postId != null) {
-                                        widget.onPriceClicked!(int.parse(widget.postId!));
-                                      }
-                                    },
-                                    child: GlassContainer(
-                                      customShadow:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? []
-                                              : null,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical:
-                                                AppTheme.elementSpacing / 4,
-                                            horizontal:
-                                                AppTheme.elementSpacing / 2),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(widget.cryptoText,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                        fontSize: 12.sp)),
-                                            Icon(
-                                              Icons.currency_bitcoin,
-                                              size: 16.w,
-                                            )
-                                          ],
+                    // Bottom section with either list button (for owner) or price
+                    widget.isOwner
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              widget.hasListForSale
+                                  ? LongButtonWidget(
+                                      buttonType: ButtonType.transparent,
+                                      customHeight: 30.h,
+                                      customWidth: 125.w * widget.scale,
+                                      title: "List",
+                                      onTap: () {})
+                                  : Container(),
+                              widget.hasLikeButton
+                                  ? _buildLikeButton()
+                                  : Container(),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              widget.hasPrice
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        if (widget.onPriceClicked != null &&
+                                            widget.postId != null) {
+                                          widget.onPriceClicked!(
+                                              int.parse(widget.postId!));
+                                        }
+                                      },
+                                      child: GlassContainer(
+                                        customShadow:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? []
+                                                : null,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical:
+                                                  AppTheme.elementSpacing / 4,
+                                              horizontal:
+                                                  AppTheme.elementSpacing / 2),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(widget.cryptoText,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                          fontSize: 12.sp)),
+                                              Icon(
+                                                Icons.currency_bitcoin,
+                                                size: 16.w,
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                : Container(),
-                            widget.hasLikeButton
-                                ? _buildLikeButton()
-                                : Container(),
-                          ],
-                        ),
-                ],
+                                    )
+                                  : Container(),
+                              widget.hasLikeButton
+                                  ? _buildLikeButton()
+                                  : Container(),
+                            ],
+                          ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-     ),
     );
   }
 
@@ -236,7 +246,8 @@ class _AssetCardState extends State<AssetCard> {
             return Icon(
               isLiked ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
               color: isLiked
-                  ? Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                  ? Theme.of(context).colorScheme.primary ==
+                          AppTheme.colorBitcoin
                       ? AppTheme.colorBitcoin
                       : Theme.of(context).colorScheme.primary
                   : Theme.of(context).brightness == Brightness.light
@@ -249,22 +260,22 @@ class _AssetCardState extends State<AssetCard> {
             try {
               // Return the new state immediately for animation
               bool newLikedState = !isLiked;
-              
+
               // Fire and forget - don't wait for backend update to complete the animation
               if (!isLiked) {
                 controller.toggleLike(widget.postId!);
               } else {
                 controller.deleteLikeByPostId(widget.postId!);
               }
-              
+
               // Call the callback if provided
               if (widget.onLikeChanged != null) {
                 widget.onLikeChanged!(newLikedState);
               }
-              
+
               // Update local state
               this.isLiked.value = newLikedState;
-              
+
               return newLikedState;
             } catch (e) {
               print("Error toggling like: $e");
@@ -273,12 +284,14 @@ class _AssetCardState extends State<AssetCard> {
             }
           },
           bubblesColor: BubblesColor(
-            dotPrimaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-                ? AppTheme.colorBitcoin
-                : Theme.of(context).colorScheme.primary,
-            dotSecondaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-                ? AppTheme.colorPrimaryGradient
-                : Theme.of(context).colorScheme.secondary,
+            dotPrimaryColor:
+                Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                    ? AppTheme.colorBitcoin
+                    : Theme.of(context).colorScheme.primary,
+            dotSecondaryColor:
+                Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                    ? AppTheme.colorPrimaryGradient
+                    : Theme.of(context).colorScheme.secondary,
           ),
         ));
   }
@@ -286,12 +299,10 @@ class _AssetCardState extends State<AssetCard> {
   Widget topWidget(String? type, Media? e) {
     if (e != null) {
       if (type == "text" || type == "description") {
-        return Container(
-            child: TextBuilderNetwork(url: e.data));
+        return Container(child: TextBuilderNetwork(url: e.data));
       }
       if (type == "external_link") {
-        return Container(
-            child: const LinkBuilder(url: 'haha'));
+        return Container(child: const LinkBuilder(url: 'haha'));
       }
       if (type == "asset_image") {
         // Direct asset path handling
@@ -331,11 +342,9 @@ class _AssetCardState extends State<AssetCard> {
         }
       }
       if (type == "audio") {
-        return Container(
-            child: AudioBuilderNetwork(url: e.data));
+        return Container(child: AudioBuilderNetwork(url: e.data));
       } else {
-        return Container(
-            child: const TextBuilderNetwork(url: "No data found"));
+        return Container(child: const TextBuilderNetwork(url: "No data found"));
       }
     } else {
       return Container(

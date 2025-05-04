@@ -49,7 +49,7 @@ class _AssetsTabState extends State<AssetsTab> {
       'color': Colors.purple,
     },
   ];
-  
+
   // Top projects data
   final List<Map<String, dynamic>> topProjects = [
     {
@@ -80,7 +80,7 @@ class _AssetsTabState extends State<AssetsTab> {
       'isPositive': true,
     },
   ];
-  
+
   // Trending projects data
   final List<Map<String, dynamic>> trendingProjects = [
     {
@@ -230,21 +230,21 @@ class _AssetsTabState extends State<AssetsTab> {
       ],
     },
   ];
-  
+
   // Map to track like state for each asset
   final Map<String, bool> likeStates = {};
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize all featured collections' assets as unliked
     for (var collection in featuredCollections) {
       for (var asset in collection['assets']) {
         likeStates[asset['id']] = false;
       }
     }
-    
+
     // Initialize all top collections' assets as unliked
     for (var collection in topCollections) {
       for (var asset in collection['assets']) {
@@ -252,7 +252,7 @@ class _AssetsTabState extends State<AssetsTab> {
       }
     }
   }
-  
+
   // Toggle like state for a specific asset
   void toggleLike(String assetId) {
     setState(() {
@@ -264,26 +264,24 @@ class _AssetsTabState extends State<AssetsTab> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return bitnetScaffold(
       body: VerticalFadeListView.standardTab(
-        child: ListView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          cacheExtent: 1000, // Cache more content for smoother scrolling
-          children: [
-          
+          child: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        cacheExtent: 1000, // Cache more content for smoother scrolling
+        children: [
           // Spacing at the top - consistent with other tabs
           SizedBox(height: AppTheme.cardPadding * 1.5.h),
-          
+
           // Carousel Slider for Trending Assets
           CarouselSlider.builder(
-            options: getStandardizedCarouselOptions(
-              autoPlayIntervalSeconds: 4
-            ),
+            options: getStandardizedCarouselOptions(autoPlayIntervalSeconds: 4),
             itemCount: assetData.length,
             itemBuilder: (context, index, _) {
               final asset = assetData[index];
-              
+
               // Create media for asset
               final List<Media> assetMedia = [
                 Media(
@@ -291,7 +289,7 @@ class _AssetsTabState extends State<AssetsTab> {
                   data: asset['image'],
                 )
               ];
-              
+
               // Wrap in RepaintBoundary for better performance
               return RepaintBoundary(
                 child: AssetCard(
@@ -308,28 +306,30 @@ class _AssetsTabState extends State<AssetsTab> {
               );
             },
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h * 1.5),
-          
+
           // Top Projects Today section with CommonHeading
           CommonHeading(
             headingText: '🏆 Top Projects Today',
             hasButton: true,
             onPress: 'top_projects',
           ),
-          
+
           // A single GlassContainer containing all top projects with number indicators
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
               customShadow: isDarkMode ? [] : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: topProjects.asMap().entries.map((entry) {
                     final int idx = entry.key;
                     final project = entry.value;
-                    
+
                     return GestureDetector(
                       onTap: () {
                         // Navigate to the collection screen with the project's collection name
@@ -340,11 +340,13 @@ class _AssetsTabState extends State<AssetsTab> {
                       child: Stack(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing),
                             child: Container(
                               height: AppTheme.cardPadding * 2.75,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   // Project info (left side)
                                   Row(
@@ -359,27 +361,37 @@ class _AssetsTabState extends State<AssetsTab> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                                      SizedBox(
+                                          width:
+                                              AppTheme.elementSpacing.w / 1.5),
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             project['name'],
-                                            style: Theme.of(context).textTheme.titleLarge,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
                                           ),
                                           SizedBox(height: 2),
                                           Text(
                                             project['collection'],
-                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                              color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: isDarkMode
+                                                      ? AppTheme.white60
+                                                      : AppTheme.black60,
+                                                ),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  
+
                                   // Price and change (right side)
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -389,9 +401,12 @@ class _AssetsTabState extends State<AssetsTab> {
                                         children: [
                                           Text(
                                             "${project['price']} BTC",
-                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -404,15 +419,18 @@ class _AssetsTabState extends State<AssetsTab> {
                                               vertical: 2,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: project['isPositive'] 
-                                                  ? AppTheme.successColor.withOpacity(0.2)
-                                                  : AppTheme.errorColor.withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(50),
+                                              color: project['isPositive']
+                                                  ? AppTheme.successColor
+                                                      .withOpacity(0.2)
+                                                  : AppTheme.errorColor
+                                                      .withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],
                                               style: TextStyle(
-                                                color: project['isPositive'] 
+                                                color: project['isPositive']
                                                     ? AppTheme.successColor
                                                     : AppTheme.errorColor,
                                                 fontSize: 12,
@@ -442,28 +460,30 @@ class _AssetsTabState extends State<AssetsTab> {
               ),
             ),
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h),
-          
+
           // Trending section with CommonHeading
           CommonHeading(
             headingText: '🔥 Trending',
             hasButton: true,
             onPress: 'trending_projects',
           ),
-          
+
           // A single GlassContainer containing all trending projects with number indicators
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
               customShadow: isDarkMode ? [] : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: trendingProjects.asMap().entries.map((entry) {
                     final int idx = entry.key;
                     final project = entry.value;
-                    
+
                     return GestureDetector(
                       onTap: () {
                         // Navigate to the collection screen with the project's collection name
@@ -474,11 +494,13 @@ class _AssetsTabState extends State<AssetsTab> {
                       child: Stack(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing),
                             child: Container(
                               height: AppTheme.cardPadding * 2.75,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   // Project info (left side)
                                   Row(
@@ -493,16 +515,21 @@ class _AssetsTabState extends State<AssetsTab> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                                      SizedBox(
+                                          width:
+                                              AppTheme.elementSpacing.w / 1.5),
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             children: [
                                               Text(
                                                 project['name'],
-                                                style: Theme.of(context).textTheme.titleLarge,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge,
                                               ),
                                               SizedBox(width: 5),
                                               Icon(
@@ -515,15 +542,20 @@ class _AssetsTabState extends State<AssetsTab> {
                                           SizedBox(height: 2),
                                           Text(
                                             project['collection'],
-                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                              color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: isDarkMode
+                                                      ? AppTheme.white60
+                                                      : AppTheme.black60,
+                                                ),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  
+
                                   // Price and change (right side)
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -533,9 +565,12 @@ class _AssetsTabState extends State<AssetsTab> {
                                         children: [
                                           Text(
                                             "${project['price']} BTC",
-                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -548,8 +583,10 @@ class _AssetsTabState extends State<AssetsTab> {
                                               vertical: 2,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Colors.orange.withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(50),
+                                              color: Colors.orange
+                                                  .withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],
@@ -587,16 +624,16 @@ class _AssetsTabState extends State<AssetsTab> {
               ),
             ),
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h),
-          
+
           // Featured Collections
           CommonHeading(
             headingText: '✨ Featured Collections',
             hasButton: true,
             onPress: 'featured_collections',
           ),
-          
+
           // List of featured collections
           ...featuredCollections.map((collection) {
             return Column(
@@ -604,7 +641,8 @@ class _AssetsTabState extends State<AssetsTab> {
               children: [
                 // Collection grid
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing.w / 2),
                   child: GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -613,13 +651,14 @@ class _AssetsTabState extends State<AssetsTab> {
                       crossAxisCount: 2, // 2 items per row
                       mainAxisSpacing: AppTheme.elementSpacing.h,
                       crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-                      childAspectRatio: (size.width / 2) / 240.w, // Match TokensTab
+                      childAspectRatio:
+                          (size.width / 2) / 240.w, // Match TokensTab
                     ),
                     itemCount: collection['assets'].length,
                     itemBuilder: (context, index) {
                       final asset = collection['assets'][index];
                       final String assetId = asset['id'];
-                      
+
                       // Create media for asset
                       final List<Media> assetMedia = [
                         Media(
@@ -627,7 +666,7 @@ class _AssetsTabState extends State<AssetsTab> {
                           data: asset['image'],
                         )
                       ];
-                      
+
                       return AssetCard(
                         postId: assetId,
                         nftName: asset['name'],
@@ -653,14 +692,14 @@ class _AssetsTabState extends State<AssetsTab> {
               ],
             );
           }).toList(),
-          
+
           // Top Collections
           CommonHeading(
             headingText: '🔝 Top Collections',
             hasButton: true,
             onPress: 'top_collections',
           ),
-          
+
           // List of top collections
           ...topCollections.map((collection) {
             return Column(
@@ -668,7 +707,8 @@ class _AssetsTabState extends State<AssetsTab> {
               children: [
                 // Collection grid
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing.w / 2),
                   child: GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -677,13 +717,14 @@ class _AssetsTabState extends State<AssetsTab> {
                       crossAxisCount: 2, // 2 items per row
                       mainAxisSpacing: AppTheme.elementSpacing.h,
                       crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-                      childAspectRatio: (size.width / 2) / 240.w, // Match TokensTab
+                      childAspectRatio:
+                          (size.width / 2) / 240.w, // Match TokensTab
                     ),
                     itemCount: collection['assets'].length,
                     itemBuilder: (context, index) {
                       final asset = collection['assets'][index];
                       final String assetId = asset['id'];
-                      
+
                       // Create media for asset
                       final List<Media> assetMedia = [
                         Media(
@@ -691,7 +732,7 @@ class _AssetsTabState extends State<AssetsTab> {
                           data: asset['image'],
                         )
                       ];
-                      
+
                       return AssetCard(
                         postId: assetId,
                         nftName: asset['name'],
@@ -717,7 +758,7 @@ class _AssetsTabState extends State<AssetsTab> {
               ],
             );
           }).toList(),
-          
+
           // Extra space at the bottom for better scrolling
           SizedBox(height: 100.h),
         ],

@@ -19,9 +19,15 @@ class StructuredData extends StatelessWidget {
       return child;
     }
 
-    // For the older version of seo package, we can't directly inject JSON-LD
-    // So we'll just return the child for now
-    return child;
+    // Format the JSON-LD data with proper escaping
+    final String jsonLdString = _formatJsonLd(jsonLdData);
+
+    // Use the SEO package to inject the structured data
+    // return Seo.html(
+    //   html: jsonLdString,
+    //   child: child,
+    // );
+    return Container();
   }
 
   /// Formats a Map into a valid JSON-LD string
@@ -36,7 +42,7 @@ class StructuredData extends StatelessWidget {
 
     // Convert to JSON with proper escaping
     String jsonString = _mapToJsonString(data);
-    
+
     // Wrap in script tags for JSON-LD
     return '<script type="application/ld+json">$jsonString</script>';
   }
@@ -45,18 +51,18 @@ class StructuredData extends StatelessWidget {
   String _mapToJsonString(Map<String, dynamic> map) {
     final StringBuffer buffer = StringBuffer();
     buffer.write('{');
-    
+
     bool isFirst = true;
     map.forEach((key, value) {
       if (!isFirst) {
         buffer.write(',');
       }
       isFirst = false;
-      
+
       buffer.write('"$key":');
       buffer.write(_valueToJsonString(value));
     });
-    
+
     buffer.write('}');
     return buffer.toString();
   }
@@ -79,17 +85,17 @@ class StructuredData extends StatelessWidget {
     } else if (value is List) {
       final StringBuffer buffer = StringBuffer();
       buffer.write('[');
-      
+
       bool isFirst = true;
       for (var item in value) {
         if (!isFirst) {
           buffer.write(',');
         }
         isFirst = false;
-        
+
         buffer.write(_valueToJsonString(item));
       }
-      
+
       buffer.write(']');
       return buffer.toString();
     } else if (value is Map) {
@@ -148,7 +154,8 @@ class StructuredData extends StatelessWidget {
       'name': name,
       'url': url,
       if (description != null) 'description': description,
-      if (datePublished != null) 'datePublished': datePublished.toIso8601String(),
+      if (datePublished != null)
+        'datePublished': datePublished.toIso8601String(),
       if (dateModified != null) 'dateModified': dateModified.toIso8601String(),
       if (image != null) 'image': image,
     };
@@ -174,14 +181,16 @@ class StructuredData extends StatelessWidget {
   static Map<String, dynamic> faq({
     required List<Map<String, String>> questions,
   }) {
-    final List<Map<String, dynamic>> faqItems = questions.map((q) => {
-      '@type': 'Question',
-      'name': q['question'],
-      'acceptedAnswer': {
-        '@type': 'Answer',
-        'text': q['answer'],
-      },
-    }).toList();
+    final List<Map<String, dynamic>> faqItems = questions
+        .map((q) => {
+              '@type': 'Question',
+              'name': q['question'],
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': q['answer'],
+              },
+            })
+        .toList();
 
     return {
       '@type': 'FAQPage',
