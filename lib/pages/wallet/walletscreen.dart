@@ -106,7 +106,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                 child: Stack(
                   children: [
                     Obx(() => Container(
-                          height: 300,
+                          height: 250,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -1096,7 +1096,7 @@ class WalletChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 250,
       child: Obx(() {
         bitcoinController.pbChartPing.value;
         // Ensure we have data to display
