@@ -19,7 +19,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
   String searchQuery = '';
   late List<ChartLine> chartData;
   String selectedTimespan = "1W";
-  
+
   @override
   void initState() {
     super.initState();
@@ -28,46 +28,53 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
     // Set initial timespan
     selectedTimespan = "1W";
   }
-  
+
   List<ChartLine> generateMockChartData() {
     // Create mock data for a price chart (last 7 days)
     final List<ChartLine> data = [];
     final now = DateTime.now();
     double basePrice = 0.032; // Base price in BTC
-    
+
     // Generate data points for the last 7 days with some random fluctuations
     for (int i = 7; i >= 0; i--) {
-      final time = now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
+      final time =
+          now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
       // Random fluctuation between -15% and +15%
-      final randomFactor = 1.0 + (0.15 * (0.5 - (DateTime(now.year, now.month, now.day).millisecondsSinceEpoch % 10) / 10));
+      final randomFactor = 1.0 +
+          (0.15 *
+              (0.5 -
+                  (DateTime(now.year, now.month, now.day)
+                              .millisecondsSinceEpoch %
+                          10) /
+                      10));
       final price = basePrice * randomFactor;
       basePrice = price; // Each day builds on the previous price
       data.add(ChartLine(time: time, price: price));
     }
-    
+
     return data;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(
+          horizontal: AppTheme.cardPadding.w, vertical: AppTheme.cardPadding.h),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate.fixed([
           // Collection Price Chart
           SizedBox(height: AppTheme.cardPadding * 1.h),
           _buildPriceHeader(),
           SizedBox(height: 8.h),
           _buildPriceChart(),
           SizedBox(height: AppTheme.cardPadding * 1.5.h),
-          
+
           // Price Statistics Section
           Text(
             "Price Statistics",
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: 12.h),
 
@@ -103,14 +110,13 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
               Text(
                 "Recent Sales",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-
             ],
           ),
           SizedBox(height: 12.h),
-          
+
           // Search bar
           SearchFieldWidget(
             hintText: "Search sales...",
@@ -128,7 +134,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
 
           // Sales List
           _buildRecentSalesList(context),
-        ],
+        ]),
       ),
     );
   }
@@ -136,7 +142,6 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
   Widget _buildPriceHeader() {
     // Calculate price change
 
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -146,17 +151,16 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             Text(
               "Collection Price",
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),
         SizedBox(height: AppTheme.elementSpacing.h),
-
       ],
     );
   }
-  
+
   Widget _buildPriceChart() {
     final firstPrice = chartData.first.price;
     final lastPrice = chartData.last.price;
@@ -179,10 +183,9 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                     Text(
                       "${lastPrice.toStringAsFixed(4)} BTC",
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
-
                   ],
                 ),
                 PercentageChangeWidget(
@@ -237,15 +240,15 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
       ),
     );
   }
-  
+
   Widget _buildTimeFrameButtons() {
     final timeframes = ["1D", "1W", "1M", "1Y", "Max"];
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: timeframes.map((timeframe) {
         final isSelected = selectedTimespan == timeframe;
-        
+
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -258,11 +261,15 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             opacity: isSelected ? 0.3 : 0.1,
             borderRadius: BorderRadius.circular(10),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing * 0.5),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.elementSpacing * 1,
+                  vertical: AppTheme.elementSpacing * 0.5),
               child: Text(
                 timeframe,
                 style: TextStyle(
-                  color: isSelected ? Theme.of(context).textTheme.bodyMedium?.color : Theme.of(context).textTheme.bodyMedium?.color,
+                  color: isSelected
+                      ? Theme.of(context).textTheme.bodyMedium?.color
+                      : Theme.of(context).textTheme.bodyMedium?.color,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -272,9 +279,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
       }).toList(),
     );
   }
-  
 
-  
   Widget _buildStatRow(BuildContext context, String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,8 +287,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
         Text(
           label,
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           value,
@@ -295,24 +300,54 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
 
   Widget _buildRecentSalesList(BuildContext context) {
     final allSalesData = [
-      {"id": "#2390", "price": "0.024 BTC", "date": "2 hours ago", "from": "User1", "to": "User2"},
-      {"id": "#1872", "price": "0.031 BTC", "date": "5 hours ago", "from": "User3", "to": "User4"},
-      {"id": "#2103", "price": "0.018 BTC", "date": "1 day ago", "from": "User5", "to": "User6"},
-      {"id": "#1945", "price": "0.027 BTC", "date": "2 days ago", "from": "User7", "to": "User8"},
-      {"id": "#2287", "price": "0.022 BTC", "date": "3 days ago", "from": "User9", "to": "User10"},
+      {
+        "id": "#2390",
+        "price": "0.024 BTC",
+        "date": "2 hours ago",
+        "from": "User1",
+        "to": "User2"
+      },
+      {
+        "id": "#1872",
+        "price": "0.031 BTC",
+        "date": "5 hours ago",
+        "from": "User3",
+        "to": "User4"
+      },
+      {
+        "id": "#2103",
+        "price": "0.018 BTC",
+        "date": "1 day ago",
+        "from": "User5",
+        "to": "User6"
+      },
+      {
+        "id": "#1945",
+        "price": "0.027 BTC",
+        "date": "2 days ago",
+        "from": "User7",
+        "to": "User8"
+      },
+      {
+        "id": "#2287",
+        "price": "0.022 BTC",
+        "date": "3 days ago",
+        "from": "User9",
+        "to": "User10"
+      },
     ];
-    
+
     // Filter sales based on search query
     final salesData = allSalesData.where((sale) {
       if (searchQuery.isEmpty) return true;
-      
+
       final query = searchQuery.toLowerCase();
       return sale["id"]!.toLowerCase().contains(query) ||
-             sale["price"]!.toLowerCase().contains(query) ||
-             sale["from"]!.toLowerCase().contains(query) ||
-             sale["to"]!.toLowerCase().contains(query);
+          sale["price"]!.toLowerCase().contains(query) ||
+          sale["from"]!.toLowerCase().contains(query) ||
+          sale["to"]!.toLowerCase().contains(query);
     }).toList();
-    
+
     if (salesData.isEmpty) {
       return Center(
         child: Padding(
@@ -353,9 +388,10 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                     children: [
                       Text(
                         "Inscription ${sale["id"]}",
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
@@ -369,10 +405,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      sale["price"].toString(),
-                      style: Theme.of(context).textTheme.titleMedium
-                    ),
+                    Text(sale["price"].toString(),
+                        style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: 4.h),
                     Text(
                       sale["date"].toString(),

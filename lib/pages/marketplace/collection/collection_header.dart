@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-class CollectionHeader extends StatelessWidget {
+class CollectionHeader extends StatefulWidget {
   final Size size;
   final String? name;
   final List<int> inscriptions;
@@ -18,14 +18,25 @@ class CollectionHeader extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CollectionHeader> createState() => _CollectionHeaderState();
+}
+
+class _CollectionHeaderState extends State<CollectionHeader>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       padding: EdgeInsets.only(
-          top: AppTheme.cardPadding.h / 4, bottom: AppTheme.cardPadding.h),
+          top: AppTheme.cardPadding.h / 2, bottom: AppTheme.cardPadding.h),
       child: Column(
         children: [
           Stack(
             children: [
+              Container(
+                width: widget.size.width,
+                height: 260.h,
+              ),
               Container(
                 margin: EdgeInsets.only(bottom: 0.h),
                 padding: EdgeInsets.symmetric(horizontal: 0.w),
@@ -33,34 +44,38 @@ class CollectionHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                   child: Image.asset(
                     nftImage5,
-                    width: size.width,
+                    width: widget.size.width,
                     height: 240.h,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               // Custom Outline
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: BannerOutlinePainter(
-                    profileCenter: Offset(200, 250), // adjust this
-                    radius: 50.w,
-                  ),
-                ),
-              ),
+
               Positioned(
                 bottom: 0,
                 left: 0,
                 child: SizedBox(
-                  width: size.width,
+                  width: widget.size.width,
                   child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100.r),
-                      child: Image.asset(
-                        user1Image,
-                        width: 100.w,
-                        height: 100.w,
-                        fit: BoxFit.cover,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryColor.withAlpha(200),
+                              blurRadius: 1,
+                              spreadRadius: 4,
+                            )
+                          ]),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100.r),
+                        child: Image.asset(
+                          user1Image,
+                          width: 100.w,
+                          height: 100.w,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -70,14 +85,14 @@ class CollectionHeader extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            name != null ? name! : L10n.of(context)!.unknown,
+            widget.name != null ? widget.name! : L10n.of(context)!.unknown,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
           ),
           Text(
-            'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
+            'Inscriptions #${widget.inscriptions[0]}-${widget.inscriptions[widget.inscriptions.length - 1]}',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
@@ -85,42 +100,7 @@ class CollectionHeader extends StatelessWidget {
       ),
     );
   }
-}
-
-class BannerOutlinePainter extends CustomPainter {
-  final Offset profileCenter;
-  final double radius;
-
-  BannerOutlinePainter({required this.profileCenter, required this.radius});
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = primaryColor
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke;
-
-    final path = Path();
-
-    // Start at bottom-left of the banner
-    path.moveTo(0, profileCenter.dy);
-
-    // Line toward the profile picture (left side)
-    path.lineTo(profileCenter.dx - radius, profileCenter.dy);
-
-    // Arc over the top of the profile picture
-    path.arcToPoint(
-      Offset(profileCenter.dx + radius, profileCenter.dy),
-      radius: Radius.circular(radius),
-      clockwise: false,
-    );
-
-    // Line to bottom-right of the banner
-    path.lineTo(size.width, profileCenter.dy);
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool get wantKeepAlive => true;
 }

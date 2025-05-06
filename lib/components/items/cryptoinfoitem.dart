@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
@@ -37,7 +38,7 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
     // Use the same providers as in TransactionItem
     final currencyProvider = Provider.of<CurrencyChangeProvider>(context);
     final currencyTypeProvider =
-    Provider.of<CurrencyTypeProvider>(context, listen: true);
+        Provider.of<CurrencyTypeProvider>(context, listen: true);
     String selectedCurrency = currencyProvider.selectedCurrency ?? "USD";
 
     // Get current bitcoin price from your WalletsController
@@ -59,31 +60,36 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
         children: [
           Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Icon and Currency Name
-                Row(
-                  children: [
-                    Container(
-                      height: AppTheme.cardPadding * 1.75,
-                      width: AppTheme.cardPadding * 1.75,
-                      child: ClipOval(child: widget.currency.icon),
-                    ),
-                    SizedBox(width: AppTheme.elementSpacing.w / 1.5),
-                    Text(
-                      widget.currency.name,
-                      style: Theme.of(widget.context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.white90
-                            : AppTheme.black90,
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Container(
+                          height: AppTheme.cardPadding * 1.75,
+                          width: AppTheme.cardPadding * 1.75,
+                          child: ClipOval(child: widget.currency.icon),
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                      Text(
+                        widget.currency.name,
+                        style: Theme.of(widget.context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? AppTheme.white90
+                                  : AppTheme.black90,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
                 // Main Balance – apply the currency switch logic with conditional icon
                 Column(
@@ -92,23 +98,33 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
                   children: [
                     Row(
                       children: [
-                        Obx(() => Get.find<WalletsController>().hideBalance.value
-                          ? Text(
-                              "******",
-                              style: Theme.of(widget.context).textTheme.titleMedium,
-                            )
-                          : Text(
-                              currencyTypeProvider.coin ?? true
-                                  ? widget.balance
-                                  : "$currencyEquivalent${getCurrency(selectedCurrency)}",
-                              style: Theme.of(widget.context).textTheme.titleMedium,
-                            )
-                        ),
+                        Obx(() => Get.find<WalletsController>()
+                                .hideBalance
+                                .value
+                            ? Text(
+                                getZoomScale(context) > 2.9 ? "****" : "******",
+                                style: getZoomScale(context) > 2.9
+                                    ? Theme.of(widget.context)
+                                        .textTheme
+                                        .titleSmall
+                                    : Theme.of(widget.context)
+                                        .textTheme
+                                        .titleMedium,
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            : Text(
+                                currencyTypeProvider.coin ?? true
+                                    ? widget.balance
+                                    : "$currencyEquivalent${getCurrency(selectedCurrency)}",
+                                style: Theme.of(widget.context)
+                                    .textTheme
+                                    .titleMedium,
+                              )),
                         (currencyTypeProvider.coin ?? true)
                             ? Icon(
-                          AppTheme.satoshiIcon,
-                          // Optionally add color logic if needed
-                        )
+                                AppTheme.satoshiIcon,
+                                // Optionally add color logic if needed
+                              )
                             : const SizedBox.shrink(),
                       ],
                     ),

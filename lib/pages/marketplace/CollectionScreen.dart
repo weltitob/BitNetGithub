@@ -12,8 +12,6 @@ import 'package:bitnet/pages/marketplace/collection/tabs/price_sales_tab_view.da
 import 'package:bitnet/pages/marketplace/collection/tabs/row_tab_view.dart';
 import 'package:bitnet/pages/marketplace/widgets/buy_sliding_panel.dart';
 import 'package:bitnet/pages/marketplace/widgets/cart_sheet.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -76,40 +74,39 @@ class _CollectionScreenState extends State<CollectionScreen> {
       context: context,
       body: Stack(
         children: [
-          NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverToBoxAdapter(
-                  child: CollectionHeader(
-                    size: size,
-                    name: name,
-                    inscriptions: inscriptions,
-                  ),
+          CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: CollectionHeader(
+                  size: size,
+                  name: name,
+                  inscriptions: inscriptions,
                 ),
-                SliverToBoxAdapter(
-                  child: CollectionTabBar(
-                    currentTabIndex: currentTabIndex,
-                    onTabChanged: (index) {
-                      setState(() {
-                        currentTabIndex = index;
-                      });
-                    },
-                  ),
+              ),
+              SliverToBoxAdapter(
+                child: CollectionTabBar(
+                  currentTabIndex: currentTabIndex,
+                  onTabChanged: (index) {
+                    setState(() {
+                      currentTabIndex = index;
+                    });
+                  },
                 ),
-              ];
-            },
-            body: IndexedStack(
-              index: currentTabIndex,
-              children: [
-                // Row View Tab (now first)
-                RowTabView(
+              ),
+              // Row View Tab (now first)
+              SliverOffstage(
+                offstage: currentTabIndex != 0,
+                sliver: RowTabView(
                   sortedGridList: sortedGridList,
                   selectedProducts: selectedProducts,
                   handleProductClick: handleProductClick,
                   showBuyPanel: showBuyPanel,
                 ),
-                // Column View Tab (now second)
-                ColumnTabView(
+              ),
+              // Column View Tab (now second)
+              SliverOffstage(
+                offstage: currentTabIndex != 1,
+                sliver: ColumnTabView(
                   sortedGridList: sortedGridList,
                   selectedProducts: selectedProducts,
                   handleProductClick: handleProductClick,
@@ -122,14 +119,17 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   },
                   currentSortingFilter: sortingFilter,
                 ),
-                // Price/Sales Tab
-                PriceSalesTabView(),
-                // Owners Tab
-                OwnersTabView(),
-                // Info Tab
-                InfoTabView(),
-              ],
-            ),
+              ),
+              // // Price/Sales Tab
+              SliverOffstage(
+                  offstage: currentTabIndex != 2, sliver: PriceSalesTabView()),
+              // Owners Tab
+              SliverOffstage(
+                  offstage: currentTabIndex != 3, sliver: OwnersTabView()),
+              // Info Tab
+              SliverOffstage(
+                  offstage: currentTabIndex != 4, sliver: InfoTabView()),
+            ],
           ),
 
           // Cart Bottom Sheet

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +20,19 @@ class TimeChooserButton extends StatelessWidget {
     final bool isSelected = timespan == timeperiod;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+      padding: EdgeInsets.symmetric(
+          horizontal: getZoomScale(context) > 2.9
+              ? AppTheme.elementSpacing / 16
+              : AppTheme.elementSpacing / 2),
       child: isSelected
           ? GlassContainer(
-        borderThickness: 1.5,
-        blur: 50,
-        opacity: 0.1,
-        borderRadius: const BorderRadius.all(Radius.circular(AppTheme.cardPadding / 1.5)),
-        child: _buildButtonContent(context, isSelected),
-      )
+              borderThickness: 1.5,
+              blur: 50,
+              opacity: 0.1,
+              borderRadius: const BorderRadius.all(
+                  Radius.circular(AppTheme.cardPadding / 1.5)),
+              child: _buildButtonContent(context, isSelected),
+            )
           : _buildButtonContent(context, isSelected),
     );
   }
@@ -38,7 +43,7 @@ class TimeChooserButton extends StatelessWidget {
         padding: EdgeInsets.zero,
         minimumSize: Size(50, isSelected ? 30 : 20),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
       ),
       onPressed: onPressed,
       child: Container(
@@ -49,10 +54,13 @@ class TimeChooserButton extends StatelessWidget {
         child: Text(
           timeperiod,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            color: isSelected
-                ? Theme.of(context).colorScheme.onPrimaryContainer
-                : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.6),
-          ),
+                color: isSelected
+                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                    : Theme.of(context)
+                        .colorScheme
+                        .onPrimaryContainer
+                        .withOpacity(0.6),
+              ),
         ),
       ),
     );
@@ -74,7 +82,8 @@ class CustomizableTimeChooser extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomizableTimeChooserState createState() => _CustomizableTimeChooserState();
+  _CustomizableTimeChooserState createState() =>
+      _CustomizableTimeChooserState();
 }
 
 class _CustomizableTimeChooserState extends State<CustomizableTimeChooser> {
@@ -92,19 +101,22 @@ class _CustomizableTimeChooserState extends State<CustomizableTimeChooser> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: widget.timePeriods.map((period) => _buildButton(period)).toList(),
+        children:
+            widget.timePeriods.map((period) => _buildButton(period)).toList(),
       ),
     );
   }
 
   Widget _buildButton(String period) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: widget.buttonBuilder(
-        context,
-        period,
-        selectedPeriod == period,
-            () => _handleButtonPress(period),
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0.0),
+        child: widget.buttonBuilder(
+          context,
+          period,
+          selectedPeriod == period,
+          () => _handleButtonPress(period),
+        ),
       ),
     );
   }
@@ -116,4 +128,3 @@ class _CustomizableTimeChooserState extends State<CustomizableTimeChooser> {
     widget.onTimePeriodSelected(period);
   }
 }
-

@@ -28,7 +28,9 @@ class FilterBottomSheet extends StatelessWidget {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,24 +51,27 @@ class FilterBottomSheet extends StatelessWidget {
                 ),
 
                 // Apply Button
-                BottomCenterButton(buttonTitle: "Apply", buttonState: ButtonState.idle, onButtonTap: (){}),
-
               ],
             ),
           ),
+          BottomCenterButton(
+              buttonTitle: "Apply",
+              buttonState: ButtonState.idle,
+              onButtonTap: () {}),
         ],
       ),
     );
   }
-  
+
   Widget _buildSortOption(BuildContext context, String title) {
     final isSelected = currentSortingFilter == title;
-    
+
     return ListTile(
       onTap: () {
         onSortingChanged(title);
       },
-      contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: 4.0),
+      contentPadding: EdgeInsets.symmetric(
+          horizontal: AppTheme.elementSpacing, vertical: 4.0),
       title: Text(
         title,
         style: TextStyle(
@@ -74,9 +79,9 @@ class FilterBottomSheet extends StatelessWidget {
           color: isSelected ? AppTheme.colorBitcoin : null,
         ),
       ),
-      trailing: isSelected 
-        ? Icon(Icons.check_circle, color: AppTheme.colorBitcoin)
-        : null,
+      trailing: isSelected
+          ? Icon(Icons.check_circle, color: AppTheme.colorBitcoin)
+          : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),

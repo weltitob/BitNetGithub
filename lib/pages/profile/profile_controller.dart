@@ -142,26 +142,26 @@ class ProfileController extends BaseController {
 
   void fetchTaprootAssets() async {
     final logger = Get.find<LoggerService>();
-    logger.i('Fetching taproot started...');
+    logger.i('izak: Fetching taproot started...');
     isLoading.value = true;
     assetsLoading.value = true;
     try {
       List<Asset> fetchedAssets = await listTaprootAssets();
       List<Asset> reversedAssets = fetchedAssets.reversed.toList();
       assets.value = reversedAssets;
-      logger.i('Above is the asset value');
+      logger.i('izak: Above is the asset value');
 
       await fetchNext20Metas(0, 10); // Load metadata for the first 20 assets
       assetsLazyLoading.value = assets.take(10).toList();
       isLoading.value = false;
     } catch (e) {
-      logger.e('Error fetching taproot assets: $e');
+      logger.e('izak: Error fetching taproot assets: $e');
     }
     assetsLoading.value = false;
   }
 
   fetchNext20Metas(int startIndex, int count) async {
-    logger.i('Fetching next 20 taproot assets...');
+    logger.i('izak: Fetching next 20 taproot assets...');
     Map<String, AssetMetaResponse> metas = {};
     for (int i = startIndex; i < startIndex + count && i < assets.length; i++) {
       String assetId = assets[i].assetGenesis?.assetId ?? '';
@@ -170,7 +170,7 @@ class ProfileController extends BaseController {
         metas[assetId] = meta;
       }
     }
-    logger.i('above is the asset meta data done value ');
+    logger.i('izak: above is the asset meta data done value ');
 
     assetMetaMap.addAll(metas);
   }

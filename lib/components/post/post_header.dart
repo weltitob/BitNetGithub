@@ -53,7 +53,7 @@ class PostHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Name und Username in einer Zeile
-                Row(
+                Wrap(
                   children: [
                     // Display Name
                     GestureDetector(
