@@ -157,3 +157,63 @@ class CategoriesListModal {
     required this.categoriesText,
   });
 }
+
+class NFTAsset {
+  final String id;
+  final String name;
+  final String collection;
+  final String imageUrl;
+  final String? description;
+  final double? currentPrice;
+  final String? owner;
+  final bool isListed;
+
+  NFTAsset({
+    required this.id,
+    required this.name,
+    required this.collection,
+    required this.imageUrl,
+    this.description,
+    this.currentPrice,
+    this.owner,
+    this.isListed = false,
+  });
+  
+  /// Create an NFTAsset from an AssetCard
+  static NFTAsset fromAssetCard({
+    required String? assetId,
+    required String? nftName,
+    required String? nftMainName,
+    required String? imageUrl,
+    String? owner,
+    bool isListed = false,
+  }) {
+    return NFTAsset(
+      id: assetId ?? '',
+      name: nftName ?? 'Asset',
+      collection: nftMainName ?? 'Collection',
+      imageUrl: imageUrl ?? '',
+      isListed: isListed,
+      owner: owner ?? '',
+    );
+  }
+  
+  /// Create an NFTAsset from a post with image media
+  static NFTAsset fromPost({
+    required String postId,
+    required String postName,
+    required String collection,
+    required String imageUrl,
+    required String owner,
+    bool isListed = false,
+  }) {
+    return NFTAsset(
+      id: postId,
+      name: postName,
+      collection: collection,
+      imageUrl: imageUrl,
+      isListed: isListed,
+      owner: owner,
+    );
+  }
+}

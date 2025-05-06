@@ -6,7 +6,9 @@ import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
+import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/marketplace/listing_helper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -170,7 +172,20 @@ class _AssetCardState extends State<AssetCard> {
                                       customHeight: 30.h,
                                       customWidth: 125.w * widget.scale,
                                       title: "List",
-                                      onTap: () {})
+                                      onTap: () {
+                                        // Create an NFTAsset from the current asset using the factory method
+                                        final asset = NFTAsset.fromAssetCard(
+                                          assetId: widget.assetId,
+                                          nftName: widget.nftName,
+                                          nftMainName: widget.nftMainName,
+                                          imageUrl: firstMediaData?.data,
+                                          owner: 'You',
+                                          isListed: false
+                                        );
+                                        
+                                        // Show the listing bottom sheet
+                                        showListingBottomSheet(context, asset);
+                                      })
                                   : Container(),
                               widget.hasLikeButton
                                   ? _buildLikeButton()

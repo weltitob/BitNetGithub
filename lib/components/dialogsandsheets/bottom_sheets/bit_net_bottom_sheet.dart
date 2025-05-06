@@ -10,6 +10,7 @@ Future<T?> BitNetBottomSheet<T>({
   Color backgroundColor = Colors.transparent,
   bool isDismissible = true,
   bool isScrollControlled = true,
+  bool extendBehindAppBar = false,
   bool goBack = false,
 }) {
   // this should use the appbar for bottomsheets by deafult and the appbar should be build in a way wher eit can have 3 values backbutton, centertext and right a action
@@ -31,15 +32,19 @@ Future<T?> BitNetBottomSheet<T>({
         ),
       ),
       builder: (context) {
-        return BitnetBottomSheetWidget(
-          height: height,
-          width: width,
-          borderRadius: borderRadius,
-          backgroundColor: backgroundColor,
-          isDismissible: isDismissible,
-          isScrollControlled: isScrollControlled,
-          goBack: goBack,
-          child: child,
+        return Material(
+          color: Colors.transparent,
+          child: BitnetBottomSheetWidget(
+            height: height,
+            width: width,
+            borderRadius: borderRadius,
+            backgroundColor: backgroundColor,
+            isDismissible: isDismissible,
+            isScrollControlled: isScrollControlled,
+            extendBehindAppBar: extendBehindAppBar,
+            goBack: goBack,
+            child: child,
+          ),
         );
       });
 }
@@ -90,6 +95,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.isDismissible = true,
     this.isScrollControlled = true,
+    this.extendBehindAppBar = false,
     this.goBack = false,
     required this.child,
   });
@@ -99,6 +105,7 @@ class BitnetBottomSheetWidget extends StatelessWidget {
   final Color backgroundColor;
   final bool isDismissible;
   final bool isScrollControlled;
+  final bool extendBehindAppBar;
   final bool goBack;
   final Widget child;
   @override
@@ -110,7 +117,9 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           height: AppTheme.elementSpacing / 1.375,
           width: AppTheme.cardPadding * 2.25,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.grey :  Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) : darken(Theme.of(context).colorScheme.primaryContainer, 70),
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.grey.shade300
+                : Colors.grey.shade700,
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
@@ -119,32 +128,22 @@ class BitnetBottomSheetWidget extends StatelessWidget {
           child: Container(
             height: height != null ? (height! - AppTheme.cardPadding * 3) : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                colors:
-                Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? [Colors.grey, Colors.grey ,Colors.grey, Colors.grey, Colors.grey] :
-                Theme.of(context).brightness == Brightness.light
-                    ? [
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.9),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.7),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.4),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.0001),
-                      ]
-                    : [
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.9),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.7),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.4),
-                        darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.0001),
-                      ],
-              ),
+              // Use the provided backgroundColor or fall back to theme colors
+              color: backgroundColor != Colors.transparent 
+                ? backgroundColor 
+                : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(borderRadius),
                 topRight: Radius.circular(borderRadius),
               ),
+              // Add a subtle shadow for depth
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 0,
+                ),
+              ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(borderRadius), topRight: Radius.circular(borderRadius)),
