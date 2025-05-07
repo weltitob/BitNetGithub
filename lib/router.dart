@@ -1,4 +1,5 @@
 import 'package:bitnet/pages/detail/image_detail_screen.dart';
+import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/foundation.dart';

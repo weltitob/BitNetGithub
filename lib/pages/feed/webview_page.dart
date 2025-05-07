@@ -16,11 +16,15 @@ class _WebViewPageState extends State<WebViewPage> {
   late String url;
   late String name;
   late WebViewController controller;
+  late bool isApp;
   @override
   void initState() {
     super.initState();
     name = widget.routerState.pathParameters['name']!;
     url = widget.routerState.pathParameters['url']!;
+    isApp = widget.routerState.extra is Map
+        ? (widget.routerState.extra as Map)['is_app']
+        : false;
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(

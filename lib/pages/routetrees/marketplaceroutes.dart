@@ -53,3 +53,5 @@ const kFavouriteScreenRoute = 'favourite_screen_route';
 const kAboutScreenRoute = 'about_screen_route';
 const kCollectionScreenRoute = 'collection_screen_route';
 const kWebViewScreenRoute = 'webview_screen_route';
+const kMyAppsPageRoute = "my_apps_page_route";
+const kAppPageRoute = "app_tab_route";
