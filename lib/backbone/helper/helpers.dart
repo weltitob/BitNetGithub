@@ -32,7 +32,7 @@ class HapticFeedback {
       }
     }
   }
-  
+
   // Medium feedback for confirmations
   static Future<void> mediumImpact() async {
     if (await Vibration.hasVibrator() ?? false) {
@@ -43,7 +43,7 @@ class HapticFeedback {
       }
     }
   }
-  
+
   // Strong feedback for important events
   static Future<void> heavyImpact() async {
     if (await Vibration.hasVibrator() ?? false) {
@@ -54,13 +54,13 @@ class HapticFeedback {
       }
     }
   }
-  
+
   // Success feedback pattern
   static Future<void> successNotification() async {
     if (await Vibration.hasVibrator() ?? false) {
       if (await Vibration.hasCustomVibrationsSupport() ?? false) {
         Vibration.vibrate(
-          pattern: [0, 30, 20, 60, 20, 100], 
+          pattern: [0, 30, 20, 60, 20, 100],
           intensities: [0, 50, 100, 150, 100, 50],
         );
       } else {
@@ -68,7 +68,7 @@ class HapticFeedback {
       }
     }
   }
-  
+
   // Warning feedback pattern
   static Future<void> warningNotification() async {
     if (await Vibration.hasVibrator() ?? false) {
@@ -79,7 +79,7 @@ class HapticFeedback {
       }
     }
   }
-  
+
   // Error feedback pattern
   static Future<void> errorNotification() async {
     if (await Vibration.hasVibrator() ?? false) {
@@ -283,7 +283,8 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   }
 }
 
-String displayTimeAgoFromInt(int time, {bool numericDates = true, String language = 'de'}) {
+String displayTimeAgoFromInt(int time,
+    {bool numericDates = true, String language = 'de'}) {
   // The time is already in milliseconds, so use it directly
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
   final DateTime date2 = DateTime.now();
@@ -539,8 +540,9 @@ CarouselOptions getStandardizedCarouselOptions({
   int autoPlayIntervalSeconds = 5,
 }) {
   // Print debug info to help diagnose carousel autoplay issues
-  print("Creating carousel options with autoPlay: true (interval: ${autoPlayIntervalSeconds}s)");
-  
+  print(
+      "Creating carousel options with autoPlay: true (interval: ${autoPlayIntervalSeconds}s)");
+
   return CarouselOptions(
     // Always enable autoPlay regardless of debug mode to ensure consistent behavior
     autoPlay: true,
@@ -554,4 +556,13 @@ CarouselOptions getStandardizedCarouselOptions({
     pauseAutoPlayOnTouch: true,
     scrollPhysics: const BouncingScrollPhysics(),
   );
+}
+
+double getZoomScale(BuildContext context) {
+  final logicalSize = MediaQuery.of(context).size;
+  final physicalSize = View.of(context).physicalSize;
+  final dpr = MediaQuery.of(context).devicePixelRatio;
+
+  final calculatedZoom = physicalSize.width / logicalSize.width;
+  return calculatedZoom;
 }

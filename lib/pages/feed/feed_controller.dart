@@ -21,12 +21,12 @@ class FeedController extends GetxController
   RxBool isLoading = false.obs;
   RxBool isSearching = false.obs;
   RxString searchQuery = ''.obs;
-  
+
   // Cached data
   QuerySnapshot? searchResultsFuture;
   RxList<UserSearchResult> searchresults = <UserSearchResult>[].obs;
   List<UserSearchResult> searchresultsMain = [];
-  
+
   // Filter search results without rebuilding entire widget tree
   void filterSearchResults(String query) {
     searchQuery.value = query.toLowerCase();
@@ -40,7 +40,7 @@ class FeedController extends GetxController
           .toList();
     }
   }
-  
+
   // Optimized search people with proper loading states
   Future<void> handleSearchPeople(String query) async {
     if (searchresultsMain.isNotEmpty && query.isEmpty) {
@@ -48,18 +48,18 @@ class FeedController extends GetxController
       searchresults.value = searchresultsMain;
       return;
     }
-    
+
     try {
       isLoading.value = true;
-      
+
       // Clear existing results for a fresh search
       searchresults.clear();
-      
+
       // Fetch data if not already cached
       if (searchResultsFuture == null) {
         searchResultsFuture = await usersCollection.get();
       }
-      
+
       // Process results
       final results = <UserSearchResult>[];
       for (var doc in searchResultsFuture!.docs) {
@@ -69,11 +69,10 @@ class FeedController extends GetxController
           userData: user,
         ));
       }
-      
+
       // Store and filter results
       searchresultsMain = results;
       filterSearchResults(query);
-      
     } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
@@ -101,13 +100,11 @@ class FeedController extends GetxController
             await homeController.getDataHeightHash(query);
         context.push('/wallet/bitcoinscreen/mempool');
       }
-      if (query.isNotEmpty &&
-          containsSixIntegers(query)) {
+      if (query.isNotEmpty && containsSixIntegers(query)) {
         homeController.blockHeight = int.parse(query);
         context.push('/wallet/bitcoinscreen/mempool');
       }
-      if (query.isNotEmpty &&
-          isValidBitcoinAddressHash(query)) {
+      if (query.isNotEmpty && isValidBitcoinAddressHash(query)) {
         controllerTransaction.getAddressComponent(query);
         controllerTransaction.addressId = query;
         Navigator.push(
@@ -117,7 +114,8 @@ class FeedController extends GetxController
           ),
         );
       }
-      if (tabController!.index == 3) { // People
+      if (tabController!.index == 3) {
+        // People
         searchresults.value = List.from(searchresultsMain);
       }
     } catch (e) {
@@ -153,30 +151,31 @@ class FeedController extends GetxController
       'assets/images/bitcoin.png',
       'Blockchain',
       'Blockchain',
-    )
+    ),
+    WalletCategory('assets/images/bitcoin.png', "Apps", "Apps")
   ];
 
   // Properly typed controllers for better performance
   TabController? tabController;
   Rx<ScrollController>? scrollController;
   late final ScrollController scrollControllerColumn;
-  
+
   // Per-tab scroll position cache to maintain scroll positions
   final Map<int, double> tabScrollPositions = {};
-  
+
   // Observable states
   RxBool fixedScroll = false.obs;
   RxBool isTabSwitching = false.obs;
-  
+
   // Method to explicitly switch tabs that updates both the TabController and reactive state
   void switchToTab(int index) {
     if (tabController == null || index < 0 || index >= tabController!.length) {
       return;
     }
-    
+
     // First update our reactive state directly
     currentTabIndex.value = index;
-    
+
     // Then update the actual TabController if needed
     if (tabController!.index != index) {
       try {
@@ -187,18 +186,18 @@ class FeedController extends GetxController
         tabController!.index = index;
       }
     }
-    
+
     // Save the current scroll position before switching
     saveScrollPosition(currentTabIndex.value);
   }
-  
+
   // Save tab scroll position when changing tabs
   void saveScrollPosition(int tabIndex) {
     if (scrollController?.value.hasClients == true) {
       tabScrollPositions[tabIndex] = scrollController!.value.position.pixels;
     }
   }
-  
+
   // Restore scroll position when returning to a tab
   void restoreScrollPosition(int tabIndex) {
     if (scrollController?.value.hasClients == true) {
@@ -214,37 +213,37 @@ class FeedController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    
+
     // Initialize scroll controllers first
     scrollControllerColumn = ScrollController();
     scrollController = ScrollController().obs;
-    
+
     // Set up optimized scroll listeners
     if (scrollController != null) {
       scrollController!.value.addListener(_optimizedScrollListener);
     }
-    
+
     // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 5, vsync: this);
-    
+    tabController = TabController(length: 6, vsync: this);
+
     // Enhanced tab controller listener with better error handling
     tabController!.addListener(() {
       if (tabController != null && tabController!.indexIsChanging == false) {
         // Only update if this is a settled index, not during animation
         int newIndex = tabController!.index;
-        
+
         // Update our reactive state
         if (currentTabIndex.value != newIndex) {
           print("Tab changed to: $newIndex");
           currentTabIndex.value = newIndex;
-          
+
           // Save scroll position and scroll to top
           saveScrollPosition(currentTabIndex.value);
           Future.microtask(() => smoothScrollToTop());
         }
       }
     });
-    
+
     // Add a reaction to ensure tab state and controller stay in sync
     ever(currentTabIndex, (int index) {
       print("currentTabIndex changed to: $index");
@@ -252,7 +251,7 @@ class FeedController extends GetxController
         tabController!.animateTo(index);
       }
     });
-    
+
     // Load initial data - lazy load for better performance
     Future.microtask(() => handleSearchPeople(''));
     Future.microtask(() => getData());
@@ -280,10 +279,8 @@ class FeedController extends GetxController
   void smoothScrollToTop() {
     try {
       // More robust check to ensure the controller is properly attached
-      if (scrollController?.value != null && 
-          scrollController!.value.hasClients && 
-          scrollController!.value.position != null) {
-        
+      if (scrollController?.value != null &&
+          scrollController!.value.hasClients) {
         scrollController!.value.animateTo(
           0,
           duration: const Duration(milliseconds: 300),
@@ -292,10 +289,10 @@ class FeedController extends GetxController
       } else {
         print("ScrollController not attached yet - skipping scroll to top");
       }
-      
+
       // Only fix scroll for specific tabs
       fixedScroll.value = tabController?.index == 0;
-      
+
       // Make sure current tab is properly initialized
       int currentIndex = currentTabIndex.value;
       if (currentIndex >= 0 && currentIndex < walletcategorys.length) {

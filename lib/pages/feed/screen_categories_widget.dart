@@ -28,6 +28,8 @@ class ScreenCategoryWidget extends StatelessWidget {
         return FontAwesomeIcons.images;
       case 'Blockchain':
         return FontAwesomeIcons.cubes;
+      case 'Apps':
+        return Icons.apps_rounded;
       default:
         return FontAwesomeIcons.circleQuestion;
     }
@@ -38,18 +40,18 @@ class ScreenCategoryWidget extends StatelessWidget {
     // Get controller only once - no need to use GetBuilder
     final controller = Get.find<FeedController>();
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Function to handle tab change
     void handleTabChange() {
       print("Tab pressed: $index");
-      
+
       // Use the direct tab switching method instead of manipulating the controller
       controller.switchToTab(index);
-      
+
       // Add haptic feedback for better user experience using our custom HapticFeedback class
       HapticFeedback.lightImpact();
     }
-    
+
     // Use Obx for more efficient reactive updates
     return Obx(() {
       // Reactive isSelected check
@@ -59,7 +61,7 @@ class ScreenCategoryWidget extends StatelessWidget {
           : isDarkMode
               ? AppTheme.white60
               : AppTheme.black60;
-      
+
       // Performance improvement: use const padding
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6.0),
@@ -70,7 +72,8 @@ class ScreenCategoryWidget extends StatelessWidget {
             onTap: handleTabChange,
             // Simplified tap colors
             splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+            highlightColor:
+                Theme.of(context).colorScheme.primary.withOpacity(0.05),
             // Cache child widget based on selection state
             child: Container(
               child: isSelected
@@ -83,13 +86,16 @@ class ScreenCategoryWidget extends StatelessWidget {
     });
   }
 
-  Widget _buildSelectedTab(BuildContext context, Color textColor, VoidCallback onTabChange) {
+  Widget _buildSelectedTab(
+      BuildContext context, Color textColor, VoidCallback onTabChange) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GlassContainer(
       opacity: 0,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing  * 0.75, vertical: AppTheme.elementSpacing / 2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing * 0.75,
+            vertical: AppTheme.elementSpacing / 2),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -114,9 +120,12 @@ class ScreenCategoryWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildInactiveTab(BuildContext context, Color textColor, VoidCallback onTabChange) {
+  Widget _buildInactiveTab(
+      BuildContext context, Color textColor, VoidCallback onTabChange) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.75, vertical: AppTheme.elementSpacing / 2),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.elementSpacing * 0.75,
+          vertical: AppTheme.elementSpacing / 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

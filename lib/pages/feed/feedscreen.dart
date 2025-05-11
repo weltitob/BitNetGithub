@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/feed/build_search_result_widget.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
@@ -23,7 +24,7 @@ class KeepAliveWrapper extends StatefulWidget {
   final bool keepAlive;
 
   const KeepAliveWrapper({
-    Key? key, 
+    Key? key,
     required this.child,
     this.keepAlive = true,
   }) : super(key: key);
@@ -38,7 +39,7 @@ class _KeepAliveWrapperState extends State<KeepAliveWrapper>
   Widget build(BuildContext context) {
     // Always call super.build for AutomaticKeepAliveClientMixin
     super.build(context);
-    
+
     // Performance optimization: use RepaintBoundary to isolate repaints
     return RepaintBoundary(
       child: widget.child,
@@ -92,12 +93,12 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
-    
+
     // Ensure the controller is ready
     if (controller.scrollController?.value == null) {
       controller.scrollController = ScrollController().obs;
     }
-    
+
     return KeyboardSizeProvider(
       child: bitnetScaffold(
         body: CustomScrollView(
@@ -121,7 +122,8 @@ class _FeedScreenState extends State<FeedScreen>
                         }
                         return SearchFieldWidget(
                           isSearchEnabled: true,
-                          hintText: "Paste walletaddress, transactionid or blockid...",
+                          hintText:
+                              "Paste walletaddress, transactionid or blockid...",
                           onChanged: (v) {
                             // Only update search for people tab
                             if (controller.tabController!.index == 3) {
@@ -133,7 +135,7 @@ class _FeedScreenState extends State<FeedScreen>
                       },
                     ),
                   ),
-                  
+
                   // Optimized TabBar - pre-built categories list
                   Container(
                     height: AppTheme.cardPadding * 2.h,
@@ -144,7 +146,7 @@ class _FeedScreenState extends State<FeedScreen>
                 ],
               ),
             ),
-            
+
             // Tab content - rendering only active tab content using Obx for reactive updates
             SliverFillRemaining(
               child: Obx(() {
@@ -160,6 +162,7 @@ class _FeedScreenState extends State<FeedScreen>
                     const AssetsTab(),
                     const SearchResultWidget(),
                     MempoolHome(isFromHome: true),
+                    const AppsTab()
                   ],
                 );
               }),
@@ -170,7 +173,7 @@ class _FeedScreenState extends State<FeedScreen>
       ),
     );
   }
-  
+
   // Pre-built optimized tabs widget
   Widget _buildTabs(FeedController controller) {
     return Obx(() {

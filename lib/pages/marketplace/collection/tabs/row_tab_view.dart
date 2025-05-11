@@ -34,51 +34,40 @@ class RowTabView extends StatelessWidget {
       }
       groupedAssets[groupName]!.add(asset);
     }
+    List<dynamic> gridList = List.empty(growable: true);
+    for (List<GridListModal> item in groupedAssets.values) {
+      gridList.add("stop");
+      gridList.addAll(item);
+      gridList.add("stop");
+    }
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        gridList.map((entry) {
+          if (entry is String) {
+            return SizedBox(height: AppTheme.elementSpacing.w / 2);
+          }
+          GridListModal item = entry as GridListModal;
+          final media = Media(
+            data: item.nftImage,
+            type:
+                "image", // Changed from asset_image to image to match PostComponent format
+          );
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: groupedAssets.entries.map((entry) {
-          final collectionName = entry.key;
-          final collectionAssets = entry.value;
+          // Create fake rockets map with current user state
+          Map<String, bool> rockets = {};
+          if (selectedProducts.contains(item.id)) {
+            rockets["current_user"] = true;
+          }
 
-          return Padding(
-            padding:
-                EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.w / 2),
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: collectionAssets.length,
-              itemBuilder: (context, index) {
-                final item = collectionAssets[index];
-
-                // Create Media object for the post component
-                final media = Media(
-                  data: item.nftImage,
-                  type:
-                      "image", // Changed from asset_image to image to match PostComponent format
-                );
-
-                // Create fake rockets map with current user state
-                Map<String, bool> rockets = {};
-                if (selectedProducts.contains(item.id)) {
-                  rockets["current_user"] = true;
-                }
-
-                return PostComponent(
-                  postId: item.id.toString(),
-                  ownerId: "marketplace_owner", // Placeholder owner ID
-                  username: "marketplace", // Placeholder username
-                  displayname: item.nftMainName,
-                  rockets: rockets,
-                  medias: [media],
-                  timestamp: DateTime.now(), // Use current time as placeholder
-                  postName: item.nftName,
-                );
-              },
-            ),
+          return PostComponent(
+            postId: item.id.toString(),
+            ownerId: "marketplace_owner", // Placeholder owner ID
+            username: "marketplace", // Placeholder username
+            displayname: item.nftMainName,
+            rockets: rockets,
+            medias: [media],
+            timestamp: DateTime.now(), // Use current time as placeholder
+            postName: item.nftName,
           );
         }).toList(),
       ),

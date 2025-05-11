@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
+import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/website/emailfetcher.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/foundation.dart';
@@ -280,6 +281,20 @@ class AppRoutes {
                   context: ctx,
                 ),
               ),
+              GoRoute(
+                  path: kAppPageRoute,
+                  builder: (context, state) => AppTab(routerState: state)),
+              GoRoute(
+                  name: kMyAppsPageRoute,
+                  path: kMyAppsPageRoute,
+                  builder: (ctx, state) => MyAppsPage(
+                        routerState: state,
+                      ),
+                  routes: [
+                    GoRoute(
+                        path: kAppPageRoute,
+                        builder: (context, state) => AppTab(routerState: state))
+                  ]),
               GoRoute(
                   path: kWebViewScreenRoute + "/:url/:name",
                   name: kWebViewScreenRoute,

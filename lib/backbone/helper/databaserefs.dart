@@ -4,11 +4,12 @@ import 'package:flutter/foundation.dart';
 
 class Databaserefs {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  static final FirebaseStorage _storage =FirebaseStorage.instance;
+  static final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Collections
   static final usersCollection = _firestore.collection("users");
-  static final socialRecoveryCollection = _firestore.collection("socialRecovery");
+  static final socialRecoveryCollection =
+      _firestore.collection("socialRecovery");
   static final emailRecoveryCollection = _firestore.collection("emailRecovery");
   static final protocolCollection = _firestore.collection("protocols");
   static final transactionCollection = _firestore.collection("transactions");
@@ -26,13 +27,12 @@ class Databaserefs {
   static final backendRef = _firestore.collection('backend');
   static final commentsRef = _firestore.collection('comments');
   static final timelineRef = _firestore.collection('timeline');
-  
+  static final appsRef = _firestore.collection('mini_apps');
   // Storage
   static final storageRef = _storage.ref();
-  
+
   // Helper methods to check if we're in web mode
   static bool get isWebMode => kIsWeb;
-
 }
 
 // // Legacy direct references - keeping for backward compatibility

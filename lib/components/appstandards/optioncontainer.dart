@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,8 @@ class BitNetImageWithTextContainer extends StatelessWidget {
     this.height = AppTheme.cardPadding * 7,
     this.fallbackIconSize = AppTheme.cardPadding * 1.75,
     this.isActive = true, // default value is true
-    Key? key, this.customColor,
+    Key? key,
+    this.customColor,
   }) : super(key: key);
 
   @override
@@ -63,14 +65,18 @@ class BitNetImageWithTextContainer extends StatelessWidget {
                 width: width / 1.5,
                 decoration: BoxDecoration(
                   borderRadius: borderRadius / 1.5,
-                  boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [AppTheme.boxShadowSmall],
+                  boxShadow: Theme.of(context).brightness == Brightness.light
+                      ? []
+                      : [AppTheme.boxShadowSmall],
                 ),
                 child: image != null
                     ? Image.asset(image!)
                     : Icon(
                         fallbackIcon ?? Icons.error,
-                        size: fallbackIconSize ??AppTheme.cardPadding * 1.75,
-                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                        size: fallbackIconSize ?? AppTheme.cardPadding * 1.75,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black80
+                            : AppTheme.white80,
                       ),
               ),
               Container(
@@ -78,7 +84,11 @@ class BitNetImageWithTextContainer extends StatelessWidget {
                   right: AppTheme.elementSpacing,
                   left: AppTheme.elementSpacing,
                 ),
-                child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: textstyle),
+                child: Text(text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: textstyle),
               ),
             ],
           ),
@@ -150,14 +160,18 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
                 width: width / 1.5,
                 decoration: BoxDecoration(
                   borderRadius: borderRadius / 1.5,
-                  boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [AppTheme.boxShadowSmall],
+                  boxShadow: Theme.of(context).brightness == Brightness.light
+                      ? []
+                      : [AppTheme.boxShadowSmall],
                 ),
                 child: image != null
                     ? Image.asset(image!)
                     : Icon(
                         fallbackIcon ?? Icons.error,
                         size: fallbackIconSize ?? AppTheme.cardPadding * 1.75,
-                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.black80
+                            : AppTheme.white80,
                       ),
               ),
               Container(
@@ -165,7 +179,11 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
                   right: AppTheme.elementSpacing,
                   left: AppTheme.elementSpacing,
                 ),
-                child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: textstyle),
+                child: Text(text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: textstyle),
               ),
             ],
           ),
@@ -200,7 +218,7 @@ class BitNetImageWithTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BorderRadius borderRadius = BorderRadius.circular(width / 3);
-
+    double zoomScale = getZoomScale(context);
     return InkWell(
       onTap: action,
       borderRadius: borderRadius,
@@ -217,18 +235,23 @@ class BitNetImageWithTextButton extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: width / 1.4,
-                  width: width / 1.4,
+                  height: zoomScale > 2.9 ? width : width / 1.4,
+                  width: zoomScale > 2.9 ? width : width / 1.4,
                   decoration: BoxDecoration(
                     borderRadius: borderRadius / 1.5,
-                    boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [AppTheme.boxShadowSmall],
+                    boxShadow: Theme.of(context).brightness == Brightness.light
+                        ? []
+                        : [AppTheme.boxShadowSmall],
                   ),
                   child: image != null
                       ? Image.asset(image!)
                       : Icon(
                           fallbackIcon ?? Icons.error,
                           size: fallbackIconSize ?? AppTheme.cardPadding * 1.75,
-                          color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black80
+                                  : AppTheme.white80,
                         ),
                 ),
               ],
@@ -242,7 +265,10 @@ class BitNetImageWithTextButton extends StatelessWidget {
               left: AppTheme.elementSpacing,
             ),
             child: Text(text,
-                maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
