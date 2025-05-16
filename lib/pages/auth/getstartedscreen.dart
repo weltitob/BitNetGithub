@@ -104,18 +104,20 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   context.go('/authhome/pinverification');
                 }),
             SizedBox(height: AppTheme.cardPadding * 1.h),
-            Container(
-              margin:
-                  const EdgeInsets.only(top: AppTheme.cardPadding, bottom: 2),
-              child: GestureDetector(
-                onTap: () {
-                  logger.i("AGBS and Impressum was clicked");
-                },
-                child: TextButton(
-                  onPressed: () => context.push("/agbs"),
-                  child: Text(
-                    "AGBS and Impressum",
-                    style: Theme.of(context).textTheme.bodyMedium,
+            Expanded(
+              child: Container(
+                margin:
+                    const EdgeInsets.only(top: AppTheme.cardPadding, bottom: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    logger.i("AGBS and Impressum was clicked");
+                  },
+                  child: TextButton(
+                    onPressed: () => context.push("/agbs"),
+                    child: Text(
+                      "AGBS and Impressum",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                 ),
               ),
