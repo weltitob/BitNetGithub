@@ -29,6 +29,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -66,9 +67,14 @@ import 'backbone/auth/auth.dart';
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
 Future<void> main() async {
-  // Set up error handler to catch Firebase initialization errors first
+  // Set up error handler to catch various initialization errors
   FlutterError.onError = (FlutterErrorDetails details) {
-    if (kIsWeb &&
+    // Handle errors gracefully without crashing the app
+    if (details.exception is PlatformException && 
+        details.exception.toString().contains('MissingPluginException')) {
+      // Only log to console, don't crash the app for plugin errors
+      print('Plugin error (handled gracefully): ${details.exception}');
+    } else if (kIsWeb &&
         (details.exception.toString().contains('Firebase') ||
             details.exception.toString().contains('core/not-initialized'))) {
       // Only log to console, don't show on screen
@@ -165,6 +171,16 @@ Future<void> _initializeAllServices() async {
 
 // Function to initialize Firebase services
 Future<void> _initializeFirebaseServices() async {
+  // Ensure LoggerService is initialized
+  LoggerService logger;
+  if (!Get.isRegistered<LoggerService>()) {
+    logger = Get.put(LoggerService(), permanent: true);
+  } else {
+    logger = Get.find<LoggerService>();
+  }
+  
+  logger.i('Initializing Firebase');
+  
   await Firebase.initializeApp(
     options: const FirebaseOptions(
         apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
@@ -174,8 +190,6 @@ Future<void> _initializeFirebaseServices() async {
         storageBucket: 'bitnet-cb34f.appspot.com'),
   );
 
-  // Get logger to track app check initialization
-  final logger = Get.find<LoggerService>();
   logger.i('Initializing Firebase App Check');
   
   try {
@@ -200,14 +214,25 @@ Future<void> _initializeFirebaseServices() async {
 
 // Function to initialize controllers
 Future<void> _initializeControllers() async {
-  // Initialize essential controllers first
-  Get.put(LoggerService(), permanent: true);
-  Get.put(DioClient(), permanent: true);
+  // Initialize essential controllers first, but check if already registered
+  if (!Get.isRegistered<LoggerService>()) {
+    Get.put(LoggerService(), permanent: true);
+  }
+  
+  if (!Get.isRegistered<DioClient>()) {
+    Get.put(DioClient(), permanent: true);
+  }
 
-  // Initialize and fetch remote config
-  final remoteConfigController =
-      Get.put(RemoteConfigController(), permanent: true);
-  await remoteConfigController.fetchRemoteConfigData();
+  try {
+    // Initialize and fetch remote config
+    final remoteConfigController = 
+        Get.isRegistered<RemoteConfigController>() ? 
+        Get.find<RemoteConfigController>() : 
+        Get.put(RemoteConfigController(), permanent: true);
+    await remoteConfigController.fetchRemoteConfigData();
+  } catch (e) {
+    print('Error initializing RemoteConfig: $e');
+  }
 
   // Initialize remaining controllers
   Get.put(SettingsController());

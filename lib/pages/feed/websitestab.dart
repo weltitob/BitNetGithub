@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetContainer.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
+import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -66,21 +66,26 @@ class WebsitesTab extends StatelessWidget {
 
   Widget _buildWebsiteItem(
       BuildContext context, String title, String imagePath, String url) {
-    return BitNetContainer(
-      onTap: () {
-        context.push('/feed/webview/${Uri.encodeComponent(url)}/${Uri.encodeComponent(title)}');
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BitNetImageWithText(
-            imageAsset: imagePath,
-            text: title,
-            imageSize: AppTheme.cardPadding * 2,
-            fontSize: 16,
-            textPadding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-          ),
-        ],
+    return GlassContainer(
+      padding: EdgeInsets.all(AppTheme.elementSpacing),
+      child: InkWell(
+        onTap: () {
+          context.push('/feed/webview/${Uri.encodeComponent(url)}/${Uri.encodeComponent(title)}');
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BitNetImageWithTextButton(
+              title,
+              () {
+                context.push('/feed/webview/${Uri.encodeComponent(url)}/${Uri.encodeComponent(title)}');
+              },
+              image: imagePath,
+              width: AppTheme.cardPadding * 4,
+              height: AppTheme.cardPadding * 4,
+            ),
+          ],
+        ),
       ),
     );
   }

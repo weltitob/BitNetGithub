@@ -245,7 +245,7 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   image: assets/splash.png
-  color: "#FFFFFF"
+  color: "#000000"
   web: true
 flutter_lints: ^2.0.0
 

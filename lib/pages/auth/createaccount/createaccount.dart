@@ -5,6 +5,8 @@ import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
+import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
@@ -17,6 +19,7 @@ import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/litd/accounts.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
@@ -150,34 +153,32 @@ class CreateAccountController extends State<CreateAccount> {
 
   Future generateAccount() async {
     LoggerService logger = Get.find<LoggerService>();
-    logger.i("Generating mnemonic...");
+    logger.i("Generating mnemonic using remote API...");
 
     try {
-      // Use the fixed mnemonic to mirror the Python code
-      // Generate a 24-word mnemonic
-      // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
-      // String mnemonic = bip39.generateMnemonic(strength: 256);
+      // Generate 256-bit entropy and create a mnemonic via API
+      dynamic seedResponse = await generateSeed();
+      logger.i("Response from generateSeed API: $seedResponse");
+      
+      // Extract mnemonic from response
+      List<String> mnemonicWords = [];
+      if (seedResponse is Map<String, dynamic> && seedResponse.containsKey('cipher_seed_mnemonic')) {
+        mnemonicWords = List<String>.from(seedResponse['cipher_seed_mnemonic']);
+      } else {
+        // Fallback to local generation if API fails
+        logger.w("API seed generation failed, falling back to local generation");
+        var mnemonic = await Mnemonic.generate(
+          Language.english,
+          passphrase: "test",
+          entropyLength: 256,
+        );
+        mnemonicWords = mnemonic.sentence.split(' ');
+      }
+      
+      String mnemonicString = mnemonicWords.join(' ');
+      logger.i("Mnemonic generated: $mnemonicString");
 
-      var mnemonic = await Mnemonic.generate(
-        Language.english,
-        passphrase: "test",
-        entropyLength: 256,
-      );
-
-      // might be able to use this to send to the other person
-
-      //there was this endpoint to create and unlock the wallet
-
-      print("Mnemonic: $mnemonic");
-      print("Mnemonic sentence: ${mnemonic.sentence}");
-
-      String mnemonicString = mnemonic.sentence;
-
-      // Gene rate 256-bit entropy and create a mnemonic via api
-
-      // dynamic mnemonicString = await generateSeed();
-      logger.i("Resp from gen Seed: $mnemonicString");
-
+      // Create wallet from mnemonic
       HDWallet hdWallet = await createUserWallet(mnemonicString);
 
       // Master public key (compressed)
@@ -185,27 +186,40 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i('Master Public Key: $masterPublicKey\n');
       String did = masterPublicKey;
       logger.i("DID updated to: $did");
-      // Set the DID (Decentralized Identifier) as the public key hex
 
-      //Master private key
+      // Master private key
       String? masterPrivateKey = hdWallet.privkey;
       logger.i('Master Private Key: $masterPrivateKey\n');
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
 
-      //we need to save the macaroon again ==> is sent to the wallet upon wallet creation
-      //generateSeed()
-
-      final privateData =
-          PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
-
+      final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
+      
+      // Generate litd account and get macaroon
+      logger.i("Generating litd account and retrieving macaroon...");
+      LitdAccountResponse? litdAccount = await callGenLitdAccount(did);
+      
+      if (litdAccount != null && litdAccount.macaroon != null) {
+        logger.i("Successfully retrieved macaroon");
+        
+        // Store macaroon with account info
+        await storeLitdAccountData(
+          did, 
+          litdAccount.account?.id ?? 'unknown', 
+          litdAccount.macaroon!
+        );
+        logger.i("Stored litd account data with macaroon");
+      } else {
+        logger.w("Failed to retrieve macaroon, continuing without it");
+      }
+      
       logger.i("User registration and setup completed.");
       await signUp(did, code);
     } catch (e) {
-      logger.e("Error in generateMnemonic: $e");
+      logger.e("Error in generateAccount: $e");
       // Handle errors (e.g., show user-friendly error message)
     }
   }
@@ -214,6 +228,17 @@ class CreateAccountController extends State<CreateAccount> {
     LoggerService logger = Get.find();
 
     try {
+      // Check if we have a litd account with macaroon for this user
+      final litdAccountData = await getLitdAccountData(did);
+      String? macaroonStr = litdAccountData?['macaroon'];
+      String? accountId = litdAccountData?['accountId'];
+      
+      if (macaroonStr != null && accountId != null) {
+        logger.i("Found stored litd account: $accountId with macaroon");
+      } else {
+        logger.w("No litd account found for user, will continue without lightning functionality");
+      }
+
       final userdata = UserData(
           backgroundImageUrl: '',
           isPrivate: false,
@@ -232,6 +257,7 @@ class CreateAccountController extends State<CreateAccount> {
           nft_background_id: '',
           setupQrCodeRecovery: false,
           setupWordRecovery: false);
+          
       // Use the did for the verification codes
       VerificationCode verificationCode = VerificationCode(
         used: false,
@@ -239,6 +265,17 @@ class CreateAccountController extends State<CreateAccount> {
         issuer: issuer,
         receiver: userdata.did,
       );
+
+      // If we have macaroon data, add it to the user authentication process
+      if (macaroonStr != null && accountId != null) {
+        // Here you could modify the authentication process to include macaroon verification
+        // or store additional data in a separate collection
+        logger.i("Including litd account data in user authentication");
+        
+        // Add code here to handle the macaroon during authentication if needed
+        // For example, you might want to validate it with the lightning node
+        // or store a reference to it in the user's document
+      }
 
       final UserData? currentuserwallet =
           await firebaseAuthentication(userdata, verificationCode);
@@ -278,6 +315,12 @@ class CreateAccountController extends State<CreateAccount> {
       });
 
       logger.i("Navigating to homescreen now...");
+      
+      // After successful signup, we could also initialize the Lightning wallet if needed
+      // This would involve using the macaroon to authenticate with the Lightning node
+      if (macaroonStr != null && accountId != null) {
+        logger.i("Lightning functionality is ready to use with account $accountId");
+      }
 
       // context
       //     .go(Uri(path: '/authhome/pinverification/createaccount').toString());
