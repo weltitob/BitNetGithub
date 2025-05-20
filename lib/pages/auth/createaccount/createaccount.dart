@@ -89,6 +89,8 @@ class CreateAccountController extends State<CreateAccount> {
         // logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
         // // context.go("/persona)")
 
+
+
         //Update the username in our database for the user
         print('create account called');
         await generateAccount();
@@ -162,6 +164,10 @@ class CreateAccountController extends State<CreateAccount> {
         entropyLength: 256,
       );
 
+      // might be able to use this to send to the other person
+
+      //there was this endpoint to create and unlock the wallet
+
       print("Mnemonic: $mnemonic");
       print("Mnemonic sentence: ${mnemonic.sentence}");
 
@@ -187,6 +193,10 @@ class CreateAccountController extends State<CreateAccount> {
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
+
+      //we need to save the macaroon again ==> is sent to the wallet upon wallet creation
+      //generateSeed()
+
       final privateData =
           PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
 

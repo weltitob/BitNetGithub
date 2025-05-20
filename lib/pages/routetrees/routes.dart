@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
-import 'package:bitnet/pages/website/emailfetcher.dart';
-import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -106,21 +104,6 @@ import 'package:bitnet/pages/wallet/buy/payment_methods_screen.dart';
 import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 
-import 'package:bitnet/pages/website/compliance/agbscreen.dart';
-
-import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
-
-import 'package:bitnet/pages/website/contact/report/report.dart';
-
-import 'package:bitnet/pages/website/contact/submitidea/submitidea.dart';
-
-import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
-
-import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
-
-import 'package:bitnet/pages/website/redirecttoapp.dart';
-
-import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -135,12 +118,8 @@ class AppRoutes {
 
   // Safe redirect for web to prevent Firebase-related errors
   String? webSafeRedirect(BuildContext context, GoRouterState state) {
-    // If we're on web, redirect most routes to /website
-    if (kIsWeb && !state.uri.path.startsWith('/website')) {
-      print('Web safe redirect: ${state.uri.path} -> /website');
-      return '/website';
-    }
-    return null; // No redirect for mobile or already on website route
+    // No longer need to redirect to website
+    return null;
   }
 
   List<RouteBase> get routes => [
@@ -195,15 +174,6 @@ class AppRoutes {
               }
             }),
 
-        // Main website landing page route
-        // GoRoute(
-        //     path: '/website',
-        //     builder: (ctx, state) => const WebsiteLandingPage()),
-
-        // // Early bird signup page as a separate route
-        // GoRoute(
-        //     path: '/website/earlybird',
-        //     builder: (ctx, state) => const EmailFetcherLandingPage()),
 
         GoRoute(
           path: '/report',
@@ -690,34 +660,6 @@ class AppRoutes {
           path: '/',
           builder: (ctx, state) => const LoadingViewAppStart(),
         ),
-        // GoRoute(
-        //     path: '/website',
-        //     builder: (ctx, state) => const WebsiteLandingPage(),
-        //     routes: [
-        //       GoRoute(
-        //         path: 'report',
-        //         builder: (ctx, state) => const Report(),
-        //       ),
-        //       GoRoute(
-        //         path: 'aboutus',
-        //         builder: (ctx, state) => const AboutUs(),
-        //       ),
-        //       GoRoute(
-        //         path: 'redirect',
-        //         builder: (ctx, state) => const RedirectToApp(),
-        //       ),
-        //       GoRoute(
-        //         path: 'ourteam',
-        //         builder: (ctx, state) => const OurTeam(),
-        //       ),
-        //       GoRoute(path: 'agbs', builder: (ctx, state) => const AGBScreen()),
-        //       GoRoute(
-        //           path: 'impressum',
-        //           builder: (ctx, state) => const ImpressumScreen()),
-        //       GoRoute(
-        //           path: 'submitidea',
-        //           builder: (ctx, state) => const SubmitIdea()),
-        //     ]),
         GoRoute(
           path: '/authhome',
           builder: (ctx, state) => const GetStartedScreen(),

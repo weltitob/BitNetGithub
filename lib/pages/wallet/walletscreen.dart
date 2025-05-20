@@ -45,7 +45,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:bitnet/services/moonpay.dart'
     if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
 import 'package:provider/provider.dart';

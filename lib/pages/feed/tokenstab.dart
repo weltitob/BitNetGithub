@@ -10,15 +10,13 @@ import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bitnet/pages/feed/widgets/fear_and_greed_widget.dart';
-import 'package:bitnet/pages/feed/widgets/hashrate_widget.dart';
+
 
 class TokensTab extends StatefulWidget {
   const TokensTab({super.key});

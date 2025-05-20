@@ -1,7 +1,6 @@
 import 'package:bitnet/pages/detail/image_detail_screen.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
-import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +15,7 @@ class AppRouter {
       return GoRouter(
         debugLogDiagnostics: !kReleaseMode,
         navigatorKey: _rootNavigatorKey,
-        initialLocation: kIsWeb ? '/website' : '/loading',
+        initialLocation: '/loading',
         routes: [
           // Add image detail route directly
           GoRoute(
@@ -52,7 +51,7 @@ class AppRouter {
       // Fallback minimal router
       return GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: kIsWeb ? '/website' : '/loading',
+        initialLocation: '/loading',
         routes: [
           GoRoute(
             path: '/loading',
@@ -60,10 +59,6 @@ class AppRouter {
               body: Center(child: CircularProgressIndicator()),
             ),
           ),
-          // GoRoute(
-          //   path: '/website',
-          //   builder: (context, state) => const WebsiteLandingPage(),
-          // ),
         ],
       );
     }
@@ -82,10 +77,6 @@ class AppRouter {
             body: Center(child: CircularProgressIndicator()),
           ),
         ),
-        // GoRoute(
-        //   path: '/website',
-        //   builder: (context, state) => const WebsiteLandingPage(),
-        // ),
       ];
     }
   }
@@ -98,22 +89,14 @@ class AppRouter {
       print('Creating simplified web router');
       _cachedRouter = GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: '/',
+        initialLocation: '/loading',
         routes: [
-          // GoRoute(
-          //   path: '/',
-          //   builder: (context, state) => const WebsiteLandingPage(),
-          // ),
-          // GoRoute(
-          //   path: '/website',
-          //   builder: (context, state) => const WebsiteLandingPage(),
-          // ),
-          // GoRoute(
-          //   path: '/loading',
-          //   builder: (context, state) => const Scaffold(
-          //     body: Center(child: CircularProgressIndicator()),
-          //   ),
-          // ),
+          GoRoute(
+            path: '/loading',
+            builder: (context, state) => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          ),
         ],
       );
       return _cachedRouter!;
@@ -132,22 +115,14 @@ class AppRouter {
       // Fallback minimal router
       _cachedRouter = GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: '/',
+        initialLocation: '/loading',
         routes: [
-          // GoRoute(
-          //   path: '/',
-          //   builder: (context, state) => const WebsiteLandingPage(),
-          // ),
-          // GoRoute(
-          //   path: '/loading',
-          //   builder: (context, state) => const Scaffold(
-          //     body: Center(child: CircularProgressIndicator()),
-          //   ),
-          // ),
-          // GoRoute(
-          //   path: '/website',
-          //   builder: (context, state) => const WebsiteLandingPage(),
-          // ),
+          GoRoute(
+            path: '/loading',
+            builder: (context, state) => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          ),
         ],
       );
       return _cachedRouter!;

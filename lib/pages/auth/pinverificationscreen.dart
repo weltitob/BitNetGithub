@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/fields/verification/verificationspace.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -15,7 +14,6 @@ import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -76,44 +74,57 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void checkIfCodeIsValid(String currentCode) async {
+    final logger = Get.find<LoggerService>();
+    logger.i('Attempting to validate pin code: $currentCode');
+    
     setState(() {
       _loading = true;
     });
+    
     try {
       formKey.currentState?.validate();
-
-      QuerySnapshot snapshot =
-          await codesCollection.where("code", isEqualTo: currentCode).get();
-      VerificationCode code =
-          VerificationCode.fromDocument(snapshot.docs.first);
-
-      if (code.used == false) {
-        _loading = false;
-        // //passing code to SignUp that it can be flagged as used later on
-        // context.go(Uri(
-        //     path: '/authhome/pinverification/createaccount',
-        //     queryParameters: {
-        //       'code': code.code,
-        //       'issuer': code.issuer,
-        //     }).toString());
-
-        context.go(Uri(
-                path: '/authhome/pinverification/createaccount',
-                queryParameters: {'code': code.code, 'issuer': code.issuer})
-            .toString());
-      } else {
-        errorController
-            .add(ErrorAnimationType.shake); // Triggering error shake animation
-        _error = L10n.of(context).codeAlreadyUsed;
-        setState(() {
+      logger.i('Pin code form validation passed');
+      
+      try {
+        logger.i('Querying Firestore for pin code');
+        QuerySnapshot snapshot = await codesCollection.where("code", isEqualTo: currentCode).get();
+        
+        if (snapshot.docs.isEmpty) {
+          logger.e('No matching codes found in Firestore');
+          throw Exception('No matching codes found');
+        }
+        
+        logger.i('Found matching code in Firestore');
+        VerificationCode code = VerificationCode.fromDocument(snapshot.docs.first);
+        logger.d('Code details: ${code.code}, issuer: ${code.issuer}, used: ${code.used}');
+        
+        if (code.used == false) {
+          logger.i('Code is valid and unused, proceeding to account creation');
           _loading = false;
-          hasError = true;
-        });
+          
+          context.go(Uri(
+                  path: '/authhome/pinverification/createaccount',
+                  queryParameters: {'code': code.code, 'issuer': code.issuer})
+              .toString());
+        } else {
+          logger.w('Code found but already used');
+          errorController.add(ErrorAnimationType.shake);
+          _error = L10n.of(context).codeAlreadyUsed;
+          setState(() {
+            _loading = false;
+            hasError = true;
+          });
+        }
+      } catch (firestoreError) {
+        logger.e('Firestore query error: $firestoreError');
+        // This could be related to App Check blocking the Firestore query
+        logger.e('This might be related to Firebase App Check blocking the request');
+        throw firestoreError; // Re-throw to be caught by outer catch
       }
     } catch (error) {
+      logger.e('Pin verification failed: $error');
       _error = L10n.of(context).codeNotValid;
-      errorController
-          .add(ErrorAnimationType.shake); // Triggering error shake animation
+      errorController.add(ErrorAnimationType.shake);
       setState(() {
         _loading = false;
         hasError = true;

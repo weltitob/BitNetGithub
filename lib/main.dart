@@ -174,11 +174,22 @@ Future<void> _initializeFirebaseServices() async {
         storageBucket: 'bitnet-cb34f.appspot.com'),
   );
 
-  await FirebaseAppCheck.instance.activate(
-    // For older versions of firebase_app_check
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.debug,
-  );
+  // Get logger to track app check initialization
+  final logger = Get.find<LoggerService>();
+  logger.i('Initializing Firebase App Check');
+  
+  try {
+    await FirebaseAppCheck.instance.activate(
+      // For older versions of firebase_app_check
+      androidProvider: AndroidProvider.debug,
+      appleProvider: AppleProvider.debug,
+    );
+    logger.i('Firebase App Check activated in debug mode');
+  } catch (e) {
+    logger.e('Failed to activate Firebase App Check: $e');
+    // Continue even if App Check fails - this prevents blocking the app
+    // when testing features like pin verification
+  }
 
   // Reduce Firestore cache size for better performance on web
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -314,66 +325,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // Get memoized providers
     final providers = _getWebProviders();
 
-    // return kIsWeb
-    //     ? SeoController(
-    //         tree: WidgetTree(context: context),
-    //         enabled: true, // Ensure SEO is enabled for web
-    //         //defaultLocale: 'en', // Default language
-    //         child: MultiProvider(
-    //           providers: [
-    //             ...providers,
-    //             // Stream providers are created with lazily to prevent
-    //             // unnecessary data flow until needed
-    //             StreamProvider<UserData?>(
-    //               create: (_) => Auth().userWalletStream,
-    //               initialData: null,
-    //               lazy: true, // Only subscribe when listened to
-    //             ),
-    //             StreamProvider<UserData?>(
-    //               create: (_) => Auth().userWalletStreamForAuthChanges,
-    //               initialData: null,
-    //               lazy: true, // Only subscribe when listened to
-    //             ),
-    //             ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-    //               // Debounce updates to avoid excessive stream creation
-    //               update:
-    //                   (context, currencyChangeProvider, bitcoinPriceStream) {
-    //                 // Skip unnecessary updates if the app isn't fully initialized
-    //                 if (!Get.isRegistered<WalletsController>()) {
-    //                   return bitcoinPriceStream ?? BitcoinPriceStream()
-    //                     ..updateCurrency(
-    //                         currencyChangeProvider.selectedCurrency ?? 'usd');
-    //                 }
-
-    //                 if (bitcoinPriceStream == null ||
-    //                     bitcoinPriceStream.localCurrency !=
-    //                         currencyChangeProvider.selectedCurrency) {
-    //                   bitcoinPriceStream?.dispose();
-    //                   final newStream = BitcoinPriceStream();
-    //                   newStream.updateCurrency(
-    //                       currencyChangeProvider.selectedCurrency ?? 'usd');
-
-    //                   if (Auth().currentUser != null) {
-    //                     // Use a single subscription to avoid memory leaks
-    //                     newStream.priceStream
-    //                         .asBroadcastStream()
-    //                         .listen((data) {
-    //                       Get.find<WalletsController>().chartLines.value = data;
-    //                     });
-    //                   }
-    //                   return newStream;
-    //                 }
-
-    //                 return bitcoinPriceStream;
-    //               },
-    //               dispose: (context, bitcoinPriceStream) =>
-    //                   bitcoinPriceStream.dispose(),
-    //               lazy: true, // Only create when needed
-    //             ),
-    //           ],
-    //           child: bTree.WidgetTree(),
-    //         ),
-    //       )
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<CardChangeProvider>(

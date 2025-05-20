@@ -25,6 +25,10 @@ class LoggerService extends BaseService {
   void i(Object message) {
     logger.i(message);
   }
+  
+  void w(Object message) {
+    logger.w(message);
+  }
 
   void e(Object message) {
     logger.e(message);
