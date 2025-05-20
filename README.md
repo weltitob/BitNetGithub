@@ -113,7 +113,8 @@ For detailed development guidelines, including design standards, coding conventi
 1. Clone the repository
 2. Run `flutter pub get` to install dependencies
 3. Configure Firebase credentials
-4. Run the application with `flutter run`
+4. Wait for your app-check debug token to be printed into the console and add it to the firebase console, or ask an administrator to add it for you
+5. Run the application with `flutter run`
 
 ### Useful Commands
 ```bash
