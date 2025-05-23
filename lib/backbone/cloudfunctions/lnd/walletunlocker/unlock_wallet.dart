@@ -11,9 +11,9 @@ Future<dynamic> unlockWallet({String? nodeId}) async {
   // final String restHost = litdController.litd_baseurl.value;
   // String url = 'https://$restHost/v1/unlockwallet';
 
-  // Use Caddy server routing for MVP - hardcoded to node1 for now
+  // Use Caddy server routing for MVP - hardcoded to node3 for now
   String caddyBaseUrl = 'http://192.168.178.51';
-  String selectedNode = nodeId ?? 'node1'; // Default to node1 for MVP
+  String selectedNode = nodeId ?? 'node3'; // Default to node3 for MVP
 
   // Encode the password to Base64
   String password = "development_password_dj83zb"; //i__hate..passwords!!

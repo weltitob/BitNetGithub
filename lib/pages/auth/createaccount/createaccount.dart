@@ -242,7 +242,7 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i("Private data stored successfully.");
 
       // Initialize individual Lightning node via Caddy routing (MVP)
-      logger.i("Initializing individual Lightning node via Caddy (node1)...");
+      logger.i("Initializing individual Lightning node via Caddy (node3)...");
       
       // Derive macaroon root key from seed hex (first 32 bytes)
       Uint8List seedBytes = Uint8List.fromList(hex.decode(seedHex));
@@ -253,7 +253,7 @@ class CreateAccountController extends State<CreateAccount> {
       List<String> mnemonicSeedList = mnemonicString.split(' ');
       
       try {
-        RestResponse initResponse = await initWallet(mnemonicSeedList, macaroonRootKeyHex, nodeId: 'node1');
+        RestResponse initResponse = await initWallet(mnemonicSeedList, macaroonRootKeyHex, nodeId: 'node3');
         
         if (initResponse.statusCode == "200") {
           logger.i("Lightning node initialized successfully");
@@ -264,7 +264,7 @@ class CreateAccountController extends State<CreateAccount> {
             logger.i("Successfully retrieved admin macaroon");
             
             // Store node data with macaroon for user
-            await storeNodeData(did, 'node1', adminMacaroon, '192.168.178.51');
+            await storeNodeData(did, 'node3', adminMacaroon, '192.168.178.51');
             logger.i("Stored node data with admin macaroon");
           }
         } else {
