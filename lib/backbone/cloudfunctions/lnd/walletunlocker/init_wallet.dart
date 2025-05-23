@@ -35,13 +35,22 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   logger.i("Selected Node: $selectedNode");
   logger.i("Caddy Base URL: $caddyBaseUrl");
 
-  // Use the actual mnemonic seed provided by the user instead of hardcoded one
-  logger.i("Using provided mnemonic seed for wallet initialization: $mnemonicSeed");
-  logger.i("Mnemonic seed count: ${mnemonicSeed.length} words");
-  logger.i("Individual words:");
-  for (int i = 0; i < mnemonicSeed.length; i++) {
-    logger.i("  Word ${i + 1}: '${mnemonicSeed[i]}'");
-  }
+  // TEMPORARILY OVERRIDE WITH HARDCODED TEST MNEMONIC FOR DEBUGGING
+  List<String> testMnemonic = [
+    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
+    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
+    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
+    "abandon", "abandon", "abandon", "abandon", "abandon", "art"
+  ];
+  
+  logger.i("=== TEMPORARILY USING HARDCODED TEST MNEMONIC FOR DEBUGGING ===");
+  logger.i("Original provided mnemonic: $mnemonicSeed");
+  logger.i("Original mnemonic seed count: ${mnemonicSeed.length} words");
+  logger.i("Test mnemonic: $testMnemonic");
+  logger.i("Test mnemonic count: ${testMnemonic.length} words");
+  
+  // Override the mnemonic for testing
+  mnemonicSeed = testMnemonic;
 
   String walletPassword = 'development_password_dj83zb';
   String encodedPassword = base64Encode(utf8.encode(walletPassword));
@@ -56,7 +65,21 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
     // 'macaroon_root_key': macaroonRootKeyBase64, // Removed to match Python working implementation
   };
 
-  logger.i("=== REQUEST PAYLOAD ===");
+  logger.i("=== REQUEST PAYLOAD COMPARISON ===");
+  logger.i("Our Dart request:");
+  logger.i("  wallet_password: $encodedPassword");
+  logger.i("  cipher_seed_mnemonic: $mnemonicSeed");
+  logger.i("  recovery_window: 0");
+  logger.i("  channel_backups: null");
+  logger.i("  stateless_init: false");
+  logger.i("");
+  logger.i("Python working request (for comparison):");
+  logger.i("  wallet_password: base64.b64encode(b'development_password_dj83zb').decode('utf-8')");
+  logger.i("  cipher_seed_mnemonic: mnemonic_seed (from genseed response)");
+  logger.i("  recovery_window: 0");
+  logger.i("  channel_backups: None");
+  logger.i("  stateless_init: False");
+  logger.i("");
   logger.i("Full request data: ${json.encode(data)}");
 
   // Load and convert the macaroon asset
