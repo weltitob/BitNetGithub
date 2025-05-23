@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bs58/bs58.dart';
 import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'package:pointycastle/export.dart';
 
 /// Generates a deterministic DID from a BIP39 mnemonic
@@ -113,4 +115,39 @@ class Bip39DidGenerator {
       'publicKey': publicKey,
     };
   }
+  
+  /// Generate deterministic DID from Lightning aezeed mnemonic
+  /// This function ensures the same mnemonic always produces the same DID
+  /// for recovery and login purposes with Lightning's native aezeed format
+  static String generateDidFromLightningMnemonic(String mnemonic) {
+    // Normalize the mnemonic (trim whitespace, convert to lowercase)
+    String normalizedMnemonic = mnemonic.trim().toLowerCase();
+    
+    // Create SHA256 hash of the mnemonic
+    var bytes = utf8.encode(normalizedMnemonic);
+    var digest = sha256.convert(bytes);
+    
+    // Convert to hex and take first 16 characters for readability
+    String hash = digest.toString().substring(0, 16);
+    
+    // Create deterministic DID with prefix
+    return 'did:$hash';
+  }
+  
+  /// Verify that a Lightning aezeed mnemonic generates the expected DID
+  /// Useful for recovery validation
+  static bool verifyLightningMnemonicForDid(String mnemonic, String expectedDid) {
+    try {
+      String generatedDid = generateDidFromLightningMnemonic(mnemonic);
+      return generatedDid == expectedDid;
+    } catch (e) {
+      return false;
+    }
+  }
+  
+  /// Check if a DID follows the Lightning-based format
+  static bool isValidLightningDid(String did) {
+    return did.startsWith('did_lightning_') && did.length > 14;
+  }
+  
 }

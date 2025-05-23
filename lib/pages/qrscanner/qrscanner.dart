@@ -118,13 +118,10 @@ class QRScannerController extends State<QrScanner> {
       // print("onScannedForSignIn: ${hdWallet.pubkey}");
       // print("onScannedForSignIn: ${hdWallet.privkey}");
       
-      // NEW: One user one node approach - BIP39-based key derivation
-      String did = Bip39DidGenerator.generateDidFromMnemonic(privateData.mnemonic);
-      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
+      // NEW: One user one node approach - Lightning aezeed format
+      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(privateData.mnemonic);
       print("onScannedForSignIn: $privateData");
       print("onScannedForSignIn DID: $did");
-      print("onScannedForSignIn Public Key: ${keys['publicKey']}");
-      print("onScannedForSignIn Private Key: ${keys['privateKey']}");
 
       //generate based on mnemonix the privatekeyhex the did and...#
 

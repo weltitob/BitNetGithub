@@ -381,8 +381,8 @@ class Auth {
     // OLD: Multiple users one node approach - HDWallet-based DID generation
     // final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
     
-    // NEW: One user one node approach - BIP39-based DID generation
-    final String did = Bip39DidGenerator.generateDidFromMnemonic(privateData.mnemonic);
+    // NEW: One user one node approach - Lightning aezeed format
+    final String did = Bip39DidGenerator.generateDidFromLightningMnemonic(privateData.mnemonic);
 
     try {
       //showLoadingScreen

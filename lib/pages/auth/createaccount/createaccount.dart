@@ -42,6 +42,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:crypto/crypto.dart';
+
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
@@ -211,49 +213,57 @@ class CreateAccountController extends State<CreateAccount> {
     logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
-      // Generate BIP39 mnemonic (128-bit entropy by default)
-      String mnemonicString = bip39.generateMnemonic();
-      logger.i("BIP39 mnemonic generated successfully");
+      // NEW APPROACH: Use Lightning node's native genseed endpoint
+      logger.i("=== STEP 1: GENERATING SEED VIA LIGHTNING NODE ===");
+      RestResponse seedResponse = await generateSeed(nodeId: 'node4');
       
-      // Validate the generated mnemonic
-      bool isValid = bip39.validateMnemonic(mnemonicString);
-      if (!isValid) {
-        throw Exception("Generated mnemonic is invalid");
+      if (seedResponse.statusCode != "200") {
+        throw Exception("Failed to generate seed: ${seedResponse.message}");
       }
-      logger.i("Mnemonic validation passed");
-
-      // Generate seed hex from mnemonic for Lightning node
-      String seedHex = bip39.mnemonicToSeedHex(mnemonicString);
-      logger.i("Seed hex generated from mnemonic");
-
-      // OLD: Multiple users one node approach - UUID-based DID
-      // String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      // String uuid = const Uuid().v4();
-      // String did = 'did_${timestamp}_$uuid';
       
-      // NEW: One user one node approach - Generate deterministic DID from BIP39 mnemonic
-      String did = Bip39DidGenerator.generateDidFromMnemonic(mnemonicString);
-      logger.i("Generated deterministic BIP39-based DID: $did");
+      // Extract seed data from Lightning node response
+      Map<String, dynamic> seedData = seedResponse.data;
+      List<dynamic> cipherSeedMnemonic = seedData['cipher_seed_mnemonic'] ?? [];
+      String encipheredSeed = seedData['enciphered_seed'] ?? '';
+      
+      logger.i("Lightning node generated seed successfully:");
+      logger.i("- Cipher seed mnemonic: ${cipherSeedMnemonic.length} words");
+      logger.i("- Enciphered seed: ${encipheredSeed.substring(0, 20)}... (truncated)");
+      
+      // Convert to string list for our internal use
+      List<String> mnemonicWords = cipherSeedMnemonic.cast<String>();
+      String mnemonicString = mnemonicWords.join(' ');
+      
+      logger.i("=== STEP 2: CREATING DID FROM LIGHTNING SEED ===");
+      // Create deterministic DID from Lightning's mnemonic
+      // This must be derivable from mnemonic alone for recovery/login
+      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonicString);
+      logger.i("Generated deterministic DID from Lightning seed: $did");
 
-      // Save the mnemonic securely
-      logger.i("Storing private data securely...");
+      // Save the Lightning-generated mnemonic securely
+      logger.i("Storing Lightning seed data securely...");
       final privateData = PrivateData(did: did, mnemonic: mnemonicString);
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
 
       // Initialize individual Lightning node via Caddy routing (MVP)
-      logger.i("Initializing individual Lightning node via Caddy (node3)...");
+      logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
       
-      // Derive macaroon root key from seed hex (first 32 bytes)
-      Uint8List seedBytes = Uint8List.fromList(hex.decode(seedHex));
-      Uint8List macaroonRootKeyBytes = seedBytes.sublist(0, 32);
+      // Use the enciphered_seed for macaroon root key instead of trying to convert aezeed to BIP39
+      // Take first 32 bytes of the base64 decoded enciphered_seed
+      Uint8List encipheredBytes = base64Decode(encipheredSeed);
+      Uint8List macaroonRootKeyBytes = encipheredBytes.length >= 32 
+          ? encipheredBytes.sublist(0, 32) 
+          : Uint8List.fromList([...encipheredBytes, ...List.filled(32 - encipheredBytes.length, 0)]);
       String macaroonRootKeyHex = hex.encode(macaroonRootKeyBytes);
       
-      // Convert mnemonic to list for init_wallet
-      List<String> mnemonicSeedList = mnemonicString.split(' ');
+      logger.i("Using enciphered_seed for macaroon root key derivation");
+      logger.i("Macaroon root key hex: $macaroonRootKeyHex");
+      
+      logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
       
       try {
-        RestResponse initResponse = await initWallet(mnemonicSeedList, macaroonRootKeyHex, nodeId: 'node3');
+        RestResponse initResponse = await initWallet(mnemonicWords, macaroonRootKeyHex, nodeId: 'node4');
         
         if (initResponse.statusCode == "200") {
           logger.i("Lightning node initialized successfully");
@@ -264,7 +274,7 @@ class CreateAccountController extends State<CreateAccount> {
             logger.i("Successfully retrieved admin macaroon");
             
             // Store node data with macaroon for user
-            await storeNodeData(did, 'node3', adminMacaroon, '192.168.178.51');
+            await storeNodeData(did, 'node4', adminMacaroon, '[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]');
             logger.i("Stored node data with admin macaroon");
           }
         } else {

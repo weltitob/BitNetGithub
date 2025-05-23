@@ -95,17 +95,9 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
       // String did = hdWallet.pubkey;
       // String privateKeyHex = hdWallet.privkey;
       
-      // NEW: One user one node approach - BIP39-based validation and key derivation
-      // Validate BIP39 mnemonic
-      if (!bip39.validateMnemonic(mnemonic)) {
-        throw Exception("Invalid BIP39 mnemonic provided");
-      }
-      
-      // Generate DID and keys from BIP39 mnemonic
-      String did = Bip39DidGenerator.generateDidFromMnemonic(mnemonic);
-      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(mnemonic);
-      String privateKeyHex = keys['privateKey']!;
-      String publicKeyHex = keys['publicKey']!;
+      // NEW: One user one node approach - Lightning aezeed format
+      // Generate DID from Lightning mnemonic (no BIP39 validation needed for aezeed)
+      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonic);
 
       print('Master Public Key and did: $did\n');
 

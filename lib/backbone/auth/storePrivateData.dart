@@ -182,8 +182,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
       // OLD: Multiple users one node approach - HDWallet-based DID matching
       // (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
       
-      // NEW: One user one node approach - BIP39-based DID matching
-      (user) => Bip39DidGenerator.generateDidFromMnemonic(user.mnemonic) == did,
+      // NEW: One user one node approach - Lightning aezeed format
+      (user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did,
       orElse: () {
         logger.e('No matching private data found for DID $did');
         throw Exception('No private data found for DID $did');
@@ -236,8 +236,8 @@ Future<void> deleteUserFromStoredIONData(String did) async {
       // OLD: Multiple users one node approach - HDWallet-based DID filtering
       // .where((user) => HDWallet.fromMnemonic(user.mnemonic).pubkey != did)
       
-      // NEW: One user one node approach - BIP39-based DID filtering
-      .where((user) => Bip39DidGenerator.generateDidFromMnemonic(user.mnemonic) != did)
+      // NEW: One user one node approach - Lightning aezeed format
+      .where((user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) != did)
       .toList();
 
   // Store the updated list back in the storage

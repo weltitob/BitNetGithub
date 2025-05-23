@@ -115,7 +115,7 @@ class MnemonicController extends State<MnemonicGen> {
       }
 
       // Generate deterministic DID from mnemonic
-      did = Bip39DidGenerator.generateDidFromMnemonic(mnemonicString);
+      did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonicString);
       logger.i("Generated BIP39-based DID: $did");
       // Set the DID (Decentralized Identifier) as the public key hex
 

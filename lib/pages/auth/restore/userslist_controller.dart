@@ -89,8 +89,8 @@ class UsersListController extends GetxController {
         // HDWallet hdWallet = HDWallet.fromMnemonic(ionData.mnemonic);
         // didToPrivateDataMap[hdWallet.pubkey] = ionData;
         
-        // NEW: One user one node approach - BIP39-based DID generation
-        String did = Bip39DidGenerator.generateDidFromMnemonic(ionData.mnemonic);
+        // NEW: One user one node approach - Lightning aezeed format
+        String did = Bip39DidGenerator.generateDidFromLightningMnemonic(ionData.mnemonic);
         didToPrivateDataMap[did] = ionData;
       }
 
