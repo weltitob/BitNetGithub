@@ -214,7 +214,7 @@ class CreateAccountController extends State<CreateAccount> {
     try {
       // NEW APPROACH: Use Lightning node's native genseed endpoint
       logger.i("=== STEP 1: GENERATING SEED VIA LIGHTNING NODE ===");
-      RestResponse seedResponse = await generateSeed(nodeId: 'node4');
+      RestResponse seedResponse = await generateSeed(nodeId: 'node5');
       
       if (seedResponse.statusCode != "200") {
         throw Exception("Failed to generate seed: ${seedResponse.message}");
@@ -264,7 +264,7 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
       
       try {
-        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: 'node4');
+        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: 'node5');
         
         if (initResponse.statusCode == "200") {
           logger.i("Lightning node initialized successfully");
@@ -275,7 +275,7 @@ class CreateAccountController extends State<CreateAccount> {
             logger.i("Successfully retrieved admin macaroon");
             
             // Store node data with macaroon for user
-            await storeNodeData(did, 'node4', adminMacaroon, '[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]');
+            await storeNodeData(did, 'node5', adminMacaroon, '[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]');
             logger.i("Stored node data with admin macaroon");
           }
         } else {
