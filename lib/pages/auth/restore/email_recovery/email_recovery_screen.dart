@@ -4,7 +4,8 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/email_recovery/activate_email_recovery.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -88,13 +89,23 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
       final logger = Get.find<LoggerService>();
       logger.d("User mnemonic: $mnemonic");
 
-      Uint8List seedUnit = wallet.mnemonicToSeed(mnemonic.split(' '));
-      HDWallet hdWallet = HDWallet.fromSeed(
-        seedUnit,
-      );
-      // Master public key (compressed)
-      String did = hdWallet.pubkey;
-      String privateKeyHex = hdWallet.privkey;
+      // OLD: Multiple users one node approach - HDWallet-based key derivation
+      // Uint8List seedUnit = wallet.mnemonicToSeed(mnemonic.split(' '));
+      // HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
+      // String did = hdWallet.pubkey;
+      // String privateKeyHex = hdWallet.privkey;
+      
+      // NEW: One user one node approach - BIP39-based validation and key derivation
+      // Validate BIP39 mnemonic
+      if (!bip39.validateMnemonic(mnemonic)) {
+        throw Exception("Invalid BIP39 mnemonic provided");
+      }
+      
+      // Generate DID and keys from BIP39 mnemonic
+      String did = Bip39DidGenerator.generateDidFromMnemonic(mnemonic);
+      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(mnemonic);
+      String privateKeyHex = keys['privateKey']!;
+      String publicKeyHex = keys['publicKey']!;
 
       print('Master Public Key and did: $did\n');
 

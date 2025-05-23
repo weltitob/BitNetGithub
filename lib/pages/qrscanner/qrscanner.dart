@@ -4,7 +4,7 @@ import 'package:bip39/bip39.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -113,10 +113,18 @@ class QRScannerController extends State<QrScanner> {
       }
 
       final privateData = PrivateData.fromJson(data);
-      HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+      // OLD: Multiple users one node approach - HDWallet-based key derivation
+      // HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+      // print("onScannedForSignIn: ${hdWallet.pubkey}");
+      // print("onScannedForSignIn: ${hdWallet.privkey}");
+      
+      // NEW: One user one node approach - BIP39-based key derivation
+      String did = Bip39DidGenerator.generateDidFromMnemonic(privateData.mnemonic);
+      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
       print("onScannedForSignIn: $privateData");
-      print("onScannedForSignIn: ${hdWallet.pubkey}");
-      print("onScannedForSignIn: ${hdWallet.privkey}");
+      print("onScannedForSignIn DID: $did");
+      print("onScannedForSignIn Public Key: ${keys['publicKey']}");
+      print("onScannedForSignIn Private Key: ${keys['privateKey']}");
 
       //generate based on mnemonix the privatekeyhex the did and...#
 
@@ -128,8 +136,12 @@ class QRScannerController extends State<QrScanner> {
 
       String challengeData = "QRCode Login Challenge";
 
+      // OLD: Multiple users one node approach - HDWallet key signing
+      // String signatureHex = await signChallengeData(hdWallet.privkey, hdWallet.pubkey, challengeData);
+      
+      // NEW: One user one node approach - BIP39 key signing
       String signatureHex = await signChallengeData(
-          hdWallet.privkey, hdWallet.pubkey, challengeData);
+          keys['privateKey']!, keys['publicKey']!, challengeData);
 
       logger.d('Generated signature hex: $signatureHex');
 

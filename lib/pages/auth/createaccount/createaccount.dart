@@ -14,6 +14,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.
 import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -225,10 +226,14 @@ class CreateAccountController extends State<CreateAccount> {
       String seedHex = bip39.mnemonicToSeedHex(mnemonicString);
       logger.i("Seed hex generated from mnemonic");
 
-      // Generate UUID-based DID with timestamp
-      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      String uuid = const Uuid().v4();
-      String did = 'did_${timestamp}_$uuid';
+      // OLD: Multiple users one node approach - UUID-based DID
+      // String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      // String uuid = const Uuid().v4();
+      // String did = 'did_${timestamp}_$uuid';
+      
+      // NEW: One user one node approach - Generate deterministic DID from BIP39 mnemonic
+      String did = Bip39DidGenerator.generateDidFromMnemonic(mnemonicString);
+      logger.i("Generated deterministic BIP39-based DID: $did");
 
       // Save the mnemonic securely
       logger.i("Storing private data securely...");

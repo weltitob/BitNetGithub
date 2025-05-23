@@ -11,7 +11,9 @@ import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bip39/bip39.dart' as bip39;
+import 'package:convert/convert.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -157,11 +159,17 @@ class Auth {
 
     PrivateData privateData = await getPrivateData(user.did);
     logger.d('Retrieved private data for user ${user.did}');
-    HDWallet wallet = HDWallet.fromMnemonic(privateData.mnemonic);
-    final String publicKeyHex = wallet.pubkey;
+    
+    // OLD: Multiple users one node approach - HDWallet-based key derivation
+    // HDWallet wallet = HDWallet.fromMnemonic(privateData.mnemonic);
+    // final String publicKeyHex = wallet.pubkey;
+    // final String privateKeyHex = wallet.privkey;
+    
+    // NEW: One user one node approach - Generate keys from BIP39 mnemonic
+    Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
+    final String publicKeyHex = keys['publicKey']!;
+    final String privateKeyHex = keys['privateKey']!;
     logger.d('Public Key Hex: $publicKeyHex');
-
-    final String privateKeyHex = wallet.privkey;
     logger.d('Private Key Hex: $privateKeyHex');
 
     String signatureHex =
@@ -279,6 +287,10 @@ class Auth {
   //   }
   // }
 
+  // OLD: Multiple users one node approach - LITD account generation for shared node
+  // This function is commented out because it won't work with the new one-user-one-node approach
+  // where each user gets their own Lightning node via Caddy routing
+  /*
   Future<bool> genLitdAccount(String userId) async {
     try {
       final logger = Get.find<LoggerService>();
@@ -336,6 +348,15 @@ class Auth {
       return false;
     }
   }
+  */
+  
+  // NEW: One user one node approach - Individual Lightning node initialization
+  Future<bool> genLitdAccount(String userId) async {
+    final logger = Get.find<LoggerService>();
+    logger.i("OLD genLitdAccount function called - needs new one user one node implementation since old version will not work anymore");
+    // TODO: Implement new Lightning node initialization for individual user nodes via Caddy
+    return false;
+  }
 
   String generateRandomString(int length) {
     const characters =
@@ -357,7 +378,11 @@ class Auth {
     final logger = Get.find<LoggerService>();
     logger.i("Signing in user...");
 
-    final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
+    // OLD: Multiple users one node approach - HDWallet-based DID generation
+    // final String did = HDWallet.fromMnemonic(privateData.mnemonic).pubkey;
+    
+    // NEW: One user one node approach - BIP39-based DID generation
+    final String did = Bip39DidGenerator.generateDidFromMnemonic(privateData.mnemonic);
 
     try {
       //showLoadingScreen

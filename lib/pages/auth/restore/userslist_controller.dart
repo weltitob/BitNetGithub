@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 // Import your existing models and services
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -85,8 +85,13 @@ class UsersListController extends GetxController {
 
       // Map DID to PrivateData for quick lookup
       for (var ionData in ionDataList) {
-        HDWallet hdWallet = HDWallet.fromMnemonic(ionData.mnemonic);
-        didToPrivateDataMap[hdWallet.pubkey] = ionData;
+        // OLD: Multiple users one node approach - HDWallet-based DID generation
+        // HDWallet hdWallet = HDWallet.fromMnemonic(ionData.mnemonic);
+        // didToPrivateDataMap[hdWallet.pubkey] = ionData;
+        
+        // NEW: One user one node approach - BIP39-based DID generation
+        String did = Bip39DidGenerator.generateDidFromMnemonic(ionData.mnemonic);
+        didToPrivateDataMap[did] = ionData;
       }
 
       // Extract all DIDs
@@ -220,16 +225,30 @@ class UsersListController extends GetxController {
         throw Exception("PrivateData not found for DID: $did");
       }
 
-      HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
-      print("Login for user ${hdWallet.pubkey} pressed");
-      print("Private Key: ${hdWallet.privkey}");
+      // OLD: Multiple users one node approach - HDWallet-based key derivation
+      // HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
+      // print("Login for user ${hdWallet.pubkey} pressed");
+      // print("Private Key: ${hdWallet.privkey}");
+      
+      // NEW: One user one node approach - BIP39-based key derivation
+      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
+      String publicKey = keys['publicKey']!;
+      String privateKey = keys['privateKey']!;
+      print("Login for user $did pressed");
+      print("Public Key: $publicKey");
+      print("Private Key: $privateKey");
 
       final logger = Get.find<LoggerService>();
 
       String challengeData = "Saved User SecureStorage Challenge";
 
+      // OLD: Multiple users one node approach - HDWallet key signing
+      // String signatureHex = await signChallengeData(
+      //     hdWallet.privkey, hdWallet.pubkey, challengeData);
+      
+      // NEW: One user one node approach - BIP39 key signing
       String signatureHex = await signChallengeData(
-          hdWallet.privkey, hdWallet.pubkey, challengeData);
+          privateKey, publicKey, challengeData);
 
       logger.d('Generated signature hex: $signatureHex');
       await Auth().signIn(ChallengeType.securestorage_login, privateData,

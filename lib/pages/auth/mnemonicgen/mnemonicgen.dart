@@ -4,7 +4,8 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -100,13 +101,22 @@ class MnemonicController extends State<MnemonicGen> {
         mnemonicTextController.text = mnemonicString;
       });
 
-      HDWallet hdWallet = await createUserWallet(mnemonicString);
+      // OLD: Multiple users one node approach - HDWallet-based DID generation
+      // HDWallet hdWallet = await createUserWallet(mnemonicString);
+      // String? masterPublicKey = await hdWallet.pubkey;
+      // logger.i('Master Public Key: $masterPublicKey\n');
+      // did = masterPublicKey;
+      // logger.i("DID updated to: $did");
+      
+      // NEW: One user one node approach - BIP39-based DID generation
+      // Generate BIP39 mnemonic and validate
+      if (!bip39.validateMnemonic(mnemonicString)) {
+        throw Exception("Invalid BIP39 mnemonic generated");
+      }
 
-      // Master public key (compressed)
-      String? masterPublicKey = await hdWallet.pubkey;
-      logger.i('Master Public Key: $masterPublicKey\n');
-      did = masterPublicKey;
-      logger.i("DID updated to: $did");
+      // Generate deterministic DID from mnemonic
+      did = Bip39DidGenerator.generateDidFromMnemonic(mnemonicString);
+      logger.i("Generated BIP39-based DID: $did");
       // Set the DID (Decentralized Identifier) as the public key hex
 
       setState(() {
@@ -114,14 +124,19 @@ class MnemonicController extends State<MnemonicGen> {
         hasFinishedGenWallet = true;
       });
 
-      //Master private key
-      String? masterPrivateKey = await hdWallet.privkey;
+      // OLD: Multiple users one node approach - HDWallet private key extraction
+      // String? masterPrivateKey = await hdWallet.privkey;
+      // logger.i('Master Private Key: $masterPrivateKey\n');
+      // final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
+      
+      // NEW: One user one node approach - BIP39-based key generation
+      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(mnemonicString);
+      String masterPrivateKey = keys['privateKey']!;
       logger.i('Master Private Key: $masterPrivateKey\n');
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
-      final privateData =
-          PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
+      final privateData = PrivateData(did: did, mnemonic: mnemonicString);
 
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");

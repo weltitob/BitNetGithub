@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -456,8 +456,14 @@ class _SettingUpSocialRecoveryWidgetState
                 .doc(Get.find<ProfileController>().userData.value.username)
                 .get();
         PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
-        HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
-        AESCipher cipher = AESCipher(hdWallet.privkey);
+        // OLD: Multiple users one node approach - HDWallet-based key derivation for encryption
+        // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+        // AESCipher cipher = AESCipher(hdWallet.privkey);
+        
+        // NEW: One user one node approach - BIP39-based key derivation for encryption
+        Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
+        String privateKey = keys['privateKey']!;
+        AESCipher cipher = AESCipher(privateKey);
         int userIndex = (doc.data()!['users'] as List).indexOf((test) =>
             test['username'] ==
             Get.find<ProfileController>().userData.value.username);

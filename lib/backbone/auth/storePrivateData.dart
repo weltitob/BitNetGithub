@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter/foundation.dart';
@@ -179,7 +179,11 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   // Find the PrivateData object with the matching DID
   try {
     final matchingPrivateData = usersStored.firstWhere(
-      (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
+      // OLD: Multiple users one node approach - HDWallet-based DID matching
+      // (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
+      
+      // NEW: One user one node approach - BIP39-based DID matching
+      (user) => Bip39DidGenerator.generateDidFromMnemonic(user.mnemonic) == did,
       orElse: () {
         logger.e('No matching private data found for DID $did');
         throw Exception('No private data found for DID $did');
@@ -229,7 +233,11 @@ Future<void> deleteUserFromStoredIONData(String did) async {
 
   // Filter out the user with the provided DID
   usersStored = usersStored
-      .where((user) => HDWallet.fromMnemonic(user.mnemonic).pubkey != did)
+      // OLD: Multiple users one node approach - HDWallet-based DID filtering
+      // .where((user) => HDWallet.fromMnemonic(user.mnemonic).pubkey != did)
+      
+      // NEW: One user one node approach - BIP39-based DID filtering
+      .where((user) => Bip39DidGenerator.generateDidFromMnemonic(user.mnemonic) != did)
       .toList();
 
   // Store the updated list back in the storage

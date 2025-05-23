@@ -38,9 +38,9 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKe
   // final String restHost = litdController.litd_baseurl.value;
   // String url = 'https://$restHost/v1/initwallet';
   
-  // Use Caddy server routing for MVP - hardcoded to node1 for now
+  // Use Caddy server routing for MVP - hardcoded to node3 for now
   String caddyBaseUrl = 'http://192.168.178.51';
-  String selectedNode = nodeId ?? 'node1'; // Default to node1 for MVP
+  String selectedNode = nodeId ?? 'node3'; // Default to node3 for MVP
   String url = '$caddyBaseUrl/$selectedNode/v1/initwallet';
 
   logger.i("Init wallet is called: $url");
@@ -63,7 +63,7 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKe
   //31353): │ ⛔ Failed to initialize wallet: 500, {"code":2,"message":"wrong seed version","details":[]} import 'dart:io';
 
   // Use the actual mnemonic seed provided by the user instead of hardcoded one
-  logger.i("Using provided mnemonic seed for wallet initialization");
+  logger.i("Using provided mnemonic seed for wallet initialization: $mnemonicSeed");
 
   //combine all strings in mnemonicSeedNew
   // String mnemonic = mnemonicSeedNew.join(' ');

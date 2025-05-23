@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
@@ -190,12 +190,18 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                   PrivateData privData =
                       await getPrivateData(Auth().currentUser!.uid);
 
-                  HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+                  // OLD: Multiple users one node approach - HDWallet-based key derivation
+                  // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+                  // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
+                  
+                  // NEW: One user one node approach - BIP39-based key derivation
+                  Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
+                  String privateKey = keys['privateKey']!;
                   List<UserData> invitedUsers = controller.selectedUsers
                       .map((item) => UserData.fromMap(item))
                       .toList();
 
-                  initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
+                  initiateSocialSecurity(privData.mnemonic, privateKey,
                           controller.selectedUsers.length, invitedUsers)
                       .then((val) {
                     controller.initiateSocialRecovery.value = val ? 2 : 1;
@@ -388,12 +394,18 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
     if (privData.mnemonic == mnemonic) {
       String did = Auth().currentUser!.uid;
 
-      HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+      // OLD: Multiple users one node approach - HDWallet-based key derivation
+      // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
+      // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
+      
+      // NEW: One user one node approach - BIP39-based key derivation
+      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
+      String privateKey = keys['privateKey']!;
       List<UserData> invitedUsers = controller.selectedUsers
           .map((item) => UserData.fromMap(item))
           .toList();
 
-      initiateSocialSecurity(privData.mnemonic, hdWallet.privkey,
+      initiateSocialSecurity(privData.mnemonic, privateKey,
               controller.selectedUsers.length, invitedUsers)
           .then((val) {
         controller.initiateSocialRecovery.value = val ? 2 : 1;

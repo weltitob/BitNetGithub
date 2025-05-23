@@ -212,6 +212,10 @@ import 'package:http/http.dart' as http;
 //   }
 // }
 
+// OLD: Multiple users one node approach - Lightning payment stream function
+// This entire function is commented out because it won't work with the new one-user-one-node approach
+// where each user has their own Lightning node via Caddy routing
+/*
 Stream<dynamic> sendPaymentV2Stream(
     String account, List<String> invoiceStrings, int? amount) async* {
   final logger = Get.put(LoggerService());
@@ -336,4 +340,14 @@ Stream<dynamic> sendPaymentV2Stream(
     }
     await Future.delayed(const Duration(seconds: 10));
   }
+}
+*/
+
+// NEW: One user one node approach - Lightning payment stream for individual nodes
+Stream<dynamic> sendPaymentV2Stream(
+    String account, List<String> invoiceStrings, int? amount) async* {
+  final logger = Get.find<LoggerService>();
+  logger.i("OLD sendPaymentV2Stream function called - needs new one user one node implementation since old version will not work anymore");
+  // TODO: Implement new Lightning payment stream for individual user nodes via Caddy
+  yield null;
 }
