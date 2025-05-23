@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:ui';
-
-import 'package:bip39_mnemonic/bip39_mnemonic.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:uuid/uuid.dart';
+import 'package:bip39/bip39.dart' as bip39;
+import 'package:convert/convert.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -18,6 +22,7 @@ import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/litd/accounts.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -151,73 +156,123 @@ class CreateAccountController extends State<CreateAccount> {
     );
   }
 
+  /// Store node data with macaroon for the user
+  Future<void> storeNodeData(String did, String nodeId, String adminMacaroon, String nodeHost) async {
+    LoggerService logger = Get.find<LoggerService>();
+    
+    try {
+      // Store node information in the user's document
+      Map<String, dynamic> nodeData = {
+        'node_id': nodeId,
+        'admin_macaroon': adminMacaroon,
+        'node_host': nodeHost,
+        'caddy_endpoint': 'http://$nodeHost/$nodeId',
+        'created_at': DateTime.now().toIso8601String(),
+        'status': 'initialized'
+      };
+      
+      await usersCollection
+          .doc(did)
+          .collection('node_data')
+          .doc(nodeId)
+          .set(nodeData);
+          
+      logger.i("Node data stored successfully for user $did on node $nodeId");
+    } catch (e) {
+      logger.e("Error storing node data: $e");
+      throw e;
+    }
+  }
+
+  /// Retrieve node data for a user
+  Future<Map<String, dynamic>?> getNodeData(String did, String nodeId) async {
+    LoggerService logger = Get.find<LoggerService>();
+    
+    try {
+      DocumentSnapshot doc = await usersCollection
+          .doc(did)
+          .collection('node_data')
+          .doc(nodeId)
+          .get();
+          
+      if (doc.exists) {
+        return doc.data() as Map<String, dynamic>?;
+      }
+      return null;
+    } catch (e) {
+      logger.e("Error retrieving node data: $e");
+      return null;
+    }
+  }
+
   Future generateAccount() async {
     LoggerService logger = Get.find<LoggerService>();
-    logger.i("Generating mnemonic using remote API...");
+    logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
-      // Generate 256-bit entropy and create a mnemonic via API
-      dynamic seedResponse = await generateSeed();
-      logger.i("Response from generateSeed API: $seedResponse");
+      // Generate BIP39 mnemonic (128-bit entropy by default)
+      String mnemonicString = bip39.generateMnemonic();
+      logger.i("BIP39 mnemonic generated successfully");
       
-      // Extract mnemonic from response
-      List<String> mnemonicWords = [];
-      if (seedResponse is Map<String, dynamic> && seedResponse.containsKey('cipher_seed_mnemonic')) {
-        mnemonicWords = List<String>.from(seedResponse['cipher_seed_mnemonic']);
-      } else {
-        // Fallback to local generation if API fails
-        logger.w("API seed generation failed, falling back to local generation");
-        var mnemonic = await Mnemonic.generate(
-          Language.english,
-          passphrase: "test",
-          entropyLength: 256,
-        );
-        mnemonicWords = mnemonic.sentence.split(' ');
+      // Validate the generated mnemonic
+      bool isValid = bip39.validateMnemonic(mnemonicString);
+      if (!isValid) {
+        throw Exception("Generated mnemonic is invalid");
       }
-      
-      String mnemonicString = mnemonicWords.join(' ');
-      logger.i("Mnemonic generated: $mnemonicString");
+      logger.i("Mnemonic validation passed");
 
-      // Create wallet from mnemonic
-      HDWallet hdWallet = await createUserWallet(mnemonicString);
+      // Generate seed hex from mnemonic for Lightning node
+      String seedHex = bip39.mnemonicToSeedHex(mnemonicString);
+      logger.i("Seed hex generated from mnemonic");
 
-      // Master public key (compressed)
-      String? masterPublicKey = await hdWallet.pubkey;
-      logger.i('Master Public Key: $masterPublicKey\n');
-      String did = masterPublicKey;
-      logger.i("DID updated to: $did");
+      // Generate UUID-based DID with timestamp
+      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      String uuid = const Uuid().v4();
+      String did = 'did_${timestamp}_$uuid';
 
-      // Master private key
-      String? masterPrivateKey = hdWallet.privkey;
-      logger.i('Master Private Key: $masterPrivateKey\n');
-
-      // Save the mnemonic and keys securely
+      // Save the mnemonic securely
       logger.i("Storing private data securely...");
-
-      final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
+      final privateData = PrivateData(did: did, mnemonic: mnemonicString);
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
+
+      // Initialize individual Lightning node via Caddy routing (MVP)
+      logger.i("Initializing individual Lightning node via Caddy (node1)...");
       
-      // Generate litd account and get macaroon
-      logger.i("Generating litd account and retrieving macaroon...");
-      LitdAccountResponse? litdAccount = await callGenLitdAccount(did);
+      // Derive macaroon root key from seed hex (first 32 bytes)
+      Uint8List seedBytes = Uint8List.fromList(hex.decode(seedHex));
+      Uint8List macaroonRootKeyBytes = seedBytes.sublist(0, 32);
+      String macaroonRootKeyHex = hex.encode(macaroonRootKeyBytes);
       
-      if (litdAccount != null && litdAccount.macaroon != null) {
-        logger.i("Successfully retrieved macaroon");
+      // Convert mnemonic to list for init_wallet
+      List<String> mnemonicSeedList = mnemonicString.split(' ');
+      
+      try {
+        RestResponse initResponse = await initWallet(mnemonicSeedList, macaroonRootKeyHex, nodeId: 'node1');
         
-        // Store macaroon with account info
-        await storeLitdAccountData(
-          did, 
-          litdAccount.account?.id ?? 'unknown', 
-          litdAccount.macaroon!
-        );
-        logger.i("Stored litd account data with macaroon");
-      } else {
-        logger.w("Failed to retrieve macaroon, continuing without it");
+        if (initResponse.statusCode == "200") {
+          logger.i("Lightning node initialized successfully");
+          
+          // Extract admin macaroon from response
+          String adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
+          if (adminMacaroon.isNotEmpty) {
+            logger.i("Successfully retrieved admin macaroon");
+            
+            // Store node data with macaroon for user
+            await storeNodeData(did, 'node1', adminMacaroon, '192.168.178.51');
+            logger.i("Stored node data with admin macaroon");
+          }
+        } else {
+          logger.e("Failed to initialize Lightning node: ${initResponse.message}");
+        }
+      } catch (e) {
+        logger.e("Error initializing Lightning node: $e");
       }
-      
-      logger.i("User registration and setup completed.");
+
+      logger.i("User registration and setup completed with individual Lightning node.");
       await signUp(did, code);
+      
+
     } catch (e) {
       logger.e("Error in generateAccount: $e");
       // Handle errors (e.g., show user-friendly error message)

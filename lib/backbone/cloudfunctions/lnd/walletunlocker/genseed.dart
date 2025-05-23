@@ -5,6 +5,8 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:get/get.dart';
 
 //problem with this is that the server will need to be started to use this already
+
+
 Future<dynamic> generateSeed() async {
   final litdController = Get.find<LitdController>();
   final String restHost = litdController.litd_baseurl.value;

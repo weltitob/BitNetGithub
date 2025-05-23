@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/location.dart';
@@ -49,7 +49,7 @@ class MnemonicController extends State<MnemonicGen> {
   bool isLoadingSignUp = false;
   bool hasFinishedGenWallet = false;
 
-  late Mnemonic mnemonic;
+
   late String mnemonicString;
   TextEditingController mnemonicTextController = TextEditingController();
 
@@ -84,20 +84,16 @@ class MnemonicController extends State<MnemonicGen> {
       // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
       // String mnemonic = bip39.generateMnemonic(strength: 256);
 
-      var mnemonic = await Mnemonic.generate(
-        Language.english,
-        passphrase: "test",
-        entropyLength: 256,
-      );
 
-      print("Mnemonic: $mnemonic");
-      print("Mnemonic sentence: ${mnemonic.sentence}");
 
-      mnemonicString = mnemonic.sentence;
+      // print("Mnemonic: $mnemonic");
+      // print("Mnemonic sentence: ${mnemonic.sentence}");
+      //
+      // mnemonicString = mnemonic.sentence;
 
       // Gene rate 256-bit entropy and create a mnemonic via api
 
-      // dynamic mnemonicString = await generateSeed();
+      dynamic mnemonicString = await generateSeed();
       logger.i("Resp from gen Seed: $mnemonicString");
 
       setState(() {

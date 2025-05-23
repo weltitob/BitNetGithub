@@ -4,17 +4,23 @@ import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:get/get.dart';
 
-Future<dynamic> unlockWallet() async {
+Future<dynamic> unlockWallet({String? nodeId}) async {
 
-  final litdController = Get.find<LitdController>();
-  final String restHost = litdController.litd_baseurl.value;
+  // Original litd controller approach (commented out for Caddy MVP)
+  // final litdController = Get.find<LitdController>();
+  // final String restHost = litdController.litd_baseurl.value;
+  // String url = 'https://$restHost/v1/unlockwallet';
+
+  // Use Caddy server routing for MVP - hardcoded to node1 for now
+  String caddyBaseUrl = 'http://192.168.178.51';
+  String selectedNode = nodeId ?? 'node1'; // Default to node1 for MVP
 
   // Encode the password to Base64
   String password = "development_password_dj83zb"; //i__hate..passwords!!
   String encodedPassword = base64Encode(utf8.encode(password));
 
-  // URL and data payload
-  String url = 'https://$restHost/v1/unlockwallet';
+  // URL and data payload via Caddy
+  String url = '$caddyBaseUrl/$selectedNode/v1/unlockwallet';
   Map<String, dynamic> data = {
     'wallet_password': encodedPassword,
     'recovery_window': 0,
