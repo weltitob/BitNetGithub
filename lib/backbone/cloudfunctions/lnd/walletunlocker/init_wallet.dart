@@ -35,22 +35,13 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   logger.i("Selected Node: $selectedNode");
   logger.i("Caddy Base URL: $caddyBaseUrl");
 
-  // TEMPORARILY OVERRIDE WITH HARDCODED TEST MNEMONIC FOR DEBUGGING
-  List<String> testMnemonic = [
-    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
-    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
-    "abandon", "abandon", "abandon", "abandon", "abandon", "abandon",
-    "abandon", "abandon", "abandon", "abandon", "abandon", "art"
-  ];
-  
-  logger.i("=== TEMPORARILY USING HARDCODED TEST MNEMONIC FOR DEBUGGING ===");
-  logger.i("Original provided mnemonic: $mnemonicSeed");
-  logger.i("Original mnemonic seed count: ${mnemonicSeed.length} words");
-  logger.i("Test mnemonic: $testMnemonic");
-  logger.i("Test mnemonic count: ${testMnemonic.length} words");
-  
-  // Override the mnemonic for testing
-  mnemonicSeed = testMnemonic;
+  logger.i("=== USING GENSEED MNEMONIC FOR WALLET INITIALIZATION ===");
+  logger.i("Provided mnemonic from genseed: $mnemonicSeed");
+  logger.i("Mnemonic seed count: ${mnemonicSeed.length} words");
+  logger.i("Individual words:");
+  for (int i = 0; i < mnemonicSeed.length; i++) {
+    logger.i("  Word ${i + 1}: '${mnemonicSeed[i]}'");
+  }
 
   String walletPassword = 'development_password_dj83zb';
   String encodedPassword = base64Encode(utf8.encode(walletPassword));

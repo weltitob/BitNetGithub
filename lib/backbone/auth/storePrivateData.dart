@@ -178,21 +178,32 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
 
   // Find the PrivateData object with the matching DID
   try {
+    logger.d('Searching for DID $did in ${usersStored.length} stored users');
+    for (int i = 0; i < usersStored.length; i++) {
+      String userDid = Bip39DidGenerator.generateDidFromLightningMnemonic(usersStored[i].mnemonic);
+      logger.d('User $i DID: $userDid, Target DID: $did, Match: ${userDid == did}');
+    }
+    
     final matchingPrivateData = usersStored.firstWhere(
       // OLD: Multiple users one node approach - HDWallet-based DID matching
       // (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
       
       // NEW: One user one node approach - Lightning aezeed format
       (user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did,
-      orElse: () {
-        logger.e('No matching private data found for DID $did');
-        throw Exception('No private data found for DID $did');
-      },
     );
     logger.d('Found matching private data for DID $did');
     return matchingPrivateData;
+  } on StateError catch (e) {
+    logger.e('No matching private data found for DID $did (StateError: firstWhere found no elements)');
+    logger.e('Available DIDs in storage:');
+    for (var user in usersStored) {
+      String userDid = Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic);
+      logger.e('  - $userDid');
+    }
+    throw Exception('No private data found for DID $did');
   } catch (e, stackTrace) {
     logger.e('Error searching for matching private data $e');
+    logger.e('Stack trace: $stackTrace');
     throw Exception('Error retrieving private data for DID $did');
   }
 }

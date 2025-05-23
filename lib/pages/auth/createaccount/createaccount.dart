@@ -240,10 +240,23 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i("Generated deterministic DID from Lightning seed: $did");
 
       // Save the Lightning-generated mnemonic securely
-      logger.i("Storing Lightning seed data securely...");
+      logger.i("=== STORING PRIVATE DATA ===");
+      logger.i("DID: $did");
+      logger.i("Mnemonic length: ${mnemonicString.split(' ').length} words");
+      logger.i("Mnemonic (first 3 words): ${mnemonicString.split(' ').take(3).join(' ')}...");
       final privateData = PrivateData(did: did, mnemonic: mnemonicString);
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
+      
+      // Verify that we can immediately retrieve the stored data
+      logger.i("=== VERIFYING STORED DATA ===");
+      try {
+        final retrievedData = await getPrivateData(did);
+        logger.i("✅ Successfully retrieved stored data for DID: ${retrievedData.did}");
+        logger.i("✅ Retrieved mnemonic matches: ${retrievedData.mnemonic == mnemonicString}");
+      } catch (e) {
+        logger.e("❌ Failed to retrieve just-stored data: $e");
+      }
 
       // Initialize individual Lightning node via Caddy routing (MVP)
       logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
