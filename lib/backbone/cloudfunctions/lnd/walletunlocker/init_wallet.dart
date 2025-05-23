@@ -9,25 +9,15 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:convert/convert.dart';
-import 'package:pointycastle/export.dart';
+// import 'package:pointycastle/export.dart'; // No longer needed after removing BIP39 derivation
 
 
-Uint8List deriveSeedFromMnemonic(String mnemonic, {String passphrase = ''}) {
-  final salt = utf8.encode('mnemonic$passphrase');
-  final iterations = 2048;
-  final keyLength = 64; // 64 bytes = 512 bits for BIP-39 standard seed
-
-  final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA512Digest(), 128))
-    ..init(Pbkdf2Parameters(Uint8List.fromList(salt), iterations, keyLength));
-
-  final mnemonicBytes = utf8.encode(mnemonic);
-  return pbkdf2.process(Uint8List.fromList(mnemonicBytes));
-}
+// BIP39-related deriveSeedFromMnemonic function removed - no longer needed for Lightning native aezeed format
 
 
 
 
-Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKeyHex, {String? nodeId}) async {
+Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) async {
   LoggerService logger = Get.find();
   
   // Original litd controller approach (commented out for Caddy MVP)
@@ -44,24 +34,6 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKe
   logger.i("Target URL: $url");
   logger.i("Selected Node: $selectedNode");
   logger.i("Caddy Base URL: $caddyBaseUrl");
-
-  logger.i("Original Macaroon Root Key Hex: $macaroonRootKeyHex");
-  logger.i("Macaroon Root Key Hex Length: ${macaroonRootKeyHex.length}");
-
-  // Decode the hex string into bytes (64 bytes)
-  List<int> macaroonRootKeyBytes = hex.decode(macaroonRootKeyHex);
-  logger.i("Decoded Macaroon Root Key Bytes Length: ${macaroonRootKeyBytes.length}");
-
-  //Truncate to 32 bytes
-  if (macaroonRootKeyBytes.length > 32) {
-    macaroonRootKeyBytes = macaroonRootKeyBytes.sublist(0, 32);
-    logger.i("Truncated Macaroon Root Key Bytes to 32 bytes.");
-  }
-
-  // Encode the 32-byte array to base64
-  String macaroonRootKeyBase64 = base64Encode(macaroonRootKeyBytes);
-  logger.i("Truncated Macaroon Root Key Base64: $macaroonRootKeyBase64");
-  logger.i("Base64 Length: ${macaroonRootKeyBase64.length}");
 
   // Use the actual mnemonic seed provided by the user instead of hardcoded one
   logger.i("Using provided mnemonic seed for wallet initialization: $mnemonicSeed");
@@ -81,7 +53,7 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, String macaroonRootKe
     'recovery_window': 0,
     'channel_backups': null,
     'stateless_init': false,
-    'macaroon_root_key': macaroonRootKeyBase64,
+    // 'macaroon_root_key': macaroonRootKeyBase64, // Removed to match Python working implementation
   };
 
   logger.i("=== REQUEST PAYLOAD ===");

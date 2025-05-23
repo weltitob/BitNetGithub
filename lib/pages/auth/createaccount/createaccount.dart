@@ -248,21 +248,10 @@ class CreateAccountController extends State<CreateAccount> {
       // Initialize individual Lightning node via Caddy routing (MVP)
       logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
       
-      // Use the enciphered_seed for macaroon root key instead of trying to convert aezeed to BIP39
-      // Take first 32 bytes of the base64 decoded enciphered_seed
-      Uint8List encipheredBytes = base64Decode(encipheredSeed);
-      Uint8List macaroonRootKeyBytes = encipheredBytes.length >= 32 
-          ? encipheredBytes.sublist(0, 32) 
-          : Uint8List.fromList([...encipheredBytes, ...List.filled(32 - encipheredBytes.length, 0)]);
-      String macaroonRootKeyHex = hex.encode(macaroonRootKeyBytes);
-      
-      logger.i("Using enciphered_seed for macaroon root key derivation");
-      logger.i("Macaroon root key hex: $macaroonRootKeyHex");
-      
       logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
       
       try {
-        RestResponse initResponse = await initWallet(mnemonicWords, macaroonRootKeyHex, nodeId: 'node4');
+        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: 'node4');
         
         if (initResponse.statusCode == "200") {
           logger.i("Lightning node initialized successfully");
