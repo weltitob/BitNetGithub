@@ -103,9 +103,9 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
 
       String challengeData = "Mnemonic Login Challenge";
 
-      // Sign the challenge data
-      String signatureHex =
-          await signChallengeData(privateKeyHex, did, challengeData);
+      // Lightning approach - Signing functionality needs reimplementation for Lightning
+      // TODO: Implement Lightning-based challenge signing when needed
+      String signatureHex = "placeholder_signature"; // Temporary placeholder
 
       logger.d('Generated signature hex: $signatureHex');
 

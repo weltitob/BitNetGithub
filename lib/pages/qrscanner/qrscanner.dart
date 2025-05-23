@@ -136,9 +136,9 @@ class QRScannerController extends State<QrScanner> {
       // OLD: Multiple users one node approach - HDWallet key signing
       // String signatureHex = await signChallengeData(hdWallet.privkey, hdWallet.pubkey, challengeData);
       
-      // NEW: One user one node approach - BIP39 key signing
-      String signatureHex = await signChallengeData(
-          keys['privateKey']!, keys['publicKey']!, challengeData);
+      // NEW: Lightning approach - Signing functionality needs reimplementation for Lightning
+      // TODO: Implement Lightning-based challenge signing when needed
+      String signatureHex = "placeholder_signature"; // Temporary placeholder
 
       logger.d('Generated signature hex: $signatureHex');
 
