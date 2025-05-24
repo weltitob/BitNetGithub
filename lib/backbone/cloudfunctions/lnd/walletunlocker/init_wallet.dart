@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
@@ -25,15 +26,14 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   // final String restHost = litdController.litd_baseurl.value;
   // String url = 'https://$restHost/v1/initwallet';
   
-  // Use Caddy server routing for MVP - hardcoded to node5 for now
-  String caddyBaseUrl = 'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]';
-  String selectedNode = nodeId ?? 'node5'; // Default to node5 for MVP
-  String url = '$caddyBaseUrl/$selectedNode/v1/initwallet';
+  // Use centralized Lightning configuration
+  String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
+  String url = LightningConfig.getLightningUrl('v1/initwallet', nodeId: selectedNode);
 
   logger.i("=== INIT WALLET DEBUG INFO ===");
   logger.i("Target URL: $url");
   logger.i("Selected Node: $selectedNode");
-  logger.i("Caddy Base URL: $caddyBaseUrl");
+  logger.i("Caddy Base URL: ${LightningConfig.caddyBaseUrl}");
 
   logger.i("=== USING GENSEED MNEMONIC FOR WALLET INITIALIZATION ===");
   logger.i("Provided mnemonic from genseed: $mnemonicSeed");
@@ -43,7 +43,7 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
     logger.i("  Word ${i + 1}: '${mnemonicSeed[i]}'");
   }
 
-  String walletPassword = 'development_password_dj83zb';
+  String walletPassword = LightningConfig.walletPassword;
   String encodedPassword = base64Encode(utf8.encode(walletPassword));
   logger.i("Wallet password (base64): $encodedPassword");
 
@@ -106,7 +106,7 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
       Uri.parse(url),
       headers: headers,
       body: json.encode(data),
-    ).timeout(Duration(seconds: 30)); // Add explicit timeout
+    ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
     logger.i("=== HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");

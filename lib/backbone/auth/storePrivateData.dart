@@ -158,6 +158,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   logger.d('Attempting to read private data from secure storage');
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
+  logger.d('Raw secure storage content: ${privateDataJson?.substring(0, 100) ?? '(NULL)'}...');
+
   if (privateDataJson == null) {
     logger.e(
         'No private data found in secure storage for key usersInSecureStorage');
@@ -167,12 +169,23 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   // Decode the JSON data and map it to a list of PrivateData objects
   List<PrivateData> usersStored;
   try {
-    usersStored = (jsonDecode(privateDataJson) as List)
+    logger.d('Attempting to decode JSON...');
+    final decoded = jsonDecode(privateDataJson);
+    logger.d('JSON decoded successfully, type: ${decoded.runtimeType}');
+    
+    if (decoded is! List) {
+      logger.e('Decoded JSON is not a List, it is: ${decoded.runtimeType}');
+      throw Exception('Private data JSON is not a List');
+    }
+    
+    logger.d('JSON is a List with ${decoded.length} items');
+    usersStored = decoded
         .map((json) => PrivateData.fromMap(json))
         .toList();
-    logger.d('Decoded private data JSON into PrivateData objects');
+    logger.d('Decoded private data JSON into ${usersStored.length} PrivateData objects');
   } catch (e, stackTrace) {
     logger.e('Error decoding private data JSON $e');
+    logger.e('Stack trace: $stackTrace');
     throw Exception('Failed to decode private data');
   }
 
@@ -180,16 +193,19 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   try {
     logger.d('Searching for DID $did in ${usersStored.length} stored users');
     for (int i = 0; i < usersStored.length; i++) {
-      String userDid = Bip39DidGenerator.generateDidFromLightningMnemonic(usersStored[i].mnemonic);
-      logger.d('User $i DID: $userDid, Target DID: $did, Match: ${userDid == did}');
+      String storedDid = usersStored[i].did;
+      String calculatedDid = Bip39DidGenerator.generateDidFromLightningMnemonic(usersStored[i].mnemonic);
+      logger.d('User $i:');
+      logger.d('  - Stored DID: $storedDid');
+      logger.d('  - Calculated DID: $calculatedDid');
+      logger.d('  - Target DID: $did');
+      logger.d('  - Stored match: ${storedDid == did}');
+      logger.d('  - Calculated match: ${calculatedDid == did}');
     }
     
     final matchingPrivateData = usersStored.firstWhere(
-      // OLD: Multiple users one node approach - HDWallet-based DID matching
-      // (user) => HDWallet.fromMnemonic(user.mnemonic).pubkey == did,
-      
-      // NEW: One user one node approach - Lightning aezeed format
-      (user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did,
+      // Try both the stored DID and calculated DID for compatibility
+      (user) => user.did == did || Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did,
     );
     logger.d('Found matching private data for DID $did');
     return matchingPrivateData;

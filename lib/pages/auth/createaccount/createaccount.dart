@@ -15,6 +15,14 @@ import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bitnet/backbone/helper/lightning_identity.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_status.dart';
+import 'package:bitnet/backbone/services/lightning_node_finder.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -103,7 +111,30 @@ class CreateAccountController extends State<CreateAccount> {
 
         //Update the username in our database for the user
         print('create account called');
-        await generateAccount();
+        
+        try {
+          await generateAccount();
+          logger.i("✅ Account generation completed successfully");
+        } catch (e) {
+          logger.e("❌ Account generation failed: $e");
+          setState(() {
+            isLoading = false;
+            errorMessage = "Account creation failed. Please try again.";
+          });
+          return; // Exit early, don't proceed with ProfileController
+        }
+        
+        // Verify authentication completed successfully before proceeding
+        if (Auth().currentUser == null) {
+          logger.e("❌ Authentication verification failed - currentUser is null");
+          setState(() {
+            isLoading = false;
+            errorMessage = "Authentication failed. Please try again.";
+          });
+          return; // Exit early, don't proceed with ProfileController
+        }
+        
+        logger.i("✅ Authentication verified, proceeding with profile setup");
         ProfileController profileController = Get.put(ProfileController());
         profileController.userNameController.text = localpart;
         late StreamSubscription sub;
@@ -212,9 +243,22 @@ class CreateAccountController extends State<CreateAccount> {
     logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
-      // NEW APPROACH: Use Lightning node's native genseed endpoint
-      logger.i("=== STEP 1: GENERATING SEED VIA LIGHTNING NODE ===");
-      RestResponse seedResponse = await generateSeed(nodeId: 'node5');
+      // NEW APPROACH: Find working Lightning node and use its native genseed endpoint
+      logger.i("=== STEP 1: FINDING WORKING LIGHTNING NODE ===");
+      
+      String? workingNodeId = await LightningNodeFinder.findWorkingNode(
+        timeoutSeconds: 5,
+        includeDefaultNode: true,
+      );
+      
+      if (workingNodeId == null) {
+        throw Exception("No Lightning nodes are available. Please check server status.");
+      }
+      
+      logger.i("✅ Using working node: $workingNodeId");
+      
+      logger.i("=== STEP 2: GENERATING SEED VIA LIGHTNING NODE ===");
+      RestResponse seedResponse = await generateSeed(nodeId: workingNodeId);
       
       if (seedResponse.statusCode != "200") {
         throw Exception("Failed to generate seed: ${seedResponse.message}");
@@ -233,15 +277,134 @@ class CreateAccountController extends State<CreateAccount> {
       List<String> mnemonicWords = cipherSeedMnemonic.cast<String>();
       String mnemonicString = mnemonicWords.join(' ');
       
-      logger.i("=== STEP 2: CREATING DID FROM LIGHTNING SEED ===");
-      // Create deterministic DID from Lightning's mnemonic
-      // This must be derivable from mnemonic alone for recovery/login
-      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonicString);
-      logger.i("Generated deterministic DID from Lightning seed: $did");
+      logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
+      
+      logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
+      
+      String adminMacaroon = '';
+      try {
+        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: workingNodeId);
+        
+        if (initResponse.statusCode == "200") {
+          logger.i("Lightning node initialized successfully");
+          
+          // Extract admin macaroon from response
+          adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
+          if (adminMacaroon.isNotEmpty) {
+            logger.i("Successfully retrieved admin macaroon");
+          }
+        } else {
+          logger.e("Failed to initialize Lightning node: ${initResponse.message}");
+          throw Exception("Failed to initialize Lightning node: ${initResponse.message}");
+        }
+      } catch (e) {
+        logger.e("Error initializing Lightning node: $e");
+        throw Exception("Error initializing Lightning node: $e");
+      }
 
-      // Save the Lightning-generated mnemonic securely
-      logger.i("=== STORING PRIVATE DATA ===");
-      logger.i("DID: $did");
+      logger.i("=== STEP 4: WAITING FOR LIGHTNING SERVICES TO BE READY ===");
+      
+      // Wait a moment for initialization to settle
+      logger.i("Waiting ${LightningConfig.postInitializationWaitSeconds} seconds for Lightning node to fully initialize after wallet creation...");
+      await Future.delayed(Duration(seconds: LightningConfig.postInitializationWaitSeconds));
+      
+      // Check if wallet unlock is needed (should already be unlocked from initwallet)
+      try {
+        logger.i("Attempting wallet unlock (expecting 'already unlocked' message)...");
+        dynamic unlockResponse = await unlockWallet(nodeId: workingNodeId);
+        logger.i("Wallet unlock response: $unlockResponse");
+      } catch (unlockError) {
+        logger.i("Wallet unlock result: $unlockError");
+        // This is expected - wallet should already be unlocked from initwallet
+      }
+      
+      // Use intelligent status checking instead of blind waiting
+      logger.i("Checking Lightning services readiness with status endpoint...");
+      bool isReady = await waitForLightningReady(
+        nodeId: workingNodeId,
+        adminMacaroon: adminMacaroon,
+        // Uses config defaults: maxWaitSeconds and checkIntervalSeconds
+      );
+      
+      if (!isReady) {
+        logger.e("❌ Lightning services did not become ready within ${LightningConfig.lightningReadyMaxWaitSeconds} seconds");
+        throw Exception("Lightning services did not become ready within ${LightningConfig.lightningReadyMaxWaitSeconds} seconds. Check node status.");
+      }
+      
+      // TODO: STEP 4: GETTING LIGHTNING NODE IDENTITY - TO BE ADDED LATER
+      // Currently commenting out Lightning node identity retrieval to avoid getinfo blocking issues
+      // We'll use mnemonic-based DIDs only for now
+      /*
+      logger.i("=== STEP 4: GETTING LIGHTNING NODE IDENTITY ===");
+      
+      // Now that services are confirmed ready, get the node info
+      RestResponse nodeInfoResponse = await getNodeInfo(
+        nodeId: LightningConfig.getDefaultNodeId(),
+        adminMacaroon: adminMacaroon, // Use the NEW macaroon from initwallet
+      );
+      
+      if (nodeInfoResponse.statusCode != "200") {
+        logger.e("Failed to get Lightning node info: ${nodeInfoResponse.message}");
+        throw Exception("Failed to get Lightning node info: ${nodeInfoResponse.message}");
+      }
+      
+      String lightningPubkey = nodeInfoResponse.data['identity_pubkey'] ?? '';
+      if (lightningPubkey.isEmpty) {
+        logger.e("No Lightning identity pubkey found in node info");
+        throw Exception("No Lightning identity pubkey found in node info");
+      }
+      
+      logger.i("✅ Lightning node identity: $lightningPubkey");
+      */
+      
+      logger.i("=== STEP 5: GENERATING MNEMONIC-BASED DID (SIMPLIFIED) ===");
+      
+      // SIMPLIFIED: Generate DID from mnemonic only (always derivable)
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
+      logger.i("Generated recovery DID from mnemonic: $recoveryDid");
+      
+      // Check if user already exists with this mnemonic
+      bool userAlreadyExists = await NodeMappingService.userExists(recoveryDid);
+      if (userAlreadyExists) {
+        logger.e("User already exists with this mnemonic!");
+        throw Exception("Account already exists for this mnemonic. Use recovery instead.");
+      }
+      
+      // For now, we'll use a placeholder Lightning pubkey
+      String lightningPubkey = 'placeholder_pubkey_${recoveryDid.substring(0, 8)}';
+      logger.i("Using placeholder Lightning pubkey: $lightningPubkey");
+
+      // Use recovery DID as the primary identifier
+      String did = recoveryDid;
+
+      logger.i("=== STEP 6: CREATING NODE MAPPING (SIMPLIFIED) ===");
+      
+      // Create the critical recovery mapping with simplified structure
+      UserNodeMapping nodeMapping = UserNodeMapping(
+        recoveryDid: recoveryDid,
+        lightningPubkey: lightningPubkey, // Using placeholder for now
+        nodeId: workingNodeId, // Use the actual working node we found
+        caddyEndpoint: LightningConfig.getCaddyEndpoint(workingNodeId),
+        adminMacaroon: adminMacaroon,
+        createdAt: DateTime.now(),
+        lastAccessed: DateTime.now(),
+        status: 'active',
+        metadata: {
+          'creation_method': 'mnemonic_based_account',
+          'app_version': '1.0.0',
+          'note': 'Lightning pubkey is placeholder until getinfo works',
+          'working_node_found': workingNodeId,
+        },
+      );
+      
+      // Store the node mapping BEFORE storing private data
+      await NodeMappingService.storeUserNodeMapping(nodeMapping);
+      await NodeMappingService.storeMnemonicRecoveryIndex(mnemonicString, recoveryDid);
+      logger.i("✅ Node mapping stored successfully");
+
+      // Save the Lightning-generated mnemonic securely with RECOVERY DID
+      logger.i("=== STEP 7: STORING PRIVATE DATA ===");
+      logger.i("Recovery DID: $did");
       logger.i("Mnemonic length: ${mnemonicString.split(' ').length} words");
       logger.i("Mnemonic (first 3 words): ${mnemonicString.split(' ').take(3).join(' ')}...");
       final privateData = PrivateData(did: did, mnemonic: mnemonicString);
@@ -250,6 +413,8 @@ class CreateAccountController extends State<CreateAccount> {
       
       // Verify that we can immediately retrieve the stored data
       logger.i("=== VERIFYING STORED DATA ===");
+      // Add a small delay to ensure secure storage write completes
+      await Future.delayed(Duration(milliseconds: 100));
       try {
         final retrievedData = await getPrivateData(did);
         logger.i("✅ Successfully retrieved stored data for DID: ${retrievedData.did}");
@@ -258,40 +423,51 @@ class CreateAccountController extends State<CreateAccount> {
         logger.e("❌ Failed to retrieve just-stored data: $e");
       }
 
-      // Initialize individual Lightning node via Caddy routing (MVP)
-      logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
-      
-      logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
+      // OPTIONAL: Store additional node data in legacy format (if needed for compatibility)
+      logger.i("=== STEP 8: STORING LEGACY NODE DATA (Optional) ===");
       
       try {
-        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: 'node5');
-        
-        if (initResponse.statusCode == "200") {
-          logger.i("Lightning node initialized successfully");
+        if (adminMacaroon.isNotEmpty) {
+          logger.i("Storing legacy node data for compatibility");
           
-          // Extract admin macaroon from response
-          String adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
-          if (adminMacaroon.isNotEmpty) {
-            logger.i("Successfully retrieved admin macaroon");
-            
-            // Store node data with macaroon for user
-            await storeNodeData(did, 'node5', adminMacaroon, '[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]');
-            logger.i("Stored node data with admin macaroon");
-          }
+          // Store node data with macaroon for user (legacy format)
+          await storeNodeData(did, workingNodeId, adminMacaroon, LightningConfig.caddyBaseUrl.replaceAll('http://', '').replaceAll('[', '').replaceAll(']', ''));
+          logger.i("Legacy node data stored");
         } else {
-          logger.e("Failed to initialize Lightning node: ${initResponse.message}");
+          logger.w("No admin macaroon available for legacy storage");
         }
       } catch (e) {
-        logger.e("Error initializing Lightning node: $e");
+        logger.e("Error storing legacy node data: $e");
+        // Don't fail the entire process for legacy data
       }
 
-      logger.i("User registration and setup completed with individual Lightning node.");
-      await signUp(did, code);
+      logger.i("User registration and setup completed with mnemonic-based DID architecture.");
       
+      logger.i("=== STEP 9: STARTING FIREBASE AUTHENTICATION ===");
+      logger.i("DID: $did");
+      logger.i("Code: '${code.isEmpty ? '(EMPTY)' : code}'");
+      logger.i("Issuer: '${issuer.isEmpty ? '(EMPTY)' : issuer}'");
+      
+      if (code.isEmpty) {
+        logger.w("⚠️ Code is empty - this might cause issues in authentication");
+      }
+      
+      try {
+        await signUp(did, code);
+        logger.i("✅ Firebase authentication completed successfully");
+      } catch (signUpError) {
+        logger.e("❌ Error in signUp: $signUpError");
+        throw signUpError;
+      }
 
     } catch (e) {
       logger.e("Error in generateAccount: $e");
+      logger.e("Error type: ${e.runtimeType}");
+      if (e is StateError) {
+        logger.e("StateError details: This usually means firstWhere() found no matching elements");
+      }
       // Handle errors (e.g., show user-friendly error message)
+      rethrow; // Important: rethrow so the calling code knows it failed
     }
   }
 

@@ -13,7 +13,7 @@ Future<dynamic> unlockWallet({String? nodeId}) async {
 
   // Use Caddy server routing for MVP - hardcoded to node5 for now
   String caddyBaseUrl = 'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]';
-  String selectedNode = nodeId ?? 'node5'; // Default to node5 for MVP
+  String selectedNode = nodeId ?? 'node8'; // Default to node8 for MVP
 
   // Encode the password to Base64
   String password = "development_password_dj83zb"; //i__hate..passwords!!

@@ -1,41 +1,48 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:convert';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-Future<RestResponse> generateSeed({String? nodeId}) async {
+Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon}) async {
   LoggerService logger = Get.find();
   
   // Use centralized Lightning configuration
   String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
-  String url = LightningConfig.getLightningUrl('v1/genseed', nodeId: selectedNode); // No passphrase to match Python approach
+  String url = LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
 
-  logger.i("=== GENERATE SEED DEBUG INFO ===");
+  logger.i("=== GET NODE INFO DEBUG ===");
   logger.i("Target URL: $url");
   logger.i("Selected Node: $selectedNode");
   logger.i("Caddy Base URL: ${LightningConfig.caddyBaseUrl}");
 
-  // Load and convert the macaroon asset
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-
-  ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
-  List<int> bytes = byteData.buffer.asUint8List();
-  String macaroon = bytesToHex(bytes);
-  logger.i("Admin macaroon loaded for genseed: ${macaroon.substring(0, 20)}... (truncated)");
+  // Use provided admin macaroon (from initwallet) or fallback to global one
+  String macaroon;
+  if (adminMacaroon != null && adminMacaroon.isNotEmpty) {
+    // Use the specific admin macaroon provided (e.g., from initwallet response)
+    macaroon = adminMacaroon;
+    logger.i("🔑 Using provided admin macaroon: ${macaroon.substring(0, 20)}... (truncated)");
+  } else {
+    // Fallback to global admin macaroon
+    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
+    List<int> bytes = byteData.buffer.asUint8List();
+    macaroon = bytesToHex(bytes);
+    logger.i("🔑 Using global admin macaroon: ${macaroon.substring(0, 20)}... (truncated)");
+  }
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
     'Content-Type': 'application/json',
   };
 
-  logger.i("=== GENSEED REQUEST HEADERS ===");
+  logger.i("=== REQUEST HEADERS ===");
   headers.forEach((key, value) {
     if (key == 'Grpc-Metadata-macaroon') {
       logger.i("$key: ${value.substring(0, 20)}... (truncated)");
@@ -47,7 +54,7 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
   // Override HTTP settings if necessary
   HttpOverrides.global = MyHttpOverrides();
 
-  logger.i("=== MAKING GENSEED HTTP REQUEST ===");
+  logger.i("=== MAKING HTTP REQUEST ===");
   logger.i("About to make GET request to: $url");
 
   try {
@@ -56,7 +63,7 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
       headers: headers,
     ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
-    logger.i("=== GENSEED HTTP RESPONSE RECEIVED ===");
+    logger.i("=== HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");
     logger.i("Response Headers: ${response.headers}");
     logger.i("Response Body Length: ${response.body.length}");
@@ -65,32 +72,51 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
     if (response.statusCode == 200) {
       try {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        logger.i("=== PARSED GENSEED RESPONSE DATA ===");
+        logger.i("=== PARSED NODE INFO ===");
         responseData.forEach((key, value) {
-          if (key == 'cipher_seed_mnemonic' && value is List) {
-            logger.i("$key: ${value.length} words - ${value.join(' ')}");
-          } else if (key == 'enciphered_seed') {
-            logger.i("$key: ${value.toString().substring(0, 20)}... (truncated)");
-          } else {
+          if (key == 'identity_pubkey') {
+            logger.i("$key: $value ← LIGHTNING NODE IDENTITY");
+          } else if (key == 'alias') {
             logger.i("$key: $value");
+          } else if (key == 'version') {
+            logger.i("$key: $value");
+          } else if (key == 'num_active_channels') {
+            logger.i("$key: $value");
+          } else if (key == 'num_peers') {
+            logger.i("$key: $value");
+          } else {
+            // Truncate long values for cleaner logs
+            String valueStr = value.toString();
+            if (valueStr.length > 50) {
+              logger.i("$key: ${valueStr.substring(0, 50)}... (truncated)");
+            } else {
+              logger.i("$key: $value");
+            }
           }
         });
+        
+        String identityPubkey = responseData['identity_pubkey'] ?? '';
+        if (identityPubkey.isNotEmpty) {
+          logger.i("✅ Successfully extracted Lightning node identity: $identityPubkey");
+        } else {
+          logger.w("⚠️ No identity_pubkey found in response");
+        }
 
         return RestResponse(
           statusCode: "${response.statusCode}",
-          message: "Seed generated successfully",
+          message: "Node info retrieved successfully",
           data: responseData,
         );
       } catch (jsonError) {
         logger.e("Error parsing JSON response: $jsonError");
         return RestResponse(
           statusCode: "error",
-          message: "Failed to parse genseed response: $jsonError",
+          message: "Failed to parse response: $jsonError",
           data: {"raw_response": response.body},
         );
       }
     } else {
-      logger.e("=== GENSEED HTTP ERROR RESPONSE ===");
+      logger.e("=== HTTP ERROR RESPONSE ===");
       logger.e("Status Code: ${response.statusCode}");
       logger.e("Status Text: ${response.reasonPhrase}");
       logger.e("Response Body: ${response.body}");
@@ -98,25 +124,25 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
       
       return RestResponse(
         statusCode: "error",
-        message: "Failed to generate seed: ${response.statusCode}, ${response.body}",
+        message: "Failed to get node info: ${response.statusCode}, ${response.body}",
         data: {"status_code": response.statusCode, "raw_response": response.body},
       );
     }
   } catch (e, stackTrace) {
-    logger.e("=== GENSEED EXCEPTION CAUGHT ===");
+    logger.e("=== EXCEPTION CAUGHT ===");
     logger.e("Exception Type: ${e.runtimeType}");
     logger.e("Exception Message: $e");
     logger.e("Stack Trace: $stackTrace");
     
     if (e.toString().contains('timeout')) {
-      logger.e("GENSEED CONNECTION TIMEOUT - Check if Caddy server is running on $url");
+      logger.e("CONNECTION TIMEOUT - Check if Caddy server is running on $url");
     } else if (e.toString().contains('connection')) {
-      logger.e("GENSEED CONNECTION ERROR - Check network connectivity and server availability");
+      logger.e("CONNECTION ERROR - Check network connectivity and server availability");
     }
     
     return RestResponse(
       statusCode: "error",
-      message: "Failed to generate seed: $e",
+      message: "Failed to get node info: $e",
       data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
     );
   }
