@@ -1,6 +1,7 @@
 import 'package:bitnet/pages/secondpages/agbs_and_impressum.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
+import 'package:bitnet/pages/settings/developer_options/developer_options_page.dart';
 import 'package:bitnet/pages/settings/emergency_recovery/emergency_recovery_view.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
@@ -70,7 +71,9 @@ class Settings extends StatelessWidget {
                       controller.switchTab("main");
                     },
                   ),
-                )
+                ),
+              if (controller.currentTab.value == "developer_options")
+                Expanded(child: DeveloperOptionsPage())
             ],
           ),
         ),

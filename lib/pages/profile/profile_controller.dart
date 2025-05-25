@@ -18,6 +18,7 @@ import 'package:bitnet/components/tabs/rowviewtab.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/notifications/notifications_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -85,6 +86,7 @@ class ProfileController extends BaseController {
       gotFollowingCount.value == true &&
       isUserLoading.value == false;
 
+  List<AppData> availableApps = List.empty(growable: true);
   @override
   void onInit() {
     super.onInit();

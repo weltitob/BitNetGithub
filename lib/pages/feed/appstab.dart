@@ -15,6 +15,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ import 'package:share_plus/share_plus.dart';
 
 //VARIABLE PARAMETERS:
 //address
+String MINI_APP_API_VERSION = "0.0.1";
 
 class AppsTab extends StatefulWidget {
   const AppsTab({super.key});
@@ -56,6 +58,7 @@ class _AppsTabState extends State<AppsTab> {
 
   Future<void> loadAsync() async {
     availableApps = await getAvailableApps();
+    Get.find<ProfileController>().availableApps = availableApps;
     myApps = await getMyApps(availableApps);
     for (final app in myApps) {
       app.loadFaviconBytes();
@@ -135,9 +138,10 @@ class _AppsTabState extends State<AppsTab> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         children: [
-                          ...myApps.map((app) => _AppListTile(
+                          ...myApps.map((app) => AppListTile(
                                 inMyAppsScreen: false,
                                 app: app,
+                                outsideNavigation: false,
                                 appOwned: ownedApps.contains(app.docId),
                               ))
                         ],
@@ -163,9 +167,10 @@ class _AppsTabState extends State<AppsTab> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         children: [
-                          ...availableApps.map((app) => _AppListTile(
+                          ...availableApps.map((app) => AppListTile(
                                 inMyAppsScreen: false,
                                 app: app,
+                                outsideNavigation: false,
                                 appOwned: ownedApps.contains(app.docId),
                               ))
                         ],
@@ -239,9 +244,10 @@ class _MyAppsPageState extends State<MyAppsPage> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
-                        ...myApps.map((app) => _AppListTile(
+                        ...myApps.map((app) => AppListTile(
                               inMyAppsScreen: true,
                               app: app,
+                              outsideNavigation: false,
                               appOwned: ownedApps.contains(app.docId),
                             ))
                       ],
@@ -266,20 +272,22 @@ Widget _buildImagePlaceholder({double size = 24.0}) {
   );
 }
 
-class _AppListTile extends StatefulWidget {
-  const _AppListTile({
+class AppListTile extends StatefulWidget {
+  const AppListTile({
     required this.app,
     required this.appOwned,
     required this.inMyAppsScreen,
+    required this.outsideNavigation,
   });
   final AppData app;
   final bool appOwned;
   final bool inMyAppsScreen;
+  final bool outsideNavigation;
   @override
-  State<_AppListTile> createState() => _AppListTileState();
+  State<AppListTile> createState() => _AppListTileState();
 }
 
-class _AppListTileState extends State<_AppListTile> {
+class _AppListTileState extends State<AppListTile> {
   bool buttonLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -316,11 +324,15 @@ class _AppListTileState extends State<_AppListTile> {
             }
           }),
       onTap: () {
-        if (widget.inMyAppsScreen) {
-          context.go("/feed/" + kMyAppsPageRoute + "/" + kAppPageRoute,
-              extra: widget.app.toJson());
+        if (widget.outsideNavigation) {
+          context.push("/feed/" + kAppPageRoute, extra: widget.app.toJson());
         } else {
-          context.go("/feed/" + kAppPageRoute, extra: widget.app.toJson());
+          if (widget.inMyAppsScreen) {
+            context.go("/feed/" + kMyAppsPageRoute + "/" + kAppPageRoute,
+                extra: widget.app.toJson());
+          } else {
+            context.go("/feed/" + kAppPageRoute, extra: widget.app.toJson());
+          }
         }
       },
     );
@@ -337,6 +349,7 @@ class AppData {
   final bool useNetworkAsset;
   final String? storageName;
   final Map<String, dynamic>? parameters;
+  final String? ownerId;
 
   String? faviconUrl;
   Uint8List? _faviconBytes;
@@ -356,6 +369,7 @@ class AppData {
     this.storageName,
     this.useNetworkImage = true,
     this.useNetworkAsset = false,
+    this.ownerId,
   });
 
   Map<String, dynamic> toJson() {
@@ -368,7 +382,8 @@ class AppData {
       'useNetworkAsset': useNetworkAsset,
       'storage_name': storageName,
       'parameters': parameters,
-      if (iconPath != null) 'iconPath': iconPath
+      if (iconPath != null) 'iconPath': iconPath,
+      if (ownerId != null) 'owner_id': ownerId
     };
   }
 
@@ -381,7 +396,8 @@ class AppData {
         useNetworkAsset: map['useNetworkAsset'] ?? false,
         storageName: map['storage_name'],
         parameters: map['parameters'],
-        iconPath: map.containsKey('iconPath') ? map['iconPath'] : null);
+        iconPath: map.containsKey('iconPath') ? map['iconPath'] : null,
+        ownerId: map.containsKey('ownerId') ? map['ownerId'] : null);
   }
 
   Future<String> getUrl() async {
@@ -706,7 +722,7 @@ class AppImageBuilder extends StatelessWidget {
                   iconPath,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.public, size: 20);
+                    return Icon(Icons.public, size: width);
                   },
                 );
               }
@@ -735,7 +751,7 @@ class AppImageBuilder extends StatelessWidget {
                         iconUrl,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.public, size: 20);
+                          return Icon(Icons.public, size: width);
                         },
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -773,7 +789,7 @@ class AppImageBuilder extends StatelessWidget {
                         iconUrl,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.public, size: 20);
+                          return Icon(Icons.public, size: width);
                         },
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -806,7 +822,7 @@ class AppImageBuilder extends StatelessWidget {
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           // Fallback if image fails to render
-                          return Icon(Icons.public, size: 20);
+                          return Icon(Icons.public, size: width);
                         },
                       );
                     }
