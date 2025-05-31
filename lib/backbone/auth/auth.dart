@@ -25,6 +25,8 @@ import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 
@@ -228,8 +230,25 @@ class Auth {
     }
 
     
-    // Determine the working node ID from Lightning config or user mapping
-    String workingNodeId = LightningConfig.getDefaultNodeId();
+    // Determine the working node ID from user's specific node mapping
+    String workingNodeId;
+    try {
+      logger.i('🔥 Looking up user\'s specific node mapping...');
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+      UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
+      
+      if (nodeMapping != null) {
+        workingNodeId = nodeMapping.nodeId;
+        logger.i('🔥 ✅ Found user\'s assigned node: $workingNodeId');
+      } else {
+        logger.w('🔥 ⚠️ No node mapping found, falling back to default node');
+        workingNodeId = LightningConfig.getDefaultNodeId();
+      }
+    } catch (e) {
+      logger.e('🔥 ❌ Error retrieving node mapping: $e');
+      logger.w('🔥 ⚠️ Falling back to default node');
+      workingNodeId = LightningConfig.getDefaultNodeId();
+    }
     logger.i('🔥 Using working node ID: $workingNodeId');
     
     // Lightning-native authentication using user's specific node
