@@ -218,7 +218,6 @@ dependencies:
   encrypt: ^5.0.3
   crypto: ^3.0.5
   bip32: ^2.0.0
-  wallet: ^0.0.13
   bitcoin_base: ^4.9.4
   timezone: ^0.9.4
   flutter_timezone: ^4.0.0

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,44 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 final secureStorage = const FlutterSecureStorage();
+
+/// Check if input is a DID (any supported format)
+bool isDID(String input) {
+  LoggerService logger = Get.find();
+  
+  logger.d('🔍 Checking if "$input" is a DID...');
+  
+  // Check for recovery DID format: did:mnemonic:xxxxx
+  if (RecoveryIdentity.isValidRecoveryDid(input)) {
+    logger.d('✅ Matched recovery DID format');
+    return true;
+  }
+  
+  // Check for Lightning DID format: did:xxxxxxxx (16 hex chars after 'did:')
+  if (input.startsWith('did:') && input.length == 20) {
+    String hash = input.substring(4);
+    RegExp hexPattern = RegExp(r'^[a-f0-9]{16}$');
+    if (hexPattern.hasMatch(hash)) {
+      logger.d('✅ Matched Lightning DID format');
+      return true;
+    }
+  }
+  
+  // Check for BIP39 DID format: did_xxxxx
+  if (Bip39DidGenerator.isValidBip39Did(input)) {
+    logger.d('✅ Matched BIP39 DID format');
+    return true;
+  }
+  
+  // Check for compressed public key format (legacy DID)
+  if (isCompressedPublicKey(input)) {
+    logger.d('✅ Matched compressed public key format');
+    return true;
+  }
+  
+  logger.d('❌ No DID format matched for "$input"');
+  return false;
+}
 
 // Store userId, accountId and macaroon in secure storage
 Future<void> storeLitdAccountData(
@@ -131,14 +170,14 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   // Assuming you have a logger instance set up
   LoggerService logger = Get.find();
 
-  final bool isDID = isCompressedPublicKey(didOrUsername);
+  final bool isInputDID = isDID(didOrUsername);
   late String did;
   //late String username;
 
   logger.d('Input DidOrUsername: $didOrUsername');
-  logger.d('Is input a DID: $isDID');
+  logger.d('Is input a DID: $isInputDID');
 
-  if (isDID) {
+  if (isInputDID) {
     did = didOrUsername;
     logger.d('Using DID directly: $did');
     //username = await Auth().getUserUsername(did);
@@ -195,17 +234,26 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     for (int i = 0; i < usersStored.length; i++) {
       String storedDid = usersStored[i].did;
       String calculatedDid = Bip39DidGenerator.generateDidFromLightningMnemonic(usersStored[i].mnemonic);
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(usersStored[i].mnemonic);
       logger.d('User $i:');
       logger.d('  - Stored DID: $storedDid');
       logger.d('  - Calculated DID: $calculatedDid');
+      logger.d('  - Recovery DID: $recoveryDid');
       logger.d('  - Target DID: $did');
       logger.d('  - Stored match: ${storedDid == did}');
       logger.d('  - Calculated match: ${calculatedDid == did}');
+      logger.d('  - Recovery match: ${recoveryDid == did}');
     }
     
     final matchingPrivateData = usersStored.firstWhere(
-      // Try both the stored DID and calculated DID for compatibility
-      (user) => user.did == did || Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did,
+      // Try multiple DID formats for compatibility:
+      // 1. Stored DID (original format)
+      // 2. Lightning-generated DID (current format)
+      // 3. Recovery DID (recovery format)
+      (user) => 
+        user.did == did || 
+        Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did ||
+        RecoveryIdentity.generateRecoveryDid(user.mnemonic) == did,
     );
     logger.d('Found matching private data for DID $did');
     return matchingPrivateData;
@@ -213,8 +261,11 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     logger.e('No matching private data found for DID $did (StateError: firstWhere found no elements)');
     logger.e('Available DIDs in storage:');
     for (var user in usersStored) {
-      String userDid = Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic);
-      logger.e('  - $userDid');
+      String lightningDid = Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic);
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(user.mnemonic);
+      logger.e('  - Lightning: $lightningDid');
+      logger.e('  - Recovery: $recoveryDid');
+      logger.e('  - Stored: ${user.did}');
     }
     throw Exception('No private data found for DID $did');
   } catch (e, stackTrace) {
@@ -260,10 +311,6 @@ Future<void> deleteUserFromStoredIONData(String did) async {
 
   // Filter out the user with the provided DID
   usersStored = usersStored
-      // OLD: Multiple users one node approach - HDWallet-based DID filtering
-      // .where((user) => HDWallet.fromMnemonic(user.mnemonic).pubkey != did)
-      
-      // NEW: One user one node approach - Lightning aezeed format
       .where((user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) != did)
       .toList();
 

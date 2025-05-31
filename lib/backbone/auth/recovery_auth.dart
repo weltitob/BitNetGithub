@@ -76,11 +76,12 @@ class RecoveryAuth {
       _logger.i("Challenge ID: $challengeId");
       _logger.i("Challenge data: ${challengeData.substring(0, 20)}...");
       
-      // STEP 5: Sign challenge with user's Lightning node
+      // STEP 5: Sign challenge with user's Lightning node using their specific macaroon
       _logger.i("=== STEP 5: SIGNING CHALLENGE WITH LIGHTNING NODE ===");
       RestResponse signResponse = await signMessageWithNode(
         message: challengeData,
         nodeId: nodeMapping.nodeId,
+        userDid: recoveryDid, // Use user's DID to load their specific macaroon
       );
       
       if (signResponse.statusCode != "200") {
@@ -99,12 +100,11 @@ class RecoveryAuth {
       // STEP 6: Verify Lightning signature and get Firebase token
       _logger.i("=== STEP 6: VERIFYING SIGNATURE AND GETTING TOKEN ===");
       
-      // TODO: Update this to use new Lightning verification endpoint
-      // For now, use existing verification with Lightning pubkey
       dynamic customAuthToken = await verifyMessage(
-        nodeMapping.lightningPubkey, // Use Lightning pubkey instead of old pubkey
+        recoveryDid, // Use recovery DID (not Lightning pubkey)
         challengeId,
         signature,
+        nodeId: nodeMapping.nodeId, // Send user's specific node ID
       );
       
       _logger.i("✅ Signature verified, received auth token");

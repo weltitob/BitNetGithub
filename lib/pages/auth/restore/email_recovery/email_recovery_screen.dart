@@ -31,7 +31,6 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:wallet/wallet.dart' as wallet;
 
 class EmailRecoveryScreen extends StatefulWidget {
   const EmailRecoveryScreen();

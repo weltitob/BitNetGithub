@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
+import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -51,11 +51,13 @@ dynamic callInternalRebalance(
     // Retrieve private data (DID, private key)
     PrivateData privateData = await getPrivateData(senderUserId);
     logger.d('Retrieved private data for user ${senderUserId}');
-    HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
-    final String publicKeyHex = hdWallet.pubkey;
+    
+    // NEW: One user one node approach - BIP39-based key derivation
+    Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
+    final String publicKeyHex = keys['publicKey']!;
     logger.d('Public Key Hex: $publicKeyHex');
 
-    final String privateKeyHex = hdWallet.privkey;
+    final String privateKeyHex = keys['privateKey']!;
     logger.d('Private Key Hex: $privateKeyHex');
 
     // Sign the challenge data

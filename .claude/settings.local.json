@@ -63,7 +63,10 @@
       "Bash(sh:*)",
       "Bash(touch:*)",
       "Bash(wc:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "WebFetch(domain:api.lightning.community)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:lightning.engineering)"
     ],
     "deny": []
   }

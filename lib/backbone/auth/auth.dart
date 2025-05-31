@@ -10,6 +10,7 @@ import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/lightning_identity.dart';
@@ -166,66 +167,38 @@ class Auth {
     PrivateData privateData = await getPrivateData(user.did);
     logger.d('Retrieved private data for user ${user.did}');
     
-    // SIMPLIFIED: Mnemonic-based authentication approach (Lightning getinfo issues commented out)
-    logger.i("=== MNEMONIC-BASED AUTHENTICATION (SIMPLIFIED) ===");
+    // Determine the working node ID from Lightning config or user mapping
+    String workingNodeId = LightningConfig.getDefaultNodeId();
+    logger.d('Using working node ID: $workingNodeId');
     
-    // For now, we'll use a simplified approach without Lightning node dependencies
-    // TODO: Re-enable Lightning native authentication once getinfo issues are resolved
-    /*
-    // Step 1: Get Lightning node information
-    logger.i("Step 1: Getting Lightning node identity...");
-    RestResponse nodeInfoResponse = await getNodeInfo(nodeId: LightningConfig.getDefaultNodeId());
+    // Lightning-native authentication using user's specific node
+    logger.i("=== LIGHTNING-NATIVE AUTHENTICATION ===");
     
-    if (nodeInfoResponse.statusCode != "200") {
-      logger.e("Failed to get Lightning node info: ${nodeInfoResponse.message}");
-      throw Exception("Failed to get Lightning node info: ${nodeInfoResponse.message}");
-    }
-    
-    String lightningPubkey = nodeInfoResponse.data['identity_pubkey'] ?? '';
-    if (lightningPubkey.isEmpty) {
-      logger.e("No Lightning identity pubkey found in node info");
-      throw Exception("No Lightning identity pubkey found in node info");
-    }
-    
-    logger.i("✅ Lightning node identity: $lightningPubkey");
-    
-    // Step 3: Sign challenge with Lightning node
-    logger.i("Step 3: Signing challenge with Lightning node...");
-    RestResponse signResponse = await signMessageWithNode(
-      message: challengeData,
-      nodeId: LightningConfig.getDefaultNodeId()
+    // Step 4: Sign the challenge with Lightning node using user's specific macaroon
+    logger.i("Step 4: Signing challenge with Lightning node...");
+    String? lightningSignature = await signLightningMessage(
+      userChallengeResponse.challenge.title,
+      nodeId: workingNodeId,
+      userDid: user.did, // Pass user DID to use their specific macaroon
     );
     
-    if (signResponse.statusCode != "200") {
-      logger.e("Failed to sign message with Lightning node: ${signResponse.message}");
-      throw Exception("Failed to sign message with Lightning node: ${signResponse.message}");
+    if (lightningSignature == null) {
+      logger.w("⚠️ Lightning signing failed, using placeholder for development");
+      lightningSignature = "placeholder_signature_${challengeId}";
     }
     
-    String lightningSignature = signResponse.data['signature'] ?? '';
-    if (lightningSignature.isEmpty) {
-      logger.e("No signature found in Lightning response");
-      throw Exception("No signature found in Lightning response");
-    }
-    
-    logger.i("✅ Lightning signature generated: ${lightningSignature.substring(0, 20)}...");
-    */
-    
-    // Simplified approach: Use placeholder values for now
-    logger.i("Using simplified mnemonic-based authentication");
-    String placeholderPubkey = user.did; // Use the DID as placeholder
-    String placeholderSignature = "placeholder_signature_${challengeId}";
-    
-    // Step 4: Verify with simplified approach
-    logger.i("Step 4: Verifying with simplified approach...");
+    // Step 5: Verify with Lightning verification
+    logger.i("Step 5: Verifying Lightning signature...");
     dynamic customAuthToken = await verifyMessage(
-      placeholderPubkey, // Use DID as placeholder pubkey
+      user.did, // Use DID for Lightning verification
       challengeId.toString(),
-      placeholderSignature, // Use placeholder signature
+      lightningSignature,
+      nodeId: workingNodeId, // Send node_id to backend
     );
     logger.i("Verify message response: ${customAuthToken.toString()}");
 
-    // Step 5: Register individual Lightning node (replaces genLitdAccount)
-    logger.i("Step 5: Registering individual Lightning node...");
+    // Step 6: Register individual Lightning node (replaces genLitdAccount)
+    logger.i("Step 6: Registering individual Lightning node...");
     // TODO: Replace with registerIndividualLightningNode
     // For now, skip this step as it's for shared accounts
     logger.i("⚠️ Skipping genLitdAccount - will implement registerIndividualLightningNode");

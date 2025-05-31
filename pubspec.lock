@@ -686,14 +686,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.7.0"
-  eip55:
-    dependency: transitive
-    description:
-      name: eip55
-      sha256: "213a9b86add87a5216328e8494b0ab836e401210c4d55eb5e521bd39e39169e1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   encrypt:
     dependency: "direct main"
     description:
@@ -2157,14 +2149,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
-  sec:
-    dependency: transitive
-    description:
-      name: sec
-      sha256: "8bbd56df884502192a441b5f5d667265498f2f8728a282beccd9db79e215f379"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   sensors_plus:
     dependency: transitive
     description:
@@ -2715,14 +2699,6 @@ packages:
       url: "https://github.com/chandrabezzo/wakelock.git"
     source: git
     version: "0.2.2"
-  wallet:
-    dependency: "direct main"
-    description:
-      name: wallet
-      sha256: "687fd89a16557649b26189e597792962f405797fc64113e8758eabc2c2605c32"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.13"
   watcher:
     dependency: transitive
     description:

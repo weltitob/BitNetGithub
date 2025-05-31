@@ -8,7 +8,6 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverst
 import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/stateservice.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/hdwalletfrommnemonic.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';

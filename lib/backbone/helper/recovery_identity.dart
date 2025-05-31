@@ -78,7 +78,21 @@ class RecoveryIdentity {
   static bool isValidRecoveryDid(String did) {
     // Must start with did:mnemonic: and have 16 hex characters
     RegExp didPattern = RegExp(r'^did:mnemonic:[a-f0-9]{16}$');
-    return didPattern.hasMatch(did);
+    bool isValid = didPattern.hasMatch(did);
+    
+    // Debug logging
+    print('🔍 RecoveryIdentity.isValidRecoveryDid("$did"):');
+    print('   Pattern: ^did:mnemonic:[a-f0-9]{16}\$');
+    print('   Length: ${did.length}');
+    print('   Starts with "did:mnemonic:": ${did.startsWith("did:mnemonic:")}');
+    if (did.startsWith("did:mnemonic:")) {
+      String hash = did.substring(13); // "did:mnemonic:".length = 13
+      print('   Hash part: "$hash" (length: ${hash.length})');
+      print('   Hash is hex: ${RegExp(r'^[a-f0-9]+$').hasMatch(hash)}');
+    }
+    print('   Result: $isValid');
+    
+    return isValid;
   }
   
   /// Normalize mnemonic for consistent hashing

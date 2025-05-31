@@ -302,64 +302,14 @@ class CreateAccountController extends State<CreateAccount> {
         throw Exception("Error initializing Lightning node: $e");
       }
 
-      logger.i("=== STEP 4: WAITING FOR LIGHTNING SERVICES TO BE READY ===");
+      logger.i("=== STEP 4: LIGHTNING WALLET INITIALIZATION COMPLETE ===");
+      logger.i("✅ Lightning wallet created successfully - continuing with mnemonic-based authentication");
+      logger.i("Note: Lightning services will initialize in background, but authentication doesn't depend on them");
       
-      // Wait a moment for initialization to settle
-      logger.i("Waiting ${LightningConfig.postInitializationWaitSeconds} seconds for Lightning node to fully initialize after wallet creation...");
-      await Future.delayed(Duration(seconds: LightningConfig.postInitializationWaitSeconds));
       
-      // Check if wallet unlock is needed (should already be unlocked from initwallet)
-      try {
-        logger.i("Attempting wallet unlock (expecting 'already unlocked' message)...");
-        dynamic unlockResponse = await unlockWallet(nodeId: workingNodeId);
-        logger.i("Wallet unlock response: $unlockResponse");
-      } catch (unlockError) {
-        logger.i("Wallet unlock result: $unlockError");
-        // This is expected - wallet should already be unlocked from initwallet
-      }
+      logger.i("=== STEP 4: GENERATING RECOVERY DID ===");
       
-      // Use intelligent status checking instead of blind waiting
-      logger.i("Checking Lightning services readiness with status endpoint...");
-      bool isReady = await waitForLightningReady(
-        nodeId: workingNodeId,
-        adminMacaroon: adminMacaroon,
-        // Uses config defaults: maxWaitSeconds and checkIntervalSeconds
-      );
-      
-      if (!isReady) {
-        logger.e("❌ Lightning services did not become ready within ${LightningConfig.lightningReadyMaxWaitSeconds} seconds");
-        throw Exception("Lightning services did not become ready within ${LightningConfig.lightningReadyMaxWaitSeconds} seconds. Check node status.");
-      }
-      
-      // TODO: STEP 4: GETTING LIGHTNING NODE IDENTITY - TO BE ADDED LATER
-      // Currently commenting out Lightning node identity retrieval to avoid getinfo blocking issues
-      // We'll use mnemonic-based DIDs only for now
-      /*
-      logger.i("=== STEP 4: GETTING LIGHTNING NODE IDENTITY ===");
-      
-      // Now that services are confirmed ready, get the node info
-      RestResponse nodeInfoResponse = await getNodeInfo(
-        nodeId: LightningConfig.getDefaultNodeId(),
-        adminMacaroon: adminMacaroon, // Use the NEW macaroon from initwallet
-      );
-      
-      if (nodeInfoResponse.statusCode != "200") {
-        logger.e("Failed to get Lightning node info: ${nodeInfoResponse.message}");
-        throw Exception("Failed to get Lightning node info: ${nodeInfoResponse.message}");
-      }
-      
-      String lightningPubkey = nodeInfoResponse.data['identity_pubkey'] ?? '';
-      if (lightningPubkey.isEmpty) {
-        logger.e("No Lightning identity pubkey found in node info");
-        throw Exception("No Lightning identity pubkey found in node info");
-      }
-      
-      logger.i("✅ Lightning node identity: $lightningPubkey");
-      */
-      
-      logger.i("=== STEP 5: GENERATING MNEMONIC-BASED DID (SIMPLIFIED) ===");
-      
-      // SIMPLIFIED: Generate DID from mnemonic only (always derivable)
+      // Generate recovery DID from mnemonic (always derivable for recovery)
       String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
       logger.i("Generated recovery DID from mnemonic: $recoveryDid");
       

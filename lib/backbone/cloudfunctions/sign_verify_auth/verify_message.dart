@@ -1,25 +1,50 @@
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 //verifymessage
 
-dynamic verifyMessage(String userId, String challengeId, String signature) async {
+dynamic verifyMessage(String did, String challengeId, String signature, {String? nodeId}) async {
   HttpsCallable callable =
-  FirebaseFunctions.instance.httpsCallable('verify_signature'); //old_fake_login
+  FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_func');
 
   final logger = Get.find<LoggerService>();
 
+  logger.i("🔐 Lightning Verification - DID: $did");
+  logger.i("🔐 Lightning Verification - Challenge ID: $challengeId");
+  logger.i("🔐 Lightning Verification - Signature: $signature");
+  logger.i("🔐 Lightning Verification - Node ID: $nodeId");
+
+  // If nodeId is not provided, try to get it from user's node mapping
+  String? userNodeId = nodeId;
+  if (userNodeId == null) {
+    try {
+      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(did);
+      if (nodeMapping != null) {
+        userNodeId = nodeMapping.nodeId;
+        logger.i("🔍 Retrieved user's node ID from mapping: $userNodeId");
+      } else {
+        logger.e("❌ No node mapping found for user DID: $did");
+        throw Exception("No Lightning node found for user");
+      }
+    } catch (e) {
+      logger.e("❌ Failed to get user's node ID: $e");
+      throw Exception("Failed to determine user's Lightning node: $e");
+    }
+  }
+
   final HttpsCallableResult<dynamic> response =
   await callable.call(<String, dynamic>{
-    'fakedid': userId,
+    'did': did,
     'challengeid': challengeId,
     'signature': signature,
+    'node_id': userNodeId,  // Send node_id to backend
   });
 
   logger.i("Response VERIFY MESSAGE: ${response.data}");

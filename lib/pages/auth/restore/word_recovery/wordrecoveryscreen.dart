@@ -19,7 +19,6 @@ import 'dart:typed_data';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:wallet/wallet.dart' as wallet;
 
 class WordRecoveryScreen extends StatefulWidget {
   @override
