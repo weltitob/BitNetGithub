@@ -107,9 +107,23 @@ Future<Map<String, dynamic>?> getLitdAccountData(String userId) async {
     return null;
   }
 
-  Map<String, dynamic>? account = (jsonDecode(accountsJson) as List)
-      .map((json) => Map<String, dynamic>.from(json))
-      .firstWhere((json) => json['userId'] == userId);
+  Map<String, dynamic>? account;
+  try {
+    account = (jsonDecode(accountsJson) as List)
+        .map((json) => Map<String, dynamic>.from(json))
+        .firstWhere(
+          (json) => json['userId'] == userId,
+          orElse: () => <String, dynamic>{},
+        );
+    
+    if (account.isEmpty) {
+      print('No LITD account found for userId: $userId');
+      return null;
+    }
+  } catch (e) {
+    print('Error searching for LITD account: $e');
+    return null;
+  }
   return account;
 }
 
