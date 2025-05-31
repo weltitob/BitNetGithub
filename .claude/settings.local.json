@@ -66,7 +66,8 @@
       "Bash(rg:*)",
       "WebFetch(domain:api.lightning.community)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:lightning.engineering)"
+      "WebFetch(domain:lightning.engineering)",
+      "Bash(/mnt/c/src/flutter/bin/dart analyze /mnt/c/Users/tobia/StudioProjects/bitnet/lib/backbone/cloudfunctions/lnd/lightningservice/sign_message.dart)"
     ],
     "deny": []
   }

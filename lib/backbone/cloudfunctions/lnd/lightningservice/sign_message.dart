@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -34,6 +33,12 @@ Future<RestResponse> signMessageWithNode({
   // Base64 encode the message
   String encodedMessage = base64Encode(utf8.encode(message));
   logger.i("Base64 encoded message: $encodedMessage");
+  
+  // Validate base64 encoding
+  if (!RegExp(r'^[A-Za-z0-9+/]*={0,2}$').hasMatch(encodedMessage)) {
+    logger.e("❌ Invalid base64 encoding: $encodedMessage");
+    throw Exception("Message base64 encoding is invalid");
+  }
 
   Map<String, dynamic> data = {
     'msg': encodedMessage,
@@ -53,7 +58,16 @@ Future<RestResponse> signMessageWithNode({
     try {
       final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(userDid);
       if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
-        macaroon = nodeMapping.adminMacaroon;
+        // Convert base64 macaroon to hex format for Lightning API
+        try {
+          List<int> macaroonBytes = base64Decode(nodeMapping.adminMacaroon);
+          macaroon = macaroonBytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join('');
+          logger.i("🔑 Converted base64 macaroon to hex format");
+        } catch (e) {
+          logger.e("❌ Failed to convert base64 macaroon to hex: $e");
+          throw Exception("Failed to convert macaroon format: $e");
+        }
+        
         selectedNode = nodeMapping.nodeId; // Use user's specific node
         url = LightningConfig.getLightningUrl('v1/signmessage', nodeId: selectedNode);
         logger.i("🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
@@ -67,12 +81,22 @@ Future<RestResponse> signMessageWithNode({
   } else {
     // Fallback to global admin macaroon (should be avoided in production)
     final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-    ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
-    List<int> bytes = byteData.buffer.asUint8List();
-    macaroon = bytesToHex(bytes);
+    // Use the hex string directly from remote config instead of converting ByteData
+    macaroon = remoteConfigController.adminMacaroon.value;
     logger.w("⚠️ Using global admin macaroon as fallback: ${macaroon.substring(0, 20)}... (truncated)");
+    
+    if (macaroon.isEmpty) {
+      logger.e("❌ Admin macaroon from remote config is empty");
+      throw Exception("Admin macaroon from remote config is empty");
+    }
   }
 
+  // Validate macaroon is valid hex
+  if (!RegExp(r'^[0-9a-fA-F]+$').hasMatch(macaroon)) {
+    logger.e("❌ Invalid macaroon hex format: ${macaroon.substring(0, 50)}...");
+    throw Exception("Macaroon contains invalid hex characters");
+  }
+  
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
     'Content-Type': 'application/json',
@@ -82,6 +106,8 @@ Future<RestResponse> signMessageWithNode({
   headers.forEach((key, value) {
     if (key == 'Grpc-Metadata-macaroon') {
       logger.i("$key: ${value.substring(0, 20)}... (truncated)");
+      logger.i("Macaroon length: ${value.length} characters");
+      logger.i("Macaroon valid hex: ${RegExp(r'^[0-9a-fA-F]+$').hasMatch(value)}");
     } else {
       logger.i("$key: $value");
     }
@@ -94,7 +120,7 @@ Future<RestResponse> signMessageWithNode({
   logger.i("About to make POST request to: $url");
 
   // Retry mechanism for "lnd is not ready" errors
-  int maxRetries = 10;
+  int maxRetries = 20;
   int retryDelay = 2; // seconds
   
   for (int attempt = 1; attempt <= maxRetries; attempt++) {

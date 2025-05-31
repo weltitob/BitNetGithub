@@ -1,8 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
@@ -48,22 +47,24 @@ dynamic callInternalRebalance(
     String challengeData = userChallengeResponse.challenge.title;
     logger.d('Challenge Data: $challengeData');
 
-    // Retrieve private data (DID, private key)
+    // Retrieve private data (DID, mnemonic)
     PrivateData privateData = await getPrivateData(senderUserId);
     logger.d('Retrieved private data for user ${senderUserId}');
     
-    // NEW: One user one node approach - BIP39-based key derivation
-    Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
-    final String publicKeyHex = keys['publicKey']!;
-    logger.d('Public Key Hex: $publicKeyHex');
-
-    final String privateKeyHex = keys['privateKey']!;
-    logger.d('Private Key Hex: $privateKeyHex');
-
-    // Sign the challenge data
-    String signatureHex =
-    await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
-    logger.d('Generated signature hex: $signatureHex');
+    // NEW: Lightning-native signing
+    // Sign the challenge data using Lightning node
+    logger.i("Signing challenge with Lightning node...");
+    String? lightningSignature = await signLightningMessage(
+      challengeData,
+      userDid: senderUserId,
+    );
+    
+    if (lightningSignature == null) {
+      logger.e("Failed to sign message with Lightning node");
+      throw Exception("Lightning signing failed");
+    }
+    
+    logger.d('Generated Lightning signature: ${lightningSignature.substring(0, 20)}...');
 
     // Initialize FirebaseFunctions and call the Cloud Function
     final functions = FirebaseFunctions.instance;
@@ -90,7 +91,7 @@ dynamic callInternalRebalance(
       'fallbackAddress': fallbackAddress,
       'amountSatoshi': amountSatoshi,
       'senderUserId': senderUserId,
-      'signedMessage': signatureHex,
+      'signedMessage': lightningSignature,
       'challenge_data': challengeData,
       'restHost': restHost,
     });

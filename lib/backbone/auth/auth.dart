@@ -6,7 +6,7 @@ import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
-import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
+import 'package:bitnet/backbone/cloudfunctions/auth/register_individual_node.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
@@ -328,13 +328,52 @@ class Auth {
     try {
       // Step 6: Register individual Lightning node (replaces genLitdAccount)
       logger.i("🔥 Step 6: Registering individual Lightning node...");
-      // TODO: Replace with registerIndividualLightningNode
-      // For now, skip this step as it's for shared accounts
-      logger.i("⚠️ Skipping genLitdAccount - will implement registerIndividualLightningNode");
-      logger.i("✅ Node registration step completed (skipped)");
+      
+      // Get Lightning node info for registration
+      String caddyEndpoint = LightningConfig.getCaddyEndpoint(workingNodeId);
+      
+      // Get the node mapping to access the admin macaroon
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+      UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
+      
+      if (nodeMapping != null) {
+        // Call getNodeInfo to get the Lightning pubkey
+        RestResponse nodeInfoResponse = await getNodeInfo(
+          nodeId: workingNodeId,
+          adminMacaroon: nodeMapping.adminMacaroon,
+        );
+        
+        if (nodeInfoResponse.statusCode == "200" && nodeInfoResponse.data != null) {
+          String lightningPubkey = nodeInfoResponse.data['identity_pubkey'] ?? '';
+          
+          if (lightningPubkey.isNotEmpty) {
+            // Register the individual Lightning node
+            bool registrationSuccess = await registerIndividualLightningNode(
+              did: user.did,
+              nodeId: workingNodeId,
+              adminMacaroon: nodeMapping.adminMacaroon,
+              lightningPubkey: lightningPubkey,
+              caddyEndpoint: caddyEndpoint,
+            );
+            
+            if (registrationSuccess) {
+              logger.i("✅ Individual Lightning node registered successfully");
+            } else {
+              logger.e("❌ Failed to register individual Lightning node");
+              // Continue with authentication even if registration fails
+            }
+          } else {
+            logger.e("❌ No Lightning pubkey found in node info");
+          }
+        } else {
+          logger.e("❌ Failed to get node info for registration");
+        }
+      } else {
+        logger.e("❌ No node mapping found for registration");
+      }
     } catch (e) {
       logger.e("❌ Node registration failed: $e");
-      // Don't throw here as this step is optional for now
+      // Don't throw here as this step is not critical for authentication
     }
 
     fbAuth.UserCredential? currentuser;
@@ -489,76 +528,8 @@ class Auth {
   //   }
   // }
 
-  // OLD: Multiple users one node approach - LITD account generation for shared node
-  // This function is commented out because it won't work with the new one-user-one-node approach
-  // where each user gets their own Lightning node via Caddy routing
-  /*
-  Future<bool> genLitdAccount(String userId) async {
-    try {
-      final logger = Get.find<LoggerService>();
-      logger.i("Calling genLitdaccount");
-
-      final response = await callGenLitdAccount(userId);
-
-      logger.i("genlitdaccount Response: $response");
-
-      if (response == null) {
-        logger.e(
-            "Response is null. Possibly an error occurred calling genLitdAccount.");
-        return false;
-      }
-
-      // Check if the required fields exist
-      if (response.account == null) {
-        logger.i("Response contains no account information.");
-        return false;
-      }
-
-      if (response.macaroon == null || response.macaroon!.isEmpty) {
-        logger.i("Response macaroon is null or empty.");
-        return false;
-      }
-
-      final accountId = response.account!.id;
-      final macaroon = response.macaroon;
-
-      if (userId.isEmpty) {
-        logger.i("No user is currently logged in or userId is empty.");
-        return false;
-      }
-
-      if (accountId == null || accountId.isEmpty) {
-        logger.i("Account ID is null or empty.");
-        return false;
-      }
-
-      if (macaroon == null || macaroon.isEmpty) {
-        logger.i("Macaroon is null or empty.");
-        return false;
-      }
-
-      try {
-        await storeLitdAccountData(userId, accountId, macaroon);
-        logger.i("LITD account data stored securely.");
-        return true;
-      } catch (e) {
-        logger.e("Error storing LITD account data: $e");
-        return false;
-      }
-    } catch (e) {
-      print("An exception occurred while generating LITD account: $e");
-      return false;
-    }
-  }
-  */
-  
-  // NEW: One user one node approach - Individual Lightning node initialization
-  Future<bool> genLitdAccount(String userId) async {
-    final logger = Get.find<LoggerService>();
-    logger.i("OLD genLitdAccount function called - needs new one user one node implementation since old version will not work anymore");
-    // TODO: Implement new Lightning node initialization for individual user nodes via Caddy
-    return false;
-  }
+  // DEPRECATED: genLitdAccount is no longer used in one-user-one-node architecture
+  // Use registerIndividualLightningNode() instead
 
   String generateRandomString(int length) {
     const characters =

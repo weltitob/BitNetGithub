@@ -11,8 +11,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 // Import your existing models and services
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -85,12 +85,8 @@ class UsersListController extends GetxController {
 
       // Map DID to PrivateData for quick lookup
       for (var ionData in ionDataList) {
-        // OLD: Multiple users one node approach - HDWallet-based DID generation
-        // HDWallet hdWallet = HDWallet.fromMnemonic(ionData.mnemonic);
-        // didToPrivateDataMap[hdWallet.pubkey] = ionData;
-        
-        // NEW: One user one node approach - Lightning aezeed format
-        String did = Bip39DidGenerator.generateDidFromLightningMnemonic(ionData.mnemonic);
+        // Generate recovery DID from mnemonic for user identification
+        String did = RecoveryIdentity.generateRecoveryDid(ionData.mnemonic);
         didToPrivateDataMap[did] = ionData;
       }
 
@@ -230,25 +226,25 @@ class UsersListController extends GetxController {
       // print("Login for user ${hdWallet.pubkey} pressed");
       // print("Private Key: ${hdWallet.privkey}");
       
-      // NEW: One user one node approach - BIP39-based key derivation
-      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privateData.mnemonic);
-      String publicKey = keys['publicKey']!;
-      String privateKey = keys['privateKey']!;
+      // NEW: Lightning-native authentication
       print("Login for user $did pressed");
-      print("Public Key: $publicKey");
-      print("Private Key: $privateKey");
 
       final logger = Get.find<LoggerService>();
 
       String challengeData = "Saved User SecureStorage Challenge";
 
-      // OLD: Multiple users one node approach - HDWallet key signing
-      // String signatureHex = await signChallengeData(
-      //     hdWallet.privkey, hdWallet.pubkey, challengeData);
+      // Sign with Lightning node
+      logger.i("Signing challenge with Lightning node...");
+      String? lightningSignature = await signLightningMessage(
+        challengeData,
+        userDid: did,
+      );
       
-      // NEW: One user one node approach - BIP39 key signing
-      String signatureHex = await signChallengeData(
-          privateKey, publicKey, challengeData);
+      if (lightningSignature == null) {
+        throw Exception("Failed to sign with Lightning node");
+      }
+      
+      String signatureHex = lightningSignature;
 
       logger.d('Generated signature hex: $signatureHex');
       await Auth().signIn(ChallengeType.securestorage_login, privateData,

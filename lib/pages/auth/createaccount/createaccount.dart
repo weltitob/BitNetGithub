@@ -11,7 +11,6 @@ import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
-import 'package:bitnet/backbone/cloudfunctions/litd/gen_litd_account.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
@@ -23,6 +22,7 @@ import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_status.dart';
 import 'package:bitnet/backbone/services/lightning_node_finder.dart';
+import 'package:bitnet/backbone/services/node_assignment_service.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -247,19 +247,34 @@ class CreateAccountController extends State<CreateAccount> {
     logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
-      // NEW APPROACH: Find working Lightning node and use its native genseed endpoint
-      logger.i("=== STEP 1: FINDING WORKING LIGHTNING NODE ===");
+      // NEW APPROACH: Assign an available Lightning node using load balancing
+      logger.i("=== STEP 1: ASSIGNING LIGHTNING NODE TO NEW USER ===");
       
-      String? workingNodeId = await LightningNodeFinder.findWorkingNode(
-        timeoutSeconds: 5,
-        includeDefaultNode: true,
-      );
+      String workingNodeId = await NodeAssignmentService.assignAvailableNode();
+      logger.i("✅ Assigned node to user: $workingNodeId");
       
-      if (workingNodeId == null) {
-        throw Exception("No Lightning nodes are available. Please check server status.");
+      // Verify the node is actually working
+      logger.i("Verifying node $workingNodeId is responsive...");
+      bool isNodeHealthy = await NodeAssignmentService.isNodeHealthy(workingNodeId);
+      
+      if (!isNodeHealthy) {
+        logger.w("⚠️ Assigned node $workingNodeId is not healthy, finding alternative...");
+        // Mark the node as unhealthy and try to find another
+        await NodeAssignmentService.markNodeUnhealthy(workingNodeId, "Node not responding during user creation");
+        
+        // Fallback to node finder
+        String? alternativeNode = await LightningNodeFinder.findWorkingNode(
+          timeoutSeconds: 5,
+          includeDefaultNode: true,
+        );
+        
+        if (alternativeNode != null) {
+          workingNodeId = alternativeNode;
+          logger.i("✅ Using alternative node: $workingNodeId");
+        } else {
+          throw Exception("No Lightning nodes are available. Please check server status.");
+        }
       }
-      
-      logger.i("✅ Using working node: $workingNodeId");
       
       logger.i("=== STEP 2: GENERATING SEED VIA LIGHTNING NODE ===");
       RestResponse seedResponse = await generateSeed(nodeId: workingNodeId);
