@@ -248,8 +248,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     final matchingPrivateData = usersStored.firstWhere(
       // Try multiple DID formats for compatibility:
       // 1. Stored DID (original format)
-      // 2. Lightning-generated DID (current format)
-      // 3. Recovery DID (recovery format)
+      // 2. Old Lightning-generated DID (legacy format): did:hash
+      // 3. Recovery DID (new format): did:mnemonic:hash  
       (user) => 
         user.did == did || 
         Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) == did ||

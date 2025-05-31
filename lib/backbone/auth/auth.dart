@@ -143,8 +143,12 @@ class Auth {
   Future<UserData> createUser({
     required UserData user,
     required VerificationCode code,
+    String? mnemonicForRegistration, // Optional mnemonic for registration flow
   }) async {
+    print("🟣 AUTH.CREATEUSER CALLED - ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟣 AUTH.CREATEUSER CALLED - ENTRY POINT");
+    logger.i("🔥 ✅ AUTH.CREATEUSER FUNCTION CALLED");
 
     logger.i("🔥 === STARTING CREATE USER PROCESS ===");
     logger.i("🔥 User DID: ${user.did}");
@@ -167,36 +171,60 @@ class Auth {
 
     try {
       logger.i("🔥 Step 2: Generating challenge...");
+      logger.i("🔥 📤 === CALLING CREATE_CHALLENGE CLOUD FUNCTION ===");
+      logger.i("🔥 📤 Request DID: '${user.did}'");
+      logger.i("🔥 📤 Request Challenge Type: ${ChallengeType.default_registration}");
+      logger.i("🔥 📤 About to call create_challenge()...");
+      
       userChallengeResponse = await create_challenge(user.did, ChallengeType.default_registration);
+      
+      logger.i("🔥 📥 === CREATE_CHALLENGE CLOUD FUNCTION RESPONSE ===");
+      logger.i("🔥 📥 Response received: ${userChallengeResponse != null ? 'NOT NULL' : 'NULL'}");
 
       if (userChallengeResponse == null) {
         logger.e("❌ Challenge creation returned null");
         throw Exception("Challenge creation failed: null response");
       }
 
+      logger.i('🔥 📥 Challenge response type: ${userChallengeResponse.runtimeType}');
+      logger.i('🔥 📥 Challenge response toString: $userChallengeResponse');
       logger.i('✅ Created challenge for user ${user.did}');
-      logger.i('Challenge response: $userChallengeResponse');
 
       challengeId = userChallengeResponse.challenge.challengeId;
-      logger.i('Challenge ID: $challengeId');
+      logger.i('🔥 📥 Challenge ID: $challengeId');
 
       challengeData = userChallengeResponse.challenge.title;
-      logger.i('Challenge Data: $challengeData');
-    } catch (e) {
+      logger.i('🔥 📥 Challenge Data: $challengeData');
+    } catch (e, stackTrace) {
       logger.e("❌ Failed to create challenge: $e");
+      logger.e("❌ Stack trace: $stackTrace");
+      logger.e("❌ Error type: ${e.runtimeType}");
+      if (e is StateError) {
+        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from create_challenge!");
+      }
       throw Exception("Failed to create challenge: $e");
     }
 
-    try {
-      logger.i("🔥 Step 3: Retrieving private data...");
-      logger.i("🔥 Looking for DID: ${user.did}");
-      privateData = await getPrivateData(user.did);
-      logger.i('✅ Retrieved private data for user ${user.did}');
-      logger.i('Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
-    } catch (e) {
-      logger.e("❌ Failed to retrieve private data: $e");
-      logger.e("❌ This is likely where the 'Bad state: No element' error occurs!");
-      throw Exception("Failed to retrieve private data: $e");
+    // Step 3: Get private data (skip retrieval during registration)
+    if (mnemonicForRegistration != null) {
+      logger.i("🔥 Step 3: Using provided mnemonic for registration...");
+      logger.i("🔥 Registration mnemonic length: ${mnemonicForRegistration.split(' ').length} words");
+      logger.i("🔥 ✅ Skipping getPrivateData() call during registration - using direct mnemonic");
+      
+      // Create temporary PrivateData object for registration
+      privateData = PrivateData(did: user.did, mnemonic: mnemonicForRegistration);
+    } else {
+      logger.i("🔥 Step 3: Retrieving stored private data for login...");
+      try {
+        logger.i("🔥 Looking for DID: ${user.did}");
+        privateData = await getPrivateData(user.did);
+        logger.i('✅ Retrieved private data for user ${user.did}');
+        logger.i('Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
+      } catch (e, stackTrace) {
+        logger.e("❌ Failed to retrieve private data: $e");
+        logger.e("❌ This is likely where the 'Bad state: No element' error occurs!");
+        throw Exception("Failed to retrieve private data: $e");
+      }
     }
 
     
@@ -211,9 +239,11 @@ class Auth {
     try {
       // Step 4: Sign the challenge with Lightning node using user's specific macaroon
       logger.i("🔥 Step 4: Signing challenge with Lightning node...");
-      logger.i("🔥 Challenge text to sign: '$challengeData'");
-      logger.i("🔥 Using node ID: $workingNodeId");
-      logger.i("🔥 User DID: ${user.did}");
+      logger.i("🔥 📤 === CALLING SIGN_LIGHTNING_MESSAGE CLOUD FUNCTION ===");
+      logger.i("🔥 📤 Challenge text to sign: '$challengeData'");
+      logger.i("🔥 📤 Using node ID: $workingNodeId");
+      logger.i("🔥 📤 User DID: ${user.did}");
+      logger.i("🔥 📤 About to call signLightningMessage()...");
       
       lightningSignature = await signLightningMessage(
         challengeData,
@@ -221,14 +251,24 @@ class Auth {
         userDid: user.did, // Pass user DID to use their specific macaroon
       );
       
+      logger.i("🔥 📥 === SIGN_LIGHTNING_MESSAGE CLOUD FUNCTION RESPONSE ===");
+      logger.i("🔥 📥 Response received: ${lightningSignature != null ? 'NOT NULL' : 'NULL'}");
+      
       if (lightningSignature == null) {
         logger.e("❌ Lightning signing returned null signature");
         throw Exception("Lightning signing failed: null signature returned");
       }
       
+      logger.i("🔥 📥 Signature type: ${lightningSignature.runtimeType}");
+      logger.i("🔥 📥 Signature length: ${lightningSignature.length}");
       logger.i("✅ Lightning signature created: ${lightningSignature.substring(0, 20)}...");
-    } catch (e) {
+    } catch (e, stackTrace) {
       logger.e("❌ Lightning signing failed: $e");
+      logger.e("❌ Stack trace: $stackTrace");
+      logger.e("❌ Error type: ${e.runtimeType}");
+      if (e is StateError) {
+        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from signLightningMessage!");
+      }
       throw Exception("Lightning signing failed: $e");
     }
     
@@ -236,11 +276,12 @@ class Auth {
     try {
       // Step 5: Verify with Lightning verification
       logger.i("🔥 Step 5: Verifying Lightning signature...");
-      logger.i("🔥 Calling verifyMessage with:");
-      logger.i("🔥   DID: ${user.did}");
-      logger.i("🔥   Challenge ID: $challengeId");
-      logger.i("🔥   Signature: ${lightningSignature.substring(0, 20)}...");
-      logger.i("🔥   Node ID: $workingNodeId");
+      logger.i("🔥 📤 === CALLING VERIFY_MESSAGE CLOUD FUNCTION ===");
+      logger.i("🔥 📤 Request DID: ${user.did}");
+      logger.i("🔥 📤 Request Challenge ID: $challengeId");
+      logger.i("🔥 📤 Request Signature: ${lightningSignature.substring(0, 20)}...");
+      logger.i("🔥 📤 Request Node ID: $workingNodeId");
+      logger.i("🔥 📤 About to call verifyMessage()...");
       
       customAuthToken = await verifyMessage(
         user.did, // Use DID for Lightning verification
@@ -249,14 +290,22 @@ class Auth {
         nodeId: workingNodeId, // Send node_id to backend
       );
       
+      logger.i("🔥 📥 === VERIFY_MESSAGE CLOUD FUNCTION RESPONSE ===");
+      logger.i("🔥 📥 Response received: ${customAuthToken != null ? 'NOT NULL' : 'NULL'}");
+      logger.i("🔥 📥 Response type: ${customAuthToken.runtimeType}");
       logger.i("✅ Verify message response: ${customAuthToken.toString()}");
       
       if (customAuthToken == null) {
         logger.e("❌ Lightning verification returned null token");
         throw Exception("Lightning verification failed: null token returned");
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       logger.e("❌ Lightning verification failed: $e");
+      logger.e("❌ Stack trace: $stackTrace");
+      logger.e("❌ Error type: ${e.runtimeType}");
+      if (e is StateError) {
+        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from verifyMessage!");
+      }
       throw Exception("Lightning verification failed: $e");
     }
 
@@ -275,18 +324,30 @@ class Auth {
     fbAuth.UserCredential? currentuser;
     try {
       logger.i("🔥 Step 7: Signing in with Firebase custom token...");
-      logger.i("🔥 Custom token: ${customAuthToken.toString().substring(0, 50)}...");
+      logger.i("🔥 📤 === CALLING FIREBASE SIGN_IN_WITH_TOKEN ===");
+      logger.i("🔥 📤 Custom token: ${customAuthToken.toString().substring(0, 50)}...");
+      logger.i("🔥 📤 About to call signInWithToken()...");
       
       currentuser = await signInWithToken(customToken: customAuthToken);
+      
+      logger.i("🔥 📥 === FIREBASE SIGN_IN_WITH_TOKEN RESPONSE ===");
+      logger.i("🔥 📥 Response received: ${currentuser != null ? 'NOT NULL' : 'NULL'}");
       
       if (currentuser == null) {
         logger.e("❌ Firebase sign-in returned null user");
         throw Exception("Firebase sign-in failed: null user returned");
       }
       
+      logger.i("🔥 📥 User credential type: ${currentuser.runtimeType}");
+      logger.i("🔥 📥 User UID: ${currentuser.user?.uid}");
       logger.i("✅ Firebase sign-in successful: ${currentuser.user?.uid}");
-    } catch (e) {
+    } catch (e, stackTrace) {
       logger.e("❌ Firebase sign-in failed: $e");
+      logger.e("❌ Stack trace: $stackTrace");
+      logger.e("❌ Error type: ${e.runtimeType}");
+      if (e is StateError) {
+        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from Firebase sign-in!");
+      }
       throw Exception("Firebase sign-in failed: $e");
     }
 

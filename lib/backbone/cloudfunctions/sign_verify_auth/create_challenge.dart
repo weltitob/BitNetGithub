@@ -24,37 +24,61 @@ enum ChallengeType {
 
 
 Future<UserChallengeResponse?> create_challenge(String did, ChallengeType challengeType) async {
-  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_user_challenge');
   final logger = Get.find<LoggerService>();
-  logger.i("CREATE CHALLENGE CALLED...");
+  logger.i("🚀 ✅ CREATE_CHALLENGE FUNCTION CALLED");
+  
+  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_user_challenge');
+  
+  logger.i("🚀 === CREATE_CHALLENGE FUNCTION START ===");
+  logger.i("🚀 Input DID: '$did'");
+  logger.i("🚀 Input Challenge Type: $challengeType");
+  logger.i("🚀 Challenge Type String: '${challengeType.toString().split('.').last}'");
 
   try {
-    print("Challenge type: ${challengeType.toString().split('.').last}");
-
-    final HttpsCallableResult<dynamic> response =
-    await callable.call(<String, dynamic>{
+    final Map<String, dynamic> requestData = {
       'did': did,
       'challengeType': challengeType.toString().split('.').last,
-    });
+    };
+    
+    logger.i("🚀 📤 === CALLING FIREBASE CLOUD FUNCTION ===");
+    logger.i("🚀 📤 Function name: 'create_user_challenge'");
+    logger.i("🚀 📤 Request data: $requestData");
+    logger.i("🚀 📤 About to call Firebase function...");
 
-    logger.i("Response: ${response.data}");
+    final HttpsCallableResult<dynamic> response = await callable.call(requestData);
+
+    logger.i("🚀 📥 === FIREBASE CLOUD FUNCTION RESPONSE ===");
+    logger.i("🚀 📥 Response received: ${response != null ? 'NOT NULL' : 'NULL'}");
+    logger.i("🚀 📥 Response data type: ${response.data?.runtimeType}");
+    logger.i("🚀 📥 Response data: ${response.data}");
 
     // Ensure response.data is not null and is a Map
     if (response.data != null && response.data is Map) {
-      final Map<String, dynamic> responseData =
-      Map<String, dynamic>.from(response.data as Map);
-
+      logger.i("🚀 📥 Response data is valid Map, converting...");
+      
+      final Map<String, dynamic> responseData = Map<String, dynamic>.from(response.data as Map);
+      logger.i("🚀 📥 Converted response data: $responseData");
+      
+      logger.i("🚀 📥 About to call UserChallengeResponse.fromJson()...");
       final userChallengeResponse = UserChallengeResponse.fromJson(responseData);
-
-      logger.i("UserChallengeResponse: ${userChallengeResponse.toJson()}");
+      
+      logger.i("🚀 📥 UserChallengeResponse created successfully");
+      logger.i("🚀 📥 UserChallengeResponse: ${userChallengeResponse.toJson()}");
 
       return userChallengeResponse;
     } else {
-      logger.i("Response data is null or not a Map.");
+      logger.e("🚀 ❌ Response data is null or not a Map");
+      logger.e("🚀 ❌ Response data type: ${response.data?.runtimeType}");
+      logger.e("🚀 ❌ Response data value: ${response.data}");
       return null;
     }
   } catch (e, stackTrace) {
-    logger.e("Error during create challenge: $e",);
+    logger.e("🚀 ❌ Error during create challenge: $e");
+    logger.e("🚀 ❌ Error type: ${e.runtimeType}");
+    logger.e("🚀 ❌ Stack trace: $stackTrace");
+    if (e is StateError) {
+      logger.e("🚀 ❌ 🚨 THIS IS A STATE ERROR in create_challenge - likely the 'Bad state: No element'!");
+    }
     return null;
   }
 }

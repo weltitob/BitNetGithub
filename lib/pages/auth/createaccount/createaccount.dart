@@ -84,7 +84,9 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   void createAccountPressed() async {
+    print("🔴 CREATE_ACCOUNT_PRESSED CALLED - ACTUAL ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🔴 CREATE_ACCOUNT_PRESSED CALLED - ACTUAL ENTRY POINT");
     setState(() {
       errorMessage = null;
       isLoading = true;
@@ -239,7 +241,9 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   Future generateAccount() async {
+    print("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
     LoggerService logger = Get.find<LoggerService>();
+    logger.i("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
     logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
@@ -422,7 +426,9 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   Future<bool> signUp(String did, String code) async {
+    print("🟢 SIGNUP IN CREATEACCOUNT CALLED - THIRD ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟢 SIGNUP IN CREATEACCOUNT CALLED - THIRD ENTRY POINT");
 
     try {
       // Check if we have a litd account with macaroon for this user
@@ -535,7 +541,9 @@ class CreateAccountController extends State<CreateAccount> {
 
   Future<UserData?> firebaseAuthentication(
       UserData userData, VerificationCode code) async {
+    print("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");
     try {
       logger.i("Creating firebase user now...");
 

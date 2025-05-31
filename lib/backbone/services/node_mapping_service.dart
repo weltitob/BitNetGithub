@@ -79,6 +79,8 @@ class NodeMappingService {
   /// 
   /// Primary method for finding a user's Lightning node during recovery.
   static Future<UserNodeMapping?> getUserNodeMapping(String recoveryDid) async {
+    _logger.i("🗺️ ✅ GETUSERNMAPPING FUNCTION CALLED");
+    
     try {
       _logger.i("Looking up node mapping for recovery DID: $recoveryDid");
 

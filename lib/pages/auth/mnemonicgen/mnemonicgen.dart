@@ -64,27 +64,45 @@ class MnemonicController extends State<MnemonicGen> {
 
   @override
   void initState() {
+    print("🔵 INIT STATE CALLED - VERY FIRST ENTRY POINT");
     super.initState();
     generateMnemonic();
   }
 
   void processParameters(BuildContext context) {
+    print("🟠 PROCESS PARAMETERS CALLED - ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟠 PROCESS PARAMETERS CALLED - ENTRY POINT");
     logger.i("Process parameters for mnemonicgen called");
     final Map<String, String> parameters =
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
+    logger.i("🔍 URL Query Parameters: $parameters");
+    
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
+      logger.i("✅ Code found in URL: $code");
+    } else {
+      // Provide default verification code for registration
+      code = 'DEFAULT_REG_CODE';
+      logger.w("⚠️ No 'code' parameter in URL, using default: $code");
     }
+    
     if (parameters.containsKey('issuer')) {
       issuer = parameters['issuer']!;
+      logger.i("✅ Issuer found in URL: $issuer");
+    } else {
+      // Provide default issuer for registration
+      issuer = 'registration_flow';
+      logger.w("⚠️ No 'issuer' parameter in URL, using default: $issuer");
     }
   }
 
   // Constructs Mnemonic from random secure 256bits entropy with optional passphrase
   void generateMnemonic() async {
+    print("🔴 GENERATE MNEMONIC CALLED - ENTRY POINT");
     LoggerService logger = Get.find<LoggerService>();
+    logger.i("🔴 GENERATE MNEMONIC CALLED - ENTRY POINT");
     logger.i("Generating mnemonic...");
 
     try {
@@ -100,10 +118,19 @@ class MnemonicController extends State<MnemonicGen> {
       //
       // mnemonicString = mnemonic.sentence;
 
-      // Gene rate 256-bit entropy and create a mnemonic via api
+      // Generate 256-bit entropy and create a mnemonic via api
 
-      dynamic mnemonicString = await generateSeed();
-      logger.i("Resp from gen Seed: $mnemonicString");
+      RestResponse seedResponse = await generateSeed();
+      logger.i("Resp from gen Seed: $seedResponse");
+      
+      if (seedResponse.statusCode != "200") {
+        throw Exception("Failed to generate seed: ${seedResponse.message}");
+      }
+      
+      // Extract cipher_seed_mnemonic from response data
+      List<dynamic> mnemonicWordsList = seedResponse.data['cipher_seed_mnemonic'];
+      mnemonicString = mnemonicWordsList.join(' ');
+      logger.i("Extracted mnemonic: $mnemonicString");
 
       setState(() {
         mnemonicTextController.text = mnemonicString;
@@ -199,11 +226,13 @@ class MnemonicController extends State<MnemonicGen> {
   }
 
   void confirmMnemonic(String typedMnemonic) async {
+    print("🟠 CONFIRM MNEMONIC CALLED - ENTRY POINT");
     setState(() {
       isLoadingSignUp = true;
     });
     final overlayController = Get.find<OverlayController>();
     LoggerService logger = Get.find();
+    logger.i("🟠 CONFIRM MNEMONIC CALLED - ENTRY POINT");
     logger.i("Confirming mnemonic...");
     logger.i("Typed Mnemonic: $typedMnemonic Mnemonic: $mnemonicString");
     if (mnemonicString == typedMnemonic) {
@@ -223,14 +252,32 @@ class MnemonicController extends State<MnemonicGen> {
   }
 
   Future<bool> signUp() async {
+    print("🟢 SIGNUP METHOD CALLED - ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟢 SIGNUP METHOD CALLED - ENTRY POINT");
+    
     setState(() {
       isLoadingSignUp = true;
     });
 
     try {
-      await (hasFinishedGenWallet == true);
-
+      // Wait for wallet generation to complete (if not already done)
+      logger.i("🔥 Checking wallet generation status...");
+      logger.i("🔥 hasFinishedGenWallet: $hasFinishedGenWallet");
+      
+      if (!hasFinishedGenWallet) {
+        logger.i("🔥 Waiting for wallet generation to complete...");
+        while (!hasFinishedGenWallet) {
+          await Future.delayed(Duration(milliseconds: 100));
+        }
+      }
+      
+      logger.i("🔥 Wallet generation confirmed complete");
+      logger.i("🔥 Creating UserData object...");
+      logger.i("🔥 DID: $did");
+      logger.i("🔥 Code: $code");
+      logger.i("🔥 Issuer: $issuer");
+      
       final userdata = UserData(
           backgroundImageUrl: '',
           isPrivate: false,
@@ -249,13 +296,21 @@ class MnemonicController extends State<MnemonicGen> {
           nft_background_id: '',
           setupQrCodeRecovery: false,
           setupWordRecovery: false);
+          
+      logger.i("🔥 UserData created successfully");
+      logger.i("🔥 UserData DID: ${userdata.did}");
+      
       // Use the did for the verification codes
+      logger.i("🔥 Creating VerificationCode object...");
       VerificationCode verificationCode = VerificationCode(
         used: false,
         code: code,
         issuer: issuer,
         receiver: userdata.did,
       );
+      
+      logger.i("🔥 VerificationCode created successfully");
+      logger.i("🔥 Verification Code: ${verificationCode.code}");
 
       logger.i("🔥 === CALLING FIREBASE AUTHENTICATION ===");
       logger.i("🔥 UserData DID: ${userdata.did}");
@@ -263,11 +318,21 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("🔥 Verification Code Receiver: ${verificationCode.receiver}");
       logger.i("🔥 About to call firebaseAuthentication()...");
       
-      final UserData? currentuserwallet =
-          await firebaseAuthentication(userdata, verificationCode);
-          
-      logger.i("🔥 Firebase authentication completed successfully");
-      logger.i("🔥 Returned user: ${currentuserwallet?.did}");
+      UserData? currentuserwallet;
+      try {
+        currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+        logger.i("🔥 ✅ Firebase authentication completed successfully");
+        logger.i("🔥 Returned user: ${currentuserwallet?.did}");
+      } catch (e, stackTrace) {
+        logger.e("🔥 ❌ Firebase authentication failed with error: $e");
+        logger.e("🔥 ❌ Error type: ${e.runtimeType}");
+        logger.e("🔥 ❌ Stack trace: $stackTrace");
+        if (e.toString().contains("Bad state: No element")) {
+          logger.e("🔥 ❌ This is the 'Bad state: No element' error!");
+          logger.e("🔥 ❌ Error likely in Auth().createUser() -> getPrivateData()");
+        }
+        rethrow;
+      }
       LocalStorage.instance.setString(userdata.did, "most_recent_user");
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -336,7 +401,11 @@ class MnemonicController extends State<MnemonicGen> {
 
   Future<UserData?> firebaseAuthentication(
       UserData userData, VerificationCode code) async {
+    print("🟡 FIREBASE_AUTHENTICATION CALLED - ENTRY POINT");
     LoggerService logger = Get.find();
+    logger.i("🟡 FIREBASE_AUTHENTICATION CALLED - ENTRY POINT");
+    logger.i("🔥 ✅ FIREBASE_AUTHENTICATION FUNCTION CALLED");
+    
     try {
       logger.i("🔥 === INSIDE FIREBASE AUTHENTICATION METHOD ===");
       logger.i("🔥 Received UserData DID: ${userData.did}");
@@ -348,6 +417,7 @@ class MnemonicController extends State<MnemonicGen> {
       final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
+        mnemonicForRegistration: mnemonicString, // Pass mnemonic to skip getPrivateData()
       );
 
       logger.i("🔥 Auth().createUser() completed successfully");
