@@ -3,8 +3,16 @@ import 'dart:ui';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bitnet/backbone/helper/lightning_identity.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -108,33 +116,76 @@ class MnemonicController extends State<MnemonicGen> {
       // did = masterPublicKey;
       // logger.i("DID updated to: $did");
       
-      // NEW: One user one node approach - BIP39-based DID generation
+      // NEW: Lightning-native DID generation using actual Lightning node
       // Generate BIP39 mnemonic and validate
       if (!bip39.validateMnemonic(mnemonicString)) {
         throw Exception("Invalid BIP39 mnemonic generated");
       }
 
-      // Generate deterministic DID from mnemonic
-      did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonicString);
-      logger.i("Generated BIP39-based DID: $did");
-      // Set the DID (Decentralized Identifier) as the public key hex
+      logger.i("=== INITIALIZING LIGHTNING NODE ===");
+      
+      // Step 1: Initialize Lightning wallet with the generated mnemonic
+      List<String> mnemonicWords = mnemonicString.split(' ');
+      RestResponse initResponse = await initWallet(mnemonicWords);
+      
+      if (initResponse.statusCode != "200") {
+        throw Exception("Failed to initialize Lightning wallet: ${initResponse.message}");
+      }
+      
+      String adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
+      if (adminMacaroon.isEmpty) {
+        throw Exception("No admin macaroon received from Lightning wallet initialization");
+      }
+      
+      logger.i("✅ Lightning wallet initialized successfully");
+      logger.i("Admin macaroon received: ${adminMacaroon.substring(0, 20)}...");
+      
+      // Step 2: Get Lightning node identity
+      RestResponse nodeInfo = await getNodeInfo(adminMacaroon: adminMacaroon);
+      
+      if (nodeInfo.statusCode != "200") {
+        throw Exception("Failed to get Lightning node info: ${nodeInfo.message}");
+      }
+      
+      String lightningPubkey = nodeInfo.data['identity_pubkey'] ?? '';
+      if (lightningPubkey.isEmpty) {
+        throw Exception("No identity pubkey received from Lightning node");
+      }
+      
+      logger.i("✅ Lightning node identity retrieved: ${lightningPubkey.substring(0, 20)}...");
+      
+      // Step 3: Generate recovery DID (used consistently for user identity)
+      logger.i("=== GENERATING RECOVERY DID ===");
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
+      logger.i("Recovery DID: $recoveryDid");
+      
+      // Use recovery DID as the primary user DID (for consistency and recovery)
+      did = recoveryDid;
+      logger.i("✅ Using recovery DID as primary DID: $did");
+      
+      // Step 4: Create user-node mapping
+      logger.i("=== CREATING USER-NODE MAPPING ===");
+      UserNodeMapping nodeMapping = UserNodeMapping(
+        recoveryDid: recoveryDid,
+        lightningPubkey: lightningPubkey, // Store Lightning identity for verification
+        nodeId: LightningConfig.getDefaultNodeId(),
+        caddyEndpoint: LightningConfig.caddyBaseUrl + '/' + LightningConfig.getDefaultNodeId(),
+        adminMacaroon: adminMacaroon,
+        createdAt: DateTime.now(),
+        lastAccessed: DateTime.now(),
+        status: 'active',
+      );
+      
+      // Store the mapping for both recovery and authentication
+      await NodeMappingService.storeUserNodeMapping(nodeMapping);
+      logger.i("✅ User-node mapping stored successfully");
 
       setState(() {
-        logger.i("HD Wallet created successfully.");
+        logger.i("Lightning wallet and identity created successfully.");
         hasFinishedGenWallet = true;
       });
 
-      // OLD: Multiple users one node approach - HDWallet private key extraction
-      // String? masterPrivateKey = await hdWallet.privkey;
-      // logger.i('Master Private Key: $masterPrivateKey\n');
-      // final privateData = PrivateData(did: masterPublicKey, mnemonic: mnemonicString);
-      
-      // NEW: One user one node approach - BIP39-based key generation
-      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(mnemonicString);
-      String masterPrivateKey = keys['privateKey']!;
-      logger.i('Master Private Key: $masterPrivateKey\n');
-
-      // Save the mnemonic and keys securely
+      // Step 5: Save the mnemonic and Lightning identity securely
       logger.i("Storing private data securely...");
       final privateData = PrivateData(did: did, mnemonic: mnemonicString);
 

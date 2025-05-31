@@ -146,99 +146,215 @@ class Auth {
   }) async {
     LoggerService logger = Get.find();
 
-    await usersCollection.doc(user.did).set(user.toMap());
-    logger.i('Successfully created wallet/user in database: ${user.toMap()}');
-    // Call the function to generate and store verification codes
-    logger.i(
-        "Generating and storing verification codes for friends of the new user now...");
+    logger.i("🔥 === STARTING CREATE USER PROCESS ===");
+    logger.i("🔥 User DID: ${user.did}");
+    logger.i("🔥 User data: ${user.toMap()}");
 
-    logger.i("Generating challenge...");
-    UserChallengeResponse? userChallengeResponse =
-        await create_challenge(user.did, ChallengeType.default_registration);
+    try {
+      logger.i("🔥 Step 1: Creating user document in Firestore...");
+      await usersCollection.doc(user.did).set(user.toMap());
+      logger.i('✅ Successfully created wallet/user in database');
+    } catch (e) {
+      logger.e("❌ Failed to create user document: $e");
+      throw Exception("Failed to create user document: $e");
+    }
 
-    logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
+    // Declare variables outside try-catch blocks
+    UserChallengeResponse? userChallengeResponse;
+    String challengeId = '';
+    String challengeData = '';
+    PrivateData? privateData;
 
-    String challengeId = userChallengeResponse!.challenge.challengeId;
-    logger.d('Challenge ID: $challengeId');
+    try {
+      logger.i("🔥 Step 2: Generating challenge...");
+      userChallengeResponse = await create_challenge(user.did, ChallengeType.default_registration);
 
-    String challengeData = userChallengeResponse.challenge.title;
-    logger.d('Challenge Data: $challengeData');
+      if (userChallengeResponse == null) {
+        logger.e("❌ Challenge creation returned null");
+        throw Exception("Challenge creation failed: null response");
+      }
 
-    PrivateData privateData = await getPrivateData(user.did);
-    logger.d('Retrieved private data for user ${user.did}');
+      logger.i('✅ Created challenge for user ${user.did}');
+      logger.i('Challenge response: $userChallengeResponse');
+
+      challengeId = userChallengeResponse.challenge.challengeId;
+      logger.i('Challenge ID: $challengeId');
+
+      challengeData = userChallengeResponse.challenge.title;
+      logger.i('Challenge Data: $challengeData');
+    } catch (e) {
+      logger.e("❌ Failed to create challenge: $e");
+      throw Exception("Failed to create challenge: $e");
+    }
+
+    try {
+      logger.i("🔥 Step 3: Retrieving private data...");
+      logger.i("🔥 Looking for DID: ${user.did}");
+      privateData = await getPrivateData(user.did);
+      logger.i('✅ Retrieved private data for user ${user.did}');
+      logger.i('Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
+    } catch (e) {
+      logger.e("❌ Failed to retrieve private data: $e");
+      logger.e("❌ This is likely where the 'Bad state: No element' error occurs!");
+      throw Exception("Failed to retrieve private data: $e");
+    }
+
     
     // Determine the working node ID from Lightning config or user mapping
     String workingNodeId = LightningConfig.getDefaultNodeId();
-    logger.d('Using working node ID: $workingNodeId');
+    logger.i('🔥 Using working node ID: $workingNodeId');
     
     // Lightning-native authentication using user's specific node
-    logger.i("=== LIGHTNING-NATIVE AUTHENTICATION ===");
+    logger.i("🔥 === LIGHTNING-NATIVE AUTHENTICATION ===");
     
-    // Step 4: Sign the challenge with Lightning node using user's specific macaroon
-    logger.i("Step 4: Signing challenge with Lightning node...");
-    String? lightningSignature = await signLightningMessage(
-      userChallengeResponse.challenge.title,
-      nodeId: workingNodeId,
-      userDid: user.did, // Pass user DID to use their specific macaroon
-    );
-    
-    if (lightningSignature == null) {
-      logger.w("⚠️ Lightning signing failed, using placeholder for development");
-      lightningSignature = "placeholder_signature_${challengeId}";
+    String? lightningSignature;
+    try {
+      // Step 4: Sign the challenge with Lightning node using user's specific macaroon
+      logger.i("🔥 Step 4: Signing challenge with Lightning node...");
+      logger.i("🔥 Challenge text to sign: '$challengeData'");
+      logger.i("🔥 Using node ID: $workingNodeId");
+      logger.i("🔥 User DID: ${user.did}");
+      
+      lightningSignature = await signLightningMessage(
+        challengeData,
+        nodeId: workingNodeId,
+        userDid: user.did, // Pass user DID to use their specific macaroon
+      );
+      
+      if (lightningSignature == null) {
+        logger.e("❌ Lightning signing returned null signature");
+        throw Exception("Lightning signing failed: null signature returned");
+      }
+      
+      logger.i("✅ Lightning signature created: ${lightningSignature.substring(0, 20)}...");
+    } catch (e) {
+      logger.e("❌ Lightning signing failed: $e");
+      throw Exception("Lightning signing failed: $e");
     }
     
-    // Step 5: Verify with Lightning verification
-    logger.i("Step 5: Verifying Lightning signature...");
-    dynamic customAuthToken = await verifyMessage(
-      user.did, // Use DID for Lightning verification
-      challengeId.toString(),
-      lightningSignature,
-      nodeId: workingNodeId, // Send node_id to backend
-    );
-    logger.i("Verify message response: ${customAuthToken.toString()}");
+    dynamic customAuthToken;
+    try {
+      // Step 5: Verify with Lightning verification
+      logger.i("🔥 Step 5: Verifying Lightning signature...");
+      logger.i("🔥 Calling verifyMessage with:");
+      logger.i("🔥   DID: ${user.did}");
+      logger.i("🔥   Challenge ID: $challengeId");
+      logger.i("🔥   Signature: ${lightningSignature.substring(0, 20)}...");
+      logger.i("🔥   Node ID: $workingNodeId");
+      
+      customAuthToken = await verifyMessage(
+        user.did, // Use DID for Lightning verification
+        challengeId.toString(),
+        lightningSignature,
+        nodeId: workingNodeId, // Send node_id to backend
+      );
+      
+      logger.i("✅ Verify message response: ${customAuthToken.toString()}");
+      
+      if (customAuthToken == null) {
+        logger.e("❌ Lightning verification returned null token");
+        throw Exception("Lightning verification failed: null token returned");
+      }
+    } catch (e) {
+      logger.e("❌ Lightning verification failed: $e");
+      throw Exception("Lightning verification failed: $e");
+    }
 
-    // Step 6: Register individual Lightning node (replaces genLitdAccount)
-    logger.i("Step 6: Registering individual Lightning node...");
-    // TODO: Replace with registerIndividualLightningNode
-    // For now, skip this step as it's for shared accounts
-    logger.i("⚠️ Skipping genLitdAccount - will implement registerIndividualLightningNode");
+    try {
+      // Step 6: Register individual Lightning node (replaces genLitdAccount)
+      logger.i("🔥 Step 6: Registering individual Lightning node...");
+      // TODO: Replace with registerIndividualLightningNode
+      // For now, skip this step as it's for shared accounts
+      logger.i("⚠️ Skipping genLitdAccount - will implement registerIndividualLightningNode");
+      logger.i("✅ Node registration step completed (skipped)");
+    } catch (e) {
+      logger.e("❌ Node registration failed: $e");
+      // Don't throw here as this step is optional for now
+    }
 
-    final currentuser = await signInWithToken(customToken: customAuthToken);
+    fbAuth.UserCredential? currentuser;
+    try {
+      logger.i("🔥 Step 7: Signing in with Firebase custom token...");
+      logger.i("🔥 Custom token: ${customAuthToken.toString().substring(0, 50)}...");
+      
+      currentuser = await signInWithToken(customToken: customAuthToken);
+      
+      if (currentuser == null) {
+        logger.e("❌ Firebase sign-in returned null user");
+        throw Exception("Firebase sign-in failed: null user returned");
+      }
+      
+      logger.i("✅ Firebase sign-in successful: ${currentuser.user?.uid}");
+    } catch (e) {
+      logger.e("❌ Firebase sign-in failed: $e");
+      throw Exception("Firebase sign-in failed: $e");
+    }
 
-    final remoteConfigController =
-        Get.put(RemoteConfigController(), permanent: true);
-    await remoteConfigController.fetchRemoteConfigData();
+    try {
+      logger.i("🔥 Step 8: Fetching remote config...");
+      final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+      await remoteConfigController.fetchRemoteConfigData();
+      logger.i("✅ Remote config fetched successfully");
+    } catch (e) {
+      logger.e("❌ Failed to fetch remote config: $e");
+      throw Exception("Failed to fetch remote config: $e");
+    }
 
-    // Initialize user settings in the database
-    await settingsCollection.doc(currentuser?.user!.uid).set({
-      "theme_mode": "system",
-      "lang": "en",
-      "primary_color": Colors.white.value,
-      "selected_currency": "USD",
-      "selected_card": "lightning",
-      "hide_balance": false,
-      "country": "US"
-    });
+    try {
+      logger.i("🔥 Step 9: Initializing user settings...");
+      await settingsCollection.doc(currentuser?.user!.uid).set({
+        "theme_mode": "system",
+        "lang": "en",
+        "primary_color": Colors.white.value,
+        "selected_currency": "USD",
+        "selected_card": "lightning",
+        "hide_balance": false,
+        "country": "US"
+      });
+      logger.i("✅ User settings initialized successfully");
+    } catch (e) {
+      logger.e("❌ Failed to initialize user settings: $e");
+      throw Exception("Failed to initialize user settings: $e");
+    }
 
-    await generateAndStoreVerificationCodes(
-      numCodes: 4,
-      codeLength: 5,
-      issuer: user.did,
-      codesCollection: codesCollection,
-    );
+    try {
+      logger.i("🔥 Step 10: Generating verification codes...");
+      await generateAndStoreVerificationCodes(
+        numCodes: 4,
+        codeLength: 5,
+        issuer: user.did,
+        codesCollection: codesCollection,
+      );
+      logger.i("✅ Verification codes generated successfully");
+    } catch (e) {
+      logger.e("❌ Failed to generate verification codes: $e");
+      throw Exception("Failed to generate verification codes: $e");
+    }
 
-    logger.i("Marking the verification code as used now...");
-    // Call the function to mark the verification code as used
-    await markVerificationCodeAsUsed(
-      code: code,
-      receiver: user.did,
-      codesCollection: codesCollection,
-    );
-    logger.i("Verification code marked as used.");
-    logger.i("Adding user to users count");
-    addUserCount();
-    logger.i("Returning new user now...");
+    try {
+      logger.i("🔥 Step 11: Marking verification code as used...");
+      await markVerificationCodeAsUsed(
+        code: code,
+        receiver: user.did,
+        codesCollection: codesCollection,
+      );
+      logger.i("✅ Verification code marked as used");
+    } catch (e) {
+      logger.e("❌ Failed to mark verification code as used: $e");
+      throw Exception("Failed to mark verification code as used: $e");
+    }
 
+    try {
+      logger.i("🔥 Step 12: Adding user to users count...");
+      addUserCount();
+      logger.i("✅ User count updated");
+    } catch (e) {
+      logger.e("❌ Failed to update user count: $e");
+      // Don't throw here as this is not critical
+    }
+
+    logger.i("🔥 === USER CREATION COMPLETED SUCCESSFULLY ===");
+    logger.i("🔥 Returning user: ${user.did}");
     return user;
   }
 
