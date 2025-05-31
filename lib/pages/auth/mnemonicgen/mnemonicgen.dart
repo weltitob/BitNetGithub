@@ -257,8 +257,17 @@ class MnemonicController extends State<MnemonicGen> {
         receiver: userdata.did,
       );
 
+      logger.i("🔥 === CALLING FIREBASE AUTHENTICATION ===");
+      logger.i("🔥 UserData DID: ${userdata.did}");
+      logger.i("🔥 Verification Code: ${verificationCode.code}");
+      logger.i("🔥 Verification Code Receiver: ${verificationCode.receiver}");
+      logger.i("🔥 About to call firebaseAuthentication()...");
+      
       final UserData? currentuserwallet =
           await firebaseAuthentication(userdata, verificationCode);
+          
+      logger.i("🔥 Firebase authentication completed successfully");
+      logger.i("🔥 Returned user: ${currentuserwallet?.did}");
       LocalStorage.instance.setString(userdata.did, "most_recent_user");
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -297,7 +306,9 @@ class MnemonicController extends State<MnemonicGen> {
           .go(Uri(path: '/authhome/pinverification/createaccount').toString());
       return true;
     } on FirebaseException catch (e) {
-      logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
+      logger.e("🔥 ❌ Firebase Exception in signUp method: $e");
+      logger.e("🔥 ❌ Firebase Exception code: ${e.code}");
+      logger.e("🔥 ❌ Firebase Exception message: ${e.message}");
       setState(() {
         isLoadingSignUp = false;
       });
@@ -305,8 +316,15 @@ class MnemonicController extends State<MnemonicGen> {
       throw Exception(
         "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.",
       );
-    } catch (e) {
-      logger.e("Error trying to call signUp in mnemonicgen.dart: $e");
+    } catch (e, stackTrace) {
+      logger.e("🔥 ❌ CRITICAL ERROR in signUp method: $e");
+      logger.e("🔥 ❌ Error type: ${e.runtimeType}");
+      logger.e("🔥 ❌ Error toString: ${e.toString()}");
+      logger.e("🔥 ❌ Stack trace: $stackTrace");
+      if (e is StateError) {
+        logger.e("🔥 ❌ This is a StateError - likely the 'Bad state: No element' issue!");
+        logger.e("🔥 ❌ StateError message: ${e.message}");
+      }
 
       setState(() {
         isLoadingSignUp = false;
@@ -320,21 +338,33 @@ class MnemonicController extends State<MnemonicGen> {
       UserData userData, VerificationCode code) async {
     LoggerService logger = Get.find();
     try {
-      logger.i("Creating firebase user now...");
+      logger.i("🔥 === INSIDE FIREBASE AUTHENTICATION METHOD ===");
+      logger.i("🔥 Received UserData DID: ${userData.did}");
+      logger.i("🔥 Received Verification Code: ${code.code}");
+      logger.i("🔥 Code Receiver: ${code.receiver}");
+      logger.i("🔥 Code Issuer: ${code.issuer}");
+      logger.i("🔥 About to call Auth().createUser()...");
 
       final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
       );
 
+      logger.i("🔥 Auth().createUser() completed successfully");
+      logger.i("🔥 Returning user: ${currentuserwallet.did}");
       return currentuserwallet;
     } on FirebaseException catch (e) {
-      logger.e("Firebase Exception: $e");
+      logger.e("🔥 ❌ Firebase Exception in firebaseAuthentication: $e");
+      logger.e("🔥 ❌ Firebase Exception code: ${e.code}");
+      logger.e("🔥 ❌ Firebase Exception message: ${e.message}");
       setState(() {
-        throw Exception("Error: $e");
+        throw Exception("Firebase Error: $e");
       });
     } catch (e) {
-      throw Exception("Error: $e");
+      logger.e("🔥 ❌ General Exception in firebaseAuthentication: $e");
+      logger.e("🔥 ❌ Exception type: ${e.runtimeType}");
+      logger.e("🔥 ❌ Exception toString: ${e.toString()}");
+      throw Exception("Authentication Error: $e");
     }
     return null;
   }
