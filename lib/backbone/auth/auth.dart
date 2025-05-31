@@ -285,9 +285,6 @@ class Auth {
       logger.e("❌ Lightning signing failed: $e");
       logger.e("❌ Stack trace: $stackTrace");
       logger.e("❌ Error type: ${e.runtimeType}");
-      if (e is StateError) {
-        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from signLightningMessage!");
-      }
       throw Exception("Lightning signing failed: $e");
     }
     
