@@ -93,20 +93,27 @@ Future<RestResponse> signMessageWithNode({
   logger.i("=== MAKING HTTP REQUEST ===");
   logger.i("About to make POST request to: $url");
 
-  try {
-    var response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: json.encode(data),
-    ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
+  // Retry mechanism for "lnd is not ready" errors
+  int maxRetries = 10;
+  int retryDelay = 2; // seconds
+  
+  for (int attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      logger.i("=== ATTEMPT $attempt/$maxRetries ===");
+      
+      var response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode(data),
+      ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
-    logger.i("=== HTTP RESPONSE RECEIVED ===");
-    logger.i("Response Status Code: ${response.statusCode}");
-    logger.i("Response Headers: ${response.headers}");
-    logger.i("Response Body Length: ${response.body.length}");
-    logger.i("Raw Response Body: ${response.body}");
+      logger.i("=== HTTP RESPONSE RECEIVED ===");
+      logger.i("Response Status Code: ${response.statusCode}");
+      logger.i("Response Headers: ${response.headers}");
+      logger.i("Response Body Length: ${response.body.length}");
+      logger.i("Raw Response Body: ${response.body}");
 
-    if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
       try {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         logger.i("=== PARSED SIGNATURE RESPONSE ===");
@@ -146,28 +153,55 @@ Future<RestResponse> signMessageWithNode({
       logger.e("Response Body: ${response.body}");
       logger.e("Response Headers: ${response.headers}");
       
+      // Check if this is a "lnd is not ready" error that we should retry
+      if (response.statusCode == 500 && 
+          response.body.contains("lnd is not ready") &&
+          attempt < maxRetries) {
+        logger.w("⚠️ Lightning node not ready (attempt $attempt/$maxRetries)");
+        logger.w("⏱️ Waiting ${retryDelay}s before retry...");
+        await Future.delayed(Duration(seconds: retryDelay));
+        continue; // Retry the request
+      }
+      
       return RestResponse(
         statusCode: "error",
         message: "Failed to sign message: ${response.statusCode}, ${response.body}",
         data: {"status_code": response.statusCode, "raw_response": response.body},
       );
     }
-  } catch (e, stackTrace) {
-    logger.e("=== EXCEPTION CAUGHT ===");
-    logger.e("Exception Type: ${e.runtimeType}");
-    logger.e("Exception Message: $e");
-    logger.e("Stack Trace: $stackTrace");
-    
-    if (e.toString().contains('timeout')) {
-      logger.e("CONNECTION TIMEOUT - Check if Caddy server is running on $url");
-    } else if (e.toString().contains('connection')) {
-      logger.e("CONNECTION ERROR - Check network connectivity and server availability");
+    } catch (e, stackTrace) {
+      logger.e("=== EXCEPTION CAUGHT ON ATTEMPT $attempt ===");
+      logger.e("Exception Type: ${e.runtimeType}");
+      logger.e("Exception Message: $e");
+      logger.e("Stack Trace: $stackTrace");
+      
+      if (e.toString().contains('timeout')) {
+        logger.e("CONNECTION TIMEOUT - Check if Caddy server is running on $url");
+      } else if (e.toString().contains('connection')) {
+        logger.e("CONNECTION ERROR - Check network connectivity and server availability");
+      }
+      
+      // For connection errors, retry if we have attempts left
+      if (attempt < maxRetries && (e.toString().contains('connection') || e.toString().contains('timeout'))) {
+        logger.w("⚠️ Connection error (attempt $attempt/$maxRetries)");
+        logger.w("⏱️ Waiting ${retryDelay}s before retry...");
+        await Future.delayed(Duration(seconds: retryDelay));
+        continue; // Retry the request
+      }
+      
+      return RestResponse(
+        statusCode: "error",
+        message: "Failed to sign message: $e",
+        data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
+      );
     }
-    
-    return RestResponse(
-      statusCode: "error",
-      message: "Failed to sign message: $e",
-      data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
-    );
   }
+  
+  // If we get here, all retries failed
+  logger.e("❌ All $maxRetries attempts failed");
+  return RestResponse(
+    statusCode: "error",
+    message: "Failed to sign message after $maxRetries attempts",
+    data: {"max_retries_exceeded": true},
+  );
 }
