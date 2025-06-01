@@ -53,12 +53,10 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     }
 
     final Map<String, dynamic> requestData = {
-      'data': {
-        'did': did,
-        'challengeid': challengeId,
-        'signature': signature,
-        'node_id': userNodeId,  // Send node_id to backend
-      }
+      'did': did,
+      'challengeid': challengeId,
+      'signature': signature,
+      'node_id': userNodeId,  // Send node_id to backend
     };
 
     logger.i("🛡️ 📤 === CALLING FIREBASE CLOUD FUNCTION ===");
@@ -73,39 +71,38 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     logger.i("🛡️ 📥 Response data type: ${response.data?.runtimeType}");
     logger.i("🛡️ 📥 Response data: ${response.data}");
 
-    // Assuming response.data is a Map, cast it appropriately
-    logger.i("🛡️ 📥 About to call deepMapCast...");
-    final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
-    logger.i("🛡️ 📥 Deep map cast successful: $responseData");
-    
-    logger.i("🛡️ 📥 About to call RestResponse.fromJson...");
-    final RestResponse callback = RestResponse.fromJson(responseData);
-    logger.i("🛡️ 📥 RestResponse created successfully");
+    // Follow the same pattern as create_challenge
+    if (response.data != null && response.data is Map) {
+      logger.i("🛡️ 📥 Response data is valid Map, converting...");
+      
+      final Map<String, dynamic> responseData = Map<String, dynamic>.from(response.data as Map);
+      logger.i("🛡️ 📥 Converted response data: $responseData");
 
-    logger.i("🛡️ 📥 CloudfunctionCallback: ${callback.toString()}");
-    logger.i("🛡️ 📥 Message: ${callback.message}");
-
-    // Parse the message string to a Map
-    logger.i("🛡️ 📥 About to parse message JSON...");
-    final Map<String, dynamic> messageData = jsonDecode(callback.message) as Map<String, dynamic>;
-    logger.i("🛡️ 📥 Message data parsed: $messageData");
-
-    // Extract the 'data' field
-    if (messageData.containsKey('data')) {
-      final Map<String, dynamic> data = messageData['data'] as Map<String, dynamic>;
-      logger.i("🛡️ 📥 Data field extracted: $data");
-
-      // Safely extract the customToken from the data
-      if (data.containsKey('customToken')) {
-        String customToken = data['customToken'] as String;
-        logger.i("🛡️ 📥 Custom Token extracted: ${customToken.substring(0, 20)}...");
-        return customToken;
-      } else {
-        logger.e("🛡️ ❌ Custom Token not found in message data");
-        return null;
+      // Check if the response contains a customToken directly in the message field
+      if (responseData.containsKey('message')) {
+        final String messageJson = responseData['message'] as String;
+        logger.i("🛡️ 📥 Message JSON: $messageJson");
+        
+        try {
+          final Map<String, dynamic> messageData = jsonDecode(messageJson) as Map<String, dynamic>;
+          logger.i("🛡️ 📥 Parsed message data: $messageData");
+          
+          if (messageData.containsKey('data') && messageData['data'].containsKey('customToken')) {
+            String customToken = messageData['data']['customToken'] as String;
+            logger.i("🛡️ 📥 Custom Token extracted: ${customToken.substring(0, 20)}...");
+            return customToken;
+          }
+        } catch (e) {
+          logger.e("🛡️ ❌ Error parsing message JSON: $e");
+        }
       }
+      
+      logger.e("🛡️ ❌ Custom Token not found in response");
+      return null;
     } else {
-      logger.e("🛡️ ❌ Data field not found in message");
+      logger.e("🛡️ ❌ Response data is null or not a Map");
+      logger.e("🛡️ ❌ Response data type: ${response.data?.runtimeType}");
+      logger.e("🛡️ ❌ Response data value: ${response.data}");
       return null;
     }
   } catch (e, stackTrace) {
