@@ -25,6 +25,7 @@ import 'package:bitnet/backbone/services/lightning_node_finder.dart';
 import 'package:bitnet/backbone/services/node_assignment_service.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
@@ -324,20 +325,12 @@ class CreateAccountController extends State<CreateAccount> {
           } else {
             // This is unexpected: wallet is unlocked but no user mappings found
             logger.w("⚠️ UNEXPECTED STATE: Wallet unlocked but no user mappings found for node $workingNodeId");
-            logger.w("This might indicate a data inconsistency or node reuse");
-            logger.w("Proceeding with account creation but this should be investigated");
+            logger.e("This indicates a serious data inconsistency or improper node configuration");
             
-            // Load admin macaroon since wallet is already unlocked
-            final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-            ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
-            List<int> bytes = byteData.buffer.asUint8List();
-            adminMacaroon = base64Encode(bytes);
-            
-            // Generate new mnemonic for this unexpected case
-            mnemonicString = bip39.generateMnemonic();
-            mnemonicWords = mnemonicString.split(' ');
-            
-            logger.i("Generated new mnemonic for unexpected unlocked wallet scenario");
+            throw Exception(
+              "Lightning node is in an inconsistent state. "
+              "Please contact support or try again later."
+            );
           }
         } else {
           throw Exception("Failed to generate seed: ${seedResponse.message}");
