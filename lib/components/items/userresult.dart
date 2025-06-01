@@ -2,11 +2,13 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class UserResult extends StatefulWidget {
@@ -108,14 +110,75 @@ class _UserResultState extends State<UserResult> {
                         if (widget.model == 0) ...[
                           InkWell(
                             onTap: () {
-                              showDialogue(
+                              BitNetBottomSheet(
                                 context: context,
-                                title: 'Delte saved account from device?',
-                                image: 'assets/images/trash.png',
-                                leftAction: () {},
-                                rightAction: () {
-                                  widget.onDelete();
-                                },
+                                height: AppTheme.cardPadding * 16,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppTheme.cardPadding),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Header with icon and title
+                                      Container(
+                                        height: AppTheme.cardPadding * 3,
+                                        width: AppTheme.cardPadding * 3,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.errorColor.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.5),
+                                        ),
+                                        child: Icon(
+                                          FontAwesomeIcons.trash,
+                                          color: AppTheme.errorColor,
+                                          size: AppTheme.cardPadding * 1.2,
+                                        ),
+                                      ),
+                                      SizedBox(height: AppTheme.elementSpacing),
+                                      Text(
+                                        'Delete saved account from device?',
+                                        style: Theme.of(context).textTheme.titleLarge,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: AppTheme.elementSpacing / 2),
+                                      Text(
+                                        'This will remove the account from this device. You can still recover it later using your mnemonic phrase.',
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: AppTheme.cardPadding),
+                                      // Bottom buttons
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          LongButtonWidget(
+                                            buttonType: ButtonType.transparent,
+                                            customWidth: AppTheme.cardPadding * 6.75.w,
+                                            customHeight: AppTheme.cardPadding * 2.5,
+                                            title: 'Cancel',
+                                            onTap: () => Navigator.of(context).pop(),
+                                          ),
+                                          LongButtonWidget(
+                                            buttonType: ButtonType.solid,
+                                            customWidth: AppTheme.cardPadding * 6.75.w,
+                                            customHeight: AppTheme.cardPadding * 2.5,
+                                            title: 'Delete',
+                                            textColor: AppTheme.white90,
+                                            buttonGradient: LinearGradient(
+                                              colors: [AppTheme.errorColor, AppTheme.errorColor.withOpacity(0.8)],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              widget.onDelete();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               );
                             },
                             child: Container(
