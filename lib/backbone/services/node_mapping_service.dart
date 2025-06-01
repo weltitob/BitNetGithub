@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:get/get.dart';
 
 /// Node Mapping Service
@@ -307,11 +308,8 @@ class NodeMappingService {
     try {
       _logger.i("🔒 Assigning unused node for user: $recoveryDid");
       
-      // Define available Lightning nodes (update this list as you add more nodes)
-      List<String> availableNodes = [
-        'node1', 'node2', 'node3', 'node4', 'node5', 
-        'node6', 'node7', 'node8', 'node9', 'node10'
-      ];
+      // Get available Lightning nodes from LightningConfig
+      List<String> availableNodes = LightningConfig.getAllNodeIds();
       
       // Check each node to find the first unused one
       for (String nodeId in availableNodes) {

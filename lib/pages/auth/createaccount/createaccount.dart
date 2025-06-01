@@ -250,7 +250,7 @@ class CreateAccountController extends State<CreateAccount> {
     }
   }
 
-  Future generateAccount() async {
+  Future generateAccount({String? preferredNodeId}) async {
     print("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
     LoggerService logger = Get.find<LoggerService>();
     logger.i("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
@@ -264,18 +264,36 @@ class CreateAccountController extends State<CreateAccount> {
       List<String> occupiedNodes = await NodeMappingService.getOccupiedNodes();
       logger.i("Currently occupied nodes: $occupiedNodes");
       
-      // Define available Lightning nodes (update this list as you add more nodes)
-      List<String> availableNodes = [
-        'node1', 'node2', 'node3', 'node4', 'node5', 
-        'node6', 'node7', 'node8', 'node9', 'node10'
-      ];
+      // Get available Lightning nodes from LightningConfig
+      List<String> availableNodes = LightningConfig.getAllNodeIds();
+      logger.i("Available nodes from config: $availableNodes");
       
+      // Check if preferred node is specified and available
       String? workingNodeId;
-      for (String nodeId in availableNodes) {
-        if (!occupiedNodes.contains(nodeId)) {
-          workingNodeId = nodeId;
-          logger.i("Found unused node: $nodeId");
-          break;
+      if (preferredNodeId != null) {
+        logger.i("Checking preferred node: $preferredNodeId");
+        
+        // Validate the preferred node ID format
+        if (LightningConfig.isValidNodeId(preferredNodeId)) {
+          if (!occupiedNodes.contains(preferredNodeId)) {
+            workingNodeId = preferredNodeId;
+            logger.i("✅ Using preferred node: $preferredNodeId");
+          } else {
+            logger.w("❌ Preferred node $preferredNodeId is already occupied");
+          }
+        } else {
+          logger.w("❌ Invalid preferred node ID format: $preferredNodeId");
+        }
+      }
+      
+      // If no preferred node or preferred node not available, find first available
+      if (workingNodeId == null) {
+        for (String nodeId in availableNodes) {
+          if (!occupiedNodes.contains(nodeId)) {
+            workingNodeId = nodeId;
+            logger.i("Found unused node: $nodeId");
+            break;
+          }
         }
       }
       
