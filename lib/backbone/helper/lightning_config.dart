@@ -7,10 +7,10 @@ class LightningConfig {
   static const String caddyBaseUrl = 'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]';
   
   // NODE CONFIGURATION - Change this to switch nodes application-wide
-  static const String defaultNodeId = 'node2'; // ← CHANGE THIS TO SWITCH NODES
-  
+  static const String defaultNodeId = 'node1'; // ← CHANGE THIS TO SWITCH NODES
+
   // FALLBACK NODES - Try these if default node fails
-  static const List<String> fallbackNodeIds = ['node2', 'node4', 'node5', 'node6', 'node7'];
+  static const List<String> fallbackNodeIds = ['node2', 'node3', 'node4', 'node5', 'node6', 'node7', 'node8', 'node9', 'node10'];
   
   // DERIVED CONFIGURATIONS
   static String get defaultCaddyEndpoint => '$caddyBaseUrl/$defaultNodeId';

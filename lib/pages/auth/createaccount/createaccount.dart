@@ -257,33 +257,62 @@ class CreateAccountController extends State<CreateAccount> {
     logger.i("Generating BIP39 mnemonic for one user one node approach...");
 
     try {
-      // NEW APPROACH: Assign an available Lightning node using load balancing
-      logger.i("=== STEP 1: ASSIGNING LIGHTNING NODE TO NEW USER ===");
+      // NEW APPROACH: Find an unused Lightning node (one user per node)
+      logger.i("=== STEP 1: FINDING UNUSED LIGHTNING NODE FOR NEW USER ===");
       
-      String workingNodeId = await NodeAssignmentService.assignAvailableNode();
-      logger.i("✅ Assigned node to user: $workingNodeId");
+      // Find available nodes that aren't occupied
+      List<String> occupiedNodes = await NodeMappingService.getOccupiedNodes();
+      logger.i("Currently occupied nodes: $occupiedNodes");
       
-      // Verify the node is actually working
+      // Define available Lightning nodes (update this list as you add more nodes)
+      List<String> availableNodes = [
+        'node1', 'node2', 'node3', 'node4', 'node5', 
+        'node6', 'node7', 'node8', 'node9', 'node10'
+      ];
+      
+      String? workingNodeId;
+      for (String nodeId in availableNodes) {
+        if (!occupiedNodes.contains(nodeId)) {
+          workingNodeId = nodeId;
+          logger.i("Found unused node: $nodeId");
+          break;
+        }
+      }
+      
+      if (workingNodeId == null) {
+        throw Exception("All Lightning nodes are currently occupied. Please try again later or contact support.");
+      }
+      
+      logger.i("✅ Selected unused node: $workingNodeId (strict one-user-one-node)");
+      
+      // Verify the node is actually working by testing basic connectivity
       logger.i("Verifying node $workingNodeId is responsive...");
-      bool isNodeHealthy = await NodeAssignmentService.isNodeHealthy(workingNodeId);
       
-      if (!isNodeHealthy) {
-        logger.w("⚠️ Assigned node $workingNodeId is not healthy, finding alternative...");
-        // Mark the node as unhealthy and try to find another
-        await NodeAssignmentService.markNodeUnhealthy(workingNodeId, "Node not responding during user creation");
+      // Test the assigned node specifically
+      Map<String, bool> nodeStatus = await LightningNodeFinder.getAllNodeStatus(timeoutSeconds: 5);
+      bool isAssignedNodeWorking = nodeStatus[workingNodeId] ?? false;
+      
+      if (!isAssignedNodeWorking) {
+        logger.w("⚠️ Selected node $workingNodeId is not responding, need to find alternative...");
         
-        // Fallback to node finder
-        String? alternativeNode = await LightningNodeFinder.findWorkingNode(
-          timeoutSeconds: 5,
-          includeDefaultNode: true,
-        );
+        // Find available working nodes that aren't occupied
+        String? alternativeNode;
+        for (String nodeId in nodeStatus.keys) {
+          if (nodeStatus[nodeId] == true && !occupiedNodes.contains(nodeId)) {
+            alternativeNode = nodeId;
+            logger.i("Found available working node: $nodeId");
+            break;
+          }
+        }
         
         if (alternativeNode != null) {
           workingNodeId = alternativeNode;
-          logger.i("✅ Using alternative node: $workingNodeId");
+          logger.i("✅ Using alternative available node: $workingNodeId");
         } else {
-          throw Exception("No Lightning nodes are available. Please check server status.");
+          throw Exception("No working Lightning nodes are available for assignment. All nodes are either down or occupied.");
         }
+      } else {
+        logger.i("✅ Selected node $workingNodeId is responsive and ready");
       }
       
       logger.i("=== STEP 2: GENERATING SEED VIA LIGHTNING NODE ===");
@@ -413,7 +442,7 @@ class CreateAccountController extends State<CreateAccount> {
         adminMacaroon: adminMacaroon,
         createdAt: DateTime.now(),
         lastAccessed: DateTime.now(),
-        status: 'active',
+        status: 'occupied',
         metadata: {
           'creation_method': 'mnemonic_based_account',
           'app_version': '1.0.0',
