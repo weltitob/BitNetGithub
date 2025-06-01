@@ -108,21 +108,15 @@ class _CreateAccountViewState extends State<CreateAccountView>
                           }
                           ImagePickerCombinedBottomSheet(
                             context, 
-                            includeNFTs: true,
+                            includeNFTs: false, // Disable NFTs during registration
                             onImageTap:
                               (AssetPathEntity? album, AssetEntity? image,
                                   MediaDatePair? pair) async {
+                            // During registration, only regular images are supported (no NFTs)
                             if (image != null) {
-                              //  await profileController.handleProfileImageSelected(image);
                               widget.controller.image = image;
                               widget.controller.pair = null;
                               widget.controller.bytes = await image.originBytes;
-                              setState(() {});
-                            } else if (pair != null) {
-                              //  await profileController.handleProfileNftSelected(pair);
-                              widget.controller.pair = pair;
-                              widget.controller.image = null;
-                              widget.controller.bytes = pair.media?.data;
                               setState(() {});
                             }
                             Navigator.pop(context);
