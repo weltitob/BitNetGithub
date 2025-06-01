@@ -268,8 +268,7 @@ class UsersListController extends GetxController {
       await deleteUserFromStoredIONData(did);
       userDataList.removeWhere((user) => user.did == did);
       didToPrivateDataMap.remove(did);
-      Get.snackbar('Success', 'User deleted successfully.',
-          snackPosition: SnackPosition.BOTTOM);
+      // No success message needed - bottom sheet closing provides clear feedback
     } catch (e) {
       logger.e("Error deleting user with DID $did: $e");
       overlayController.showOverlay('Failed to delete user.',
