@@ -113,71 +113,58 @@ class _UserResultState extends State<UserResult> {
                               BitNetBottomSheet(
                                 context: context,
                                 height: AppTheme.cardPadding * 16,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(AppTheme.cardPadding),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // Header with icon and title
-                                      Container(
-                                        height: AppTheme.cardPadding * 3,
-                                        width: AppTheme.cardPadding * 3,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.errorColor.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.5),
-                                        ),
-                                        child: Icon(
-                                          FontAwesomeIcons.trash,
-                                          color: AppTheme.errorColor,
-                                          size: AppTheme.cardPadding * 1.2,
-                                        ),
-                                      ),
-                                      SizedBox(height: AppTheme.elementSpacing),
-                                      Text(
-                                        'Delete saved account from device?',
-                                        style: Theme.of(context).textTheme.titleLarge,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: AppTheme.elementSpacing / 2),
-                                      Text(
-                                        'This will remove the account from this device. You can still recover it later using your mnemonic phrase.',
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: AppTheme.cardPadding),
-                                      // Bottom buttons
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          LongButtonWidget(
-                                            buttonType: ButtonType.transparent,
-                                            customWidth: AppTheme.cardPadding * 6.75.w,
-                                            customHeight: AppTheme.cardPadding * 2.5,
-                                            title: 'Cancel',
-                                            onTap: () => Navigator.of(context).pop(),
-                                          ),
-                                          LongButtonWidget(
-                                            buttonType: ButtonType.solid,
-                                            customWidth: AppTheme.cardPadding * 6.75.w,
-                                            customHeight: AppTheme.cardPadding * 2.5,
-                                            title: 'Delete',
-                                            textColor: AppTheme.white90,
-                                            buttonGradient: LinearGradient(
-                                              colors: [AppTheme.errorColor, AppTheme.errorColor.withOpacity(0.8)],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
+                                child: Column(
+                                  children: [
+                                    // Content area with padding
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(AppTheme.cardPadding),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            // Header with icon and title
+                                            Container(
+                                              height: AppTheme.cardPadding * 3,
+                                              width: AppTheme.cardPadding * 3,
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.errorColor.withOpacity(0.1),
+                                                borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.5),
+                                              ),
+                                              child: Icon(
+                                                FontAwesomeIcons.trash,
+                                                color: AppTheme.errorColor,
+                                                size: AppTheme.cardPadding * 1.2,
+                                              ),
                                             ),
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                              widget.onDelete();
-                                            },
-                                          ),
-                                        ],
+                                            SizedBox(height: AppTheme.elementSpacing),
+                                            Text(
+                                              'Delete saved account from device?',
+                                              style: Theme.of(context).textTheme.titleLarge,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: AppTheme.elementSpacing / 2),
+                                            Text(
+                                              'This will remove the account from this device. You can still recover it later using your mnemonic phrase.',
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    // Bottom buttons with no additional padding
+                                    BottomButtons(
+                                      leftButtonTitle: 'Cancel',
+                                      rightButtonTitle: 'Delete',
+                                      onLeftButtonTap: () => Navigator.of(context).pop(),
+                                      onRightButtonTap: () {
+                                        Navigator.of(context).pop();
+                                        widget.onDelete();
+                                      },
+                                    ),
+                                  ],
                                 ),
                               );
                             },
