@@ -21,7 +21,7 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
   logger.i("🛡️ Input Node ID: $nodeId");
 
   try {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_func');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_http');
 
     // If nodeId is not provided, try to get it from user's node mapping
     String? userNodeId = nodeId;
@@ -60,7 +60,7 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     };
 
     logger.i("🛡️ 📤 === CALLING FIREBASE CLOUD FUNCTION ===");
-    logger.i("🛡️ 📤 Function name: 'verify_lightning_signature_func'");
+    logger.i("🛡️ 📤 Function name: 'verify_lightning_signature_http'");
     logger.i("🛡️ 📤 Request data: $requestData");
     logger.i("🛡️ 📤 About to call Firebase function...");
 
