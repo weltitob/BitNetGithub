@@ -298,4 +298,9 @@ class NodeMappingService {
       throw Exception("Failed to migrate user to new node: $e");
     }
   }
+
+  /// Alias for getMappingsForNode for compatibility
+  static Future<List<UserNodeMapping>> getUsersForNode(String nodeId) async {
+    return await getMappingsForNode(nodeId);
+  }
 }

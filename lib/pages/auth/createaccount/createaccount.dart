@@ -119,9 +119,18 @@ class CreateAccountController extends State<CreateAccount> {
           logger.i("✅ Account generation completed successfully");
         } catch (e) {
           logger.e("❌ Account generation failed: $e");
+          
+          // Handle specific error for existing user on node
+          String friendlyErrorMessage = "Account creation failed. Please try again.";
+          if (e.toString().contains("already has a registered user")) {
+            friendlyErrorMessage = "A user is already registered on this Lightning node. Please use 'Login' or 'Recover Account' instead.";
+          } else if (e.toString().contains("Account already exists for this mnemonic")) {
+            friendlyErrorMessage = "An account already exists. Please use 'Recover Account' to restore your wallet.";
+          }
+          
           setState(() {
             isLoading = false;
-            errorMessage = "Account creation failed. Please try again.";
+            errorMessage = friendlyErrorMessage;
           });
           return; // Exit early, don't proceed with ProfileController
         }
@@ -279,46 +288,99 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i("=== STEP 2: GENERATING SEED VIA LIGHTNING NODE ===");
       RestResponse seedResponse = await generateSeed(nodeId: workingNodeId);
       
-      if (seedResponse.statusCode != "200") {
-        throw Exception("Failed to generate seed: ${seedResponse.message}");
-      }
-      
-      // Extract seed data from Lightning node response
-      Map<String, dynamic> seedData = seedResponse.data;
-      List<dynamic> cipherSeedMnemonic = seedData['cipher_seed_mnemonic'] ?? [];
-      String encipheredSeed = seedData['enciphered_seed'] ?? '';
-      
-      logger.i("Lightning node generated seed successfully:");
-      logger.i("- Cipher seed mnemonic: ${cipherSeedMnemonic.length} words");
-      logger.i("- Enciphered seed: ${encipheredSeed.substring(0, 20)}... (truncated)");
-      
-      // Convert to string list for our internal use
-      List<String> mnemonicWords = cipherSeedMnemonic.cast<String>();
-      String mnemonicString = mnemonicWords.join(' ');
-      
-      logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
-      
-      logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
-      
+      List<String> mnemonicWords;
+      String mnemonicString;
       String adminMacaroon = '';
-      try {
-        RestResponse initResponse = await initWallet(mnemonicWords, nodeId: workingNodeId);
+      
+      // Check if wallet is already unlocked (expected in one-user-one-node approach)
+      if (seedResponse.statusCode != "200" && seedResponse.data['raw_response'] != null) {
+        String responseBody = seedResponse.data['raw_response'];
+        Map<String, dynamic> errorData = jsonDecode(responseBody);
         
-        if (initResponse.statusCode == "200") {
-          logger.i("Lightning node initialized successfully");
+        if (errorData['message']?.contains('wallet already unlocked') == true) {
+          logger.i("🔍 WALLET ALREADY UNLOCKED - User should already exist for this node");
+          logger.i("=== STEP 2B: CHECKING FOR EXISTING USER ON NODE $workingNodeId ===");
           
-          // Extract admin macaroon from response
-          adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
-          if (adminMacaroon.isNotEmpty) {
-            logger.i("Successfully retrieved admin macaroon");
+          // In one-user-one-node approach, an unlocked wallet means a user already exists
+          List<UserNodeMapping> existingMappings = await NodeMappingService.getUsersForNode(workingNodeId);
+          
+          if (existingMappings.isNotEmpty) {
+            logger.i("Found existing user(s) for node $workingNodeId:");
+            for (var mapping in existingMappings) {
+              logger.i("- User: ${mapping.recoveryDid}");
+              logger.i("- Status: ${mapping.status}");
+              logger.i("- Created: ${mapping.createdAt}");
+            }
+            
+            // For account creation with existing user, this should not happen
+            // User should be using the login/recovery flow instead
+            logger.e("❌ Cannot create new account: Node $workingNodeId already has registered user(s)");
+            logger.e("User should use login or account recovery instead of account creation");
+            
+            throw Exception(
+              "This Lightning node already has a registered user. "
+              "Please use 'Login' or 'Recover Account' instead of creating a new account."
+            );
+          } else {
+            // This is unexpected: wallet is unlocked but no user mappings found
+            logger.w("⚠️ UNEXPECTED STATE: Wallet unlocked but no user mappings found for node $workingNodeId");
+            logger.w("This might indicate a data inconsistency or node reuse");
+            logger.w("Proceeding with account creation but this should be investigated");
+            
+            // Load admin macaroon since wallet is already unlocked
+            final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+            ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
+            List<int> bytes = byteData.buffer.asUint8List();
+            adminMacaroon = base64Encode(bytes);
+            
+            // Generate new mnemonic for this unexpected case
+            mnemonicString = bip39.generateMnemonic();
+            mnemonicWords = mnemonicString.split(' ');
+            
+            logger.i("Generated new mnemonic for unexpected unlocked wallet scenario");
           }
         } else {
-          logger.e("Failed to initialize Lightning node: ${initResponse.message}");
-          throw Exception("Failed to initialize Lightning node: ${initResponse.message}");
+          throw Exception("Failed to generate seed: ${seedResponse.message}");
         }
-      } catch (e) {
-        logger.e("Error initializing Lightning node: $e");
-        throw Exception("Error initializing Lightning node: $e");
+      } else if (seedResponse.statusCode == "200") {
+        // Normal path: Extract seed data from Lightning node response
+        Map<String, dynamic> seedData = seedResponse.data;
+        List<dynamic> cipherSeedMnemonic = seedData['cipher_seed_mnemonic'] ?? [];
+        String encipheredSeed = seedData['enciphered_seed'] ?? '';
+        
+        logger.i("Lightning node generated seed successfully:");
+        logger.i("- Cipher seed mnemonic: ${cipherSeedMnemonic.length} words");
+        logger.i("- Enciphered seed: ${encipheredSeed.substring(0, 20)}... (truncated)");
+        
+        // Convert to string list for our internal use
+        mnemonicWords = cipherSeedMnemonic.cast<String>();
+        mnemonicString = mnemonicWords.join(' ');
+        
+        logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
+        
+        logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
+        
+        try {
+          RestResponse initResponse = await initWallet(mnemonicWords, nodeId: workingNodeId);
+          
+          if (initResponse.statusCode == "200") {
+            logger.i("Lightning node initialized successfully");
+            
+            // Extract admin macaroon from response
+            adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
+            if (adminMacaroon.isNotEmpty) {
+              logger.i("Successfully retrieved admin macaroon");
+            }
+          } else {
+            logger.e("Failed to initialize Lightning node: ${initResponse.message}");
+            throw Exception("Failed to initialize Lightning node: ${initResponse.message}");
+          }
+        } catch (e) {
+          logger.e("Error initializing Lightning node: $e");
+          throw Exception("Error initializing Lightning node: $e");
+        }
+      } else {
+        throw Exception("Failed to generate seed: ${seedResponse.message}");
       }
 
       logger.i("=== STEP 4: LIGHTNING WALLET INITIALIZATION COMPLETE ===");
@@ -331,6 +393,7 @@ class CreateAccountController extends State<CreateAccount> {
       // Generate recovery DID from mnemonic (always derivable for recovery)
       String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
       logger.i("Generated recovery DID from mnemonic: $recoveryDid");
+      
       
       // Check if user already exists with this mnemonic
       bool userAlreadyExists = await NodeMappingService.userExists(recoveryDid);
