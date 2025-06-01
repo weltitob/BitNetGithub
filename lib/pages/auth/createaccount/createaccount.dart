@@ -147,7 +147,17 @@ class CreateAccountController extends State<CreateAccount> {
         }
         
         logger.i("✅ Authentication verified, proceeding with profile setup");
-        ProfileController profileController = Get.put(ProfileController());
+        
+        // Sichere ProfileController-Initialisierung
+        ProfileController profileController;
+        try {
+          profileController = Get.find<ProfileController>();
+          logger.i("ProfileController already exists, reusing instance");
+        } catch (e) {
+          logger.i("Creating new ProfileController instance");
+          profileController = Get.put(ProfileController());
+        }
+        
         profileController.userNameController.text = localpart;
         late StreamSubscription sub;
         sub = profileController.isUserLoading.listen((val) {

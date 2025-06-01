@@ -33,6 +33,15 @@ class _CreateAccountViewState extends State<CreateAccountView>
   @override
   Widget build(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
+    
+    // Frühe ProfileController-Initialisierung für bessere UX
+    ProfileController? profileController;
+    try {
+      profileController = Get.find<ProfileController>();
+    } catch (e) {
+      // ProfileController noch nicht verfügbar, wird später erstellt
+      print("ProfileController not yet available during registration");
+    }
 
     return WillPopScope(
       onWillPop: () async {

@@ -68,8 +68,21 @@ class ImagePickerController extends GetxController {
     this.onImageTap = onImageTap;
     this.onPop = onPop;
     
+    // Safe ProfileController access - only get it if available
     if (includeNFTs) {
-      profileController = Get.find<ProfileController>();
+      try {
+        profileController = Get.find<ProfileController>();
+        final logger = Get.find<LoggerService>();
+        logger.i("✅ ProfileController found for NFT functionality");
+        print("✅ ProfileController found for NFT functionality");
+      } catch (e) {
+        final logger = Get.find<LoggerService>();
+        logger.w("⚠️ ProfileController not available during registration, NFT features will be disabled");
+        print("⚠️ ProfileController not available during registration, NFT features will be disabled");
+        profileController = null;
+        // This allows the UI to work without crashing during registration
+        // NFT features will be gracefully disabled
+      }
     }
     
     loadData();
@@ -113,6 +126,12 @@ class ImagePickerController extends GetxController {
   Future<void> _loadNFTs() async {
     final logger = Get.find<LoggerService>();
     Stopwatch nftTimer = Stopwatch()..start();
+    
+    // Safe check for ProfileController availability
+    if (profileController == null) {
+      logger.w("ProfileController not available, skipping NFT loading");
+      return;
+    }
     
     if (profileController!.assets.isEmpty) {
       await profileController!.fetchTaprootAssetsAsync();
@@ -262,6 +281,12 @@ class ImagePickerController extends GetxController {
   
   /// Helper method to fetch NFT data in a specific range
   Future<List<MediaDatePair>> _fetchMoreNFTs(int start, int end) async {
+    // Safe check for ProfileController availability
+    if (profileController == null) {
+      print("ProfileController not available, returning empty NFT list");
+      return [];
+    }
+    
     List<Asset> metaList = profileController!.assets.value as List<Asset>;
     List<MediaDatePair> nfts = [];
     
@@ -285,6 +310,12 @@ class ImagePickerController extends GetxController {
   
   /// Lazy loads NFT meta data with optimized state management.
   Future<void> loadMetaLazy(String assetId, MediaDatePair pair) async {
+    // Safe check for ProfileController availability
+    if (profileController == null) {
+      print("ProfileController not available, skipping meta loading for asset: $assetId");
+      return;
+    }
+    
     // Check if metadata already exists in cache
     if (profileController!.assetMetaMap[assetId] != null) {
       await _applyExistingMetaData(assetId, pair);
@@ -295,6 +326,12 @@ class ImagePickerController extends GetxController {
   
   /// Helper to apply metadata that already exists in cache
   Future<void> _applyExistingMetaData(String assetId, MediaDatePair pair) async {
+    // Safe check for ProfileController availability
+    if (profileController == null) {
+      print("ProfileController not available, skipping existing meta data apply");
+      return;
+    }
+    
     Media? media = profileController!.assetMetaMap[assetId]!
         .toMedias()
         .where((test) =>
@@ -313,6 +350,12 @@ class ImagePickerController extends GetxController {
   
   /// Helper to fetch and apply new metadata
   Future<void> _fetchAndApplyMetaData(String assetId, MediaDatePair pair) async {
+    // Safe check for ProfileController availability
+    if (profileController == null) {
+      print("ProfileController not available, skipping meta data fetch");
+      return;
+    }
+    
     AssetMetaResponse? meta = await profileController!.loadMetaAsset(assetId);
     
     if (meta == null) {
