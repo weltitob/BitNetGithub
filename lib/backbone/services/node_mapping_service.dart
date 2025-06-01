@@ -299,6 +299,120 @@ class NodeMappingService {
     }
   }
 
+  /// Assign an unused Lightning node to a new user (strict one-user-one-node)
+  /// 
+  /// This method enforces the one-user-one-node architecture by ensuring
+  /// that no Lightning node can ever be assigned to more than one user.
+  static Future<String> assignUnusedNode(String recoveryDid) async {
+    try {
+      _logger.i("🔒 Assigning unused node for user: $recoveryDid");
+      
+      // Define available Lightning nodes (update this list as you add more nodes)
+      List<String> availableNodes = [
+        'node1', 'node2', 'node3', 'node4', 'node5', 
+        'node6', 'node7', 'node8', 'node9', 'node10'
+      ];
+      
+      // Check each node to find the first unused one
+      for (String nodeId in availableNodes) {
+        QuerySnapshot nodeQuery = await _userNodeMappings
+            .where('node_id', isEqualTo: nodeId)
+            .where('status', isEqualTo: 'occupied')
+            .limit(1)
+            .get();
+        
+        if (nodeQuery.docs.isEmpty) {
+          // This node is not occupied by any user
+          _logger.i("✅ Found unused node: $nodeId");
+          return nodeId;
+        } else {
+          _logger.d("❌ Node $nodeId is already occupied");
+        }
+      }
+      
+      // If we get here, all nodes are occupied
+      _logger.e("🚨 All Lightning nodes are occupied! Cannot assign node to user $recoveryDid");
+      throw Exception("All Lightning nodes are currently occupied. Please try again later or contact support.");
+      
+    } catch (e) {
+      _logger.e("❌ Error assigning unused node: $e");
+      throw Exception("Failed to assign unused node: $e");
+    }
+  }
+
+  /// Check if a specific node is available for assignment
+  static Future<bool> isNodeAvailable(String nodeId) async {
+    try {
+      QuerySnapshot nodeQuery = await _userNodeMappings
+          .where('node_id', isEqualTo: nodeId)
+          .where('status', isEqualTo: 'occupied')
+          .limit(1)
+          .get();
+      
+      bool available = nodeQuery.docs.isEmpty;
+      _logger.i("Node $nodeId availability: ${available ? 'available' : 'occupied'}");
+      return available;
+      
+    } catch (e) {
+      _logger.e("❌ Error checking node availability: $e");
+      return false;
+    }
+  }
+
+  /// Release a node (mark as available for reassignment)
+  /// 
+  /// Use this when a user account is deleted or migrated
+  static Future<void> releaseNode(String recoveryDid) async {
+    try {
+      _logger.i("🔓 Releasing node for user: $recoveryDid");
+      
+      UserNodeMapping? mapping = await getUserNodeMapping(recoveryDid);
+      if (mapping == null) {
+        _logger.w("No mapping found for user $recoveryDid - nothing to release");
+        return;
+      }
+      
+      // Mark as released instead of deleting (for audit purposes)
+      await _userNodeMappings
+          .doc(recoveryDid)
+          .update({
+            'status': 'released',
+            'released_at': FieldValue.serverTimestamp(),
+          });
+      
+      _logger.i("✅ Node ${mapping.nodeId} released and available for reassignment");
+      
+    } catch (e) {
+      _logger.e("❌ Error releasing node: $e");
+      throw Exception("Failed to release node: $e");
+    }
+  }
+
+  /// Get list of all occupied nodes
+  static Future<List<String>> getOccupiedNodes() async {
+    try {
+      QuerySnapshot occupiedQuery = await _userNodeMappings
+          .where('status', isEqualTo: 'occupied')
+          .get();
+      
+      Set<String> occupiedNodes = {};
+      for (var doc in occupiedQuery.docs) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+        String? nodeId = data?['node_id'];
+        if (nodeId != null) {
+          occupiedNodes.add(nodeId);
+        }
+      }
+      
+      _logger.i("Found ${occupiedNodes.length} occupied nodes: ${occupiedNodes.toList()}");
+      return occupiedNodes.toList();
+      
+    } catch (e) {
+      _logger.e("❌ Error getting occupied nodes: $e");
+      return [];
+    }
+  }
+
   /// Alias for getMappingsForNode for compatibility
   static Future<List<UserNodeMapping>> getUsersForNode(String nodeId) async {
     return await getMappingsForNode(nodeId);
