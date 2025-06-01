@@ -13,7 +13,7 @@ import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/recovery/user_node_mapping.dart';
-import 'package:bip39/bip39.dart' as bip39;
+// BIP39 import removed - we use aezeed format from LND instead
 import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -37,7 +37,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:bip39/bip39.dart' as bip39;
+// BIP39 import removed - we use aezeed format from LND instead
 import 'package:timezone/timezone.dart' as tz;
 
 // Removed unnecessary empty import
@@ -143,17 +143,22 @@ class MnemonicController extends State<MnemonicGen> {
       // did = masterPublicKey;
       // logger.i("DID updated to: $did");
       
-      // NEW: Lightning-native DID generation using actual Lightning node
-      // Generate BIP39 mnemonic and validate
-      if (!bip39.validateMnemonic(mnemonicString)) {
-        throw Exception("Invalid BIP39 mnemonic generated");
-      }
-
-      logger.i("=== INITIALIZING LIGHTNING NODE ===");
+      logger.i("=== STRICT ONE-USER-ONE-NODE ASSIGNMENT ===");
       
-      // Step 1: Initialize Lightning wallet with the generated mnemonic
+      // Step 1: Generate recovery DID from aezeed mnemonic (no BIP39 validation needed)
+      String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
+      logger.i("Recovery DID: $recoveryDid");
+      
+      // Step 2: Assign a completely unused Lightning node (strict one-to-one)
+      String assignedNodeId = await NodeMappingService.assignUnusedNode(recoveryDid);
+      if (assignedNodeId.isEmpty) {
+        throw Exception("No available Lightning nodes for assignment - all nodes are occupied");
+      }
+      logger.i("✅ Assigned unused node: $assignedNodeId");
+      
+      // Step 3: Initialize Lightning wallet with aezeed mnemonic on assigned node
       List<String> mnemonicWords = mnemonicString.split(' ');
-      RestResponse initResponse = await initWallet(mnemonicWords);
+      RestResponse initResponse = await initWallet(mnemonicWords, nodeId: assignedNodeId);
       
       if (initResponse.statusCode != "200") {
         throw Exception("Failed to initialize Lightning wallet: ${initResponse.message}");
@@ -164,11 +169,10 @@ class MnemonicController extends State<MnemonicGen> {
         throw Exception("No admin macaroon received from Lightning wallet initialization");
       }
       
-      logger.i("✅ Lightning wallet initialized successfully");
-      logger.i("Admin macaroon received: ${adminMacaroon.substring(0, 20)}...");
+      logger.i("✅ Lightning wallet initialized on node $assignedNodeId");
       
-      // Step 2: Get Lightning node identity
-      RestResponse nodeInfo = await getNodeInfo(adminMacaroon: adminMacaroon);
+      // Step 4: Get Lightning node identity from assigned node
+      RestResponse nodeInfo = await getNodeInfo(adminMacaroon: adminMacaroon, nodeId: assignedNodeId);
       
       if (nodeInfo.statusCode != "200") {
         throw Exception("Failed to get Lightning node info: ${nodeInfo.message}");
@@ -181,31 +185,24 @@ class MnemonicController extends State<MnemonicGen> {
       
       logger.i("✅ Lightning node identity retrieved: ${lightningPubkey.substring(0, 20)}...");
       
-      // Step 3: Generate recovery DID (used consistently for user identity)
-      logger.i("=== GENERATING RECOVERY DID ===");
-      String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
-      logger.i("Recovery DID: $recoveryDid");
-      
-      // Use recovery DID as the primary user DID (for consistency and recovery)
-      did = recoveryDid;
-      logger.i("✅ Using recovery DID as primary DID: $did");
-      
-      // Step 4: Create user-node mapping
-      logger.i("=== CREATING USER-NODE MAPPING ===");
+      // Step 5: Lock the node exclusively for this user (ONE USER ONLY)
       UserNodeMapping nodeMapping = UserNodeMapping(
         recoveryDid: recoveryDid,
-        lightningPubkey: lightningPubkey, // Store Lightning identity for verification
-        nodeId: LightningConfig.getDefaultNodeId(),
-        caddyEndpoint: LightningConfig.caddyBaseUrl + '/' + LightningConfig.getDefaultNodeId(),
+        lightningPubkey: lightningPubkey,
+        nodeId: assignedNodeId,
+        caddyEndpoint: LightningConfig.caddyBaseUrl + '/' + assignedNodeId,
         adminMacaroon: adminMacaroon,
         createdAt: DateTime.now(),
         lastAccessed: DateTime.now(),
-        status: 'active',
+        status: 'occupied', // Mark as occupied - cannot be assigned to anyone else
       );
       
-      // Store the mapping for both recovery and authentication
+      // Store the exclusive mapping - this node is now LOCKED to this user
       await NodeMappingService.storeUserNodeMapping(nodeMapping);
-      logger.i("✅ User-node mapping stored successfully");
+      logger.i("✅ Node $assignedNodeId is now exclusively locked to user $recoveryDid");
+      
+      // Use recovery DID as the primary user DID
+      did = recoveryDid;
 
       setState(() {
         logger.i("Lightning wallet and identity created successfully.");

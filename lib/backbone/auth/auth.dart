@@ -241,13 +241,12 @@ class Auth {
         workingNodeId = nodeMapping.nodeId;
         logger.i('🔥 ✅ Found user\'s assigned node: $workingNodeId');
       } else {
-        logger.w('🔥 ⚠️ No node mapping found, falling back to default node');
-        workingNodeId = LightningConfig.getDefaultNodeId();
+        logger.e('🔥 ❌ No node mapping found for user - this violates one-user-one-node architecture');
+        throw Exception("No exclusive Lightning node found for user. Each user must have their own dedicated node.");
       }
     } catch (e) {
       logger.e('🔥 ❌ Error retrieving node mapping: $e');
-      logger.w('🔥 ⚠️ Falling back to default node');
-      workingNodeId = LightningConfig.getDefaultNodeId();
+      throw Exception("Failed to find user's exclusive Lightning node: $e");
     }
     logger.i('🔥 Using working node ID: $workingNodeId');
     
