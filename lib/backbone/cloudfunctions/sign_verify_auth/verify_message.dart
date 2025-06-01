@@ -53,10 +53,12 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     }
 
     final Map<String, dynamic> requestData = {
-      'did': did,
-      'challengeid': challengeId,
-      'signature': signature,
-      'node_id': userNodeId,  // Send node_id to backend
+      'data': {
+        'did': did,
+        'challengeid': challengeId,
+        'signature': signature,
+        'node_id': userNodeId,  // Send node_id to backend
+      }
     };
 
     logger.i("🛡️ 📤 === CALLING FIREBASE CLOUD FUNCTION ===");
