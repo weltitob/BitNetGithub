@@ -324,8 +324,12 @@ Future<void> deleteUserFromStoredIONData(String did) async {
       .toList();
 
   // Filter out the user with the provided DID
+  // Check all DID formats for compatibility (same as getPrivateData function)
   usersStored = usersStored
-      .where((user) => Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) != did)
+      .where((user) => 
+        user.did != did && 
+        Bip39DidGenerator.generateDidFromLightningMnemonic(user.mnemonic) != did &&
+        RecoveryIdentity.generateRecoveryDid(user.mnemonic) != did)
       .toList();
 
   // Store the updated list back in the storage
