@@ -98,8 +98,16 @@ class Avatar extends StatelessWidget {
                 ? textWidget
                 : local
                     ? imageBytes is String
-                        ? ImageBuilder(encodedData: imageBytes)
-                        : Image.memory(imageBytes!)
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular((size - borderPadding * 2) / 3),
+                            child: ImageBuilder(encodedData: imageBytes),
+                          )
+                        : Image.memory(
+                            imageBytes!,
+                            fit: BoxFit.cover,
+                            width: size - borderPadding * 1.5,
+                            height: size - borderPadding * 1.5,
+                          )
                     : MxcImage(
                         key: Key(mxContent.toString()),
                         uri: mxContent is Uri ? mxContent : Uri.parse(mxContent.toString()),
