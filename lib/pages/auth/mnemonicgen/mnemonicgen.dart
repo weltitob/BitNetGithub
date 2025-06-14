@@ -6,8 +6,6 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
-import 'package:bitnet/backbone/helper/lightning_identity.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';

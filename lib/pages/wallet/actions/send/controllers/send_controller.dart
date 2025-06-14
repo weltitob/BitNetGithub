@@ -12,7 +12,6 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dar
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';

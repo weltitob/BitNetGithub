@@ -12,8 +12,6 @@ import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
-import 'package:bitnet/backbone/helper/lightning_identity.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';

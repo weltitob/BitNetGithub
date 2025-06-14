@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -62,9 +63,8 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       // String did = hdWallet.pubkey;
       // String privateKeyHex = hdWallet.privkey;
       
-      // NEW: One user one node approach - Lightning aezeed format
-      // Generate DID from Lightning mnemonic (no BIP39 validation needed for aezeed)
-      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(mnemonic);
+      // Generate DID from mnemonic using RecoveryIdentity
+      String did = RecoveryIdentity.generateRecoveryDid(mnemonic);
 
       print('Master Public Key and did: $did\n');
 

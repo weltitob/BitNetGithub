@@ -13,8 +13,6 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.da
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
-import 'package:bitnet/backbone/helper/lightning_identity.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
