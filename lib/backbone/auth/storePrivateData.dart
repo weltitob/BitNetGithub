@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -34,11 +33,6 @@ bool isDID(String input) {
     }
   }
   
-  // Check for BIP39 DID format: did_xxxxx
-  if (Bip39DidGenerator.isValidBip39Did(input)) {
-    logger.d('✅ Matched BIP39 DID format');
-    return true;
-  }
   
   // Check for compressed public key format (legacy DID)
   if (isCompressedPublicKey(input)) {

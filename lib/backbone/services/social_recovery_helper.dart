@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+// import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart'; // TODO: Replace with Lightning-native approach
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -461,8 +461,8 @@ class _SettingUpSocialRecoveryWidgetState
         // AESCipher cipher = AESCipher(hdWallet.privkey);
         
         // NEW: One user one node approach - BIP39-based key derivation for encryption
-        Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
-        String privateKey = keys['privateKey']!;
+        // TODO: Replace with Lightning-native key derivation
+        String privateKey = "placeholder_private_key"; // Temporary placeholder
         AESCipher cipher = AESCipher(privateKey);
         int userIndex = (doc.data()!['users'] as List).indexOf((test) =>
             test['username'] ==

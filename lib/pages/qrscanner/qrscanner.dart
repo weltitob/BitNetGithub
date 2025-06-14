@@ -4,7 +4,7 @@ import 'package:bip39/bip39.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -119,7 +119,7 @@ class QRScannerController extends State<QrScanner> {
       // print("onScannedForSignIn: ${hdWallet.privkey}");
       
       // NEW: One user one node approach - Lightning aezeed format
-      String did = Bip39DidGenerator.generateDidFromLightningMnemonic(privateData.mnemonic);
+      String did = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
       print("onScannedForSignIn: $privateData");
       print("onScannedForSignIn DID: $did");
 

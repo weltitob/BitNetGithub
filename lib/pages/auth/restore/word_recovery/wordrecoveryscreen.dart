@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';

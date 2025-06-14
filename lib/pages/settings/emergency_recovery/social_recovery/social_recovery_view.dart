@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart';
+// import 'package:bitnet/backbone/helper/key_services/bip39_did_generator.dart'; // TODO: Replace with Lightning-native approach
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/social_recovery_helper.dart';
@@ -194,9 +194,9 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                   // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
                   // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
                   
-                  // NEW: One user one node approach - BIP39-based key derivation
-                  Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
-                  String privateKey = keys['privateKey']!;
+                  // TODO: Replace with Lightning-native key derivation
+                  // For now, using placeholder - social recovery needs redesign for Lightning
+                  String privateKey = "placeholder_private_key"; // Temporary placeholder
                   List<UserData> invitedUsers = controller.selectedUsers
                       .map((item) => UserData.fromMap(item))
                       .toList();
@@ -399,8 +399,8 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
       // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
       
       // NEW: One user one node approach - BIP39-based key derivation
-      Map<String, String> keys = Bip39DidGenerator.generateKeysFromMnemonic(privData.mnemonic);
-      String privateKey = keys['privateKey']!;
+      // TODO: Replace with Lightning-native key derivation
+      String privateKey = "placeholder_private_key"; // Temporary placeholder
       List<UserData> invitedUsers = controller.selectedUsers
           .map((item) => UserData.fromMap(item))
           .toList();
