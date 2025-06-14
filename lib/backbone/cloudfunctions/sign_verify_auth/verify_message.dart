@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 //verifymessage
 
-dynamic verifyMessage(String did, String challengeId, String signature, {String? nodeId, String? recoveryDid}) async {
+dynamic verifyMessage(String did, String challengeId, String signature, {String? nodeId}) async {
   final logger = Get.find<LoggerService>();
   logger.i("🛡️ ✅ VERIFY_MESSAGE FUNCTION CALLED");
   
@@ -20,7 +20,6 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
   logger.i("🛡️ Input Challenge ID: '$challengeId'");
   logger.i("🛡️ Input Signature: '${signature.substring(0, 20)}...'");
   logger.i("🛡️ Input Node ID: $nodeId");
-  logger.i("🛡️ Input Recovery DID: $recoveryDid");
 
   try {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_func');
@@ -29,14 +28,10 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     String? userNodeId = nodeId;
     if (userNodeId == null) {
       logger.i("🛡️ 🔍 === RETRIEVING USER NODE MAPPING ===");
-      
-      // Determine which DID to use for node lookup
-      String lookupDid = recoveryDid ?? did;
-      logger.i("🛡️ 🔍 Using DID for node lookup: '$lookupDid' (${recoveryDid != null ? 'recovery DID provided' : 'using regular DID'})");
-      logger.i("🛡️ 🔍 About to call NodeMappingService.getUserNodeMapping('$lookupDid')...");
+      logger.i("🛡️ 🔍 About to call NodeMappingService.getUserNodeMapping('$did')...");
       
       try {
-        final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(lookupDid);
+        final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(did);
         
         logger.i("🛡️ 🔍 Node mapping response: ${nodeMapping != null ? 'NOT NULL' : 'NULL'}");
         
@@ -44,7 +39,7 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
           userNodeId = nodeMapping.nodeId;
           logger.i("🛡️ 🔍 Retrieved user's node ID from mapping: $userNodeId");
         } else {
-          logger.e("🛡️ ❌ No node mapping found for DID: $lookupDid");
+          logger.e("🛡️ ❌ No node mapping found for DID: $did");
           throw Exception("No Lightning node found for user");
         }
       } catch (e, stackTrace) {

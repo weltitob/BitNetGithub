@@ -303,7 +303,6 @@ class Auth {
         challengeId.toString(),
         lightningSignature,
         nodeId: workingNodeId, // Send node_id to backend
-        recoveryDid: recoveryDid, // Pass recovery DID for node lookup
       );
       
       logger.i("🔥 📥 === VERIFY_MESSAGE CLOUD FUNCTION RESPONSE ===");
@@ -581,7 +580,6 @@ class Auth {
         did.toString(),
         challengeId.toString(),
         signatureHex.toString(),
-        recoveryDid: did, // Pass recovery DID (which is what 'did' is in this context)
       );
 
       //now check if user has an individual node or uses the old LITD account system
