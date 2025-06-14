@@ -303,6 +303,7 @@ class Auth {
         challengeId.toString(),
         lightningSignature,
         nodeId: workingNodeId, // Send node_id to backend
+        recoveryDid: recoveryDid, // Pass recovery DID for node lookup
       );
       
       logger.i("🔥 📥 === VERIFY_MESSAGE CLOUD FUNCTION RESPONSE ===");
@@ -580,48 +581,65 @@ class Auth {
         did.toString(),
         challengeId.toString(),
         signatureHex.toString(),
+        recoveryDid: did, // Pass recovery DID (which is what 'did' is in this context)
       );
 
-      //now retrive the users lnd accountid and macaroon from firebase and save it into the secure storage
+      //now check if user has an individual node or uses the old LITD account system
       try {
         final userId = did.toString();
-        final docSnapshot = await FirebaseFirestore.instance
-            .collection("users_lnd_node")
-            .doc(userId)
-            .get();
-
-        if (docSnapshot.exists) {
-          final data = docSnapshot.data();
-          if (data == null) {
-            logger.e("User document is empty");
-            throw Exception("User document is empty");
-          }
-
-          // Extract the lnd_account information
-          final lndAccount = data['lnd_account'];
-          if (lndAccount == null) {
-            logger.e("LITD account data not found in user document");
-            throw Exception("LITD account data not found");
-          }
-
-          final accountId = lndAccount['accountid'];
-          final macaroon = lndAccount['macaroon'];
-
-          if (accountId == null || macaroon == null) {
-            logger.e("Missing accountId or macaroon in LITD account data");
-            throw Exception("Incomplete LITD account data");
-          }
-
-          // Now that we have the data, call storeLitdAccountData
-          await storeLitdAccountData(userId, accountId, macaroon);
-          logger.i("Successfully retrieved and stored LITD account data.");
+        
+        // Generate recovery DID from the mnemonic for individual node users
+        final recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+        
+        // First check if user has an individual node mapping using recovery DID
+        final userNodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
+            
+        if (userNodeMapping != null) {
+          // User has an individual node - skip LITD account retrieval
+          logger.i("User has individual node mapping - skipping LITD account retrieval");
+          logger.i("Node ID: ${userNodeMapping.nodeId}");
+          logger.i("Lightning Pubkey: ${userNodeMapping.shortLightningPubkey}");
         } else {
-          logger.e("User document does not exist");
-          throw Exception("User document does not exist");
+          // Fall back to old LITD account system for legacy users
+          logger.i("Checking for legacy LITD account...");
+          final docSnapshot = await FirebaseFirestore.instance
+              .collection("users_lnd_node")
+              .doc(userId)
+              .get();
+
+          if (docSnapshot.exists) {
+            final data = docSnapshot.data();
+            if (data == null) {
+              logger.e("User document is empty");
+              throw Exception("User document is empty");
+            }
+
+            // Extract the lnd_account information
+            final lndAccount = data['lnd_account'];
+            if (lndAccount == null) {
+              logger.e("LITD account data not found in user document");
+              throw Exception("LITD account data not found");
+            }
+
+            final accountId = lndAccount['accountid'];
+            final macaroon = lndAccount['macaroon'];
+
+            if (accountId == null || macaroon == null) {
+              logger.e("Missing accountId or macaroon in LITD account data");
+              throw Exception("Incomplete LITD account data");
+            }
+
+            // Now that we have the data, call storeLitdAccountData
+            await storeLitdAccountData(userId, accountId, macaroon);
+            logger.i("Successfully retrieved and stored LITD account data.");
+          } else {
+            logger.i("No LITD account found - user likely has individual node");
+          }
         }
       } catch (e) {
-        logger.e("Error storing LITD account data: $e");
-        throw Exception("Error storing LITD account data: $e");
+        logger.e("Error handling node/LITD account data: $e");
+        // Don't throw here - allow sign in to continue for users with individual nodes
+        logger.i("Continuing with sign in despite node data error...");
       }
 
       logger.i("Verify message response: ${customAuthToken.toString()}");

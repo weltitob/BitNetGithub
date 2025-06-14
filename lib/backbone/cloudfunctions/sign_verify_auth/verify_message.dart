@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
@@ -10,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 //verifymessage
 
-dynamic verifyMessage(String did, String challengeId, String signature, {String? nodeId}) async {
+dynamic verifyMessage(String did, String challengeId, String signature, {String? nodeId, String? recoveryDid}) async {
   final logger = Get.find<LoggerService>();
   logger.i("🛡️ ✅ VERIFY_MESSAGE FUNCTION CALLED");
   
@@ -19,18 +20,23 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
   logger.i("🛡️ Input Challenge ID: '$challengeId'");
   logger.i("🛡️ Input Signature: '${signature.substring(0, 20)}...'");
   logger.i("🛡️ Input Node ID: $nodeId");
+  logger.i("🛡️ Input Recovery DID: $recoveryDid");
 
   try {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_http');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('verify_lightning_signature_func');
 
     // If nodeId is not provided, try to get it from user's node mapping
     String? userNodeId = nodeId;
     if (userNodeId == null) {
       logger.i("🛡️ 🔍 === RETRIEVING USER NODE MAPPING ===");
-      logger.i("🛡️ 🔍 About to call NodeMappingService.getUserNodeMapping('$did')...");
+      
+      // Determine which DID to use for node lookup
+      String lookupDid = recoveryDid ?? did;
+      logger.i("🛡️ 🔍 Using DID for node lookup: '$lookupDid' (${recoveryDid != null ? 'recovery DID provided' : 'using regular DID'})");
+      logger.i("🛡️ 🔍 About to call NodeMappingService.getUserNodeMapping('$lookupDid')...");
       
       try {
-        final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(did);
+        final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(lookupDid);
         
         logger.i("🛡️ 🔍 Node mapping response: ${nodeMapping != null ? 'NOT NULL' : 'NULL'}");
         
@@ -38,7 +44,7 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
           userNodeId = nodeMapping.nodeId;
           logger.i("🛡️ 🔍 Retrieved user's node ID from mapping: $userNodeId");
         } else {
-          logger.e("🛡️ ❌ No node mapping found for user DID: $did");
+          logger.e("🛡️ ❌ No node mapping found for DID: $lookupDid");
           throw Exception("No Lightning node found for user");
         }
       } catch (e, stackTrace) {
@@ -69,35 +75,80 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     logger.i("🛡️ 📥 === FIREBASE CLOUD FUNCTION RESPONSE ===");
     logger.i("🛡️ 📥 Response received: ${response != null ? 'NOT NULL' : 'NULL'}");
     logger.i("🛡️ 📥 Response data type: ${response.data?.runtimeType}");
-    logger.i("🛡️ 📥 Response data: ${response.data}");
+    
+    // Pretty print the response for better debugging
+    if (response.data != null) {
+      try {
+        final jsonString = const JsonEncoder.withIndent('  ').convert(response.data);
+        logger.i("🛡️ 📥 Response data (formatted):\n$jsonString");
+      } catch (e) {
+        logger.i("🛡️ 📥 Response data (raw): ${response.data}");
+      }
+    } else {
+      logger.i("🛡️ 📥 Response data is NULL");
+    }
 
     // Follow the same pattern as create_challenge
     if (response.data != null && response.data is Map) {
       logger.i("🛡️ 📥 Response data is valid Map, converting...");
       
       final Map<String, dynamic> responseData = Map<String, dynamic>.from(response.data as Map);
-      logger.i("🛡️ 📥 Converted response data: $responseData");
+      
+      // Log all keys in the response for debugging
+      logger.i("🛡️ 📥 Response contains keys: ${responseData.keys.toList()}");
+      
+      // Log each key-value pair for clarity
+      responseData.forEach((key, value) {
+        if (value is String && value.length > 100) {
+          logger.i("🛡️ 📥 Response['$key']: ${value.substring(0, 50)}... (truncated)");
+        } else {
+          logger.i("🛡️ 📥 Response['$key']: $value");
+        }
+      });
 
-      // Check if the response contains a customToken directly in the message field
+      // Check if the response contains customToken directly
+      if (responseData.containsKey('customToken')) {
+        String customToken = responseData['customToken'] as String;
+        logger.i("🛡️ ✅ SUCCESS: Custom Token found directly in response!");
+        logger.i("🛡️ ✅ Token preview: ${customToken.substring(0, min(customToken.length, 50))}...");
+        logger.i("🛡️ ✅ Token length: ${customToken.length} characters");
+        return customToken;
+      }
+      
+      // Check if the response contains a customToken in the message field (old format)
       if (responseData.containsKey('message')) {
+        logger.i("🛡️ 📥 Found 'message' field, checking for nested token...");
         final String messageJson = responseData['message'] as String;
         logger.i("🛡️ 📥 Message JSON: $messageJson");
         
         try {
           final Map<String, dynamic> messageData = jsonDecode(messageJson) as Map<String, dynamic>;
-          logger.i("🛡️ 📥 Parsed message data: $messageData");
+          logger.i("🛡️ 📥 Parsed message data keys: ${messageData.keys.toList()}");
           
-          if (messageData.containsKey('data') && messageData['data'].containsKey('customToken')) {
-            String customToken = messageData['data']['customToken'] as String;
-            logger.i("🛡️ 📥 Custom Token extracted: ${customToken.substring(0, 20)}...");
-            return customToken;
+          if (messageData.containsKey('data') && messageData['data'] is Map) {
+            final dataMap = messageData['data'] as Map<String, dynamic>;
+            logger.i("🛡️ 📥 Data field keys: ${dataMap.keys.toList()}");
+            
+            if (dataMap.containsKey('customToken')) {
+              String customToken = dataMap['customToken'] as String;
+              logger.i("🛡️ ✅ SUCCESS: Custom Token found in message.data!");
+              logger.i("🛡️ ✅ Token preview: ${customToken.substring(0, min(customToken.length, 50))}...");
+              logger.i("🛡️ ✅ Token length: ${customToken.length} characters");
+              return customToken;
+            }
           }
         } catch (e) {
           logger.e("🛡️ ❌ Error parsing message JSON: $e");
+          logger.e("🛡️ ❌ Message content: $messageJson");
         }
       }
       
-      logger.e("🛡️ ❌ Custom Token not found in response");
+      logger.e("🛡️ ❌ FAILED: Custom Token not found in response!");
+      logger.e("🛡️ ❌ Expected 'customToken' field in response");
+      logger.e("🛡️ ❌ Actual response structure:");
+      responseData.forEach((key, value) {
+        logger.e("🛡️ ❌   $key: ${value.runtimeType} = ${value.toString().substring(0, min(value.toString().length, 100))}");
+      });
       return null;
     } else {
       logger.e("🛡️ ❌ Response data is null or not a Map");
@@ -112,6 +163,7 @@ dynamic verifyMessage(String did, String challengeId, String signature, {String?
     if (e is StateError) {
       logger.e("🛡️ ❌ 🚨 THIS IS A STATE ERROR in verifyMessage - likely the 'Bad state: No element'!");
     }
+    logger.e("🛡️ ❌ === VERIFY_MESSAGE FUNCTION FAILED ===");
     rethrow;
   }
 }
