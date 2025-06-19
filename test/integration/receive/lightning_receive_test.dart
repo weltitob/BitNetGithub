@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +19,7 @@ class _MockLightningReceiveScreenState extends State<MockLightningReceiveScreen>
   bool isLoading = false;
   String? copyMessage;
   String? errorMessage;
+  Timer? _copyMessageTimer;
   
   void _createLightningInvoice() async {
     // Clear previous messages
@@ -65,9 +67,15 @@ class _MockLightningReceiveScreenState extends State<MockLightningReceiveScreen>
       copyMessage = 'Invoice copied to clipboard';
     });
     
+    // Cancel any existing timer
+    _copyMessageTimer?.cancel();
+    
     // Don't start a timer in test environment to avoid pending timer issues
-    if (!const bool.fromEnvironment('flutter.test', defaultValue: false)) {
-      Future.delayed(Duration(seconds: 2), () {
+    // Check both environment variables that might indicate test mode
+    bool isInTest = const bool.fromEnvironment('flutter.test', defaultValue: false) || 
+                    const bool.fromEnvironment('FLUTTER_TEST', defaultValue: false);
+    if (!isInTest) {
+      _copyMessageTimer = Timer(Duration(seconds: 2), () {
         if (mounted) {
           setState(() {
             copyMessage = null;
@@ -261,6 +269,7 @@ class _MockLightningReceiveScreenState extends State<MockLightningReceiveScreen>
   
   @override
   void dispose() {
+    _copyMessageTimer?.cancel();
     amountController.dispose();
     memoController.dispose();
     super.dispose();
@@ -472,15 +481,21 @@ bool isValidLightningInvoice(String invoice) {
 
 int? extractAmountFromInvoice(String invoice) {
   // Simple extraction for test purposes
-  final match = RegExp(r'ln[t]?bc[rt]?(\d+)([munp])').firstMatch(invoice.toLowerCase());
+  final match = RegExp(r'ln[t]?bc[rt]?(\d+)([munp])?').firstMatch(invoice.toLowerCase());
   if (match != null) {
     final amount = int.parse(match.group(1)!);
-    final multiplier = match.group(2)!;
+    final multiplier = match.group(2);
+    
+    // If no multiplier, return the amount as satoshis
+    if (multiplier == null || multiplier.isEmpty) {
+      return amount;
+    }
+    
     switch (multiplier) {
-      case 'm': return amount * 1000000;  // milli-bitcoin
-      case 'u': return amount;             // micro-bitcoin (bits)
-      case 'n': return amount ~/ 1000;     // nano-bitcoin
-      case 'p': return amount ~/ 1000000;  // pico-bitcoin
+      case 'm': return amount * 100000;   // milli-bitcoin (to satoshis)
+      case 'u': return amount;            // micro-bitcoin (satoshis)
+      case 'n': return amount ~/ 1000;    // nano-bitcoin 
+      case 'p': return amount ~/ 1000000; // pico-bitcoin
       default: return amount;
     }
   }

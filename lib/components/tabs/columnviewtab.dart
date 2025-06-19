@@ -78,16 +78,49 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
       () {
         return !controller.isLoading.value && controller.assets.isEmpty
             ? SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding,
+                    vertical: AppTheme.cardPadding * 2,
+                  ),
+                  padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor.withOpacity(0.5),
+                    borderRadius: AppTheme.cardRadiusMid,
+                    border: Border.all(
+                      color: Theme.of(context).dividerColor.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error),
-                      const SizedBox(width: AppTheme.cardPadding),
+                      Container(
+                        padding: const EdgeInsets.all(AppTheme.cardPadding),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.collections_outlined,
+                          size: AppTheme.cardPadding * 2,
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(height: AppTheme.elementSpacing),
                       Text(
-                        'No assets found',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                        'No Assets Yet',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                      Text(
+                        'Your created assets will appear here',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

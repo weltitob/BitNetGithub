@@ -6,7 +6,7 @@ import 'unit/bitcoin/bitcoin_validation_test.dart' as bitcoin_tests;
 import 'unit/utils/date_time_utils_test.dart' as datetime_tests;
 import 'unit/utils/string_utils_test.dart' as string_tests;
 import 'unit/models/bitcoin_models_test.dart' as model_tests;
-import 'unit/receive/receive_controller_test.dart' as receive_controller_tests;
+import 'unit/receive/receive_controller_simple_test.dart' as receive_controller_tests;
 import 'unit/receive/receive_models_test.dart' as receive_model_tests;
 import 'unit/receive/receive_cloud_functions_test.dart' as receive_cloud_tests;
 

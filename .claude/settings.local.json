@@ -75,7 +75,9 @@
       "Bash(/usr/bin/flutter test test/unit/currency/currency_converter_test.dart)",
       "Bash(/mnt/c/src/flutter/bin/flutter test test/unit/currency/currency_converter_test.dart)",
       "Bash(/mnt/c/src/flutter/bin/flutter clean)",
-      "Bash(grep -n \"isBitcoinWalletValid\" /mnt/c/Users/tobia/StudioProjects/bitnet/lib/backbone/helper/helpers.dart)"
+      "Bash(grep -n \"isBitcoinWalletValid\" /mnt/c/Users/tobia/StudioProjects/bitnet/lib/backbone/helper/helpers.dart)",
+      "Bash(/mnt/c/src/flutter/bin/flutter test test/integration/receive/lightning_receive_test.dart --verbose)",
+      "Bash(bash -c:*)"
     ],
     "deny": []
   }

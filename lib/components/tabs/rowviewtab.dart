@@ -68,11 +68,61 @@ class _RowViewTabState extends State<RowViewTab>
     return Obx(() {
       return controller.isLoading.value
           ? SliverToBoxAdapter(child: dotProgress(context))
-          : SliverList(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              delegate:
-                  SliverChildListDelegate(assetsByGroup.entries.map((entry) {
+          : controller.assets.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding,
+                      vertical: AppTheme.cardPadding * 2,
+                    ),
+                    padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor.withOpacity(0.5),
+                      borderRadius: AppTheme.cardRadiusMid,
+                      border: Border.all(
+                        color: Theme.of(context).dividerColor.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(AppTheme.cardPadding),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.grid_view_outlined,
+                            size: AppTheme.cardPadding * 2,
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.elementSpacing),
+                        Text(
+                          'No Collections Yet',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                        Text(
+                          'Your asset collections will appear here',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SliverList(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  delegate:
+                      SliverChildListDelegate(assetsByGroup.entries.map((entry) {
                 final groupName = entry.key;
                 final groupAssets = entry.value;
 
