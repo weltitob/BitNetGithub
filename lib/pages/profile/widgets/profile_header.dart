@@ -114,6 +114,7 @@ class UserInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
+    final theme = Theme.of(context);
 
     return Container(
       child: Obx(() {
@@ -123,73 +124,67 @@ class UserInformation extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Display Name
             isEditMode
                 ? GlassContainer(
               borderRadius: BorderRadius.only(
                   topRight: AppTheme.cornerRadiusMid / 2,
                   topLeft: AppTheme.cornerRadiusMid / 2),
-              customColor: Theme.of(context).brightness == Brightness.light
+              customColor: theme.brightness == Brightness.light
                   ? Colors.black.withOpacity(0.5)
                   : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
                 child: TextField(
                   focusNode: controller.focusNodeDisplayName,
                   readOnly: !isEditMode,
-                  // Align top-left:
                   textAlign: TextAlign.left,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
                     fillColor: Colors.transparent,
                     isDense: true,
                     border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
                     errorText: controller.displayNameValid.value
                         ? null
                         : L10n.of(context)!.coudntChangeUsername,
                   ),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(color: AppTheme.white90),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.onSurface,
+                    height: 1.2,
+                  ),
                   controller: controller.displayNameController,
                 ),
               ),
             )
                 : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                focusNode: controller.focusNodeDisplayName,
-                readOnly: !isEditMode,
-                // Align top-left:
-                textAlign: TextAlign.left,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: InputDecoration(
-                  fillColor: Colors.transparent,
-                  isDense: true,
-                  border: InputBorder.none,
-                  errorText: controller.displayNameValid.value
-                      ? null
-                      : L10n.of(context)!.coudntChangeUsername,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+              child: Text(
+                controller.displayNameController.text.isNotEmpty 
+                    ? controller.displayNameController.text 
+                    : 'Display Name',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                  height: 1.2,
                 ),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(color: AppTheme.white90),
-                controller: controller.displayNameController,
               ),
             ),
 
-            //username
+            const SizedBox(height: 2),
+
+            // Username
             isEditMode
                 ? GlassContainer(
               borderRadius: BorderRadius.only(
                   bottomLeft: AppTheme.cornerRadiusMid / 2,
                   bottomRight: AppTheme.cornerRadiusMid / 2),
-              customColor: Theme.of(context).brightness == Brightness.light
+              customColor: theme.brightness == Brightness.light
                   ? Colors.black.withOpacity(0.5)
                   : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
                 child: TextField(
                   focusNode: controller.focusNodeUsername,
                   readOnly: !isEditMode,
@@ -199,38 +194,31 @@ class UserInformation extends StatelessWidget {
                     fillColor: Colors.transparent,
                     isDense: true,
                     border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
                     errorText: controller.displayNameValid.value
                         ? null
                         : L10n.of(context)!.badCharacters,
                   ),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: AppTheme.white90,
-                    fontWeight: FontWeight.w600,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: theme.colorScheme.onSurface.withOpacity(0.75),
+                    height: 1.1,
                   ),
                   controller: controller.userNameController,
                 ),
               ),
             )
                 : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                focusNode: controller.focusNodeUsername,
-                readOnly: !isEditMode,
-                textAlign: TextAlign.start,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  fillColor: Colors.transparent,
-                  isDense: true,
-                  border: InputBorder.none,
-                  errorText: controller.displayNameValid.value
-                      ? null
-                      : L10n.of(context)!.badCharacters,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+              child: Text(
+                controller.userNameController.text.isNotEmpty 
+                    ? controller.userNameController.text 
+                    : '@username',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.75),
+                  height: 1.1,
                 ),
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: AppTheme.white90,
-                  fontWeight: FontWeight.w600,
-                ),
-                controller: controller.userNameController,
               ),
             ),
           ],

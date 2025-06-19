@@ -11,6 +11,7 @@ class ProfileBio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
+    final theme = Theme.of(context);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -25,30 +26,30 @@ class ProfileBio extends StatelessWidget {
         if (isEditMode) {
           return GlassContainer(
             borderRadius: AppTheme.cardRadiusMid,
-            customColor: Theme.of(context).brightness == Brightness.light
+            customColor: theme.brightness == Brightness.light
                 ? Colors.black.withOpacity(0.5)
                 : null,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: Text(
                 bioText,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: AppTheme.white70),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.8),
+                  height: 1.4,
+                ),
               ),
             ),
           );
         }
 
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Text(
             bioText,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: AppTheme.white70),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              height: 1.4,
+            ),
           ),
         );
       }),
