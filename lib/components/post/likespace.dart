@@ -70,6 +70,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   bool showheart = false;
   RxBool isLiked = false.obs;
   final homeController = Get.find<HomeController>();
+  Timer? _heartTimer;
 
   _buildLikeSpaceState({
     required this.type,
@@ -169,12 +170,14 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                   .doc(targetId)
                   .update({'likes.did': true});
 
-              Timer(const Duration(milliseconds: 500), () {
+              _heartTimer?.cancel(); // Cancel any existing timer
+              _heartTimer = Timer(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   setState(() {
                     showheart = false;
                   });
                 }
+                _heartTimer = null;
               });
             }
           });
@@ -186,6 +189,12 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
 
     // Return new state immediately for animation
     return newState;
+  }
+  
+  @override
+  void dispose() {
+    _heartTimer?.cancel();
+    super.dispose();
   }
 
   @override

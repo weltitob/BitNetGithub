@@ -1,148 +1,156 @@
-# BitNET Test Suite
+# BitNET Unit Tests
 
-This directory contains tests for the BitNET one-user-one-node payment architecture.
+This directory contains unit tests for the BitNET application, organized by functionality and focusing on pure, easily testable functions.
 
-## Test Node Configuration
+## Structure
 
-We have **two testnet Lightning nodes** running through Caddy proxy:
-
-### Node 1 - Authentication & Setup Node
-- **Node ID**: `node1`
-- **Purpose**: Used for authentication tests and initial user setup
-- **Usage**: 
-  - User registration
-  - Lightning identity generation
-  - Initial wallet creation
-  - Authentication flows
-
-### Node 2 - Payment Operations Node
-- **Node ID**: `node2` 
-- **Purpose**: Used for all payment functionality tests after user signup
-- **Usage**:
-  - Lightning payments (sending/receiving)
-  - Onchain transactions
-  - Address generation
-  - Balance operations
-  - Invoice creation
-
-## Test Credentials & Configuration
-
-All credentials and configuration needed to access `node2` for payment tests are available in this folder:
-
-### Configuration Files:
-- `test_config.json` - Contains node endpoints and test user data
-- `node2_macaroon.hex` - Admin macaroon for node2 (if needed)
-- `test_wallets.json` - Pre-funded test wallet information
-
-### Example Test Configuration:
-```dart
-// For authentication tests (node1)
-const authTestConfig = {
-  'nodeId': 'node1',
-  'userId': 'auth-test-user',
-  'baseUrl': 'testnet.bitnet.com', // Caddy proxy URL
-};
-
-// For payment tests (node2)
-const paymentTestConfig = {
-  'nodeId': 'node2',
-  'userId': 'payment-test-user',
-  'baseUrl': 'testnet.bitnet.com', // Same Caddy proxy
-  'testInvoice': 'lnbc...', // Pre-generated test invoice
-  'testAddress': 'tb1q...', // Testnet address
-};
 ```
-
-## Test Structure
-
-### Unit Tests
-- `unit/send_payment_test.dart` - Lightning payment sending tests
-- `unit/onchain_test.dart` - Onchain transaction tests
-- `unit/auth_test.dart` - Authentication flow tests
-
-### Integration Tests
-- `integration/payment_flows_test.dart` - End-to-end payment flows
-- `integration/live_node_test.dart` - Real node interaction tests
-- `integration/auth_flow_test.dart` - Complete authentication flow
+test/
+├── unit/                    # Unit tests for pure functions
+│   ├── currency/           # Currency conversion tests
+│   ├── bitcoin/            # Bitcoin validation tests
+│   ├── utils/              # Utility function tests
+│   └── models/             # Model serialization tests
+├── run_all_unit_tests.dart # Main test runner
+├── TESTING_STRATEGY.md     # Overall testing strategy
+└── UNITTEST_TODO.md        # List of functions to test
+```
 
 ## Running Tests
 
-### Run all tests:
+# Run all tests
+flutter test test/run_all_unit_tests.dart
+
+# Run specific category
+flutter test test/unit/currency/
+
+# Run with coverage
+flutter test --coverage
+4. Safe Functions Only:
+   - Only pure functions (no side effects)
+   - No external dependencies
+   - Deterministic results
+   - Clear inputs and outputs
+
+### Run all unit tests:
 ```bash
-flutter test
+flutter test test/run_all_unit_tests.dart
 ```
 
-### Run authentication tests (node1):
+### Run specific test categories:
 ```bash
-flutter test test/unit/auth_test.dart
+# Currency conversion tests only
+flutter test test/unit/currency/
+
+# Bitcoin validation tests only
+flutter test test/unit/bitcoin/
+
+# Utility tests only
+flutter test test/unit/utils/
+
+# Model tests only
+flutter test test/unit/models/
 ```
 
-### Run payment tests (node2):
+### Run with coverage:
 ```bash
-flutter test test/unit/send_payment_test.dart test/unit/onchain_test.dart
+flutter test --coverage test/run_all_unit_tests.dart
 ```
 
-### Run integration tests:
+### Generate coverage report:
 ```bash
-flutter test test/integration/ --dart-define=INTEGRATION_TEST=true
+# Generate coverage
+flutter test --coverage
+
+# Generate HTML report (requires lcov)
+genhtml coverage/lcov.info -o coverage/html
+
+# Open report
+open coverage/html/index.html
 ```
 
-## Test Data Setup
+## Test Categories
 
-### Before running payment tests:
-1. Ensure node2 has testnet funds
-2. Check that test invoices are valid
-3. Verify Caddy proxy is running
-4. Confirm node2 credentials are up to date
+### 1. Currency Conversion Tests (`unit/currency/`)
+- Bitcoin to Satoshi conversion
+- Satoshi to Bitcoin conversion
+- Fiat currency exchange
+- Smart unit selection
 
-### Test Wallet Funding:
-- Node2 is pre-funded with testnet Bitcoin
-- Lightning channels are already opened
-- Test amounts are kept small (100-10000 sats)
+### 2. Bitcoin Validation Tests (`unit/bitcoin/`)
+- Compressed public key validation
+- Transaction ID validation
+- Lightning invoice validation
+- Lightning address validation
+- BIP21 URI validation
 
-## Important Notes
+### 3. Utility Tests (`unit/utils/`)
+- Date/time formatting
+- Random string generation
+- Percentage formatting
+- Color generation
+- Numeric validation
 
-1. **Never use mainnet nodes** for testing
-2. **Node isolation**: Node1 and Node2 are completely separate
-3. **Cleanup**: Tests should clean up generated addresses/invoices
-4. **Rate limiting**: Add delays between tests to avoid overwhelming nodes
-5. **Credentials**: Never commit real macaroons or sensitive data
+### 4. Model Tests (`unit/models/`)
+- Fee model serialization
+- Invoice model serialization
+- Address validation model
+- Bitcoin unit conversions
 
-## Test Coverage
+## Test Guidelines
 
-### Authentication (Node1):
-- ✅ User registration with Lightning identity
-- ✅ Mnemonic-based recovery
-- ✅ Challenge/response authentication
-- ✅ Node assignment
+### Writing New Tests
 
-### Payments (Node2):
-- ✅ Lightning invoice creation
-- ✅ Lightning payment sending
-- ✅ Onchain address generation (SegWit & Taproot)
-- ✅ Onchain transaction sending
-- ✅ Fee estimation
-- ✅ Balance queries
-- ✅ Internal rebalancing
+1. **Keep tests pure**: Test only the function logic, not external dependencies
+2. **Test edge cases**: Include tests for boundaries, nulls, and invalid inputs
+3. **Use descriptive names**: Test names should clearly indicate what is being tested
+4. **Group related tests**: Use `group()` to organize related test cases
+5. **Add comments**: Explain complex test scenarios or expected behaviors
 
-## Troubleshooting
+### Test Structure Example
 
-### Common Issues:
-1. **"Node not accessible"** - Check Caddy proxy is running
-2. **"Invalid macaroon"** - Update test credentials
-3. **"Insufficient balance"** - Refund test wallets
-4. **"Channel not active"** - Check Lightning channels on node2
-
-### Debug Mode:
-```bash
-flutter test --verbose test/integration/live_node_test.dart
+```dart
+group('Function Category', () {
+  test('should handle normal case', () {
+    // Arrange
+    final input = 'test';
+    
+    // Act
+    final result = functionUnderTest(input);
+    
+    // Assert
+    expect(result, equals('expected'));
+  });
+  
+  test('should handle edge case', () {
+    expect(() => functionUnderTest(null), throwsException);
+  });
+});
 ```
 
-## Contributing
+## Coverage Goals
 
-When adding new tests:
-1. Use node1 for auth-related tests only
-2. Use node2 for all payment operations
-3. Include proper cleanup in tearDown()
-4. Document any new test requirements
-5. Update test configuration if needed
+- **Minimum coverage**: 80% for all tested functions
+- **Critical functions**: 95% coverage (currency conversion, Bitcoin validation)
+- **Focus on**: Business logic, not UI or external service calls
+
+## Adding New Tests
+
+1. Identify pure functions in the codebase
+2. Create appropriate test file in the correct subdirectory
+3. Write comprehensive tests covering:
+   - Happy path
+   - Edge cases
+   - Error conditions
+   - Boundary values
+4. Add import to `run_all_unit_tests.dart`
+5. Run tests to ensure they pass
+6. Check coverage meets requirements
+
+## Continuous Integration
+
+These tests are designed to run quickly (< 30 seconds total) and should be integrated into the CI/CD pipeline to run on every commit.
+
+## Next Steps
+
+See `UNITTEST_TODO.md` for a list of additional functions that should be tested.

@@ -76,10 +76,20 @@ class CreateAccountController extends State<CreateAccount> {
   bool isDefaultPlatform =
       (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
   void login() => context.go('/authhome/login');
+  
+  // Store subscription for proper disposal
+  StreamSubscription? _profileLoadingSubscription;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _profileLoadingSubscription?.cancel();
+    controllerUsername.dispose();
+    super.dispose();
   }
 
   void createAccountPressed() async {
@@ -157,8 +167,7 @@ class CreateAccountController extends State<CreateAccount> {
         }
         
         profileController.userNameController.text = localpart;
-        late StreamSubscription sub;
-        sub = profileController.isUserLoading.listen((val) {
+        _profileLoadingSubscription = profileController.isUserLoading.listen((val) {
           if (!val) {
             profileController.updateUsername();
             if (image != null) {
@@ -167,7 +176,8 @@ class CreateAccountController extends State<CreateAccount> {
             if (pair != null) {
               profileController.handleProfileNftSelected(pair!);
             }
-            sub.cancel();
+            _profileLoadingSubscription?.cancel();
+            _profileLoadingSubscription = null;
           }
         });
 
@@ -493,6 +503,29 @@ class CreateAccountController extends State<CreateAccount> {
           logger.e("❌ Failed to store admin macaroon locally: $e");
           // Don't fail the entire registration, but log the error
         }
+        
+        // TODO: Bake limited invoice tracking macaroon
+        // This macaroon will only have permissions to:
+        // - List invoices (invoices:read)
+        // - Track payment status (offchain:read)
+        // It will be stored in Firebase for backend payment tracking
+        logger.i("=== TODO: BAKE INVOICE TRACKING MACAROON ===");
+        // String invoiceTrackingMacaroon = await bakeLimitedMacaroon(
+        //   nodeId: workingNodeId,
+        //   adminMacaroon: adminMacaroon,
+        //   permissions: ['invoices:read', 'offchain:read'],
+        // );
+        // 
+        // if (invoiceTrackingMacaroon.isNotEmpty) {
+        //   // Update node mapping with tracking macaroon
+        //   await FirebaseFirestore.instance
+        //     .collection('node_mappings')
+        //     .doc(recoveryDid)
+        //     .update({
+        //       'invoiceTrackingMacaroon': invoiceTrackingMacaroon,
+        //     });
+        //   logger.i("✅ Invoice tracking macaroon stored in Firebase");
+        // }
       }
 
       // Save the Lightning-generated mnemonic securely with RECOVERY DID

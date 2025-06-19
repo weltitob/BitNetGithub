@@ -21,7 +21,10 @@ class AssetsTab extends StatefulWidget {
   State<AssetsTab> createState() => _AssetsTabState();
 }
 
-class _AssetsTabState extends State<AssetsTab> {
+class _AssetsTabState extends State<AssetsTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   // Sample asset data
   final List<Map<String, dynamic>> assetData = [
     {
@@ -262,6 +265,7 @@ class _AssetsTabState extends State<AssetsTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final Size size = MediaQuery.of(context).size;
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 

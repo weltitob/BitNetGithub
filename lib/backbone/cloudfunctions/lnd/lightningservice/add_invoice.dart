@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart'; // Includes bytesToHex
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
@@ -57,9 +58,9 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for user: $userId");
 
-    // Get the admin macaroon from node mapping
-    final macaroon = nodeMapping.adminMacaroon;
-    if (macaroon.isEmpty) {
+    // Get the admin macaroon from node mapping (stored as base64)
+    final macaroonBase64 = nodeMapping.adminMacaroon;
+    if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
           statusCode: "error",
@@ -67,11 +68,13 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
           data: {}
       );
     }
+    
+    // Convert base64 macaroon to hex format
+    final macaroonBytes = base64Decode(macaroonBase64);
+    final macaroon = bytesToHex(macaroonBytes);
 
-    // Get Caddy URL for the user's node
-    final litdController = Get.find<LitdController>();
-    final baseUrl = litdController.litd_baseurl.value;
-    final url = 'https://$baseUrl/$nodeId/v1/invoices';
+    // Get Caddy URL for the user's node using LightningConfig
+    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/invoices';
     
     logger.i("Creating invoice at: $url");
 

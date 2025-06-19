@@ -133,20 +133,36 @@ bool isCompressedPublicKey(String input) {
 }
 
 bool isValidBitcoinTransactionID(String input) {
-  RegExp txidPattern = RegExp(r'^[a-zA-Z0-9]{64}$');
+  RegExp txidPattern = RegExp(r'^[a-fA-F0-9]{64}$');
   return txidPattern.hasMatch(input);
 }
 
 bool isValidBitcoinAddressHash(String input) {
-  RegExp blockHashPattern = RegExp(
-    r'^[a-zA-Z0-9]{62}$',
-    caseSensitive: false,
-  );
-  return blockHashPattern.hasMatch(input);
+  if (input.isEmpty) return false;
+  
+  // P2PKH addresses (start with 1, length 26-35, base58)
+  if (input.startsWith('1')) {
+    return RegExp(r'^1[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) && 
+           input.length >= 26 && input.length <= 35;
+  }
+  
+  // P2SH addresses (start with 3, length 26-35, base58)
+  if (input.startsWith('3')) {
+    return RegExp(r'^3[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) && 
+           input.length >= 26 && input.length <= 35;
+  }
+  
+  // Bech32 addresses (start with bc1, lowercase)
+  if (input.startsWith('bc1')) {
+    return RegExp(r'^bc1[a-z0-9]{39,59}$').hasMatch(input) && 
+           input.length >= 42;
+  }
+  
+  return false;
 }
 
 bool containsSixIntegers(String input) {
-  RegExp sixIntegersPattern = RegExp(r'^\d{6}$');
+  RegExp sixIntegersPattern = RegExp(r'(?<!\d)\d{6}(?!\d)');
   return sixIntegersPattern.hasMatch(input);
 }
 
@@ -164,14 +180,16 @@ bool isLightningAdressAsMail(String input) {
 }
 
 bool isBip21WithBolt11(String input) {
-  if (input.startsWith("bitcoin:")) {
+  if (input.toLowerCase().startsWith("bitcoin:")) {
     Uri? uri = Uri.tryParse(input);
     if (uri != null) {
       String? lightningParam = uri.queryParameters["lightning"];
 
       if (lightningParam != null) {
-        if (lightningParam.toUpperCase().startsWith("LNBC") &&
-            isBitcoinWalletValid(uri.path)) {
+        if ((lightningParam.toUpperCase().startsWith("LNBC") || 
+             lightningParam.toUpperCase().startsWith("LNTB") || 
+             lightningParam.toUpperCase().startsWith("LNBCRT")) &&
+            isValidBitcoinAddressHash(uri.path)) {
           return true;
         }
       }
@@ -181,13 +199,13 @@ bool isBip21WithBolt11(String input) {
 }
 
 bool isBip21WithBolt12(String input) {
-  if (input.startsWith("bitcoin:")) {
+  if (input.toLowerCase().startsWith("bitcoin:")) {
     Uri? uri = Uri.tryParse(input);
     if (uri != null) {
       String? lightningParam = uri.queryParameters["lightning"];
 
       if (lightningParam != null) {
-        if (lightningParam.startsWith("LNO")) {
+        if (lightningParam.toUpperCase().startsWith("LNO")) {
           return true;
         }
       }
@@ -241,8 +259,23 @@ getaverage(dynamic currentline) {
   if (currentline == null || currentline.isEmpty) {
     return 0;
   }
-  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
-      currentline.length;
+  
+  // Handle both lists of numbers and lists of objects with price property
+  if (currentline[0] is num) {
+    // Direct list of numbers
+    double sum = 0.0;
+    for (var item in currentline) {
+      sum += item.toDouble();
+    }
+    return sum / currentline.length;
+  } else {
+    // List of objects with price property
+    double sum = 0.0;
+    for (var item in currentline) {
+      sum += item.price.toDouble();
+    }
+    return sum / currentline.length;
+  }
 }
 
 // Display the time ago from a timestamp
@@ -255,19 +288,19 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   if ((difference.inDays / 365).floor() >= 2) {
     return 'vor ${(difference.inDays / 365).floor()} Jahren';
   } else if ((difference.inDays / 365).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
+    return (numericDates) ? 'vor 1 Jahr' : 'letztes Jahr';
   } else if ((difference.inDays / 30).floor() >= 2) {
-    return 'vor ${(difference.inDays / 365).floor()} Monaten';
+    return 'vor ${(difference.inDays / 30).floor()} Monaten';
   } else if ((difference.inDays / 30).floor() >= 1) {
-    return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
+    return (numericDates) ? 'vor 1 Monat' : 'letzten Monat';
   } else if ((difference.inDays / 7).floor() >= 2) {
     return 'vor ${(difference.inDays / 7).floor()} Wochen';
   } else if ((difference.inDays / 7).floor() >= 1) {
-    return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
+    return (numericDates) ? 'vor 1 Woche' : 'letzte Woche';
   } else if (difference.inDays >= 2) {
     return 'vor ${difference.inDays} Tagen';
   } else if (difference.inDays >= 1) {
-    return (numericDates) ? 'vor 1 Tag' : 'Gestern';
+    return (numericDates) ? 'vor 1 Tag' : 'gestern';
   } else if (difference.inHours >= 2) {
     return 'vor ${difference.inHours} Stunden';
   } else if (difference.inHours >= 1) {
@@ -279,12 +312,12 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   } else if (difference.inSeconds >= 3) {
     return 'vor ${difference.inSeconds} Sekunden';
   } else {
-    return 'Just now';
+    return 'gerade eben';
   }
 }
 
 String displayTimeAgoFromInt(int time,
-    {bool numericDates = true, String language = 'de'}) {
+    {bool numericDates = false, String language = 'de'}) {
   // The time is already in milliseconds, so use it directly
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
   final DateTime date2 = DateTime.now();
@@ -293,7 +326,7 @@ String displayTimeAgoFromInt(int time,
   // Validate the date (handle future dates)
   if (date.isAfter(date2)) {
     // Future date (invalid) - show current time instead
-    return language == 'en' ? 'Just now' : 'Gerade eben';
+    return language == 'en' ? 'Just now' : 'gerade eben';
   }
 
   // Language-based formatting
@@ -302,19 +335,19 @@ String displayTimeAgoFromInt(int time,
     if ((difference.inDays / 365).floor() >= 2) {
       return '${(difference.inDays / 365).floor()} years ago';
     } else if ((difference.inDays / 365).floor() >= 1) {
-      return (numericDates) ? '1 year ago' : 'Last year';
+      return (numericDates) ? '1 year ago' : 'last year';
     } else if ((difference.inDays / 30).floor() >= 2) {
       return '${(difference.inDays / 30).floor()} months ago';
     } else if ((difference.inDays / 30).floor() >= 1) {
-      return (numericDates) ? '1 month ago' : 'Last month';
+      return (numericDates) ? '1 month ago' : 'last month';
     } else if ((difference.inDays / 7).floor() >= 2) {
       return '${(difference.inDays / 7).floor()} weeks ago';
     } else if ((difference.inDays / 7).floor() >= 1) {
-      return (numericDates) ? '1 week ago' : 'Last week';
+      return (numericDates) ? '1 week ago' : 'last week';
     } else if (difference.inDays >= 2) {
       return '${difference.inDays} days ago';
     } else if (difference.inDays >= 1) {
-      return (numericDates) ? '1 day ago' : 'Yesterday';
+      return (numericDates) ? '1 day ago' : 'yesterday';
     } else if (difference.inHours >= 2) {
       return '${difference.inHours} hours ago';
     } else if (difference.inHours >= 1) {
@@ -326,7 +359,7 @@ String displayTimeAgoFromInt(int time,
     } else if (difference.inSeconds >= 3) {
       return '${difference.inSeconds} seconds ago';
     } else {
-      return 'Just now';
+      return 'just now';
     }
   } else {
     // German format (default)
@@ -363,12 +396,13 @@ String displayTimeAgoFromInt(int time,
 }
 
 String convertIntoDateFormat(int time) {
-  // Convert the timestamp to DateTime
-  final logger = Get.find<LoggerService>();
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+  // Convert the timestamp to DateTime (time is already in milliseconds)
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
   // Format the DateTime object to a readable string
   String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
-  logger.i("Formatted date: $formattedDate");
+  if (kDebugMode) {
+    print("Formatted date: $formattedDate");
+  }
   return formattedDate;
 }
 

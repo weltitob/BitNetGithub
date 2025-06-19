@@ -21,16 +21,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:timezone/timezone.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 
-// var datetime = DateTime.now();
-// DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-// DateFormat timeFormat = DateFormat("HH:mm");
-// String inital_date = dateFormat.format(datetime);
-// String inital_time = timeFormat.format(datetime);
 GlobalKey<_CustomWidgetState> chartInfoKey = GlobalKey<_CustomWidgetState>();
-// String trackBallValuePrice = "-----.--";
-// String trackBallValueTime = "${inital_time}";
-// String trackBallValueDate = "${inital_date}";
-// String trackBallValuePricechange = "+0";
 Color initAnimationColor = Colors.blue;
 
 class ChartWidget extends StatefulWidget {
@@ -46,115 +37,14 @@ class _ChartWidgetState extends State<ChartWidget> {
   late bool _loading;
   Timer? timer;
 
-  // late double new_lastpriceexact;
-  // late double new_lastimeeexact;
-  // late double new_lastpricerounded;
-  // late double new_firstpriceexact;
-
   StreamController<ChartLine> _priceStreamController =
       StreamController<ChartLine>();
 
-  // String selectedtimespan = "1D";
-
-  // List<String> timespans = ["1D", "1W", "1M", "1J", "Max"];
-
-  // // Initialized the global variable
-
   getChartLine(String currency) async {
-    // CryptoChartLine chartClassDay = CryptoChartLine(
-    //   crypto: "bitcoin",
-    //   currency: currency,
-    //   days: "1",
-    // );
-    // CryptoChartLine chartClassWeek = CryptoChartLine(
-    //   crypto: "bitcoin",
-    //   currency: currency,
-    //   days: "7",
-    // );
-    // CryptoChartLine chartClassMonth = CryptoChartLine(
-    //   crypto: "bitcoin",
-    //   currency: currency,
-    //   days: "30",
-    // );
-    // CryptoChartLine chartClassYear = CryptoChartLine(
-    //   crypto: "bitcoin",
-    //   currency: currency,
-    //   days: "365",
-    // );
-    // CryptoChartLine chartClassMax = CryptoChartLine(
-    //   crypto: "bitcoin",
-    //   currency: currency,
-    //   days: "max",
-    // );
-
-    // // Call getChartData for each in parallel
-    // await Future.wait([
-    //   chartClassDay.getChartData(),
-    //   chartClassWeek.getChartData(),
-    //   chartClassMonth.getChartData(),
-    //   chartClassYear.getChartData(),
-    //   chartClassMax.getChartData(),
-    // ]);
-
-    // if (chartClassDay.chartLine.isNotEmpty) {
-    //   Get.find<CryptoItemController>().firstPrice.value =
-    //       chartClassDay.chartLine.first.price;
-
-    //   Get.find<WalletsController>().chartLines.value =
-    //       chartClassDay.chartLine.last;
-    // }
-    // final maxchartunfinished = chartClassMax.chartLine.toSet().toList();
-    // final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
-    // final onemonthchartunfinished = chartClassMonth.chartLine.toSet().toList();
-    // final oneweekchartunfinished = chartClassWeek.chartLine.toSet().toList();
-    // final oneweekchartfinished = chartClassDay.chartLine.toSet().toList();
-
-    // onedaychart = chartClassDay.chartLine.toSet().toList();
-    // //get latest price from onedaychart
-    // List<ChartLine> onedaychartlast = [onedaychart.last];
-    // //add latest price to every chart
-    // maxchart = maxchartunfinished + onedaychartlast;
-    // oneyearchart = oneyearchartunfinished + onedaychartlast;
-    // onemonthchart = onemonthchartunfinished + onedaychartlast;
-    // oneweekchart = oneweekchartunfinished + onedaychartlast;
-    // //standard current line should be onedaychart
-    // currentline = onedaychart;
-
-    // _latesttimeinit = currentline.value.last.time;
-    // _lastpriceinit = double.parse((currentline.value.last.price).toStringAsFixed(2));
-    // _firstpriceinit =
-    //     double.parse((currentline.value.first.price).toStringAsFixed(2));
-
-    //for custom widget define default value
-    //price
-    // trackBallValuePrice = _lastpriceinit.toString();
-    // //date
-    // var datetime = DateTime.fromMillisecondsSinceEpoch(_latesttimeinit.round(),
-    //     isUtc: false);
-    // DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-    // DateFormat timeFormat = DateFormat("HH:mm");
-    // String date = dateFormat.format(datetime);
-    // String time = timeFormat.format(datetime);
-    // trackBallValueTime = time.toString();
-    // trackBallValueDate = date.toString();
-    // //percent
-    // double priceChange = (currentline.value.last.price - currentline.value.first.price) /
-    //     currentline.value.first.price;
-    // trackBallValuePricechange = toPercent(priceChange);
-
     setState(() {
       _loading = false;
     });
   }
-
-  // // updateChart when new data arrives
-  // void updateChart() {
-  //   ChartLine newdata = onedaychart.last;
-  //   setState(() {
-  //     currentline.value.add(newdata);
-  //     _chartSeriesController?.animate();
-  //   });
-  // }
 
   void setValues(BitcoinController ctrler) {
     // Check if the currentline is empty before accessing elements
@@ -222,7 +112,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 ),
                               ),
                             )
-                          : ChartCore(),
+                          : RepaintBoundary(child: ChartCore()),
                     ),
                   ],
                 ),
@@ -599,6 +489,9 @@ class _CustomWidgetState extends State<CustomWidget>
 
   @override
   Widget build(BuildContext context) {
+    // Cache Theme to avoid multiple expensive calls
+    final theme = Theme.of(context);
+    
     final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
@@ -638,10 +531,10 @@ class _CustomWidgetState extends State<CustomWidget>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Bitcoin",
-                            style: Theme.of(context).textTheme.headlineMedium),
+                            style: theme.textTheme.headlineMedium),
                         Text(
                           trackDate,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: theme.textTheme.titleSmall,
                         ),
                       ],
                     ),
@@ -650,11 +543,11 @@ class _CustomWidgetState extends State<CustomWidget>
                       children: <Widget>[
                         Text(
                           "BTC",
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: theme.textTheme.titleSmall,
                         ),
                         Text(
                           trackTime,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: theme.textTheme.titleSmall,
                         ),
                       ],
                     ),
@@ -669,36 +562,9 @@ class _CustomWidgetState extends State<CustomWidget>
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Stack(
-                  //   children: [
-                  //     Container(
-                  //       height: AppTheme.elementSpacing * 0.75,
-                  //       width: AppTheme.elementSpacing * 0.75,
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(500.0),
-                  //         color: Colors.white10,
-                  //       ),
-                  //     ),
-                  //     if (_isBlinking)
-                  //       Positioned.fill(
-                  //         child:  AnimatedBuilder(
-                  //           animation: _animation,
-                  //           builder: (context, child) {
-                  //             return Container(
-                  //               decoration: BoxDecoration(
-                  //                 borderRadius: BorderRadius.circular(500.0),
-                  //                 color: _animation.value,
-                  //               ),
-                  //             );
-                  //           },
-                  //         ),
-                  //       ),
-                  //   ],
-                  // ),
-                  // SizedBox(width: AppTheme.elementSpacing,),
                   Text(
                     "${bitcoinController.trackBallValuePrice}${getCurrency(currency!)}",
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: theme.textTheme.displaySmall,
                   ),
                 ],
               ),

@@ -53,8 +53,43 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class WalletScreen extends GetWidget<WalletsController> {
   WalletScreen({Key? key}) : super(key: key);
 
+  // Moved outside build method for better performance
+  bool _isPriceChangePositive(BitcoinController controller) {
+    // Get the price difference
+    double lastPrice = controller.pbNew_lastpricerounded.value;
+    double firstPrice = controller.pbNew_firstpriceexact;
+    double diff = lastPrice - firstPrice;
+
+    // Always consider zero or very small differences as positive
+    bool isZeroOrPositive = diff >= 0 || diff.abs() < 0.001;
+
+    // Added safeguard: If the percentChange is "-0%" or "0%", always return true
+    String percentChange = controller.pbOverallPriceChange.value;
+    if (percentChange.trim() == "-0%" || percentChange.trim() == "0%") {
+      return true;
+    }
+
+    return isZeroOrPositive;
+  }
+  
+  // PageController cache to avoid recreation on every build
+  static final Map<String, PageController> _pageControllerCache = {};
+  
+  PageController _getPageController() {
+    final key = 'wallet_page_controller';
+    if (!_pageControllerCache.containsKey(key)) {
+      _pageControllerCache[key] = PageController(
+        initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
+        viewportFraction: 0.8885,
+      );
+    }
+    return _pageControllerCache[key]!;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Cache MediaQuery to avoid multiple expensive calls
+    final screenSize = MediaQuery.of(context).size;
     WalletsController walletController = Get.find<WalletsController>();
     ProfileController profileController = Get.find<ProfileController>();
     String? currency =
@@ -66,35 +101,13 @@ class WalletScreen extends GetWidget<WalletsController> {
     }
     BitcoinController bitcoinController = Get.find<BitcoinController>();
 
-    // Debug function to help diagnose background gradient issues
-    bool _isPriceChangePositive(BitcoinController controller) {
-      // Get the price difference
-      double lastPrice = controller.pbNew_lastpricerounded.value;
-      double firstPrice = controller.pbNew_firstpriceexact;
-      double diff = lastPrice - firstPrice;
-
-      // Always consider zero or very small differences as positive
-      bool isZeroOrPositive = diff >= 0 || diff.abs() < 0.001;
-
-      // Added safeguard: If the percentChange is "-0%" or "0%", always return true
-      String percentChange = controller.pbOverallPriceChange.value;
-      if (percentChange.trim() == "-0%" || percentChange.trim() == "0%") {
-        return true;
-      }
-
-      return isZeroOrPositive;
-    }
 
     return bitnetScaffold(
       context: context,
       body: StatefulBuilder(
         builder: (context, setState) {
-          // PageController with a viewportFraction < 1.0 so that
-          // the next/previous card partially peeks in
-          final pageController = PageController(
-            initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
-            viewportFraction: 0.8885, // see some of the next/prev card
-          );
+          // Use cached PageController to avoid recreation on every build
+          final pageController = _getPageController();
           SubServersStatus?
               subServersStatus; // local variable to store fetched data
 

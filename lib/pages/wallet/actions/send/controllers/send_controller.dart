@@ -68,6 +68,9 @@ class SendsController extends BaseController {
 
   // ADD:
   RxList<UserData> foundUsers = <UserData>[].obs;
+  
+  // Store all subscriptions for proper disposal
+  final List<StreamSubscription> _subscriptions = [];
 
   void handleSearch(String value) {
     logger.i("handleSearch called with value: $value");
@@ -819,7 +822,7 @@ class SendsController extends BaseController {
             invoiceStrings,
             int.parse(bip21InvoiceSatController.text));
         bool firstSuccess = false;
-        paymentStream.listen((dynamic response) {
+        final sub = paymentStream.listen((dynamic response) {
           isFinished.value =
               true; // Assuming you might want to update UI on each response
           if (response['status'] == "SUCCEEDED") {
@@ -865,6 +868,7 @@ class SendsController extends BaseController {
           // Handle stream completion if necessary
         }, cancelOnError: true // Cancel the subscription upon first error
             );
+        _subscriptions.add(sub);
       }
     }
   }
@@ -975,7 +979,7 @@ class SendsController extends BaseController {
       bool success = false;
       final completer = Completer<bool>();
       
-      paymentStream.listen((dynamic response) {
+      final sub = paymentStream.listen((dynamic response) {
         isFinished.value = true;
         if (response['status'] == "SUCCEEDED") {
           logger.i("BIP21 Lightning payment successful!");
@@ -994,6 +998,7 @@ class SendsController extends BaseController {
         if (!completer.isCompleted) completer.complete(false);
       });
       
+      _subscriptions.add(sub);
       return await completer.future;
     }
   }
@@ -1028,7 +1033,7 @@ class SendsController extends BaseController {
               invoiceStrings,
               int.parse(satController.text));
           bool firstSuccess = false;
-          paymentStream.listen((dynamic response) {
+          final sub = paymentStream.listen((dynamic response) {
             isFinished.value =
                 true; // Assuming you might want to update UI on each response
             if (response['status'] == "SUCCEEDED") {
@@ -1085,6 +1090,7 @@ class SendsController extends BaseController {
             // Handle stream completion if necessary
           }, cancelOnError: true // Cancel the subscription upon first error
               );
+          _subscriptions.add(sub);
         } else if (sendType == SendType.OnChain) {
           // NEW: One user one node approach - Direct onchain sending via LND
           logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
@@ -1303,6 +1309,12 @@ class SendsController extends BaseController {
 
   @override
   void dispose() {
+    // Cancel all stream subscriptions
+    for (final sub in _subscriptions) {
+      sub.cancel();
+    }
+    _subscriptions.clear();
+    
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
     btcController.dispose();

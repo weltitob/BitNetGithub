@@ -67,14 +67,8 @@ class ColoredPriceWidget extends StatelessWidget {
       
       // Initialize with a default non-zero value if we're showing BTC and price is missing
       if (controller.coin.value && priceValue <= 0) {
-        // If we're in satoshi mode but don't have the price yet, show a placeholder
-        if (controller.totalBalanceSAT.value > 0) {
-          // If we have the total balance, use a proportion of it as placeholder
-          satoshiValue = (controller.totalBalanceSAT.value * 0.01).round();
-          satoshiValue = satoshiValue > 0 ? satoshiValue : 1; // Ensure at least 1 sat shows
-        } else {
-          satoshiValue = 1; // Default to 1 sat if nothing else is available
-        }
+        // If we're in satoshi mode but don't have the price yet, show 0
+        satoshiValue = 0; // Show 0 instead of 1 when there's no balance
       } else if (bitcoinPrice > 0 && currencySymbol != 'sat') {
         // Convert fiat amount to BTC then to satoshis
         double btcAmount = priceValue / bitcoinPrice;

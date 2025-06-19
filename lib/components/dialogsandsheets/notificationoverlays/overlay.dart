@@ -12,6 +12,9 @@ class OverlayController extends GetxController
     with SingleGetTickerProviderMixin {
   // Rx variable to manage the current overlay entry
   Rx<OverlayEntry?> overlayEntry = Rx<OverlayEntry?>(null);
+  
+  // Store timers for proper disposal
+  Timer? _connectivityTimer;
 
   // 1) Simple Text Overlay
   Future<void> showOverlay(String? message,
@@ -137,12 +140,14 @@ class OverlayController extends GetxController
     overlayEntry.value = overlay;
 
     // Check connectivity every 2 seconds and remove overlay once online
-    Timer.periodic(const Duration(seconds: 2), (timer) async {
+    _connectivityTimer?.cancel(); // Cancel any existing timer
+    _connectivityTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
       final connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         overlay.remove();
         animationController.dispose();
         timer.cancel();
+        _connectivityTimer = null;
       }
     });
   }
@@ -243,5 +248,11 @@ class OverlayController extends GetxController
   void removeOverlay() {
     overlayEntry.value?.remove();
     overlayEntry.value = null;
+  }
+  
+  @override
+  void onClose() {
+    _connectivityTimer?.cancel();
+    super.onClose();
   }
 }

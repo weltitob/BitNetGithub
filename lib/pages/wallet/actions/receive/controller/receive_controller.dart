@@ -292,6 +292,12 @@ class ReceiveController extends BaseController {
 
   @override
   void dispose() {
+    timer.cancel();
+    satController.dispose();
+    btcController.dispose();
+    currController.dispose();
+    btcControllerCombined.dispose();
+    messageController.dispose();
     super.dispose();
   }
 }

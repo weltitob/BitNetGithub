@@ -39,7 +39,10 @@ class AppsTab extends StatefulWidget {
   State<AppsTab> createState() => _AppsTabState();
 }
 
-class _AppsTabState extends State<AppsTab> {
+class _AppsTabState extends State<AppsTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   List<AppData> myApps = List.empty();
   List<AppData> availableApps = List.empty();
   bool loading = true;
@@ -87,6 +90,7 @@ class _AppsTabState extends State<AppsTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return bitnetScaffold(
       context: context,
       body: VerticalFadeListView.standardTab(

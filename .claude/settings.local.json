@@ -71,7 +71,11 @@
       "Bash(firebase functions:log:*)",
       "Bash(git ls-tree:*)",
       "Bash(true)",
-      "Bash(diff:*)"
+      "Bash(diff:*)",
+      "Bash(/usr/bin/flutter test test/unit/currency/currency_converter_test.dart)",
+      "Bash(/mnt/c/src/flutter/bin/flutter test test/unit/currency/currency_converter_test.dart)",
+      "Bash(/mnt/c/src/flutter/bin/flutter clean)",
+      "Bash(grep -n \"isBitcoinWalletValid\" /mnt/c/Users/tobia/StudioProjects/bitnet/lib/backbone/helper/helpers.dart)"
     ],
     "deny": []
   }

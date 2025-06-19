@@ -126,7 +126,7 @@ void main() {
     test('should handle edge cases', () {
       expect(isValidBitcoinTransactionID(''), isFalse);
       expect(isValidBitcoinTransactionID('not-a-txid'), isFalse);
-      expect(isValidBitcoinTransactionID(null), isFalse);
+      // Skip null test as function expects non-nullable String
     });
 
     test('should handle uppercase and lowercase', () {

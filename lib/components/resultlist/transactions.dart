@@ -58,14 +58,11 @@ class _TransactionsState extends State<Transactions>
   // (Neu) Filter-Controller & Suchfeld
 
   final TextEditingController searchCtrl = TextEditingController();
+  Timer? _searchTimer;
 
 
   bool firstInit = false;
 
-  // // Streams
-  // StreamSubscription<BitcoinTransaction?>? transactionStream;
-  // StreamSubscription<ReceivedInvoice?>? lightningStream;
-  // StreamSubscription<ReceivedInvoice?>? paymentStream;
 
   @override
   void initState() {
@@ -159,8 +156,7 @@ class _TransactionsState extends State<Transactions>
 
   @override
   void dispose() {
-    // lightningStream?.cancel();
-    // transactionStream?.cancel();
+    _searchTimer?.cancel();
     super.dispose();
   }
 
@@ -213,24 +209,6 @@ class _TransactionsState extends State<Transactions>
     }
   }
 
-  /// Daten, die über [widget.newData] reinkommen, einpflegen
-  // void updateDataWithNew() {
-  //   logger.i("Checking for newData...");
-  //   if (widget.newData == null) return;
-  //
-  //   for (dynamic data in widget.newData!) {
-  //     if (data is LightningPayment) {
-  //       logger.i("Adding new lightning payment from newData: $data");
-  //       lightningPayments.add(data);
-  //      }else if(data is ReceivedInvoice) {
-  //       logger.i("Adding new ReceivedInvoice from newData: $data");
-  //       lightningInvoices.add(data);
-  //     } else if (data is BitcoinTransaction) {
-  //       logger.i("Adding new onchain tx from newData: $data");
-  //       onchainTransactions.add(data);
-  //     }
-  //   }
-  // }
 
   /// (Neu) Alle Transaktionen sammeln + Filterung + Search anwenden
   void combineAllTransactionsWithFiltering({bool sticky = true}) {
@@ -362,17 +340,25 @@ class _TransactionsState extends State<Transactions>
 
       finalTransactions.add(
         Padding(
+          key: ValueKey('header_$category'),
           padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.cardPadding,
               vertical: AppTheme.elementSpacing),
-          child: Text(
-            category,
-            style: Theme.of(Get.context!).textTheme.titleSmall,
+          child: Builder(
+            builder: (context) => Text(
+              category,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
         ),
       );
       //transactions: transactions
-      finalTransactions.add(TransactionContainer(transactions: transactions));
+      finalTransactions.add(
+        TransactionContainer(
+          key: ValueKey('container_$category'),
+          transactions: transactions,
+        ),
+      );
     });
 
     return finalTransactions;
@@ -431,26 +417,33 @@ class _TransactionsState extends State<Transactions>
                   // controller: searchCtrl,
                   handleSearch: (v) {
                     searchCtrl.text = v;
-                    combineAllTransactionsWithFiltering();
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.filter,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.white60
-                          : AppTheme.black60,
-                      size: AppTheme.cardPadding * 0.75,
-                    ),
-                    onPressed: () async {
-                      await BitNetBottomSheet(
-                        context: context,
-                        child: WalletFilterScreen(
-                          hideLightning: widget.hideLightning,
-                          hideOnchain: widget.hideOnchain,
-                          forcedFilters: widget.filters,
-                        ),
-                      );
+                    _searchTimer?.cancel();
+                    _searchTimer = Timer(const Duration(milliseconds: 300), () {
                       combineAllTransactionsWithFiltering();
+                    });
+                  },
+                  suffixIcon: Builder(
+                    builder: (context) {
+                      final theme = Theme.of(context);
+                      final isDark = theme.brightness == Brightness.dark;
+                      return IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.filter,
+                          color: isDark ? AppTheme.white60 : AppTheme.black60,
+                          size: AppTheme.cardPadding * 0.75,
+                        ),
+                        onPressed: () async {
+                          await BitNetBottomSheet(
+                            context: context,
+                            child: WalletFilterScreen(
+                              hideLightning: widget.hideLightning,
+                              hideOnchain: widget.hideOnchain,
+                              forcedFilters: widget.filters,
+                            ),
+                          );
+                          combineAllTransactionsWithFiltering();
+                        },
+                      );
                     },
                   ),
                 ),
@@ -473,9 +466,11 @@ class _TransactionsState extends State<Transactions>
                 Container(
                   height: AppTheme.cardPadding * 4,
                   child: Center(
-                    child: Text(
-                      "No activity to display",
-                      style: Theme.of(Get.context!).textTheme.bodyMedium,
+                    child: Builder(
+                      builder: (context) => Text(
+                        "No activity to display",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
                   ),
                 ),
@@ -500,26 +495,33 @@ class _TransactionsState extends State<Transactions>
                     // controller: searchCtrl,
                     handleSearch: (v) {
                       searchCtrl.text = v;
-                      combineAllTransactionsWithFiltering();
-                    },
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.filter,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black60,
-                        size: AppTheme.cardPadding * 0.75,
-                      ),
-                      onPressed: () async {
-                        await BitNetBottomSheet(
-                          context: context,
-                          child: WalletFilterScreen(
-                            hideLightning: widget.hideLightning,
-                            hideOnchain: widget.hideOnchain,
-                            forcedFilters: widget.filters,
-                          ),
-                        );
+                      _searchTimer?.cancel();
+                      _searchTimer = Timer(const Duration(milliseconds: 300), () {
                         combineAllTransactionsWithFiltering();
+                      });
+                    },
+                    suffixIcon: Builder(
+                      builder: (context) {
+                        final theme = Theme.of(context);
+                        final isDark = theme.brightness == Brightness.dark;
+                        return IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.filter,
+                            color: isDark ? AppTheme.white60 : AppTheme.black60,
+                            size: AppTheme.cardPadding * 0.75,
+                          ),
+                          onPressed: () async {
+                            await BitNetBottomSheet(
+                              context: context,
+                              child: WalletFilterScreen(
+                                hideLightning: widget.hideLightning,
+                                hideOnchain: widget.hideOnchain,
+                                forcedFilters: widget.filters,
+                              ),
+                            );
+                            combineAllTransactionsWithFiltering();
+                          },
+                        );
                       },
                     ),
                   ),
@@ -560,7 +562,21 @@ class TransactionContainer extends StatelessWidget {
           GlassContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: transactions,
+              children: transactions.map((tx) => 
+                tx.data.txHash.isNotEmpty 
+                  ? ValueKey(tx.data.txHash)
+                  : ValueKey('${tx.data.timestamp}_${tx.data.amount}')
+              ).map((key) {
+                final index = transactions.indexWhere((tx) => 
+                  tx.data.txHash.isNotEmpty 
+                    ? tx.data.txHash == (key as ValueKey).value
+                    : '${tx.data.timestamp}_${tx.data.amount}' == (key as ValueKey).value
+                );
+                return KeyedSubtree(
+                  key: key,
+                  child: transactions[index],
+                );
+              }).toList(),
             ),
           ),
           SizedBox(height: AppTheme.cardPadding * 0.5.h),

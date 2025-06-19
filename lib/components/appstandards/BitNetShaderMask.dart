@@ -14,7 +14,6 @@ class BitNetShaderMask extends StatelessWidget {
           colors: [
             AppTheme.colorBitcoin,
             AppTheme.colorPrimaryGradient,
-            // Sie können dies zu einer beliebigen anderen Farbe ändern, um den gewünschten Gradienteneffekt zu erzielen
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

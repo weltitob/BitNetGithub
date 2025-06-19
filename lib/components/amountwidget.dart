@@ -88,6 +88,9 @@ class _AmountWidgetState extends State<AmountWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Cache Theme to avoid multiple expensive calls
+    final theme = Theme.of(context);
+    
     String? currencyType =
         controller.swapped ? "USD" : controller.currentUnit.name;
     String? currency =
@@ -252,8 +255,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                                         Text(getCurrency(currency!),
                                             style: TextStyle(
                                                 fontSize: 24,
-                                                color: Theme.of(context)
-                                                            .brightness ==
+                                                color: theme.brightness ==
                                                         Brightness.light
                                                     ? AppTheme.black70
                                                     : AppTheme.white90)),
@@ -263,7 +265,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                                       getCurrencyIcon(
                                           controller.currentUnit.name),
                                       size: AppTheme.cardPadding * 1.25,
-                                      color: Theme.of(context).brightness ==
+                                      color: theme.brightness ==
                                               Brightness.light
                                           ? AppTheme.black70
                                           : AppTheme.white90),
@@ -271,7 +273,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                               counterText: "",
                               hintText: "0.0",
                               hintStyle: TextStyle(
-                                  color: Theme.of(context).brightness ==
+                                  color: theme.brightness ==
                                           Brightness.light
                                       ? AppTheme.black60
                                       : AppTheme.white60),
@@ -281,11 +283,11 @@ class _AmountWidgetState extends State<AmountWidget> {
                                 widget.satController,
                                 widget.currController),
                             autofocus: false,
-                            style: Theme.of(context)
+                            style: theme
                                 .textTheme
                                 .displayLarge!
                                 .copyWith(
-                                    color: Theme.of(context).brightness ==
+                                    color: theme.brightness ==
                                             Brightness.light
                                         ? AppTheme.black70
                                         : AppTheme.white90),
@@ -372,10 +374,11 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
+      final theme = Theme.of(context);
       return Text(
         "≈ ${widget.currController.text}${getCurrency(currency!)}", // show the converted value of Bitcoin to Euro with 2 decimal places
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: Theme.of(context).brightness == Brightness.light
+        style: theme.textTheme.bodyLarge!.copyWith(
+            color: theme.brightness == Brightness.light
                 ? AppTheme.black70
                 : AppTheme
                     .white90), // use the bodyLarge text theme style from the current theme
@@ -444,13 +447,14 @@ class _AmountWidgetState extends State<AmountWidget> {
     }
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
+      final theme = Theme.of(context);
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             "≈ ${controller.currentUnit == BitcoinUnits.BTC ? widget.btcController.text : widget.satController.text}", // show the converted value of Bitcoin to Euro with 2 decimal places
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).brightness == Brightness.light
+            style: theme.textTheme.bodyLarge!.copyWith(
+                color: theme.brightness == Brightness.light
                     ? AppTheme.black70
                     : AppTheme
                         .white90), // use the bodyLarge text theme style from the current theme
@@ -459,7 +463,7 @@ class _AmountWidgetState extends State<AmountWidget> {
             getCurrencyIcon(
               controller.currentUnit.name,
             ),
-            color: Theme.of(context).brightness == Brightness.light
+            color: theme.brightness == Brightness.light
                 ? AppTheme.black70
                 : AppTheme.white90,
           )

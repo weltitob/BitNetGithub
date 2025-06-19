@@ -25,7 +25,10 @@ class TokensTab extends StatefulWidget {
   State<TokensTab> createState() => _TokensTabState();
 }
 
-class _TokensTabState extends State<TokensTab> {
+class _TokensTabState extends State<TokensTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   // Sample token data
   final List<Map<String, dynamic>> tokenData = [
     {
@@ -145,6 +148,7 @@ class _TokensTabState extends State<TokensTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final Size size = MediaQuery.of(context).size;
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     

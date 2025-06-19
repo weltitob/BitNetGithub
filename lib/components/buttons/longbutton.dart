@@ -47,6 +47,9 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Cache Theme to avoid multiple expensive calls
+    final theme = Theme.of(context);
+    
     // Use a more rounded border radius - half the height for pill-shaped buttons
     final borderRadius = BorderRadius.circular(widget.customHeight / 2);
     final borderRadiusNum = widget.customHeight / 2;
@@ -66,25 +69,21 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                       : _isHovered
                           ? [
                               darken(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .secondaryContainer,
+                                  theme.colorScheme.secondaryContainer,
                                   10),
                               darken(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
+                                  theme.colorScheme.tertiaryContainer,
                                   10)
                             ]
-                          : Theme.of(context).colorScheme.primary ==
+                          : theme.colorScheme.primary ==
                                   AppTheme.colorBitcoin
                               ? [
                                   AppTheme.colorBitcoin,
                                   AppTheme.colorPrimaryGradient,
                                 ]
                               : [
-                                  Theme.of(context).colorScheme.primary,
-                                  Theme.of(context).colorScheme.secondary,
+                                  theme.colorScheme.primary,
+                                  theme.colorScheme.secondary,
                                 ],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
@@ -151,27 +150,20 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                                   textAlign: TextAlign.center,
                                   style: widget.titleStyle != null
                                       ? widget.titleStyle
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .titleSmall
-                                          ?.copyWith(
+                                      : theme.textTheme.titleSmall?.copyWith(
                                           fontWeight: FontWeight.w700,
                                           color: widget.textColor != null
                                               ? widget.textColor
                                               : widget.buttonType ==
                                                       ButtonType.solid
-                                                  ? Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimary
-                                                  : Theme.of(context)
-                                                              .brightness ==
+                                                  ? theme.colorScheme.onPrimary
+                                                  : theme.brightness ==
                                                           Brightness.light
                                                       ? AppTheme.black70
                                                       : AppTheme.white90,
                                           shadows: [
                                             //AppTheme.boxShadowBig,
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
+                                            theme.brightness == Brightness.light
                                                 ? AppTheme.boxShadow
                                                 : AppTheme.boxShadowButton,
                                           ],

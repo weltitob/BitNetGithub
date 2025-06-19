@@ -44,7 +44,9 @@ class CurrencyConverter {
   }
 
   static double convertBitcoinToSats(double amount) {
-    return (amount * 100000000);
+    // Multiply and round to avoid floating point precision issues
+    // Round to nearest integer since satoshis are indivisible
+    return (amount * 100000000).roundToDouble();
   }
 
   static double convertSatoshiToBTC(double amount) {

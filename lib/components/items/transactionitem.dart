@@ -101,9 +101,10 @@ class _TransactionItemState extends State<TransactionItem>
         .toStringAsFixed(2)
         : "0.00";
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
+    return RepaintBoundary(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
         onTap: () async {
           if (!isTapped) {
             isTapped = true;
@@ -338,7 +339,7 @@ class _TransactionItemState extends State<TransactionItem>
           ),
         ),
       ),
-    );
+    ));
   }
 
   @override

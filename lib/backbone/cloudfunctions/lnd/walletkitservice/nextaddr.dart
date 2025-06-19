@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -16,7 +20,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 // Future<RestResponse> a(String account) async {
 //   //this obviously doesnt work because it's not for one user would be for all
@@ -152,17 +155,19 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for address generation");
     
-    // Get the admin macaroon from node mapping
-    final macaroon = nodeMapping.adminMacaroon;
-    if (macaroon.isEmpty) {
+    // Get the admin macaroon from node mapping (stored as base64)
+    final macaroonBase64 = nodeMapping.adminMacaroon;
+    if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return null;
     }
     
-    // Get Caddy URL for the user's node
-    final litdController = Get.find<LitdController>();
-    final baseUrl = litdController.litd_baseurl.value;
-    final url = 'https://$baseUrl/$nodeId/v2/wallet/address/next';
+    // Convert base64 macaroon to hex format
+    final macaroonBytes = base64Decode(macaroonBase64);
+    final macaroon = hex.encode(macaroonBytes);
+    
+    // Get Caddy URL for the user's node using LightningConfig
+    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/address/next';
     
     logger.i("Getting next address from: $url");
     
