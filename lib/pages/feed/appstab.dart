@@ -109,73 +109,102 @@ class _AppsTabState extends State<AppsTab> {
                 children: [
                   // Trending section
 
-                  SizedBox(height: AppTheme.cardPadding * 1.5.h),
+                  SizedBox(height: AppTheme.cardPadding.h),
                   if (loading || (!loading && myApps.isNotEmpty))
-                    TextButton(
-                      onPressed: () {
-                        if (!loading) {
-                          context.goNamed(kMyAppsPageRoute,
-                              extra:
-                                  myApps.map((app) => app.toJson()).toList());
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            "My Apps",
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                          Icon(Icons.arrow_forward_ios_rounded)
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: TextButton(
+                        onPressed: () {
+                          if (!loading) {
+                            context.goNamed(kMyAppsPageRoute,
+                                extra:
+                                    myApps.map((app) => app.toJson()).toList());
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              "My Apps",
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            const SizedBox(width: AppTheme.elementSpacing),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: AppTheme.iconSize * 0.75,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  if (loading) dotProgress(context),
+                  if (loading)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: dotProgress(context),
+                    ),
                   if (!loading && myApps.isNotEmpty) ...{
-                    GlassContainer(
-                        child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ListView(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: [
-                          ...myApps.map((app) => AppListTile(
-                                inMyAppsScreen: false,
-                                app: app,
-                                outsideNavigation: false,
-                                appOwned: ownedApps.contains(app.docId),
-                              ))
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: GlassContainer(
+                        child: ListView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          children: [
+                            ...myApps.map((app) => AppListTile(
+                                  inMyAppsScreen: false,
+                                  app: app,
+                                  outsideNavigation: false,
+                                  appOwned: ownedApps.contains(app.docId),
+                                ))
+                          ],
+                        ),
                       ),
-                    )),
-                    SizedBox(height: AppTheme.cardPadding * 2.h),
+                    ),
+                    SizedBox(height: AppTheme.cardPadding.h),
                   },
 
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 8.0),
-                    child: Text(
-                      "Available Apps",
-                      style: Theme.of(context).textTheme.headlineSmall,
+                        horizontal: AppTheme.cardPadding),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: AppTheme.elementSpacing),
+                      child: Text(
+                        "Available Apps",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
                     ),
                   ),
-                  if (loading) dotProgress(context),
+                  if (loading)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: dotProgress(context),
+                    ),
                   if (!loading) ...{
-                    GlassContainer(
-                        child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ListView(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: [
-                          ...availableApps.map((app) => AppListTile(
-                                inMyAppsScreen: false,
-                                app: app,
-                                outsideNavigation: false,
-                                appOwned: ownedApps.contains(app.docId),
-                              ))
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: GlassContainer(
+                        child: ListView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          children: [
+                            ...availableApps.map((app) => AppListTile(
+                                  inMyAppsScreen: false,
+                                  app: app,
+                                  outsideNavigation: false,
+                                  appOwned: ownedApps.contains(app.docId),
+                                ))
+                          ],
+                        ),
                       ),
-                    ))
+                    ),
+                    SizedBox(height: AppTheme.cardPadding.h),
                   },
                 ],
               );
@@ -233,26 +262,29 @@ class _MyAppsPageState extends State<MyAppsPage> {
               return ListView(
                 physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
+                padding: EdgeInsets.zero,
                 children: [
-                  // Trending section
-
-                  SizedBox(height: AppTheme.cardPadding * 1.5.h),
-                  GlassContainer(
-                      child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        ...myApps.map((app) => AppListTile(
-                              inMyAppsScreen: true,
-                              app: app,
-                              outsideNavigation: false,
-                              appOwned: ownedApps.contains(app.docId),
-                            ))
-                      ],
+                  SizedBox(height: AppTheme.cardPadding.h),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: GlassContainer(
+                      child: ListView(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          ...myApps.map((app) => AppListTile(
+                                inMyAppsScreen: true,
+                                app: app,
+                                outsideNavigation: false,
+                                appOwned: ownedApps.contains(app.docId),
+                              ))
+                        ],
+                      ),
                     ),
-                  ))
+                  ),
+                  SizedBox(height: AppTheme.cardPadding.h),
                 ],
               );
             }),
