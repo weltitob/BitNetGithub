@@ -68,7 +68,10 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:lightning.engineering)",
       "Bash(/mnt/c/src/flutter/bin/dart analyze /mnt/c/Users/tobia/StudioProjects/bitnet/lib/backbone/cloudfunctions/lnd/lightningservice/sign_message.dart)",
-      "Bash(firebase functions:log:*)"
+      "Bash(firebase functions:log:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(true)",
+      "Bash(diff:*)"
     ],
     "deny": []
   }
