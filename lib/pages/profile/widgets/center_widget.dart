@@ -14,62 +14,79 @@ class CenterWidget extends StatelessWidget {
     final controller = Get.find<ProfileController>();
     final double containerWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-    final isLightMode = theme.brightness == Brightness.light;
-
-    // Get colors for the indicator based on theme
-    final Color indicatorColor = isLightMode 
-        ? Colors.black.withOpacity(0.2)
-        : Colors.white.withOpacity(0.2);
 
     return Positioned(
       bottom: 0,
       child: Container(
         width: containerWidth,
-        height: 60,
+        height: AppTheme.cardPadding * 2.8.h,
+        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w),
         decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
+          color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 10,
-              offset: const Offset(0, -1),
+              color: theme.shadowColor.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -2),
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.05),
+              blurRadius: 40,
+              offset: const Offset(0, -8),
+              spreadRadius: 0,
             ),
           ],
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+          border: Border.all(
+            color: theme.dividerColor.withOpacity(0.1),
+            width: 1,
           ),
         ),
-        child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CenterWidgetIcon(
-                    label: 'Table',
-                    iconData: Icons.table_rows_rounded,
-                    index: 0,
-                    onTap: () => controller.currentview.value = 0,
-                  ),
-                  CenterWidgetIcon(
-                    label: 'Column',
-                    iconData: Icons.view_column_rounded,
-                    index: 1,
-                    onTap: () => controller.currentview.value = 1,
-                  ),
-                  CenterWidgetIcon(
-                    label: 'Alerts',
-                    iconData: Icons.notifications_outlined,
-                    index: 2,
-                    onTap: () => controller.currentview.value = 2,
-                  ),
-                  CenterWidgetIcon(
-                    label: 'Liked',
-                    iconData: FontAwesomeIcons.heart,
-                    index: 3,
-                    onTap: () => controller.currentview.value = 3,
-                  ),
-                ],
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing.w,
+            vertical: AppTheme.elementSpacing.h * 0.5,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: CenterWidgetIcon(
+                  label: 'Table',
+                  iconData: Icons.table_rows_rounded,
+                  index: 0,
+                  onTap: () => controller.currentview.value = 0,
+                ),
               ),
-            ),
+              Expanded(
+                child: CenterWidgetIcon(
+                  label: 'Column',
+                  iconData: Icons.view_column_rounded,
+                  index: 1,
+                  onTap: () => controller.currentview.value = 1,
+                ),
+              ),
+              Expanded(
+                child: CenterWidgetIcon(
+                  label: 'Alerts',
+                  iconData: Icons.notifications_outlined,
+                  index: 2,
+                  onTap: () => controller.currentview.value = 2,
+                ),
+              ),
+              Expanded(
+                child: CenterWidgetIcon(
+                  label: 'Liked',
+                  iconData: FontAwesomeIcons.heart,
+                  index: 3,
+                  onTap: () => controller.currentview.value = 3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
