@@ -270,7 +270,7 @@ class SendsController extends BaseController {
     return qrTyped;
   }
 
-  void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
+  Future<void> onQRCodeScanned(dynamic encodedString, BuildContext cxt) async {
     // Logic to determine the type of QR code
     QRTyped type = determineQRType(encodedString);
     logger.i("TYPE DETECTED! $type");
@@ -495,7 +495,9 @@ class SendsController extends BaseController {
         LightningPayment payment = LightningPayment.fromJson(typedResponse);
         sub!.cancel();
         logger.i("Payment successful! Forwarding to feed...");
-        context.go("/");
+        if (canNavigate) {
+          context.go("/");
+        }
       } else if ((response)['status'] == 'FAILED') {
         overlayController
             .showOverlay("Payment failed: ${response['failure_reason']}");
@@ -759,7 +761,9 @@ class SendsController extends BaseController {
           Get.find<WalletsController>().fetchOnchainWalletBalance();
           overlayController.showOverlay(
               "Onchain transaction successfully broadcastet, it can take a while!");
-          GoRouter.of(this.context).go("/feed");
+          if (canNavigate) {
+            GoRouter.of(this.context).go("/feed");
+          }
         } else {
           overlayController.showOverlay("Payment failed.");
           isFinished.value = false;
@@ -794,7 +798,9 @@ class SendsController extends BaseController {
               logger.i(
                   "Payment successful it should update the stream in walletcontroller which shows the overlay!");
               logger.i("Payment successful! Forwarding to wallet...");
-              context.go("/");
+              if (canNavigate) {
+                context.go("/");
+              }
               firstSuccess = true;
             }
           }
@@ -834,7 +840,7 @@ class SendsController extends BaseController {
     return false;
   }
 
-  Future<dynamic> sendBTC(BuildContext context) async {
+  Future<dynamic> sendBTC(BuildContext context, {bool canNavigate = true, bool shouldPop = false}) async {
     LoggerService logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();
     logger.i("sendBTC() called");
@@ -890,7 +896,9 @@ class SendsController extends BaseController {
                 // overlayController.showOverlay("Payment successful!");
 
                 logger.i("Payment successful! Forwarding to wallet...");
-                context.go("/");
+                if (canNavigate) {
+                  context.go("/");
+                }
 
                 firstSuccess = true;
               }
