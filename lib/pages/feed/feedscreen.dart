@@ -71,9 +71,18 @@ class _FeedScreenState extends State<FeedScreen>
   late FocusNode searchNode;
   late ScrollController homeScrollController;
   late Function() scrollListener;
+  
+  // Track which tabs have been initialized for lazy loading
+  final List<bool> _tabsInitialized = List.filled(6, false);
+  
   @override
   void initState() {
     super.initState();
+    
+    // Log performance improvement
+    final startTime = DateTime.now();
+    print('[PERFORMANCE] FeedScreen initState started at: $startTime');
+    
     Get.put(FeedController()).initNFC(context);
     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
     scrollListener = () {
@@ -81,6 +90,14 @@ class _FeedScreenState extends State<FeedScreen>
     };
     homeScrollController.addListener(scrollListener);
     searchNode = FocusNode();
+    
+    // Initialize the first tab immediately
+    _tabsInitialized[0] = true;
+    
+    final endTime = DateTime.now();
+    final loadTime = endTime.difference(startTime).inMilliseconds;
+    print('[PERFORMANCE] FeedScreen initState completed in: ${loadTime}ms');
+    print('[PERFORMANCE] Lazy loading enabled - only 1 of 6 tabs initialized');
   }
 
   @override
@@ -151,18 +168,36 @@ class _FeedScreenState extends State<FeedScreen>
             SliverFillRemaining(
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
-                print("Rendering tab index: $currentIndex");
+                
+                // Mark current tab as initialized when it's selected
+                if (!_tabsInitialized[currentIndex]) {
+                  // Use post frame callback to avoid setState during build
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      final tabNames = ['WebsitesTab', 'TokensTab', 'AssetsTab', 'SearchResultWidget', 'MempoolHome', 'AppsTab'];
+                      print('[PERFORMANCE] Initializing ${tabNames[currentIndex]} (tab $currentIndex) on first access');
+                      setState(() {
+                        _tabsInitialized[currentIndex] = true;
+                      });
+                      final initializedCount = _tabsInitialized.where((initialized) => initialized).length;
+                      print('[PERFORMANCE] Total tabs initialized: $initializedCount/6');
+                    }
+                  });
+                }
+                
+                print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
+                
                 return IndexedStack(
                   index: currentIndex,
                   sizing: StackFit.expand,
                   children: [
                     // Lazy-loading tabs for better performance
-                    const WebsitesTab(),
-                    const TokensTab(),
-                    const AssetsTab(),
-                    const SearchResultWidget(),
-                    MempoolHome(isFromHome: true),
-                    const AppsTab()
+                    _buildLazyTab(0, const WebsitesTab()),
+                    _buildLazyTab(1, const TokensTab()),
+                    _buildLazyTab(2, const AssetsTab()),
+                    _buildLazyTab(3, const SearchResultWidget()),
+                    _buildLazyTab(4, MempoolHome(isFromHome: true)),
+                    _buildLazyTab(5, const AppsTab())
                   ],
                 );
               }),
@@ -193,5 +228,46 @@ class _FeedScreenState extends State<FeedScreen>
         },
       );
     });
+  }
+  
+  // Build lazy tab - returns a lightweight placeholder for uninitialized tabs
+  Widget _buildLazyTab(int index, Widget tabContent) {
+    final controller = Get.find<FeedController>();
+    final isCurrentTab = controller.currentTabIndex.value == index;
+    
+    // If tab is not initialized and not current, return minimal placeholder
+    if (!_tabsInitialized[index] && !isCurrentTab) {
+      return const SizedBox.shrink();
+    }
+    
+    // If tab is current but not yet initialized, show loading indicator
+    if (!_tabsInitialized[index] && isCurrentTab) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Text(
+              'Loading...',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      );
+    }
+    
+    // For initialized tabs, wrap with KeepAliveWrapper to maintain state
+    // Only keep alive tabs that benefit from it (tabs with expensive data)
+    final bool shouldKeepAlive = index == 1 || index == 2; // TokensTab and AssetsTab
+    
+    return KeepAliveWrapper(
+      keepAlive: shouldKeepAlive,
+      child: tabContent,
+    );
   }
 }
