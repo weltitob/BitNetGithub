@@ -40,24 +40,7 @@ class CenterWidget extends StatelessWidget {
             topRight: Radius.circular(20),
           ),
         ),
-        child: Column(
-          children: [
-            // Animated selection indicator
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: EdgeInsets.only(
-                left: containerWidth / 4 * controller.currentview.value,
-              ),
-              width: containerWidth / 4,
-              height: 4, // Increased height from 2 to 4
-              decoration: BoxDecoration(
-                color: indicatorColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Tab row
-            Expanded(
-              child: Row(
+        child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CenterWidgetIcon(
@@ -87,8 +70,6 @@ class CenterWidget extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
       ),
     );
   }
