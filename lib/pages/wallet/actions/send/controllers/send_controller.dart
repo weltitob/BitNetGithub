@@ -463,7 +463,7 @@ class SendsController extends BaseController {
   }
 
   Future<LightningPayment?> payLnUrl(
-      String url, int amount, BuildContext context) async {
+      String url, int amount, BuildContext context, {bool canNavigate = true}) async {
     final logger = Get.find<LoggerService>();
     final overlayController = Get.find<OverlayController>();
 
@@ -857,7 +857,7 @@ class SendsController extends BaseController {
           logger.i("Satcontroller text: ${satController.text}");
           logger
               .i("Satcontroller text parsed: ${int.parse(satController.text)}");
-          payLnUrl(lnCallback!, int.parse(satController.text), context);
+          payLnUrl(lnCallback!, int.parse(satController.text), context, canNavigate: canNavigate);
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
