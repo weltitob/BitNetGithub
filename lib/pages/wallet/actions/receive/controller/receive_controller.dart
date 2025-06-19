@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dar
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -206,16 +207,28 @@ class ReceiveController extends BaseController {
     }
   }
 
-  void getBtcAddress() async {
+  void getBtcAddress({String addressType = 'WITNESS_PUBKEY_HASH'}) async {
     logger.i("Getting BTC Address");
-    String addr = await nextAddr(Auth().currentUser!.uid);
-    BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
-    Get.find<WalletsController>().btcAddresses.add(address.addr);
-    LocalStorage.instance.setStringList(
-        Get.find<WalletsController>().btcAddresses,
-        "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
-    logger.i("Bitcoin onchain Address" + address.addr.toString());
-    qrCodeDataStringOnchain.value = address.addr.toString();
+    
+    // Get address directly from user's LND node
+    // Use TAPROOT_PUBKEY for taproot addresses, WITNESS_PUBKEY_HASH for segwit
+    String? addr = await nextAddrDirect(
+      Auth().currentUser!.uid,
+      addressType: addressType,
+    );
+    
+    if (addr != null) {
+      BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
+      Get.find<WalletsController>().btcAddresses.add(address.addr);
+      LocalStorage.instance.setStringList(
+          Get.find<WalletsController>().btcAddresses,
+          "btc_addresses:${FirebaseAuth.instance.currentUser!.uid}");
+      logger.i("Bitcoin onchain Address: ${address.addr}");
+      qrCodeDataStringOnchain.value = address.addr.toString();
+    } else {
+      logger.e("Failed to generate Bitcoin address");
+      Get.find<OverlayController>().showOverlay("Failed to generate address. Please try again.");
+    }
   }
 
   // /// Sets the receive type explicitly to the provided type.
@@ -227,11 +240,12 @@ class ReceiveController extends BaseController {
   void tapGenerateInvoice(TextEditingController controller) {
     if (receiveType.value == ReceiveType.Lightning_b11) {
       getInvoice((double.parse(controller.text)).toInt(), "");
-    } else if (receiveType.value == ReceiveType.OnChain_segwit ||
-        receiveType.value == ReceiveType.OnChain_taproot) {
-      getBtcAddress();
+    } else if (receiveType.value == ReceiveType.OnChain_segwit) {
+      getBtcAddress(addressType: 'WITNESS_PUBKEY_HASH'); // SegWit address
+    } else if (receiveType.value == ReceiveType.OnChain_taproot) {
+      getBtcAddress(addressType: 'TAPROOT_PUBKEY'); // Taproot address
     } else if (receiveType.value == ReceiveType.Combined_b11_taproot) {
-      getBtcAddress();
+      getBtcAddress(addressType: 'TAPROOT_PUBKEY'); // Use Taproot for combined
       getInvoiceCombined((double.parse(controller.text)).toInt(), "");
     }
   }

@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // Future<RestResponse> a(String account) async {
 //   //this obviously doesnt work because it's not for one user would be for all
@@ -71,6 +74,11 @@ import 'package:get/get.dart';
 //   }
 // }
 
+// DEPRECATED: Old Firebase function approach - DO NOT USE
+// This function is deprecated as it relies on Firebase Cloud Functions
+// and doesn't work with the new one-user-one-node architecture.
+// Use nextAddrDirect() instead which fetches addresses directly from the user's LND node.
+/*
 dynamic nextAddr(String account, {bool change = false}) async {
   final logger = Get.put(LoggerService());
   try {
@@ -123,6 +131,99 @@ dynamic nextAddr(String account, {bool change = false}) async {
   } catch (e) {
     final logger = Get.find<LoggerService>();
     logger.e("Failed to generate address: $e");
+    return null;
+  }
+}
+*/
+
+// NEW: One user one node approach - Get next address directly from user's LND node
+Future<String?> nextAddrDirect(String userId, {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) async {
+  final logger = Get.find<LoggerService>();
+  logger.i("nextAddrDirect: Getting next address for user $userId");
+  
+  try {
+    // Get user's node mapping
+    final nodeMappingService = Get.find<NodeMappingService>();
+    final nodeMapping = await nodeMappingService.getUserNodeMapping(userId);
+    
+    if (nodeMapping == null) {
+      logger.e("No node mapping found for user: $userId");
+      return null;
+    }
+    
+    final nodeId = nodeMapping.nodeId;
+    logger.i("Using node: $nodeId for address generation");
+    
+    // Load user's admin macaroon
+    final macaroon = await loadMacaroonAsset(nodeId);
+    if (macaroon.isEmpty) {
+      logger.e("Failed to load macaroon for node: $nodeId");
+      return null;
+    }
+    
+    // Get Caddy URL for the user's node
+    final litdController = Get.find<LitdController>();
+    final baseUrl = litdController.litd_baseurl.value;
+    final url = 'https://$baseUrl/$nodeId/v2/wallet/address/next';
+    
+    logger.i("Getting next address from: $url");
+    
+    // Prepare request data
+    final Map<String, dynamic> data = {
+      'account': '', // Empty string uses default wallet account
+      'type': addressType, // WITNESS_PUBKEY_HASH for SegWit, TAPROOT_PUBKEY for Taproot
+      'change': change,
+    };
+    
+    // Set up headers
+    final headers = {
+      'Grpc-Metadata-macaroon': macaroon,
+      'Content-Type': 'application/json',
+    };
+    
+    // Set up HTTP override for SSL
+    HttpOverrides.global = MyHttpOverrides();
+    
+    // Make the request
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(data),
+    );
+    
+    logger.i("Response status: ${response.statusCode}");
+    
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      final address = decoded['addr'];
+      
+      logger.i("Generated new address: $address");
+      
+      // Store address in Firestore for tracking (optional)
+      try {
+        final userDoc = btcAddressesRef.doc(userId);
+        await userDoc.set({
+          change ? 'change_addresses' : 'non_change_addresses': FieldValue.arrayUnion([address]),
+          'addresses': FieldValue.arrayUnion([address]),
+          'last_updated': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+        
+        // Also update local wallet controller
+        final walletController = Get.find<WalletsController>();
+        walletController.btcAddresses.add(address);
+      } catch (e) {
+        logger.e("Failed to store address in Firestore: $e");
+        // Continue anyway, address generation was successful
+      }
+      
+      return address;
+    } else {
+      final error = jsonDecode(response.body);
+      logger.e("Failed to generate address: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+      return null;
+    }
+  } catch (e) {
+    logger.e("Error generating address: $e");
     return null;
   }
 }

@@ -28,6 +28,8 @@ import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class ProfileController extends BaseController {
+  // Add disposal flags to prevent adding listeners multiple times
+  bool _listenersInitialized = false;
   late String profileId;
 
   late List<Widget> pages;
@@ -90,9 +92,6 @@ class ProfileController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    loadData();
-    _setupUsernameListener();
-    fetchTaprootAssets();
     scrollController = ScrollController();
     pages = [
       ColumnViewTab(),
@@ -101,6 +100,9 @@ class ProfileController extends BaseController {
       LikeViewTab(),
       EditProfileTab(),
     ];
+    _setupUsernameListener();
+    loadData();
+    fetchTaprootAssets();
   }
 
   void _setupUsernameListener() {
@@ -144,22 +146,34 @@ class ProfileController extends BaseController {
 
   void fetchTaprootAssets() async {
     final logger = Get.find<LoggerService>();
-    logger.i('izak: Fetching taproot started...');
+    logger.i('Fetching taproot assets...');
+    
+    // Don't reload if already loading
+    if (assetsLoading.value) return;
+    
     isLoading.value = true;
     assetsLoading.value = true;
+    
     try {
       List<Asset> fetchedAssets = await listTaprootAssets();
-      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
-      assets.value = reversedAssets;
-      logger.i('izak: Above is the asset value');
-
-      await fetchNext20Metas(0, 10); // Load metadata for the first 20 assets
-      assetsLazyLoading.value = assets.take(10).toList();
+      
+      // Only update if data has changed
+      if (fetchedAssets.length != assets.length) {
+        List<Asset> reversedAssets = fetchedAssets.reversed.toList();
+        assets.value = reversedAssets;
+        
+        // Load initial batch of metadata
+        await fetchNext20Metas(0, 10);
+        assetsLazyLoading.value = assets.take(10).toList();
+      }
+      
       isLoading.value = false;
     } catch (e) {
-      logger.e('izak: Error fetching taproot assets: $e');
+      logger.e('Error fetching taproot assets: $e');
+      isLoading.value = false;
+    } finally {
+      assetsLoading.value = false;
     }
-    assetsLoading.value = false;
   }
 
   fetchNext20Metas(int startIndex, int count) async {
@@ -194,17 +208,30 @@ class ProfileController extends BaseController {
   loadData() async {
     final logger = Get.find<LoggerService>();
     logger.i("Loading data for profile page");
+    
+    // First get user ID as it's required for other operations
     await getUserId();
-    await getUser();
+    
+    // Run these operations in parallel
+    await Future.wait([
+      getUser(),
+      getFollowers(),
+      getFollowing(),
+      checkIfFollowing(),
+    ]);
+    
+    // Initialize recovery options (non-critical, don't await)
     socialRecoveryInit();
     emailRecoveryInit();
     wordRecoveryInit();
-    getFollowers();
-    getFollowing();
-    checkIfFollowing();
-    addFocusNodeListenerAndUpdate(focusNodeUsername, updateUsername);
-    addFocusNodeListenerAndUpdate(focusNodeDisplayName, updateDisplayName);
-    addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
+    
+    // Add listeners only if not already initialized
+    if (!_listenersInitialized) {
+      addFocusNodeListenerAndUpdate(focusNodeUsername, updateUsername);
+      addFocusNodeListenerAndUpdate(focusNodeDisplayName, updateDisplayName);
+      addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
+      _listenersInitialized = true;
+    }
   }
 
   addFocusNodeListenerAndUpdate(FocusNode focusNode, Function() func) {
@@ -234,15 +261,20 @@ class ProfileController extends BaseController {
       showFollwers?.value = userData.value.showFollowers;
       _backgroundImage?.value = userData.value.backgroundImageUrl;
       _profileImage?.value = userData.value.profileImageUrl;
-      displayNameController.addListener(() {
-        changingDisplayName.value = displayNameController.text;
-      });
-      userNameController.addListener(() {
-        changingUserName.value = userNameController.text;
-      });
-      bioController.addListener(() {
-        changingBio.value = bioController.text;
-      });
+      
+      // Only add text controller listeners once
+      if (!_listenersInitialized) {
+        displayNameController.addListener(() {
+          changingDisplayName.value = displayNameController.text;
+        });
+        userNameController.addListener(() {
+          changingUserName.value = userNameController.text;
+        });
+        bioController.addListener(() {
+          changingBio.value = bioController.text;
+        });
+      }
+      
       isUserLoading.value = false;
     } catch (e) {
       logger.e("Error getting user data: $e");
@@ -348,8 +380,9 @@ class ProfileController extends BaseController {
       followerCount?.value = snapshot.docs.length;
       gotFollowerCount.value = true;
     } catch (e, tr) {
-      print(e);
-      print(tr);
+      logger.e("Error getting followers: $e");
+      logger.e("Stack trace: $tr");
+      gotFollowerCount.value = true; // Set to true even on error to prevent infinite loading
     }
   }
 
@@ -360,8 +393,9 @@ class ProfileController extends BaseController {
       followingCount?.value = snapshot.docs.length;
       gotFollowingCount.value = true;
     } catch (e, tr) {
-      print(e);
-      print(tr);
+      logger.e("Error getting following: $e");
+      logger.e("Stack trace: $tr");
+      gotFollowingCount.value = true; // Set to true even on error to prevent infinite loading
     }
   }
 
@@ -376,8 +410,9 @@ class ProfileController extends BaseController {
       isFollowing?.value = doc.exists;
       gotIsFollowing.value = true;
     } catch (e, tr) {
-      print(e);
-      print(tr);
+      logger.e("Error checking if following: $e");
+      logger.e("Stack trace: $tr");
+      gotIsFollowing.value = true; // Set to true even on error to prevent infinite loading
     }
   }
 
@@ -572,5 +607,23 @@ class ProfileController extends BaseController {
   void wordRecoveryInit() {
     Get.find<SettingsController>().wordRecoveryState.value =
         userData.value.setupWordRecovery ? 2 : 0;
+  }
+
+  @override
+  void onClose() {
+    // Dispose text controllers
+    displayNameController.dispose();
+    userNameController.dispose();
+    bioController.dispose();
+    
+    // Dispose focus nodes
+    focusNodeDisplayName.dispose();
+    focusNodeUsername.dispose();
+    focusNodeBio.dispose();
+    
+    // Dispose scroll controller
+    scrollController.dispose();
+    
+    super.onClose();
   }
 }

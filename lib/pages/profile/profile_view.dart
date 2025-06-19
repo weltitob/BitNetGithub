@@ -56,44 +56,48 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => bitnetScaffold(
-        context: context,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: controller.isUserLoading.value
-            ? Center(child: dotProgress(context))
-            : CustomScrollView(
-                controller: controller.scrollController,
-                slivers: [
-                  const SliverToBoxAdapter(child: const ProfileHeader()),
-                  const SliverToBoxAdapter(
-                    child: const SizedBox(
-                      height: AppTheme.cardPadding * 0.5,
-                    ),
-                  ),
-                  Obx(() {
-                    return controller.pages[controller.currentview.value];
-                  }),
-                ],
+    return bitnetScaffold(
+      context: context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Obx(() {
+        if (controller.isUserLoading.value) {
+          return Center(child: dotProgress(context));
+        }
+        
+        return CustomScrollView(
+          controller: controller.scrollController,
+          slivers: [
+            const SliverToBoxAdapter(child: ProfileHeader()),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: AppTheme.cardPadding * 0.5,
               ),
-        floatingActionButton: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 0.75),
-            child: LongButtonWidget(
-              buttonType: ButtonType.solid,
-              customHeight: AppTheme.cardPadding * 1.7,
-              customWidth: AppTheme.cardPadding * 4.75,
-              leadingIcon: Icon(
-                FontAwesomeIcons.add,
-                size: AppTheme.cardPadding * 0.75,
-                color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin ? Colors.white : Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
-              ),
-              title: 'Create',
-              onTap: () {
-                context.push('/create');
-              },
             ),
+            Obx(() => controller.pages[controller.currentview.value]),
+          ],
+        );
+      }),
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 0.75),
+          child: LongButtonWidget(
+            buttonType: ButtonType.solid,
+            customHeight: AppTheme.cardPadding * 1.7,
+            customWidth: AppTheme.cardPadding * 4.75,
+            leadingIcon: Icon(
+              FontAwesomeIcons.add,
+              size: AppTheme.cardPadding * 0.75,
+              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
+                  ? Colors.white 
+                  : Theme.of(context).brightness == Brightness.light 
+                      ? AppTheme.white70 
+                      : AppTheme.black60,
+            ),
+            title: 'Create',
+            onTap: () {
+              context.push('/create');
+            },
           ),
         ),
       ),
