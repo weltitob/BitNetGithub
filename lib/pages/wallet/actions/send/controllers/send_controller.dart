@@ -188,10 +188,14 @@ class SendsController extends BaseController {
 
   String bitcoinReceiverAdress = ""; // the Bitcoin receiver address
   String bip21InvoiceAddress = "";
+  String? bip21BitcoinAddress; // Bitcoin address from BIP21 URI
   TextEditingController bip21InvoiceSatController = TextEditingController();
   TextEditingController bip21InvoiceBtcController = TextEditingController();
   TextEditingController bip21InvoiceCurrencyController =
       TextEditingController();
+  TextEditingController bip21OnchainSatController = TextEditingController();
+  TextEditingController bip21OnchainBtcController = TextEditingController();
+  TextEditingController bip21OnchainCurrencyController = TextEditingController();
 
   int? lowerBound;
   int? upperBound;
@@ -395,11 +399,25 @@ class SendsController extends BaseController {
       moneyTextFieldIsEnabled.value = true;
     }
 
-    dynamic fundedPsbtResponse =
-        await estimateFee(AppTheme.targetConf.toString());
-    final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
-    double sat_per_vbyte = double.parse(sat_per_kw); // / 4
-    feesDouble = sat_per_vbyte;
+    // Note: This fee estimation is for UI display only
+    // The actual fee will be calculated when sending
+    // Using a dummy address for fee estimation
+    final dummyAddress = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
+    final dummyAmount = 10000; // 10k sats for estimation
+    
+    dynamic fundedPsbtResponse = await estimateFee(
+      userId: Auth().currentUser!.uid,
+      address: dummyAddress,
+      amountSat: dummyAmount,
+      targetConf: AppTheme.targetConf,
+    );
+    
+    if (fundedPsbtResponse.statusCode == "success") {
+      final feeRate = fundedPsbtResponse.data["feerate_sat_per_vbyte"] ?? 1;
+      feesDouble = feeRate.toDouble();
+    } else {
+      feesDouble = 1.0; // Default fee rate
+    }
     bitcoinUnit = BitcoinUnits.SAT;
 
     logger.i("Estimated fees: $feesDouble");
@@ -594,11 +612,25 @@ class SendsController extends BaseController {
       moneyTextFieldIsEnabled.value = true;
     }
 
-    dynamic fundedPsbtResponse =
-        await estimateFee(AppTheme.targetConf.toString());
-    final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
-    double sat_per_vbyte = double.parse(sat_per_kw); // / 4
-    feesDouble = sat_per_vbyte;
+    // Note: This fee estimation is for UI display only
+    // The actual fee will be calculated when sending
+    // Using a dummy address for fee estimation
+    final dummyAddress = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
+    final dummyAmount = 10000; // 10k sats for estimation
+    
+    dynamic fundedPsbtResponse = await estimateFee(
+      userId: Auth().currentUser!.uid,
+      address: dummyAddress,
+      amountSat: dummyAmount,
+      targetConf: AppTheme.targetConf,
+    );
+    
+    if (fundedPsbtResponse.statusCode == "success") {
+      final feeRate = fundedPsbtResponse.data["feerate_sat_per_vbyte"] ?? 1;
+      feesDouble = feeRate.toDouble();
+    } else {
+      feesDouble = 1.0; // Default fee rate
+    }
     bitcoinUnit = BitcoinUnits.SAT;
 
     logger.i("Estimated fees: $feesDouble");
@@ -697,7 +729,13 @@ class SendsController extends BaseController {
             );
 
         PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
-        dynamic feeResponse = await estimateFee(AppTheme.targetConf.toString());
+        // Use new estimateFee with proper parameters
+        dynamic feeResponse = await estimateFee(
+          userId: Auth().currentUser!.uid,
+          address: bitcoinReceiverAdress,
+          amountSat: amountInSat.toInt(),
+          targetConf: AppTheme.targetConf,
+        );
         final sat_per_kw = double.parse(feeResponse.data["sat_per_kw"]);
         double utxoSum = 0;
         for (Utxo utxo in utxos.utxos) {
@@ -840,8 +878,8 @@ class SendsController extends BaseController {
     if (onchain) {
       logger.i("Processing BIP21 onchain payment");
       // Use the onchain address from BIP21
-      final address = bip21BitcoinAddress ?? bitcoinReceiverAdress;
-      final amountSat = int.parse(bip21OnchainSatController.text);
+      final address = bitcoinReceiverAdress;
+      final amountSat = int.parse(satController.text.isEmpty ? "0" : satController.text);
       
       try {
         // First estimate the fee

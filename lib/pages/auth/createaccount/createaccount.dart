@@ -481,6 +481,19 @@ class CreateAccountController extends State<CreateAccount> {
       await NodeMappingService.storeUserNodeMapping(nodeMapping);
       await NodeMappingService.storeMnemonicRecoveryIndex(mnemonicString, recoveryDid);
       logger.i("✅ Node mapping stored successfully");
+      
+      // Store the admin macaroon locally in secure storage
+      if (adminMacaroon.isNotEmpty) {
+        logger.i("=== STORING ADMIN MACAROON LOCALLY ===");
+        try {
+          // Use recovery DID as userId and node ID as accountId for individual nodes
+          await storeLitdAccountData(recoveryDid, workingNodeId, adminMacaroon);
+          logger.i("✅ Admin macaroon stored locally in secure storage");
+        } catch (e) {
+          logger.e("❌ Failed to store admin macaroon locally: $e");
+          // Don't fail the entire registration, but log the error
+        }
+      }
 
       // Save the Lightning-generated mnemonic securely with RECOVERY DID
       logger.i("=== STEP 7: STORING PRIVATE DATA ===");

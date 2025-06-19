@@ -270,7 +270,10 @@ class _BuyScreenState extends State<BuyScreen> {
   }
 
   Future<String> getBtcAddress() async {
-    String addr = await nextAddr(Auth().currentUser!.uid);
+    String? addr = await nextAddr(Auth().currentUser!.uid);
+    if (addr == null) {
+      throw Exception("Failed to generate Bitcoin address");
+    }
     BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
     Get.find<WalletsController>().btcAddresses.add(address.addr);
     LocalStorage.instance.setStringList(

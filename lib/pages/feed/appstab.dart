@@ -443,7 +443,11 @@ class AppData {
         if (parameters![paramKey] == "VAR") {
           if (paramKey == "address") {
             logger.i("Getting BTC Address");
-            String addr = await nextAddr(Auth().currentUser!.uid);
+            String? addr = await nextAddr(Auth().currentUser!.uid);
+            if (addr == null) {
+              logger.e("Failed to generate address");
+              continue;
+            }
             BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
             finalUrl = finalUrl + "${paramKey}=${address.addr}&";
           }

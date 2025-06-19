@@ -213,7 +213,7 @@ class ProfileController extends BaseController {
     await getUserId();
     
     // Run these operations in parallel
-    await Future.wait([
+    await Future.wait<void>([
       getUser(),
       getFollowers(),
       getFollowing(),
@@ -373,7 +373,7 @@ class ProfileController extends BaseController {
     });
   }
 
-  void getFollowers() async {
+  Future<void> getFollowers() async {
     try {
       QuerySnapshot snapshot =
           await followersRef.doc(profileId).collection('userFollowers').get();
@@ -386,7 +386,7 @@ class ProfileController extends BaseController {
     }
   }
 
-  void getFollowing() async {
+  Future<void> getFollowing() async {
     try {
       QuerySnapshot snapshot =
           await followingRef.doc(profileId).collection('userFollowing').get();
@@ -399,7 +399,7 @@ class ProfileController extends BaseController {
     }
   }
 
-  void checkIfFollowing() async {
+  Future<void> checkIfFollowing() async {
     try {
       final myuser = Auth().currentUser!.uid;
       DocumentSnapshot doc = await followersRef

@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -142,9 +141,8 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
   logger.i("nextAddrDirect: Getting next address for user $userId");
   
   try {
-    // Get user's node mapping
-    final nodeMappingService = Get.find<NodeMappingService>();
-    final nodeMapping = await nodeMappingService.getUserNodeMapping(userId);
+    // Get user's node mapping - userId is the recovery DID
+    final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
     
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
@@ -154,10 +152,10 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for address generation");
     
-    // Load user's admin macaroon
-    final macaroon = await loadMacaroonAsset(nodeId);
+    // Get the admin macaroon from node mapping
+    final macaroon = nodeMapping.adminMacaroon;
     if (macaroon.isEmpty) {
-      logger.e("Failed to load macaroon for node: $nodeId");
+      logger.e("No macaroon found in node mapping for node: $nodeId");
       return null;
     }
     
@@ -227,3 +225,7 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
     return null;
   }
 }
+
+// Export as nextAddr for backward compatibility
+Future<String?> nextAddr(String userId, {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) =>
+    nextAddrDirect(userId, change: change, addressType: addressType);

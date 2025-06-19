@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/http_no_ssl.dart'; // Includes bytesToHex
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 
 
@@ -23,64 +23,63 @@ List<int> computeHash(List<int> preimage) {
 }
 
 
+// NEW: One user one node approach - Create Lightning invoice on user's node
 Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress, dynamic preimage) async {
   HttpOverrides.global = MyHttpOverrides();
 
   final logger = Get.find<LoggerService>();
-  logger.i("Calling addInvoice() with fallback address $fallbackAddress");
+  logger.i("NEW addInvoice: Creating invoice on user's individual node");
+  logger.i("Amount: $amount sats, fallback address: $fallbackAddress");
 
-  // 1. Try finding LitdController
-  LitdController? litdController;
   try {
-    litdController = Get.find<LitdController>();
-  } catch (e) {
-    logger.e("LitdController not found: $e");
-    return RestResponse(
-        statusCode: "error",
-        message: "LitdController not found!",
-        data: {}
-    );
-  }
-
-  // 2. Check if litd_baseurl is set
-  final String? restHost = litdController?.litd_baseurl.value.isNotEmpty == true
-      ? litdController.litd_baseurl.value
-      : null;
-  if (restHost == null) {
-    logger.e("litd_baseurl is null or empty.");
-    return RestResponse(
-        statusCode: "error",
-        message: "LITD base URL is empty!",
-        data: {}
-    );
-  }
-
-  // 3. Load macaroon
-  ByteData? byteData;
-  try {
-    byteData = await loadMacaroonAsset();
-    if (byteData == null) {
-      throw Exception("Macaroon asset is null");
+    // Get current user's ID
+    final userId = Auth().currentUser?.uid;
+    if (userId == null) {
+      logger.e("No user logged in");
+      return RestResponse(
+          statusCode: "error",
+          message: "No user logged in",
+          data: {}
+      );
     }
-  } catch (e, stackTrace) {
-    logger.e("Error loading macaroon asset: $e\n$stackTrace");
-    return RestResponse(
-        statusCode: "error",
-        message: "Error loading macaroon asset",
-        data: {}
-    );
-  }
 
-  // Convert bytes to base64
-  final List<int> bytes = byteData.buffer.asUint8List();
-  String macaroon = bytesToHex(bytes);
+    // Get user's node mapping
+    final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
+    if (nodeMapping == null) {
+      logger.e("No node mapping found for user: $userId");
+      return RestResponse(
+          statusCode: "error",
+          message: "No Lightning node assigned to user",
+          data: {}
+      );
+    }
 
-  // Prepare headers and payload
-  final String url = 'https://$restHost/v1/invoices';
-  final Map<String, String> headers = {
-    'Grpc-Metadata-macaroon': macaroon,
-    'Content-Type': 'application/json',
-  };
+    final nodeId = nodeMapping.nodeId;
+    logger.i("Using node: $nodeId for user: $userId");
+
+    // Get the admin macaroon from node mapping
+    final macaroon = nodeMapping.adminMacaroon;
+    if (macaroon.isEmpty) {
+      logger.e("No macaroon found in node mapping for node: $nodeId");
+      return RestResponse(
+          statusCode: "error",
+          message: "Failed to load node credentials",
+          data: {}
+      );
+    }
+
+    // Get Caddy URL for the user's node
+    final litdController = Get.find<LitdController>();
+    final baseUrl = litdController.litd_baseurl.value;
+    final url = 'https://$baseUrl/$nodeId/v1/invoices';
+    
+    logger.i("Creating invoice at: $url");
+
+    // Prepare headers
+    final Map<String, String> headers = {
+      'Grpc-Metadata-macaroon': macaroon,
+      'Content-Type': 'application/json',
+    };
 
   final hash = computeHash(preimage);
 
@@ -97,37 +96,49 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
     'is_keysend': true,
   };
 
-  // 4. Post invoice request using http package
-  try {
-    logger.i("Making POST request to $url with headers $headers and payload $data");
-    final response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: jsonEncode(data),
-    );
-
-    // Check the response
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      logger.i("Successfully added invoice: $responseData");
-      return RestResponse(
-          statusCode: "${response.statusCode}",
-          message: "Successfully added invoice",
-          data: responseData
+    // Post invoice request to user's node
+    try {
+      logger.i("Making POST request to user's node");
+      logger.d("Headers: ${headers.keys}, Data: ${data.keys}");
+      
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(data),
       );
-    } else {
-      logger.e("Failed to add invoice. Status: ${response.statusCode}, Body: ${response.body}");
+
+      // Check the response
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        logger.i("Successfully created invoice on node $nodeId");
+        logger.d("Invoice: ${responseData['payment_request']?.substring(0, 50)}...");
+        
+        return RestResponse(
+            statusCode: "${response.statusCode}",
+            message: "Successfully added invoice",
+            data: responseData
+        );
+      } else {
+        logger.e("Failed to add invoice. Status: ${response.statusCode}, Body: ${response.body}");
+        return RestResponse(
+            statusCode: "error",
+            message: "Failed to add invoice: ${response.statusCode}",
+            data: response.body.isNotEmpty ? jsonDecode(response.body) : {}
+        );
+      }
+    } catch (e, stackTrace) {
+      logger.e("Error creating invoice on node $nodeId: $e\nStackTrace: $stackTrace");
       return RestResponse(
           statusCode: "error",
-          message: "Failed to add invoice: ${response.statusCode}",
-          data: jsonDecode(response.body)
+          message: "Failed to add invoice due to an error: $e",
+          data: {}
       );
     }
-  } catch (e, stackTrace) {
-    logger.e("Error in HTTP POST: $e\nStackTrace: $stackTrace");
+  } catch (e) {
+    logger.e("Fatal error in addInvoice: $e");
     return RestResponse(
         statusCode: "error",
-        message: "Failed to add invoice due to an error",
+        message: "Fatal error: $e",
         data: {}
     );
   }

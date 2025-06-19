@@ -3,10 +3,9 @@ import 'dart:io';
 
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
-import 'package:bitnet/models/api/rest_response.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,9 +23,8 @@ Future<RestResponse> sendCoins({
   logger.i("sendCoins: Sending $amountSat sats to $address for user $userId");
 
   try {
-    // Get user's node mapping
-    final nodeMappingService = Get.find<NodeMappingService>();
-    final nodeMapping = await nodeMappingService.getUserNodeMapping(userId);
+    // Get user's node mapping - userId is the recovery DID
+    final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
     
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
@@ -40,10 +38,10 @@ Future<RestResponse> sendCoins({
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for onchain send");
     
-    // Load user's admin macaroon
-    final macaroon = await loadMacaroonAsset(nodeId);
+    // Get the admin macaroon from node mapping
+    final macaroon = nodeMapping.adminMacaroon;
     if (macaroon.isEmpty) {
-      logger.e("Failed to load macaroon for node: $nodeId");
+      logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
         statusCode: "error",
         message: "Failed to load node credentials",
@@ -135,9 +133,8 @@ Future<RestResponse> estimateFee({
   logger.i("estimateFee: Estimating fee for $amountSat sats to $address");
 
   try {
-    // Get user's node mapping
-    final nodeMappingService = Get.find<NodeMappingService>();
-    final nodeMapping = await nodeMappingService.getUserNodeMapping(userId);
+    // Get user's node mapping - userId is the recovery DID
+    final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
     
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
@@ -150,10 +147,10 @@ Future<RestResponse> estimateFee({
     
     final nodeId = nodeMapping.nodeId;
     
-    // Load user's admin macaroon
-    final macaroon = await loadMacaroonAsset(nodeId);
+    // Get the admin macaroon from node mapping
+    final macaroon = nodeMapping.adminMacaroon;
     if (macaroon.isEmpty) {
-      logger.e("Failed to load macaroon for node: $nodeId");
+      logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
         statusCode: "error",
         message: "Failed to load node credentials",
