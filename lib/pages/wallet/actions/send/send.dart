@@ -8,7 +8,8 @@ import 'package:go_router/go_router.dart';
 class Send extends StatefulWidget {
   final String? parameters;
   final GoRouterState? state;
-  const Send({super.key, this.parameters, this.state});
+  final bool shouldPop;
+  const Send({super.key, this.parameters, this.state, this.shouldPop = false});
 
   @override
   State<Send> createState() => _SendState();
@@ -44,7 +45,7 @@ class _SendState extends State<Send> {
     }
     sendController.context = context;
     return Obx(() => sendController.hasReceiver.value
-        ? const SendBTCScreen()
+        ? const SendBTCScreen(shouldPop: true)
         : const SearchReceiver());
   }
 }

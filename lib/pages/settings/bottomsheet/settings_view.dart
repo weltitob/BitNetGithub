@@ -183,6 +183,24 @@ class SettingsView extends StatelessWidget {
                   controller.switchTab('agbs');
                 },
               ),
+              BitNetListTile(
+                leading: RoundedButtonWidget(
+                  iconData: Icons.developer_mode_outlined,
+                  onTap: () {
+                    controller.switchTab('developer_options');
+                  },
+                  size: AppTheme.iconSize * 1.5,
+                  buttonType: ButtonType.transparent,
+                ),
+                text: "Developer Options",
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('developer_options');
+                },
+              ),
               // BitNetListTile(
               //   leading: RoundedButtonWidget(
               //     iconData: Icons.switch_access_shortcut,

@@ -104,7 +104,6 @@ import 'package:bitnet/pages/wallet/buy/payment_methods_screen.dart';
 import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 
-
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
@@ -173,7 +172,6 @@ class AppRoutes {
                 return const LoadingViewAppStart();
               }
             }),
-
 
         GoRoute(
           path: '/report',
@@ -506,6 +504,19 @@ class AppRoutes {
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
                       child: const Send(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'send_popper',
+              redirect: webRedirect,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => Send(key: state.pageKey, shouldPop: true)
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const Send(shouldPop: true),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),

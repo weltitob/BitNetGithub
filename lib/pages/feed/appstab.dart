@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -12,6 +14,8 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +27,10 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
 import 'package:share_plus/share_plus.dart';
+
+//VARIABLE PARAMETERS:
+//address
+String MINI_APP_API_VERSION = "0.0.1";
 
 class AppsTab extends StatefulWidget {
   const AppsTab({super.key});
@@ -50,6 +58,7 @@ class _AppsTabState extends State<AppsTab> {
 
   Future<void> loadAsync() async {
     availableApps = await getAvailableApps();
+    Get.find<ProfileController>().availableApps = availableApps;
     myApps = await getMyApps(availableApps);
     for (final app in myApps) {
       app.loadFaviconBytes();
@@ -129,9 +138,10 @@ class _AppsTabState extends State<AppsTab> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         children: [
-                          ...myApps.map((app) => _AppListTile(
+                          ...myApps.map((app) => AppListTile(
                                 inMyAppsScreen: false,
                                 app: app,
+                                outsideNavigation: false,
                                 appOwned: ownedApps.contains(app.docId),
                               ))
                         ],
@@ -157,9 +167,10 @@ class _AppsTabState extends State<AppsTab> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         children: [
-                          ...availableApps.map((app) => _AppListTile(
+                          ...availableApps.map((app) => AppListTile(
                                 inMyAppsScreen: false,
                                 app: app,
+                                outsideNavigation: false,
                                 appOwned: ownedApps.contains(app.docId),
                               ))
                         ],
@@ -233,9 +244,10 @@ class _MyAppsPageState extends State<MyAppsPage> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
-                        ...myApps.map((app) => _AppListTile(
+                        ...myApps.map((app) => AppListTile(
                               inMyAppsScreen: true,
                               app: app,
+                              outsideNavigation: false,
                               appOwned: ownedApps.contains(app.docId),
                             ))
                       ],
@@ -260,20 +272,22 @@ Widget _buildImagePlaceholder({double size = 24.0}) {
   );
 }
 
-class _AppListTile extends StatefulWidget {
-  const _AppListTile({
+class AppListTile extends StatefulWidget {
+  const AppListTile({
     required this.app,
     required this.appOwned,
     required this.inMyAppsScreen,
+    required this.outsideNavigation,
   });
   final AppData app;
   final bool appOwned;
   final bool inMyAppsScreen;
+  final bool outsideNavigation;
   @override
-  State<_AppListTile> createState() => _AppListTileState();
+  State<AppListTile> createState() => _AppListTileState();
 }
 
-class _AppListTileState extends State<_AppListTile> {
+class _AppListTileState extends State<AppListTile> {
   bool buttonLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -281,18 +295,24 @@ class _AppListTileState extends State<_AppListTile> {
       text: widget.app.name,
       leading: AppImageBuilder(app: widget.app, width: 38.w, height: 38.h),
       trailing: LongButtonWidget(
-          state: buttonLoading ? ButtonState.disabled : ButtonState.idle,
+          state: buttonLoading ? ButtonState.loading : ButtonState.idle,
           title: widget.appOwned ? "Go" : "Get",
           customWidth: 90.w,
           customHeight: 40.h,
           onTap: () async {
             if (widget.appOwned) {
+              buttonLoading = true;
+              setState(() {});
               context.pushNamed(kWebViewScreenRoute, pathParameters: {
-                'url': widget.app.url,
+                'url': await widget.app.getUrl(),
                 'name': widget.app.name,
               }, extra: {
                 "is_app": true
               });
+              buttonLoading = false;
+              if (context.mounted) {
+                setState(() {});
+              }
             } else {
               buttonLoading = true;
               setState(() {});
@@ -304,11 +324,15 @@ class _AppListTileState extends State<_AppListTile> {
             }
           }),
       onTap: () {
-        if (widget.inMyAppsScreen) {
-          context.go("/feed/" + kMyAppsPageRoute + "/" + kAppPageRoute,
-              extra: widget.app.toJson());
+        if (widget.outsideNavigation) {
+          context.push("/feed/" + kAppPageRoute, extra: widget.app.toJson());
         } else {
-          context.go("/feed/" + kAppPageRoute, extra: widget.app.toJson());
+          if (widget.inMyAppsScreen) {
+            context.go("/feed/" + kMyAppsPageRoute + "/" + kAppPageRoute,
+                extra: widget.app.toJson());
+          } else {
+            context.go("/feed/" + kAppPageRoute, extra: widget.app.toJson());
+          }
         }
       },
     );
@@ -322,6 +346,10 @@ class AppData {
   final String desc;
   final String? iconPath; // Local asset path for the icon
   final bool useNetworkImage;
+  final bool useNetworkAsset;
+  final String? storageName;
+  final Map<String, dynamic>? parameters;
+  final String? ownerId;
 
   String? faviconUrl;
   Uint8List? _faviconBytes;
@@ -331,13 +359,18 @@ class AppData {
   final int _maxRetries = 5;
   final _completer = Completer<Uint8List?>();
 
-  AppData(
-      {required this.docId,
-      required this.url,
-      required this.name,
-      required this.desc,
-      this.iconPath,
-      this.useNetworkImage = true});
+  AppData({
+    required this.docId,
+    required this.url,
+    required this.name,
+    required this.desc,
+    this.parameters,
+    this.iconPath,
+    this.storageName,
+    this.useNetworkImage = true,
+    this.useNetworkAsset = false,
+    this.ownerId,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -346,7 +379,11 @@ class AppData {
       'desc': desc,
       'docId': docId,
       'useNetworkImage': useNetworkImage,
-      if (iconPath != null) 'iconPath': iconPath
+      'useNetworkAsset': useNetworkAsset,
+      'storage_name': storageName,
+      'parameters': parameters,
+      if (iconPath != null) 'iconPath': iconPath,
+      if (ownerId != null) 'owner_id': ownerId
     };
   }
 
@@ -356,8 +393,38 @@ class AppData {
         url: map['url'],
         name: map['name'],
         desc: map['desc'],
-        iconPath: map.containsKey('iconPath') ? map['iconPath'] : null);
+        useNetworkAsset: map['useNetworkAsset'] ?? false,
+        storageName: map['storage_name'],
+        parameters: map['parameters'],
+        iconPath: map.containsKey('iconPath') ? map['iconPath'] : null,
+        ownerId: map.containsKey('ownerId') ? map['ownerId'] : null);
   }
+
+  Future<String> getUrl() async {
+    final logger = Get.find<LoggerService>();
+
+    if (parameters == null) {
+      return url;
+    } else {
+      String finalUrl = url + "?";
+      for (String paramKey in parameters!.keys) {
+        if (parameters![paramKey] == "VAR") {
+          if (paramKey == "address") {
+            logger.i("Getting BTC Address");
+            String addr = await nextAddr(Auth().currentUser!.uid);
+            BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
+            finalUrl = finalUrl + "${paramKey}=${address.addr}&";
+          }
+        } else {
+          finalUrl = finalUrl + "${paramKey}=${parameters![paramKey]}&";
+        }
+      }
+      if (finalUrl.endsWith("&"))
+        finalUrl = finalUrl.substring(0, finalUrl.length - 1);
+      return finalUrl;
+    }
+  }
+
   Future<String> getFaviconUrl() async {
     if (faviconUrl != null) {
       return faviconUrl!;
@@ -586,14 +653,21 @@ class _AppTabState extends State<AppTab> {
                               : ButtonState.idle,
                           onTap: () async {
                             if (appOwned) {
+                              buttonLoading = true;
+                              setState(() {});
+
                               context.pushNamed(kWebViewScreenRoute,
                                   pathParameters: {
-                                    'url': app.url,
+                                    'url': await app.getUrl(),
                                     'name': app.name,
                                   },
                                   extra: {
                                     "is_app": true
                                   });
+                              buttonLoading = false;
+                              if (context.mounted) {
+                                setState(() {});
+                              }
                             } else {
                               buttonLoading = true;
                               setState(() {});
@@ -626,99 +700,140 @@ class AppImageBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: width, // Increased from 34.h
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        height: width, // Increased from 34.h
 
-      width: height, // Increased from 34.w
+        width: height, // Increased from 34.w
 
-      child: Builder(
-        builder: (context) {
-          // First priority: Use local asset if iconPath is provided
-          if (app.iconPath != null) {
-            final String iconPath = app.iconPath!;
-            if (iconPath.toLowerCase().endsWith('.svg')) {
-              return SvgPicture.asset(
-                iconPath,
-                fit: BoxFit.contain,
-              );
-            } else {
-              return Image.asset(
-                iconPath,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(Icons.public, size: 20);
+        child: Builder(
+          builder: (context) {
+            // First priority: Use local asset if iconPath is provided
+            if (app.iconPath != null) {
+              final String iconPath = app.iconPath!;
+              if (iconPath.toLowerCase().endsWith('.svg')) {
+                return SvgPicture.asset(
+                  iconPath,
+                  fit: BoxFit.contain,
+                );
+              } else {
+                return Image.asset(
+                  iconPath,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.public, size: width);
+                  },
+                );
+              }
+            } else if (app.useNetworkAsset) {
+              return FutureBuilder<String>(
+                future: storageRef
+                    .child("mini_app_icons/${app.storageName}")
+                    .getDownloadURL(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data != null &&
+                      snapshot.data!.isNotEmpty) {
+                    final String iconUrl = snapshot.data!;
+                    final bool isSvg = iconUrl.toLowerCase().endsWith('.svg') ||
+                        (app.isSvgFavicon);
+
+                    if (isSvg) {
+                      return SvgPicture.network(
+                        iconUrl,
+                        fit: BoxFit.fill,
+                        placeholderBuilder: (BuildContext context) =>
+                            _buildImagePlaceholder(size: 24.0),
+                      );
+                    } else {
+                      return Image.network(
+                        iconUrl,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.public, size: width);
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return _buildImagePlaceholder(size: 24.0);
+                        },
+                      );
+                    }
+                  } else {
+                    return _buildImagePlaceholder(size: 24.0);
+                  }
                 },
               );
             }
-          }
-          // Second priority: Use network image if useNetworkImage is true
-          else if (app.useNetworkImage) {
-            return FutureBuilder<String>(
-              future: app.getFaviconUrl(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData &&
-                    snapshot.data != null &&
-                    snapshot.data!.isNotEmpty) {
-                  final String iconUrl = snapshot.data!;
-                  final bool isSvg = iconUrl.toLowerCase().endsWith('.svg') ||
-                      (app.isSvgFavicon);
+            // Second priority: Use network image if useNetworkImage is true
+            else if (app.useNetworkImage) {
+              return FutureBuilder<String>(
+                future: app.getFaviconUrl(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data != null &&
+                      snapshot.data!.isNotEmpty) {
+                    final String iconUrl = snapshot.data!;
+                    final bool isSvg = iconUrl.toLowerCase().endsWith('.svg') ||
+                        (app.isSvgFavicon);
 
-                  if (isSvg) {
-                    return SvgPicture.network(
-                      iconUrl,
-                      fit: BoxFit.fill,
-                      placeholderBuilder: (BuildContext context) =>
-                          _buildImagePlaceholder(size: 24.0),
-                    );
+                    if (isSvg) {
+                      return SvgPicture.network(
+                        iconUrl,
+                        fit: BoxFit.fill,
+                        placeholderBuilder: (BuildContext context) =>
+                            _buildImagePlaceholder(size: 24.0),
+                      );
+                    } else {
+                      return Image.network(
+                        iconUrl,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.public, size: width);
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return _buildImagePlaceholder(size: 24.0);
+                        },
+                      );
+                    }
                   } else {
-                    return Image.network(
-                      iconUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.public, size: 20);
-                      },
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return _buildImagePlaceholder(size: 24.0);
-                      },
-                    );
+                    return _buildImagePlaceholder(size: 24.0);
                   }
-                } else {
-                  return _buildImagePlaceholder(size: 24.0);
-                }
-              },
-            );
-          }
-          // Third priority: Use memory image (original behavior)
-          else {
-            return FutureBuilder<Uint8List?>(
-              future: app.loadFaviconBytes(),
-              builder:
-                  (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  // Check if favicon is SVG and render accordingly
-                  if (app.isSvgFavicon) {
-                    return SvgPicture.memory(
-                      snapshot.data!,
-                      fit: BoxFit.fill,
-                    );
+                },
+              );
+            }
+            // Third priority: Use memory image (original behavior)
+            else {
+              return FutureBuilder<Uint8List?>(
+                future: app.loadFaviconBytes(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    // Check if favicon is SVG and render accordingly
+                    if (app.isSvgFavicon) {
+                      return SvgPicture.memory(
+                        snapshot.data!,
+                        fit: BoxFit.fill,
+                      );
+                    } else {
+                      return Image.memory(
+                        snapshot.data!,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Fallback if image fails to render
+                          return Icon(Icons.public, size: width);
+                        },
+                      );
+                    }
                   } else {
-                    return Image.memory(
-                      snapshot.data!,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        // Fallback if image fails to render
-                        return Icon(Icons.public, size: 20);
-                      },
-                    );
+                    return _buildImagePlaceholder(size: 20.0);
                   }
-                } else {
-                  return _buildImagePlaceholder(size: 20.0);
-                }
-              },
-            );
-          }
-        },
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -740,7 +855,12 @@ Future<List<AppData>> getAvailableApps() async {
           url: doc.data()['url'],
           name: doc.data()['name'],
           desc: doc.data()['desc'],
+          useNetworkAsset: doc.data()['useNetworkAsset'] ?? false,
+          storageName: doc.data()['storage_name'],
           useNetworkImage: doc.data()['useNetworkImage'],
+          parameters: doc.data().containsKey('parameters')
+              ? doc.data()['parameters']
+              : null,
           iconPath: doc.data().containsKey('iconPath')
               ? doc.data()['iconPath']
               : null))

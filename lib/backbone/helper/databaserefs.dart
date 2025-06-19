@@ -28,6 +28,9 @@ class Databaserefs {
   static final commentsRef = _firestore.collection('comments');
   static final timelineRef = _firestore.collection('timeline');
   static final appsRef = _firestore.collection('mini_apps');
+  static final appApplicationsRef =
+      _firestore.collection('mini_app_applications');
+
   // Storage
   static final storageRef = _storage.ref();
 
@@ -56,3 +59,4 @@ final backendRef = Databaserefs.backendRef;
 final storageRef = Databaserefs.storageRef;
 final commentsRef = Databaserefs.commentsRef;
 final timelineRef = Databaserefs.timelineRef;
+final appApplicationsRef = Databaserefs.appApplicationsRef;

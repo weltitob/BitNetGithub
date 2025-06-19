@@ -27,7 +27,7 @@ class FormTextField extends StatefulWidget {
   final bool readOnly; // Add read-only property
   final double? width; // Customizable width
   final double? height; // Customizable height
-
+  final EdgeInsets insidePadding;
   const FormTextField({
     Key? key,
     required this.hintText,
@@ -51,7 +51,8 @@ class FormTextField extends StatefulWidget {
     this.isMultiline = false,
     this.readOnly = false,
     this.width, // Add width to constructor
-    this.height, // Add height to constructor
+    this.height,
+    this.insidePadding = EdgeInsets.zero, // Add height to constructor
   }) : super(key: key);
 
   @override
@@ -71,11 +72,11 @@ class _FormTextFieldState extends State<FormTextField> {
   void _isinsideList() {
     if (widget.isBIPField && widget.controller != null) {
       isInsideList = widget.bipwords
-          ?.any((bipword) => (bipword == widget.controller?.text)) ??
+              ?.any((bipword) => (bipword == widget.controller?.text)) ??
           false;
       List<String> matches = widget.bipwords
-          ?.where((s) => s.startsWith(widget.controller!.text))
-          .toList() ??
+              ?.where((s) => s.startsWith(widget.controller!.text))
+              .toList() ??
           [];
       List<String> longestMatches = findLongestWords(matches);
       setState(() {
@@ -124,15 +125,17 @@ class _FormTextFieldState extends State<FormTextField> {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
+            padding: widget.insidePadding,
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               border: Border.all(
                 color: Colors.transparent,
                 width: 0.0,
               ),
-              color: Theme.of(context).colorScheme.brightness == Brightness.light
-                  ? AppTheme.white60
-                  : AppTheme.colorGlassContainer,
+              color:
+                  Theme.of(context).colorScheme.brightness == Brightness.light
+                      ? AppTheme.white60
+                      : AppTheme.colorGlassContainer,
             ),
             child: TextFormField(
               readOnly: widget.readOnly,
@@ -149,10 +152,10 @@ class _FormTextFieldState extends State<FormTextField> {
               textAlign: TextAlign.center,
               style: (widget.isBIPField)
                   ? Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: (isInsideList)
-                    ? AppTheme.successColor
-                    : AppTheme.errorColor,
-              )
+                        color: (isInsideList)
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
+                      )
                   : Theme.of(context).textTheme.titleSmall,
               obscureText: widget.isObscure,
               decoration: InputDecoration(
