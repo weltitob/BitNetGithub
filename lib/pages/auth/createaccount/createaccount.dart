@@ -114,7 +114,7 @@ class CreateAccountController extends State<CreateAccount> {
         print('create account called');
         
         try {
-          await generateAccount();
+          await generateAccount(username: localpart);
           logger.i("✅ Account generation completed successfully");
         } catch (e) {
           logger.e("❌ Account generation failed: $e");
@@ -159,7 +159,7 @@ class CreateAccountController extends State<CreateAccount> {
         profileController.userNameController.text = localpart;
         late StreamSubscription sub;
         sub = profileController.isUserLoading.listen((val) {
-          if (val) {
+          if (!val) {
             profileController.updateUsername();
             if (image != null) {
               profileController.handleProfileImageSelected(image!);
@@ -258,7 +258,7 @@ class CreateAccountController extends State<CreateAccount> {
     }
   }
 
-  Future generateAccount({String? preferredNodeId}) async {
+  Future generateAccount({String? preferredNodeId, String? username}) async {
     print("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
     LoggerService logger = Get.find<LoggerService>();
     logger.i("🔵 GENERATE_ACCOUNT CALLED - SECOND ENTRY POINT");
@@ -533,7 +533,7 @@ class CreateAccountController extends State<CreateAccount> {
       }
       
       try {
-        await signUp(did, code);
+        await signUp(did, code, username);
         logger.i("✅ Firebase authentication completed successfully");
       } catch (signUpError) {
         logger.e("❌ Error in signUp: $signUpError");
@@ -551,7 +551,7 @@ class CreateAccountController extends State<CreateAccount> {
     }
   }
 
-  Future<bool> signUp(String did, String code) async {
+  Future<bool> signUp(String did, String code, String? username) async {
     print("🟢 SIGNUP IN CREATEACCOUNT CALLED - THIRD ENTRY POINT");
     LoggerService logger = Get.find();
     logger.i("🟢 SIGNUP IN CREATEACCOUNT CALLED - THIRD ENTRY POINT");
@@ -573,10 +573,10 @@ class CreateAccountController extends State<CreateAccount> {
           isPrivate: false,
           showFollowers: false,
           did: did,
-          displayName: did,
+          displayName: username ?? did,  // Use username if provided, otherwise fall back to DID
           bio: L10n.of(context)!.joinedRevolution,
           customToken: "customToken",
-          username: did,
+          username: username ?? did,      // Use username if provided, otherwise fall back to DID
           profileImageUrl: '',
           createdAt: Timestamp.fromDate(DateTime.now()),
           updatedAt: Timestamp.fromDate(DateTime.now()),
@@ -606,8 +606,10 @@ class CreateAccountController extends State<CreateAccount> {
         // or store a reference to it in the user's document
       }
 
+      // Pass the mnemonic to firebaseAuthentication for registration flow
+      final PrivateData privateData = await getPrivateData(did);
       final UserData? currentuserwallet =
-          await firebaseAuthentication(userdata, verificationCode);
+          await firebaseAuthentication(userdata, verificationCode, privateData.mnemonic);
       LocalStorage.instance.setString(userdata.did, "most_recent_user");
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -666,7 +668,7 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   Future<UserData?> firebaseAuthentication(
-      UserData userData, VerificationCode code) async {
+      UserData userData, VerificationCode code, String? mnemonicForRegistration) async {
     print("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");
     LoggerService logger = Get.find();
     logger.i("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");
@@ -676,6 +678,7 @@ class CreateAccountController extends State<CreateAccount> {
       final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
+        mnemonicForRegistration: mnemonicForRegistration,
       );
 
       return currentuserwallet;

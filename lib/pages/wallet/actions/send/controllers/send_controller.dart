@@ -5,7 +5,8 @@ import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart' as old_fee;
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/send_coins.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
@@ -834,10 +835,129 @@ class SendsController extends BaseController {
   // NEW: One user one node approach - Bitcoin transaction handling for individual nodes
   Future<dynamic> sendBip21BTC(BuildContext context, bool onchain) async {
     final logger = Get.find<LoggerService>();
-    logger.i("OLD sendBip21BTC function called - needs new one user one node implementation since old version will not work anymore");
-    // TODO: Implement new Bitcoin transaction handling for individual user nodes via Caddy
-    // This will require new Bitcoin key derivation compatible with BIP39 and individual node architecture
-    return false;
+    final overlayController = Get.find<OverlayController>();
+    
+    if (onchain) {
+      logger.i("Processing BIP21 onchain payment");
+      // Use the onchain address from BIP21
+      final address = bip21BitcoinAddress ?? bitcoinReceiverAdress;
+      final amountSat = int.parse(bip21OnchainSatController.text);
+      
+      try {
+        // First estimate the fee
+        final feeEstimate = await estimateFee(
+          userId: Auth().currentUser!.uid,
+          address: address,
+          amountSat: amountSat,
+          targetConf: AppTheme.targetConf,
+        );
+        
+        if (feeEstimate.statusCode != "success") {
+          overlayController.showOverlay("Failed to estimate fee: ${feeEstimate.message}");
+          isFinished.value = false;
+          return false;
+        }
+        
+        final feeSat = feeEstimate.data['fee_sat'] ?? 0;
+        logger.i("Estimated fee: $feeSat sats");
+        
+        // Show confirmation dialog
+        bool? confirmed = await Get.dialog<bool>(
+          AlertDialog(
+            title: Text('Confirm BIP21 Onchain Transaction'),
+            content: Text(
+              'Send ${amountSat} sats to\n${address.substring(0, 10)}...${address.substring(address.length - 10)}\n\nFee: $feeSat sats\nTotal: ${amountSat + feeSat} sats',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true),
+                child: Text('Confirm'),
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+        
+        if (confirmed != true) {
+          isFinished.value = false;
+          return false;
+        }
+        
+        // Send the transaction
+        final sendResult = await sendCoins(
+          userId: Auth().currentUser!.uid,
+          address: address,
+          amountSat: amountSat,
+          targetConf: AppTheme.targetConf,
+        );
+        
+        if (sendResult.statusCode == "success") {
+          final txid = sendResult.data['txid'];
+          logger.i("BIP21 onchain transaction sent! TXID: $txid");
+          
+          Get.find<WalletsController>().fetchOnchainWalletBalance();
+          overlayController.showOverlay(
+            "BIP21 onchain transaction sent!\nTXID: ${txid.substring(0, 8)}..."
+          );
+          
+          context.go("/");
+          return true;
+        } else {
+          overlayController.showOverlay("Transaction failed: ${sendResult.message}");
+          isFinished.value = false;
+          return false;
+        }
+      } catch (e) {
+        logger.e("Error sending BIP21 onchain transaction: $e");
+        overlayController.showOverlay("Error: $e");
+        isFinished.value = false;
+        return false;
+      }
+    } else {
+      logger.i("Processing BIP21 Lightning payment");
+      // Process Lightning invoice from BIP21
+      final invoice = bip21InvoiceAddress;
+      if (invoice.isEmpty) {
+        overlayController.showOverlay("No Lightning invoice in BIP21");
+        isFinished.value = false;
+        return false;
+      }
+      
+      List<String> invoiceStrings = [invoice];
+      Stream<dynamic> paymentStream = sendPaymentV2Stream(
+        Auth().currentUser!.uid,
+        invoiceStrings,
+        int.parse(bip21InvoiceSatController.text)
+      );
+      
+      bool success = false;
+      final completer = Completer<bool>();
+      
+      paymentStream.listen((dynamic response) {
+        isFinished.value = true;
+        if (response['status'] == "SUCCEEDED") {
+          logger.i("BIP21 Lightning payment successful!");
+          overlayController.showOverlay("BIP21 Lightning payment sent!");
+          context.go("/");
+          success = true;
+          if (!completer.isCompleted) completer.complete(true);
+        } else if (response['status'] == "FAILED") {
+          overlayController.showOverlay("Payment failed: ${response['failure_reason'] ?? 'Unknown error'}");
+          isFinished.value = false;
+          if (!completer.isCompleted) completer.complete(false);
+        }
+      }, onError: (error) {
+        isFinished.value = false;
+        overlayController.showOverlay("Error: $error");
+        if (!completer.isCompleted) completer.complete(false);
+      });
+      
+      return await completer.future;
+    }
   }
 
   Future<dynamic> sendBTC(BuildContext context, {bool canNavigate = true, bool shouldPop = false}) async {
@@ -908,7 +1028,7 @@ class SendsController extends BaseController {
               logger.i("Payment failed!");
               if (!firstSuccess) {
                 overlayController
-                    .showOverlay("Payment failed: ${response.message}");
+                    .showOverlay("Payment failed: ${response['failure_reason'] ?? 'Unknown error'}");
 
                 firstSuccess = true;
               }
@@ -928,12 +1048,86 @@ class SendsController extends BaseController {
           }, cancelOnError: true // Cancel the subscription upon first error
               );
         } else if (sendType == SendType.OnChain) {
-          // OLD: Multiple users one node approach - Complex Bitcoin transaction building with HDWallet
-          // This entire OnChain section is commented out because it won't work with the new one-user-one-node approach
-          // It requires specialized Bitcoin key derivation (hdWallet.findKeyPair) that needs reimplementation
-          /*
+          // NEW: One user one node approach - Direct onchain sending via LND
           logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
           final amountInSat = int.parse(satController.text);
+          
+          try {
+            // First estimate the fee
+            final feeEstimate = await estimateFee(
+              userId: Auth().currentUser!.uid,
+              address: bitcoinReceiverAdress,
+              amountSat: amountInSat,
+              targetConf: AppTheme.targetConf,
+            );
+            
+            if (feeEstimate.statusCode != "success") {
+              overlayController.showOverlay("Failed to estimate fee: ${feeEstimate.message}");
+              isFinished.value = false;
+              return;
+            }
+            
+            final feeSat = feeEstimate.data['fee_sat'] ?? 0;
+            logger.i("Estimated fee: $feeSat sats");
+            
+            // Show confirmation dialog
+            bool? confirmed = await Get.dialog<bool>(
+              AlertDialog(
+                title: Text('Confirm Transaction'),
+                content: Text(
+                  'Send ${amountInSat} sats to\n${bitcoinReceiverAdress.substring(0, 10)}...${bitcoinReceiverAdress.substring(bitcoinReceiverAdress.length - 10)}\n\nFee: $feeSat sats\nTotal: ${amountInSat + feeSat} sats',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(result: false),
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Get.back(result: true),
+                    child: Text('Confirm'),
+                  ),
+                ],
+              ),
+              barrierDismissible: false,
+            );
+            
+            if (confirmed != true) {
+              isFinished.value = false;
+              return;
+            }
+            
+            // Send the transaction
+            final sendResult = await sendCoins(
+              userId: Auth().currentUser!.uid,
+              address: bitcoinReceiverAdress,
+              amountSat: amountInSat,
+              targetConf: AppTheme.targetConf,
+            );
+            
+            if (sendResult.statusCode == "success") {
+              final txid = sendResult.data['txid'];
+              logger.i("Transaction sent successfully! TXID: $txid");
+              
+              Get.find<WalletsController>().fetchOnchainWalletBalance();
+              overlayController.showOverlay(
+                "Onchain transaction sent!\nTXID: ${txid.substring(0, 8)}..."
+              );
+              
+              if (canNavigate) {
+                context.go("/");
+              }
+            } else {
+              overlayController.showOverlay("Transaction failed: ${sendResult.message}");
+              isFinished.value = false;
+            }
+          } catch (e) {
+            logger.e("Error sending onchain transaction: $e");
+            overlayController.showOverlay("Error: $e");
+            isFinished.value = false;
+          }
+          
+          // OLD: Complex manual transaction building code (commented out)
+          /*
           RestResponse listAddressesResponse =
               await listAddressesLnd(Auth().currentUser!.uid);
 
