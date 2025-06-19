@@ -57,8 +57,8 @@ class BitNetTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine if we should use Bitcoin gradient
-    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+    final theme = Theme.of(context);
+    final bool useBitcoinGradient = theme.colorScheme.primary == AppTheme.colorBitcoin;
     
     return HorizontalFadeListView(
       child: ButtonsTabBar(
@@ -67,9 +67,10 @@ class BitNetTabBar extends StatelessWidget {
         contentPadding: contentPadding,
         borderWidth: borderWidth,
         unselectedBorderColor: unselectedBorderColor,
-        borderColor: Colors.white.withOpacity(0.2),
+        borderColor: theme.colorScheme.primary.withOpacity(0.3),
         radius: radius,
         physics: physics,
+        duration: 250,
         decoration: useBitcoinGradient
           ? BoxDecoration(
               gradient: LinearGradient(
@@ -81,16 +82,43 @@ class BitNetTabBar extends StatelessWidget {
                 ],
               ),
               borderRadius: BorderRadius.circular(radius),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.colorBitcoin.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             )
           : BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: theme.colorScheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(radius),
+              border: Border.all(
+                color: theme.colorScheme.primary.withOpacity(0.2),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.shadowColor.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-        unselectedDecoration: unselectedDecoration,
+        unselectedDecoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(radius),
+        ),
         tabs: tabs,
-        labelStyle: TextStyle(
-          color: useBitcoinGradient ? Colors.white : null,
-          fontWeight: FontWeight.bold,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: useBitcoinGradient 
+              ? Colors.white 
+              : theme.colorScheme.primary,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurface.withOpacity(0.6),
+          fontWeight: FontWeight.w400,
         ),
       ),
     );
