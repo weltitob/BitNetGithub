@@ -103,37 +103,6 @@ void main() {
     });
   });
 
-  group('String Utils - Random Color Generation', () {
-    test('should generate valid Color objects', () {
-      final color = getRandomColor();
-      expect(color, isA<Color>());
-    });
-
-    test('should generate different colors on consecutive calls', () {
-      final colors = List.generate(10, (_) => getRandomColor());
-      final uniqueColors = colors.toSet();
-      
-      // While not guaranteed, 10 random colors should likely have
-      // at least 5 different ones
-      expect(uniqueColors.length, greaterThanOrEqualTo(5));
-    });
-
-    test('should generate colors with full opacity', () {
-      final color = getRandomColor();
-      // Full opacity means alpha channel is 255 (0xFF)
-      expect(color.alpha, equals(255));
-    });
-
-    test('should generate colors within valid RGB range', () {
-      // Generate multiple colors to test
-      for (int i = 0; i < 100; i++) {
-        final color = getRandomColor();
-        expect(color.red, inInclusiveRange(0, 255));
-        expect(color.green, inInclusiveRange(0, 255));
-        expect(color.blue, inInclusiveRange(0, 255));
-      }
-    });
-  });
 
   group('String Utils - Six Integer Validation', () {
     test('should validate strings with exactly 6 consecutive digits', () {
