@@ -170,10 +170,10 @@ class _FeedScreenState extends State<FeedScreen>
                 final int currentIndex = controller.currentTabIndex.value;
                 
                 // Mark current tab as initialized when it's selected
-                if (!_tabsInitialized[currentIndex]) {
-                  // Use post frame callback to avoid setState during build
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (mounted) {
+                if (!_tabsInitialized[currentIndex] && mounted) {
+                  // Defer the state update to avoid setState during build
+                  Future.microtask(() {
+                    if (mounted && !_tabsInitialized[currentIndex]) {
                       final tabNames = ['WebsitesTab', 'TokensTab', 'AssetsTab', 'SearchResultWidget', 'MempoolHome', 'AppsTab'];
                       print('[PERFORMANCE] Initializing ${tabNames[currentIndex]} (tab $currentIndex) on first access');
                       setState(() {

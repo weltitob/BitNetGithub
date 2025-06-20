@@ -72,19 +72,6 @@ class WalletScreen extends GetWidget<WalletsController> {
     return isZeroOrPositive;
   }
   
-  // PageController cache to avoid recreation on every build
-  static final Map<String, PageController> _pageControllerCache = {};
-  
-  PageController _getPageController() {
-    final key = 'wallet_page_controller';
-    if (!_pageControllerCache.containsKey(key)) {
-      _pageControllerCache[key] = PageController(
-        initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
-        viewportFraction: 0.8885,
-      );
-    }
-    return _pageControllerCache[key]!;
-  }
 
   @override
   Widget build(BuildContext context) {
