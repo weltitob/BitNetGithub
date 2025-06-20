@@ -37,7 +37,7 @@ class CenterWidgetIcon extends StatelessWidget {
               // Icon
               Icon(
                 iconData,
-                size: 22,
+                size: 26,
                 color: isSelected
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurface.withOpacity(0.5),
@@ -47,12 +47,12 @@ class CenterWidgetIcon extends StatelessWidget {
               AnimatedContainer(
                 duration: AppTheme.animationDuration,
                 curve: Curves.easeInOut,
-                margin: EdgeInsets.only(top: 4),
-                height: 2,
-                width: isSelected ? 20 : 0,
+                margin: EdgeInsets.only(top: 6),
+                height: 3,
+                width: isSelected ? 28 : 0,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(1),
+                  borderRadius: BorderRadius.circular(1.5),
                 ),
               ),
             ],

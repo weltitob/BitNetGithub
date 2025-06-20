@@ -21,12 +21,14 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:timezone/timezone.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 
-GlobalKey<_CustomWidgetState> chartInfoKey = GlobalKey<_CustomWidgetState>();
 Color initAnimationColor = Colors.blue;
 
 class ChartWidget extends StatefulWidget {
+  final Map<String, dynamic>? tokenData;
+  
   const ChartWidget({
     Key? key,
+    this.tokenData,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,8 @@ class ChartWidget extends StatefulWidget {
 class _ChartWidgetState extends State<ChartWidget> {
   late bool _loading;
   Timer? timer;
+  final GlobalKey<_CustomWidgetState> chartInfoKey = GlobalKey<_CustomWidgetState>();
+  final GlobalKey<_ChartCoreState> chartCoreKey = GlobalKey<_ChartCoreState>();
 
   StreamController<ChartLine> _priceStreamController =
       StreamController<ChartLine>();
@@ -90,6 +94,53 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   Widget build(BuildContext context) {
     BitcoinController bitcoinController = Get.find<BitcoinController>();
+    
+    // For tokens, skip the loading check
+    if (widget.tokenData != null) {
+      return Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: CustomWidget(
+              key: chartInfoKey,
+              tokenData: widget.tokenData,
+            ),
+          ),
+          Column(
+            children: [
+              Container(
+                child: RepaintBoundary(
+                  child: ChartCore(
+                    key: chartCoreKey,
+                    chartInfoKey: chartInfoKey,
+                    tokenData: widget.tokenData,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Time chooser for tokens
+          CustomizableTimeChooser(
+            timePeriods: ['1D', '1W', '1M', '1J', 'Max'],
+            initialSelectedPeriod: '1D',
+            onTimePeriodSelected: (String newTimeperiod) {
+              // Update ChartCore's selected period
+              chartCoreKey.currentState?.updateSelectedPeriod(newTimeperiod);
+            },
+            buttonBuilder: (context, period, isSelected, onPressed) {
+              return TimeChooserButton(
+                timeperiod: period,
+                timespan: period,
+                onPressed: onPressed,
+              );
+            },
+          ),
+        ],
+      );
+    }
+    
+    // Bitcoin chart
     return Obx(() {
       return bitcoinController.loading.value
           ? dotProgress(context)
@@ -112,7 +163,10 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 ),
                               ),
                             )
-                          : RepaintBoundary(child: ChartCore()),
+                          : RepaintBoundary(child: ChartCore(
+                              chartInfoKey: chartInfoKey,
+                              tokenData: widget.tokenData,
+                            )),
                     ),
                   ],
                 ),
@@ -262,16 +316,109 @@ class _ChartWidgetState extends State<ChartWidget> {
 }
 
 class ChartCore extends StatefulWidget {
+  final GlobalKey<_CustomWidgetState> chartInfoKey;
+  final Map<String, dynamic>? tokenData;
+  
+  const ChartCore({
+    Key? key, 
+    required this.chartInfoKey,
+    this.tokenData,
+  }) : super(key: key);
+  
   @override
   State<ChartCore> createState() => _ChartCoreState();
 }
 
 class _ChartCoreState extends State<ChartCore> {
   bool isTrackballActive = false;
+  String selectedPeriod = '1D';
+  
+  void updateSelectedPeriod(String period) {
+    setState(() {
+      selectedPeriod = period;
+    });
+  }
+  
+  Widget _buildTokenChart(BuildContext context) {
+    // Get token data
+    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>;
+    final currentPrice = widget.tokenData!['currentPrice'];
+    final tokenSymbol = widget.tokenData!['tokenSymbol'];
+    
+    // Get data for selected period
+    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>;
+    
+    // Convert to ChartLine format
+    final chartData = periodData.map((point) {
+      return ChartLine(
+        time: (point['time'] as int).toDouble(),
+        price: double.parse(point['price'].toString()),
+      );
+    }).toList();
+    
+    // Calculate price changes
+    final firstPrice = chartData.isNotEmpty ? chartData.first.price : currentPrice;
+    final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPrice;
+    final priceChange = firstPrice == 0 ? 0 : (lastPrice - firstPrice) / firstPrice;
+    
+    // Use the SAME chart UI as Bitcoin
+    return SizedBox(
+      height: AppTheme.cardPadding * 16.h,
+      child: SfCartesianChart(
+        trackballBehavior: TrackballBehavior(
+          enable: true,
+          activationMode: ActivationMode.singleTap,
+          tooltipSettings: InteractiveTooltip(
+            enable: true,
+            color: Colors.black,
+            textStyle: TextStyle(color: Colors.white),
+          ),
+        ),
+        plotAreaBorderWidth: 0,
+        primaryXAxis: NumericAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.none,
+          isVisible: false,
+          majorGridLines: MajorGridLines(width: 0),
+          minorGridLines: MinorGridLines(width: 0),
+        ),
+        primaryYAxis: NumericAxis(
+          opposedPosition: true,
+          isVisible: false,
+          majorGridLines: MajorGridLines(width: 0),
+          minorGridLines: MinorGridLines(width: 0),
+        ),
+        series: <AreaSeries<ChartLine, double>>[
+          AreaSeries<ChartLine, double>(
+            name: 'Price',
+            dataSource: chartData,
+            xValueMapper: (ChartLine line, _) => line.time,
+            yValueMapper: (ChartLine line, _) => line.price,
+            color: priceChange >= 0 ? Colors.green : Colors.red,
+            borderColor: priceChange >= 0 ? Colors.green : Colors.red,
+            borderWidth: 2,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: priceChange >= 0
+                  ? [Colors.green.withOpacity(0.2), Colors.green.withOpacity(0.0)]
+                  : [Colors.red.withOpacity(0.2), Colors.red.withOpacity(0.0)],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     BitcoinController bitcoinController = Get.find<BitcoinController>();
 
+    // If we have token data, build a token chart
+    if (widget.tokenData != null) {
+      return _buildTokenChart(context);
+    }
+
+    // Otherwise, build the Bitcoin chart
     return Obx(() {
       bitcoinController.liveChart.value;
 
@@ -314,8 +461,8 @@ class _ChartCoreState extends State<ChartCore> {
         //bitcoinController.trackBallValueDate = date.toString();
         // Update the entire information widget
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted && chartInfoKey.currentState != null) {
-            chartInfoKey.currentState!.refresh();
+          if (mounted && widget.chartInfoKey.currentState != null) {
+            widget.chartInfoKey.currentState!.refresh();
           }
         });
       }
@@ -355,7 +502,7 @@ class _ChartCoreState extends State<ChartCore> {
                   bitcoinController.trackBallValuePricechange =
                       toPercent(priceChange);
 
-                  chartInfoKey.currentState!.refresh();
+                  widget.chartInfoKey.currentState!.refresh();
                 }
               },
               onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
@@ -370,7 +517,7 @@ class _ChartCoreState extends State<ChartCore> {
                     : (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
                 bitcoinController.trackBallValuePricechange =
                     toPercent(priceChange);
-                chartInfoKey.currentState!.refresh();
+                widget.chartInfoKey.currentState!.refresh();
                 //reset to date of last value
                 var datetime = DateTime.fromMillisecondsSinceEpoch(
                     _lastimeeexact.round(),
@@ -447,9 +594,11 @@ class _ChartCoreState extends State<ChartCore> {
 
 class CustomWidget extends StatefulWidget {
   final Key key;
+  final Map<String, dynamic>? tokenData;
 
   const CustomWidget({
     required this.key,
+    this.tokenData,
   });
 
   @override
@@ -489,11 +638,156 @@ class _CustomWidgetState extends State<CustomWidget>
     }
   }
 
+  // Helper method to format price based on value
+  String _formatPrice(double price) {
+    if (price >= 1000) {
+      // For prices like 48,350
+      return price.toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]},',
+      );
+    } else if (price >= 1) {
+      // For prices like 15.75
+      return price.toStringAsFixed(2);
+    } else {
+      // For very small prices
+      return price.toStringAsFixed(6);
+    }
+  }
+  
+  // Helper method to get token image path
+  String _getTokenImage(String tokenSymbol) {
+    switch (tokenSymbol) {
+      case 'GENST':
+        return 'assets/tokens/genisisstone.webp';
+      case 'HTDG':
+        return 'assets/tokens/hotdog.webp';
+      case 'CAT':
+        return 'assets/tokens/cat.webp';
+      case 'EMRLD':
+        return 'assets/tokens/emerald.webp';
+      case 'LILA':
+        return 'assets/tokens/lila.webp';
+      case 'MINRL':
+        return 'assets/tokens/mineral.webp';
+      case 'TBLUE':
+        return 'assets/tokens/token_blue.webp';
+      default:
+        return 'assets/images/bitcoin.png';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Cache Theme to avoid multiple expensive calls
     final theme = Theme.of(context);
     
+    // Check if we're displaying token data
+    if (widget.tokenData != null) {
+      final tokenSymbol = widget.tokenData!['tokenSymbol'];
+      final tokenName = widget.tokenData!['tokenName'];
+      final currentPrice = widget.tokenData!['currentPrice'];
+      
+      // For tokens, use simpler date/time display
+      final now = DateTime.now();
+      DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+      DateFormat timeFormat = DateFormat("HH:mm");
+      String date = dateFormat.format(now);
+      String time = timeFormat.format(now);
+      
+      return Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                height: AppTheme.elementSpacing * 3.75,
+                width: AppTheme.elementSpacing * 3.75,
+                child: ClipOval(
+                  child: Image.asset(
+                    _getTokenImage(tokenSymbol),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(tokenName,
+                            style: theme.textTheme.headlineMedium),
+                        Text(
+                          date,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          tokenSymbol,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        Text(
+                          time,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "\$${_formatPrice(currentPrice)}",
+                    style: theme.textTheme.displaySmall,
+                  ),
+                ],
+              ),
+              Builder(
+                builder: (context) {
+                  // Get the current chart state if available
+                  final chartCoreState = context.findAncestorStateOfType<_ChartCoreState>();
+                  String percentage = '+0.00%';
+                  bool isPositive = true;
+                  
+                  if (chartCoreState != null && widget.tokenData != null) {
+                    final selectedPeriod = chartCoreState.selectedPeriod;
+                    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>;
+                    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>;
+                    
+                    if (periodData.isNotEmpty) {
+                      final firstPrice = double.parse(periodData.first['price'].toString());
+                      final lastPrice = double.parse(periodData.last['price'].toString());
+                      final change = ((lastPrice - firstPrice) / firstPrice) * 100;
+                      isPositive = change >= 0;
+                      percentage = '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
+                    }
+                  }
+                  
+                  return BitNetPercentWidget(
+                    priceChange: percentage,
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    
+    // Bitcoin data display
     final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;

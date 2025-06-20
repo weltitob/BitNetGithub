@@ -43,7 +43,7 @@ class ColumnTabView extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppTheme.elementSpacing.w * 1.5,
+                  horizontal: AppTheme.cardPadding.w,
                 ),
                 child: SearchFieldWidget(
                   hintText: "Search...",
@@ -78,16 +78,18 @@ class ColumnTabView extends StatelessWidget {
           child: SizedBox(
         height: AppTheme.cardPadding.h,
       )),
-      SliverGrid.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // 2 items per row
-          mainAxisSpacing: AppTheme.elementSpacing.h / 6,
-          crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-          childAspectRatio:
-              (size.width / 2) / 240.w, // Adjust according to your design
-        ),
-        itemCount: sortedGridList.length,
-        itemBuilder: (BuildContext context, int index) {
+      SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+        sliver: SliverGrid.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // 2 items per row
+            mainAxisSpacing: AppTheme.elementSpacing.h,
+            crossAxisSpacing: AppTheme.elementSpacing.w,
+            childAspectRatio:
+                (size.width / 2) / 240.w, // Adjust according to your design
+          ),
+          itemCount: sortedGridList.length,
+          itemBuilder: (BuildContext context, int index) {
           final item = sortedGridList[index];
           final media = Media(
             data: item.nftImage,
@@ -130,119 +132,8 @@ class ColumnTabView extends StatelessWidget {
             ),
           );
         },
+        ),
       )
     ]);
-    // return SingleChildScrollView(
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.center,
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       // Filter Row with SearchField
-    //       SizedBox(
-    //         height: AppTheme.cardPadding.h,
-    //       ),
-    //       Row(
-    //         children: [
-    //           Expanded(
-    //             child: Padding(
-    //               padding: EdgeInsets.symmetric(
-    //                 horizontal: AppTheme.elementSpacing.w * 1.5,
-    //               ),
-    //               child: SearchFieldWidget(
-    //                 hintText: "Search...",
-    //                 isSearchEnabled: true,
-    //                 handleSearch: (value) {
-    //                   // Implement search functionality
-    //                 },
-    //                 onChanged: (value) {
-    //                   // Implement onChange functionality
-    //                 },
-    //                 suffixIcon: IconButton(
-    //                   icon: Icon(Icons.filter_alt_rounded),
-    //                   onPressed: () {
-    //                     // Show filter bottom sheet
-    //                     BitNetBottomSheet(
-    //                       context: context,
-    //                       height: MediaQuery.of(context).size.height * 0.7,
-    //                       child: FilterBottomSheet(
-    //                         onSortingChanged: onSortingChanged,
-    //                         currentSortingFilter: currentSortingFilter,
-    //                       ),
-    //                     );
-    //                   },
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       SizedBox(
-    //         height: AppTheme.cardPadding.h,
-    //       ),
-
-    //       // Grid of Assets
-    //       Center(
-    //         child: GridView.builder(
-    //           shrinkWrap: true,
-    //           physics: const NeverScrollableScrollPhysics(),
-    //           scrollDirection: Axis.vertical,
-    //           padding: EdgeInsets.symmetric(
-    //               horizontal: AppTheme.elementSpacing.w / 2),
-    //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //             crossAxisCount: 2, // 2 items per row
-    //             mainAxisSpacing: AppTheme.elementSpacing.h,
-    //             crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-    //             childAspectRatio:
-    //                 (size.width / 2) / 240.w, // Adjust according to your design
-    //           ),
-    //           itemCount: sortedGridList.length,
-    //           itemBuilder: (BuildContext context, int index) {
-    //             final item = sortedGridList[index];
-    //             final media = Media(
-    //               data: item.nftImage,
-    //               type: "asset_image",
-    //             );
-
-    //             return GestureDetector(
-    //               onTap: () {
-    //                 if (selectedProducts.isNotEmpty) {
-    //                   handleProductClick(item.id, context);
-    //                 } else {
-    //                   context.goNamed('/asset_screen',
-    //                       pathParameters: {'nft_id': item.nftName});
-    //                 }
-    //               },
-    //               onLongPress: () {
-    //                 handleProductClick(item.id, context);
-    //               },
-    //               child: Stack(
-    //                 children: [
-    //                   AssetCard(
-    //                     medias: [media],
-    //                     scale: 0.75,
-    //                     nftName: item.nftName,
-    //                     nftMainName: item.nftMainName,
-    //                     cryptoText: item.cryptoText,
-    //                     rank: item.rank.toString(),
-    //                     hasPrice: true,
-    //                     hasLiked: selectedProducts.contains(item.id),
-    //                     hasListForSale: false,
-    //                     postId: item.id.toString(),
-    //                     onLikeChanged: (isLiked) {
-    //                       handleProductClick(item.id, context);
-    //                     },
-    //                     onPriceClicked: (id) {
-    //                       showBuyPanel(id);
-    //                     },
-    //                   ),
-    //                 ],
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

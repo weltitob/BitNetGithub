@@ -25,7 +25,7 @@ class CenterWidget extends StatelessWidget {
       bottom: 0,
       child: Container(
         width: containerWidth,
-        height: 60,
+        height: 65,
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
           boxShadow: [

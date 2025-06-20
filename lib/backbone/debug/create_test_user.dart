@@ -30,6 +30,12 @@ class CreateTestUser {
   // Your provided macaroon (base64)
   static const String testMacaroon = 'AgEDbG5kAvgBAwoQ/weJX+5bBfAK0yfk7aSzMRIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpbnZvaWNlcxIEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3cml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCghvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2VuZXJhdGUSBHJlYWQAAAYgYCj995/9RFj9Zfx4adNyKCnAHMfFeEaYxyo5i9bwYuA=';
   
+  // Admin macaroon for testnode1 (provided by user)
+  // AgEDbG5kAvgBAwoQTukszzJeveaIZc4ATy8a5BIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpb
+  // nZvaWNlcxIEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3cml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCg
+  // hvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2V
+  // uZXJhdGUSBHJlYWQAAAYgKJMiiClRYWuZxocBWnRme5SXkYiGC/4HCGgEclNdxrE=
+  
   // Test mnemonic (24 words - you can replace with your own)
   static const String testMnemonic = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
   

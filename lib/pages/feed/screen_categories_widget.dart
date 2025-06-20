@@ -1,5 +1,8 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart'; // Import the helpers file for HapticFeedback
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -85,33 +88,34 @@ class ScreenCategoryWidget extends StatelessWidget {
 
   Widget _buildSelectedTab(
       BuildContext context, Color textColor, VoidCallback onTabChange) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing * 0.75,
-          vertical: AppTheme.elementSpacing / 2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Icon only, no text
-          Icon(
-            _getIconForCategory(text),
-            size: 26,
-            color: textColor,
-          ),
-          
-          // Animated underline indicator
-          AnimatedContainer(
-            duration: AppTheme.animationDuration,
-            curve: Curves.easeInOut,
-            margin: EdgeInsets.only(top: 6),
-            height: 3,
-            width: 28,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(1.5),
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return GlassContainer(
+      opacity: 0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing * 0.75,
+            vertical: AppTheme.elementSpacing / 2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RoundedButtonWidget(
+              iconData: _getIconForCategory(text),
+              onTap: onTabChange,
+              buttonType: ButtonType.solid,
+              size: AppTheme.cardPadding * 1.25,
             ),
-          ),
-        ],
+            const SizedBox(width: AppTheme.elementSpacing * 0.5),
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -122,26 +126,22 @@ class ScreenCategoryWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: AppTheme.elementSpacing * 0.75,
           vertical: AppTheme.elementSpacing / 2),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Icon only, no text  
-          Icon(
-            _getIconForCategory(text),
-            size: 26,
-            color: textColor,
+          RoundedButtonWidget(
+            iconData: _getIconForCategory(text),
+            onTap: onTabChange,
+            buttonType: ButtonType.transparent,
+            size: AppTheme.cardPadding * 1.25,
           ),
-          
-          // Hidden underline indicator (width: 0)
-          AnimatedContainer(
-            duration: AppTheme.animationDuration,
-            curve: Curves.easeInOut,
-            margin: EdgeInsets.only(top: 6),
-            height: 3,
-            width: 0,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(1.5),
+          const SizedBox(width: AppTheme.elementSpacing * 0.5),
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.normal,
+              fontSize: 15,
             ),
           ),
         ],

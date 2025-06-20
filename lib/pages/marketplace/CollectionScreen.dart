@@ -13,6 +13,7 @@ import 'package:bitnet/pages/marketplace/collection/tabs/row_tab_view.dart';
 import 'package:bitnet/pages/marketplace/widgets/buy_sliding_panel.dart';
 import 'package:bitnet/pages/marketplace/widgets/cart_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -129,6 +130,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
               // Info Tab
               SliverOffstage(
                   offstage: currentTabIndex != 4, sliver: InfoTabView()),
+              
+              // Bottom padding for better scrolling
+              SliverToBoxAdapter(
+                child: SizedBox(height: 100.h),
+              ),
             ],
           ),
 

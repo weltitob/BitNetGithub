@@ -29,69 +29,216 @@ class _TokensTabState extends State<TokensTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // Sample token data
+  
+  // Get price history for a token (simplified version)
+  Map<String, dynamic> _getTokenPriceHistory(String symbol) {
+    // This should match the data from TokenMarketplaceScreen
+    // In a real app, this would be fetched from a service
+    double currentPrice;
+    switch (symbol) {
+      case 'GENST':
+        currentPrice = 48350.0;
+        break;
+      case 'HTDG':
+        currentPrice = 15.75;
+        break;
+      case 'CAT':
+        currentPrice = 892.50;
+        break;
+      case 'EMRLD':
+        currentPrice = 12450.0;
+        break;
+      case 'LILA':
+        currentPrice = 234.80;
+        break;
+      case 'MINRL':
+        currentPrice = 3567.25;
+        break;
+      case 'TBLUE':
+        currentPrice = 67.90;
+        break;
+      default:
+        currentPrice = 100.0;
+    }
+    return {
+      '1D': _generateSimplePriceHistory(currentPrice, 24, Duration(days: 1)),
+      '1W': _generateSimplePriceHistory(currentPrice, 7 * 24, Duration(days: 7)),
+      '1M': _generateSimplePriceHistory(currentPrice, 30 * 24, Duration(days: 30)),
+      '1J': _generateSimplePriceHistory(currentPrice, 365, Duration(days: 365)),
+      'Max': _generateSimplePriceHistory(currentPrice, 730, Duration(days: 730)),
+    };
+  }
+  
+  List<Map<String, dynamic>> _generateSimplePriceHistory(
+    double currentPrice,
+    int dataPoints,
+    Duration totalDuration,
+  ) {
+    final List<Map<String, dynamic>> priceHistory = [];
+    final now = DateTime.now();
+    final intervalMs = totalDuration.inMilliseconds ~/ dataPoints;
+    
+    for (int i = 0; i < dataPoints; i++) {
+      final timestamp = now.subtract(totalDuration).add(Duration(milliseconds: intervalMs * i));
+      // Simple linear interpolation from 70% to 100% of current price
+      final progress = i / dataPoints;
+      final price = currentPrice * (0.7 + 0.3 * progress);
+      
+      priceHistory.add({
+        'time': timestamp.millisecondsSinceEpoch,
+        'price': price.toStringAsFixed(6),
+      });
+    }
+    
+    return priceHistory;
+  }
+  // Sample token data - all available tokens
   final List<Map<String, dynamic>> tokenData = [
-    {
-      'name': 'Bitcoin',
-      'symbol': 'BTC',
-      'image': 'assets/images/bitcoin.png',
-      'price': '48,224.65',
-      'change': '+5.2%',
-      'isPositive': true,
-      'color': AppTheme.colorBitcoin,
-      'chartData': [
-        ChartLine(time: 0, price: 42000),
-        ChartLine(time: 1, price: 42500),
-        ChartLine(time: 2, price: 43100),
-        ChartLine(time: 3, price: 43050),
-        ChartLine(time: 4, price: 44500),
-        ChartLine(time: 5, price: 45200),
-        ChartLine(time: 6, price: 46100),
-        ChartLine(time: 7, price: 45800),
-        ChartLine(time: 8, price: 46750),
-        ChartLine(time: 9, price: 48200),
-      ]
-    },
     {
       'name': 'Genesis Stone',
       'symbol': 'GENST',
       'image': 'assets/tokens/genisisstone.webp',
-      'price': '0.000142',
+      'price': '48,350',
       'change': '+3.7%',
       'isPositive': true,
       'color': Colors.blue,
       'chartData': [
-        ChartLine(time: 0, price: 0.000120),
-        ChartLine(time: 1, price: 0.000125),
-        ChartLine(time: 2, price: 0.000130),
-        ChartLine(time: 3, price: 0.000128),
-        ChartLine(time: 4, price: 0.000133),
-        ChartLine(time: 5, price: 0.000138),
-        ChartLine(time: 6, price: 0.000135),
-        ChartLine(time: 7, price: 0.000140),
-        ChartLine(time: 8, price: 0.000142),
-        ChartLine(time: 9, price: 0.000142),
+        ChartLine(time: 0, price: 45000),
+        ChartLine(time: 1, price: 45500),
+        ChartLine(time: 2, price: 46200),
+        ChartLine(time: 3, price: 46000),
+        ChartLine(time: 4, price: 46800),
+        ChartLine(time: 5, price: 47500),
+        ChartLine(time: 6, price: 47200),
+        ChartLine(time: 7, price: 48000),
+        ChartLine(time: 8, price: 48200),
+        ChartLine(time: 9, price: 48350),
       ]
     },
     {
       'name': 'Hotdog',
       'symbol': 'HTDG',
       'image': 'assets/tokens/hotdog.webp',
-      'price': '0.000089',
+      'price': '15.75',
       'change': '+2.1%',
       'isPositive': true,
       'color': Colors.red.shade400,
       'chartData': [
-        ChartLine(time: 0, price: 0.000075),
-        ChartLine(time: 1, price: 0.000078),
-        ChartLine(time: 2, price: 0.000082),
-        ChartLine(time: 3, price: 0.000080),
-        ChartLine(time: 4, price: 0.000083),
-        ChartLine(time: 5, price: 0.000086),
-        ChartLine(time: 6, price: 0.000084),
-        ChartLine(time: 7, price: 0.000087),
-        ChartLine(time: 8, price: 0.000088),
-        ChartLine(time: 9, price: 0.000089),
+        ChartLine(time: 0, price: 14.80),
+        ChartLine(time: 1, price: 14.95),
+        ChartLine(time: 2, price: 15.10),
+        ChartLine(time: 3, price: 15.05),
+        ChartLine(time: 4, price: 15.25),
+        ChartLine(time: 5, price: 15.40),
+        ChartLine(time: 6, price: 15.35),
+        ChartLine(time: 7, price: 15.55),
+        ChartLine(time: 8, price: 15.65),
+        ChartLine(time: 9, price: 15.75),
+      ]
+    },
+    {
+      'name': 'Cat Token',
+      'symbol': 'CAT',
+      'image': 'assets/tokens/cat.webp',
+      'price': '892.50',
+      'change': '+8.4%',
+      'isPositive': true,
+      'color': Colors.orange,
+      'chartData': [
+        ChartLine(time: 0, price: 810),
+        ChartLine(time: 1, price: 825),
+        ChartLine(time: 2, price: 840),
+        ChartLine(time: 3, price: 835),
+        ChartLine(time: 4, price: 855),
+        ChartLine(time: 5, price: 870),
+        ChartLine(time: 6, price: 865),
+        ChartLine(time: 7, price: 880),
+        ChartLine(time: 8, price: 885),
+        ChartLine(time: 9, price: 892.50),
+      ]
+    },
+    {
+      'name': 'Emerald',
+      'symbol': 'EMRLD',
+      'image': 'assets/tokens/emerald.webp',
+      'price': '12,450',
+      'change': '-1.2%',
+      'isPositive': false,
+      'color': Colors.green.shade700,
+      'chartData': [
+        ChartLine(time: 0, price: 12600),
+        ChartLine(time: 1, price: 12580),
+        ChartLine(time: 2, price: 12550),
+        ChartLine(time: 3, price: 12530),
+        ChartLine(time: 4, price: 12510),
+        ChartLine(time: 5, price: 12490),
+        ChartLine(time: 6, price: 12480),
+        ChartLine(time: 7, price: 12470),
+        ChartLine(time: 8, price: 12460),
+        ChartLine(time: 9, price: 12450),
+      ]
+    },
+    {
+      'name': 'Lila Coin',
+      'symbol': 'LILA',
+      'image': 'assets/tokens/lila.webp',
+      'price': '234.80',
+      'change': '+5.6%',
+      'isPositive': true,
+      'color': Colors.purple,
+      'chartData': [
+        ChartLine(time: 0, price: 220),
+        ChartLine(time: 1, price: 223),
+        ChartLine(time: 2, price: 226),
+        ChartLine(time: 3, price: 225),
+        ChartLine(time: 4, price: 228),
+        ChartLine(time: 5, price: 230),
+        ChartLine(time: 6, price: 232),
+        ChartLine(time: 7, price: 233),
+        ChartLine(time: 8, price: 234),
+        ChartLine(time: 9, price: 234.80),
+      ]
+    },
+    {
+      'name': 'Mineral',
+      'symbol': 'MINRL',
+      'image': 'assets/tokens/mineral.webp',
+      'price': '3,567.25',
+      'change': '+12.3%',
+      'isPositive': true,
+      'color': Colors.grey,
+      'chartData': [
+        ChartLine(time: 0, price: 3150),
+        ChartLine(time: 1, price: 3200),
+        ChartLine(time: 2, price: 3280),
+        ChartLine(time: 3, price: 3350),
+        ChartLine(time: 4, price: 3400),
+        ChartLine(time: 5, price: 3450),
+        ChartLine(time: 6, price: 3480),
+        ChartLine(time: 7, price: 3520),
+        ChartLine(time: 8, price: 3540),
+        ChartLine(time: 9, price: 3567.25),
+      ]
+    },
+    {
+      'name': 'Token Blue',
+      'symbol': 'TBLUE',
+      'image': 'assets/tokens/token_blue.webp',
+      'price': '67.90',
+      'change': '-3.8%',
+      'isPositive': false,
+      'color': Colors.lightBlue,
+      'chartData': [
+        ChartLine(time: 0, price: 70.50),
+        ChartLine(time: 1, price: 70.20),
+        ChartLine(time: 2, price: 69.80),
+        ChartLine(time: 3, price: 69.50),
+        ChartLine(time: 4, price: 69.00),
+        ChartLine(time: 5, price: 68.80),
+        ChartLine(time: 6, price: 68.50),
+        ChartLine(time: 7, price: 68.20),
+        ChartLine(time: 8, price: 68.00),
+        ChartLine(time: 9, price: 67.90),
       ]
     },
   ];
@@ -99,24 +246,24 @@ class _TokensTabState extends State<TokensTab>
   // Top movers data
   final List<Map<String, dynamic>> topMoversData = [
     {
-      'name': 'Ordinals',
-      'symbol': 'ORD',
-      'image': 'assets/tokens/hotdog.webp',
-      'change': '+15.8%',
-      'isPositive': true,
-    },
-    {
-      'name': 'Lumen',
-      'symbol': 'LUM',
-      'image': 'assets/tokens/genisisstone.webp',
+      'name': 'Mineral',
+      'symbol': 'MINRL',
+      'image': 'assets/tokens/mineral.webp',
       'change': '+12.3%',
       'isPositive': true,
     },
     {
-      'name': 'Nebula',
-      'symbol': 'NEB',
-      'image': 'assets/images/bitcoin.png',
-      'change': '+9.7%',
+      'name': 'Cat Token',
+      'symbol': 'CAT',
+      'image': 'assets/tokens/cat.webp',
+      'change': '+8.4%',
+      'isPositive': true,
+    },
+    {
+      'name': 'Lila Coin',
+      'symbol': 'LILA',
+      'image': 'assets/tokens/lila.webp',
+      'change': '+5.6%',
       'isPositive': true,
     },
   ];
@@ -124,25 +271,25 @@ class _TokensTabState extends State<TokensTab>
   // Top volume data
   final List<Map<String, dynamic>> topVolumeData = [
     {
-      'name': 'Ethereum',
-      'symbol': 'ETH',
+      'name': 'Genesis Stone',
+      'symbol': 'GENST',
       'image': 'assets/tokens/genisisstone.webp',
-      'change': '+7.5%',
+      'change': '+3.7%',
       'isPositive': true,
     },
     {
-      'name': 'Lightning',
-      'symbol': 'LN',
-      'image': 'assets/images/lightning.png',
-      'change': '+4.2%',
-      'isPositive': true,
-    },
-    {
-      'name': 'SolDot',
-      'symbol': 'SDT',
-      'image': 'assets/tokens/hotdog.webp',
-      'change': '-2.8%',
+      'name': 'Emerald',
+      'symbol': 'EMRLD',
+      'image': 'assets/tokens/emerald.webp',
+      'change': '-1.2%',
       'isPositive': false,
+    },
+    {
+      'name': 'Mineral',
+      'symbol': 'MINRL',
+      'image': 'assets/tokens/mineral.webp',
+      'change': '+12.3%',
+      'isPositive': true,
     },
   ];
 
@@ -174,8 +321,23 @@ class _TokensTabState extends State<TokensTab>
               // Wrap in RepaintBoundary for better performance
               return GestureDetector(
                 onTap: () {
-                  // Navigate to token marketplace screen
-                  context.push('/feed/token_marketplace/${token['symbol']}/${token['name']}');
+                  // Navigate to BitcoinScreen with token data
+                  if (token['symbol'] == 'BTC') {
+                    // For Bitcoin, navigate to normal Bitcoin screen
+                    context.push('/wallet/bitcoinscreen');
+                  } else {
+                    // For tokens, pass token data
+                    context.push(
+                      '/wallet/bitcoinscreen',
+                      extra: {
+                        'isToken': true,
+                        'tokenSymbol': token['symbol'],
+                        'tokenName': token['name'],
+                        'priceHistory': _getTokenPriceHistory(token['symbol']),
+                        'currentPrice': double.parse(token['price'].replaceAll(',', '')),
+                      },
+                    );
+                  }
                 },
                 child: RepaintBoundary(
                   child: GlassContainer(
@@ -197,16 +359,6 @@ class _TokensTabState extends State<TokensTab>
                           Container(
                             height: 38.h,
                             width: 38.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: token['color'].withOpacity(0.3),
-                                  blurRadius: 12,
-                                  spreadRadius: 2,
-                                )
-                              ]
-                            ),
                             child: ClipOval(
                               child: Image.asset(
                                 token['image'],
@@ -243,6 +395,7 @@ class _TokensTabState extends State<TokensTab>
                       Expanded(
                         child: Container(
                           color: Colors.transparent,
+                          margin: EdgeInsets.symmetric(horizontal: 4.w), // Minimal spacing
                           child: SfCartesianChart(
                             plotAreaBorderWidth: 0,
                             margin: EdgeInsets.zero,
@@ -257,23 +410,33 @@ class _TokensTabState extends State<TokensTab>
                               majorTickLines: const MajorTickLines(width: 0),
                             ),
                             series: <ChartSeries>[
-                              // Line series - now using successColor for all cases
+                              // Line series - using correct color based on token performance
                               AreaSeries<ChartLine, double>(
                                 dataSource: chartData,
                                 animationDuration: 1500,
                                 xValueMapper: (ChartLine data, _) => data.time,
                                 yValueMapper: (ChartLine data, _) => data.price,
-                                color: AppTheme.successColor.withOpacity(0.3),
+                                color: token['isPositive'] 
+                                    ? AppTheme.successColor.withOpacity(0.3)
+                                    : AppTheme.errorColor.withOpacity(0.3),
                                 borderWidth: 2.5,
-                                borderColor: AppTheme.successColor,
+                                borderColor: token['isPositive'] 
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor,
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [
-                                    AppTheme.successColor.withOpacity(0.3),
-                                    AppTheme.successColor.withOpacity(0.05),
-                                    Colors.transparent,
-                                  ],
+                                  colors: token['isPositive'] 
+                                      ? [
+                                          AppTheme.successColor.withOpacity(0.3),
+                                          AppTheme.successColor.withOpacity(0.05),
+                                          Colors.transparent,
+                                        ]
+                                      : [
+                                          AppTheme.errorColor.withOpacity(0.3),
+                                          AppTheme.errorColor.withOpacity(0.05),
+                                          Colors.transparent,
+                                        ],
                                 ),
                               )
                             ],
@@ -332,19 +495,33 @@ class _TokensTabState extends State<TokensTab>
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: [
-                    // First crypto item with NumberIndicator
+                    // First crypto item with NumberIndicator - Genesis Stone (highest market cap)
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
-                          child: CryptoItem(
-                            hasGlassContainer: false,
+                          onTap: () {
+                            // Navigate to BitcoinScreen with token data
+                            context.push(
+                              '/wallet/bitcoinscreen',
+                              extra: {
+                                'isToken': true,
+                                'tokenSymbol': 'GENST',
+                                'tokenName': 'Genesis Stone',
+                                'priceHistory': _getTokenPriceHistory('GENST'),
+                                'currentPrice': 48350.0,
+                              },
+                            );
+                          },
+                          child: _buildTokenCryptoItem(
                             currency: Currency(
-                              code: 'Hotdog',
-                              name: 'Hotdog',
-                              icon: Image.asset("./assets/tokens/hotdog.webp"),
+                              code: 'GENST',
+                              name: 'Genesis Stone',
+                              icon: Image.asset("./assets/tokens/genisisstone.webp"),
                             ),
-                            context: context,
+                            price: '48,350',
+                            change: '+3.7%',
+                            isPositive: true,
+                            chartData: tokenData.firstWhere((t) => t['symbol'] == 'GENST')['chartData'],
                           ),
                         ),
                         Positioned(
@@ -354,19 +531,33 @@ class _TokensTabState extends State<TokensTab>
                         ),
                       ],
                     ),
-                    // Second crypto item with NumberIndicator
+                    // Second crypto item with NumberIndicator - Emerald
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/GENST/Genesis Stone'),
-                          child: CryptoItem(
-                            hasGlassContainer: false,
+                          onTap: () {
+                            // Navigate to BitcoinScreen with token data
+                            context.push(
+                              '/wallet/bitcoinscreen',
+                              extra: {
+                                'isToken': true,
+                                'tokenSymbol': 'EMRLD',
+                                'tokenName': 'Emerald',
+                                'priceHistory': _getTokenPriceHistory('EMRLD'),
+                                'currentPrice': 12450.0,
+                              },
+                            );
+                          },
+                          child: _buildTokenCryptoItem(
                             currency: Currency(
-                              code: 'GENST',
-                              name: 'Genisis Stone',
-                              icon: Image.asset("./assets/tokens/genisisstone.webp"),
+                              code: 'EMRLD',
+                              name: 'Emerald',
+                              icon: Image.asset("./assets/tokens/emerald.webp"),
                             ),
-                            context: context,
+                            price: '12,450',
+                            change: '-1.2%',
+                            isPositive: false,
+                            chartData: tokenData.firstWhere((t) => t['symbol'] == 'EMRLD')['chartData'],
                           ),
                         ),
                         Positioned(
@@ -376,19 +567,33 @@ class _TokensTabState extends State<TokensTab>
                         ),
                       ],
                     ),
-                    // Third crypto item with NumberIndicator
+                    // Third crypto item with NumberIndicator - Mineral
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
-                          child: CryptoItem(
-                            hasGlassContainer: false,
+                          onTap: () {
+                            // Navigate to BitcoinScreen with token data
+                            context.push(
+                              '/wallet/bitcoinscreen',
+                              extra: {
+                                'isToken': true,
+                                'tokenSymbol': 'MINRL',
+                                'tokenName': 'Mineral',
+                                'priceHistory': _getTokenPriceHistory('MINRL'),
+                                'currentPrice': 3567.25,
+                              },
+                            );
+                          },
+                          child: _buildTokenCryptoItem(
                             currency: Currency(
-                              code: 'HTDG',
-                              name: 'Hotdog',
-                              icon: Image.asset("./assets/tokens/hotdog.webp"),
+                              code: 'MINRL',
+                              name: 'Mineral',
+                              icon: Image.asset("./assets/tokens/mineral.webp"),
                             ),
-                            context: context,
+                            price: '3,567.25',
+                            change: '+12.3%',
+                            isPositive: true,
+                            chartData: tokenData.firstWhere((t) => t['symbol'] == 'MINRL')['chartData'],
                           ),
                         ),
                         Positioned(
@@ -424,16 +629,19 @@ class _TokensTabState extends State<TokensTab>
                   children: topMoversData.asMap().entries.map((entry) {
                     final int idx = entry.key;
                     final mover = entry.value;
+                    final tokenInfo = tokenData.firstWhere((t) => t['symbol'] == mover['symbol']);
                     return Stack(
                       children: [
-                        CryptoItem(
-                          hasGlassContainer: false,
+                        _buildTokenCryptoItem(
                           currency: Currency(
                             code: mover['symbol'],
                             name: mover['name'],
                             icon: Image.asset(mover['image']),
                           ),
-                          context: context,
+                          price: tokenInfo['price'],
+                          change: mover['change'],
+                          isPositive: mover['isPositive'],
+                          chartData: tokenInfo['chartData'],
                         ),
                         Positioned(
                           left: 10,
@@ -468,16 +676,19 @@ class _TokensTabState extends State<TokensTab>
                   children: topVolumeData.asMap().entries.map((entry) {
                     final int idx = entry.key;
                     final volume = entry.value;
+                    final tokenInfo = tokenData.firstWhere((t) => t['symbol'] == volume['symbol']);
                     return Stack(
                       children: [
-                        CryptoItem(
-                          hasGlassContainer: false,
+                        _buildTokenCryptoItem(
                           currency: Currency(
                             code: volume['symbol'],
                             name: volume['name'],
                             icon: Image.asset(volume['image']),
                           ),
-                          context: context,
+                          price: tokenInfo['price'],
+                          change: volume['change'],
+                          isPositive: volume['isPositive'],
+                          chartData: tokenInfo['chartData'],
                         ),
                         Positioned(
                           left: 10,
@@ -526,6 +737,129 @@ class _TokensTabState extends State<TokensTab>
           SizedBox(height: 100.h), // Added extra space at the bottom
         ],
       )), context: context,
+    );
+  }
+  
+  // Build custom crypto item widget with token data
+  Widget _buildTokenCryptoItem({
+    required Currency currency,
+    required String price,
+    required String change,
+    required bool isPositive,
+    required List<ChartLine> chartData,
+  }) {
+    return GlassContainer(
+      opacity: 0.0,
+      borderThickness: 1,
+      height: AppTheme.cardPadding * 2.75,
+      borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      height: AppTheme.cardPadding * 1.75,
+                      width: AppTheme.cardPadding * 1.75,
+                      child: ClipOval(child: currency.icon),
+                    ),
+                    SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currency.name,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "\$$price",
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: Theme.of(context).brightness == Brightness.light
+                                    ? AppTheme.black60
+                                    : AppTheme.white60,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w / 2),
+                Expanded(
+                  child: Container(
+                    color: Colors.transparent,
+                    child: SfCartesianChart(
+                      enableAxisAnimation: true,
+                      plotAreaBorderWidth: 0,
+                      primaryXAxis: CategoryAxis(
+                        labelPlacement: LabelPlacement.onTicks,
+                        edgeLabelPlacement: EdgeLabelPlacement.none,
+                        isVisible: false,
+                        majorGridLines: const MajorGridLines(width: 0),
+                        majorTickLines: const MajorTickLines(width: 0),
+                      ),
+                      primaryYAxis: NumericAxis(
+                        plotOffset: 0,
+                        edgeLabelPlacement: EdgeLabelPlacement.none,
+                        isVisible: false,
+                        majorGridLines: const MajorGridLines(width: 0),
+                        majorTickLines: const MajorTickLines(width: 0),
+                      ),
+                      series: <ChartSeries>[
+                        LineSeries<ChartLine, double>(
+                          dataSource: chartData,
+                          animationDuration: 0,
+                          xValueMapper: (ChartLine crypto, _) => crypto.time,
+                          yValueMapper: (ChartLine crypto, _) => crypto.price,
+                          color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w / 2),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PercentageChangeWidget(
+                      percentage: change,
+                      isPositive: isPositive,
+                      fontSize: 12,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                // Navigate to BitcoinScreen with token data
+                context.push(
+                  '/wallet/bitcoinscreen',
+                  extra: {
+                    'isToken': true,
+                    'tokenSymbol': currency.code,
+                    'tokenName': currency.name,
+                    'priceHistory': _getTokenPriceHistory(currency.code),
+                    'currentPrice': double.parse(price.replaceAll(',', '')),
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

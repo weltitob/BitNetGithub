@@ -149,37 +149,43 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
         '1D': _generatePriceHistory(48350, 96, Duration(days: 1), 0.02),
         '1W': _generatePriceHistory(48350, 168, Duration(days: 7), 0.05),
         '1M': _generatePriceHistory(48350, 30, Duration(days: 30), 0.08),
-        '1Y': _generatePriceHistory(48350, 365, Duration(days: 365), 0.15),
+        '1J': _generatePriceHistory(48350, 365, Duration(days: 365), 0.15),
+        'Max': _generatePriceHistory(48350, 730, Duration(days: 730), 0.20),
       },
       'HTDG': {
         '1D': _generatePriceHistory(15.75, 96, Duration(days: 1), 0.03),
         '1W': _generatePriceHistory(15.75, 168, Duration(days: 7), 0.07),
         '1M': _generatePriceHistory(15.75, 30, Duration(days: 30), 0.10),
-        '1Y': _generatePriceHistory(15.75, 365, Duration(days: 365), 0.20),
+        '1J': _generatePriceHistory(15.75, 365, Duration(days: 365), 0.20),
+        'Max': _generatePriceHistory(15.75, 730, Duration(days: 730), 0.25),
       },
       'LUMN': {
         '1D': _generatePriceHistory(2345, 96, Duration(days: 1), 0.025),
         '1W': _generatePriceHistory(2345, 168, Duration(days: 7), 0.06),
         '1M': _generatePriceHistory(2345, 30, Duration(days: 30), 0.09),
-        '1Y': _generatePriceHistory(2345, 365, Duration(days: 365), 0.18),
+        '1J': _generatePriceHistory(2345, 365, Duration(days: 365), 0.18),
+        'Max': _generatePriceHistory(2345, 730, Duration(days: 730), 0.22),
       },
       'NBLA': {
         '1D': _generatePriceHistory(890, 96, Duration(days: 1), 0.04),
         '1W': _generatePriceHistory(890, 168, Duration(days: 7), 0.08),
         '1M': _generatePriceHistory(890, 30, Duration(days: 30), 0.12),
-        '1Y': _generatePriceHistory(890, 365, Duration(days: 365), 0.25),
+        '1J': _generatePriceHistory(890, 365, Duration(days: 365), 0.25),
+        'Max': _generatePriceHistory(890, 730, Duration(days: 730), 0.30),
       },
       'QUSR': {
         '1D': _generatePriceHistory(142.5, 96, Duration(days: 1), 0.035),
         '1W': _generatePriceHistory(142.5, 168, Duration(days: 7), 0.075),
         '1M': _generatePriceHistory(142.5, 30, Duration(days: 30), 0.11),
-        '1Y': _generatePriceHistory(142.5, 365, Duration(days: 365), 0.22),
+        '1J': _generatePriceHistory(142.5, 365, Duration(days: 365), 0.22),
+        'Max': _generatePriceHistory(142.5, 730, Duration(days: 730), 0.28),
       },
       'VRTX': {
         '1D': _generatePriceHistory(9.45, 96, Duration(days: 1), 0.05),
         '1W': _generatePriceHistory(9.45, 168, Duration(days: 7), 0.10),
         '1M': _generatePriceHistory(9.45, 30, Duration(days: 30), 0.15),
-        '1Y': _generatePriceHistory(9.45, 365, Duration(days: 365), 0.30),
+        '1J': _generatePriceHistory(9.45, 365, Duration(days: 365), 0.30),
+        'Max': _generatePriceHistory(9.45, 730, Duration(days: 730), 0.35),
       },
     };
   }
@@ -598,15 +604,27 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
               child: GestureDetector(
                 onTap: () {
                   // Navigate to BitcoinScreen with token data
-                  context.pushNamed(
-                    'bitcoin',
-                    extra: {
-                      'isToken': true,
-                      'tokenSymbol': widget.tokenSymbol,
-                      'tokenName': widget.tokenName,
-                      'priceHistory': tokenPriceHistory[widget.tokenSymbol],
-                      'currentPrice': _getCurrentTokenData()['currentPrice'],
-                    },
+                  // Ensure price history is generated
+                  final priceHistory = tokenPriceHistory[widget.tokenSymbol];
+                  final currentPrice = _getCurrentTokenData()['currentPrice'];
+                  
+                  final navigationData = {
+                    'isToken': true,
+                    'tokenSymbol': widget.tokenSymbol,
+                    'tokenName': widget.tokenName,
+                    'priceHistory': priceHistory,
+                    'currentPrice': currentPrice is double ? currentPrice : currentPrice.toDouble(),
+                  };
+                  
+                  print('Navigating to BitcoinScreen with:');
+                  print('Symbol: ${widget.tokenSymbol}');
+                  print('Name: ${widget.tokenName}');
+                  print('Current Price: $currentPrice');
+                  print('Price History exists: ${priceHistory != null}');
+                  
+                  context.push(
+                    '/wallet/bitcoinscreen',
+                    extra: navigationData,
                   );
                 },
                 child: Container(

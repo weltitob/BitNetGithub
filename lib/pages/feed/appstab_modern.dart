@@ -288,65 +288,21 @@ class _AppsTabModernState extends State<AppsTabModern>
                       child: dotProgress(context),
                     )
                   else if (myApps.isNotEmpty)
-                    SizedBox(
-                      height: 110.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    Container(
+                      height: myApps.length <= 3 ? 120.h : 240.h,
+                      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 16.w,
+                          mainAxisSpacing: 16.h,
+                          childAspectRatio: 0.9,
+                        ),
                         itemCount: myApps.length,
                         itemBuilder: (context, index) {
                           final app = myApps[index];
-                          return Padding(
-                            padding: EdgeInsets.only(right: 12.w),
-                            child: GestureDetector(
-                              onTap: () async {
-                                context.pushNamed(kWebViewScreenRoute, 
-                                  pathParameters: {
-                                    'url': await app.getUrl(),
-                                    'name': app.name,
-                                  }, 
-                                  extra: {"is_app": true}
-                                );
-                              },
-                              child: Container(
-                                width: 90.w,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 65.w,
-                                      height: 65.h,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.surface,
-                                        borderRadius: BorderRadius.circular(16.r),
-                                        border: Border.all(
-                                          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-                                        ),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16.r),
-                                        child: Center(
-                                          child: AppImageBuilder(
-                                            app: app,
-                                            width: 50.w,
-                                            height: 50.h,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    Text(
-                                      app.name,
-                                      style: Theme.of(context).textTheme.bodySmall,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
+                          return _buildIOSAppIcon(app, true, false);
                         },
                       ),
                     ),
@@ -371,17 +327,17 @@ class _AppsTabModernState extends State<AppsTabModern>
                     child: dotProgress(context),
                   )
                 else ...[
-                  // Available Apps Grid
+                  // Available Apps Grid - iOS Style
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
+                        crossAxisCount: 3,
                         crossAxisSpacing: 16.w,
-                        mainAxisSpacing: 20.h,
-                        childAspectRatio: 0.70, // Adjusted for more vertical space
+                        mainAxisSpacing: 16.h,
+                        childAspectRatio: 0.9,
                       ),
                       itemCount: availableApps.length + comingSoonApps.length,
                       itemBuilder: (context, index) {
@@ -389,10 +345,10 @@ class _AppsTabModernState extends State<AppsTabModern>
                           final app = availableApps[index];
                           final isOwned = ownedApps.contains(app.docId);
                           
-                          return _buildAppGridItem(app, isOwned, false);
+                          return _buildIOSAppIcon(app, isOwned, false);
                         } else {
                           final app = comingSoonApps[index - availableApps.length];
-                          return _buildAppGridItem(app, false, true);
+                          return _buildIOSAppIcon(app, false, true);
                         }
                       },
                     ),
@@ -408,6 +364,348 @@ class _AppsTabModernState extends State<AppsTabModern>
     );
   }
   
+  Widget _buildIOSAppIcon(AppData app, bool isOwned, bool isComingSoon) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final iconSize = constraints.maxWidth * 0.75;
+        
+        return GestureDetector(
+          onTap: () async {
+            if (isComingSoon) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Coming soon!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            } else if (isOwned) {
+              final url = await app.getUrl();
+              context.pushNamed(kWebViewScreenRoute, 
+                pathParameters: {
+                  'url': url,
+                  'name': app.name,
+                }, 
+                extra: {"is_app": true}
+              );
+            } else {
+              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: Stack(
+                    children: [
+                      // Glass Container App Icon
+                      Container(
+                        width: iconSize,
+                        height: iconSize,
+                        child: GlassContainer(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                        blur: 20,
+                        opacity: 0.1,
+                        borderThickness: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                          child: Container(
+                            width: iconSize,
+                            height: iconSize,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: iconSize,
+                                height: iconSize,
+                                child: AppImageBuilder(
+                                  app: app,
+                                  width: iconSize,
+                                  height: iconSize,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    
+                    // Coming Soon Overlay
+                    if (isComingSoon)
+                      Positioned.fill(
+                        child: Container(
+                          width: iconSize,
+                          height: iconSize,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                          ),
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Text(
+                                'SOON',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                    ],
+                  ),
+                ),
+              ),
+              
+              // App Name
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: Text(
+                    app.name,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildModernAppCard(AppData app, bool isOwned, bool isComingSoon, List<String> ownedApps) {
+    return GestureDetector(
+      onTap: () async {
+        if (isComingSoon) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Coming soon!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } else if (isOwned) {
+          final url = await app.getUrl();
+          context.pushNamed(kWebViewScreenRoute, 
+            pathParameters: {
+              'url': url,
+              'name': app.name,
+            }, 
+            extra: {"is_app": true}
+          );
+        } else {
+          context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(AppTheme.cardPadding.w),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(0.05),
+              blurRadius: 10,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // App Icon
+            Stack(
+              children: [
+                Container(
+                  width: 65.w,
+                  height: 65.h,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                    child: Center(
+                      child: AppImageBuilder(
+                        app: app,
+                        width: 50.w,
+                        height: 50.h,
+                      ),
+                    ),
+                  ),
+                ),
+                if (isComingSoon)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'SOON',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (isOwned)
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: Container(
+                      width: 20.w,
+                      height: 20.h,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.surface,
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        size: 12.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            
+            SizedBox(width: AppTheme.elementSpacing.w),
+            
+            // App Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          app.name,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isComingSoon)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Text(
+                            'Coming Soon',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      else if (isOwned)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Text(
+                            'Owned',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  
+                  SizedBox(height: 4.h),
+                  
+                  Text(
+                    'BitNET Community',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  
+                  SizedBox(height: 6.h),
+                  
+                  Text(
+                    app.desc,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                      height: 1.3,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            
+            SizedBox(width: AppTheme.elementSpacing.w),
+            
+            // Action Button
+            if (!isComingSoon)
+              LongButtonWidget(
+                title: isOwned ? 'Open' : 'Get',
+                customWidth: 70.w,
+                customHeight: 36.h,
+                buttonType: isOwned ? ButtonType.solid : ButtonType.transparent,
+                titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                onTap: () async {
+                  if (isOwned) {
+                    final url = await app.getUrl();
+                    context.pushNamed(kWebViewScreenRoute, 
+                      pathParameters: {
+                        'url': url,
+                        'name': app.name,
+                      }, 
+                      extra: {"is_app": true}
+                    );
+                  } else {
+                    context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                  }
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAppGridItem(AppData app, bool isOwned, bool isComingSoon) {
     return GestureDetector(
       onTap: () async {

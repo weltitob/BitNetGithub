@@ -17,7 +17,7 @@ import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
-import 'package:bitnet/components/chart/token_chart.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -55,6 +55,51 @@ class BitcoinScreen extends StatefulWidget {
   State<BitcoinScreen> createState() => _BitcoinScreenState();
 }
 
+// Mock token balance helper
+String _getMockTokenBalance(String tokenSymbol) {
+  // Return mock balances for different tokens
+  switch (tokenSymbol) {
+    case 'GENST':
+      return '1250000'; // 1.25M GENST tokens
+    case 'HTDG':
+      return '850000'; // 850K HTDG tokens
+    case 'CAT':
+      return '42000'; // 42K CAT tokens
+    case 'EMRLD':
+      return '175'; // 175 EMRLD tokens
+    case 'LILA':
+      return '9850'; // 9.85K LILA tokens
+    case 'MINRL':
+      return '567'; // 567 MINRL tokens
+    case 'TBLUE':
+      return '125000'; // 125K TBLUE tokens
+    default:
+      return '1000000'; // 1M tokens default
+  }
+}
+
+// Helper to get token image path
+String _getTokenImagePath(String tokenSymbol) {
+  switch (tokenSymbol) {
+    case 'GENST':
+      return 'assets/tokens/genisisstone.webp';
+    case 'HTDG':
+      return 'assets/tokens/hotdog.webp';
+    case 'CAT':
+      return 'assets/tokens/cat.webp';
+    case 'EMRLD':
+      return 'assets/tokens/emerald.webp';
+    case 'LILA':
+      return 'assets/tokens/lila.webp';
+    case 'MINRL':
+      return 'assets/tokens/mineral.webp';
+    case 'TBLUE':
+      return 'assets/tokens/token_blue.webp';
+    default:
+      return 'assets/images/bitcoin.png';
+  }
+}
+
 class _BitcoinScreenState extends State<BitcoinScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -74,6 +119,13 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       });
     });
     scrollController = ScrollController();
+    
+    // Debug: Check if token data is being received
+    if (widget.tokenData != null) {
+      print('BitcoinScreen received token data: ${widget.tokenData}');
+    } else {
+      print('BitcoinScreen: No token data received, showing Bitcoin');
+    }
   }
 
   @override
@@ -118,13 +170,19 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               SliverToBoxAdapter(
                 child: SizedBox(height: AppTheme.cardPadding * 3),
               ),
-              // Chart Widget
+              
+              // Chart Section (moved to correct position)
               SliverToBoxAdapter(
-                child: const ChartWidget(),
+                child: ChartWidget(
+                  tokenData: widget.tokenData,
+                ),
               ),
+              
               SliverToBoxAdapter(
-                child: SizedBox(height: AppTheme.cardPadding * 2),
+                child: SizedBox(height: AppTheme.cardPadding.h * 2),
               ),
+              
+              // Show buttons for both Bitcoin and tokens
               SliverToBoxAdapter(
                 child: Padding(
                   padding:  EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -134,10 +192,17 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     BitNetImageWithTextButton(
                       L10n.of(context)!.send,
                       () {
-                        context.go('/wallet/send');
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Get.find<SendsController>().getClipboardData();
-                        });
+                        if (widget.tokenData != null) {
+                          // For tokens, show a coming soon message or navigate to token send
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Token send coming soon')),
+                          );
+                        } else {
+                          context.go('/wallet/send');
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Get.find<SendsController>().getClipboardData();
+                          });
+                        }
                       },
                       // image: "assets/images/send_image.png",
                       width: AppTheme.cardPadding * 2.5.h,
@@ -147,9 +212,14 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     BitNetImageWithTextButton(
                       L10n.of(context)!.receive,
                       () {
-                        context.go(
-                          '/wallet/receive',
-                        );
+                        if (widget.tokenData != null) {
+                          // For tokens, show a coming soon message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Token receive coming soon')),
+                          );
+                        } else {
+                          context.go('/wallet/receive');
+                        }
                       },
                       // image: "assets/images/receive_image.png",
                       width: AppTheme.cardPadding * 2.5.h,
@@ -157,31 +227,45 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       fallbackIcon: Icons.arrow_downward_rounded,
                     ),
                     BitNetImageWithTextButton(
-                      "Swap",
+                      widget.tokenData != null ? "Buy" : "Swap",
                       () {
-                        Get.put(LoopsController());
-                        context.go("/wallet/loop_screen");
+                        if (widget.tokenData != null) {
+                          // Navigate to token marketplace buy flow
+                          context.push('/feed/token_marketplace/${widget.tokenData!['tokenSymbol']}/${widget.tokenData!['tokenName']}');
+                        } else {
+                          // For Bitcoin, navigate to swap/loop screen
+                          Get.put(LoopsController());
+                          context.go("/wallet/loop_screen");
+                        }
                       },
                       // image: "assets/images/rebalance_image.png",
                       width: AppTheme.cardPadding * 2.5.h,
                       height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: Icons.sync_rounded,
+                      fallbackIcon: widget.tokenData != null ? FontAwesomeIcons.btc : Icons.sync_rounded,
+                      fallbackIconSize: AppTheme.iconSize * 1.5,
                     ),
                     BitNetImageWithTextButton(
-                      "Buy",
+                      widget.tokenData != null ? "Sell" : "Buy",
                       () {
-                        context.go("/wallet/buy");
+                        if (widget.tokenData != null) {
+                          // Navigate to token marketplace sell flow
+                          context.push('/feed/token_marketplace/${widget.tokenData!['tokenSymbol']}/${widget.tokenData!['tokenName']}');
+                        } else {
+                          // For Bitcoin, navigate to buy screen
+                          context.go("/wallet/buy");
+                        }
                       },
                       // image: "assets/images/send_image.png",
                       width: AppTheme.cardPadding * 2.5.h,
                       height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: FontAwesomeIcons.btc,
+                      fallbackIcon: widget.tokenData != null ? Icons.sell_outlined : FontAwesomeIcons.btc,
                       fallbackIconSize: AppTheme.iconSize * 1.5,
                     ),
                   ],
                 ),
                 ),
               ),
+              // Cryptos section for both Bitcoin and tokens
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -196,28 +280,79 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       SizedBox(height: AppTheme.cardPadding.h),
-                      Obx(
-                            () {
-                          final logger = Get.find<LoggerService>();
-                          final confirmedBalanceStr = walletController
-                              .onchainBalance.value.confirmedBalance.obs;
-                          final unconfirmedBalanceStr = walletController
-                              .onchainBalance.value.unconfirmedBalance.obs;
-                          logger.i(
-                            "Confirmed Balance onchain: $confirmedBalanceStr",
-                          );
-                          logger.i(
-                            "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
-                          );
+                      if (widget.tokenData != null) ...[
+                        // Token balance display with mock data
+                        CryptoInfoItem(
+                          balance: _getMockTokenBalance(widget.tokenData!['tokenSymbol']),
+                          defaultUnit: BitcoinUnits.SAT,
+                          currency: Currency(
+                            code: widget.tokenData!['tokenSymbol'],
+                            name: widget.tokenData!['tokenName'],
+                            icon: Image.asset(
+                              _getTokenImagePath(widget.tokenData!['tokenSymbol']),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          context: context,
+                          onTap: () {
+                            // Scroll to top
+                            scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          },
+                        ),
+                      ] else ...[
+                        // Bitcoin balances
+                        Obx(
+                              () {
+                            final logger = Get.find<LoggerService>();
+                            final confirmedBalanceStr = walletController
+                                .onchainBalance.value.confirmedBalance.obs;
+                            final unconfirmedBalanceStr = walletController
+                                .onchainBalance.value.unconfirmedBalance.obs;
+                            logger.i(
+                              "Confirmed Balance onchain: $confirmedBalanceStr",
+                            );
+                            logger.i(
+                              "Unconfirmed Balance onchain: $unconfirmedBalanceStr",
+                            );
+                            return CryptoInfoItem(
+                              balance: confirmedBalanceStr.value,
+                              // confirmedBalance: confirmedBalanceStr.value,
+                              // unconfirmedBalance: unconfirmedBalanceStr.value,
+                              defaultUnit: BitcoinUnits.SAT,
+                              currency: Currency(
+                                code: 'BTC',
+                                name: 'Bitcoin (Onchain)',
+                                icon: Image.asset("assets/images/bitcoin.png"),
+                              ),
+                              context: context,
+                              onTap: () {
+                                // No need to navigate when already on this screen
+                                // Just scroll to top if needed
+                                scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing.h),
+                        Obx(() {
+                          final confirmedBalanceStr =
+                              walletController.lightningBalance.value.balance.obs;
                           return CryptoInfoItem(
                             balance: confirmedBalanceStr.value,
                             // confirmedBalance: confirmedBalanceStr.value,
-                            // unconfirmedBalance: unconfirmedBalanceStr.value,
                             defaultUnit: BitcoinUnits.SAT,
                             currency: Currency(
                               code: 'BTC',
-                              name: 'Bitcoin (Onchain)',
-                              icon: Image.asset("assets/images/bitcoin.png"),
+                              name: 'Bitcoin (Lightning)',
+                              icon: Image.asset("assets/images/lightning.png"),
                             ),
                             context: context,
                             onTap: () {
@@ -229,40 +364,96 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                                 curve: Curves.easeOut,
                               );
                             },
+                            // unconfirmedBalance: '',
                           );
-                        },
-                      ),
-                      SizedBox(height: AppTheme.elementSpacing.h),
-                      Obx(() {
-                        final confirmedBalanceStr =
-                            walletController.lightningBalance.value.balance.obs;
-                        return CryptoInfoItem(
-                          balance: confirmedBalanceStr.value,
-                          // confirmedBalance: confirmedBalanceStr.value,
-                          defaultUnit: BitcoinUnits.SAT,
-                          currency: Currency(
-                            code: 'BTC',
-                            name: 'Bitcoin (Lightning)',
-                            icon: Image.asset("assets/images/lightning.png"),
-                          ),
-                          context: context,
-                          onTap: () {
-                            // No need to navigate when already on this screen
-                            // Just scroll to top if needed
-                            scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
-                            );
-                          },
-                          // unconfirmedBalance: '',
-                        );
-                      }),
+                        }),
+                      ],
                     ],
                   ),
                 ),
               ),
+              
+              // Go to Marketplace button for tokens
+              if (widget.tokenData != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding.w,
+                    vertical: AppTheme.cardPadding.h,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to token marketplace
+                      context.push('/feed/token_marketplace/${widget.tokenData!['tokenSymbol']}/${widget.tokenData!['tokenName']}');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                          ],
+                        ),
+                        borderRadius: AppTheme.cardRadiusMid,
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      padding: EdgeInsets.all(AppTheme.cardPadding),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(AppTheme.elementSpacing),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.storefront_rounded,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 24,
+                                ),
+                              ),
+                              SizedBox(width: AppTheme.elementSpacing),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Go to Marketplace',
+                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Buy or sell ${widget.tokenData!['tokenSymbol']} tokens',
+                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                            size: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              
               // Wallet Balances - Tab Bar
+              if (widget.tokenData == null)
               SliverToBoxAdapter(
                 child: Container(
                   margin: EdgeInsets.only(
@@ -305,16 +496,6 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                 ),
               ),
-              // Chart Section
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                  child: widget.tokenData != null
-                    ? _buildTokenChart()
-                    : ChartWidget(),
-                ),
-              ),
-              
               // Bitcoin/Token Info
               SliverToBoxAdapter(
                 child: InformationWidget(
@@ -328,31 +509,33 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ),
               // Cryptos
               // Activity Header
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: AppTheme.cardPadding * 1.75),
-                      Text(L10n.of(context)!.activity,
-                          style: Theme.of(context).textTheme.titleLarge),
-                      SizedBox(height: AppTheme.elementSpacing),
-                    ],
+              if (widget.tokenData == null) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: AppTheme.cardPadding * 1.75),
+                        Text(L10n.of(context)!.activity,
+                            style: Theme.of(context).textTheme.titleLarge),
+                        SizedBox(height: AppTheme.elementSpacing),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // Transactions list
-              Transactions(
+                // Transactions list
+                Transactions(
                 hideLightning: isOnchainSelected,
                 hideOnchain: !isOnchainSelected,
                 filters: isOnchainSelected
                     ? [L10n.of(context)!.onchain]
                     : ['Lightning'],
                 scrollController: scrollController,
-              ),
+                ),
+              ],
               // Bottom padding
               SliverToBoxAdapter(
                 child: SizedBox(height: AppTheme.cardPadding * 4),
@@ -437,18 +620,6 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           );
         }),
       ),
-    );
-  }
-  
-  Widget _buildTokenChart() {
-    // Token chart implementation (to be deleted later only to mock user workflow)
-    final tokenSymbol = widget.tokenData!['tokenSymbol'];
-    final priceHistory = widget.tokenData!['priceHistory'];
-    
-    return TokenChartWidget(
-      tokenSymbol: tokenSymbol,
-      priceHistory: priceHistory,
-      currentPrice: widget.tokenData!['currentPrice'],
     );
   }
 }

@@ -659,20 +659,52 @@ class HomeController extends BaseController {
   }
 
   Future<int?> getBlockHeight(String txId) async {
-    final logger = Get.find<LoggerService>();
     loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
       final response = await dioClient.get(url: url);
-      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
-        jsonDecode(
-          jsonEncode(response.data),
-        ),
-      );
-      // print(txDetailsConfirmed!.height);
-      return txDetailsConfirmed!.height;
+      
+      // Null safety check for response data
+      if (response.data == null) {
+        logger.w('Received null response data for getBlockHeight');
+        return null;
+      }
+      
+      // Validate response data structure
+      final responseData = response.data;
+      if (responseData is! Map<String, dynamic>) {
+        logger.w('Invalid response data type for getBlockHeight');
+        return null;
+      }
+      
+      // Check if height field exists and is valid
+      if (!responseData.containsKey('height') || responseData['height'] == null) {
+        logger.w('Missing or null height field in getBlockHeight response');
+        return null;
+      }
+      
+      // Validate height field type
+      final heightValue = responseData['height'];
+      if (heightValue is! int && heightValue is! num) {
+        logger.w('Invalid height field type in getBlockHeight: ${heightValue.runtimeType}');
+        return null;
+      }
+      
+      // Safely parse the full object if we need it for other purposes
+      try {
+        txDetailsConfirmed = TransactionConfirmedDetail.fromJson(responseData);
+        return txDetailsConfirmed!.height;
+      } catch (parseError) {
+        logger.e('Error parsing full TransactionConfirmedDetail in getBlockHeight: $parseError');
+        // Still return the height even if full parsing fails
+        return heightValue is int ? heightValue : (heightValue as num).toInt();
+      }
+    } on DioException catch (e) {
+      logger.e('DioException in getBlockHeight: $e');
     } catch (e) {
-      logger.e(e);
+      logger.e('Error in getBlockHeight: $e');
+    } finally {
+      loadingDetail.value = false;
     }
     return null;
   }
@@ -697,7 +729,38 @@ class HomeController extends BaseController {
         return;
       }
       
-      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(response.data);
+      // Validate response data structure before parsing
+      final responseData = response.data;
+      if (responseData is! Map<String, dynamic>) {
+        logger.w('Invalid response data type for txDetailsConfirmedF');
+        loadingDetail.value = false;
+        isLoading.value = false;
+        return;
+      }
+      
+      // Check for required fields to prevent null assignment to non-nullable types
+      final requiredFields = ['id', 'height', 'version', 'timestamp', 'bits', 'nonce', 
+                             'difficulty', 'merkle_root', 'tx_count', 'size', 'weight', 
+                             'previousblockhash', 'mediantime', 'extras'];
+      
+      for (String field in requiredFields) {
+        if (!responseData.containsKey(field) || responseData[field] == null) {
+          logger.w('Missing or null required field "$field" in txDetailsConfirmedF response');
+          loadingDetail.value = false;
+          isLoading.value = false;
+          return;
+        }
+      }
+      
+      // Validate specific field types that commonly cause issues
+      if (responseData['height'] is! int && responseData['height'] is! num) {
+        logger.w('Invalid height field type in txDetailsConfirmedF: ${responseData['height'].runtimeType}');
+        loadingDetail.value = false;
+        isLoading.value = false;
+        return;
+      }
+      
+      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(responseData);
       isLoading.value = false;
       update();
     } on DioException catch (e) {
@@ -707,11 +770,16 @@ class HomeController extends BaseController {
       update();
     } catch (e) {
       logger.e('Error in txDetailsConfirmedF: $e');
+      logger.e('Error details: ${e.toString()}');
+      if (e is TypeError) {
+        logger.e('TypeError - likely null assignment to non-nullable field');
+      }
       txDetailsConfirmed = null; // Reset to null on error
       isLoading.value = false;
       update();
+    } finally {
+      loadingDetail.value = false;
     }
-    loadingDetail.value = false;
   }
 
   Future<void> txDetailsF(String? txId, int page) async {

@@ -8,7 +8,7 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
-import 'package:bitnet/pages/settings/developer_options/mini_app_application_form.dart';
+import 'package:bitnet/pages/settings/developer_options/mini_app_creator.dart';
 import 'package:bitnet/pages/settings/developer_options/registered_mini_apps.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
 import 'package:bitnet/pages/settings/emergency_recovery/social_recovery/social_recovery_view.dart';
@@ -52,10 +52,10 @@ class _DeveloperOptionsPageState extends State<DeveloperOptionsPage> {
         title: "Developer Options",
       ),
       SettingsPageModel(
-        widget: MiniAppApplicationForm(),
+        widget: MiniAppCreator(),
         goBack: true,
         iconData: Icons.apps_rounded,
-        title: "Mini App Application",
+        title: "Create Mini App",
       ),
       SettingsPageModel(
         widget: RegisteredMiniAppsPage(),
@@ -144,7 +144,7 @@ class _DeveloperOptionsPageState extends State<DeveloperOptionsPage> {
               size: AppTheme.iconSize * 1.5,
               buttonType: ButtonType.transparent,
             ),
-            text: "Mini App Application Form",
+            text: "Create Mini App",
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,

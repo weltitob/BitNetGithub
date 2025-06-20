@@ -1,6 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,34 +25,35 @@ class CollectionTabIcon extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (!isSelected) ...[
-            Container(
-              color: Colors.transparent,
-              width: AppTheme.cardPadding * 1.75.h,
-              height: AppTheme.cardPadding * 1.75.h,
-              child: Icon(
-                iconData,
-                size: AppTheme.iconSize,
-                color: theme.colorScheme.onPrimaryContainer.withOpacity(0.4),
+      child: Container(
+        width: 60.w,
+        height: 40.h,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icon
+            Icon(
+              iconData,
+              size: 26,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.5),
+            ),
+            
+            // Animated underline indicator
+            AnimatedContainer(
+              duration: AppTheme.animationDuration,
+              curve: Curves.easeInOut,
+              margin: EdgeInsets.only(top: 6),
+              height: 3,
+              width: isSelected ? 28 : 0,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(1.5),
               ),
             ),
           ],
-          if (isSelected) ...[
-            Container(
-              width: AppTheme.cardPadding * 1.75.h,
-              height: AppTheme.cardPadding * 1.75.h,
-              child: RoundedButtonWidget(
-                size: AppTheme.cardPadding * 1.75.h,
-                buttonType: ButtonType.transparent,
-                iconData: iconData, 
-                onTap: onTap
-              ),
-            )
-          ],
-        ],
+        ),
       ),
     );
   }
