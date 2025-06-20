@@ -93,8 +93,11 @@ class WalletScreen extends GetWidget<WalletsController> {
       context: context,
       body: StatefulBuilder(
         builder: (context, setState) {
-          // Use cached PageController to avoid recreation on every build
-          final pageController = _getPageController();
+          // Create PageController inline to avoid missing method issues
+          final pageController = PageController(
+            initialPage: controller.selectedCard.value == 'onchain' ? 1 : 0,
+            viewportFraction: 0.8885,
+          );
           SubServersStatus?
               subServersStatus; // local variable to store fetched data
 

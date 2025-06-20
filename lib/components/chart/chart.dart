@@ -314,7 +314,9 @@ class _ChartCoreState extends State<ChartCore> {
         //bitcoinController.trackBallValueDate = date.toString();
         // Update the entire information widget
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          chartInfoKey.currentState!.refresh();
+          if (mounted && chartInfoKey.currentState != null) {
+            chartInfoKey.currentState!.refresh();
+          }
         });
       }
       return SizedBox(

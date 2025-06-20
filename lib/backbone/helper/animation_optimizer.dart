@@ -30,13 +30,20 @@ class AnimationOptimizer {
       // by monitoring frame timings
       // Use a timer to measure frame duration instead of firstFrameTimeStamp
       Stopwatch frameTimer = Stopwatch()..start();
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        final frameDuration = frameTimer.elapsedMilliseconds;
-        frameTimer.stop();
+      
+      // Ensure the binding is initialized before adding callback
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          final frameDuration = frameTimer.elapsedMilliseconds;
+          frameTimer.stop();
 
-        if (frameDuration > 100) {
-          // If first frame took more than 100ms
-          _shouldDisableAnimations = true;
+          if (frameDuration > 100) {
+            // If first frame took more than 100ms
+            _shouldDisableAnimations = true;
+          }
+        } catch (e) {
+          // Fail silently if there's an issue with frame timing
+          frameTimer.stop();
         }
       });
     }
