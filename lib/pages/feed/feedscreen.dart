@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
+import 'package:bitnet/pages/feed/appstab_modern.dart';
 import 'package:bitnet/pages/feed/build_search_result_widget.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
@@ -197,7 +198,7 @@ class _FeedScreenState extends State<FeedScreen>
                     _buildLazyTab(2, const AssetsTab()),
                     _buildLazyTab(3, const SearchResultWidget()),
                     _buildLazyTab(4, MempoolHome(isFromHome: true)),
-                    _buildLazyTab(5, const AppsTab())
+                    _buildLazyTab(5, const AppsTabModern())
                   ],
                 );
               }),

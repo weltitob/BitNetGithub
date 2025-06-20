@@ -1,15 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
+import 'package:bitnet/models/keys/userchallenge.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
@@ -32,7 +37,7 @@ class CreateTestUser {
   static const String testTaprootAddress = 'bc1p_debug_taproot_address_testuser2';
   static const String testSegwitAddress = 'bc1q_debug_segwit_address_testuser2';
   
-  // Test Lightning pubkey
+  // Test Lightning pubkey (this will be fetched from the actual node during registration)
   static const String testLightningPubkey = '03debug_lightning_pubkey_testuser2_node2';
   
   /// Creates or logs in the test user using BitNET's Lightning auth flow
@@ -91,7 +96,7 @@ class CreateTestUser {
   /// Performs Lightning-based login for existing user
   static Future<bool> _doLightningLogin(String userId) async {
     try {
-      print('🔐 Starting Lightning login flow...');
+      print('🔐 Starting Lightning login flow for existing user...');
       
       // Store private data for auth
       final privateData = PrivateData(
@@ -99,19 +104,86 @@ class CreateTestUser {
         mnemonic: testMnemonic,
       );
       await storePrivateData(privateData);
+      print('💾 Private data stored');
       
-      // Use Auth().signIn which handles the Lightning auth flow
+      // Wait for Lightning node to be ready
+      print('⏳ Waiting for Lightning node to be ready...');
+      await Future.delayed(Duration(seconds: 10));
+      
+      // Create challenge for login
+      print('🔐 Creating login challenge...');
+      final userChallengeResponse = await create_challenge(userId, ChallengeType.mnemonic_login);
+      if (userChallengeResponse == null) {
+        throw Exception('Failed to create login challenge');
+      }
+      
+      final challengeId = userChallengeResponse.challenge.challengeId;
+      final challengeData = userChallengeResponse.challenge.title;
+      print('📋 Challenge created: $challengeId');
+      
+      // Sign the challenge with Lightning node
+      print('⚡ Signing challenge with Lightning node...');
+      final lightningSignature = await signLightningMessage(
+        challengeData,
+        nodeId: testNodeId,
+        userDid: userId,
+      );
+      
+      if (lightningSignature == null) {
+        throw Exception('Failed to sign with Lightning node');
+      }
+      print('✅ Lightning signature obtained');
+      
+      // Verify the signature and get custom token
+      print('🔐 Verifying signature...');
+      final customAuthToken = await verifyMessage(
+        userId,
+        challengeId.toString(),
+        lightningSignature,
+        nodeId: testNodeId,
+      );
+      
+      if (customAuthToken == null) {
+        throw Exception('Failed to verify signature');
+      }
+      print('✅ Signature verified, got custom token');
+      
+      // Sign in with Firebase
+      print('🔥 Signing in with Firebase...');
       final auth = Auth();
+      final userCredential = await auth.signInWithToken(customToken: customAuthToken);
       
-      // For login, we need to pass the private data and challenge type
-      // The signIn method will handle challenge creation, Lightning signing, and verification
-      // Note: We'll need to use the proper context, for now we'll return false
-      print('⚠️ Lightning login requires proper context for navigation');
-      print('⚠️ Use quickLoginTestUser() for now or implement proper context passing');
+      if (userCredential == null) {
+        throw Exception('Failed to sign in with custom token');
+      }
+      print('✅ Firebase sign-in successful');
       
-      return false;
+      // Update localStorage
+      if (!Get.isRegistered<LocalStorage>()) {
+        final localStorage = LocalStorage();
+        await localStorage.initStorage();
+        Get.put(localStorage);
+      }
+      
+      final localStorage = Get.find<LocalStorage>();
+      localStorage.setString(userId, 'userId');
+      localStorage.setBool(true, 'isLoggedIn');
+      localStorage.setString(testUsername, 'currentUsername');
+      localStorage.setString(userId, 'currentUserDid');
+      
+      // Store the macaroon locally for this user
+      await storeLitdAccountData(userId, testNodeId, testMacaroon);
+      
+      print('✅ Test user login complete!');
+      print('📋 Logged in as:');
+      print('   Username: $testUsername');
+      print('   User ID: $userId');
+      print('   Node: $testNodeId');
+      
+      return true;
     } catch (e) {
       print('❌ Lightning login failed: $e');
+      print('Stack trace: ${StackTrace.current}');
       return false;
     }
   }
@@ -129,12 +201,12 @@ class CreateTestUser {
       if (existingMapping == null) {
         print('📝 Creating node mapping for test user...');
         
-        // Create node mapping first
+        // Create node mapping first with proper Caddy endpoint
         final nodeMapping = UserNodeMapping(
           recoveryDid: recoveryDid,
           lightningPubkey: testLightningPubkey,
           nodeId: testNodeId,
-          caddyEndpoint: 'http://[::1]/$testNodeId',
+          caddyEndpoint: 'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]/$testNodeId',
           adminMacaroon: testMacaroon,
           createdAt: DateTime.now(),
           lastAccessed: DateTime.now(),
@@ -145,6 +217,11 @@ class CreateTestUser {
         await NodeMappingService.storeMnemonicRecoveryIndex(testMnemonic, recoveryDid);
         print('✅ Node mapping created');
       }
+      
+      // Wait for Lightning node to be ready before proceeding
+      print('⏳ Waiting for Lightning node to be ready...');
+      print('⏳ Node2 may take up to 40 seconds to fully initialize...');
+      await Future.delayed(Duration(seconds: 10)); // Give node more time to start
       
       // Generate a temporary DID for initial user creation
       // The actual DID will be assigned by Firebase after auth
@@ -186,7 +263,7 @@ class CreateTestUser {
           .doc('debug_system')
           .collection('codes')
           .doc('DEBUG_CODE_123')
-          .set(verificationCode.toMap());
+          .set(verificationCode.toJson());
       
       print('📝 Verification code stored');
       
@@ -199,6 +276,7 @@ class CreateTestUser {
       print('💾 Private data stored');
       
       // Call Auth().createUser which handles the full Lightning auth flow
+      // This will retry the Lightning node connection internally
       final auth = Auth();
       final createdUser = await auth.createUser(
         user: userData,
