@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -22,8 +22,9 @@ import 'package:http/http.dart' as http;
 // Stream<RestResponse> sendPaymentV2Stream(
 //     List<String> invoiceStrings, int? amount) async* {
 //
-//   final litdController = Get.find<LitdController>();
-//   final String restHost = litdController.litd_baseurl.value;
+//   // OLD IMPLEMENTATION - Using shared macaroon and dynamic URL
+//   // final litdController = Get.find<LitdController>();
+//   // final String restHost = litdController.litd_baseurl.value;
 //   ByteData byteData = await loadAdminMacaroonAsset();
 //   List<int> bytes = byteData.buffer.asUint8List();
 //   String macaroon = bytesToHex(bytes);
@@ -32,7 +33,7 @@ import 'package:http/http.dart' as http;
 //     'Grpc-Metadata-macaroon': macaroon,
 //   };
 //
-//   String url = 'https://$restHost/v2/router/send';
+//   String url = '${LightningConfig.caddyBaseUrl}/v2/router/send'; // Missing nodeId!
 //
 //   HttpOverrides.global = MyHttpOverrides();
 //
@@ -383,10 +384,8 @@ Stream<dynamic> sendPaymentV2Stream(
       return;
     }
     
-    // Get Caddy URL for the user's node
-    final litdController = Get.find<LitdController>();
-    final baseUrl = litdController.litd_baseurl.value;
-    final nodeUrl = 'https://$baseUrl/$nodeId';
+    // Get Caddy URL for the user's node using LightningConfig
+    final nodeUrl = '${LightningConfig.caddyBaseUrl}/$nodeId';
     
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
@@ -49,10 +49,8 @@ Future<RestResponse> sendCoins({
       );
     }
     
-    // Get Caddy URL for the user's node
-    final litdController = Get.find<LitdController>();
-    final baseUrl = litdController.litd_baseurl.value;
-    final url = 'https://$baseUrl/$nodeId/v1/transactions';
+    // Get Caddy URL for the user's node using LightningConfig
+    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/transactions';
     
     logger.i("Sending coins via: $url");
     
@@ -158,10 +156,8 @@ Future<RestResponse> estimateFee({
       );
     }
     
-    // Get Caddy URL for the user's node
-    final litdController = Get.find<LitdController>();
-    final baseUrl = litdController.litd_baseurl.value;
-    final url = 'https://$baseUrl/$nodeId/v2/wallet/estimatefee';
+    // Get Caddy URL for the user's node using LightningConfig
+    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee';
     
     // Prepare request data
     final Map<String, dynamic> data = {
