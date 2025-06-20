@@ -43,12 +43,12 @@ class _CreateAccountViewState extends State<CreateAccountView>
       print("ProfileController not yet available during registration");
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (!widget.controller.isLoading) {
+    return PopScope(
+      canPop: false, // Prevent default back navigation
+      onPopInvoked: (bool didPop) {
+        if (!didPop && !widget.controller.isLoading) {
           context.go('/authhome');
         }
-        return false; // Prevent the system from popping the current route.
       },
       child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {

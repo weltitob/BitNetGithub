@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -21,11 +22,17 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final controller = Get.put(ProfileController());
+  late final ProfileController controller;
 
   @override
   void initState() {
     super.initState();
+    // Get or create the ProfileController
+    if (Get.isRegistered<ProfileController>()) {
+      controller = Get.find<ProfileController>();
+    } else {
+      controller = Get.put(ProfileController());
+    }
     controller.scrollController.addListener(_scrollListener);
   }
 
@@ -60,8 +67,63 @@ class _ProfileViewState extends State<ProfileView> {
       context: context,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Obx(() {
+        // Debug logging
+        print('ProfileView - isUserLoading: ${controller.isUserLoading.value}');
+        print('ProfileView - profileLoadError: ${controller.profileLoadError.value}');
+        
         if (controller.isUserLoading.value) {
           return Center(child: dotProgress(context));
+        }
+        
+        // Show error message if profile failed to load
+        if (controller.profileLoadError.value.isNotEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.cardPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing * 2),
+                  Text(
+                    'Profile Error',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing),
+                  Text(
+                    controller.profileLoadError.value,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing * 2),
+                  LongButtonWidget(
+                    buttonType: ButtonType.solid,
+                    title: 'Retry',
+                    onTap: () {
+                      controller.profileLoadError.value = '';
+                      controller.isUserLoading.value = true;
+                      controller.loadData();
+                    },
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing),
+                  LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    title: 'Log Out',
+                    onTap: () async {
+                      // Sign out from Firebase
+                      await Auth().signOut();
+                      // Navigate to auth screen
+                      context.go('/authhome');
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
         }
         
         return CustomScrollView(

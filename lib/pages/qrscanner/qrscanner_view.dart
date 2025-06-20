@@ -27,11 +27,8 @@ class QRScannerView extends StatelessWidget {
 
     final overlayController = Get.find<OverlayController>();
 
-    return WillPopScope(
-      onWillPop: () async {
-        // context.pop();
-        return true;
-      },
+    return PopScope(
+      canPop: true, // Allow normal back navigation
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
         removeGradientColor: true,

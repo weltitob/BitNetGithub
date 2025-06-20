@@ -21,8 +21,8 @@ import 'package:bitnet/pages/secondpages/mempool/components/block_details/fee_di
 import 'package:bitnet/pages/secondpages/mempool/components/block_details/mining_info_card.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/blocks_list_view.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/difficulty_adjustment_card.dart';
-import 'package:bitnet/pages/secondpages/mempool/components/fear_and_greed_card.dart';
-import 'package:bitnet/pages/secondpages/mempool/components/hashrate_card.dart';
+import 'package:bitnet/pages/secondpages/mempool/components/fear_and_greed_card_optimized.dart';
+import 'package:bitnet/pages/secondpages/mempool/components/hashrate_card_optimized.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/transaction_fee_card.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
@@ -62,46 +62,110 @@ class _MempoolHomeState extends State<MempoolHome> {
   final key1 = GlobalKey();
 
   Future<void> getDataBlockHeightSearch() async {
-    if (controller.blockHeight != null) {
+    if (controller.blockHeight == null) {
+      print('Block height is null, skipping data fetch');
+      return;
+    }
+    
+    try {
       controller.isLoading.value = true;
       controller.bitcoinData.clear();
-      await controller.getDataHeight(controller.blockHeight! + 15);
-      await controller.getDataHeight(controller.blockHeight!);
-      await controller.getDataHeight(controller.blockHeight! - 15);
+      
+      // Fetch block data with error handling for each call
+      try {
+        await controller.getDataHeight(controller.blockHeight! + 15);
+      } catch (e) {
+        print('Failed to fetch block height +15: $e');
+      }
+      
+      try {
+        await controller.getDataHeight(controller.blockHeight!);
+      } catch (e) {
+        print('Failed to fetch current block height: $e');
+      }
+      
+      try {
+        await controller.getDataHeight(controller.blockHeight! - 15);
+      } catch (e) {
+        print('Failed to fetch block height -15: $e');
+      }
+      
+      // Safely find the block index with bounds checking
       controller.indexBlock.value = controller.bitcoinData
           .indexWhere((e) => e.height == controller.blockHeight);
-      controller.selectedIndex = controller.bitcoinData
-          .indexWhere((e) => e.height == controller.blockHeight);
-      controller
-          .txDetailsConfirmedF(
-              controller.bitcoinData[controller.indexBlock.value].id!)
-          .then((_) async {
-        Map<String, dynamic> data =
-            Get.find<WalletsController>().onchainTransactions;
-        if (data.isNotEmpty) {
-          onchainTransactions = await Future.microtask(() {
-            BitcoinTransactionsList bitcoinTransactions =
-                BitcoinTransactionsList.fromJson(data);
+      
+      if (controller.indexBlock.value == -1) {
+        print('Block not found in bitcoinData, using index 0');
+        controller.indexBlock.value = 0;
+      }
+      
+      controller.selectedIndex = controller.indexBlock.value;
+      
+      // Ensure we have data before accessing by index
+      if (controller.bitcoinData.isEmpty) {
+        print('No bitcoin data available');
+        controller.isLoading.value = false;
+        return;
+      }
+      
+      // Safely access block data
+      if (controller.indexBlock.value < controller.bitcoinData.length &&
+          controller.bitcoinData[controller.indexBlock.value].id != null) {
+        
+        try {
+          await controller.txDetailsConfirmedF(
+              controller.bitcoinData[controller.indexBlock.value].id!);
+          
+          // Safe transaction processing
+          try {
+            Map<String, dynamic> data =
+                Get.find<WalletsController>().onchainTransactions;
+            if (data.isNotEmpty && controller.txDetailsConfirmed?.id != null) {
+              onchainTransactions = await Future.microtask(() {
+                try {
+                  BitcoinTransactionsList bitcoinTransactions =
+                      BitcoinTransactionsList.fromJson(data);
 
-            return bitcoinTransactions.transactions
-                .where(
-                    (tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
-                .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
-                .toList();
-          });
+                  return bitcoinTransactions.transactions
+                      .where((tx) => tx.blockHash == controller.txDetailsConfirmed!.id)
+                      .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
+                      .toList();
+                } catch (e) {
+                  print('Error processing onchain transactions: $e');
+                  return <BitcoinTransaction>[];
+                }
+              });
+            }
+          } catch (e) {
+            print('Error fetching onchain transactions: $e');
+          }
+          
+          // Safely fetch transaction details
+          await controller.txDetailsF(
+              controller.bitcoinData[controller.indexBlock.value].id!, 0);
+              
+        } catch (e) {
+          print('Error fetching transaction details: $e');
         }
-      });
-      controller.txDetailsF(
-          controller.bitcoinData[controller.indexBlock.value].id!, 0);
+      }
+      
       controller.isLoading.value = false;
-      _controller.animateTo(
-        controller.scrollValue.value.w +
-            (140.w * controller.indexBlock.value).w,
-        duration: const Duration(
-          milliseconds: 500,
-        ),
-        curve: Curves.easeInOut,
-      );
+      
+      // Safe scroll animation
+      try {
+        await _controller.animateTo(
+          controller.scrollValue.value.w +
+              (140.w * controller.indexBlock.value).w,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      } catch (e) {
+        print('Error animating scroll: $e');
+      }
+      
+    } catch (e) {
+      print('Error in getDataBlockHeightSearch: $e');
+      controller.isLoading.value = false;
     }
   }
 
@@ -218,7 +282,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                               isLoading: controller.isLoading.value,
                               hasUserTxs: hasUserTxs,
                               onMempoolBlockTap: (index) {
-                                channel.sink.add('{"track-mempool-block":$index}');
+                                controller.sendWebSocketMessage('{"track-mempool-block":$index}');
                                 setState(() {
                                   controller.showNextBlock.value = true;
                                   controller.showBlock.value = false;
@@ -512,13 +576,13 @@ class _MempoolHomeState extends State<MempoolHome> {
                 
                 SizedBox(height: AppTheme.cardPadding.h * 1),
                 
-                // Hashrate card
-                HashrateCard(),
+                // Hashrate card - Optimized version
+                HashrateCardOptimized(),
                 
                 SizedBox(height: AppTheme.cardPadding.h * 1),
                 
-                // Fear & Greed Index card
-                FearAndGreedCard(),
+                // Fear & Greed Index card - Optimized version
+                FearAndGreedCardOptimized(),
                 
                 SizedBox(height: AppTheme.cardPadding.h * 1),
                 

@@ -40,21 +40,41 @@ class ProfileController extends BaseController {
   Rx<bool> assetsLoading = false.obs;
 
   RxBool isUserLoading = true.obs;
-  late Rx<UserData> userData;
+  Rx<UserData> userData = UserData(
+    docId: '',
+    did: '',
+    displayName: '',
+    username: '',
+    bio: '',
+    customToken: '',
+    profileImageUrl: '',
+    backgroundImageUrl: '',
+    isPrivate: false,
+    showFollowers: true,
+    setupQrCodeRecovery: false,
+    setupWordRecovery: false,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+    isActive: true,
+    dob: 0,
+    nft_profile_id: '',
+    nft_background_id: '',
+  ).obs;
+  RxString profileLoadError = ''.obs;
 
-  RxBool? isPrivate;
-  RxBool? showFollwers;
-  RxString? _profileImage;
-  RxString? _backgroundImage;
+  RxBool isPrivate = false.obs;
+  RxBool showFollwers = true.obs;
+  RxString _profileImage = ''.obs;
+  RxString _backgroundImage = ''.obs;
 
   RxBool usernameValid = true.obs;
   RxBool displayNameValid = true.obs;
   RxBool bioValid = true.obs;
 
-  RxBool? isFollowing;
+  RxBool isFollowing = false.obs;
   RxBool gotIsFollowing = false.obs;
-  RxInt? followerCount;
-  RxInt? followingCount;
+  RxInt followerCount = 0.obs;
+  RxInt followingCount = 0.obs;
   RxBool gotFollowerCount = false.obs;
   RxBool gotFollowingCount = false.obs;
   TextEditingController displayNameController = TextEditingController();
@@ -70,9 +90,9 @@ class ProfileController extends BaseController {
   List<Widget> organizedNotifications = [];
   Map<String, List<SingleNotificationWidget>> categorizedNotifications = {};
 
-  RxString? validDisplayName;
-  RxString? validUserName;
-  RxString? validBio;
+  RxString validDisplayName = ''.obs;
+  RxString validUserName = ''.obs;
+  RxString validBio = ''.obs;
 
   final focusNodeDisplayName = FocusNode();
   final focusNodeUsername = FocusNode();
@@ -92,6 +112,7 @@ class ProfileController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    logger.i("ProfileController onInit called");
     scrollController = ScrollController();
     pages = [
       ColumnViewTab(),
@@ -101,6 +122,11 @@ class ProfileController extends BaseController {
       EditProfileTab(),
     ];
     _setupUsernameListener();
+    
+    // Clear any previous error state
+    profileLoadError.value = '';
+    isUserLoading.value = true;
+    
     loadData();
     fetchTaprootAssets();
   }
@@ -133,14 +159,34 @@ class ProfileController extends BaseController {
 
   Future<void> getUserId() async {
     final logger = Get.find<LoggerService>();
-    logger.i("Getting user id for profile page: ${Auth().currentUser!.uid}");
-    QuerySnapshot<Map<String, dynamic>> query = await usersCollection
-        .where('did', isEqualTo: Auth().currentUser!.uid)
-        .get();
-    if (query.docs.isEmpty) {
+    logger.i("getUserId() called");
+    
+    // Check if user is authenticated
+    if (Auth().currentUser == null) {
+      logger.e("No authenticated user found");
       profileId = "";
-    } else {
-      profileId = query.docs.first.id;
+      throw Exception("Please log in to view your profile");
+    }
+    
+    final uid = Auth().currentUser!.uid;
+    logger.i("Getting user id for profile page: $uid");
+    
+    // In BitNET, the document ID should be the Firebase UID
+    // So we directly use the UID as the profile ID
+    profileId = uid;
+    
+    // Verify the document exists
+    try {
+      logger.i("Checking if user document exists for UID: $uid");
+      final doc = await usersCollection.doc(uid).get();
+      if (!doc.exists) {
+        logger.e("User document not found for UID: $uid");
+        throw Exception("User profile not found. Please complete your profile setup.");
+      }
+      logger.i("User document exists, profileId set to: $profileId");
+    } catch (e) {
+      logger.e("Error checking user document: $e");
+      throw e;
     }
   }
 
@@ -209,28 +255,42 @@ class ProfileController extends BaseController {
     final logger = Get.find<LoggerService>();
     logger.i("Loading data for profile page");
     
-    // First get user ID as it's required for other operations
-    await getUserId();
-    
-    // Run these operations in parallel
-    await Future.wait<void>([
-      getUser(),
-      getFollowers(),
-      getFollowing(),
-      checkIfFollowing(),
-    ]);
-    
-    // Initialize recovery options (non-critical, don't await)
-    socialRecoveryInit();
-    emailRecoveryInit();
-    wordRecoveryInit();
-    
-    // Add listeners only if not already initialized
-    if (!_listenersInitialized) {
-      addFocusNodeListenerAndUpdate(focusNodeUsername, updateUsername);
-      addFocusNodeListenerAndUpdate(focusNodeDisplayName, updateDisplayName);
-      addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
-      _listenersInitialized = true;
+    try {
+      // Reset error state
+      profileLoadError.value = '';
+      isUserLoading.value = true;
+      
+      // First get user ID as it's required for other operations
+      await getUserId();
+      
+      // Run these operations in parallel
+      await Future.wait<void>([
+        getUser(),
+        getFollowers(),
+        getFollowing(),
+        checkIfFollowing(),
+      ]);
+      
+      // Initialize recovery options (non-critical, don't await)
+      socialRecoveryInit();
+      emailRecoveryInit();
+      wordRecoveryInit();
+      
+      // Add listeners only if not already initialized
+      if (!_listenersInitialized) {
+        addFocusNodeListenerAndUpdate(focusNodeUsername, updateUsername);
+        addFocusNodeListenerAndUpdate(focusNodeDisplayName, updateDisplayName);
+        addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
+        _listenersInitialized = true;
+      }
+      
+      logger.i("Profile data loaded successfully");
+    } catch (e) {
+      logger.e("Error loading profile data: $e");
+      // Set a flag to show error in UI
+      profileLoadError.value = e.toString();
+      // IMPORTANT: Set loading to false so the error screen shows
+      isUserLoading.value = false;
     }
   }
 
@@ -246,21 +306,31 @@ class ProfileController extends BaseController {
     try {
       logger.i("Getting user data for $profileId from firebase");
       isUserLoading.value = true;
+      
+      if (profileId.isEmpty) {
+        throw Exception("Invalid profile ID");
+      }
+      
       DocumentSnapshot? doc = await usersCollection.doc(profileId).get();
+      
+      if (!doc.exists) {
+        throw Exception("User profile not found");
+      }
+      
       userData = UserData.fromDocument(doc).obs;
 
       displayNameController.text = userData.value.displayName;
       changingDisplayName.value = userData.value.displayName;
-      validDisplayName?.value = userData.value.displayName;
+      validDisplayName.value = userData.value.displayName;
       userNameController.text = userData.value.username;
       changingUserName.value = userData.value.username;
-      validUserName?.value = userData.value.username;
+      validUserName.value = userData.value.username;
       bioController.text = userData.value.bio;
       changingBio.value = userData.value.bio;
-      validBio?.value = userData.value.bio;
-      showFollwers?.value = userData.value.showFollowers;
-      _backgroundImage?.value = userData.value.backgroundImageUrl;
-      _profileImage?.value = userData.value.profileImageUrl;
+      validBio.value = userData.value.bio;
+      showFollwers.value = userData.value.showFollowers;
+      _backgroundImage.value = userData.value.backgroundImageUrl;
+      _profileImage.value = userData.value.profileImageUrl;
       
       // Only add text controller listeners once
       if (!_listenersInitialized) {
@@ -278,6 +348,9 @@ class ProfileController extends BaseController {
       isUserLoading.value = false;
     } catch (e) {
       logger.e("Error getting user data: $e");
+      isUserLoading.value = false;
+      // Re-throw to be handled by the UI
+      throw e;
     }
   }
 
@@ -333,14 +406,14 @@ class ProfileController extends BaseController {
 
   void handleFollowUser() {
     final myuser = Auth().currentUser!.uid;
-    isFollowing!.value = true;
+    isFollowing.value = true;
     followersRef.doc(profileId).collection('userFollowers').doc(myuser).set({});
     followingRef.doc(myuser).collection('userFollowing').doc(profileId).set({});
   }
 
   void handleUnfollowUser() {
     final myuser = Auth().currentUser!.uid;
-    isFollowing!.value = false;
+    isFollowing.value = false;
     followersRef
         .doc(profileId)
         .collection('userFollowers')
@@ -375,44 +448,65 @@ class ProfileController extends BaseController {
 
   Future<void> getFollowers() async {
     try {
+      if (profileId.isEmpty) {
+        logger.w("getFollowers called with empty profileId");
+        followerCount.value = 0;
+        gotFollowerCount.value = true;
+        return;
+      }
       QuerySnapshot snapshot =
           await followersRef.doc(profileId).collection('userFollowers').get();
-      followerCount?.value = snapshot.docs.length;
+      followerCount.value = snapshot.docs.length;
       gotFollowerCount.value = true;
     } catch (e, tr) {
       logger.e("Error getting followers: $e");
       logger.e("Stack trace: $tr");
       gotFollowerCount.value = true; // Set to true even on error to prevent infinite loading
+      rethrow; // Re-throw to be caught by loadData
     }
   }
 
   Future<void> getFollowing() async {
     try {
+      if (profileId.isEmpty) {
+        logger.w("getFollowing called with empty profileId");
+        followingCount.value = 0;
+        gotFollowingCount.value = true;
+        return;
+      }
       QuerySnapshot snapshot =
           await followingRef.doc(profileId).collection('userFollowing').get();
-      followingCount?.value = snapshot.docs.length;
+      followingCount.value = snapshot.docs.length;
       gotFollowingCount.value = true;
     } catch (e, tr) {
       logger.e("Error getting following: $e");
       logger.e("Stack trace: $tr");
       gotFollowingCount.value = true; // Set to true even on error to prevent infinite loading
+      rethrow; // Re-throw to be caught by loadData
     }
   }
 
   Future<void> checkIfFollowing() async {
     try {
+      if (profileId.isEmpty) {
+        logger.w("checkIfFollowing called with empty profileId");
+        isFollowing.value = false;
+        gotIsFollowing.value = true;
+        return;
+      }
       final myuser = Auth().currentUser!.uid;
       DocumentSnapshot doc = await followersRef
           .doc(profileId)
           .collection('userFollowers')
           .doc(myuser)
           .get();
-      isFollowing?.value = doc.exists;
+      isFollowing.value = doc.exists;
       gotIsFollowing.value = true;
     } catch (e, tr) {
       logger.e("Error checking if following: $e");
       logger.e("Stack trace: $tr");
       gotIsFollowing.value = true; // Set to true even on error to prevent infinite loading
+      rethrow; // Re-throw to be caught by loadData
     }
   }
 

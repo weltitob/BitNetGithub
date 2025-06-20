@@ -550,14 +550,17 @@ class _ShortsPlayerBuilderState extends State<ShortsPlayerBuilder>
   Widget build(BuildContext context) {
     final _player = Container(
       key: playerKey,
-      child: WillPopScope(
-        onWillPop: () async {
+      child: PopScope(
+        canPop: false, // We'll handle pop manually
+        onPopInvoked: (bool didPop) {
+          if (didPop) return; // Already popped, do nothing
+          
           final controller = widget.player.controller;
           if (controller.value.isFullScreen) {
             widget.player.controller.toggleFullScreenMode();
-            return false;
+          } else {
+            Navigator.of(context).pop();
           }
-          return true;
         },
         child: widget.player,
       ),

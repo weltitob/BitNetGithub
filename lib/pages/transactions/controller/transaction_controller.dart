@@ -308,9 +308,10 @@ class TransactionController extends BaseController {
   String? balance;
 
   changeSocket() {
-    channel.sink.add('{"track-rbf-summary":false}');
-    channel.sink.add('{"action":"want","data":["blocks","mempool-blocks"]}');
-    channel.sink.add('{"track-tx":"${txID!}"}');
+    final homeController = Get.find<HomeController>();
+    homeController.sendWebSocketMessage('{"track-rbf-summary":false}');
+    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage('{"track-tx":"${txID!}"}');
   }
 
   getTrans(String txID) async {
@@ -887,14 +888,15 @@ class TransactionController extends BaseController {
   }
 
   transactionTrack() {
-    channel.sink.add('{"track-rbf-summary":false}');
-    channel.sink.add('{"action":"want","data":["blocks","mempool-blocks"]}');
-    channel.sink.add('{"action":"want","data":["blocks","mempool-blocks"]}');
-    channel.sink.add('{"track-tx":"${txID}"}');
+    final homeController = Get.find<HomeController>();
+    homeController.sendWebSocketMessage('{"track-rbf-summary":false}');
+    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage('{"track-tx":"${txID}"}');
     Future.delayed(
       const Duration(minutes: 3),
       () {
-        channel.sink.add('{"action":"ping"}');
+        homeController.sendWebSocketMessage('{"action":"ping"}');
       },
     );
   }

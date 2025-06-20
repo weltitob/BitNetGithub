@@ -368,8 +368,11 @@ class _ListNFTScreenState extends State<ListNFTScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false, // We'll handle pop manually
+      onPopInvoked: (bool didPop) async {
+        if (didPop) return; // Already popped, do nothing
+        
         // Check if we have unsaved data before letting the user leave
         if (currController.text.isNotEmpty && double.tryParse(currController.text.trim()) != null) {
           // Ask user to confirm leaving if they entered a price
@@ -390,9 +393,14 @@ class _ListNFTScreenState extends State<ListNFTScreen> {
               ],
             ),
           );
-          return shouldPop ?? false;
+          
+          if (shouldPop ?? false) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          // No unsaved data, allow pop
+          Navigator.of(context).pop();
         }
-        return true;
       },
       child: bitnetScaffold(
         context: context,

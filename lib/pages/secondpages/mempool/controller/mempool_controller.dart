@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -11,9 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
 
 /// Enhanced controller for the Mempool page components
-/// This extends the functionality of the HomeController with additional
-/// features specific to the components we've extracted
-class MempoolController extends GetxController {
+/// Now extends BaseController for consistent API client usage and error handling
+class MempoolController extends BaseController {
   // Reference to the main controller
   final homeController = Get.find<HomeController>();
   
@@ -40,30 +40,43 @@ class MempoolController extends GetxController {
   Future<void> getHashrateData([String period = '1M']) async {
     try {
       hashrateLoading.value = true;
+      
+      // Use shared dioClient instead of creating new Dio instance
+      String url = 'https://mempool.space/api/v1/mining/hashrate/$period';
+      final response = await dioClient.get(url: url);
 
-      var dio = Dio();
-      var response = await dio.get('https://mempool.space/api/v1/mining/hashrate/$period');
-
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data != null) {
         List<ChartLine> line = [];
         hashrateChartData.clear();
         hashrateChartDifficulty.clear();
 
-        HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
-        hashrateChartDifficulty.addAll(hashChartModel.difficulty ?? []);
+        try {
+          HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
+          hashrateChartDifficulty.addAll(hashChartModel.difficulty ?? []);
 
-        for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
-          line.add(ChartLine(
-            time: double.parse(hashChartModel.hashrates![i].timestamp.toString()),
-            price: hashChartModel.hashrates![i].avgHashrate!,
-          ));
+          // Safe iteration with null checks
+          if (hashChartModel.hashrates != null) {
+            for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
+              final hashrate = hashChartModel.hashrates![i];
+              if (hashrate.timestamp != null && hashrate.avgHashrate != null) {
+                line.add(ChartLine(
+                  time: double.parse(hashrate.timestamp.toString()),
+                  price: hashrate.avgHashrate!,
+                ));
+              }
+            }
+          }
+
+          hashrateChartData.assignAll(line);
+        } catch (e) {
+          logger.e('Error parsing hashrate data: $e');
         }
-
-        hashrateChartData.assignAll(line);
-        hashrateLoading.value = false;
       }
+    } on DioException catch (e) {
+      logger.e('DioException in getHashrateData: $e');
     } catch (e) {
-      print('Hashrate error: $e');
+      logger.e('Error in getHashrateData: $e');
+    } finally {
       hashrateLoading.value = false;
     }
   }
@@ -83,8 +96,17 @@ class MempoolController extends GetxController {
     }
   }
   
-  // Get current hashrate value and percentage change
+  // Cached hashrate info to avoid recalculation
+  final RxMap<String, dynamic> _cachedHashrateInfo = <String, dynamic>{}.obs;
+
+  // Get current hashrate value and percentage change with caching
   Map<String, dynamic> getCurrentHashrateInfo() {
+    // Return cached value if data hasn't changed
+    if (_cachedHashrateInfo.isNotEmpty && 
+        _cachedHashrateInfo['dataLength'] == hashrateChartData.length) {
+      return _cachedHashrateInfo;
+    }
+
     String currentHashrate = "...";
     String changePercentage = "";
     bool isPositive = true;
@@ -92,13 +114,22 @@ class MempoolController extends GetxController {
     if (hashrateChartData.isNotEmpty) {
       // Get the most recent data point
       final lastPoint = hashrateChartData.last;
-      // Format hashrate value - convert to EH/s (Exahash per second)
-      final hashrateParsed = double.parse(lastPoint.price.toString().substring(
-          0,
-          lastPoint.price.toString().length > 3
-              ? 3
-              : lastPoint.price.toString().length));
-      currentHashrate = "$hashrateParsed EH/s";
+      
+      // Optimized formatting - avoid string operations
+      final hashrateValue = lastPoint.price;
+      String hashrateStr;
+      
+      if (hashrateValue >= 1000) {
+        // Convert to EH/s with 1 decimal place
+        hashrateStr = "${(hashrateValue / 1000).toStringAsFixed(1)} ZH/s";
+      } else if (hashrateValue >= 100) {
+        // Show without decimals for 3-digit values
+        hashrateStr = "${hashrateValue.toInt()} EH/s";
+      } else {
+        // Show with 1 decimal for smaller values
+        hashrateStr = "${hashrateValue.toStringAsFixed(1)} EH/s";
+      }
+      currentHashrate = hashrateStr;
 
       // Calculate change percentage if we have more than one data point
       if (hashrateChartData.length > 10) {
@@ -110,11 +141,15 @@ class MempoolController extends GetxController {
       }
     }
     
-    return {
+    // Cache the result
+    _cachedHashrateInfo.value = {
       'currentHashrate': currentHashrate,
       'changePercentage': changePercentage,
       'isPositive': isPositive,
+      'dataLength': hashrateChartData.length,
     };
+    
+    return _cachedHashrateInfo;
   }
   
   // ===== Fear & Greed Methods =====
@@ -123,24 +158,40 @@ class MempoolController extends GetxController {
     try {
       fearGreedLoading.value = true;
 
-      var dio = Dio();
-      var response = await dio.get('https://fear-and-greed-index.p.rapidapi.com/v1/fgi',
-          options: Options(headers: {
-            'X-RapidAPI-Key': 'd9329ded30msh2e4ed90bed55972p1162f9jsn68d0a91b20ff',
-            'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com'
-          }));
-
-      if (response.statusCode == 200) {
-        fearGreedData.value = FearGearChartModel.fromJson(response.data);
-        if (fearGreedData.value.lastUpdated != null) {
-          DateTime dateTime = DateTime.parse(fearGreedData.value.lastUpdated!.humanDate!)
-              .toUtc();
-          formattedFearGreedDate.value = DateFormat('d MMMM yyyy').format(dateTime);
+      // Use shared dioClient with proper headers parameter
+      String url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
+      final response = await dioClient.get(
+        url: url,
+        headers: {
+          'X-RapidAPI-Key': 'd9329ded30msh2e4ed90bed55972p1162f9jsn68d0a91b20ff',
+          'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com'
         }
-        fearGreedLoading.value = false;
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        try {
+          fearGreedData.value = FearGearChartModel.fromJson(response.data);
+          
+          // Safe date formatting with null checks
+          if (fearGreedData.value.lastUpdated?.humanDate != null) {
+            try {
+              DateTime dateTime = DateTime.parse(fearGreedData.value.lastUpdated!.humanDate!)
+                  .toUtc();
+              formattedFearGreedDate.value = DateFormat('d MMMM yyyy').format(dateTime);
+            } catch (dateError) {
+              logger.e('Error parsing date: $dateError');
+              formattedFearGreedDate.value = 'Date unavailable';
+            }
+          }
+        } catch (parseError) {
+          logger.e('Error parsing Fear & Greed data: $parseError');
+        }
       }
+    } on DioException catch (e) {
+      logger.e('DioException in getFearGreedData: $e');
     } catch (e) {
-      print('Fear and Greed error: $e');
+      logger.e('Error in getFearGreedData: $e');
+    } finally {
       fearGreedLoading.value = false;
     }
   }

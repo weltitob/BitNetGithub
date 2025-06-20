@@ -17,6 +17,7 @@ import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/components/chart/token_chart.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -43,7 +44,12 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BitcoinScreen extends StatefulWidget {
-  const BitcoinScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic>? tokenData;
+  
+  const BitcoinScreen({
+    Key? key,
+    this.tokenData,
+  }) : super(key: key);
 
   @override
   State<BitcoinScreen> createState() => _BitcoinScreenState();
@@ -88,7 +94,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: bitnetAppBar(
-        text: L10n.of(context)!.bitcoinChart,
+        text: widget.tokenData != null 
+          ? '${widget.tokenData!['tokenName']} Chart'
+          : L10n.of(context)!.bitcoinChart,
         context: context,
         onTap: () {
           // Use context.canPop() to determine if we can safely go back in history
@@ -297,11 +305,25 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                 ),
               ),
-              // Bitcoin Info
+              // Chart Section
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  child: widget.tokenData != null
+                    ? _buildTokenChart()
+                    : ChartWidget(),
+                ),
+              ),
+              
+              // Bitcoin/Token Info
               SliverToBoxAdapter(
                 child: InformationWidget(
-                  title: L10n.of(context)!.about,
-                  description: L10n.of(context)!.bitcoinDescription,
+                  title: widget.tokenData != null 
+                    ? 'About ${widget.tokenData!['tokenName']}'
+                    : L10n.of(context)!.about,
+                  description: widget.tokenData != null
+                    ? '${widget.tokenData!['tokenName']} (${widget.tokenData!['tokenSymbol']}) is a digital asset with a current price of \$${widget.tokenData!['currentPrice']}.'
+                    : L10n.of(context)!.bitcoinDescription,
                 ),
               ),
               // Cryptos
@@ -415,6 +437,18 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           );
         }),
       ),
+    );
+  }
+  
+  Widget _buildTokenChart() {
+    // Token chart implementation (to be deleted later only to mock user workflow)
+    final tokenSymbol = widget.tokenData!['tokenSymbol'];
+    final priceHistory = widget.tokenData!['priceHistory'];
+    
+    return TokenChartWidget(
+      tokenSymbol: tokenSymbol,
+      priceHistory: priceHistory,
+      currentPrice: widget.tokenData!['currentPrice'],
     );
   }
 }

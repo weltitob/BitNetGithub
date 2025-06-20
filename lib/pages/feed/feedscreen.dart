@@ -170,21 +170,8 @@ class _FeedScreenState extends State<FeedScreen>
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
                 
-                // Mark current tab as initialized when it's selected
-                if (!_tabsInitialized[currentIndex] && mounted) {
-                  // Defer the state update to avoid setState during build
-                  Future.microtask(() {
-                    if (mounted && !_tabsInitialized[currentIndex]) {
-                      final tabNames = ['WebsitesTab', 'TokensTab', 'AssetsTab', 'SearchResultWidget', 'MempoolHome', 'AppsTab'];
-                      print('[PERFORMANCE] Initializing ${tabNames[currentIndex]} (tab $currentIndex) on first access');
-                      setState(() {
-                        _tabsInitialized[currentIndex] = true;
-                      });
-                      final initializedCount = _tabsInitialized.where((initialized) => initialized).length;
-                      print('[PERFORMANCE] Total tabs initialized: $initializedCount/6');
-                    }
-                  });
-                }
+                // Mark current tab as initialized when it's selected - SAFE VERSION
+                _initializeTabSafely(currentIndex);
                 
                 print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
                 
@@ -231,6 +218,20 @@ class _FeedScreenState extends State<FeedScreen>
     });
   }
   
+  // Safe tab initialization that defers state updates outside build cycle
+  void _initializeTabSafely(int currentIndex) {
+    if (!_tabsInitialized[currentIndex] && mounted) {
+      // Use WidgetsBinding to defer state update until after build cycle
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_tabsInitialized[currentIndex]) {
+          setState(() {
+            _tabsInitialized[currentIndex] = true;
+          });
+        }
+      });
+    }
+  }
+
   // Build lazy tab - returns a lightweight placeholder for uninitialized tabs
   Widget _buildLazyTab(int index, Widget tabContent) {
     final controller = Get.find<FeedController>();

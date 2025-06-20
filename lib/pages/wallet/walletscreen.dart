@@ -157,8 +157,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      profileController.isUserLoading ==
-                                              true.obs
+                                      profileController.isUserLoading.value ||
+                                              profileController.userData.value.profileImageUrl.isEmpty
                                           ? Avatar(
                                               onTap: () async {
                                                 // context.go(

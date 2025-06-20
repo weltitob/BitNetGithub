@@ -67,6 +67,57 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     sellPriceFocusNode = FocusNode();
   }
   
+  // Generate realistic price history for tokens (to be deleted later only to mock user workflow)
+  List<Map<String, dynamic>> _generatePriceHistory(
+    double currentPrice,
+    int dataPoints,
+    Duration totalDuration,
+    double volatility,
+  ) {
+    final List<Map<String, dynamic>> priceHistory = [];
+    final now = DateTime.now();
+    final intervalMs = totalDuration.inMilliseconds ~/ dataPoints;
+    
+    // Start with a lower price to show growth
+    double price = currentPrice * 0.7; // Start at 70% of current price
+    
+    // Use a seed for consistent but varied results
+    int seed = currentPrice.toInt() + dataPoints;
+    
+    for (int i = 0; i < dataPoints; i++) {
+      final timestamp = now.subtract(totalDuration).add(Duration(milliseconds: intervalMs * i));
+      
+      // Generate pseudo-random number using seed
+      seed = (seed * 1103515245 + 12345) % (1 << 31);
+      final random = (seed % 100) / 100.0;
+      final change = (random - 0.5) * volatility;
+      
+      // Trend towards current price
+      final trendFactor = i / dataPoints;
+      final targetPrice = currentPrice * (0.7 + 0.3 * trendFactor);
+      
+      price = price * (1 + change) + (targetPrice - price) * 0.1;
+      
+      // Add some market-like patterns
+      if (i % 10 == 0) {
+        // Occasional spikes
+        price *= (1 + (random - 0.5) * volatility * 2);
+      }
+      
+      // Ensure we end close to current price
+      if (i == dataPoints - 1) {
+        price = currentPrice;
+      }
+      
+      priceHistory.add({
+        'time': timestamp.millisecondsSinceEpoch,
+        'price': price.toStringAsFixed(2),
+      });
+    }
+    
+    return priceHistory;
+  }
+  
   @override
   void dispose() {
     btcController.dispose();
@@ -81,6 +132,56 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     sellPriceSatController.dispose();
     sellPriceFocusNode.dispose();
     super.dispose();
+  }
+  
+  // Lazy initialization for price history
+  Map<String, Map<String, dynamic>>? _tokenPriceHistory;
+  
+  Map<String, Map<String, dynamic>> get tokenPriceHistory {
+    _tokenPriceHistory ??= _generateAllTokenPriceHistory();
+    return _tokenPriceHistory!;
+  }
+  
+  // Generate price history for all tokens (to be deleted later only to mock user workflow)
+  Map<String, Map<String, dynamic>> _generateAllTokenPriceHistory() {
+    return {
+      'GENST': {
+        '1D': _generatePriceHistory(48350, 96, Duration(days: 1), 0.02),
+        '1W': _generatePriceHistory(48350, 168, Duration(days: 7), 0.05),
+        '1M': _generatePriceHistory(48350, 30, Duration(days: 30), 0.08),
+        '1Y': _generatePriceHistory(48350, 365, Duration(days: 365), 0.15),
+      },
+      'HTDG': {
+        '1D': _generatePriceHistory(15.75, 96, Duration(days: 1), 0.03),
+        '1W': _generatePriceHistory(15.75, 168, Duration(days: 7), 0.07),
+        '1M': _generatePriceHistory(15.75, 30, Duration(days: 30), 0.10),
+        '1Y': _generatePriceHistory(15.75, 365, Duration(days: 365), 0.20),
+      },
+      'LUMN': {
+        '1D': _generatePriceHistory(2345, 96, Duration(days: 1), 0.025),
+        '1W': _generatePriceHistory(2345, 168, Duration(days: 7), 0.06),
+        '1M': _generatePriceHistory(2345, 30, Duration(days: 30), 0.09),
+        '1Y': _generatePriceHistory(2345, 365, Duration(days: 365), 0.18),
+      },
+      'NBLA': {
+        '1D': _generatePriceHistory(890, 96, Duration(days: 1), 0.04),
+        '1W': _generatePriceHistory(890, 168, Duration(days: 7), 0.08),
+        '1M': _generatePriceHistory(890, 30, Duration(days: 30), 0.12),
+        '1Y': _generatePriceHistory(890, 365, Duration(days: 365), 0.25),
+      },
+      'QUSR': {
+        '1D': _generatePriceHistory(142.5, 96, Duration(days: 1), 0.035),
+        '1W': _generatePriceHistory(142.5, 168, Duration(days: 7), 0.075),
+        '1M': _generatePriceHistory(142.5, 30, Duration(days: 30), 0.11),
+        '1Y': _generatePriceHistory(142.5, 365, Duration(days: 365), 0.22),
+      },
+      'VRTX': {
+        '1D': _generatePriceHistory(9.45, 96, Duration(days: 1), 0.05),
+        '1W': _generatePriceHistory(9.45, 168, Duration(days: 7), 0.10),
+        '1M': _generatePriceHistory(9.45, 30, Duration(days: 30), 0.15),
+        '1Y': _generatePriceHistory(9.45, 365, Duration(days: 365), 0.30),
+      },
+    };
   }
   
   // Comprehensive marketplace data for all tokens
@@ -490,6 +591,70 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                 ),
               ),
             ),
+            
+            // Currency tile for chart navigation
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to BitcoinScreen with token data
+                  context.pushNamed(
+                    'bitcoin',
+                    extra: {
+                      'isToken': true,
+                      'tokenSymbol': widget.tokenSymbol,
+                      'tokenName': widget.tokenName,
+                      'priceHistory': tokenPriceHistory[widget.tokenSymbol],
+                      'currentPrice': _getCurrentTokenData()['currentPrice'],
+                    },
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(AppTheme.cardPadding.w * 0.75),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.show_chart,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24,
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'View Price Chart',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text(
+                              'Track ${widget.tokenSymbol} price movements',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+            SizedBox(height: AppTheme.cardPadding.h),
 
             // Buy/Sell buttons
             Padding(
@@ -1530,7 +1695,150 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                       ],
                     ),
                   );
-                },
+                }).toList(),
+                  ],
+                  
+                  // If no exact matches, show partial sellers
+                  if (availableSellers.isEmpty && partialSellers.isNotEmpty) ...[
+                    Container(
+                      padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+                      margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.error.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: Theme.of(context).colorScheme.error,
+                            size: 20,
+                          ),
+                          SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                          Expanded(
+                            child: Text(
+                              'Only partial amounts available. Multiple orders required.',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ...partialSellers.map((seller) {
+                      final pricePerToken = double.tryParse(seller['price'].toString().replaceAll(',', '')) ?? 0;
+                      final sellerAmount = double.tryParse(seller['amount'].toString()) ?? 0;
+                      final totalCost = pricePerToken * sellerAmount;
+                      
+                      return Container(
+                        padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+                        margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h * 0.5),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            // Seller info
+                            CircleAvatar(
+                              radius: 14,
+                              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                              child: Text(
+                                seller['seller'][0],
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: AppTheme.elementSpacing.w * 0.75),
+                            
+                            // Name and available
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    seller['seller'],
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Has ${sellerAmount} tokens',
+                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 10,
+                                      color: Theme.of(context).colorScheme.error,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            // Price
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '\$${seller['price']}',
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'per token',
+                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 9),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            // Total cost
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '\$${totalCost.toStringAsFixed(2)}',
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'for ${sellerAmount}',
+                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 9),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                            
+                            // Buy partial button
+                            LongButtonWidget(
+                              buttonType: ButtonType.transparent,
+                              title: 'Buy',
+                              customHeight: AppTheme.buttonHeight * 0.7.h,
+                              customWidth: AppTheme.cardPadding * 3.w,
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                _executeBuyOrder(seller);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ],
               ),
         ),
       ],
@@ -1538,21 +1846,112 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
   }
 
   void _executeBuyOrder([Map<String, dynamic>? seller]) {
-    final sellerName = seller?['seller'] ?? 'seller';
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Buy order placed with $sellerName for ${widget.tokenSymbol}'),
-        backgroundColor: AppTheme.successColor,
-      ),
+    // Mock workflow implementation (to be deleted later only to mock user workflow)
+    final sellerName = seller?['seller'] ?? 'Unknown Seller';
+    final amount = seller?['amount'] ?? buyAmount;
+    final price = seller?['price'] ?? '0';
+    
+    // Simulate order processing
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        // Auto-dismiss after 2 seconds
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Successfully bought $amount ${widget.tokenSymbol} from $sellerName at \$$price per token'),
+              backgroundColor: AppTheme.successColor,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        });
+        
+        return Center(
+          child: Container(
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                SizedBox(height: AppTheme.elementSpacing.h),
+                Text(
+                  'Processing order...',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   void _executeSellOrder() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sell order created for ${widget.tokenSymbol}'),
-        backgroundColor: AppTheme.successColor,
-      ),
+    // Mock workflow implementation (to be deleted later only to mock user workflow)
+    // Add the new sell order to mock data temporarily
+    final newOrder = {
+      'seller': 'You',
+      'amount': selectedAmount,
+      'price': selectedPrice,
+      'rating': 5.0,
+      'trades': 0,
+    };
+    
+    // Update mock data for this token
+    setState(() {
+      if (tokenMarketData.containsKey(widget.tokenSymbol)) {
+        (tokenMarketData[widget.tokenSymbol]!['sellOffers'] as List).insert(0, newOrder);
+      }
+    });
+    
+    // Show processing dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        // Auto-dismiss after 2 seconds
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Successfully listed $selectedAmount ${widget.tokenSymbol} at \$$selectedPrice per token'),
+              backgroundColor: AppTheme.successColor,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        });
+        
+        return Center(
+          child: Container(
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                SizedBox(height: AppTheme.elementSpacing.h),
+                Text(
+                  'Listing tokens...',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

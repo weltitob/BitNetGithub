@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
+import 'package:bitnet/pages/feed/appstab_modern.dart';
+import 'package:bitnet/pages/feed/app_details_wrapper.dart';
+import 'package:bitnet/pages/feed/my_apps_wrapper.dart';
+import 'package:bitnet/pages/feed/token_marketplace_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -250,18 +254,30 @@ class AppRoutes {
                 ),
               ),
               GoRoute(
+                path: 'token_marketplace/:symbol/:name',
+                name: 'token_marketplace',
+                builder: (ctx, state) => TokenMarketplaceScreen(
+                  tokenSymbol: state.pathParameters['symbol'] ?? '',
+                  tokenName: state.pathParameters['name'] ?? '',
+                ),
+              ),
+              GoRoute(
                   path: kAppPageRoute,
-                  builder: (context, state) => AppTab(routerState: state)),
+                  builder: (context, state) => ModernAppDetailsPage(routerState: state)),
+              GoRoute(
+                  path: 'app-details/:id',
+                  name: 'app-details',
+                  builder: (context, state) => ModernAppDetailsPage(routerState: state)),
               GoRoute(
                   name: kMyAppsPageRoute,
                   path: kMyAppsPageRoute,
-                  builder: (ctx, state) => MyAppsPage(
+                  builder: (ctx, state) => ModernMyAppsPage(
                         routerState: state,
                       ),
                   routes: [
                     GoRoute(
                         path: kAppPageRoute,
-                        builder: (context, state) => AppTab(routerState: state))
+                        builder: (context, state) => ModernAppDetailsPage(routerState: state))
                   ]),
               GoRoute(
                   path: kWebViewScreenRoute + "/:url/:name",
@@ -289,13 +305,18 @@ class AppRoutes {
           routes: [
             GoRoute(
                 path: 'bitcoinscreen',
+                name: 'bitcoin',
                 builder: _dynamicTransition == null
-                    ? (ctx, state) => const BitcoinScreen()
+                    ? (ctx, state) => BitcoinScreen(
+                        tokenData: state.extra as Map<String, dynamic>?,
+                      )
                     : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) => CustomTransitionPage(
                         key: state.pageKey,
-                        child: const BitcoinScreen(),
+                        child: BitcoinScreen(
+                          tokenData: state.extra as Map<String, dynamic>?,
+                        ),
                         transitionsBuilder: _dynamicTransition!)
                     : null,
                 routes: [

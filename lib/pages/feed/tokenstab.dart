@@ -174,11 +174,8 @@ class _TokensTabState extends State<TokensTab>
               // Wrap in RepaintBoundary for better performance
               return GestureDetector(
                 onTap: () {
-                  // Navigate to Bitcoin screen when clicking on tokens
-                  // Use push to maintain navigation history
-                  if (token['symbol'] == 'BTC') {
-                    context.push('/wallet/bitcoinscreen');
-                  }
+                  // Navigate to token marketplace screen
+                  context.push('/feed/token_marketplace/${token['symbol']}/${token['name']}');
                 },
                 child: RepaintBoundary(
                   child: GlassContainer(
@@ -198,6 +195,8 @@ class _TokensTabState extends State<TokensTab>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
+                            height: 38.h,
+                            width: 38.w,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               boxShadow: [
@@ -208,11 +207,11 @@ class _TokensTabState extends State<TokensTab>
                                 )
                               ]
                             ),
-                            child: Container(
-                              height: 38.h, // Increased from 34.h
-                              width: 38.w, // Increased from 34.w
-                              padding: const EdgeInsets.all(2),
-                              child: Image.asset(token['image']),
+                            child: ClipOval(
+                              child: Image.asset(
+                                token['image'],
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           SizedBox(width: AppTheme.elementSpacing.w * 0.75), // Increased from 10.w
@@ -337,7 +336,7 @@ class _TokensTabState extends State<TokensTab>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -359,7 +358,7 @@ class _TokensTabState extends State<TokensTab>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          onTap: () => context.push('/feed/token_marketplace/GENST/Genesis Stone'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -381,7 +380,7 @@ class _TokensTabState extends State<TokensTab>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(

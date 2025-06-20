@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
@@ -17,14 +18,25 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 num usdPrice = 0;
 Color primaryColor = const Color(0xff24273e);
 
-final channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
-var subscription;
+// Removed global WebSocket - now managed per controller instance
 
 class HomeController extends BaseController {
+  // WebSocket management - instance-based instead of global
+  WebSocketChannel? _channel;
+  StreamSubscription? _subscription;
+  Timer? _reconnectTimer;
+  Timer? _pingTimer;
+  bool _isDisposed = false;
+  int _reconnectAttempts = 0;
+  static const int _maxReconnectAttempts = 5;
+  static const Duration _reconnectDelay = Duration(seconds: 5);
+  
+  // Loading states
   RxBool loadingDetail = false.obs;
   int? blockHeight;
   RxBool isLoadingPage = false.obs;
@@ -42,8 +54,12 @@ class HomeController extends BaseController {
   int selectedIndexData = -1;
   RxBool daLoading = false.obs;
   RxDouble scrollValue = 1250.0.obs;
+  
+  // Data collections with size limits to prevent unbounded growth
+  static const int _maxListSize = 1000;
+  static const int _maxBlockTransactions = 500;
+  
   List<BlockData> bitcoinData = [];
-  // List<BlockData> bitcoinDataHeight = [];
   List<TransactionDetailsModel> txDetails = [];
   List<TransactionDetailsModel> txDetailsFound = [];
   List<TransactionDetailsModel> txDetailsReset = [];
@@ -65,26 +81,49 @@ class HomeController extends BaseController {
   String baseUrl = 'https://mempool.space/api/';
   final GlobalKey containerKey = GlobalKey();
   List<PostsDataModel>? postsDataList = [];
+  
+  // Block transactions with bounds checking
+  List blockTransactions = [];
 
   @override
   void onInit() {
     super.onInit();
-    allData();
+    _initializeController();
+  }
+
+  /// Safe initialization with error handling
+  Future<void> _initializeController() async {
+    try {
+      await allData();
+    } catch (e) {
+      logger.e('Controller initialization failed: $e');
+      // Set error state but don't crash
+      isLoading.value = false;
+      socketLoading.value = false;
+    }
   }
 
   allData() async {
-    // for (int i = 0; i < 3; i++) {
-    //   createPost(
-    //       true, true, true, 'nftName$i', 'nftMainName$i', 'cryptoText$i');
-    // }
-    postsDataList = await fetchPosts();
+    try {
+      postsDataList = await fetchPosts();
 
-    socketLoading.value = true;
-    await getWebSocketData();
-    await getData();
-    await callApiWithDelay();
-    await txDetailsConfirmedF(bitcoinData.first.id!);
-    await txDetailsF(bitcoinData.first.id!, 0);
+      socketLoading.value = true;
+      await getWebSocketData();
+      await getData();
+      await callApiWithDelay();
+      
+      // Safe access to first bitcoin data with null checks
+      if (bitcoinData.isNotEmpty && bitcoinData.first.id != null) {
+        final firstBlockId = bitcoinData.first.id!;
+        await txDetailsConfirmedF(firstBlockId);
+        await txDetailsF(firstBlockId, 0);
+      } else {
+        logger.w('No bitcoin data available for txDetails calls');
+      }
+    } catch (e) {
+      logger.e('Error in allData initialization: $e');
+      socketLoading.value = false;
+    }
   }
 
   String formatAmount(String price) {
@@ -112,7 +151,7 @@ class HomeController extends BaseController {
       return text;
     }
 
-    int mid = text.length ~/ 1.5;
+    int mid = (text.length / 1.5).toInt();
     String truncatedString = "${text.substring(0, mid - 1)}...${text.substring(mid + 2)}";
     return truncatedString;
   }
@@ -276,131 +315,347 @@ class HomeController extends BaseController {
   RxString replacedTx = ''.obs;
   RxInt txPosition = 0.obs;
   RbfTransaction? rbfTransaction;
-  List blockTransactions = [];
 
-  getWebSocketData() async {
-    socketLoading.value = true;
-    transactionLoading.value = true;
-    update();
-    channel.sink.add('{"action":"init"}');
-    channel.sink.add('{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
-    channel.sink.add('{"track-rbf-summary":true}');
-    Future.delayed(
-      const Duration(minutes: 5),
-      () {
-        channel.sink.add('{"action":"ping"}');
+  /// Safe WebSocket initialization with proper error handling and disposal
+  Future<void> getWebSocketData() async {
+    if (_isDisposed) return;
+    
+    try {
+      socketLoading.value = true;
+      transactionLoading.value = true;
+      
+      // Close existing connection if any
+      await _closeWebSocket();
+      
+      // Create new WebSocket connection
+      _channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
+      
+      // Set up ping timer for keep-alive
+      _pingTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
+        _sendSafeMessage('{"action":"ping"}');
+      });
+      
+      // Initialize connection
+      _sendSafeMessage('{"action":"init"}');
+      _sendSafeMessage('{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
+      _sendSafeMessage('{"track-rbf-summary":true}');
+      
+      // Set up stream listener with proper error handling
+      _setupWebSocketListener();
+      
+    } catch (e) {
+      logger.e('WebSocket initialization failed: $e');
+      _handleWebSocketError(e);
+    }
+  }
+  
+  /// Send message safely with null checks
+  void _sendSafeMessage(String message) {
+    try {
+      if (_channel?.sink != null && !_isDisposed) {
+        _channel!.sink.add(message);
+      }
+    } catch (e) {
+      logger.e('Failed to send WebSocket message: $e');
+    }
+  }
+  
+  /// Public method to send WebSocket messages
+  void sendWebSocketMessage(String message) {
+    _sendSafeMessage(message);
+  }
+  
+  /// Set up WebSocket stream listener with error recovery
+  void _setupWebSocketListener() {
+    if (_channel?.stream == null || _isDisposed) return;
+    
+    _subscription = _channel!.stream.listen(
+      (message) {
+        if (_isDisposed) return;
+        _processWebSocketMessage(message);
       },
+      onError: (error) {
+        logger.e('WebSocket error: $error');
+        _handleWebSocketError(error);
+      },
+      onDone: () {
+        logger.i('WebSocket connection closed');
+        if (!_isDisposed) {
+          _attemptReconnection();
+        }
+      },
+      cancelOnError: false,
     );
-    subscription = channel.stream.asBroadcastStream().listen((message) {
-      Map<String, dynamic> data = jsonDecode(message);
+  }
+  
+  /// Process WebSocket message safely in isolate to avoid blocking UI
+  void _processWebSocketMessage(dynamic message) {
+    try {
+      // Parse message safely
+      if (message == null || message.toString().isEmpty) return;
+      
+      Map<String, dynamic> data = jsonDecode(message.toString());
+      
+      // Handle projected block transactions with bounds checking
+      _handleProjectedBlockTransactions(data);
+      
+      // Handle mempool model data
+      _handleMempoolModelData(data, message.toString());
+      
+    } catch (e) {
+      logger.e('Error processing WebSocket message: $e');
+    }
+  }
+  
+  /// Handle projected block transactions with bounds checking
+  void _handleProjectedBlockTransactions(Map<String, dynamic> data) {
+    try {
       if (data['projected-block-transactions'] != null) {
-        if (data['projected-block-transactions']['blockTransactions'] != null) {
+        final projectedBlockTx = data['projected-block-transactions'];
+        
+        // Update block transactions if provided
+        if (projectedBlockTx['blockTransactions'] != null) {
           blockTransactions.clear();
-          blockTransactions = data['projected-block-transactions']['blockTransactions'];
-          // print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
+          final newTransactions = projectedBlockTx['blockTransactions'];
+          if (newTransactions is List) {
+            // Apply size limit to prevent unbounded growth
+            final limitedTransactions = newTransactions.length > _maxBlockTransactions
+                ? newTransactions.sublist(0, _maxBlockTransactions)
+                : newTransactions;
+            blockTransactions.addAll(limitedTransactions);
+          }
         }
-        if (data['projected-block-transactions']['delta']['added'] != null) {
-          blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
-        }
+        
+        // Handle delta changes with bounds checking
+        if (projectedBlockTx['delta'] != null) {
+          final delta = projectedBlockTx['delta'];
+          
+          // Handle added transactions with size limit
+          if (delta['added'] != null && delta['added'] is List) {
+            final toAdd = delta['added'] as List;
+            final currentSize = blockTransactions.length;
+            final availableSpace = _maxBlockTransactions - currentSize;
+            
+            if (availableSpace > 0) {
+              final limitedAdd = toAdd.length > availableSpace
+                  ? toAdd.sublist(0, availableSpace)
+                  : toAdd;
+              blockTransactions.addAll(limitedAdd);
+            }
+          }
 
-        if (data['projected-block-transactions']['delta']['removed'] != null) {
-          List remove = data['projected-block-transactions']['delta']['removed'];
-          for (int i = 0; i < blockTransactions.length; i++) {
-            String e = blockTransactions[i].first;
-            // print(remove.contains(e));
-            if (remove.contains(e)) {
-              // print('remove');
-              blockTransactions.removeAt(i);
+          // Handle removed transactions safely
+          if (delta['removed'] != null && delta['removed'] is List) {
+            final remove = delta['removed'] as List;
+            // Remove from the end to avoid index shifting issues
+            for (int i = blockTransactions.length - 1; i >= 0; i--) {
+              if (i < blockTransactions.length && 
+                  blockTransactions[i] is List && 
+                  (blockTransactions[i] as List).isNotEmpty) {
+                final txData = blockTransactions[i] as List;
+                if (txData.isNotEmpty && remove.contains(txData.first)) {
+                  blockTransactions.removeAt(i);
+                }
+              }
             }
           }
         }
       }
-
-      MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
-      if (memPool.txPosition != null) {
+    } catch (e) {
+      logger.e('Error handling projected block transactions: $e');
+    }
+  }
+  
+  /// Handle mempool model data with safe parsing and null safety
+  void _handleMempoolModelData(Map<String, dynamic> data, String rawMessage) {
+    try {
+      MemPoolModel memPool = MemPoolModel.fromJson(data);
+      
+      // Safe transaction position update
+      if (memPool.txPosition?.position?.block != null) {
         txPosition.value = memPool.txPosition!.position.block;
       }
 
-      if (memPool.rbfTransaction != null) {
+      // Safe RBF transaction handling
+      if (memPool.rbfTransaction?.txid != null) {
         isRbfTransaction.value = true;
         replacedTx.value = memPool.rbfTransaction!.txid;
       }
-      if (memPool.conversions != null) {
-        currentUSD.value = int.parse(memPool.conversions!.uSD.toString());
+      
+      // Safe currency conversion with validation
+      if (memPool.conversions?.uSD != null) {
+        final usdValue = memPool.conversions!.uSD;
+        if (usdValue is num && usdValue > 0) {
+          currentUSD.value = usdValue.toInt();
+        }
       }
-      if (memPool.mempoolBlocks != null) {
+      
+      // Safe mempool blocks update with size limit
+      if (memPool.mempoolBlocks != null && memPool.mempoolBlocks!.isNotEmpty) {
         mempoolBlocks.clear();
-        mempoolBlocks.addAll(memPool.mempoolBlocks!);
+        final limitedBlocks = memPool.mempoolBlocks!.length > 50
+            ? memPool.mempoolBlocks!.sublist(0, 50)
+            : memPool.mempoolBlocks!;
+        mempoolBlocks.addAll(limitedBlocks);
       }
 
-      if (memPool.transactions != null) {
+      // Safe transactions update with size limit
+      if (memPool.transactions != null && memPool.transactions!.isNotEmpty) {
         transaction.clear();
-        transaction.addAll(memPool.transactions!);
+        final limitedTransactions = memPool.transactions!.length > 100
+            ? memPool.transactions!.sublist(0, 100)
+            : memPool.transactions!;
+        transaction.addAll(limitedTransactions);
       }
-      if (memPool.fees != null) {
+      
+      // Safe fees update
+      if (memPool.fees?.fastestFee != null) {
         fees = memPool.fees;
-        highPriority.value = fees!.fastestFee.toString();
+        highPriority.value = memPool.fees!.fastestFee.toString();
       }
 
-      if (memPool.da != null) {
+      // Safe difficulty adjustment with null checking
+      if (memPool.da?.estimatedRetargetDate != null) {
         daLoading.value = true;
         da = memPool.da;
-        DateTime currentDate = DateTime.now();
-        DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(da!.estimatedRetargetDate!.toInt());
-        Duration difference = targetDate.difference(currentDate);
-        days = '${difference.inDays + 1} days';
+        try {
+          DateTime currentDate = DateTime.now();
+          DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(
+            memPool.da!.estimatedRetargetDate!.toInt()
+          );
+          Duration difference = targetDate.difference(currentDate);
+          days = '${difference.inDays + 1} days';
+        } catch (e) {
+          logger.e('Error calculating difficulty adjustment date: $e');
+          days = 'Unknown';
+        }
         daLoading.value = false;
       }
-      if (memPool.rbfSummary != null) {
+      
+      // Safe RBF summary updates with size limits
+      if (memPool.rbfSummary != null && memPool.rbfSummary!.isNotEmpty) {
         transactionReplacements.clear();
-        transactionReplacements.addAll(memPool.rbfSummary!);
+        final limitedSummary = memPool.rbfSummary!.length > 50
+            ? memPool.rbfSummary!.sublist(0, 50)
+            : memPool.rbfSummary!;
+        transactionReplacements.addAll(limitedSummary);
       }
 
-      if (memPool.rbfLatestSummary != null) {
+      if (memPool.rbfLatestSummary != null && memPool.rbfLatestSummary!.isNotEmpty) {
         transactionReplacements.clear();
-        transactionReplacements.addAll(memPool.rbfLatestSummary!);
+        final limitedLatestSummary = memPool.rbfLatestSummary!.length > 50
+            ? memPool.rbfLatestSummary!.sublist(0, 50)
+            : memPool.rbfLatestSummary!;
+        transactionReplacements.addAll(limitedLatestSummary);
       }
 
+      // Update loading states
       socketLoading.value = false;
       transactionLoading.value = false;
-      update();
-    }, onError: (error) {
+      
+    } catch (e) {
+      logger.e('Error handling mempool model data: $e');
+      // Set error state but don't crash
       socketLoading.value = false;
       transactionLoading.value = false;
-      update();
-      print('WebSocket error: $error');
+    }
+  }
+  
+  /// Handle WebSocket errors with exponential backoff
+  void _handleWebSocketError(dynamic error) {
+    logger.e('WebSocket error: $error');
+    socketLoading.value = false;
+    transactionLoading.value = false;
+    
+    if (!_isDisposed) {
+      _attemptReconnection();
+    }
+  }
+  
+  /// Attempt WebSocket reconnection with exponential backoff
+  void _attemptReconnection() {
+    if (_isDisposed || _reconnectAttempts >= _maxReconnectAttempts) {
+      logger.w('Max reconnection attempts reached or controller disposed');
+      return;
+    }
+    
+    _reconnectAttempts++;
+    final delay = Duration(seconds: _reconnectDelay.inSeconds * _reconnectAttempts);
+    
+    logger.i('Attempting WebSocket reconnection in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)');
+    
+    _reconnectTimer = Timer(delay, () {
+      if (!_isDisposed) {
+        getWebSocketData();
+      }
     });
+  }
+  
+  /// Close WebSocket connection safely
+  Future<void> _closeWebSocket() async {
+    try {
+      _reconnectTimer?.cancel();
+      _pingTimer?.cancel();
+      
+      await _subscription?.cancel();
+      _subscription = null;
+      
+      await _channel?.sink.close();
+      _channel = null;
+      
+    } catch (e) {
+      logger.e('Error closing WebSocket: $e');
+    }
   }
 
   callApiWithDelay() async {
-    // print('callapi with delay called ');
-    // timer =
-    //     Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
+    if (_isDisposed) return;
+    
     try {
       String url = 'https://mempool.space/api/v1/blocks';
       final response = await dioClient.get(url: url);
-      response.data.length;
-      bitcoinData.clear();
-
-      for (int i = 0; i < response.data.length; i++) {
-        bitcoinData.add(
-          BlockData.fromJson(
-            response.data[i],
-          ),
-        );
+      
+      // Null safety and bounds checking
+      if (response.data == null || response.data is! List) {
+        logger.w('Invalid response data from blocks API');
+        isLoading.value = false;
+        return;
       }
+      
+      bitcoinData.clear();
+      
+      // Apply size limit to prevent unbounded growth - only store latest 100 blocks
+      final dataList = response.data as List;
+      final maxBlocks = 100;
+      final limitedData = dataList.length > maxBlocks 
+          ? dataList.sublist(0, maxBlocks)
+          : dataList;
+
+      for (int i = 0; i < limitedData.length; i++) {
+        try {
+          final blockData = limitedData[i];
+          if (blockData != null) {
+            bitcoinData.add(BlockData.fromJson(blockData));
+          }
+        } catch (e) {
+          logger.e('Error parsing block data at index $i: $e');
+          // Continue with other blocks even if one fails
+        }
+      }
+      
       dollarRate();
       isLoading.value = false;
       Get.forceAppUpdate();
       update();
-    } on DioException {
+    } on DioException catch (e) {
+      logger.e('DioException in callApiWithDelay: $e');
       isLoading.value = false;
       update();
     } catch (e) {
+      logger.e('Error in callApiWithDelay: $e');
       isLoading.value = false;
       update();
     }
-    // });
   }
 
   Future<int?> getBlockHeight(String txId) async {
@@ -422,79 +677,155 @@ class HomeController extends BaseController {
     return null;
   }
 
-  Future<void> txDetailsConfirmedF(String txId) async {
+  Future<void> txDetailsConfirmedF(String? txId) async {
+    if (txId == null || txId.isEmpty) {
+      logger.w('txDetailsConfirmedF called with null or empty txId');
+      loadingDetail.value = false;
+      return;
+    }
+    
     loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
       final response = await dioClient.get(url: url);
-      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
-        jsonDecode(
-          jsonEncode(response.data),
-        ),
-      );
+      
+      // Null safety check for response data
+      if (response.data == null) {
+        logger.w('Received null response data for txDetailsConfirmedF');
+        loadingDetail.value = false;
+        isLoading.value = false;
+        return;
+      }
+      
+      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(response.data);
       isLoading.value = false;
       update();
-    } on DioException {
+    } on DioException catch (e) {
+      logger.e('DioException in txDetailsConfirmedF: $e');
+      txDetailsConfirmed = null; // Reset to null on error
       isLoading.value = false;
       update();
     } catch (e) {
+      logger.e('Error in txDetailsConfirmedF: $e');
+      txDetailsConfirmed = null; // Reset to null on error
       isLoading.value = false;
       update();
     }
     loadingDetail.value = false;
-    return null;
   }
 
-  Future<void> txDetailsF(String txId, int page) async {
+  Future<void> txDetailsF(String? txId, int page) async {
+    if (txId == null || txId.isEmpty) {
+      logger.w('txDetailsF called with null or empty txId');
+      return;
+    }
+    
     try {
       isLoadingTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
 
       final response = await dioClient.get(url: url);
 
-      response.data.length;
+      // Null safety check for response data
+      if (response.data == null) {
+        logger.w('Received null response data for txDetailsF');
+        return;
+      }
+      
+      final responseData = response.data;
+      if (responseData is! List) {
+        logger.w('Response data is not a List');
+        return;
+      }
+      
       txDetails.clear();
       txDetailsFound.clear();
       txDetailsReset.clear();
       opReturns.clear();
-      for (int i = 0; i < response.data.length; i++) {
-        txDetails.add(TransactionDetailsModel.fromJson(response.data[i]));
+      
+      // Safe iteration with null checks
+      for (int i = 0; i < responseData.length && i < _maxListSize; i++) {
+        final txData = responseData[i];
+        if (txData != null) {
+          try {
+            txDetails.add(TransactionDetailsModel.fromJson(txData));
+          } catch (e) {
+            logger.e('Error parsing transaction at index $i: $e');
+          }
+        }
       }
-      txDetailsFound = txDetails;
-      txDetailsReset = txDetails;
+      
+      txDetailsFound = List.from(txDetails);
+      txDetailsReset = List.from(txDetails);
       isLoadingTx.value = false;
       update();
-    } on DioException {
+    } on DioException catch (e) {
+      logger.e('DioException in txDetailsF: $e');
       isLoadingTx.value = false;
       update();
     } catch (e) {
+      logger.e('Error in txDetailsF: $e');
       isLoadingTx.value = false;
       update();
     }
   }
 
-//returns amount loaded, if less than 25, we are at the final page.
-  Future<int> txDetailsMore(String txId, int page) async {
+/// Returns amount loaded, if less than 25, we are at the final page.
+  /// Returns -1 on error
+  Future<int> txDetailsMore(String? txId, int page) async {
+    if (txId == null || txId.isEmpty) {
+      logger.w('txDetailsMore called with null or empty txId');
+      return -1;
+    }
+    
     try {
       isLoadingMoreTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
 
       final response = await dioClient.get(url: url);
 
-      response.data.length;
-      for (int i = 0; i < response.data.length; i++) {
-        txDetails.add(TransactionDetailsModel.fromJson(response.data[i]));
+      // Null safety check for response data
+      if (response.data == null) {
+        logger.w('Received null response data for txDetailsMore');
+        isLoadingMoreTx.value = false;
+        return -1;
       }
-      txDetailsFound = txDetails;
-      txDetailsReset = txDetails;
+      
+      final responseData = response.data;
+      if (responseData is! List) {
+        logger.w('Response data is not a List');
+        isLoadingMoreTx.value = false;
+        return -1;
+      }
+      
+      int addedCount = 0;
+      // Check if we have space for more transactions
+      final availableSpace = _maxListSize - txDetails.length;
+      
+      for (int i = 0; i < responseData.length && addedCount < availableSpace; i++) {
+        final txData = responseData[i];
+        if (txData != null) {
+          try {
+            txDetails.add(TransactionDetailsModel.fromJson(txData));
+            addedCount++;
+          } catch (e) {
+            logger.e('Error parsing transaction at index $i: $e');
+          }
+        }
+      }
+      
+      txDetailsFound = List.from(txDetails);
+      txDetailsReset = List.from(txDetails);
       isLoadingMoreTx.value = false;
       update();
-      return response.data.length;
-    } on DioException {
+      return addedCount;
+    } on DioException catch (e) {
+      logger.e('DioException in txDetailsMore: $e');
       isLoadingMoreTx.value = false;
       update();
       return -1;
     } catch (e) {
+      logger.e('Error in txDetailsMore: $e');
       isLoadingMoreTx.value = false;
       update();
       return -1;
@@ -761,6 +1092,37 @@ class HomeController extends BaseController {
     }
 
     yield allPosts;
+  }
+
+  @override
+  void onClose() {
+    _isDisposed = true;
+    
+    // Clean up WebSocket resources
+    _closeWebSocket();
+    
+    // Cancel reconnection timers
+    _reconnectTimer?.cancel();
+    _pingTimer?.cancel();
+    
+    // Dispose text controllers
+    searchCtrl.dispose();
+    
+    // Clear data collections to free memory
+    bitcoinData.clear();
+    txDetails.clear();
+    txDetailsFound.clear();
+    txDetailsReset.clear();
+    opReturns.clear();
+    blockTransactions.clear();
+    socketsData.clear();
+    mempoolBlocks.clear();
+    transaction.clear();
+    transactionReplacements.clear();
+    postsDataList?.clear();
+    
+    logger.i('HomeController disposed successfully');
+    super.onClose();
   }
 }
 
