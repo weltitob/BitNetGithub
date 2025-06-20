@@ -523,6 +523,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
 //   }
 // }
 
+/// Optimized SellSheet with better performance
 class SellSheet extends GetWidget<SellSheetController> {
   const SellSheet({
     super.key,
@@ -531,68 +532,105 @@ class SellSheet extends GetWidget<SellSheetController> {
   @override
   Widget build(BuildContext context) {
     final logger = Get.find<LoggerService>();
-    return bitnetScaffold(
-      extendBodyBehindAppBar: true,
-      context: context,
-      appBar: bitnetAppBar(
-        hasBackButton: false,
-        text: L10n.of(context)!.sell,
+    
+    return RepaintBoundary(
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
         context: context,
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              const SizedBox(
-                height: AppTheme.cardPadding * 4,
+        appBar: bitnetAppBar(
+          hasBackButton: false,
+          text: L10n.of(context)!.sell,
+          context: context,
+        ),
+        body: Stack(
+          children: [
+            // Main content with performance optimizations
+            RepaintBoundary(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 4,
+                  ),
+                  // Optimized AmountWidget wrapper
+                  RepaintBoundary(
+                    child: AmountWidget(
+                        swapped: Get.find<WalletsController>().reversed.value,
+                        enabled: () => true,
+                        satController: controller.satCtrlBuy,
+                        btcController: controller.btcCtrlBuy,
+                        currController: controller.currCtrlBuy,
+                        focusNode: controller.nodeSell,
+                        autoConvert: true,
+                        context: context),
+                  ),
+                  const SizedBox(
+                    height: AppTheme.cardPadding * 2,
+                  ),
+                  // Additional spacing optimization
+                  SizedBox(height: AppTheme.cardPadding),
+                ],
               ),
-              AmountWidget(
-                  swapped: Get.find<WalletsController>().reversed.value,
-                  enabled: () => true,
-                  satController: controller.satCtrlBuy,
-                  btcController: controller.btcCtrlBuy,
-                  currController: controller.currCtrlBuy,
-                  focusNode: controller.nodeSell,
-                  autoConvert: true,
-                  context: context),
-              const SizedBox(
-                height: AppTheme.cardPadding * 2,
-              ),
-              const SizedBox(height: AppTheme.cardPadding),
-            ],
-          ),
-          Obx(() {
-            // Use Obx to reactively display the button state
-            return BottomCenterButton(
-                buttonTitle: "Sell my Bitcoin",
-                buttonState: controller.buttonState.value,
-                onButtonTap: () async {
-                  controller.buttonState.value = ButtonState.loading;
-                  bool hasStripeAccount = false;
-                  if (!hasStripeAccount) {
-                    logger.i("Creating a new stripe account for the user...");
-                    //get the link for the user
-                    String accountlink =
-                        await createStripeAccount("USERIDNEW", "DE");
-                    //launch the link for the user
-                    logger.i("Opening the link now... $accountlink");
-                    //convert the link to a url
-                    final uri = Uri.parse(accountlink);
-                    //launch the link
-                    await launchUrl(uri);
-                    //we need to redirect to the app
-                    //then we proceed with the payment
-                  } else {
-                    //use the stripe account that already exists for the user to pay him out
-                    logger
-                        .i("Using the existing stripe account for the user...");
-                  }
-                  controller.buttonState.value = ButtonState.idle;
-                });
-          })
-        ],
+            ),
+            // Optimized button with debounced action
+            Obx(() {
+              return RepaintBoundary(
+                child: BottomCenterButton(
+                    buttonTitle: "Sell my Bitcoin",
+                    buttonState: controller.buttonState.value,
+                    onButtonTap: () => _handleSellAction(controller, logger)),
+              );
+            })
+          ],
+        ),
       ),
     );
+  }
+
+  /// Optimized sell action with proper error handling and debouncing
+  Future<void> _handleSellAction(SellSheetController controller, LoggerService logger) async {
+    // Prevent multiple taps
+    if (controller.buttonState.value == ButtonState.loading) {
+      return;
+    }
+    
+    try {
+      controller.buttonState.value = ButtonState.loading;
+      
+      // Use debouncing to prevent rapid fire actions
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      bool hasStripeAccount = false;
+      
+      if (!hasStripeAccount) {
+        logger.i("Creating a new stripe account for the user...");
+        
+        // Get the link for the user with timeout
+        String accountlink = await createStripeAccount("USERIDNEW", "DE")
+            .timeout(const Duration(seconds: 30));
+        
+        logger.i("Opening the link now... $accountlink");
+        
+        // Convert the link to a url with validation
+        final uri = Uri.tryParse(accountlink);
+        if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+          await launchUrl(uri);
+        } else {
+          logger.e("Invalid URL received: $accountlink");
+          throw Exception("Invalid account link received");
+        }
+      } else {
+        // Use the stripe account that already exists for the user to pay him out
+        logger.i("Using the existing stripe account for the user...");
+      }
+    } catch (e, stackTrace) {
+      logger.e("Error during sell action: $e\nStackTrace: $stackTrace");
+      // Could show a snackbar or dialog here for user feedback
+    } finally {
+      // Always reset button state
+      if (controller.isClosed == false) {
+        controller.buttonState.value = ButtonState.idle;
+      }
+    }
   }
 }
 

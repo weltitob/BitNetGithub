@@ -5,21 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class WebsitesTab extends StatefulWidget {
+class WebsitesTab extends StatelessWidget {
   const WebsitesTab({Key? key}) : super(key: key);
 
   @override
-  State<WebsitesTab> createState() => _WebsitesTabState();
-}
-
-class _WebsitesTabState extends State<WebsitesTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return SingleChildScrollView(
       padding: EdgeInsets.all(AppTheme.cardPadding.w),
       child: Column(
