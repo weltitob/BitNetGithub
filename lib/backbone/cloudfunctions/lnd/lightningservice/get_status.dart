@@ -5,7 +5,10 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -15,7 +18,9 @@ import 'package:http/http.dart' as http;
 /// 
 /// Uses the /v1/status endpoint to determine if Lightning services are ready
 /// instead of blind retries. This is much more reliable than waiting arbitrary time.
-Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon}) async {
+/// 
+/// NEW: Supports one-user-one-node architecture with user-specific status checks
+Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, String? userDid}) async {
   LoggerService logger = Get.find();
   
   // Use centralized Lightning configuration
@@ -25,21 +30,41 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon}) asyn
   logger.i("=== GET NODE STATUS DEBUG ===");
   logger.i("Target URL: $url");
   logger.i("Selected Node: $selectedNode");
+  logger.i("User DID: $userDid");
   logger.i("Caddy Base URL: ${LightningConfig.caddyBaseUrl}");
 
-  // Use provided admin macaroon (from initwallet) or fallback to global one
+  // Use provided admin macaroon, user-specific macaroon, or fallback to global one
   String macaroon;
   if (adminMacaroon != null && adminMacaroon.isNotEmpty) {
     // Use the specific admin macaroon provided (e.g., from initwallet response)
     macaroon = adminMacaroon;
     logger.i("🔑 Using provided admin macaroon for status check: ${macaroon.substring(0, 20)}... (truncated)");
+  } else if (userDid != null && userDid.isNotEmpty) {
+    // NEW: Load user-specific macaroon from storage
+    try {
+      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(userDid);
+      if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
+        // Convert base64 macaroon to hex format
+        final macaroonBase64 = nodeMapping.adminMacaroon;
+        final macaroonBytes = base64Decode(macaroonBase64);
+        macaroon = bytesToHex(macaroonBytes);
+        selectedNode = nodeMapping.nodeId; // Use user's specific node
+        url = LightningConfig.getLightningUrl('v1/status', nodeId: selectedNode);
+        logger.i("🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
+      } else {
+        throw Exception("No user-specific macaroon found for DID: $userDid");
+      }
+    } catch (e) {
+      logger.e("❌ Failed to load user-specific macaroon: $e");
+      throw Exception("Failed to load user macaroon: $e");
+    }
   } else {
-    // Fallback to global admin macaroon
+    // Fallback to global admin macaroon (for system-level operations)
     final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
     ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
     List<int> bytes = byteData.buffer.asUint8List();
     macaroon = bytesToHex(bytes);
-    logger.i("🔑 Using global admin macaroon for status check: ${macaroon.substring(0, 20)}... (truncated)");
+    logger.w("⚠️ Using global admin macaroon for status check as fallback: ${macaroon.substring(0, 20)}... (truncated)");
   }
 
   Map<String, String> headers = {
@@ -242,18 +267,21 @@ bool _checkLightningReadiness(Map<String, dynamic> statusData, LoggerService log
 }
 
 /// Validate Lightning readiness by actually calling getinfo
+/// 
+/// NEW: Supports user-specific validation
 Future<bool> validateLightningWithGetInfo({
   String? nodeId,
   String? adminMacaroon,
+  String? userDid,
 }) async {
   LoggerService logger = Get.find();
   
   try {
-    // We'll import the getNodeInfo function at the top of the file
-    // and call it directly to test actual functionality
+    // Call getNodeInfo with user-specific parameters
     RestResponse getInfoResponse = await getNodeInfo(
       nodeId: nodeId,
       adminMacaroon: adminMacaroon,
+      userDid: userDid,
     );
     
     if (getInfoResponse.statusCode == "200") {
@@ -272,9 +300,11 @@ Future<bool> validateLightningWithGetInfo({
 /// Wait for Lightning services to be ready with intelligent status checking + getinfo validation
 /// 
 /// Much better than blind retries - actually checks when services are available
+/// NEW: Supports user-specific readiness checks
 Future<bool> waitForLightningReady({
   String? nodeId,
   String? adminMacaroon,
+  String? userDid,
   int? maxWaitSeconds,
   int? checkIntervalSeconds,
 }) async {
@@ -286,6 +316,7 @@ Future<bool> waitForLightningReady({
   
   logger.i("=== WAITING FOR LIGHTNING SERVICES TO BE READY ===");
   logger.i("Max wait time: ${maxWaitSeconds}s, check interval: ${checkIntervalSeconds}s");
+  logger.i("User DID: $userDid");
   
   int elapsed = 0;
   while (elapsed < maxWaitSeconds) {
@@ -296,6 +327,7 @@ Future<bool> waitForLightningReady({
       RestResponse statusResponse = await getNodeStatus(
         nodeId: nodeId,
         adminMacaroon: adminMacaroon,
+        userDid: userDid,
       );
       
       if (statusResponse.statusCode == "200") {
@@ -308,6 +340,7 @@ Future<bool> waitForLightningReady({
           bool getInfoWorking = await validateLightningWithGetInfo(
             nodeId: nodeId,
             adminMacaroon: adminMacaroon,
+            userDid: userDid,
           );
           
           if (getInfoWorking) {
@@ -336,4 +369,38 @@ Future<bool> waitForLightningReady({
   
   logger.e("❌ Lightning services not ready after ${maxWaitSeconds}s");
   return false;
+}
+
+/// NEW: Convenience function to check user's node status
+Future<RestResponse> getUserNodeStatus(String userId) async {
+  final logger = Get.find<LoggerService>();
+  logger.i("Checking status for user's node: $userId");
+  
+  try {
+    return await getNodeStatus(userDid: userId);
+  } catch (e) {
+    logger.e("Failed to get user node status: $e");
+    return RestResponse(
+      statusCode: "error",
+      message: "Failed to get user node status: $e",
+      data: {},
+    );
+  }
+}
+
+/// NEW: Convenience function to check current user's node status
+Future<RestResponse> getCurrentUserNodeStatus() async {
+  final logger = Get.find<LoggerService>();
+  
+  final userId = Auth().currentUser?.uid;
+  if (userId == null) {
+    logger.e("No user logged in");
+    return RestResponse(
+      statusCode: "error",
+      message: "No user logged in",
+      data: {},
+    );
+  }
+  
+  return await getUserNodeStatus(userId);
 }
