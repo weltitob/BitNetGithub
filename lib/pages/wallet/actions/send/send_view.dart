@@ -77,23 +77,22 @@ class SendBTCScreen extends GetWidget<SendsController> {
       backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
         onTap: () {
-          // For Lightning invoices and other cases where we need to go back to search
+          // Reset controller state first
+          controller.usersQuery.value = '';
+          controller.resetValues();
+          controller.handleSearch('');
+          
+          // For cases where we need to go back to search receiver
           if (shouldPop) {
             // Reset the hasReceiver flag to show SearchReceiver again
             controller.hasReceiver.value = false;
-            controller.usersQuery.value = '';
-            controller.resetValues();
-            controller.handleSearch('');
           } else {
-            // Normal navigation case
+            // Normal navigation case - go back to previous screen
             if (Navigator.of(context).canPop()) {
               context.pop();
             } else {
               context.go('/wallet');
             }
-            controller.usersQuery.value = '';
-            controller.resetValues();
-            controller.handleSearch('');
           }
         },
         customTitle: Column(
@@ -117,9 +116,28 @@ class SendBTCScreen extends GetWidget<SendsController> {
         ],
       ),
       body: PopScope(
-        canPop: shouldPop,
-        onPopInvoked: (v) {
-          controller.resetValues();
+        canPop: !shouldPop, // Don't allow system pop when shouldPop is true
+        onPopInvoked: (didPop) {
+          if (!didPop) {
+            // Reset controller state first
+            controller.usersQuery.value = '';
+            controller.resetValues();
+            controller.handleSearch('');
+            
+            // For cases where we need to go back to search receiver
+            if (shouldPop) {
+              // Reset the hasReceiver flag to show SearchReceiver again
+              controller.hasReceiver.value = false;
+              // No navigation needed - the Obx will rebuild with SearchReceiver
+            } else {
+              // This shouldn't happen since canPop is true when shouldPop is false
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              } else {
+                context.go('/wallet');
+              }
+            }
+          }
         },
         child: Column(
           children: [

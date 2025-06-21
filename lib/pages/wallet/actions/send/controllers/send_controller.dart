@@ -692,7 +692,6 @@ class SendsController extends BaseController {
         logger.e("❌ LNURL callback failed with status: ${response.statusCode}");
         overlayController.showOverlay("LNURL service error: ${response.statusCode}");
         isFinished.value = false;
-        loadingSending.value = false;
         return null;
       }
 
@@ -705,7 +704,6 @@ class SendsController extends BaseController {
         logger.e("❌ Failed to parse LNURL callback response: $e");
         overlayController.showOverlay("Invalid LNURL response format");
         isFinished.value = false;
-        loadingSending.value = false;
         return null;
       }
       
@@ -715,7 +713,6 @@ class SendsController extends BaseController {
         logger.e("❌ LNURL callback returned empty invoice");
         overlayController.showOverlay("LNURL service returned invalid invoice");
         isFinished.value = false;
-        loadingSending.value = false;
         return null;
       }
       
@@ -743,7 +740,6 @@ class SendsController extends BaseController {
           overlayController.showOverlay("Payment timeout - please try again");
           sub?.cancel();
           isFinished.value = false;
-          loadingSending.value = false;
           return;
         }
 
@@ -802,14 +798,12 @@ class SendsController extends BaseController {
           } else if (failureReason?.contains('INSUFFICIENT_BALANCE') == true) {
             overlayController.showOverlay("Payment failed: Insufficient balance in your Lightning wallet");
             isFinished.value = false;
-            loadingSending.value = false;
             if (!paymentCompleter.isCompleted) {
               paymentCompleter.complete(false);
             }
           } else {
             overlayController.showOverlay("Payment failed: ${failureReason ?? 'Unknown error'}");
             isFinished.value = false;
-            loadingSending.value = false;
             if (!paymentCompleter.isCompleted) {
               paymentCompleter.complete(false);
             }
@@ -870,7 +864,6 @@ class SendsController extends BaseController {
           logger.w("❓ Unknown LNURL payment status: '$paymentStatus', treating as failure");
           overlayController.showOverlay("Payment status unknown: please check your transactions");
           isFinished.value = false;
-          loadingSending.value = false;
           if (!paymentCompleter.isCompleted) {
             paymentCompleter.complete(false);
           }
@@ -889,7 +882,6 @@ class SendsController extends BaseController {
         // Max retries exceeded
         logger.e("❌ LNURL payment failed after $maxRetries retries");
         isFinished.value = false;
-        loadingSending.value = false;
         overlayController.showOverlay("Payment failed after retries: $error");
         if (!paymentCompleter.isCompleted) {
           paymentCompleter.complete(false);
@@ -951,7 +943,6 @@ class SendsController extends BaseController {
       logger.e("💥 LNURL payment setup failed: $e");
       overlayController.showOverlay("LNURL payment setup failed: $e");
       isFinished.value = false;
-      loadingSending.value = false;
       return null;
     }
   }
@@ -1598,7 +1589,7 @@ class SendsController extends BaseController {
           logger.i("Satcontroller text: ${satController.text}");
           logger
               .i("Satcontroller text parsed: ${int.parse(satController.text)}");
-          payLnUrl(lnCallback!, int.parse(satController.text), context, canNavigate: true); // LNURL always navigates
+          await payLnUrl(lnCallback!, int.parse(satController.text), context, canNavigate: true); // LNURL always navigates
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
@@ -1606,12 +1597,16 @@ class SendsController extends BaseController {
             bitcoinReceiverAdress
           ]; // Assuming you want to send a list containing a single invoice for now
 
+          // Create completer to wait for payment completion
+          final Completer<bool> invoiceCompleter = Completer<bool>();
+          
           Stream<dynamic> paymentStream = sendPaymentV2Stream(
               Auth().currentUser!.uid,
               invoiceStrings,
               int.parse(satController.text));
           bool firstSuccess = false;
-          final sub = paymentStream.listen((dynamic response) {
+          StreamSubscription? sub;
+          sub = paymentStream.listen((dynamic response) {
             // Extract status from stream-processed response (already validated by stream)
             final paymentStatus = response['status'] ?? '';
             final paymentHash = response['payment_hash'] as String?;
@@ -1665,6 +1660,8 @@ class SendsController extends BaseController {
 
                   firstSuccess = true;
                 }
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
               } catch (e) {
                 logger.e("Failed to parse LightningPayment from response: $e");
                 logger.i("Payment was successful but parsing failed. Continuing anyway...");
@@ -1686,6 +1683,8 @@ class SendsController extends BaseController {
                   }
                   firstSuccess = true;
                 }
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
               }
             } else if (paymentStatus == "FAILED") {
               // Handle error  
@@ -1699,7 +1698,8 @@ class SendsController extends BaseController {
                   firstSuccess = true;
                 }
                 isFinished.value = true;
-                loadingSending.value = false;
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
                 // Always navigate for successful payments regardless of shouldPop
                 try {
                   GoRouter.of(context).go("/");
@@ -1719,14 +1719,16 @@ class SendsController extends BaseController {
                   firstSuccess = true;
                 }
                 isFinished.value = false;
-                loadingSending.value = false;
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(false);
               } else {
                 if (!firstSuccess) {
                   overlayController.showOverlay("Payment failed: ${failureReason ?? 'Unknown error'}");
                   firstSuccess = true;
                 }
                 isFinished.value = false; // Keep the user on the same page to possibly retry or show error
-                loadingSending.value = false;
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(false);
               }
             } else if (paymentStatus == 'IN_FLIGHT' || 
                        paymentStatus == 'PENDING') {
@@ -1756,6 +1758,8 @@ class SendsController extends BaseController {
                     }
                     firstSuccess = true;
                   }
+                  sub?.cancel();
+                  if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
                 } catch (e) {
                   logger.e("Failed to parse LightningPayment from IN_FLIGHT response: $e");
                   logger.i("Invoice Payment was successful but parsing failed. Continuing anyway...");
@@ -1776,6 +1780,8 @@ class SendsController extends BaseController {
                     }
                     firstSuccess = true;
                   }
+                  sub?.cancel();
+                  if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
                 }
               } else {
                 // Payment is still processing - keep listening, don't set firstSuccess
@@ -1800,6 +1806,8 @@ class SendsController extends BaseController {
                   }
                   firstSuccess = true;
                 }
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
               } catch (e) {
                 logger.e("Failed to parse LightningPayment from response: $e");
                 logger.i("Invoice Payment was successful but parsing failed. Continuing anyway...");
@@ -1810,6 +1818,8 @@ class SendsController extends BaseController {
                   }
                   firstSuccess = true;
                 }
+                sub?.cancel();
+                if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(true);
               }
             } else {
               // Only show failure for truly unknown/final failure states
@@ -1819,15 +1829,25 @@ class SendsController extends BaseController {
                 firstSuccess = true;
               }
               isFinished.value = false;
+              sub?.cancel();
+              if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(false);
             }
           }, onError: (error) {
             isFinished.value = false;
             overlayController.showOverlay("An error occurred: $error");
+            sub?.cancel();
+            if (!invoiceCompleter.isCompleted) invoiceCompleter.complete(false);
           }, onDone: () {
             // Handle stream completion if necessary
           }, cancelOnError: true // Cancel the subscription upon first error
               );
           _subscriptions.add(sub);
+          
+          // Wait for invoice payment to complete
+          logger.i("⏳ Waiting for invoice payment to complete...");
+          final invoiceSuccess = await invoiceCompleter.future;
+          logger.i("🎯 Invoice payment completed with result: $invoiceSuccess");
+          
         } else if (sendType == SendType.OnChain) {
           // NEW: One user one node approach - Direct onchain sending via LND
           logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
@@ -1915,19 +1935,16 @@ class SendsController extends BaseController {
           // This will require new Bitcoin key derivation compatible with BIP39 and individual node architecture
           overlayController.showOverlay("OnChain transactions need reimplementation for individual nodes");
           isFinished.value = false;
-          loadingSending.value = false;
         } else {
           logger.i("Unknown sendType");
         }
       } catch (e) {
         logger.e("Error with sendBTC: " + e.toString());
         isFinished.value = false;
-        loadingSending.value = false;
       }
     } else {
       // Display an error message if biometric authentication failed
       isFinished.value = false;
-      loadingSending.value = false;
       logger.e('Biometric authentication failed');
     }
   }
