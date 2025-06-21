@@ -6,7 +6,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart' hide GlassContainer;
+
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/floor_price_widget.dart';
@@ -718,7 +718,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
               child: GlassContainer(
-                customShadow: isDarkMode ? [] : null,
+                boxShadow: isDarkMode ? [] : null,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                   child: Column(

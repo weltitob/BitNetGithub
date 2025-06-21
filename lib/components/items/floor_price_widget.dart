@@ -22,10 +22,14 @@ class FloorPriceWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: GlassContainer(
-        borderThickness: 1.5,
-        blur: 50,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+          width: 1.5,
+        ),
+        blurX: 50,
+        blurY: 50,
         opacity: 0.1,
-        borderRadius: AppTheme.cardRadiusMid,
+        borderRadius: AppTheme.borderRadiusMid.r,
         child: Container(
           padding: EdgeInsets.all(AppTheme.cardPadding.w),
           child: Column(
