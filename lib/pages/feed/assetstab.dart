@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
@@ -325,7 +325,7 @@ class _AssetsTabState extends State<AssetsTab>
             padding:
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: AppTheme.elementSpacing * 0.5),
@@ -428,8 +428,7 @@ class _AssetsTabState extends State<AssetsTab>
                                                       .withOpacity(0.2)
                                                   : AppTheme.errorColor
                                                       .withOpacity(0.2),
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
+                                              borderRadius: BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],
@@ -479,7 +478,7 @@ class _AssetsTabState extends State<AssetsTab>
             padding:
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: AppTheme.elementSpacing * 0.5),
@@ -589,8 +588,7 @@ class _AssetsTabState extends State<AssetsTab>
                                             decoration: BoxDecoration(
                                               color: Colors.orange
                                                   .withOpacity(0.2),
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
+                                              borderRadius: BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],

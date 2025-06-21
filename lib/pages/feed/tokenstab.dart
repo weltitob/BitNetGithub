@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/items/marketcap_widget.dart';
@@ -403,15 +403,27 @@ class _TokensTabState extends State<TokensTab>
               // Wrap in RepaintBoundary for better performance
               return GestureDetector(
                 onTap: () {
-                  // Navigate to token marketplace for all tokens
-                  context.push('/feed/token_marketplace/${token['symbol']}/${token['name']}');
+                  // Navigate to Bitcoin screen with token chart data
+                  final navigationData = {
+                    'isToken': true,
+                    'tokenSymbol': token['symbol'],
+                    'tokenName': token['name'],
+                    'priceHistory': _getTokenPriceHistory(token['symbol']),
+                    'currentPrice': double.parse(token['price'].replaceAll(',', '')),
+                  };
+                  
+                  context.push(
+                    '/wallet/bitcoinscreen',
+                    extra: navigationData,
+                  );
                 },
                 child: RepaintBoundary(
-                  child: GlassContainer(
-                    width: getStandardizedCardWidth().w,
+                  child: Container(
                     margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
-                    customShadow: isDarkMode ? [] : null,
-                    child: Padding(
+                    child: GlassContainer(
+                      width: getStandardizedCardWidth().w,
+                      boxShadow: isDarkMode ? [] : null,
+                      child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 20.w,
                       vertical: 18.h, // Increased from 16.h
@@ -549,7 +561,9 @@ class _TokensTabState extends State<TokensTab>
                     ),
                   ),
                 ),
-              ));
+                  ),
+                ),
+              );
             },
           ),
           
@@ -566,7 +580,7 @@ class _TokensTabState extends State<TokensTab>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
@@ -668,7 +682,7 @@ class _TokensTabState extends State<TokensTab>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
@@ -716,7 +730,7 @@ class _TokensTabState extends State<TokensTab>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(

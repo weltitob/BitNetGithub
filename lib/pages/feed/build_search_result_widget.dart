@@ -4,7 +4,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -106,36 +106,35 @@ class SearchResultWidget extends StatelessWidget {
   Widget _buildUserCarouselItem(UserData userData, int? rank, BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
-    return GlassContainer(
-      width: getStandardizedCardWidth().w, // Standardized width across all carousels
-      margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w), // Standardized margin across all carousels
-      borderRadius: AppTheme.cardRadiusMid.r,
-      blur: isDarkMode ? 5 : 2,
-      opacity: isDarkMode ? 0.15 : 0.05,
-      customColor: isDarkMode 
-          ? Colors.grey.shade900.withOpacity(0.6) 
-          : Colors.white.withOpacity(0.9),
-      child: Padding(
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+      child: GlassContainer(
+        width: getStandardizedCardWidth().w,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+        opacity: isDarkMode ? 0.15 : 0.05,
+        child: Padding(
         padding: const EdgeInsets.all(AppTheme.cardPadding),
         child: InkWell(
           onTap: () async {},
           borderRadius: BorderRadius.circular(AppTheme.cardPadding),
-          child: Stack(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Avatar in the center
-                  Center(
-                    child: Avatar(
-                      size: AppTheme.cardPadding * 4,
-                      onTap: () async {},
-                      mxContent: userData.profileImageUrl,
-                      name: userData.username,
-                      profileId: userData.did,
-                      isNft: false,
-                    ),
-                  ),
+              // Avatar in the center
+              Center(
+                child: Avatar(
+                  size: AppTheme.cardPadding * 4,
+                  onTap: () async {},
+                  mxContent: userData.profileImageUrl,
+                  name: userData.username,
+                  profileId: userData.did,
+                  isNft: false,
+                  cornerWidget: rank != null ? NumberIndicator(
+                    number: rank,
+                    size: 0.8,
+                  ) : null,
+                ),
+              ),
                   
                   const SizedBox(height: AppTheme.elementSpacing),
                   
@@ -171,16 +170,9 @@ class SearchResultWidget extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-              if (rank != null)
-                Positioned(
-                  left: 10,
-                  top: 10,
-                  child: NumberIndicator(number: rank),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -276,59 +268,53 @@ class SearchResultWidget extends StatelessWidget {
   }
   
   Widget _buildUserItem(UserData userData, [int? rank]) {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppTheme.elementSpacing * 0.75,
-            horizontal: AppTheme.elementSpacing,
-          ),
-          child: InkWell(
-            onTap: () async {},
-            borderRadius: AppTheme.cardRadiusBig,
-            child: Row(
-              children: [
-                Avatar(
-                  size: AppTheme.cardPadding * 2,
-                  onTap: () async {},
-                  mxContent: userData.profileImageUrl,
-                  name: userData.username,
-                  profileId: userData.did,
-                  isNft: false,
-                ),
-                const SizedBox(width: AppTheme.elementSpacing),
-                Container(
-                  width: AppTheme.cardPadding * 6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "@${userData.username}",
-                        style: Theme.of(Get.context!).textTheme.titleSmall,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: AppTheme.elementSpacing / 4),
-                      Text(
-                        userData.displayName,
-                        style: Theme.of(Get.context!).textTheme.bodySmall,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: AppTheme.elementSpacing * 0.75,
+        horizontal: AppTheme.elementSpacing,
+      ),
+      child: InkWell(
+        onTap: () async {},
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusBig),
+        child: Row(
+          children: [
+            Avatar(
+              size: AppTheme.cardPadding * 2,
+              onTap: () async {},
+              mxContent: userData.profileImageUrl,
+              name: userData.username,
+              profileId: userData.did,
+              isNft: false,
+              cornerWidget: rank != null ? NumberIndicator(
+                number: rank,
+                size: 0.8,
+              ) : null,
             ),
-          ),
+            const SizedBox(width: AppTheme.elementSpacing),
+            Container(
+              width: AppTheme.cardPadding * 6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "@${userData.username}",
+                    style: Theme.of(Get.context!).textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppTheme.elementSpacing / 4),
+                  Text(
+                    userData.displayName,
+                    style: Theme.of(Get.context!).textTheme.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        if (rank != null)
-          Positioned(
-            left: 10,
-            top: 10,
-            child: NumberIndicator(number: rank),
-          ),
-      ],
+      ),
     );
   }
 

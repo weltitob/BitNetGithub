@@ -8,7 +8,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -142,10 +142,9 @@ class _AppsTabModernState extends State<AppsTabModern>
                             child: GlassContainer(
                               width: 280.w,
                               height: 180.h,
-                              blur: 50,
                               opacity: 0.1,
-                              borderThickness: 1,
-                              borderRadius: BorderRadius.circular(AppTheme.cardPaddingBig.r),
+                              border: Border.all(width: 1, color: Theme.of(context).dividerColor),
+                              borderRadius: AppTheme.cardPaddingBig.r,
                               child: Padding(
                                 padding: EdgeInsets.all(20.w),
                                 child: Column(
@@ -405,9 +404,8 @@ class _AppsTabModernState extends State<AppsTabModern>
                         height: iconSize,
                         child: GlassContainer(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                        blur: 20,
                         opacity: 0.1,
-                        borderThickness: 1,
+                        border: Border.all(width: 1, color: Theme.of(context).dividerColor),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
                           child: Container(
