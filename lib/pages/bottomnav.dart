@@ -8,7 +8,7 @@ import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/profile/profile.dart';
@@ -93,17 +93,19 @@ class _BottomNavState extends State<BottomNav>
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .get();
-      ThemeController.of(context).setThemeMode(ThemeMode.values
-              .singleWhereOrNull(
-                  (value) => value.name == data.data()?['theme_mode']) ??
-          ThemeMode.system);
-      ThemeController.of(context)
-          .setPrimaryColor(Color(data.data()?['primary_color']), false);
-      final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false)
-          .setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context, listen: false)
-          .setCardInDatabase(data.data()?['selected_card']);
+      if (mounted) {
+        ThemeController.of(context).setThemeMode(ThemeMode.values
+                .singleWhereOrNull(
+                    (value) => value.name == data.data()?['theme_mode']) ??
+            ThemeMode.system);
+        ThemeController.of(context)
+            .setPrimaryColor(Color(data.data()?['primary_color']), false);
+        final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
+        Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(data.data()?['lang'], locale);
+        Provider.of<CardChangeProvider>(context, listen: false)
+            .setCardInDatabase(data.data()?['selected_card']);
+      }
       final walletController = Get.find<WalletsController>();
       walletController.setHideBalance(
           hide: data.data()?['hide_balance'] ?? false);
