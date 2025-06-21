@@ -600,8 +600,9 @@ class _ChartCoreState extends State<ChartCore> {
       }
       return SizedBox(
         height: AppTheme.cardPadding * 16.h,
-        child: Obx(
-          () => SfCartesianChart(
+        child: RepaintBoundary(
+          child: Obx(
+            () => SfCartesianChart(
               trackballBehavior: bitcoinController.trackballBehavior,
               onChartTouchInteractionDown: (args) {
                 isTrackballActive = true;
@@ -718,6 +719,8 @@ class _ChartCoreState extends State<ChartCore> {
                           : AppTheme.errorColor,
                 )
               ]),
+            ),
+          ),
         ),
       );
     });

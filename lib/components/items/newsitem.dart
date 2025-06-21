@@ -2,6 +2,7 @@ import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class NewsTile extends StatelessWidget {
   final String imgUrl, title, desc, content, posturl, author, publishedAt;
@@ -96,9 +97,16 @@ class NewsPicture extends StatelessWidget {
           ),
           child: ClipRRect(
               borderRadius: AppTheme.cardRadiusMid,
-              child: Image.network(
-                imgUrl,
+              child: CachedNetworkImage(
+                imageUrl: imgUrl,
                 fit: BoxFit.fitHeight,
+                placeholder: (context, url) => Container(
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                ),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.broken_image,
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.5),
+                ),
               )),
         ),
       ),

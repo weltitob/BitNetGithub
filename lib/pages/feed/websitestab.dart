@@ -547,7 +547,9 @@ class WebsiteData {
     
     // Skip favicon loading if already loaded
     if (faviconBytes != null) {
-      _faviconBytesController.add(faviconBytes);
+      if (!_faviconBytesController.isClosed) {
+        _faviconBytesController.add(faviconBytes);
+      }
       return;
     }
     
@@ -567,15 +569,21 @@ class WebsiteData {
       
       if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
         faviconBytes = response.bodyBytes;
-        _faviconBytesController.add(faviconBytes);
+        if (!_faviconBytesController.isClosed) {
+          _faviconBytesController.add(faviconBytes);
+        }
         print('Successfully loaded favicon for $name');
       } else {
         print('Failed to load favicon for $name - Status: ${response.statusCode}');
-        _faviconBytesController.add(null);
+        if (!_faviconBytesController.isClosed) {
+          _faviconBytesController.add(null);
+        }
       }
     } catch (e) {
       print('Error loading favicon for $name: $e');
-      _faviconBytesController.add(null);
+      if (!_faviconBytesController.isClosed) {
+        _faviconBytesController.add(null);
+      }
     }
   }
 
