@@ -148,6 +148,7 @@ Future<RestResponse> estimateFee({
     }
     
     final nodeId = nodeMapping.nodeId;
+    logger.i("Using node: $nodeId for fee estimation");
     
     // Get the admin macaroon from node mapping (stored as base64)
     final macaroonBase64 = nodeMapping.adminMacaroon;
@@ -163,55 +164,89 @@ Future<RestResponse> estimateFee({
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = bytesToHex(macaroonBytes);
+    logger.i("🔑 Using user-specific macaroon for ${nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
     
-    // Get Caddy URL for the user's node using LightningConfig
-    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee';
+    // Get Caddy URL for the user's node using LightningConfig  
+    // Use the same format as the old working version: GET with path parameter
+    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee/$targetConf';
+    logger.i("Fee estimation URL: $url");
     
-    // Prepare request data
-    final Map<String, dynamic> data = {
-      'addr_to_amount': {
-        address: amountSat,
-      },
-      'target_conf': targetConf,
-    };
-    
-    // Set up headers
+    // Set up headers (same as old version)
     final headers = {
       'Grpc-Metadata-macaroon': macaroon,
-      'Content-Type': 'application/json',
     };
+    
+    logger.i("Fee estimation headers: ${headers.keys.toList()}");
     
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();
     
-    // Make the request
-    final response = await http.post(
+    logger.i("Making GET request for fee estimation (like old version)...");
+    
+    // Make the request using GET (like old version)
+    final response = await http.get(
       Uri.parse(url),
       headers: headers,
-      body: jsonEncode(data),
     );
     
+    logger.i("Fee estimation response status: ${response.statusCode}");
+    logger.i("Fee estimation response body: ${response.body}");
+    logger.i("Fee estimation response headers: ${response.headers}");
+    
     if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-      
-      return RestResponse(
-        statusCode: "success",
-        message: "Fee estimated successfully",
-        data: {
-          'fee_sat': decoded['fee_sat'] ?? 0,
-          'feerate_sat_per_vbyte': decoded['feerate_sat_per_vbyte'] ?? 0,
-          ...decoded,
-        },
-      );
+      try {
+        final decoded = jsonDecode(response.body);
+        logger.i("Successfully decoded fee estimation response: $decoded");
+        
+        // Convert sat_per_kw to sat_per_vbyte
+        // 1 kw (kilo-weight) = 4 vbytes, so sat_per_kw / 4 = sat_per_vbyte
+        int satPerKw = int.tryParse(decoded['sat_per_kw']?.toString() ?? '0') ?? 0;
+        double satPerVbyte = satPerKw / 4.0;
+        
+        // Don't calculate total fee here - just return the fee rate
+        // The controller will calculate the actual fee based on transaction size
+        
+        logger.i("Converted fee rate: $satPerKw sat/kw → $satPerVbyte sat/vbyte");
+        
+        return RestResponse(
+          statusCode: "success",
+          message: "Fee estimated successfully",
+          data: {
+            'feerate_sat_per_vbyte': satPerVbyte.ceil(), // Return as int
+            'sat_per_kw': satPerKw,
+            'min_relay_fee_sat_per_kw': decoded['min_relay_fee_sat_per_kw'],
+            ...decoded,
+          },
+        );
+      } catch (e) {
+        logger.e("Failed to parse fee estimation response: $e");
+        return RestResponse(
+          statusCode: "error",
+          message: "Failed to parse fee response: $e",
+          data: {'raw_response': response.body},
+        );
+      }
     } else {
-      final error = jsonDecode(response.body);
-      logger.e("Failed to estimate fee: ${error['message'] ?? 'Unknown error'}");
+      logger.e("Fee estimation failed with status ${response.statusCode}");
+      logger.e("Error response body: ${response.body}");
       
-      return RestResponse(
-        statusCode: "error",
-        message: error['message'] ?? 'Failed to estimate fee',
-        data: error,
-      );
+      try {
+        final error = jsonDecode(response.body);
+        logger.e("Parsed error: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+        
+        return RestResponse(
+          statusCode: "error",
+          message: error['message'] ?? error['error'] ?? 'Failed to estimate fee',
+          data: error,
+        );
+      } catch (e) {
+        logger.e("Failed to parse error response: $e");
+        return RestResponse(
+          statusCode: "error",
+          message: "Failed to estimate fee: HTTP ${response.statusCode}",
+          data: {'raw_response': response.body, 'status_code': response.statusCode},
+        );
+      }
     }
   } catch (e) {
     logger.e("Error estimating fee: $e");
