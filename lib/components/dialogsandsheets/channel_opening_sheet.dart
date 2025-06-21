@@ -9,13 +9,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ChannelOpeningSheet extends StatefulWidget {
-  final String lnurlString;
+  final String? lnurlString;
   final VoidCallback? onChannelOpened;
+  final bool createBlocktankChannel;
+  final int? localAmount;
+  final int? pushAmount;
 
   const ChannelOpeningSheet({
     Key? key,
-    required this.lnurlString,
+    this.lnurlString,
     this.onChannelOpened,
+    this.createBlocktankChannel = false,
+    this.localAmount,
+    this.pushAmount,
   }) : super(key: key);
 
   @override
@@ -43,12 +49,31 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         _errorMessage = null;
       });
 
-      final channelRequest = await _channelService.fetchChannelRequest(widget.lnurlString);
-      
-      setState(() {
-        _channelRequest = channelRequest;
-        _isLoading = false;
-      });
+      if (widget.createBlocktankChannel) {
+        // For Blocktank channels, we'll create the order during the opening process
+        // Just show a mock request for UI purposes
+        setState(() {
+          _channelRequest = LnurlChannelRequest(
+            tag: 'channelRequest',
+            k1: 'blocktank-order',
+            callback: 'https://api1.blocktank.to/api/channels',
+            uri: 'blocktank-lsp@api1.blocktank.to:9735',
+            nodeId: 'blocktank-lsp',
+            localAmt: widget.localAmount ?? 20000,
+            pushAmt: widget.pushAmount ?? 0,
+          );
+          _isLoading = false;
+        });
+      } else if (widget.lnurlString != null) {
+        final channelRequest = await _channelService.fetchChannelRequest(widget.lnurlString!);
+        
+        setState(() {
+          _channelRequest = channelRequest;
+          _isLoading = false;
+        });
+      } else {
+        throw Exception("No LNURL string or Blocktank channel option provided");
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -66,17 +91,37 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         _errorMessage = null;
       });
 
-      final result = await _channelService.processChannelRequest(
-        widget.lnurlString,
-        onProgress: (progress) {
-          setState(() {
-            _progress = progress;
-            if (progress.errorMessage != null) {
-              _errorMessage = progress.errorMessage;
-            }
-          });
-        },
-      );
+      LnurlChannelResult result;
+      
+      if (widget.createBlocktankChannel) {
+        // Create and process Blocktank channel
+        result = await _channelService.createAndProcessBlocktankChannel(
+          localAmount: widget.localAmount ?? 20000,
+          pushAmount: widget.pushAmount ?? 0,
+          isPrivate: false,
+          onProgress: (progress) {
+            setState(() {
+              _progress = progress;
+              if (progress.errorMessage != null) {
+                _errorMessage = progress.errorMessage;
+              }
+            });
+          },
+        );
+      } else {
+        // Process existing LNURL
+        result = await _channelService.processChannelRequest(
+          lnurlString: widget.lnurlString,
+          onProgress: (progress) {
+            setState(() {
+              _progress = progress;
+              if (progress.errorMessage != null) {
+                _errorMessage = progress.errorMessage;
+              }
+            });
+          },
+        );
+      }
       
       if (result.success) {
         // Wait a moment to show success, then close
@@ -138,7 +183,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
             
             // Title
             Text(
-              "Open Lightning Channel",
+              widget.createBlocktankChannel ? "Create Blocktank Channel" : "Open Lightning Channel",
               style: theme.textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
@@ -413,6 +458,24 @@ extension ChannelOpeningSheetExtension on BuildContext {
       backgroundColor: Colors.transparent,
       builder: (context) => ChannelOpeningSheet(
         lnurlString: lnurlString,
+        onChannelOpened: onChannelOpened,
+      ),
+    );
+  }
+  
+  Future<void> showBlocktankChannelSheet({
+    int localAmount = 20000,
+    int pushAmount = 0,
+    VoidCallback? onChannelOpened,
+  }) async {
+    await showModalBottomSheet(
+      context: this,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ChannelOpeningSheet(
+        createBlocktankChannel: true,
+        localAmount: localAmount,
+        pushAmount: pushAmount,
         onChannelOpened: onChannelOpened,
       ),
     );

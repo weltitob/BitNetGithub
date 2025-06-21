@@ -106,7 +106,7 @@ class ChannelOpeningProgress {
   factory ChannelOpeningProgress.connecting() {
     return ChannelOpeningProgress(
       status: 'connecting',
-      message: 'Connecting to Lightning Service Provider...',
+      message: 'Establishing peer connection with Lightning Service Provider...',
       progress: 0.25,
     );
   }
@@ -114,7 +114,7 @@ class ChannelOpeningProgress {
   factory ChannelOpeningProgress.checkingConnection() {
     return ChannelOpeningProgress(
       status: 'checking_connection',
-      message: 'Checking peer connection status...',
+      message: 'Checking for existing channels...',
       progress: 0.20,
     );
   }
