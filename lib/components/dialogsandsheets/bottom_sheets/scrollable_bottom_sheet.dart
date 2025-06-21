@@ -117,7 +117,7 @@ class ScrollableBottomSheet extends StatelessWidget {
                     // Title if no appBar but title is provided
                     if (appBar == null && title != null)
                       Padding(
-                        padding: const EdgeInsets.all(AppTheme.cardPadding),
+                        padding: const EdgeInsets.all(AppTheme.elementSpacing),
                         child: Text(
                           title!,
                           style: Theme.of(context).textTheme.titleLarge,

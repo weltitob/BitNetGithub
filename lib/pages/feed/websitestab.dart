@@ -6,8 +6,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart' hide GlassContainer;
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
@@ -317,7 +316,7 @@ class _WebsitesTabState extends State<WebsitesTab>
                   child: GlassContainer(
                     width: getStandardizedCardWidth().w,
                     margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
-                    customShadow: isDarkMode ? [] : null,
+                    boxShadow: isDarkMode ? [] : null,
                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
                     child: Stack(
                       children: [
@@ -401,16 +400,15 @@ class _WebsitesTabState extends State<WebsitesTab>
                             // Banner image takes remaining space
                             if (website.bannerPath != null)
                               Expanded(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(AppTheme.borderRadiusMid),
-                                    bottomRight: Radius.circular(AppTheme.borderRadiusMid),
-                                  ),
-                                  child: Image.asset(
-                                    website.bannerPath!,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
+                                child: Padding(
+                                  padding: EdgeInsets.all(AppTheme.elementSpacing * 0.75),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                                    child: Image.asset(
+                                      website.bannerPath!,
+                                      width: double.infinity,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         color: Theme.of(context).colorScheme.surface,
                                         child: Center(
@@ -422,6 +420,7 @@ class _WebsitesTabState extends State<WebsitesTab>
                                         ),
                                       );
                                     },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -453,7 +452,7 @@ class _WebsitesTabState extends State<WebsitesTab>
             padding:
                 EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
             child: GlassContainer(
-              customShadow: isDarkMode ? [] : null,
+              boxShadow: isDarkMode ? [] : null,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: AppTheme.elementSpacing * 0.5),

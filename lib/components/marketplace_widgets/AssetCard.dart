@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -86,7 +86,7 @@ class _AssetCardState extends State<AssetCard> {
 
     return RepaintBoundary(
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusMid.r,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
         child: Container(
           margin: EdgeInsets.symmetric(
               horizontal: getStandardizedCardMargin().w * widget.scale),
@@ -98,7 +98,7 @@ class _AssetCardState extends State<AssetCard> {
             child: GlassContainer(
               width: getStandardizedCardWidth().w * widget.scale,
               height: 260.h * widget.scale, // Fixed height for consistent card size
-              customShadow:
+              boxShadow:
                   Theme.of(context).brightness == Brightness.light ? [] : null,
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.15),
@@ -120,13 +120,13 @@ class _AssetCardState extends State<AssetCard> {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                    fontSize: 14.sp,
+                                    fontSize: (16.sp * widget.scale).clamp(14.sp, 20.sp),
                                     fontWeight: FontWeight.bold),
                           ),
                         ),
                         SizedBox(width: 4.w),
                         GlassContainer(
-                            customShadow:
+                            boxShadow:
                                 Theme.of(context).brightness == Brightness.light
                                     ? []
                                     : null,
@@ -148,7 +148,7 @@ class _AssetCardState extends State<AssetCard> {
                         padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h / 2),
                         child: RepaintBoundary(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                            borderRadius: BorderRadius.circular(10.r),
                             child: Container(
                               width: double.infinity,
                               child: firstMediaData != null
@@ -204,7 +204,7 @@ class _AssetCardState extends State<AssetCard> {
                                         }
                                       },
                                       child: GlassContainer(
-                                        customShadow:
+                                        boxShadow:
                                             Theme.of(context).brightness ==
                                                     Brightness.light
                                                 ? []
@@ -223,7 +223,7 @@ class _AssetCardState extends State<AssetCard> {
                                                       .textTheme
                                                       .bodyMedium
                                                       ?.copyWith(
-                                                          fontSize: 12.sp)),
+                                                          fontSize: (12.sp * widget.scale).clamp(10.sp, 16.sp))),
                                               Icon(
                                                 Icons.currency_bitcoin,
                                                 size: 16.w,
