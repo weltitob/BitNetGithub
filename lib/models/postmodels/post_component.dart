@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/post/components/applemusicbuilder.dart';
 import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
@@ -426,7 +426,8 @@ class _PostComponentState extends State<PostComponent>
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 10.0),
+        child: mediaWidget);
   }
 
   // Builds non-editable media widgets for viewing posts
@@ -465,7 +466,8 @@ class _PostComponentState extends State<PostComponent>
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 10.0),
+        child: mediaWidget);
   }
 
   @override
