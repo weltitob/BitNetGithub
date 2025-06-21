@@ -138,7 +138,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ),
                           ),
                         )),
-                    WalletChartWidget(bitcoinController: bitcoinController),
+                    Opacity(
+                      opacity: 0.1,
+                      child: WalletChartWidget(bitcoinController: bitcoinController),
+                    ),
                     Column(
                       children: [
                         Obx(
@@ -1201,7 +1204,6 @@ class WalletChartWidget extends StatelessWidget {
               color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
               width: 3,
               splineType: SplineType.natural,
-              opacity: 0.1,
             ),
           ],
         );

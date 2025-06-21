@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/services/favicon_cache_service.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
@@ -30,6 +32,8 @@ class _WebsitesTabState extends State<WebsitesTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  
+  late final FaviconCacheService _faviconCache;
 
   // Simple, non-animated placeholder for favicon/image loading
   // Much more efficient than animated progress indicators
@@ -247,27 +251,59 @@ class _WebsitesTabState extends State<WebsitesTab>
   @override
   void initState() {
     super.initState();
-    // Only load favicons for visible websites (first 4 in carousel)
-    print('WebsitesTab: Starting to load favicons for first 4 websites');
+    
+    // Initialize favicon cache service
+    _faviconCache = Get.find<FaviconCacheService>();
+    
+    // Load favicons using the cache service
+    _loadFaviconsWithCache();
+  }
+  
+  Future<void> _loadFaviconsWithCache() async {
+    // First, load favicons for visible websites (first 4 in carousel)
+    final visibleUrls = websites.take(4)
+        .where((w) => w.iconPath == null)
+        .map((w) => w.url)
+        .toList();
+    
     for (int i = 0; i < 4 && i < websites.length; i++) {
       final website = websites[i];
-      // Load favicon for websites that don't have a local iconPath
       if (website.iconPath == null) {
-        website.loadFaviconBytes();
+        _loadCachedFavicon(website);
       }
     }
     
-    // Load remaining favicons with a delay to prevent performance issues
+    // Preload remaining favicons with a delay
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
+        final remainingUrls = websites.skip(4)
+            .where((w) => w.iconPath == null)
+            .map((w) => w.url)
+            .toList();
+        
+        // Preload in background
+        _faviconCache.preloadFavicons(remainingUrls);
+        
+        // Update UI for remaining websites
         for (int i = 4; i < websites.length; i++) {
           final website = websites[i];
           if (website.iconPath == null) {
-            website.loadFaviconBytes();
+            _loadCachedFavicon(website);
           }
         }
       }
     });
+  }
+  
+  Future<void> _loadCachedFavicon(WebsiteData website) async {
+    try {
+      final bytes = await _faviconCache.getFavicon(website.url);
+      if (bytes != null && mounted) {
+        website.updateFaviconBytes(bytes);
+      }
+    } catch (e) {
+      print('Error loading cached favicon for ${website.name}: $e');
+    }
   }
 
   @override
@@ -541,49 +577,10 @@ class WebsiteData {
     this.replaceColor = true,
   });
 
-  Future<void> loadFaviconBytes() async {
-    // Only fetch favicon if no iconPath is provided
-    if (iconPath != null) return;
-    
-    // Skip favicon loading if already loaded
-    if (faviconBytes != null) {
-      if (!_faviconBytesController.isClosed) {
-        _faviconBytesController.add(faviconBytes);
-      }
-      return;
-    }
-    
-    // Simple async loading without timers
-    try {
-      // Just use Google's favicon service for all websites - it's more reliable
-      final Uri uri = Uri.parse(url);
-      final domain = uri.host.isEmpty ? url : uri.host;
-      final faviconUrl = 'https://www.google.com/s2/favicons?domain=$domain&sz=64';
-      
-      print('Fetching favicon from: $faviconUrl');
-      
-      final response = await http.get(Uri.parse(faviconUrl)).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () => http.Response('', 408),
-      );
-      
-      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
-        faviconBytes = response.bodyBytes;
-        if (!_faviconBytesController.isClosed) {
-          _faviconBytesController.add(faviconBytes);
-        }
-        print('Successfully loaded favicon for $name');
-      } else {
-        print('Failed to load favicon for $name - Status: ${response.statusCode}');
-        if (!_faviconBytesController.isClosed) {
-          _faviconBytesController.add(null);
-        }
-      }
-    } catch (e) {
-      print('Error loading favicon for $name: $e');
-      if (!_faviconBytesController.isClosed) {
-        _faviconBytesController.add(null);
-      }
+  void updateFaviconBytes(Uint8List bytes) {
+    faviconBytes = bytes;
+    if (!_faviconBytesController.isClosed) {
+      _faviconBytesController.add(faviconBytes);
     }
   }
 

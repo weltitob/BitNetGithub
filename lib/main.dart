@@ -23,6 +23,8 @@ import 'package:bitnet/pages/transactions/controller/transaction_controller.dart
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/backbone/services/api_cache_service.dart';
+import 'package:bitnet/backbone/services/favicon_cache_service.dart';
+import 'package:bitnet/backbone/services/app_image_cache_service.dart';
 import 'package:bitnet/router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -245,6 +247,8 @@ Future<void> _initializeControllers() async {
   Get.put(OverlayController(), permanent: true);
   Get.put(UsersListController(), permanent: true);
   Get.put(ApiCacheService(), permanent: true);
+  Get.put(FaviconCacheService(), permanent: true);
+  Get.put(AppImageCacheService(), permanent: true);
 }
 
 // Asynchronously initialize remaining services for web after UI is rendered

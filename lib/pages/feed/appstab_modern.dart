@@ -9,11 +9,13 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
+import 'package:bitnet/components/items/cached_app_image.dart';
+import 'package:bitnet/backbone/services/app_image_cache_service.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -35,12 +37,14 @@ class _AppsTabModernState extends State<AppsTabModern>
   List<AppData> comingSoonApps = [];
   bool loading = true;
   String selectedCategory = 'All';
+  late final AppImageCacheService _imageCacheService;
   
   final List<String> categories = ['All', 'Finance', 'Games', 'Tools', 'Social'];
 
   @override
   void initState() {
     super.initState();
+    _imageCacheService = Get.find<AppImageCacheService>();
     loadAsync();
   }
 
@@ -50,6 +54,9 @@ class _AppsTabModernState extends State<AppsTabModern>
     
     // Set featured apps (first 3 apps)
     featuredApps = availableApps.take(3).toList();
+    
+    // Preload images for featured apps
+    _preloadImages();
     
     // Add some coming soon apps
     comingSoonApps = [
@@ -88,6 +95,40 @@ class _AppsTabModernState extends State<AppsTabModern>
     
     loading = false;
     if (mounted) setState(() {});
+  }
+  
+  Future<void> _preloadImages() async {
+    // Preload featured app images
+    final storageNames = featuredApps
+        .where((app) => app.useNetworkAsset && app.storageName != null)
+        .map((app) => app.storageName!)
+        .toList();
+    
+    final urls = featuredApps
+        .where((app) => app.useNetworkImage)
+        .map((app) => app.url)
+        .toList();
+    
+    await _imageCacheService.preloadImages(storageNames, urls);
+    
+    // Preload visible apps (first 6)
+    final visibleApps = availableApps.take(6).toList();
+    final visibleStorageNames = visibleApps
+        .where((app) => app.useNetworkAsset && app.storageName != null)
+        .map((app) => app.storageName!)
+        .toList();
+    
+    final visibleUrls = visibleApps
+        .where((app) => app.useNetworkImage)
+        .map((app) => app.url)
+        .toList();
+    
+    // Delay preloading of remaining apps
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        _imageCacheService.preloadImages(visibleStorageNames, visibleUrls);
+      }
+    });
   }
 
 
@@ -164,7 +205,7 @@ class _AppsTabModernState extends State<AppsTabModern>
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(12.r),
                                             child: Center(
-                                              child: AppImageBuilder(
+                                              child: CachedAppImage(
                                                 app: app,
                                                 width: 35.w,
                                                 height: 35.h,
@@ -415,7 +456,7 @@ class _AppsTabModernState extends State<AppsTabModern>
                               child: SizedBox(
                                 width: iconSize,
                                 height: iconSize,
-                                child: AppImageBuilder(
+                                child: CachedAppImage(
                                   app: app,
                                   width: iconSize,
                                   height: iconSize,
