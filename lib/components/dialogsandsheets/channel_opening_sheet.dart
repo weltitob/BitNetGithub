@@ -66,13 +66,19 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         _errorMessage = null;
       });
 
-      final result = await _channelService.processChannelRequest(widget.lnurlString);
+      final result = await _channelService.processChannelRequest(
+        widget.lnurlString,
+        onProgress: (progress) {
+          setState(() {
+            _progress = progress;
+            if (progress.errorMessage != null) {
+              _errorMessage = progress.errorMessage;
+            }
+          });
+        },
+      );
       
       if (result.success) {
-        setState(() {
-          _progress = ChannelOpeningProgress.completed();
-        });
-        
         // Wait a moment to show success, then close
         await Future.delayed(Duration(seconds: 2));
         
@@ -82,10 +88,13 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         
         Navigator.of(context).pop();
       } else {
-        setState(() {
-          _progress = ChannelOpeningProgress.error(result.message);
-          _errorMessage = result.message;
-        });
+        // Error state is already handled by the progress callback
+        if (_progress?.errorMessage == null) {
+          setState(() {
+            _progress = ChannelOpeningProgress.error(result.message);
+            _errorMessage = result.message;
+          });
+        }
       }
     } catch (e) {
       setState(() {

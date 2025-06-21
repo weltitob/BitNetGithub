@@ -3,6 +3,7 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
@@ -12,6 +13,7 @@ import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class TokenMarketplaceScreen extends StatefulWidget {
@@ -674,29 +676,31 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             
             SizedBox(height: AppTheme.cardPadding.h),
 
-            // Buy/Sell buttons
+            // Buy/Sell buttons (matching chart screen UI)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
-                    child: LongButtonWidget(
-                      buttonType: ButtonType.solid,
-                      title: 'Buy ${widget.tokenSymbol}',
-                      onTap: () {
-                        _showBuyBottomSheet();
-                      },
-                    ),
+                  BitNetImageWithTextButton(
+                    "Buy",
+                    () {
+                      _showTokenBuyBottomSheet();
+                    },
+                    width: AppTheme.cardPadding * 2.5.h,
+                    height: AppTheme.cardPadding * 2.5.h,
+                    fallbackIcon: FontAwesomeIcons.btc,
+                    fallbackIconSize: AppTheme.iconSize * 1.5,
                   ),
-                  SizedBox(width: AppTheme.elementSpacing.w),
-                  Expanded(
-                    child: LongButtonWidget(
-                      buttonType: ButtonType.transparent,
-                      title: 'Sell ${widget.tokenSymbol}',
-                      onTap: () {
-                        _showSellBottomSheet();
-                      },
-                    ),
+                  BitNetImageWithTextButton(
+                    "Sell",
+                    () {
+                      _showTokenSellBottomSheet();
+                    },
+                    width: AppTheme.cardPadding * 2.5.h,
+                    height: AppTheme.cardPadding * 2.5.h,
+                    fallbackIcon: Icons.sell_outlined,
+                    fallbackIconSize: AppTheme.iconSize * 1.5,
                   ),
                 ],
               ),
@@ -889,7 +893,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     );
   }
 
-  void _showBuyBottomSheet() {
+  void _showTokenBuyBottomSheet() {
     // Clear controllers
     btcController.clear();
     currController.clear();
@@ -936,7 +940,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     );
   }
 
-  void _showSellBottomSheet() {
+  void _showTokenSellBottomSheet() {
     // Reset state
     sellStep = 1;
     selectedPrice = '';
@@ -1024,33 +1028,77 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
         
         SizedBox(height: AppTheme.cardPadding.h),
         
-        // Floor price info
-        Container(
-          padding: EdgeInsets.all(AppTheme.cardPadding.w * 0.75),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.trending_down,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
-              ),
-              SizedBox(width: AppTheme.elementSpacing.w * 0.5),
-              Text(
-                'Floor Price: ',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                '\$${_getCurrentTokenData()['floorPrice']}',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
+        // Floor price info with cleaner UI (matching chart screen)
+        GlassContainer(
+          borderThickness: 1.5,
+          blur: 50,
+          opacity: 0.1,
+          borderRadius: AppTheme.cardRadiusMid,
+          child: Container(
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(AppTheme.elementSpacing.w * 0.75),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      ),
+                      child: Icon(
+                        Icons.insights_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: AppTheme.elementSpacing.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Floor Price on Marketplace',
+                            style: Theme.of(context).textTheme.titleSmall,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'Lowest available price',
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: AppTheme.elementSpacing.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '\$${_getCurrentTokenData()['floorPrice']}',
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          '${widget.tokenSymbol}',
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         

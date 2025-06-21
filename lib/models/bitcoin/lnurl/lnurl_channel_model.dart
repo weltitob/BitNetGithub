@@ -123,14 +123,22 @@ class ChannelOpeningProgress {
     return ChannelOpeningProgress(
       status: 'opening',
       message: 'Opening channel...',
-      progress: 0.75,
+      progress: 0.60,
+    );
+  }
+
+  factory ChannelOpeningProgress.verifying() {
+    return ChannelOpeningProgress(
+      status: 'verifying',
+      message: 'Verifying channel is active...',
+      progress: 0.85,
     );
   }
 
   factory ChannelOpeningProgress.completed() {
     return ChannelOpeningProgress(
       status: 'completed',
-      message: 'Channel opened successfully!',
+      message: 'Channel opened and verified successfully!',
       progress: 1.0,
       isCompleted: true,
     );

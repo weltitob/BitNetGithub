@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -235,7 +236,7 @@ class LnurlChannelService {
     }
   }
 
-  /// Gets the user's macaroon for LND authentication
+  /// Gets the user's macaroon for LND authentication (properly hex-encoded)
   Future<String> _getUserMacaroon() async {
     try {
       final currentUser = Auth().currentUser;
@@ -248,7 +249,21 @@ class LnurlChannelService {
       
       if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
         _logger.i("Using user-specific macaroon for ${nodeMapping.nodeId}");
-        return nodeMapping.adminMacaroon;
+        
+        // The macaroon is stored as base64, but LND expects hex
+        // Convert base64 to hex
+        try {
+          final base64Macaroon = nodeMapping.adminMacaroon;
+          final macaroonBytes = base64.decode(base64Macaroon);
+          final hexMacaroon = macaroonBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+          
+          _logger.i("Converted macaroon from base64 to hex (${base64Macaroon.length} -> ${hexMacaroon.length} chars)");
+          return hexMacaroon;
+        } catch (e) {
+          _logger.e("Failed to convert macaroon from base64 to hex: $e");
+          // If conversion fails, try using the macaroon as-is
+          return nodeMapping.adminMacaroon;
+        }
       } else {
         throw Exception("No user-specific macaroon found for user: ${currentUser.uid}");
       }
@@ -303,8 +318,120 @@ class LnurlChannelService {
     }
   }
 
-  /// Complete flow for processing an LNURL channel request
-  Future<LnurlChannelResult> processChannelRequest(String lnurlString) async {
+  /// Lists all channels for the current node
+  Future<List<Map<String, dynamic>>> listChannels() async {
+    try {
+      final baseUrl = await _getLndBaseUrl();
+      final url = '$baseUrl/v1/channels';
+      
+      _logger.i("Listing channels from: $url");
+      
+      // Get user's macaroon for authentication
+      final macaroon = await _getUserMacaroon();
+      
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Grpc-Metadata-macaroon': macaroon,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final channels = data['channels'] as List<dynamic>? ?? [];
+        _logger.i("Found ${channels.length} channels");
+        return channels.cast<Map<String, dynamic>>();
+      } else {
+        _logger.e("Failed to list channels: ${response.statusCode} - ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      _logger.e("Error listing channels: $e");
+      return [];
+    }
+  }
+
+  /// Verifies that a channel with the specified remote node exists and is active
+  Future<bool> verifyChannelCreation(String remoteNodeId, {int maxWaitSeconds = 60}) async {
+    try {
+      _logger.i("Verifying channel creation with remote node: $remoteNodeId");
+      
+      final startTime = DateTime.now();
+      const checkInterval = Duration(seconds: 3);
+      
+      while (DateTime.now().difference(startTime).inSeconds < maxWaitSeconds) {
+        final channels = await listChannels();
+        
+        // Look for a channel with the specified remote node
+        for (final channel in channels) {
+          final remotePubkey = channel['remote_pubkey'] as String?;
+          final channelActive = channel['active'] as bool? ?? false;
+          final channelPoint = channel['channel_point'] as String?;
+          
+          if (remotePubkey == remoteNodeId) {
+            _logger.i("Found channel with remote node $remoteNodeId: $channelPoint");
+            
+            if (channelActive) {
+              _logger.i("✅ Channel is active and ready");
+              return true;
+            } else {
+              _logger.i("Channel found but not yet active, continuing to poll...");
+            }
+          }
+        }
+        
+        _logger.i("Channel not found or not active yet, waiting ${checkInterval.inSeconds}s...");
+        await Future.delayed(checkInterval);
+      }
+      
+      _logger.w("Channel verification timed out after ${maxWaitSeconds}s");
+      return false;
+      
+    } catch (e) {
+      _logger.e("Error verifying channel creation: $e");
+      return false;
+    }
+  }
+
+  /// Gets detailed information about a specific channel
+  Future<Map<String, dynamic>?> getChannelInfo(String channelPoint) async {
+    try {
+      final baseUrl = await _getLndBaseUrl();
+      final url = '$baseUrl/v1/graph/edge/$channelPoint';
+      
+      _logger.i("Getting channel info for: $channelPoint");
+      
+      // Get user's macaroon for authentication
+      final macaroon = await _getUserMacaroon();
+      
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Grpc-Metadata-macaroon': macaroon,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        _logger.i("Retrieved channel info successfully");
+        return data;
+      } else {
+        _logger.e("Failed to get channel info: ${response.statusCode} - ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      _logger.e("Error getting channel info: $e");
+      return null;
+    }
+  }
+
+  /// Complete flow for processing an LNURL channel request with verification
+  Future<LnurlChannelResult> processChannelRequest(
+    String lnurlString, {
+    Function(ChannelOpeningProgress)? onProgress,
+  }) async {
     try {
       _logger.i("Processing channel request: $lnurlString");
 
@@ -320,6 +447,7 @@ class LnurlChannelService {
       final hostPort = uriParts[1];
 
       // Step 3: Connect to LSP node
+      onProgress?.call(ChannelOpeningProgress.connecting());
       final connected = await connectToPeer(nodeId, hostPort);
       if (!connected) {
         throw Exception("Failed to connect to LSP node");
@@ -329,6 +457,7 @@ class LnurlChannelService {
       final myNodeId = await getNodeId();
 
       // Step 5: Claim the channel
+      onProgress?.call(ChannelOpeningProgress.claiming());
       final channelResponse = await claimChannel(
         channelRequest.callback,
         channelRequest.k1,
@@ -336,15 +465,55 @@ class LnurlChannelService {
         isPrivate: false, // Default to public channel
       );
 
+      if (channelResponse.status != 'OK') {
+        final errorProgress = ChannelOpeningProgress.error(
+          channelResponse.reason ?? 'Channel claim failed'
+        );
+        onProgress?.call(errorProgress);
+        return LnurlChannelResult(
+          success: false,
+          message: channelResponse.reason ?? 'Channel claim failed',
+          channelRequest: channelRequest,
+          channelResponse: channelResponse,
+        );
+      }
+
+      // Step 6: Opening channel
+      onProgress?.call(ChannelOpeningProgress.opening());
+      await Future.delayed(Duration(seconds: 2)); // Allow some time for channel opening to begin
+
+      // Step 7: Verify the channel was actually created
+      onProgress?.call(ChannelOpeningProgress.verifying());
+      _logger.i("Channel claimed successfully, verifying channel creation...");
+      final channelVerified = await verifyChannelCreation(nodeId, maxWaitSeconds: 60);
+      
+      if (!channelVerified) {
+        _logger.w("Channel claim succeeded but channel verification failed");
+        final errorProgress = ChannelOpeningProgress.error(
+          'Channel was claimed but could not be verified as active'
+        );
+        onProgress?.call(errorProgress);
+        return LnurlChannelResult(
+          success: false,
+          message: 'Channel was claimed but could not be verified as active',
+          channelRequest: channelRequest,
+          channelResponse: channelResponse,
+        );
+      }
+
+      // Step 8: Success
+      onProgress?.call(ChannelOpeningProgress.completed());
+      _logger.i("✅ Channel successfully created and verified");
       return LnurlChannelResult(
-        success: channelResponse.status == 'OK',
-        message: channelResponse.reason ?? 'Channel request processed',
+        success: true,
+        message: 'Channel created and verified successfully',
         channelRequest: channelRequest,
         channelResponse: channelResponse,
       );
 
     } catch (e) {
       _logger.e("Failed to process channel request: $e");
+      onProgress?.call(ChannelOpeningProgress.error(e.toString()));
       return LnurlChannelResult(
         success: false,
         message: e.toString(),

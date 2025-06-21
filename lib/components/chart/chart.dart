@@ -351,7 +351,7 @@ class _ChartCoreState extends State<ChartCore> {
     // Convert to ChartLine format
     final chartData = periodData.map((point) {
       return ChartLine(
-        time: (point['time'] as int).toDouble(),
+        time: (point['time'] is int) ? (point['time'] as int).toDouble() : (point['time'] as double),
         price: double.parse(point['price'].toString()),
       );
     }).toList();

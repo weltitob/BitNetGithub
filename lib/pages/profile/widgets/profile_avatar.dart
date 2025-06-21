@@ -43,88 +43,25 @@ class ProfileAvatar extends StatelessWidget {
   }
 
   void _handleAvatarTap(BuildContext context, ProfileController controller, OverlayController overlayController) async {
-    await BitNetBottomSheet(
-      height: MediaQuery.of(context).size.height * 0.6,
-      context: context,
-      child: bitnetScaffold(
-        extendBodyBehindAppBar: true,
-        context: context,
-        appBar: bitnetAppBar(
-          hasBackButton: false,
-          context: context,
-          onTap: () {
-            Navigator.pop(context);
-          },
-          text: 'Change Images',
-        ),
-        body: Stack(
-          children: [
-            Container(
-              child: const Column(
-                children: [
-                  SizedBox(height: AppTheme.cardPadding * 4),
-                  Icon(FontAwesomeIcons.image, size: AppTheme.cardPadding * 4),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding,
-                        vertical: AppTheme.cardPadding * 2),
-                    child: Text(
-                      "Here you can change your profile picture or background image.",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            BottomButtons(
-              leftButtonTitle: "Profile Picture",
-              rightButtonTitle: "Background",
-              onLeftButtonTap: () async {
-                Navigator.pop(context);
-                final PermissionState ps = await PhotoManager.requestPermissionExtend();
-                if (!ps.isAuth && !ps.hasAccess) {
-                  overlayController.showOverlay(
-                      'Please give the app photo access to continue.',
-                      color: AppTheme.errorColor);
-                  return;
-                }
-                ImagePickerCombinedBottomSheet(
-                    context, 
-                    includeNFTs: true,
-                    onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                      if (image != null) {
-                        await controller.handleProfileImageSelected(image);
-                      } else if (pair != null) {
-                        await controller.handleProfileNftSelected(pair);
-                      }
-                      Navigator.pop(context);
-                });
-              },
-              onRightButtonTap: () async {
-                Navigator.pop(context);
-                final PermissionState ps = await PhotoManager.requestPermissionExtend();
-                if (!ps.isAuth && !ps.hasAccess) {
-                  overlayController.showOverlay(
-                      'Please give the app photo access to continue.',
-                      color: AppTheme.errorColor);
-                  return;
-                }
-                ImagePickerCombinedBottomSheet(
-                    context, 
-                    includeNFTs: true,
-                    onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                      if (image != null) {
-                        await controller.handleBackgroundImageSelected(image);
-                      } else if (pair != null) {
-                        await controller.handleBackgroundNftSelected(pair);
-                      }
-                      Navigator.pop(context);
-                });
-              }
-            )
-          ],
-        ),
-      ),
-    );
+    // Directly open profile picture selection without showing the choice dialog
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+    if (!ps.isAuth && !ps.hasAccess) {
+      overlayController.showOverlay(
+          'Please give the app photo access to continue.',
+          color: AppTheme.errorColor);
+      return;
+    }
+    
+    ImagePickerCombinedBottomSheet(
+        context, 
+        includeNFTs: true,
+        onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+          if (image != null) {
+            await controller.handleProfileImageSelected(image);
+          } else if (pair != null) {
+            await controller.handleProfileNftSelected(pair);
+          }
+          Navigator.pop(context);
+    });
   }
 }

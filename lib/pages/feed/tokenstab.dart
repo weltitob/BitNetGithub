@@ -95,29 +95,8 @@ class _TokensTabState extends State<TokensTab>
     return history;
   }
   
-  // Sample token data with realistic chart patterns
+  // Sample token data with realistic chart patterns - using only available token images
   final List<Map<String, dynamic>> tokenData = [
-    {
-      'name': 'Bitcoin',
-      'symbol': 'BTC',
-      'image': 'assets/images/bitcoin.png',
-      'price': '48,224.65',
-      'change': '+5.2%',
-      'isPositive': true,
-      'color': AppTheme.colorBitcoin,
-      'chartData': [
-        ChartLine(time: 0, price: 42000),
-        ChartLine(time: 1, price: 42500),
-        ChartLine(time: 2, price: 43100),
-        ChartLine(time: 3, price: 43050),
-        ChartLine(time: 4, price: 44500),
-        ChartLine(time: 5, price: 45200),
-        ChartLine(time: 6, price: 46100),
-        ChartLine(time: 7, price: 45800),
-        ChartLine(time: 8, price: 46750),
-        ChartLine(time: 9, price: 48224),
-      ]
-    },
     {
       'name': 'Genesis Stone',
       'symbol': 'GENST',
@@ -127,16 +106,16 @@ class _TokensTabState extends State<TokensTab>
       'isPositive': true,
       'color': Colors.blue,
       'chartData': [
-        ChartLine(time: 0, price: 0.000120),
-        ChartLine(time: 1, price: 0.000125),
-        ChartLine(time: 2, price: 0.000130),
-        ChartLine(time: 3, price: 0.000128),
-        ChartLine(time: 4, price: 0.000133),
-        ChartLine(time: 5, price: 0.000138),
-        ChartLine(time: 6, price: 0.000135),
-        ChartLine(time: 7, price: 0.000140),
-        ChartLine(time: 8, price: 0.000141),
-        ChartLine(time: 9, price: 0.000142),
+        ChartLine(time: 0.0, price: 0.000120),
+        ChartLine(time: 1.0, price: 0.000125),
+        ChartLine(time: 2.0, price: 0.000130),
+        ChartLine(time: 3.0, price: 0.000128),
+        ChartLine(time: 4.0, price: 0.000133),
+        ChartLine(time: 5.0, price: 0.000138),
+        ChartLine(time: 6.0, price: 0.000135),
+        ChartLine(time: 7.0, price: 0.000140),
+        ChartLine(time: 8.0, price: 0.000141),
+        ChartLine(time: 9.0, price: 0.000142),
       ]
     },
     {
@@ -148,16 +127,16 @@ class _TokensTabState extends State<TokensTab>
       'isPositive': false,
       'color': Colors.red.shade400,
       'chartData': [
-        ChartLine(time: 0, price: 0.000075),
-        ChartLine(time: 1, price: 0.000073),
-        ChartLine(time: 2, price: 0.000071),
-        ChartLine(time: 3, price: 0.000072),
-        ChartLine(time: 4, price: 0.000070),
-        ChartLine(time: 5, price: 0.000068),
-        ChartLine(time: 6, price: 0.000069),
-        ChartLine(time: 7, price: 0.000067),
-        ChartLine(time: 8, price: 0.000066),
-        ChartLine(time: 9, price: 0.000067),
+        ChartLine(time: 0.0, price: 0.000075),
+        ChartLine(time: 1.0, price: 0.000073),
+        ChartLine(time: 2.0, price: 0.000071),
+        ChartLine(time: 3.0, price: 0.000072),
+        ChartLine(time: 4.0, price: 0.000070),
+        ChartLine(time: 5.0, price: 0.000068),
+        ChartLine(time: 6.0, price: 0.000069),
+        ChartLine(time: 7.0, price: 0.000067),
+        ChartLine(time: 8.0, price: 0.000066),
+        ChartLine(time: 9.0, price: 0.000067),
       ]
     },
     {
@@ -169,16 +148,16 @@ class _TokensTabState extends State<TokensTab>
       'isPositive': true,
       'color': Colors.orange.shade400,
       'chartData': [
-        ChartLine(time: 0, price: 0.000082),
-        ChartLine(time: 1, price: 0.000083),
-        ChartLine(time: 2, price: 0.000085),
-        ChartLine(time: 3, price: 0.000084),
-        ChartLine(time: 4, price: 0.000086),
-        ChartLine(time: 5, price: 0.000087),
-        ChartLine(time: 6, price: 0.000088),
-        ChartLine(time: 7, price: 0.000087),
-        ChartLine(time: 8, price: 0.000088),
-        ChartLine(time: 9, price: 0.000089),
+        ChartLine(time: 0.0, price: 0.000082),
+        ChartLine(time: 1.0, price: 0.000083),
+        ChartLine(time: 2.0, price: 0.000085),
+        ChartLine(time: 3.0, price: 0.000084),
+        ChartLine(time: 4.0, price: 0.000086),
+        ChartLine(time: 5.0, price: 0.000087),
+        ChartLine(time: 6.0, price: 0.000088),
+        ChartLine(time: 7.0, price: 0.000087),
+        ChartLine(time: 8.0, price: 0.000088),
+        ChartLine(time: 9.0, price: 0.000089),
       ]
     },
     {
@@ -190,144 +169,207 @@ class _TokensTabState extends State<TokensTab>
       'isPositive': true,
       'color': Colors.green.shade400,
       'chartData': [
-        ChartLine(time: 0, price: 0.000135),
-        ChartLine(time: 1, price: 0.000140),
-        ChartLine(time: 2, price: 0.000145),
-        ChartLine(time: 3, price: 0.000143),
-        ChartLine(time: 4, price: 0.000148),
-        ChartLine(time: 5, price: 0.000151),
-        ChartLine(time: 6, price: 0.000153),
-        ChartLine(time: 7, price: 0.000154),
-        ChartLine(time: 8, price: 0.000155),
-        ChartLine(time: 9, price: 0.000156),
+        ChartLine(time: 0.0, price: 0.000135),
+        ChartLine(time: 1.0, price: 0.000140),
+        ChartLine(time: 2.0, price: 0.000145),
+        ChartLine(time: 3.0, price: 0.000143),
+        ChartLine(time: 4.0, price: 0.000148),
+        ChartLine(time: 5.0, price: 0.000151),
+        ChartLine(time: 6.0, price: 0.000153),
+        ChartLine(time: 7.0, price: 0.000154),
+        ChartLine(time: 8.0, price: 0.000155),
+        ChartLine(time: 9.0, price: 0.000156),
+      ]
+    },
+    {
+      'name': 'Lila Token',
+      'symbol': 'LILA',
+      'image': 'assets/tokens/lila.webp',
+      'price': '0.000234',
+      'change': '+4.5%',
+      'isPositive': true,
+      'color': Colors.purple.shade400,
+      'chartData': [
+        ChartLine(time: 0.0, price: 0.000210),
+        ChartLine(time: 1.0, price: 0.000215),
+        ChartLine(time: 2.0, price: 0.000220),
+        ChartLine(time: 3.0, price: 0.000218),
+        ChartLine(time: 4.0, price: 0.000225),
+        ChartLine(time: 5.0, price: 0.000228),
+        ChartLine(time: 6.0, price: 0.000230),
+        ChartLine(time: 7.0, price: 0.000232),
+        ChartLine(time: 8.0, price: 0.000233),
+        ChartLine(time: 9.0, price: 0.000234),
+      ]
+    },
+    {
+      'name': 'Mineral',
+      'symbol': 'MINRL',
+      'image': 'assets/tokens/mineral.webp',
+      'price': '0.000567',
+      'change': '-1.2%',
+      'isPositive': false,
+      'color': Colors.brown.shade400,
+      'chartData': [
+        ChartLine(time: 0.0, price: 0.000590),
+        ChartLine(time: 1.0, price: 0.000585),
+        ChartLine(time: 2.0, price: 0.000580),
+        ChartLine(time: 3.0, price: 0.000575),
+        ChartLine(time: 4.0, price: 0.000570),
+        ChartLine(time: 5.0, price: 0.000568),
+        ChartLine(time: 6.0, price: 0.000569),
+        ChartLine(time: 7.0, price: 0.000567),
+        ChartLine(time: 8.0, price: 0.000566),
+        ChartLine(time: 9.0, price: 0.000567),
+      ]
+    },
+    {
+      'name': 'Token Blue',
+      'symbol': 'TBLUE',
+      'image': 'assets/tokens/token_blue.webp',
+      'price': '0.000079',
+      'change': '+6.3%',
+      'isPositive': true,
+      'color': Colors.blue.shade600,
+      'chartData': [
+        ChartLine(time: 0.0, price: 0.000068),
+        ChartLine(time: 1.0, price: 0.000070),
+        ChartLine(time: 2.0, price: 0.000072),
+        ChartLine(time: 3.0, price: 0.000074),
+        ChartLine(time: 4.0, price: 0.000075),
+        ChartLine(time: 5.0, price: 0.000076),
+        ChartLine(time: 6.0, price: 0.000077),
+        ChartLine(time: 7.0, price: 0.000078),
+        ChartLine(time: 8.0, price: 0.000078),
+        ChartLine(time: 9.0, price: 0.000079),
       ]
     },
   ];
 
-  // Top movers data
+  // Top movers data - using available token images
   final List<Map<String, dynamic>> topMoversData = [
     {
-      'name': 'Ordinals',
-      'symbol': 'ORD',
-      'image': 'assets/tokens/hotdog.webp',
-      'change': '+15.8%',
+      'name': 'Emerald',
+      'symbol': 'EMRLD',
+      'image': 'assets/tokens/emerald.webp',
+      'change': '+7.9%',
       'isPositive': true,
-      'price': '0.000245',
+      'price': '0.000156',
       'chartData': [
-        ChartLine(time: 0, price: 0.000180),
-        ChartLine(time: 1, price: 0.000190),
-        ChartLine(time: 2, price: 0.000200),
-        ChartLine(time: 3, price: 0.000210),
-        ChartLine(time: 4, price: 0.000220),
-        ChartLine(time: 5, price: 0.000230),
-        ChartLine(time: 6, price: 0.000235),
-        ChartLine(time: 7, price: 0.000240),
-        ChartLine(time: 8, price: 0.000243),
-        ChartLine(time: 9, price: 0.000245),
+        ChartLine(time: 0.0, price: 0.000135),
+        ChartLine(time: 1.0, price: 0.000140),
+        ChartLine(time: 2.0, price: 0.000145),
+        ChartLine(time: 3.0, price: 0.000143),
+        ChartLine(time: 4.0, price: 0.000148),
+        ChartLine(time: 5.0, price: 0.000151),
+        ChartLine(time: 6.0, price: 0.000153),
+        ChartLine(time: 7.0, price: 0.000154),
+        ChartLine(time: 8.0, price: 0.000155),
+        ChartLine(time: 9.0, price: 0.000156),
       ]
     },
     {
-      'name': 'Lumen',
-      'symbol': 'LUM',
-      'image': 'assets/tokens/genisisstone.webp',
-      'change': '+12.3%',
+      'name': 'Token Blue',
+      'symbol': 'TBLUE',
+      'image': 'assets/tokens/token_blue.webp',
+      'change': '+6.3%',
       'isPositive': true,
-      'price': '0.000195',
+      'price': '0.000079',
       'chartData': [
-        ChartLine(time: 0, price: 0.000160),
-        ChartLine(time: 1, price: 0.000165),
-        ChartLine(time: 2, price: 0.000170),
-        ChartLine(time: 3, price: 0.000175),
-        ChartLine(time: 4, price: 0.000180),
-        ChartLine(time: 5, price: 0.000185),
-        ChartLine(time: 6, price: 0.000188),
-        ChartLine(time: 7, price: 0.000190),
-        ChartLine(time: 8, price: 0.000193),
-        ChartLine(time: 9, price: 0.000195),
+        ChartLine(time: 0.0, price: 0.000068),
+        ChartLine(time: 1.0, price: 0.000070),
+        ChartLine(time: 2.0, price: 0.000072),
+        ChartLine(time: 3.0, price: 0.000074),
+        ChartLine(time: 4.0, price: 0.000075),
+        ChartLine(time: 5.0, price: 0.000076),
+        ChartLine(time: 6.0, price: 0.000077),
+        ChartLine(time: 7.0, price: 0.000078),
+        ChartLine(time: 8.0, price: 0.000078),
+        ChartLine(time: 9.0, price: 0.000079),
       ]
     },
     {
-      'name': 'Nebula',
-      'symbol': 'NEB',
-      'image': 'assets/images/bitcoin.png',
-      'change': '+9.7%',
+      'name': 'Lila Token',
+      'symbol': 'LILA',
+      'image': 'assets/tokens/lila.webp',
+      'change': '+4.5%',
       'isPositive': true,
-      'price': '0.000110',
+      'price': '0.000234',
       'chartData': [
-        ChartLine(time: 0, price: 0.000095),
-        ChartLine(time: 1, price: 0.000098),
-        ChartLine(time: 2, price: 0.000100),
-        ChartLine(time: 3, price: 0.000102),
-        ChartLine(time: 4, price: 0.000104),
-        ChartLine(time: 5, price: 0.000106),
-        ChartLine(time: 6, price: 0.000107),
-        ChartLine(time: 7, price: 0.000108),
-        ChartLine(time: 8, price: 0.000109),
-        ChartLine(time: 9, price: 0.000110),
+        ChartLine(time: 0.0, price: 0.000210),
+        ChartLine(time: 1.0, price: 0.000215),
+        ChartLine(time: 2.0, price: 0.000220),
+        ChartLine(time: 3.0, price: 0.000218),
+        ChartLine(time: 4.0, price: 0.000225),
+        ChartLine(time: 5.0, price: 0.000228),
+        ChartLine(time: 6.0, price: 0.000230),
+        ChartLine(time: 7.0, price: 0.000232),
+        ChartLine(time: 8.0, price: 0.000233),
+        ChartLine(time: 9.0, price: 0.000234),
       ]
     },
   ];
 
-  // Top volume data
+  // Top volume data - using available token images
   final List<Map<String, dynamic>> topVolumeData = [
     {
-      'name': 'Ethereum',
-      'symbol': 'ETH',
+      'name': 'Mineral',
+      'symbol': 'MINRL',
+      'image': 'assets/tokens/mineral.webp',
+      'change': '-1.2%',
+      'isPositive': false,
+      'price': '0.000567',
+      'chartData': [
+        ChartLine(time: 0.0, price: 0.000590),
+        ChartLine(time: 1.0, price: 0.000585),
+        ChartLine(time: 2.0, price: 0.000580),
+        ChartLine(time: 3.0, price: 0.000575),
+        ChartLine(time: 4.0, price: 0.000570),
+        ChartLine(time: 5.0, price: 0.000568),
+        ChartLine(time: 6.0, price: 0.000569),
+        ChartLine(time: 7.0, price: 0.000567),
+        ChartLine(time: 8.0, price: 0.000566),
+        ChartLine(time: 9.0, price: 0.000567),
+      ]
+    },
+    {
+      'name': 'Genesis Stone',
+      'symbol': 'GENST',
       'image': 'assets/tokens/genisisstone.webp',
-      'change': '+7.5%',
+      'change': '+3.7%',
       'isPositive': true,
-      'price': '0.000340',
+      'price': '0.000142',
       'chartData': [
-        ChartLine(time: 0, price: 0.000300),
-        ChartLine(time: 1, price: 0.000305),
-        ChartLine(time: 2, price: 0.000310),
-        ChartLine(time: 3, price: 0.000315),
-        ChartLine(time: 4, price: 0.000320),
-        ChartLine(time: 5, price: 0.000325),
-        ChartLine(time: 6, price: 0.000330),
-        ChartLine(time: 7, price: 0.000335),
-        ChartLine(time: 8, price: 0.000338),
-        ChartLine(time: 9, price: 0.000340),
+        ChartLine(time: 0.0, price: 0.000120),
+        ChartLine(time: 1.0, price: 0.000125),
+        ChartLine(time: 2.0, price: 0.000130),
+        ChartLine(time: 3.0, price: 0.000128),
+        ChartLine(time: 4.0, price: 0.000133),
+        ChartLine(time: 5.0, price: 0.000138),
+        ChartLine(time: 6.0, price: 0.000135),
+        ChartLine(time: 7.0, price: 0.000140),
+        ChartLine(time: 8.0, price: 0.000141),
+        ChartLine(time: 9.0, price: 0.000142),
       ]
     },
     {
-      'name': 'Lightning',
-      'symbol': 'LN',
-      'image': 'assets/images/lightning.png',
-      'change': '+4.2%',
-      'isPositive': true,
-      'price': '0.000125',
-      'chartData': [
-        ChartLine(time: 0, price: 0.000115),
-        ChartLine(time: 1, price: 0.000117),
-        ChartLine(time: 2, price: 0.000118),
-        ChartLine(time: 3, price: 0.000119),
-        ChartLine(time: 4, price: 0.000120),
-        ChartLine(time: 5, price: 0.000121),
-        ChartLine(time: 6, price: 0.000122),
-        ChartLine(time: 7, price: 0.000123),
-        ChartLine(time: 8, price: 0.000124),
-        ChartLine(time: 9, price: 0.000125),
-      ]
-    },
-    {
-      'name': 'SolDot',
-      'symbol': 'SDT',
-      'image': 'assets/tokens/hotdog.webp',
+      'name': 'Cat Token',
+      'symbol': 'CAT',
+      'image': 'assets/tokens/cat.webp',
       'change': '-2.8%',
       'isPositive': false,
-      'price': '0.000087',
+      'price': '0.000067',
       'chartData': [
-        ChartLine(time: 0, price: 0.000095),
-        ChartLine(time: 1, price: 0.000093),
-        ChartLine(time: 2, price: 0.000092),
-        ChartLine(time: 3, price: 0.000091),
-        ChartLine(time: 4, price: 0.000090),
-        ChartLine(time: 5, price: 0.000089),
-        ChartLine(time: 6, price: 0.000088),
-        ChartLine(time: 7, price: 0.000087),
-        ChartLine(time: 8, price: 0.000087),
-        ChartLine(time: 9, price: 0.000087),
+        ChartLine(time: 0.0, price: 0.000075),
+        ChartLine(time: 1.0, price: 0.000073),
+        ChartLine(time: 2.0, price: 0.000071),
+        ChartLine(time: 3.0, price: 0.000072),
+        ChartLine(time: 4.0, price: 0.000070),
+        ChartLine(time: 5.0, price: 0.000068),
+        ChartLine(time: 6.0, price: 0.000069),
+        ChartLine(time: 7.0, price: 0.000067),
+        ChartLine(time: 8.0, price: 0.000066),
+        ChartLine(time: 9.0, price: 0.000067),
       ]
     },
   ];
@@ -361,23 +403,8 @@ class _TokensTabState extends State<TokensTab>
               // Wrap in RepaintBoundary for better performance
               return GestureDetector(
                 onTap: () {
-                  // Navigate to BitcoinScreen with token data
-                  if (token['symbol'] == 'BTC') {
-                    // For Bitcoin, navigate to normal Bitcoin screen
-                    context.push('/wallet/bitcoinscreen');
-                  } else {
-                    // For tokens, pass token data
-                    context.push(
-                      '/wallet/bitcoinscreen',
-                      extra: {
-                        'isToken': true,
-                        'tokenSymbol': token['symbol'],
-                        'tokenName': token['name'],
-                        'priceHistory': _getTokenPriceHistory(token['symbol']),
-                        'currentPrice': double.parse(token['price'].replaceAll(',', '')),
-                      },
-                    );
-                  }
+                  // Navigate to token marketplace for all tokens
+                  context.push('/feed/token_marketplace/${token['symbol']}/${token['name']}');
                 },
                 child: RepaintBoundary(
                   child: GlassContainer(
@@ -544,11 +571,11 @@ class _TokensTabState extends State<TokensTab>
                 padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: [
-                    // First crypto item with NumberIndicator - using tokenData[0] (Bitcoin)
+                    // First crypto item with NumberIndicator - using tokenData[0] (Genesis Stone)
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/wallet/bitcoinscreen'),
+                          onTap: () => context.push('/feed/token_marketplace/GENST/Genesis Stone'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -557,7 +584,10 @@ class _TokensTabState extends State<TokensTab>
                               icon: Image.asset(tokenData[0]['image']),
                             ),
                             context: context,
-                            // Bitcoin uses default controller data - no token overrides needed
+                            tokenChartData: tokenData[0]['chartData'],
+                            tokenPrice: tokenData[0]['price'],
+                            tokenPriceChange: tokenData[0]['change'],
+                            tokenIsPositive: tokenData[0]['isPositive'],
                           ),
                         ),
                         Positioned(
@@ -567,11 +597,11 @@ class _TokensTabState extends State<TokensTab>
                         ),
                       ],
                     ),
-                    // Second crypto item with NumberIndicator - using tokenData[1] (Genesis Stone)
+                    // Second crypto item with NumberIndicator - using tokenData[1] (Cat Token)
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/GENST/Genesis Stone'),
+                          onTap: () => context.push('/feed/token_marketplace/CAT/Cat Token'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -593,11 +623,11 @@ class _TokensTabState extends State<TokensTab>
                         ),
                       ],
                     ),
-                    // Third crypto item with NumberIndicator - using tokenData[2] (Cat Token)
+                    // Third crypto item with NumberIndicator - using tokenData[2] (Hotdog)
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/CAT/Cat Token'),
+                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(

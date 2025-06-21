@@ -485,7 +485,7 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                   child: Text(
                     "We've sent a 5 letter code to your email, please type it in below.",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceithOpacity(0.7),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
