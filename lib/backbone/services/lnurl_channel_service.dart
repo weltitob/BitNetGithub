@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
@@ -495,11 +496,21 @@ class LnurlChannelService {
         },
       );
 
+      _logger.i("Node info response status: ${response.statusCode}");
+      _logger.i("Node info response body: ${response.body.substring(0, math.min(100, response.body.length))}...");
+
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final nodeId = data['identity_pubkey'];
-        _logger.i("Retrieved node ID: $nodeId");
-        return nodeId;
+        // Check if response body looks like JSON
+        if (response.body.trim().startsWith('{')) {
+          final data = jsonDecode(response.body);
+          final nodeId = data['identity_pubkey'];
+          _logger.i("Retrieved node ID: $nodeId");
+          return nodeId;
+        } else {
+          // Response is not JSON, likely an HTML error page
+          _logger.e("Expected JSON but got HTML/text response: ${response.body}");
+          throw Exception("LND API returned HTML instead of JSON. Check if the endpoint URL is correct and the service is running properly.");
+        }
       } else {
         throw Exception("Failed to get node info: ${response.statusCode} - ${response.body}");
       }
@@ -917,6 +928,14 @@ class LnurlChannelService {
           _logger.i("✅ Active channel already exists: $channelPoint ($capacity sats)");
           await _updateChannelActivity(operationId!, ChannelOperationStatus.active, "✅ Active channel already exists ($capacity sats)", existingChannel);
           
+          // Save the final channel operation result to Firebase
+          await _saveChannelOperationToFirebase(
+            channelRequest: request,
+            status: ChannelOperationStatus.active,
+            nodeId: nodeId,
+            existingChannel: existingChannel,
+          );
+          
           onProgress?.call(ChannelOpeningProgress.completed());
           return LnurlChannelResult(
             success: true,
@@ -1135,7 +1154,14 @@ class LnurlChannelService {
       
       // Update activity with final error if we have an operation ID
       if (operationId != null) {
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "❌ Process failed: ${e.toString()}");
+        // Clean up the error message to avoid UI errors being saved
+        String cleanErrorMessage = e.toString();
+        if (cleanErrorMessage.contains('setState() called after dispose()')) {
+          cleanErrorMessage = "Process was cancelled";
+        } else if (cleanErrorMessage.length > 200) {
+          cleanErrorMessage = cleanErrorMessage.substring(0, 200) + "...";
+        }
+        await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "❌ Process failed: $cleanErrorMessage");
       }
       
       onProgress?.call(ChannelOpeningProgress.error(e.toString()));

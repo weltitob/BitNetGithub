@@ -137,6 +137,7 @@ class WalletsController extends BaseController {
   RxList<InternalRebalance> internalRebalancess_list =
       <InternalRebalance>[].obs;
   RxList<Swap> loopOperations_list = <Swap>[].obs; // optional
+  RxList<ChannelOperation> channelOperations_list = <ChannelOperation>[].obs;
 
   List<TransactionItem> __allTransactionItems = [];
   List<TransactionItem> get _allTransactionItems => __allTransactionItems;
@@ -193,90 +194,109 @@ class WalletsController extends BaseController {
     });
 
     //----------------------BALANCES----------------------
-    logger.i("Fetching balances initially in wallet_controller");
+    logger.i("Waiting for remote config before fetching balances...");
+    
+    // Wait for remote config to be initialized before making any API calls
+    final remoteConfigController = Get.find<RemoteConfigController>();
+    remoteConfigController.fetchRemoteConfigData().then((_) {
+      logger.i("Remote config loaded, now fetching balances");
+      
+      fetchOnchainWalletBalance().then((value) {
+        loadedBalanceFutures++;
+        if (!value) {
+          errorCount++;
+          loadMessageError = "Failed to load Onchain Balance";
+        }
+        if (loadedBalanceFutures == 2) {
+          queueErrorOvelay = true;
+          double btcDouble =
+              CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+          updateBalance(DateTime.now(), btcDouble);
+        }
+      });
 
-    fetchOnchainWalletBalance().then((value) {
-      loadedBalanceFutures++;
-      if (!value) {
-        errorCount++;
-        loadMessageError = "Failed to load Onchain Balance";
-      }
-      if (loadedBalanceFutures == 2) {
-        queueErrorOvelay = true;
-        double btcDouble =
-            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
-        updateBalance(DateTime.now(), btcDouble);
-      }
-    });
-
-    fetchLightingWalletBalance().then((value) {
-      loadedBalanceFutures++;
-      if (!value) {
-        errorCount++;
-        loadMessageError = "Failed to load Lightning Balance";
-      }
-      if (loadedBalanceFutures == 2) {
-        queueErrorOvelay = true;
-        double btcDouble =
-            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
-        updateBalance(DateTime.now(), btcDouble);
-      }
+      fetchLightingWalletBalance().then((value) {
+        loadedBalanceFutures++;
+        if (!value) {
+          errorCount++;
+          loadMessageError = "Failed to load Lightning Balance";
+        }
+        if (loadedBalanceFutures == 2) {
+          queueErrorOvelay = true;
+          double btcDouble =
+              CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+          updateBalance(DateTime.now(), btcDouble);
+        }
+      });
+    }).catchError((error) {
+      logger.e("Failed to load remote config: $error");
+      errorCount += 2;
+      loadMessageError = "Failed to load configuration";
     });
 
     //---------------------------------------------------
 
     //----------------------ACTIVITY----------------------
-    logger.i("Fetching activity initially in wallet_controller");
+    logger.i("Waiting for remote config before fetching activity...");
 
-    getTransactions(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching transactions in wallet_controller");
-      onchainTransactions.value = {
-        'transactions': val.map((tx) => tx.toJson()).toList()
-      };
-      logger.i("Transactions: $onchainTransactions");
-      futuresCompleted++;
-    });
+    // Activity fetching will also wait for remote config
+    remoteConfigController.fetchRemoteConfigData().then((_) {
+      logger.i("Remote config loaded, now fetching activity");
+      
+      getTransactions(Auth().currentUser!.uid).then((val) {
+        logger.i("Fetching transactions in wallet_controller");
+        onchainTransactions.value = {
+          'transactions': val.map((tx) => tx.toJson()).toList()
+        };
+        logger.i("Transactions: $onchainTransactions");
+        futuresCompleted++;
+      });
 
-    listPayments(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching payments in wallet_controller");
-      List<Map<String, dynamic>> paymentsMapped =
-          val.map((payment) => payment.toJson()).toList();
-      lightningPayments.value = {
-        'payments': paymentsMapped,
-        'first_index_offset': -1,
-        'last_index_offset': -1,
-        'total_num_payments': paymentsMapped.length
-      };
-      logger.i("Payments: $paymentsMapped");
-      futuresCompleted++;
-    });
+      listPayments(Auth().currentUser!.uid).then((val) {
+        logger.i("Fetching payments in wallet_controller");
+        List<Map<String, dynamic>> paymentsMapped =
+            val.map((payment) => payment.toJson()).toList();
+        lightningPayments.value = {
+          'payments': paymentsMapped,
+          'first_index_offset': -1,
+          'last_index_offset': -1,
+          'total_num_payments': paymentsMapped.length
+        };
+        logger.i("Payments: $paymentsMapped");
+        futuresCompleted++;
+      });
 
-    listInvoices(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching invoices in wallet_controller");
-      List<Map<String, dynamic>> mapList =
-          val.map((inv) => inv.toJson()).toList();
-      lightningInvoices.value = {'invoices': mapList};
-      logger.i("Invoices: $mapList");
-      futuresCompleted++;
-    });
+      listInvoices(Auth().currentUser!.uid).then((val) {
+        logger.i("Fetching invoices in wallet_controller");
+        List<Map<String, dynamic>> mapList =
+            val.map((inv) => inv.toJson()).toList();
+        lightningInvoices.value = {'invoices': mapList};
+        logger.i("Invoices: $mapList");
+        futuresCompleted++;
+      });
 
-    // FETCH ALL OLD REBALANCES ON INIT
-    listInternalRebalances(Auth().currentUser!.uid).then((val) {
-      logger.i("Fetching internal node rebalances in wallet_controller");
-      final mapList = val.map((reb) => reb.toJson()).toList();
-      internalRebalances.value = {
-        'internalRebalances': mapList, // Even if mapList is empty
-      };
+      // FETCH ALL OLD REBALANCES ON INIT
+      listInternalRebalances(Auth().currentUser!.uid).then((val) {
+        logger.i("Fetching internal node rebalances in wallet_controller");
+        final mapList = val.map((reb) => reb.toJson()).toList();
+        internalRebalances.value = {
+          'internalRebalances': mapList, // Even if mapList is empty
+        };
 
-      logger.i("Internal rebalances: $mapList");
-      // Not incrementing futuresCompleted here by default,
-      // will handle them in loadActivity with a new method
-      futuresCompleted++;
-    });
+        logger.i("Internal rebalances: $mapList");
+        // Not incrementing futuresCompleted here by default,
+        // will handle them in loadActivity with a new method
+        futuresCompleted++;
+      });
 
-    // FETCH ALL CHANNEL OPERATIONS ON INIT
-    _loadChannelOperations().then((val) {
-      futuresCompleted++;
+      // FETCH ALL CHANNEL OPERATIONS ON INIT
+      _loadChannelOperations().then((val) {
+        futuresCompleted++;
+      });
+    }).catchError((error) {
+      logger.e("Failed to load remote config for activity: $error");
+      // Set futures to complete to prevent hanging
+      futuresCompleted.value = 5;
     });
 
     // War mal: "if (walletController.futuresCompleted >= 3)"
@@ -653,26 +673,9 @@ class WalletsController extends BaseController {
         // Add to allTransactions list
         addOrUpdateTransaction(transactionItem);
         
-        // Show overlay for channel operations
-        if (operation.status == ChannelOperationStatus.active) {
-          if (operation.type == ChannelOperationType.existing) {
-            overlayController.showOverlayTransaction(
-              "Existing channel detected",
-              transactionItem,
-            );
-          } else {
-            overlayController.showOverlayTransaction(
-              "Channel opened successfully",
-              transactionItem,
-            );
-          }
-        } else if (operation.status == ChannelOperationStatus.pending ||
-                   operation.status == ChannelOperationStatus.opening) {
-          overlayController.showOverlayTransaction(
-            "Channel opening initiated",
-            transactionItem,
-          );
-        }
+        // Completely disable automatic channel operation overlays to prevent spam
+        // User will see channel status in the wallet transaction list instead
+        // Remove all overlay notifications for channel operations
         
       } catch (e, stacktrace) {
         channelOp = null;
@@ -1252,9 +1255,31 @@ class WalletsController extends BaseController {
         ),
       );
 
-      // (Optional) We could combine the actual internalRebalancess_list here too
-      // But because we already store them in LN invoice/payments
-      // we don't need to do a separate pass unless we want a unique display.
+      // Combine Channel Operations
+      _allTransactionItems.addAll(
+        channelOperations_list.map(
+          (operation) => TransactionItem(
+            data: TransactionItemData(
+              timestamp: operation.timestamp,
+              type: operation.type == ChannelOperationType.existing 
+                  ? TransactionType.channelDetected
+                  : TransactionType.channelOpen,
+              direction: operation.type == ChannelOperationType.existing
+                  ? TransactionDirection.received // Detected channels show as received
+                  : TransactionDirection.sent, // New channels show as sent (we initiated)
+              receiver: operation.remoteNodeAlias,
+              txHash: operation.channelId,
+              amount: operation.capacity > 0 ? operation.capacity.toString() : "0",
+              fee: 0,
+              status: operation.status == ChannelOperationStatus.active
+                  ? TransactionStatus.confirmed
+                  : operation.status == ChannelOperationStatus.failed
+                      ? TransactionStatus.failed
+                      : TransactionStatus.pending,
+            ),
+          ),
+        ),
+      );
 
       // Sort the combined list by timestamp descending
       _allTransactionItems

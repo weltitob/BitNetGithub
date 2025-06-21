@@ -35,6 +35,8 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   ChannelOpeningProgress? _progress;
   bool _isLoading = true;
   String? _errorMessage;
+  bool _isProcessing = false; // Flag to prevent multiple simultaneous operations
+  bool _shouldCancel = false; // Flag to cancel operations when widget is disposed
 
   @override
   void initState() {
@@ -110,9 +112,10 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   }
 
   Future<void> _openChannel() async {
-    if (_channelRequest == null) return;
+    if (_channelRequest == null || _isProcessing) return;
 
     try {
+      _isProcessing = true;
       if (mounted) {
         setState(() {
           _progress = ChannelOpeningProgress.connecting();
@@ -129,7 +132,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           pushAmount: widget.pushAmount ?? 0,
           isPrivate: true,
           onProgress: (progress) {
-            if (mounted) {
+            if (mounted && !_shouldCancel) {
               setState(() {
                 _progress = progress;
                 if (progress.errorMessage != null) {
@@ -144,7 +147,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         result = await _channelService.processChannelRequest(
           lnurlString: widget.lnurlString,
           onProgress: (progress) {
-            if (mounted) {
+            if (mounted && !_shouldCancel) {
               setState(() {
                 _progress = progress;
                 if (progress.errorMessage != null) {
@@ -160,7 +163,10 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         // Wait a moment to show success, then close
         await Future.delayed(Duration(seconds: 2));
         
-        if (widget.onChannelOpened != null) {
+        // Only call onChannelOpened for truly new channels, not existing ones
+        if (widget.onChannelOpened != null && 
+            !result.message.toLowerCase().contains('already exists') &&
+            !result.message.toLowerCase().contains('detected')) {
           widget.onChannelOpened!();
         }
         
@@ -181,7 +187,15 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           _errorMessage = e.toString();
         });
       }
+    } finally {
+      _isProcessing = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _shouldCancel = true;
+    super.dispose();
   }
 
   @override
