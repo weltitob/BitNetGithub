@@ -243,59 +243,54 @@ class WalletsController extends BaseController {
 
     // Activity is still fetched from Firebase, not from individual nodes
     getTransactions(Auth().currentUser!.uid).then((val) {
-        logger.i("Fetching transactions in wallet_controller");
-        onchainTransactions.value = {
-          'transactions': val.map((tx) => tx.toJson()).toList()
-        };
-        logger.i("Transactions: $onchainTransactions");
-        futuresCompleted++;
-      });
+      logger.i("Fetching transactions in wallet_controller");
+      onchainTransactions.value = {
+        'transactions': val.map((tx) => tx.toJson()).toList()
+      };
+      logger.i("Transactions: $onchainTransactions");
+      futuresCompleted++;
+    });
 
-      listPayments(Auth().currentUser!.uid).then((val) {
-        logger.i("Fetching payments in wallet_controller");
-        List<Map<String, dynamic>> paymentsMapped =
-            val.map((payment) => payment.toJson()).toList();
-        lightningPayments.value = {
-          'payments': paymentsMapped,
-          'first_index_offset': -1,
-          'last_index_offset': -1,
-          'total_num_payments': paymentsMapped.length
-        };
-        logger.i("Payments: $paymentsMapped");
-        futuresCompleted++;
-      });
+    listPayments(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching payments in wallet_controller");
+      List<Map<String, dynamic>> paymentsMapped =
+          val.map((payment) => payment.toJson()).toList();
+      lightningPayments.value = {
+        'payments': paymentsMapped,
+        'first_index_offset': -1,
+        'last_index_offset': -1,
+        'total_num_payments': paymentsMapped.length
+      };
+      logger.i("Payments: $paymentsMapped");
+      futuresCompleted++;
+    });
 
-      listInvoices(Auth().currentUser!.uid).then((val) {
-        logger.i("Fetching invoices in wallet_controller");
-        List<Map<String, dynamic>> mapList =
-            val.map((inv) => inv.toJson()).toList();
-        lightningInvoices.value = {'invoices': mapList};
-        logger.i("Invoices: $mapList");
-        futuresCompleted++;
-      });
+    listInvoices(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching invoices in wallet_controller");
+      List<Map<String, dynamic>> mapList =
+          val.map((inv) => inv.toJson()).toList();
+      lightningInvoices.value = {'invoices': mapList};
+      logger.i("Invoices: $mapList");
+      futuresCompleted++;
+    });
 
-      // FETCH ALL OLD REBALANCES ON INIT
-      listInternalRebalances(Auth().currentUser!.uid).then((val) {
-        logger.i("Fetching internal node rebalances in wallet_controller");
-        final mapList = val.map((reb) => reb.toJson()).toList();
-        internalRebalances.value = {
-          'internalRebalances': mapList, // Even if mapList is empty
-        };
+    // FETCH ALL OLD REBALANCES ON INIT
+    listInternalRebalances(Auth().currentUser!.uid).then((val) {
+      logger.i("Fetching internal node rebalances in wallet_controller");
+      final mapList = val.map((reb) => reb.toJson()).toList();
+      internalRebalances.value = {
+        'internalRebalances': mapList, // Even if mapList is empty
+      };
 
-        logger.i("Internal rebalances: $mapList");
-        // Not incrementing futuresCompleted here by default,
-        // will handle them in loadActivity with a new method
-        futuresCompleted++;
-      });
+      logger.i("Internal rebalances: $mapList");
+      // Not incrementing futuresCompleted here by default,
+      // will handle them in loadActivity with a new method
+      futuresCompleted++;
+    });
 
-      // FETCH ALL CHANNEL OPERATIONS ON INIT
-      _loadChannelOperations().then((val) {
-        futuresCompleted++;
-      });
-    }).catchError((error) {
-      logger.e("Failed to load remote config for activity: $error");
-      // Set futures to complete to prevent hanging
-      futuresCompleted.value = 5;
+    // FETCH ALL CHANNEL OPERATIONS ON INIT
+    _loadChannelOperations().then((val) {
+      futuresCompleted++;
     });
 
     // War mal: "if (walletController.futuresCompleted >= 3)"
@@ -1296,18 +1291,24 @@ class WalletsController extends BaseController {
 
   Future<OnchainBalance> getOnchainBalance() async {
     try {
-      RestResponse onchainBalanceRest =
-          await walletBalance(acc: Auth().currentUser!.uid);
+      // Use empty string for default account instead of user ID
+      RestResponse onchainBalanceRest = await walletBalance(acc: '');
+      
+      logger.i("Onchain balance response: ${onchainBalanceRest.statusCode}");
+      logger.d("Onchain balance data: ${onchainBalanceRest.data}");
 
-      if (!onchainBalanceRest.data.isEmpty) {
+      if (onchainBalanceRest.statusCode != "error" && !onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
             OnchainBalance.fromJson(onchainBalanceRest.data);
 
         this.onchainBalance.value = onchainBalance;
+        logger.i("Onchain balance updated: confirmed=${onchainBalance.confirmedBalance}, unconfirmed=${onchainBalance.unconfirmedBalance}");
+      } else {
+        logger.e("Failed to get onchain balance: ${onchainBalanceRest.message}");
       }
       changeTotalBalanceStr();
     } catch (e) {
-      print(e);
+      logger.e("Error in getOnchainBalance: $e");
     }
 
     return this.onchainBalance.value;
@@ -1503,22 +1504,43 @@ class WalletsController extends BaseController {
   }
 
   changeTotalBalanceStr() {
-    // Assuming both values are strings and represent numerical values
-    String confirmedBalanceStr = onchainBalance.value.confirmedBalance;
-    String balanceStr = lightningBalance.value.balance;
+    try {
+      // Get balance strings with null safety
+      String confirmedBalanceStr = onchainBalance.value.confirmedBalance ?? '0';
+      String balanceStr = lightningBalance.value.balance ?? '0';
 
-    double confirmedBalanceSAT = double.parse(confirmedBalanceStr);
-    double balanceSAT = double.parse(balanceStr);
+      // Parse with error handling
+      double confirmedBalanceSAT = 0;
+      double balanceSAT = 0;
+      
+      try {
+        confirmedBalanceSAT = double.parse(confirmedBalanceStr);
+      } catch (e) {
+        logger.w("Failed to parse onchain balance: $confirmedBalanceStr");
+        confirmedBalanceSAT = 0;
+      }
+      
+      try {
+        balanceSAT = double.parse(balanceStr);
+      } catch (e) {
+        logger.w("Failed to parse lightning balance: $balanceStr");
+        balanceSAT = 0;
+      }
 
-    totalBalanceSAT.value = confirmedBalanceSAT + balanceSAT;
+      totalBalanceSAT.value = confirmedBalanceSAT + balanceSAT;
 
-    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
-        totalBalanceSAT.value, BitcoinUnits.SAT);
-    final balance = bitcoinUnit.amount;
-    final unit = bitcoinUnit.bitcoinUnitAsString;
+      BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
+          totalBalanceSAT.value, BitcoinUnits.SAT);
+      final balance = bitcoinUnit.amount;
+      final unit = bitcoinUnit.bitcoinUnitAsString;
 
-    totalBalanceStr.value = balance.toString() + " " + unit;
-    totalBalance.value = bitcoinUnit;
+      totalBalanceStr.value = balance.toString() + " " + unit;
+      totalBalance.value = bitcoinUnit;
+      
+      logger.d("Total balance updated: ${totalBalanceSAT.value} SAT");
+    } catch (e) {
+      logger.e("Error in changeTotalBalanceStr: $e");
+    }
   }
   
   // Calculate what the balance would be if converted at a specific historical price point

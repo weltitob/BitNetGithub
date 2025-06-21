@@ -45,6 +45,8 @@ import 'package:bitnet/pages/feed/webview_page.dart';
 
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 
+import 'package:bitnet/pages/marketplace/collection/owners_screen.dart';
+
 import 'package:bitnet/pages/marketplace/ListScreen.dart';
 
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
@@ -252,6 +254,17 @@ class AppRoutes {
                   routerState: state,
                   context: ctx,
                 ),
+                routes: [
+                  GoRoute(
+                    path: 'owners',
+                    name: 'collection_owners',
+                    builder: (ctx, state) {
+                      // Import the OwnersScreen
+                      final collectionName = state.pathParameters['collection_id'] ?? '';
+                      return OwnersScreen(collectionName: collectionName);
+                    },
+                  ),
+                ],
               ),
               GoRoute(
                 path: 'token_marketplace/:symbol/:name',

@@ -163,10 +163,13 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 ),
                               ),
                             )
-                          : RepaintBoundary(child: ChartCore(
-                              chartInfoKey: chartInfoKey,
-                              tokenData: widget.tokenData,
-                            )),
+                          : RepaintBoundary(
+                              child: ChartCore(
+                                key: chartCoreKey,
+                                chartInfoKey: chartInfoKey,
+                                tokenData: widget.tokenData,
+                              ),
+                            ),
                     ),
                   ],
                 ),

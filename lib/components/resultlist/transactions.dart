@@ -400,7 +400,7 @@ class _TransactionsState extends State<Transactions>
         );
       }
 
-      // If fullList is true, display all transactions in a SliverToBoxAdapter
+      // If fullList is true, display all transactions with ListView.builder for better performance
       if (widget.fullList) {
         return SliverToBoxAdapter(
           child: Column(
@@ -448,8 +448,15 @@ class _TransactionsState extends State<Transactions>
                   ),
                 ),
               ),
-              // Categorized Transactions
-              ...transactionsController.orderedTransactions,
+              // Categorized Transactions with ListView.builder for performance
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: transactionsController.orderedTransactions.length,
+                itemBuilder: (context, index) {
+                  return transactionsController.orderedTransactions[index];
+                },
+              ),
             ],
           ),
         );

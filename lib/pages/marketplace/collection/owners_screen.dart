@@ -1,9 +1,11 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -38,63 +40,55 @@ class _OwnersScreenState extends State<OwnersScreen> {
   }
 
   void _loadMockOwners() {
-    // Mock data for demonstration
+    // Mock data from original owners tab
     _owners = [
       OwnerModel(
-        address: '1A1zP1e...aMGHmknpX',
-        username: 'satoshi_nakamoto',
-        itemsOwned: 1200,
-        totalValue: '12.5 BTC',
-        isVerified: true,
+        name: "User1",
+        address: "bc1q...3x9f",
+        assets: 42,
+        percentage: "4.2%",
       ),
       OwnerModel(
-        address: '1BvBMS...3J3RQborc',
-        username: 'punk_collector',
-        itemsOwned: 850,
-        totalValue: '8.2 BTC',
-        isVerified: true,
+        name: "User2",
+        address: "bc1q...7t2g",
+        assets: 38,
+        percentage: "3.8%",
       ),
       OwnerModel(
-        address: '1HLoD9...iqhzqtX5H',
-        username: 'ordinal_maxi',
-        itemsOwned: 642,
-        totalValue: '6.1 BTC',
-        isVerified: false,
+        name: "User3",
+        address: "bc1q...5k1h",
+        assets: 27,
+        percentage: "2.7%",
       ),
       OwnerModel(
-        address: '12c6DS...Qj7VWXl2R',
-        username: 'bitcoin_whale',
-        itemsOwned: 521,
-        totalValue: '5.8 BTC',
-        isVerified: true,
+        name: "User4",
+        address: "bc1q...9j4d",
+        assets: 19,
+        percentage: "1.9%",
       ),
       OwnerModel(
-        address: '1F1tAa...8WUvhW9oK',
-        username: 'nft_enthusiast',
-        itemsOwned: 387,
-        totalValue: '4.2 BTC',
-        isVerified: false,
+        name: "User5",
+        address: "bc1q...2m7s",
+        assets: 15,
+        percentage: "1.5%",
       ),
       OwnerModel(
-        address: '1Dorian...SSgqyKP5L',
-        username: 'crypto_artist',
-        itemsOwned: 256,
-        totalValue: '3.1 BTC',
-        isVerified: true,
+        name: "User6",
+        address: "bc1q...6f3a",
+        assets: 12,
+        percentage: "1.2%",
       ),
       OwnerModel(
-        address: '1JwSS...8BEHhABfY',
-        username: 'hodler_supreme',
-        itemsOwned: 198,
-        totalValue: '2.4 BTC',
-        isVerified: false,
+        name: "User7",
+        address: "bc1q...8n2v",
+        assets: 10,
+        percentage: "1.0%",
       ),
       OwnerModel(
-        address: '1Nd4T...k7VKqyRzs',
-        username: 'punk_trader',
-        itemsOwned: 134,
-        totalValue: '1.8 BTC',
-        isVerified: false,
+        name: "User8",
+        address: "bc1q...1p4c",
+        assets: 8,
+        percentage: "0.8%",
       ),
     ];
   }
@@ -102,10 +96,15 @@ class _OwnersScreenState extends State<OwnersScreen> {
   void _filterOwners(String query) {
     _searchQuery = query;
     setState(() {
-      _filteredOwners = _owners.where((owner) {
-        return owner.username.toLowerCase().contains(query.toLowerCase()) ||
-               owner.address.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+      if (query.isEmpty) {
+        _filteredOwners = _owners;
+      } else {
+        final queryLower = query.toLowerCase();
+        _filteredOwners = _owners.where((owner) {
+          return owner.name.toLowerCase().contains(queryLower) ||
+                 owner.address.toLowerCase().contains(queryLower);
+        }).toList();
+      }
     });
   }
 
@@ -116,206 +115,140 @@ class _OwnersScreenState extends State<OwnersScreen> {
       appBar: bitnetAppBar(
         context: context,
         text: '${widget.collectionName ?? "Collection"} Holders',
-        onTap: () => context.pop(),
+        onTap: () => Navigator.of(context).pop(),
       ),
-      body: Column(
-        children: [
-          // Search Section
-          Padding(
-            padding: EdgeInsets.all(AppTheme.cardPadding.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: AppTheme.cardPadding.w, vertical: AppTheme.cardPadding.h),
+        child: Column(
+          children: [
+            // Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Search Holders',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: AppTheme.elementSpacing.h),
-                SearchFieldWidget(
-                  hintText: 'Search by username or address...',
-                  isSearchEnabled: true,
-                  handleSearch: (value) => _filterOwners(value),
-                  onChanged: (value) => _filterOwners(value),
-                ),
+                Text("Top Owners", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
-          ),
-          
-          // Owners List
-          Expanded(
-            child: _filteredOwners.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+            SizedBox(height: 12.h),
+
+            // Search Bar
+            SearchFieldWidget(
+              hintText: "Search owners...",
+              isSearchEnabled: true,
+              handleSearch: (value) {
+                // Handle search submission
+              },
+              onChanged: (value) => _filterOwners(value),
+            ),
+            SizedBox(height: 16.h),
+
+            // No Results Message
+            if (_filteredOwners.isEmpty)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32.h),
+                  child: Text(
+                    "No owners found matching your search",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
+
+            // Owners List with GlassContainer wrapper for consistency
+            if (_filteredOwners.isNotEmpty)
+              Expanded(
+                child: GlassContainer(
+                  child: ListView.builder(
                     itemCount: _filteredOwners.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
                     itemBuilder: (context, index) {
                       final owner = _filteredOwners[index];
-                      return _buildOwnerTile(owner, index + 1);
+                      final displayNumber = index + 1;
+                      
+                      return BitNetListTile(
+                        margin: EdgeInsets.zero,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPaddingSmall,
+                          vertical: AppTheme.elementSpacing,
+                        ),
+                        leading: Avatar(
+                          profileId: owner.name.toLowerCase(),
+                          name: owner.name,
+                          size: 48.w,
+                          type: profilePictureType.onchain,
+                          cornerWidget: displayNumber <= 3 ? NumberIndicator(
+                            number: displayNumber,
+                            size: 0.8,
+                          ) : null,
+                          onTap: () {
+                            // Handle owner profile tap
+                          },
+                        ),
+                        customTitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              owner.name,
+                              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              owner.address,
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? AppTheme.white60 
+                                    : AppTheme.black60,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "${owner.assets} assets",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              owner.percentage,
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          // Handle owner tap - navigate to owner detail
+                        },
+                      );
                     },
                   ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOwnerTile(OwnerModel owner, int rank) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
-      child: GlassContainer(
-        boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
-        child: Padding(
-          padding: EdgeInsets.all(AppTheme.cardPaddingSmall.w),
-          child: Row(
-            children: [
-              // Rank
-              Container(
-                width: 32.w,
-                height: 32.h,
-                decoration: BoxDecoration(
-                  color: rank <= 3 
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                      : Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                ),
-                child: Center(
-                  child: Text(
-                    '#$rank',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: rank <= 3 
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
                 ),
               ),
-              
-              SizedBox(width: AppTheme.elementSpacing.w),
-              
-              // Avatar
-              Avatar(
-                profileId: owner.address,
-                name: owner.username,
-                size: 44.w,
-                type: profilePictureType.none,
-              ),
-              
-              SizedBox(width: AppTheme.elementSpacing.w),
-              
-              // Owner Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            owner.username,
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (owner.isVerified) ...[
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Icons.verified,
-                            size: 16.w,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ],
-                      ],
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      owner.address,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              
-              SizedBox(width: AppTheme.elementSpacing.w),
-              
-              // Stats
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${owner.itemsOwned} items',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    owner.totalValue,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppTheme.cardPadding.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64.w,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
-            ),
-            SizedBox(height: AppTheme.elementSpacing.h),
-            Text(
-              'No holders found',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
-            ),
-            SizedBox(height: AppTheme.elementSpacing.h / 2),
-            Text(
-              'Try adjusting your search terms',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
+
 }
 
 class OwnerModel {
+  final String name;
   final String address;
-  final String username;
-  final int itemsOwned;
-  final String totalValue;
-  final bool isVerified;
+  final int assets;
+  final String percentage;
 
   OwnerModel({
+    required this.name,
     required this.address,
-    required this.username,
-    required this.itemsOwned,
-    required this.totalValue,
-    required this.isVerified,
+    required this.assets,
+    required this.percentage,
   });
 }

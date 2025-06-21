@@ -355,69 +355,73 @@ class _CryptoItemState extends State<CryptoItem> {
 
                     color: Colors.transparent,
 
-                    child: SfCartesianChart(
+                    child: RepaintBoundary(
 
-                        enableAxisAnimation: true,
+                      child: SfCartesianChart(
 
-                        plotAreaBorderWidth: 0,
+                          enableAxisAnimation: true,
 
-                        primaryXAxis: CategoryAxis(
+                          plotAreaBorderWidth: 0,
 
-                            labelPlacement: LabelPlacement.onTicks,
+                          primaryXAxis: CategoryAxis(
 
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                              labelPlacement: LabelPlacement.onTicks,
 
-                            isVisible: false,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
 
-                            majorGridLines:
+                              isVisible: false,
 
-                            const MajorGridLines(width: 0),
+                              majorGridLines:
 
-                            majorTickLines:
+                              const MajorGridLines(width: 0),
 
-                            const MajorTickLines(width: 0)),
+                              majorTickLines:
 
-                        primaryYAxis: NumericAxis(
+                              const MajorTickLines(width: 0)),
 
-                            plotOffset: 0,
+                          primaryYAxis: NumericAxis(
 
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
+                              plotOffset: 0,
 
-                            isVisible: false,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
 
-                            majorGridLines:
+                              isVisible: false,
 
-                            const MajorGridLines(width: 0),
+                              majorGridLines:
 
-                            majorTickLines:
+                              const MajorGridLines(width: 0),
 
-                            const MajorTickLines(width: 0)),
+                              majorTickLines:
 
-                        series: <ChartSeries>[
+                              const MajorTickLines(width: 0)),
 
-                          LineSeries<ChartLine, double>(
+                          series: <ChartSeries>[
 
-                            dataSource: widget.tokenChartData ?? controllerCrypto.onedaychart,
+                            LineSeries<ChartLine, double>(
 
-                            animationDuration: 0,
+                              dataSource: widget.tokenChartData ?? controllerCrypto.onedaychart,
 
-                            xValueMapper: (ChartLine crypto, _) =>
+                              animationDuration: 0,
 
-                            crypto.time,
+                              xValueMapper: (ChartLine crypto, _) =>
 
-                            yValueMapper: (ChartLine crypto, _) =>
+                              crypto.time,
 
-                            crypto.price,
+                              yValueMapper: (ChartLine crypto, _) =>
 
-                            color: (widget.tokenIsPositive ?? (controllerCrypto.priceChange >= 0))
+                              crypto.price,
 
-                                ? AppTheme.successColor
+                              color: (widget.tokenIsPositive ?? (controllerCrypto.priceChange >= 0))
 
-                                : AppTheme.errorColor,
+                                  ? AppTheme.successColor
 
-                          )
+                                  : AppTheme.errorColor,
 
-                        ]),
+                            )
+
+                          ]),
+
+                    ),
 
                   ),
 

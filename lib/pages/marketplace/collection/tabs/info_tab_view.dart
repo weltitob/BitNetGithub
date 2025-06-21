@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
+import 'package:bitnet/pages/marketplace/collection/owners_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -61,7 +62,13 @@ class InfoTabView extends StatelessWidget {
                     _buildStatDivider(context),
                     _buildClickableStatItem(context, 'Owners', '2.4K', () {
                       // Navigate to owners screen
-                      context.push('/marketplace/collection/owners');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => OwnersScreen(
+                            collectionName: 'Bitcoin Punks', // Using demo data
+                          ),
+                        ),
+                      );
                     }),
                     _buildStatDivider(context),
                     _buildStatItem(context, 'Floor', '0.24 BTC'),
