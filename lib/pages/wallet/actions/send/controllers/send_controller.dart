@@ -43,6 +43,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -691,6 +692,7 @@ class SendsController extends BaseController {
         logger.e("❌ LNURL callback failed with status: ${response.statusCode}");
         overlayController.showOverlay("LNURL service error: ${response.statusCode}");
         isFinished.value = false;
+        loadingSending.value = false;
         return null;
       }
 
@@ -703,6 +705,7 @@ class SendsController extends BaseController {
         logger.e("❌ Failed to parse LNURL callback response: $e");
         overlayController.showOverlay("Invalid LNURL response format");
         isFinished.value = false;
+        loadingSending.value = false;
         return null;
       }
       
@@ -712,6 +715,7 @@ class SendsController extends BaseController {
         logger.e("❌ LNURL callback returned empty invoice");
         overlayController.showOverlay("LNURL service returned invalid invoice");
         isFinished.value = false;
+        loadingSending.value = false;
         return null;
       }
       
@@ -730,6 +734,7 @@ class SendsController extends BaseController {
       const int maxRetries = 3;
       const Duration paymentTimeout = Duration(minutes: 5); // Extended timeout for LNURL
       final DateTime startTime = DateTime.now();
+      final Completer<bool> paymentCompleter = Completer<bool>();
 
       sub = paymentStream.listen((dynamic response) {
         // Check for timeout
@@ -738,19 +743,19 @@ class SendsController extends BaseController {
           overlayController.showOverlay("Payment timeout - please try again");
           sub?.cancel();
           isFinished.value = false;
+          loadingSending.value = false;
           return;
         }
 
-        // Validate response format using helper function
-        final validation = _validatePaymentResponse(response, "LNURL Payment");
-        if (!validation['isValid']) {
-          logger.e("❌ Invalid LNURL payment response: ${validation['error']}");
+        // Extract status from stream-processed response (already validated by stream)
+        final paymentStatus = response['status'] ?? '';
+        final paymentHash = response['payment_hash'] as String?;
+        final failureReason = response['failure_reason'] as String?;
+        
+        if (paymentStatus.isEmpty) {
+          logger.e("❌ Invalid LNURL payment response: missing status");
           return; // Don't process invalid responses
         }
-
-        final paymentStatus = validation['status'] as String;
-        final paymentHash = validation['paymentHash'] as String?;
-        final failureReason = validation['failureReason'] as String?;
         
         logger.i("🔵 LNURL PaymentStream received status: '$paymentStatus' (retry: $retryCount/$maxRetries)");
         
@@ -765,18 +770,23 @@ class SendsController extends BaseController {
             LightningPayment payment = LightningPayment.fromJson(typedResponse);
             sub?.cancel();
             isFinished.value = true;
-            logger.i("✅ LNURL payment complete! Forwarding to feed...");
-            if (canNavigate) {
-              context.go("/");
+            logger.i("🔄 Completing payment completer with success");
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(true);
+              logger.i("✅ Payment completer completed successfully");
+            } else {
+              logger.w("⚠️ Payment completer was already completed");
             }
+            logger.i("✅ LNURL payment complete! Payment marked as finished.");
           } catch (e) {
             logger.e("Failed to parse LightningPayment from response: $e");
             logger.i("LNURL payment was successful but parsing failed. Continuing anyway...");
             sub?.cancel();
             isFinished.value = true;
-            if (canNavigate) {
-              context.go("/");
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(true);
             }
+            logger.i("✅ LNURL payment complete (parsing failed)! Payment marked as finished.");
           }
         } else if (paymentStatus == 'FAILED') {
           logger.e("❌ LNURL payment failed: ${failureReason ?? 'Unknown reason'}");
@@ -786,15 +796,23 @@ class SendsController extends BaseController {
           logger.i("Invoice already paid - treating as success");
           overlayController.showOverlay("Invoice was already paid!");
           isFinished.value = true;
-          if (canNavigate) {
-            context.go("/");
+          if (!paymentCompleter.isCompleted) {
+            paymentCompleter.complete(true);
           }
           } else if (failureReason?.contains('INSUFFICIENT_BALANCE') == true) {
             overlayController.showOverlay("Payment failed: Insufficient balance in your Lightning wallet");
             isFinished.value = false;
+            loadingSending.value = false;
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(false);
+            }
           } else {
             overlayController.showOverlay("Payment failed: ${failureReason ?? 'Unknown error'}");
             isFinished.value = false;
+            loadingSending.value = false;
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(false);
+            }
           }
           sub?.cancel();
         } else if (paymentStatus == 'IN_FLIGHT' || 
@@ -808,16 +826,16 @@ class SendsController extends BaseController {
             var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
             LightningPayment payment = LightningPayment.fromJson(typedResponse);
             sub?.cancel();
-            logger.i("LNURL Payment successful! Forwarding to feed...");
-            if (canNavigate) {
-              context.go("/");
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(true);
             }
+            logger.i("LNURL Payment successful! Payment completed.");
           } catch (e) {
             logger.e("Failed to parse LightningPayment from IN_FLIGHT response: $e");
             logger.i("LNURL Payment was successful but parsing failed. Continuing anyway...");
             sub?.cancel();
-            if (canNavigate) {
-              context.go("/");
+            if (!paymentCompleter.isCompleted) {
+              paymentCompleter.complete(true);
             }
           }
         } else {
@@ -835,16 +853,16 @@ class SendsController extends BaseController {
           var typedResponse = jsonDecode(jsonString) as Map<String, dynamic>;
           LightningPayment payment = LightningPayment.fromJson(typedResponse);
           sub?.cancel();
-          logger.i("Payment successful! Forwarding to feed...");
-          if (canNavigate) {
-            context.go("/");
+          if (!paymentCompleter.isCompleted) {
+            paymentCompleter.complete(true);
           }
+          logger.i("Payment successful! Completed.");
         } catch (e) {
           logger.e("Failed to parse LightningPayment from response: $e");
           logger.i("LNURL payment was successful but parsing failed. Continuing anyway...");
           sub?.cancel();
-          if (canNavigate) {
-            context.go("/");
+          if (!paymentCompleter.isCompleted) {
+            paymentCompleter.complete(true);
           }
         }
         } else {
@@ -852,6 +870,10 @@ class SendsController extends BaseController {
           logger.w("❓ Unknown LNURL payment status: '$paymentStatus', treating as failure");
           overlayController.showOverlay("Payment status unknown: please check your transactions");
           isFinished.value = false;
+          loadingSending.value = false;
+          if (!paymentCompleter.isCompleted) {
+            paymentCompleter.complete(false);
+          }
           sub?.cancel();
         }
       }, onError: (error) {
@@ -867,7 +889,11 @@ class SendsController extends BaseController {
         // Max retries exceeded
         logger.e("❌ LNURL payment failed after $maxRetries retries");
         isFinished.value = false;
+        loadingSending.value = false;
         overlayController.showOverlay("Payment failed after retries: $error");
+        if (!paymentCompleter.isCompleted) {
+          paymentCompleter.complete(false);
+        }
         sub?.cancel();
       }, onDone: () {
         logger.i("🏁 LNURL payment stream completed");
@@ -880,13 +906,52 @@ class SendsController extends BaseController {
       logger.i("🌐 LNURL callback successful! ${response.body}");
       logger.i("⏳ Now waiting for Lightning payment to complete...");
 
-      // Don't return immediately - let the stream handle the final result
+      // Wait for payment to complete and then navigate
+      logger.i("⏳ Waiting for payment completer to complete...");
+      final paymentSuccess = await paymentCompleter.future;
+      logger.i("🎯 Payment completer finished with result: $paymentSuccess, canNavigate: $canNavigate");
+      
+      if (paymentSuccess && canNavigate) {
+        logger.i("🚀 LNURL payment successful - now navigating to wallet screen");
+        overlayController.showOverlay("Payment sent successfully!");
+        try {
+          // Try immediate navigation first
+          GoRouter.of(context).go("/");
+          logger.i("✅ Successfully navigated to wallet screen");
+        } catch (e) {
+          logger.e("❌ Immediate navigation failed: $e");
+          // Try fallback navigation
+          try {
+            Get.offAllNamed("/");
+            logger.i("✅ Fallback navigation successful");
+          } catch (e2) {
+            logger.e("❌ Fallback navigation also failed: $e2");
+            // Try scheduled navigation as last resort
+            try {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                try {
+                  GoRouter.of(context).go("/");
+                  logger.i("✅ Scheduled navigation successful");
+                } catch (e3) {
+                  logger.e("❌ Scheduled navigation failed: $e3");
+                }
+              });
+            } catch (e3) {
+              logger.e("❌ Failed to schedule navigation: $e3");
+            }
+          }
+        }
+      } else {
+        logger.w("⚠️ Navigation skipped - paymentSuccess: $paymentSuccess, canNavigate: $canNavigate");
+      }
+
       return null;
       
     } catch (e) {
       logger.e("💥 LNURL payment setup failed: $e");
       overlayController.showOverlay("LNURL payment setup failed: $e");
       isFinished.value = false;
+      loadingSending.value = false;
       return null;
     }
   }
@@ -1533,7 +1598,7 @@ class SendsController extends BaseController {
           logger.i("Satcontroller text: ${satController.text}");
           logger
               .i("Satcontroller text parsed: ${int.parse(satController.text)}");
-          payLnUrl(lnCallback!, int.parse(satController.text), context, canNavigate: canNavigate);
+          payLnUrl(lnCallback!, int.parse(satController.text), context, canNavigate: true); // LNURL always navigates
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
@@ -1547,10 +1612,18 @@ class SendsController extends BaseController {
               int.parse(satController.text));
           bool firstSuccess = false;
           final sub = paymentStream.listen((dynamic response) {
-            isFinished.value =
-                true; // Assuming you might want to update UI on each response
-            // Handle both raw response format {result: {status: ...}} and transformed format {status: ...}
-            String paymentStatus = response['status'] ?? response['result']?['status'] ?? '';
+            // Extract status from stream-processed response (already validated by stream)
+            final paymentStatus = response['status'] ?? '';
+            final paymentHash = response['payment_hash'] as String?;
+            final failureReason = response['failure_reason'] as String?;
+            
+            if (paymentStatus.isEmpty) {
+              logger.e("❌ Invalid invoice payment response: missing status");
+              return; // Don't process invalid responses
+            }
+            
+            logger.i("🔵 Invoice PaymentStream received status: '$paymentStatus'");
+            
             if (paymentStatus == "SUCCEEDED") {
               logger.i("Success: ${response}");
 
@@ -1572,11 +1645,22 @@ class SendsController extends BaseController {
                   logger.i(
                       "Payment successful it should update the stream in walletcontroller which shows the overlay!");
                   // Get.find<WalletsController>().fetchLightingWalletBalance();
-                  // overlayController.showOverlay("Payment successful!");
+                  overlayController.showOverlay("Payment sent successfully!");
 
                   logger.i("Payment successful! Forwarding to wallet...");
-                  if (canNavigate) {
-                    context.go("/");
+                  overlayController.showOverlay("Payment sent successfully!");
+                  // Always navigate for successful payments regardless of shouldPop
+                  try {
+                    GoRouter.of(context).go("/");
+                    logger.i("✅ Successfully navigated to wallet screen (success)");
+                  } catch (e) {
+                    logger.e("❌ Navigation failed: $e");
+                    try {
+                      Get.offAllNamed("/");
+                      logger.i("✅ Fallback navigation successful (success)");
+                    } catch (e2) {
+                      logger.e("❌ Fallback navigation also failed: $e2");
+                    }
                   }
 
                   firstSuccess = true;
@@ -1586,45 +1670,68 @@ class SendsController extends BaseController {
                 logger.i("Payment was successful but parsing failed. Continuing anyway...");
                 if (!firstSuccess) {
                   logger.i("Payment successful! Forwarding to wallet...");
-                  if (canNavigate) {
-                    context.go("/");
+                  overlayController.showOverlay("Payment sent successfully!");
+                  // Always navigate for successful payments regardless of shouldPop
+                  try {
+                    GoRouter.of(context).go("/");
+                    logger.i("✅ Successfully navigated to wallet screen (success)");
+                  } catch (e) {
+                    logger.e("❌ Navigation failed: $e");
+                    try {
+                      Get.offAllNamed("/");
+                      logger.i("✅ Fallback navigation successful (success)");
+                    } catch (e2) {
+                      logger.e("❌ Fallback navigation also failed: $e2");
+                    }
                   }
                   firstSuccess = true;
                 }
               }
             } else if (paymentStatus == "FAILED") {
-              // Handle error
-              logger.i("Payment failed!");
-              String failureReason = response['failure_reason'] ?? response['result']?['failure_reason'] ?? 'Unknown error';
+              // Handle error  
+              logger.i("Invoice Payment failed!");
               
               // Check if invoice is already paid - treat as success
-              if (failureReason.toLowerCase().contains('already paid')) {
+              if (failureReason?.toLowerCase().contains('already paid') == true) {
                 logger.i("Invoice already paid - treating as success");
                 if (!firstSuccess) {
                   overlayController.showOverlay("Invoice was already paid!");
                   firstSuccess = true;
                 }
                 isFinished.value = true;
-                if (canNavigate) {
-                  context.go("/");
+                loadingSending.value = false;
+                // Always navigate for successful payments regardless of shouldPop
+                try {
+                  GoRouter.of(context).go("/");
+                  logger.i("✅ Successfully navigated to wallet screen (already paid)");
+                } catch (e) {
+                  logger.e("❌ Navigation failed: $e");
+                  try {
+                    Get.offAllNamed("/");
+                    logger.i("✅ Fallback navigation successful (already paid)");
+                  } catch (e2) {
+                    logger.e("❌ Fallback navigation also failed: $e2");
+                  }
                 }
-              } else if (failureReason.contains('INSUFFICIENT_BALANCE')) {
+              } else if (failureReason?.contains('INSUFFICIENT_BALANCE') == true) {
                 if (!firstSuccess) {
                   overlayController.showOverlay("Payment failed: Insufficient balance in your Lightning wallet");
                   firstSuccess = true;
                 }
                 isFinished.value = false;
+                loadingSending.value = false;
               } else {
                 if (!firstSuccess) {
-                  overlayController.showOverlay("Payment failed: $failureReason");
+                  overlayController.showOverlay("Payment failed: ${failureReason ?? 'Unknown error'}");
                   firstSuccess = true;
                 }
                 isFinished.value = false; // Keep the user on the same page to possibly retry or show error
+                loadingSending.value = false;
               }
             } else if (paymentStatus == 'IN_FLIGHT' || 
                        paymentStatus == 'PENDING') {
               // For invoice payments, check if IN_FLIGHT with valid payment data means success
-              if (paymentStatus == 'IN_FLIGHT' && response['result']?['payment_hash'] != null) {
+              if (paymentStatus == 'IN_FLIGHT' && paymentHash != null && paymentHash.isNotEmpty) {
                 logger.i("🟢 Invoice IN_FLIGHT payment detected with payment_hash - treating as success");
                 try {
                   String jsonString = jsonEncode(response);
@@ -1634,8 +1741,18 @@ class SendsController extends BaseController {
                   
                   if (!firstSuccess) {
                     logger.i("Invoice Payment successful! Forwarding to feed...");
-                    if (canNavigate) {
-                      context.go("/");
+                    // Always navigate for successful payments regardless of shouldPop
+                    try {
+                      GoRouter.of(context).go("/");
+                      logger.i("✅ Successfully navigated to wallet screen (IN_FLIGHT success)");
+                    } catch (e) {
+                      logger.e("❌ Navigation failed: $e");
+                      try {
+                        Get.offAllNamed("/");
+                        logger.i("✅ Fallback navigation successful (IN_FLIGHT success)");
+                      } catch (e2) {
+                        logger.e("❌ Fallback navigation also failed: $e2");
+                      }
                     }
                     firstSuccess = true;
                   }
@@ -1644,14 +1761,24 @@ class SendsController extends BaseController {
                   logger.i("Invoice Payment was successful but parsing failed. Continuing anyway...");
                   if (!firstSuccess) {
                     logger.i("Invoice Payment successful! Forwarding to feed...");
-                    if (canNavigate) {
-                      context.go("/");
+                    // Always navigate for successful payments regardless of shouldPop
+                    try {
+                      GoRouter.of(context).go("/");
+                      logger.i("✅ Successfully navigated to wallet screen (IN_FLIGHT success)");
+                    } catch (e) {
+                      logger.e("❌ Navigation failed: $e");
+                      try {
+                        Get.offAllNamed("/");
+                        logger.i("✅ Fallback navigation successful (IN_FLIGHT success)");
+                      } catch (e2) {
+                        logger.e("❌ Fallback navigation also failed: $e2");
+                      }
                     }
                     firstSuccess = true;
                   }
                 }
               } else {
-                // Payment is still processing - keep listening
+                // Payment is still processing - keep listening, don't set firstSuccess
                 logger.i("Invoice payment in progress, status: $paymentStatus");
                 return; // Don't cancel subscription, keep waiting for final status
               }
@@ -1788,16 +1915,19 @@ class SendsController extends BaseController {
           // This will require new Bitcoin key derivation compatible with BIP39 and individual node architecture
           overlayController.showOverlay("OnChain transactions need reimplementation for individual nodes");
           isFinished.value = false;
+          loadingSending.value = false;
         } else {
           logger.i("Unknown sendType");
         }
       } catch (e) {
         logger.e("Error with sendBTC: " + e.toString());
         isFinished.value = false;
+        loadingSending.value = false;
       }
     } else {
       // Display an error message if biometric authentication failed
       isFinished.value = false;
+      loadingSending.value = false;
       logger.e('Biometric authentication failed');
     }
   }
