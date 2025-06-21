@@ -80,7 +80,7 @@ class GlassContainer extends StatelessWidget {
                       ? Colors.white.withOpacity(0.9) 
                       : Colors.white.withOpacity(opacity)),
               borderRadius: radius,
-              border: border,
+              // border: border,
             ),
             padding: padding,
             child: child,

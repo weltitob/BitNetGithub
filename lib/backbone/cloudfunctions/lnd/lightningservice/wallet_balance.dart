@@ -1,94 +1,118 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:bitnet/backbone/helper/http_no_ssl.dart'; // Includes bytesToHex
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+// NEW: One user one node approach - Get wallet balance from user's node
 Future<RestResponse> walletBalance({String acc = ''}) async {
+  HttpOverrides.global = MyHttpOverrides();
+  
   final logger = Get.find<LoggerService>();
-
-  logger.i("Calling walletBalance() with account $acc");
+  logger.i("NEW walletBalance: Getting balance from user's individual node");
+  logger.i("Account filter: ${acc.isNotEmpty ? acc : 'default'}");
   
   try {
-    final litdController = Get.find<LitdController>();
-    final remoteConfigController = Get.find<RemoteConfigController>();
-    
-    // Wait for remote config to be loaded before proceeding
-    if (remoteConfigController.adminMacaroonByteData == null || litdController.litd_baseurl.value.isEmpty) {
-      logger.w("Remote config not loaded yet, waiting...");
-      await remoteConfigController.fetchRemoteConfigData();
-      
-      // Check again after fetching
-      if (remoteConfigController.adminMacaroonByteData == null || litdController.litd_baseurl.value.isEmpty) {
-        logger.e("Remote config failed to load properly");
-        return RestResponse(
-          statusCode: "error",
-          message: "Remote configuration not available",
-          data: {}
-        );
-      }
-    }
-    
-    final String restHost = litdController.litd_baseurl.value;
-    if (restHost.isEmpty) {
-      logger.e("Lightning node URL not configured");
+    // Get current user's ID
+    final userId = Auth().currentUser?.uid;
+    if (userId == null) {
+      logger.e("No user logged in");
       return RestResponse(
-        statusCode: "error", 
-        message: "Lightning node URL not configured",
+        statusCode: "error",
+        message: "No user logged in",
+        data: {}
+      );
+    }
+
+    // Get user's node mapping
+    final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
+    if (nodeMapping == null) {
+      logger.e("No node mapping found for user: $userId");
+      return RestResponse(
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {}
+      );
+    }
+
+    final nodeId = nodeMapping.nodeId;
+    logger.i("Using node: $nodeId for user: $userId");
+
+    // Get the admin macaroon from node mapping (stored as base64)
+    final macaroonBase64 = nodeMapping.adminMacaroon;
+    if (macaroonBase64.isEmpty) {
+      logger.e("No macaroon found in node mapping for node: $nodeId");
+      return RestResponse(
+        statusCode: "error",
+        message: "Failed to load node credentials",
         data: {}
       );
     }
     
-    String url = 'https://$restHost/v1/balance/blockchain';
+    // Convert base64 macaroon to hex format
+    final macaroonBytes = base64Decode(macaroonBase64);
+    final macaroon = bytesToHex(macaroonBytes);
+
+    // Build URL using Caddy endpoint
+    String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain';
     if (acc.isNotEmpty) {
-      url = 'https://$restHost/v1/balance/blockchain?account=${acc}';
+      url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain?account=${acc}';
     }
+    
+    logger.i("Getting wallet balance from: $url");
 
-    ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
-    List<int> bytes = byteData.buffer.asUint8List();
-    String macaroon = bytesToHex(bytes);
-
-    Map<String, String> headers = {
+    // Prepare headers
+    final Map<String, String> headers = {
       'Grpc-Metadata-macaroon': macaroon,
     };
 
-    HttpOverrides.global = MyHttpOverrides();
+    // Make request to user's node
+    try {
+      logger.i("Making GET request to user's node");
+      
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+      );
 
-    final DioClient dioClient = Get.find<DioClient>();
-
-    var response = await dioClient.get(
-      url: url,
-      headers: headers,
-    );
-    // Print raw response for debugging
-    logger.i('Raw Response account onchainbalance: ${response.data}');
-
-    if (response.statusCode == 200) {
-      return RestResponse(
+      // Check the response
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        logger.i("Successfully retrieved wallet balance from node $nodeId");
+        logger.d("Balance data: ${responseData}");
+        
+        return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved OnChain Balance",
-          data: response.data);
-    } else {
-      logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
-      return RestResponse(
+          data: responseData
+        );
+      } else {
+        logger.e("Failed to get balance. Status: ${response.statusCode}, Body: ${response.body}");
+        return RestResponse(
           statusCode: "error",
-          message:
-              "Failed to load data: ${response.statusCode}, ${response.data}",
-          data: {});
+          message: "Failed to load data: ${response.statusCode}",
+          data: response.body.isNotEmpty ? jsonDecode(response.body) : {}
+        );
+      }
+    } catch (e, stackTrace) {
+      logger.e("Error getting balance from node $nodeId: $e\nStackTrace: $stackTrace");
+      return RestResponse(
+        statusCode: "error",
+        message: "Failed to get balance: $e",
+        data: {}
+      );
     }
   } catch (e) {
-    logger.e('Error retriving onchain Balance: $e');
+    logger.e("Fatal error in walletBalance: $e");
     return RestResponse(
-        statusCode: "error",
-        message:
-            "Failed to load data: Could not get response from Lightning node!",
-        data: {});
+      statusCode: "error",
+      message: "Fatal error: $e",
+      data: {}
+    );
   }
 }
