@@ -23,6 +23,8 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/components/items/floor_price_widget.dart';
+import 'package:bitnet/components/items/token_action_buttons.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -254,41 +256,40 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       height: AppTheme.cardPadding * 2.5.h,
                       fallbackIcon: Icons.arrow_downward_rounded,
                     ),
-                    BitNetImageWithTextButton(
-                      widget.tokenData != null ? "Buy" : "Swap",
-                      () {
-                        if (widget.tokenData != null) {
-                          // Show buy bottom sheet for token
-                          _showTokenBuyBottomSheet();
-                        } else {
-                          // For Bitcoin, navigate to swap/loop screen
-                          Get.put(LoopsController());
-                          context.go("/wallet/loop_screen");
-                        }
-                      },
-                      // image: "assets/images/rebalance_image.png",
-                      width: AppTheme.cardPadding * 2.5.h,
-                      height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: widget.tokenData != null ? FontAwesomeIcons.btc : Icons.sync_rounded,
-                      fallbackIconSize: AppTheme.iconSize * 1.5,
-                    ),
-                    BitNetImageWithTextButton(
-                      widget.tokenData != null ? "Sell" : "Buy",
-                      () {
-                        if (widget.tokenData != null) {
-                          // Show sell bottom sheet for token
-                          _showTokenSellBottomSheet();
-                        } else {
-                          // For Bitcoin, navigate to buy screen
-                          context.push("/wallet/buy");
-                        }
-                      },
-                      // image: "assets/images/send_image.png",
-                      width: AppTheme.cardPadding * 2.5.h,
-                      height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: widget.tokenData != null ? Icons.sell_outlined : FontAwesomeIcons.btc,
-                      fallbackIconSize: AppTheme.iconSize * 1.5,
-                    ),
+                    // Use shared token action buttons for tokens
+                    if (widget.tokenData != null) 
+                      ...[
+                        Expanded(
+                          child: TokenActionButtons(
+                            onBuyTap: _showTokenBuyBottomSheet,
+                            onSellTap: _showTokenSellBottomSheet,
+                          ),
+                        ),
+                      ]
+                    else
+                      ...[
+                        BitNetImageWithTextButton(
+                          "Swap",
+                          () {
+                            Get.put(LoopsController());
+                            context.go("/wallet/loop_screen");
+                          },
+                          width: AppTheme.cardPadding * 2.5.h,
+                          height: AppTheme.cardPadding * 2.5.h,
+                          fallbackIcon: Icons.sync_rounded,
+                          fallbackIconSize: AppTheme.iconSize * 1.5,
+                        ),
+                        BitNetImageWithTextButton(
+                          "Buy",
+                          () {
+                            context.push("/wallet/buy");
+                          },
+                          width: AppTheme.cardPadding * 2.5.h,
+                          height: AppTheme.cardPadding * 2.5.h,
+                          fallbackIcon: FontAwesomeIcons.btc,
+                          fallbackIconSize: AppTheme.iconSize * 1.5,
+                        ),
+                      ],
                   ],
                 ),
                 ),
@@ -1048,78 +1049,10 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         
         SizedBox(height: AppTheme.cardPadding.h),
         
-        // Floor price info with cleaner UI
-        GlassContainer(
-          borderThickness: 1.5,
-          blur: 50,
-          opacity: 0.1,
-          borderRadius: AppTheme.cardRadiusMid,
-          child: Container(
-            padding: EdgeInsets.all(AppTheme.cardPadding.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(AppTheme.elementSpacing.w * 0.75),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                      ),
-                      child: Icon(
-                        Icons.insights_rounded,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(width: AppTheme.elementSpacing.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Floor Price on Marketplace',
-                            style: Theme.of(context).textTheme.titleSmall,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'Lowest available price',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: AppTheme.elementSpacing.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '\$${tokenData['floorPrice'].toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        Text(
-                          'per token',
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        // Floor price info using shared widget
+        FloorPriceWidget(
+          price: '\$${tokenData['floorPrice'].toStringAsFixed(2)}',
+          tokenSymbol: 'per token',
         ),
         
         const Spacer(),

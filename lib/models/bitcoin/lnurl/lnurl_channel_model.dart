@@ -111,6 +111,14 @@ class ChannelOpeningProgress {
     );
   }
 
+  factory ChannelOpeningProgress.checkingConnection() {
+    return ChannelOpeningProgress(
+      status: 'checking_connection',
+      message: 'Checking peer connection status...',
+      progress: 0.20,
+    );
+  }
+
   factory ChannelOpeningProgress.claiming() {
     return ChannelOpeningProgress(
       status: 'claiming',

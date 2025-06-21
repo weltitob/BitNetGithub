@@ -122,6 +122,13 @@ class LnurlChannelService {
     try {
       _logger.i("Connecting to peer: $nodeId@$host");
       
+      // First check if we're already connected
+      final isConnected = await isPeerConnected(nodeId);
+      if (isConnected) {
+        _logger.i("✅ Already connected to peer $nodeId");
+        return true;
+      }
+      
       final baseUrl = await _getLndBaseUrl();
       final url = '$baseUrl/v1/peers';
       
@@ -146,14 +153,64 @@ class LnurlChannelService {
       );
 
       if (response.statusCode == 200) {
-        _logger.i("Successfully connected to peer");
+        _logger.i("✅ Successfully connected to peer");
         return true;
       } else {
+        // Check if the error is "already connected"
+        final responseBody = response.body.toLowerCase();
+        if (responseBody.contains('already connected')) {
+          _logger.i("✅ Peer already connected (from error response)");
+          return true;
+        }
+        
         _logger.e("Failed to connect to peer: ${response.statusCode} - ${response.body}");
         return false;
       }
     } catch (e) {
       _logger.e("Error connecting to peer: $e");
+      return false;
+    }
+  }
+
+  /// Checks if a peer is already connected
+  Future<bool> isPeerConnected(String nodeId) async {
+    try {
+      final baseUrl = await _getLndBaseUrl();
+      final url = '$baseUrl/v1/peers';
+      
+      _logger.i("Checking connected peers");
+      
+      // Get user's macaroon for authentication
+      final macaroon = await _getUserMacaroon();
+      
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Grpc-Metadata-macaroon': macaroon,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final peers = data['peers'] as List<dynamic>? ?? [];
+        
+        // Check if the node is in the connected peers list
+        for (final peer in peers) {
+          if (peer['pub_key'] == nodeId) {
+            _logger.i("Found peer $nodeId in connected peers list");
+            return true;
+          }
+        }
+        
+        _logger.i("Peer $nodeId not found in connected peers list");
+        return false;
+      } else {
+        _logger.w("Failed to check connected peers: ${response.statusCode}");
+        return false;
+      }
+    } catch (e) {
+      _logger.e("Error checking connected peers: $e");
       return false;
     }
   }

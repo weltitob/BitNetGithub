@@ -104,21 +104,34 @@ class ImagePickerController extends GetxController {
     final logger = Get.find<LoggerService>();
     _loadTimer.start();
     
-    // Always load albums and photos first for better initial performance
-    final loadedAlbums = await BitnetPhotoManager.loadAlbums();
-    albums.value = loadedAlbums;
-    logger.i("Album loading took: ${_loadTimer.elapsedMilliseconds}ms");
-    
-    currentAlbum.value = albums.value.first;
-    currentPhotos.value = await BitnetPhotoManager.loadImages(currentAlbum.value!, 0, 50);
-    logger.i("Photo loading took: ${_loadTimer.elapsedMilliseconds}ms");
-    
-    // Update UI with photos first before loading NFTs
-    loading.value = false;
-    
-    // If NFTs are needed, load them separately after photos are displayed
-    if (includeNFTs && profileController != null) {
-      _loadNFTs();
+    try {
+      // Always load albums and photos first for better initial performance
+      final loadedAlbums = await BitnetPhotoManager.loadAlbums();
+      albums.value = loadedAlbums;
+      logger.i("Album loading took: ${_loadTimer.elapsedMilliseconds}ms");
+      
+      if (albums.value.isNotEmpty) {
+        currentAlbum.value = albums.value.first;
+        currentPhotos.value = await BitnetPhotoManager.loadImages(currentAlbum.value!, 0, 50);
+        logger.i("Photo loading took: ${_loadTimer.elapsedMilliseconds}ms");
+      } else {
+        logger.w("No albums found - permissions might be denied or no photos available");
+        currentPhotos.value = [];
+      }
+      
+      // Update UI with photos first before loading NFTs
+      loading.value = false;
+      
+      // If NFTs are needed, load them separately after photos are displayed
+      if (includeNFTs && profileController != null) {
+        _loadNFTs();
+      }
+    } catch (e) {
+      logger.e("Error loading photo data: $e");
+      // Ensure loading is set to false even on error to show empty state
+      loading.value = false;
+      albums.value = [];
+      currentPhotos.value = [];
     }
   }
   

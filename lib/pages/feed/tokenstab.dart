@@ -559,7 +559,7 @@ class _TokensTabState extends State<TokensTab>
           CommonHeading(
             headingText: "💰 Top 3 by Market Cap",
             hasButton: true,
-            onPress: 'marketcap',
+            onPress: () => _navigateToTopMarketCapToken(),
           ),
           
           // A single GlassContainer containing all crypto items
@@ -661,7 +661,7 @@ class _TokensTabState extends State<TokensTab>
           CommonHeading(
             headingText: "📈 Top Movers Today",
             hasButton: true,
-            onPress: 'topmovers',
+            onPress: () => _navigateToTopMover(),
           ),
           
           // Top Movers list
@@ -709,7 +709,7 @@ class _TokensTabState extends State<TokensTab>
           CommonHeading(
             headingText: "📊 Top Volume Today",
             hasButton: true,
-            onPress: 'topvolume',
+            onPress: () => _navigateToTopVolume(),
           ),
           
           // Top Volume list
@@ -757,5 +757,24 @@ class _TokensTabState extends State<TokensTab>
         ],
       )),
     );
+  }
+
+  // Navigation methods for top section buttons
+  void _navigateToTopMarketCapToken() {
+    // Navigate to the top market cap token (first in tokenData)
+    final topToken = tokenData[0];
+    context.push('/feed/token_marketplace/${topToken['symbol']}/${topToken['name']}');
+  }
+
+  void _navigateToTopMover() {
+    // Navigate to the top mover token (first in topMoversData)
+    final topMover = topMoversData[0];
+    context.push('/feed/token_marketplace/${topMover['symbol']}/${topMover['name']}');
+  }
+
+  void _navigateToTopVolume() {
+    // Navigate to the top volume token (first in topVolumeData)
+    final topVolume = topVolumeData[0];
+    context.push('/feed/token_marketplace/${topVolume['symbol']}/${topVolume['name']}');
   }
 }

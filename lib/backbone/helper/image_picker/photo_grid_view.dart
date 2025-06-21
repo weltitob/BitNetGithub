@@ -16,15 +16,52 @@ class PhotoGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => GridView.builder(
-      controller: controller.imgScrollController,
-      itemCount: controller.loadingMoreImages.value
-          ? ((controller.currentPhotos.length % 3) == 0
-              ? controller.currentPhotos.length + 3
-              : controller.currentPhotos.length + 3 + (controller.currentPhotos.length % 3))
-          : controller.currentPhotos.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemBuilder: (ctx, i) {
+    return Obx(() {
+      // Show loading indicator if still loading and no photos loaded yet
+      if (controller.loading.value && controller.currentPhotos.isEmpty) {
+        return Center(child: dotProgress(context));
+      }
+      
+      // Show empty state if no photos are available
+      if (controller.currentPhotos.isEmpty && !controller.loading.value) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.photo_library_outlined,
+                size: 64,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'No photos found',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Please check your photo permissions',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      
+      // Show the photo grid
+      return GridView.builder(
+        controller: controller.imgScrollController,
+        itemCount: controller.loadingMoreImages.value
+            ? ((controller.currentPhotos.length % 3) == 0
+                ? controller.currentPhotos.length + 3
+                : controller.currentPhotos.length + 3 + (controller.currentPhotos.length % 3))
+            : controller.currentPhotos.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        itemBuilder: (ctx, i) {
         if (i < controller.currentPhotos.length) {
           final photo = controller.currentPhotos[i];
           return InkWell(
@@ -72,7 +109,8 @@ class PhotoGridView extends StatelessWidget {
             color: Colors.transparent,
           );
         }
-      },
-    ));
+        },
+      );
+    });
   }
 }

@@ -57,7 +57,13 @@ class _CommonHeadingState extends State<CommonHeading> {
                       size: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
                       iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                      onTap: () => context.pushNamed(widget.onPress),
+                      onTap: () {
+                        if (widget.onPress is String) {
+                          context.pushNamed(widget.onPress);
+                        } else if (widget.onPress is Function) {
+                          widget.onPress();
+                        }
+                      },
                       iconData: widget.customButtonIcon,
                     )
                   : Container(),

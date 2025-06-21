@@ -340,13 +340,41 @@ class _ChartCoreState extends State<ChartCore> {
   }
   
   Widget _buildTokenChart(BuildContext context) {
-    // Get token data
-    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>;
+    // Safely get token data with null checks
+    if (widget.tokenData == null) {
+      return Center(
+        child: Text(
+          'No token data available',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
+    
+    // Get token data with safe casting
+    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
     final currentPrice = widget.tokenData!['currentPrice'];
     final tokenSymbol = widget.tokenData!['tokenSymbol'];
     
+    if (priceHistory == null || priceHistory.isEmpty) {
+      return Center(
+        child: Text(
+          'Price history not available',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
+    
     // Get data for selected period
-    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>;
+    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>?;
+    
+    if (periodData == null || periodData.isEmpty) {
+      return Center(
+        child: Text(
+          'No data for selected period',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
     
     // Convert to ChartLine format
     final chartData = periodData.map((point) {
