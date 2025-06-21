@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class MarketCapWidget extends StatelessWidget {
     ];
     
     return GlassContainer(
-      customShadow: isDarkMode ? [] : null,
+      boxShadow: isDarkMode ? [] : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

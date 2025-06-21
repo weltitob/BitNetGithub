@@ -1,4 +1,4 @@
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
 

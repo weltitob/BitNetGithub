@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 
 class BitNetImageWithTextContainer extends StatelessWidget {
@@ -50,8 +50,8 @@ class BitNetImageWithTextContainer extends StatelessWidget {
         child: GlassContainer(
           width: width,
           height: height,
-          customColor: customColor,
-          borderThickness: isActive ? 1 : 0,
+          
+          border: (isActive ? 1 : 0) == 0 ? null : Border.all(width: isActive ? 1 : 0, color: Theme.of(context).dividerColor),
           borderRadius: borderRadius,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -145,9 +145,9 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
         child: GlassContainer(
           width: width,
           height: height,
-          borderThickness: isActive ? 1 : 0,
+          border: (isActive ? 1 : 0) == 0 ? null : Border.all(width: isActive ? 1 : 0, color: Theme.of(context).dividerColor),
           borderRadius: borderRadius,
-          customShadow: [AppTheme.boxShadowSmall],
+          boxShadow: [AppTheme.boxShadowSmall],
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

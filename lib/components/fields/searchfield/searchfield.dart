@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 
 class SearchFieldWidget extends StatefulWidget {
@@ -34,11 +34,11 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
     return Container(
       child: GlassContainer(
 
-        borderRadius: AppTheme.cardRadiusSmall,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
         child: Container(
           height: AppTheme.cardPadding * 1.75,
           decoration: BoxDecoration(
-            borderRadius: AppTheme.cardRadiusSmall,
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
 
           ),
           child: TextFormField(
@@ -88,7 +88,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 border: OutlineInputBorder(
                     borderSide:
                         const BorderSide(width: 0, style: BorderStyle.none),
-                    borderRadius: AppTheme.cardRadiusMid)),
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid))),
           ),
         ),
       ),

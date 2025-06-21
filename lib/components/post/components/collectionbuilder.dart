@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 
 class CollectionBuilder extends StatelessWidget {
@@ -11,8 +11,7 @@ class CollectionBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
       child: GlassContainer(
-        customColor: Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50) : null,
-        borderRadius: BorderRadius.circular(AppTheme.elementSpacing * 1.5),
+        borderRadius: AppTheme.elementSpacing * 1.5,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
           child: Row(

@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 
 class AppBarActionButton extends StatelessWidget {
@@ -17,10 +17,10 @@ class AppBarActionButton extends StatelessWidget {
         left: AppTheme.elementSpacing * 0.5,
       ),
       child: GlassContainer(
-          borderThickness: 4, // remove border if not active
-          blur: 50,
+          border: Border.all(width: 4, color: Theme.of(context).dividerColor), // remove border if not active
+          blurX: 50, blurY: 50,
           opacity: 0.1,
-          borderRadius: AppTheme.cardRadiusCircular,
+          borderRadius: AppTheme.borderRadiusCircular,
           child: Container(
             height: AppTheme.cardPadding * 1,
             width: AppTheme.cardPadding * 1,

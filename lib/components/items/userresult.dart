@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -51,14 +51,12 @@ class _UserResultState extends State<UserResult> {
     return Container(
       height: AppTheme.cardPadding * 2.75,
       child: GlassContainer(
-        borderThickness: 1.5, // remove border if not active
-        blur: 50,
-        customColor: widget.selected ? AppTheme.successColor : null,
+        border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
         opacity: 0.1,
-        borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
+        borderRadius: AppTheme.cardPadding * 2.75 / 3,
         child: InkWell(
           onTap: widget.model == 2 ? widget.onTap : () {},
-          borderRadius: AppTheme.cardRadiusBig,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusBig),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -172,10 +170,9 @@ class _UserResultState extends State<UserResult> {
                               height: AppTheme.cardPadding * 1.5,
                               width: AppTheme.cardPadding * 1.5,
                               child: GlassContainer(
-                                borderThickness: 1.5, // remove border if not active
-                                blur: 50,
+                                border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
                                 opacity: 0.1,
-                                borderRadius: AppTheme.cardRadiusMid,
+                                borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
                                 child: Icon(
                                   FontAwesomeIcons.remove,
                                   size: AppTheme.elementSpacing * 1.5,
@@ -208,10 +205,9 @@ class _UserResultState extends State<UserResult> {
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  borderThickness: 1.5, // remove border if not active
-                                  blur: 50,
+                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     FontAwesomeIcons.key,
                                     size: AppTheme.elementSpacing * 1.5,
@@ -244,10 +240,9 @@ class _UserResultState extends State<UserResult> {
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  borderThickness: 1.5, // remove border if not active
-                                  blur: 50,
+                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     widget.onTapIcon ?? Icons.person_add,
                                     size: AppTheme.elementSpacing * 1.5,
@@ -267,10 +262,9 @@ class _UserResultState extends State<UserResult> {
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  borderThickness: 1.5, // remove border if not active
-                                  blur: 50,
+                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     FontAwesomeIcons.key,
                                     size: AppTheme.elementSpacing * 1.5,

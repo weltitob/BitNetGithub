@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter/material.dart';
 
@@ -97,10 +97,12 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
               : GlassContainer(
                   height: widget.customHeight,
                   width: widget.customWidth,
-                  borderThickness: widget.state == ButtonState.disabled
+                  border: (widget.state == ButtonState.disabled
                       ? 0
-                      : 1.5, // remove border if not active
-                  blur: 50,
+                      : 1.5) == 0 ? null : Border.all(width: widget.state == ButtonState.disabled
+                      ? 0
+                      : 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+                  blurX: 50, blurY: 50,
                   opacity: 0.1,
                   borderRadius: borderRadius,
                   child: Container(),

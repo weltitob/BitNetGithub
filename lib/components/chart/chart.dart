@@ -350,10 +350,20 @@ class _ChartCoreState extends State<ChartCore> {
       );
     }
     
-    // Get token data with safe casting
+    // Get token data with safe casting and null checks
     final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
     final currentPrice = widget.tokenData!['currentPrice'];
     final tokenSymbol = widget.tokenData!['tokenSymbol'];
+    
+    // Add validation for required fields
+    if (tokenSymbol == null || currentPrice == null) {
+      return Center(
+        child: Text(
+          'Invalid token data',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
     
     if (priceHistory == null || priceHistory.isEmpty) {
       return Center(
@@ -365,7 +375,13 @@ class _ChartCoreState extends State<ChartCore> {
     }
     
     // Get data for selected period
-    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>?;
+    final periodDataRaw = priceHistory[selectedPeriod];
+    List<Map<String, dynamic>>? periodData;
+    
+    // Handle different data types safely
+    if (periodDataRaw is List) {
+      periodData = periodDataRaw.cast<Map<String, dynamic>>().toList();
+    }
     
     if (periodData == null || periodData.isEmpty) {
       return Center(
@@ -376,18 +392,57 @@ class _ChartCoreState extends State<ChartCore> {
       );
     }
     
-    // Convert to ChartLine format
-    final chartData = periodData.map((point) {
-      return ChartLine(
-        time: (point['time'] is int) ? (point['time'] as int).toDouble() : (point['time'] as double),
-        price: double.parse(point['price'].toString()),
+    // Convert to ChartLine format with better error handling
+    List<ChartLine> chartData = [];
+    try {
+      chartData = periodData.map((point) {
+        final time = point['time'];
+        final price = point['price'];
+        
+        double timeValue = 0;
+        double priceValue = 0;
+        
+        // Handle time conversion
+        if (time is int) {
+          timeValue = time.toDouble();
+        } else if (time is double) {
+          timeValue = time;
+        }
+        
+        // Handle price conversion
+        if (price is num) {
+          priceValue = price.toDouble();
+        } else if (price is String) {
+          priceValue = double.tryParse(price) ?? 0;
+        }
+        
+        return ChartLine(
+          time: timeValue,
+          price: priceValue,
+        );
+      }).toList();
+    } catch (e) {
+      LoggerService logger = Get.find<LoggerService>();
+      logger.e("Error converting chart data: $e");
+      return Center(
+        child: Text(
+          'Error loading chart data',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
       );
-    }).toList();
+    }
     
     // Calculate price changes
-    final firstPrice = chartData.isNotEmpty ? chartData.first.price : currentPrice;
-    final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPrice;
-    final priceChange = firstPrice == 0 ? 0 : (lastPrice - firstPrice) / firstPrice;
+    double currentPriceValue = 0;
+    if (currentPrice is num) {
+      currentPriceValue = currentPrice.toDouble();
+    } else if (currentPrice is String) {
+      currentPriceValue = double.tryParse(currentPrice) ?? 0;
+    }
+    
+    final firstPrice = chartData.isNotEmpty ? chartData.first.price : currentPriceValue;
+    final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPriceValue;
+    final priceChange = firstPrice == 0 ? 0.0 : (lastPrice - firstPrice) / firstPrice;
     
     // Create trackball behavior with proper callbacks
     final trackballBehavior = TrackballBehavior(
@@ -763,12 +818,30 @@ class _CustomWidgetState extends State<CustomWidget>
     
     // Check if we're displaying token data
     if (widget.tokenData != null) {
-      final tokenSymbol = widget.tokenData!['tokenSymbol'];
-      final tokenName = widget.tokenData!['tokenName'];
+      final tokenSymbol = widget.tokenData!['tokenSymbol'] as String?;
+      final tokenName = widget.tokenData!['tokenName'] as String?;
       final currentPrice = widget.tokenData!['currentPrice'];
       
+      // Validate required fields
+      if (tokenSymbol == null || tokenName == null || currentPrice == null) {
+        return Center(
+          child: Text(
+            'Invalid token data',
+            style: theme.textTheme.bodyMedium,
+          ),
+        );
+      }
+      
+      // Convert currentPrice to double
+      double currentPriceValue = 0;
+      if (currentPrice is num) {
+        currentPriceValue = currentPrice.toDouble();
+      } else if (currentPrice is String) {
+        currentPriceValue = double.tryParse(currentPrice) ?? 0;
+      }
+      
       // Use hover values if hovering, otherwise use current values
-      final displayPrice = _isHovering && _hoverPrice != null ? _hoverPrice! : currentPrice;
+      final displayPrice = _isHovering && _hoverPrice != null ? _hoverPrice! : currentPriceValue;
       final displayTime = _isHovering && _hoverTime != null ? _hoverTime! : DateTime.now();
       
       DateFormat dateFormat = DateFormat("dd.MM.yyyy");
@@ -845,18 +918,45 @@ class _CustomWidgetState extends State<CustomWidget>
                   
                   if (chartCoreState != null && widget.tokenData != null) {
                     final selectedPeriod = chartCoreState.selectedPeriod;
-                    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>;
-                    final periodData = priceHistory[selectedPeriod] as List<Map<String, dynamic>>;
+                    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
                     
-                    if (periodData.isNotEmpty) {
-                      final firstPrice = double.parse(periodData.first['price'].toString());
-                      // Use hover price if hovering, otherwise use last price
-                      final comparePrice = _isHovering && _hoverPrice != null 
-                          ? _hoverPrice! 
-                          : double.parse(periodData.last['price'].toString());
-                      final change = ((comparePrice - firstPrice) / firstPrice) * 100;
-                      isPositive = change >= 0;
-                      percentage = '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
+                    if (priceHistory != null) {
+                      final periodDataRaw = priceHistory[selectedPeriod];
+                      if (periodDataRaw is List && periodDataRaw.isNotEmpty) {
+                        try {
+                          final periodData = periodDataRaw.cast<Map<String, dynamic>>();
+                          
+                          // Safely parse first price
+                          double firstPrice = 0;
+                          final firstPriceData = periodData.first['price'];
+                          if (firstPriceData is num) {
+                            firstPrice = firstPriceData.toDouble();
+                          } else if (firstPriceData is String) {
+                            firstPrice = double.tryParse(firstPriceData) ?? 0;
+                          }
+                          
+                          // Safely parse last price or use hover price
+                          double comparePrice = 0;
+                          if (_isHovering && _hoverPrice != null) {
+                            comparePrice = _hoverPrice!;
+                          } else {
+                            final lastPriceData = periodData.last['price'];
+                            if (lastPriceData is num) {
+                              comparePrice = lastPriceData.toDouble();
+                            } else if (lastPriceData is String) {
+                              comparePrice = double.tryParse(lastPriceData) ?? 0;
+                            }
+                          }
+                          
+                          if (firstPrice > 0) {
+                            final change = ((comparePrice - firstPrice) / firstPrice) * 100;
+                            isPositive = change >= 0;
+                            percentage = '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
+                          }
+                        } catch (e) {
+                          // Keep default values if there's an error
+                        }
+                      }
                     }
                   }
                   

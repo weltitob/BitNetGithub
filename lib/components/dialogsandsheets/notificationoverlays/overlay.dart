@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
@@ -221,7 +221,6 @@ class OverlayController extends GetxController
                     padding: const EdgeInsets.symmetric(
                         horizontal: AppTheme.cardPadding),
                     child: GlassContainer(
-                      customColor: Theme.of(Get.context!).colorScheme.background,
                       child: TransactionItem(
                         data: itemData,
                       ),

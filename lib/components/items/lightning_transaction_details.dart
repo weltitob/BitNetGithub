@@ -7,7 +7,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
@@ -74,7 +74,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       height: AppTheme.cardPadding * 3,
                     ),
                     GlassContainer(
-                      borderRadius: AppTheme.cardRadiusBig,
+                      borderRadius: AppTheme.borderRadiusBig,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.elementSpacing,
@@ -195,7 +195,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                               padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.5, vertical: AppTheme.elementSpacing),
                               child: GlassContainer(
                                 opacity: 0.05,
-                                borderRadius: AppTheme.cardRadiusSmall,
+                                borderRadius: AppTheme.borderRadiusSmall,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: AppTheme.elementSpacing,

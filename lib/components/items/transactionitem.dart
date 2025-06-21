@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/pages/channels/channel_operation_details.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/loop_transaction_screen.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
@@ -21,6 +22,7 @@ enum TransactionType {
   loopIn,
   loopOut,
   internalRebalance,
+  channelOpen,
 }
 
 enum TransactionStatus { failed, pending, confirmed }
@@ -139,6 +141,16 @@ class _TransactionItemState extends State<TransactionItem>
                 ),
               ),
             );
+          } else if (widget.data.type == TransactionType.channelOpen) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChannelOperationDetails(
+                  data: widget.data,
+                  channelId: widget.data.txHash,
+                ),
+              ),
+            );
           } else {
             final controllerTransaction = Get.put(
               TransactionController(
@@ -225,6 +237,12 @@ class _TransactionItemState extends State<TransactionItem>
                                 height: AppTheme.cardPadding * 0.6,
                                 fit: BoxFit.contain,
                               )
+                                  : widget.data.type == TransactionType.channelOpen
+                                  ? Icon(
+                                Icons.account_tree,
+                                size: AppTheme.cardPadding * 0.6,
+                                color: AppTheme.colorBitcoin,
+                              )
                                   : Row(
                                 children: [
                                   Image.asset(
@@ -261,7 +279,11 @@ class _TransactionItemState extends State<TransactionItem>
                                   TransactionType.lightning
                                   ? 'Lightning'
                                   : widget.data.type ==
-                                  TransactionType.internalRebalance ? 'Lightning' : 'Onchain',
+                                  TransactionType.internalRebalance 
+                                  ? 'Lightning' 
+                                  : widget.data.type == TransactionType.channelOpen
+                                  ? 'Channel'
+                                  : 'Onchain',
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(Get.context!)
                                   .textTheme

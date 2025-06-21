@@ -3,7 +3,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -53,9 +53,9 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
         : "0.00";
 
     return GlassContainer(
-      borderThickness: 1,
+      border: Border.all(width: 1, color: Theme.of(context).dividerColor),
       height: AppTheme.cardPadding * 2.75,
-      borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.75 / 3),
+      borderRadius: AppTheme.cardPadding * 2.75 / 3,
       child: Stack(
         children: [
           Padding(

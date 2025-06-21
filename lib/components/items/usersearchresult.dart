@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +42,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
           borderRadius: borderRadius,
           child: InkWell(
             onTap: widget.onTap,
-            borderRadius: AppTheme.cardRadiusBig,
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusBig),
             child: Row(
               children: [
                 const SizedBox(

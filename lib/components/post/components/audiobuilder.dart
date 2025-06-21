@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';

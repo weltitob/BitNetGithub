@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,11 +36,12 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {},
-      child: GlassContainer(
+      child: Container(
         margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 15.w),
-          child: Row(
+        child: GlassContainer(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 15.w),
+            child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -124,6 +125,7 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                 )
             ],
           ),
+            ),
         ),
       ),
     );

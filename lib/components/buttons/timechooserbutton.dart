@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 
 class TimeChooserButton extends StatelessWidget {
@@ -26,8 +26,8 @@ class TimeChooserButton extends StatelessWidget {
               : AppTheme.elementSpacing / 2),
       child: isSelected
           ? GlassContainer(
-              borderThickness: 1.5,
-              blur: 50,
+              border: Border.all(width: 1.5, color: Theme.of(context).dividerColor),
+              blurX: 50, blurY: 50,
               opacity: 0.1,
               borderRadius: const BorderRadius.all(
                   Radius.circular(AppTheme.cardPadding / 1.5)),
