@@ -88,16 +88,21 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
 
   logger.i("Generated preimage: ${base64Encode(preimage)}");
 
+  // Create invoice data with route hints for private channels
   final Map<String, dynamic> data = {
     'r_hash': base64Encode(hash),
     'r_preimage': base64Encode(preimage),
     'memo': memo ?? "",
     'value': amount,
-    'expiry': 1200,
+    'expiry': 3600,  // Increased to 1 hour for better reliability
     'fallback_addr': fallbackAddress,
-    'private': false,
-    'is_keysend': true,
+    'private': true,  // This tells LND to include route hints for private channels
+    'is_keysend': false,  // Regular invoice, not keysend
+    // LND will automatically add route_hints when private=true
+    // and the node has private channels
   };
+  
+  logger.i("Creating private invoice with route hints for amount: $amount sats");
 
     // Post invoice request to user's node
     try {

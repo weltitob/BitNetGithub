@@ -53,12 +53,12 @@ class PostHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Name und Username in einer Zeile
-                Wrap(
+                Row(
                   children: [
                     // Display Name
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {},
                         child: Text(
                           displayName,
                           overflow: TextOverflow.ellipsis,
@@ -70,16 +70,14 @@ class PostHeader extends StatelessWidget {
                     SizedBox(width: AppTheme.elementSpacing.w * 0.5),
 
                     // Username
-                    Flexible(
-                      child: Text(
-                        //avoid duplicate @ symbols
-                        username.startsWith('@') ? username : '@$username',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: AppTheme.white70,
-                            ),
-                      ),
+                    Text(
+                      //avoid duplicate @ symbols
+                      username.startsWith('@') ? username : '@$username',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.white70,
+                          ),
                     ),
                   ],
                 ),

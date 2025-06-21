@@ -194,56 +194,55 @@ class WalletsController extends BaseController {
     });
 
     //----------------------BALANCES----------------------
-    logger.i("Waiting for remote config before fetching balances...");
+    logger.i("NEW: Fetching balances from user's individual node...");
     
-    // Wait for remote config to be initialized before making any API calls
-    final remoteConfigController = Get.find<RemoteConfigController>();
-    remoteConfigController.fetchRemoteConfigData().then((_) {
-      logger.i("Remote config loaded, now fetching balances");
-      
-      fetchOnchainWalletBalance().then((value) {
-        loadedBalanceFutures++;
-        if (!value) {
-          errorCount++;
-          loadMessageError = "Failed to load Onchain Balance";
-        }
-        if (loadedBalanceFutures == 2) {
-          queueErrorOvelay = true;
-          double btcDouble =
-              CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
-          updateBalance(DateTime.now(), btcDouble);
-        }
-      });
-
-      fetchLightingWalletBalance().then((value) {
-        loadedBalanceFutures++;
-        if (!value) {
-          errorCount++;
-          loadMessageError = "Failed to load Lightning Balance";
-        }
-        if (loadedBalanceFutures == 2) {
-          queueErrorOvelay = true;
-          double btcDouble =
-              CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
-          updateBalance(DateTime.now(), btcDouble);
-        }
-      });
+    // Fetch balances directly - no need to wait for remote config anymore
+    // The balance functions now get node info from NodeMappingService
+    fetchOnchainWalletBalance().then((value) {
+      loadedBalanceFutures++;
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Onchain Balance";
+      }
+      if (loadedBalanceFutures == 2) {
+        queueErrorOvelay = true;
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
+      }
     }).catchError((error) {
-      logger.e("Failed to load remote config: $error");
-      errorCount += 2;
-      loadMessageError = "Failed to load configuration";
+      logger.e("Error fetching onchain balance: $error");
+      loadedBalanceFutures++;
+      errorCount++;
+      loadMessageError = "Failed to load Onchain Balance";
+    });
+
+    fetchLightingWalletBalance().then((value) {
+      loadedBalanceFutures++;
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Lightning Balance";
+      }
+      if (loadedBalanceFutures == 2) {
+        queueErrorOvelay = true;
+        double btcDouble =
+            CurrencyConverter.convertSatoshiToBTC(totalBalanceSAT.value);
+        updateBalance(DateTime.now(), btcDouble);
+      }
+    }).catchError((error) {
+      logger.e("Error fetching lightning balance: $error");
+      loadedBalanceFutures++;
+      errorCount++;
+      loadMessageError = "Failed to load Lightning Balance";
     });
 
     //---------------------------------------------------
 
     //----------------------ACTIVITY----------------------
-    logger.i("Waiting for remote config before fetching activity...");
+    logger.i("Fetching activity from Firebase...");
 
-    // Activity fetching will also wait for remote config
-    remoteConfigController.fetchRemoteConfigData().then((_) {
-      logger.i("Remote config loaded, now fetching activity");
-      
-      getTransactions(Auth().currentUser!.uid).then((val) {
+    // Activity is still fetched from Firebase, not from individual nodes
+    getTransactions(Auth().currentUser!.uid).then((val) {
         logger.i("Fetching transactions in wallet_controller");
         onchainTransactions.value = {
           'transactions': val.map((tx) => tx.toJson()).toList()
