@@ -77,10 +77,24 @@ class SendBTCScreen extends GetWidget<SendsController> {
       backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
         onTap: () {
-          context.pop();
-          controller.usersQuery.value = '';
-          controller.resetValues();
-          controller.handleSearch('');
+          // For Lightning invoices and other cases where we need to go back to search
+          if (shouldPop) {
+            // Reset the hasReceiver flag to show SearchReceiver again
+            controller.hasReceiver.value = false;
+            controller.usersQuery.value = '';
+            controller.resetValues();
+            controller.handleSearch('');
+          } else {
+            // Normal navigation case
+            if (Navigator.of(context).canPop()) {
+              context.pop();
+            } else {
+              context.go('/wallet');
+            }
+            controller.usersQuery.value = '';
+            controller.resetValues();
+            controller.handleSearch('');
+          }
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -197,14 +211,14 @@ class SendBTCScreen extends GetWidget<SendsController> {
                       : ButtonState.idle,
                   onButtonTap: () async {
                     if (!controller.loadingSending.value) {
-                      controller.toggleButtonState();
-                      await controller.sendBTC(context,
-                          canNavigate: !shouldPop, shouldPop: shouldPop);
-                      controller.isFinished.listen((isFinished) {
-                        if (isFinished) {
-                          controller.toggleButtonState();
-                        }
-                      });
+                      controller.loadingSending.value = true;
+                      try {
+                        await controller.sendBTC(context,
+                            canNavigate: !shouldPop, shouldPop: shouldPop);
+                      } finally {
+                        // Always reset loading state, regardless of success or failure
+                        controller.loadingSending.value = false;
+                      }
                     }
                   },
                 )),

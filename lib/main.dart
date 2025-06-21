@@ -22,6 +22,7 @@ import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:bitnet/backbone/services/api_cache_service.dart';
 import 'package:bitnet/router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -33,6 +34,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -154,6 +156,7 @@ Future<void> _initializeWebServices() async {
 // Separate function to initialize all services for mobile platforms
 Future<void> _initializeAllServices() async {
   await LocalStorage.instance.initStorage();
+  await GetStorage.init();
 
   ShakeDetector.autoStart(
     onPhoneShake: () {
@@ -241,6 +244,7 @@ Future<void> _initializeControllers() async {
   Get.put(ReceiveController(), permanent: true);
   Get.put(OverlayController(), permanent: true);
   Get.put(UsersListController(), permanent: true);
+  Get.put(ApiCacheService(), permanent: true);
 }
 
 // Asynchronously initialize remaining services for web after UI is rendered

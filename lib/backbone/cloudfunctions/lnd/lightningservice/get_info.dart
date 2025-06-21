@@ -36,7 +36,10 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
     try {
       final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(userDid);
       if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
-        macaroon = nodeMapping.adminMacaroon;
+        // Convert base64 macaroon to hex format
+        final macaroonBase64 = nodeMapping.adminMacaroon;
+        final macaroonBytes = base64Decode(macaroonBase64);
+        macaroon = bytesToHex(macaroonBytes);
         selectedNode = nodeMapping.nodeId; // Use user's specific node
         url = LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
         logger.i("🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");

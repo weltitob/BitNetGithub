@@ -322,8 +322,8 @@ class SendsController extends BaseController {
         giveValuesToLnUrl(encodedString, asAddress: true);
         break;
       case QRTyped.LightningChannel:
-        logger.i("LightningChannel was detected");
-        await _handleChannelRequest(encodedString, cxt);
+        logger.i("LightningChannel was detected - treating as LNURL payment");
+        giveValuesToLnUrl(encodedString);
         break;
       case QRTyped.OnChain:
         logger.i("OnChain was detected");
@@ -373,6 +373,27 @@ class SendsController extends BaseController {
     getSendUsers();
   }
 
+  @override
+  void onClose() {
+    // Reset all states when controller is disposed
+    resetValues();
+    
+    // Cancel any active subscriptions
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    
+    // Dispose controllers and focus nodes
+    sendScrollerController.dispose();
+    myFocusNodeAdressSearch.dispose();
+    myFocusNodeAdress.dispose();
+    myFocusNodeMoney.dispose();
+    bitcoinReceiverAdressController.dispose();
+    
+    super.onClose();
+  }
+
   void resetValues() {
     hasReceiver.value = false;
     bitcoinReceiverAdress = "";
@@ -383,6 +404,11 @@ class SendsController extends BaseController {
 
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
+    
+    // Reset send button state
+    isFinished.value = false;
+    loadingSending.value = false;
+    
     //context.go("/wallet/send");
   }
 
@@ -549,9 +575,19 @@ class SendsController extends BaseController {
           context.go("/");
         }
       } else if ((response)['status'] == 'FAILED') {
-        overlayController
-            .showOverlay("Payment failed: ${response['failure_reason']}");
-        isFinished.value = false;
+        String failureReason = response['failure_reason'] ?? '';
+        // Check if invoice is already paid - treat as success
+        if (failureReason.toLowerCase().contains('already paid')) {
+          logger.i("Invoice already paid - treating as success");
+          overlayController.showOverlay("Invoice was already paid!");
+          isFinished.value = true;
+          if (canNavigate) {
+            context.go("/");
+          }
+        } else {
+          overlayController.showOverlay("Payment failed: $failureReason");
+          isFinished.value = false;
+        }
         sub!.cancel();
       } else {
         overlayController
@@ -589,21 +625,42 @@ class SendsController extends BaseController {
     }
     
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
+    
+    // Log the parsed amount details
+    logger.i("🔍 Invoice parsing details:");
+    logger.i("Raw amount from invoice: ${req.amount} BTC");
+    logger.i("Amount in millisats: ${(req.amount.toDouble() * 100000000000).toString()}");
+    
     double satoshi =
         CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
     int cleanAmount = satoshi.toInt();
     
+    logger.i("Amount in sats: $cleanAmount");
+    logger.i("Setting amount in controller text field...");
+    
     if (sendType == SendType.Bip21) {
       bip21InvoiceSatController.text = cleanAmount.toString();
+      logger.i("Set BIP21 invoice amount: ${bip21InvoiceSatController.text}");
     } else {
       satController.text = cleanAmount.toString();
+      logger.i("Set regular invoice amount: ${satController.text}");
     }
     
     moneyTextFieldIsEnabled.value = false;
+    logger.i("💰 Money text field disabled for invoice amount");
     description.value = req.tags[1].data;
+    
+    // Reset send button state when new invoice is scanned
+    isFinished.value = false;
+    loadingSending.value = false;
+    logger.i("🔄 Send button reset to allow new payment");
+    
+    // Force UI update to show the amount
+    update();
     
     // Ensure we maintain a consistent state
     logger.i("Setting type: $sendType, Mode: ${bip21Mode.value}");
+    logger.i("✅ Invoice parsing complete. hasReceiver: ${hasReceiver.value}");
   }
 
   Future<void> giveValuesToBip21(String encodedString) async {
@@ -1016,9 +1073,20 @@ class SendsController extends BaseController {
           success = true;
           if (!completer.isCompleted) completer.complete(true);
         } else if (response['status'] == "FAILED") {
-          overlayController.showOverlay("Payment failed: ${response['failure_reason'] ?? 'Unknown error'}");
-          isFinished.value = false;
-          if (!completer.isCompleted) completer.complete(false);
+          String failureReason = response['failure_reason'] ?? 'Unknown error';
+          // Check if invoice is already paid - treat as success
+          if (failureReason.toLowerCase().contains('already paid')) {
+            logger.i("BIP21 Invoice already paid - treating as success");
+            overlayController.showOverlay("Invoice was already paid!");
+            isFinished.value = true;
+            context.go("/");
+            success = true;
+            if (!completer.isCompleted) completer.complete(true);
+          } else {
+            overlayController.showOverlay("Payment failed: $failureReason");
+            isFinished.value = false;
+            if (!completer.isCompleted) completer.complete(false);
+          }
         }
       }, onError: (error) {
         isFinished.value = false;
@@ -1097,15 +1165,26 @@ class SendsController extends BaseController {
             if (response['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
-              if (!firstSuccess) {
-                overlayController
-                    .showOverlay("Payment failed: ${response['failure_reason'] ?? 'Unknown error'}");
-
-                firstSuccess = true;
+              String failureReason = response['failure_reason'] ?? 'Unknown error';
+              
+              // Check if invoice is already paid - treat as success
+              if (failureReason.toLowerCase().contains('already paid')) {
+                logger.i("Invoice already paid - treating as success");
+                if (!firstSuccess) {
+                  overlayController.showOverlay("Invoice was already paid!");
+                  firstSuccess = true;
+                }
+                isFinished.value = true;
+                if (canNavigate) {
+                  context.go("/");
+                }
+              } else {
+                if (!firstSuccess) {
+                  overlayController.showOverlay("Payment failed: $failureReason");
+                  firstSuccess = true;
+                }
+                isFinished.value = false; // Keep the user on the same page to possibly retry or show error
               }
-
-              isFinished.value =
-                  false; // Keep the user on the same page to possibly retry or show error
             } else {
               logger.i("Parsing of response failed! PLEASE FIX");
               isFinished.value =
@@ -1198,122 +1277,7 @@ class SendsController extends BaseController {
             isFinished.value = false;
           }
           
-          // OLD: Complex manual transaction building code (commented out)
-          /*
-          RestResponse listAddressesResponse =
-              await listAddressesLnd(Auth().currentUser!.uid);
 
-          AccountWithAddresses account = AccountWithAddresses.fromJson(
-              (listAddressesResponse.data['account_with_addresses'] as List)
-                  .firstWhereOrNull(
-                      (acc) => acc['name'] == Auth().currentUser!.uid));
-          List<String> changeAddresses = account.addresses
-              .where((test) => test.isInternal)
-              .map((test) => test.address)
-              .toList();
-          List<String> nonChangeAddresses = account.addresses
-              .where((test) => !test.isInternal)
-              .map((test) => test.address)
-              .toList();
-
-          dynamic restResponseListUnspent =
-              await listUnspent(Auth().currentUser!.uid);
-          UtxoRequestList utxos =
-              UtxoRequestList.fromJson(restResponseListUnspent.data);
-
-          TransactionData transactiondata = TransactionData(
-              raw: RawTransactionData(
-                inputs: utxos.utxos
-                    .map((i) => Input(
-                          txidStr: i.outpoint.txidStr,
-                          txidBytes: i.outpoint.txidBytes,
-                          outputIndex: i.outpoint.outputIndex,
-                        ))
-                    .toList(),
-                outputs: Outputs(
-                    outputs: {bitcoinReceiverAdress: amountInSat.toInt()}),
-              ),
-              targetConf: AppTheme
-                  .targetConf, //The number of blocks to aim for when confirming the transaction.
-              account: "",
-              minConfs:
-                  4, //going for safety and not speed because for speed oyu would use the lightning network
-              spendUnconfirmed:
-                  false, //Whether unconfirmed outputs should be used as inputs for the transaction.
-              changeType: 0 //CHANGE_ADDRESS_TYPE_UNSPECIFIED
-              );
-
-          PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
-          dynamic feeResponse =
-              await estimateFee(AppTheme.targetConf.toString());
-          final sat_per_kw = double.parse(feeResponse.data["sat_per_kw"]);
-          double utxoSum = 0;
-          for (Utxo utxo in utxos.utxos) {
-            utxoSum += utxo.amountSat;
-          }
-
-          String changeAddress =
-              await nextAddr(Auth().currentUser!.uid, change: true);
-          HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
-          final builder = BitcoinTransactionBuilder(
-              outPuts: [
-                BitcoinOutput(
-                    address: parseBitcoinAddress(bitcoinReceiverAdress),
-                    value: BigInt.from(amountInSat.toInt())),
-                BitcoinOutput(
-                    address: parseBitcoinAddress(changeAddress),
-                    value: BigInt.from(
-                        utxoSum - (amountInSat.toInt() + sat_per_kw)))
-              ],
-              fee: BigInt.from(sat_per_kw),
-              network: BitcoinNetwork.mainnet,
-              utxos: utxos.utxos
-                  .map((utxo) => UtxoWithAddress(
-                      utxo: BitcoinUtxo(
-                          txHash: utxo.outpoint.txidStr,
-                          value: BigInt.from(utxo.amountSat),
-                          vout: utxo.outpoint.outputIndex,
-                          scriptType: parseBitcoinAddress(utxo.address).type),
-                      ownerDetails: UtxoAddressDetails(
-                          publicKey: hdWallet
-                              .findKeyPair(
-                                utxo.address,
-                                privData.mnemonic,
-                                changeAddresses.contains(utxo.address) ? 1 : 0,
-                              )
-                              .getPublic()
-                              .publicKey
-                              .toHex(),
-                          address: parseBitcoinAddress(utxo.address))))
-                  .toList());
-          final tr =
-              builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
-            String address =
-                utxo.ownerDetails.address.toAddress(BitcoinNetwork.mainnet);
-            final ECPrivate privateKey = hdWallet.findKeyPair(
-              address,
-              privData.mnemonic,
-              changeAddresses.contains(address) ? 1 : 0,
-            );
-            return privateKey.signInput(trDigest, sigHash: sighash);
-          });
-          final txId = tr.serialize();
-          const network = BitcoinNetwork.mainnet;
-          final service = BitcoinApiService();
-          final api = ApiProvider.fromBlocCypher(network, service);
-          String response = await api.sendRawTransaction(tr.serialize());
-          print(response);
-          isFinished.value = true;
-          if ('' == "200") {
-            Get.find<WalletsController>().fetchOnchainWalletBalance();
-            overlayController.showOverlay(
-                "Onchain transaction successfully broadcastet, it can take a while!");
-            GoRouter.of(this.context).go("/feed");
-          } else {
-            overlayController.showOverlay("Payment failed.");
-            isFinished.value = false;
-          }
-          */
           
           // NEW: One user one node approach - Bitcoin transaction handling for individual nodes
           logger.i("OLD sendBTC OnChain function called - needs new one user one node implementation since old version will not work anymore");

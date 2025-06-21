@@ -38,9 +38,9 @@ Future<RestResponse> sendCoins({
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for onchain send");
     
-    // Get the admin macaroon from node mapping
-    final macaroon = nodeMapping.adminMacaroon;
-    if (macaroon.isEmpty) {
+    // Get the admin macaroon from node mapping (stored as base64)
+    final macaroonBase64 = nodeMapping.adminMacaroon;
+    if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
         statusCode: "error",
@@ -48,6 +48,10 @@ Future<RestResponse> sendCoins({
         data: {},
       );
     }
+    
+    // Convert base64 macaroon to hex format
+    final macaroonBytes = base64Decode(macaroonBase64);
+    final macaroon = bytesToHex(macaroonBytes);
     
     // Get Caddy URL for the user's node using LightningConfig
     final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/transactions';
@@ -145,9 +149,9 @@ Future<RestResponse> estimateFee({
     
     final nodeId = nodeMapping.nodeId;
     
-    // Get the admin macaroon from node mapping
-    final macaroon = nodeMapping.adminMacaroon;
-    if (macaroon.isEmpty) {
+    // Get the admin macaroon from node mapping (stored as base64)
+    final macaroonBase64 = nodeMapping.adminMacaroon;
+    if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
         statusCode: "error",
@@ -155,6 +159,10 @@ Future<RestResponse> estimateFee({
         data: {},
       );
     }
+    
+    // Convert base64 macaroon to hex format
+    final macaroonBytes = base64Decode(macaroonBase64);
+    final macaroon = bytesToHex(macaroonBytes);
     
     // Get Caddy URL for the user's node using LightningConfig
     final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee';

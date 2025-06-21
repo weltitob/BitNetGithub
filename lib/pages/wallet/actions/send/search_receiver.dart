@@ -33,6 +33,8 @@ class SearchReceiver extends GetWidget<SendsController> {
           text: L10n.of(context)!.chooseReceipient,
           context: context,
           onTap: () {
+            // Reset send controller when going back
+            controller.resetValues();
             context.go('/feed');
           },
         ),
@@ -40,6 +42,8 @@ class SearchReceiver extends GetWidget<SendsController> {
         body: PopScope(
           canPop: false,
           onPopInvoked: (v) {
+            // Reset send controller when popping
+            controller.resetValues();
             context.go('/feed');
           },
           child: Stack(

@@ -34,23 +34,32 @@ class LightningPayment {
   });
 
   factory LightningPayment.fromJson(Map<String, dynamic> json) {
+    // Helper function to safely parse integers
+    int safeParseInt(dynamic value, {int defaultValue = 0}) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String && value.isNotEmpty) {
+        return int.tryParse(value) ?? defaultValue;
+      }
+      return int.tryParse(value.toString()) ?? defaultValue;
+    }
+    
     return LightningPayment(
-      paymentHash: json['payment_hash'],
-      value: int.parse(json['value'].toString()),
-      creationDate: int.parse(json['creation_date'].toString()),
-      fee: int.parse(json['fee'].toString()),
-      paymentPreimage: json['payment_preimage'],
-      valueSat: int.parse(json['value_sat'].toString()),
-      valueMsat: int.parse(json['value_msat'].toString()),
-      paymentRequest: json['payment_request'],
-      status: json['status'],
-      feeSat: int.parse(json['fee_sat'].toString()),
-      feeMsat: int.parse(json['fee_msat'].toString()),
-      creationTimeNs: int.parse(json['creation_time_ns'].toString()),
-      htlcs: List<Htlc>.from(json['htlcs'].map((x) => Htlc.fromJson(x))),
-      paymentIndex: json['payment_index'],
-      failureReason:
-          json['failure_reason'] ?? '', // Assuming failureReason can be null
+      paymentHash: json['payment_hash'] ?? '',
+      value: safeParseInt(json['value']),
+      creationDate: safeParseInt(json['creation_date']),
+      fee: safeParseInt(json['fee']),
+      paymentPreimage: json['payment_preimage'] ?? '',
+      valueSat: safeParseInt(json['value_sat']),
+      valueMsat: safeParseInt(json['value_msat']),
+      paymentRequest: json['payment_request'] ?? '',
+      status: json['status'] ?? '',
+      feeSat: safeParseInt(json['fee_sat']),
+      feeMsat: safeParseInt(json['fee_msat']),
+      creationTimeNs: safeParseInt(json['creation_time_ns']),
+      htlcs: (json['htlcs'] as List<dynamic>?)?.map((x) => Htlc.fromJson(x as Map<String, dynamic>)).toList() ?? [],
+      paymentIndex: json['payment_index'] ?? '',
+      failureReason: json['failure_reason'] ?? '',
     );
   }
 
@@ -95,14 +104,24 @@ class Htlc {
   });
 
   factory Htlc.fromJson(Map<String, dynamic> json) {
+    // Helper function to safely parse integers
+    int safeParseInt(dynamic value, {int defaultValue = 0}) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String && value.isNotEmpty) {
+        return int.tryParse(value) ?? defaultValue;
+      }
+      return int.tryParse(value.toString()) ?? defaultValue;
+    }
+    
     return Htlc(
-      attemptId: int.parse(json['attempt_id'].toString()),
-      status: json['status'],
-      route: Route.fromJson(json['route']),
-      attemptTimeNs: int.parse(json['attempt_time_ns'].toString()),
-      resolveTimeNs: int.parse(json['resolve_time_ns'].toString()),
+      attemptId: safeParseInt(json['attempt_id']),
+      status: json['status'] ?? '',
+      route: json['route'] != null ? Route.fromJson(json['route'] as Map<String, dynamic>) : Route.empty(),
+      attemptTimeNs: safeParseInt(json['attempt_time_ns']),
+      resolveTimeNs: safeParseInt(json['resolve_time_ns']),
       failure: json['failure'],
-      preimage: json['preimage'],
+      preimage: json['preimage'] ?? '',
     );
   }
 
@@ -137,13 +156,34 @@ class Route {
   });
 
   factory Route.fromJson(Map<String, dynamic> json) {
+    // Helper function to safely parse integers
+    int safeParseInt(dynamic value, {int defaultValue = 0}) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String && value.isNotEmpty) {
+        return int.tryParse(value) ?? defaultValue;
+      }
+      return int.tryParse(value.toString()) ?? defaultValue;
+    }
+    
     return Route(
-      totalTimeLock: int.parse(json['total_time_lock'].toString()),
-      totalFees: int.parse(json['total_fees'].toString()),
-      totalAmt: int.parse(json['total_amt'].toString()),
-      hops: List<Hop>.from(json['hops'].map((x) => Hop.fromJson(x))),
-      totalFeesMsat: int.parse(json['total_fees_msat'].toString()),
-      totalAmtMsat: int.parse(json['total_amt_msat'].toString()),
+      totalTimeLock: safeParseInt(json['total_time_lock']),
+      totalFees: safeParseInt(json['total_fees']),
+      totalAmt: safeParseInt(json['total_amt']),
+      hops: (json['hops'] as List<dynamic>?)?.map((x) => Hop.fromJson(x as Map<String, dynamic>)).toList() ?? [],
+      totalFeesMsat: safeParseInt(json['total_fees_msat']),
+      totalAmtMsat: safeParseInt(json['total_amt_msat']),
+    );
+  }
+
+  factory Route.empty() {
+    return Route(
+      totalTimeLock: 0,
+      totalFees: 0,
+      totalAmt: 0,
+      hops: [],
+      totalFeesMsat: 0,
+      totalAmtMsat: 0,
     );
   }
 
@@ -183,16 +223,26 @@ class Hop {
   });
 
   factory Hop.fromJson(Map<String, dynamic> json) {
+    // Helper function to safely parse integers
+    int safeParseInt(dynamic value, {int defaultValue = 0}) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String && value.isNotEmpty) {
+        return int.tryParse(value) ?? defaultValue;
+      }
+      return int.tryParse(value.toString()) ?? defaultValue;
+    }
+    
     return Hop(
-      chanId: json['chan_id'],
-      chanCapacity: json['chan_capacity'],
-      amtToForward: int.parse(json['amt_to_forward'].toString()),
-      fee: int.parse(json['fee'].toString()),
-      expiry: int.parse(json['expiry'].toString()),
-      amtToForwardMsat: int.parse(json['amt_to_forward_msat'].toString()),
-      feeMsat: int.parse(json['fee_msat'].toString()),
-      pubKey: json['pub_key'],
-      tlvPayload: json['tlv_payload'],
+      chanId: json['chan_id'] ?? '',
+      chanCapacity: json['chan_capacity'] ?? '',
+      amtToForward: safeParseInt(json['amt_to_forward']),
+      fee: safeParseInt(json['fee']),
+      expiry: safeParseInt(json['expiry']),
+      amtToForwardMsat: safeParseInt(json['amt_to_forward_msat']),
+      feeMsat: safeParseInt(json['fee_msat']),
+      pubKey: json['pub_key'] ?? '',
+      tlvPayload: json['tlv_payload'] ?? false,
     );
   }
   Map<String, dynamic> toJson() {
