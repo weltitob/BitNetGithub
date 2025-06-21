@@ -61,6 +61,7 @@ class EmailRecoveryPageThree extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(AppTheme.cardPadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding * 2),
             
@@ -211,6 +212,7 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
       child: Padding(
         padding: EdgeInsets.all(AppTheme.cardPadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding * 2),
             
@@ -341,6 +343,7 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
       child: Padding(
         padding: EdgeInsets.all(AppTheme.cardPadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding),
             

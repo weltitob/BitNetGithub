@@ -156,9 +156,9 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
             margin: isSuperSmallScreen
                 ? const EdgeInsets.symmetric(horizontal: 0)
                 : EdgeInsets.symmetric(
-                    horizontal: (screenWidth / 2 - 250.w) < 0
+                    horizontal: (screenWidth / 2 - 250) < 0
                         ? 0
-                        : screenWidth / 2 - 250.w,
+                        : screenWidth / 2 - 250,
                   ),
             extendBodyBehindAppBar: true,
             backgroundColor: Theme.of(context).colorScheme.surface,
@@ -182,11 +182,11 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                   )
                 : SafeArea(
                     child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                      padding: EdgeInsets.all(AppTheme.cardPadding),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          SizedBox(height: AppTheme.cardPadding.h * 2),
+                          SizedBox(height: AppTheme.cardPadding * 2),
                           
                           // Header section
                           Column(
@@ -198,7 +198,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: AppTheme.elementSpacing.h),
+                              SizedBox(height: AppTheme.elementSpacing),
                               Text(
                                 "Please input your email and password to restore your account.",
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -209,7 +209,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                             ],
                           ),
                           
-                          SizedBox(height: AppTheme.cardPadding.h * 2),
+                          SizedBox(height: AppTheme.cardPadding * 2),
                           // Form fields
                           Column(
                             children: [
@@ -227,7 +227,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                 isObscure: false,
                               ),
                               if (emailError.isNotEmpty) ...[
-                                SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                SizedBox(height: AppTheme.elementSpacing / 2),
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -239,7 +239,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                 ),
                               ],
                               
-                              SizedBox(height: AppTheme.cardPadding.h),
+                              SizedBox(height: AppTheme.cardPadding),
                               
                               FormTextField(
                                 width: double.infinity,
@@ -266,7 +266,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                                 ),
                               ),
                               if (passwordError.isNotEmpty) ...[
-                                SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                SizedBox(height: AppTheme.elementSpacing / 2),
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -285,7 +285,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
                           
                           // Bottom button section
                           Padding(
-                            padding: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
+                            padding: EdgeInsets.only(bottom: AppTheme.cardPadding),
                             child: SizedBox(
                               width: double.infinity,
                               child: LongButtonWidget(
@@ -448,10 +448,10 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.all(AppTheme.cardPadding.w),
+        padding: EdgeInsets.all(AppTheme.cardPadding),
         child: Column(
           children: [
-            SizedBox(height: AppTheme.cardPadding.h * 3),
+            SizedBox(height: AppTheme.cardPadding * 3),
             
             // Header section
             Column(
@@ -461,17 +461,17 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                   children: [
                     Image.asset(
                       'assets/images/logoclean.png',
-                      width: AppTheme.cardPadding.h,
-                      height: AppTheme.cardPadding.h,
+                      width: AppTheme.cardPadding,
+                      height: AppTheme.cardPadding,
                     ),
-                    SizedBox(width: AppTheme.elementSpacing.w / 2),
+                    SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
                       "BitNet",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),
-                SizedBox(height: AppTheme.cardPadding.h * 2),
+                SizedBox(height: AppTheme.cardPadding * 2),
                 Text(
                   "Verify Your Email",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -479,13 +479,13 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: AppTheme.elementSpacing.h),
+                SizedBox(height: AppTheme.elementSpacing),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: Text(
                     "We've sent a 5 letter code to your email, please type it in below.",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      color: Theme.of(context).colorScheme.onSurfaceithOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -507,7 +507,7 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
               errorText: errorText,
             ),
             
-            SizedBox(height: AppTheme.cardPadding.h),
+            SizedBox(height: AppTheme.cardPadding),
             
             // Resend code button
             TextButton(
@@ -592,7 +592,7 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
               ),
             ),
             
-            SizedBox(height: AppTheme.cardPadding.h * 2),
+            SizedBox(height: AppTheme.cardPadding * 2),
           ],
         ),
       ),

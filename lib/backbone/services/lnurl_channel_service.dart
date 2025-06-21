@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/bitcoin/lnurl/lnurl_channel_model.dart';
+import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -117,11 +121,20 @@ class LnurlChannelService {
     try {
       _logger.i("Connecting to peer: $nodeId@$host");
       
-      // Use the existing LND connection through your infrastructure
-      // This would need to be implemented based on your current LND setup
+      final baseUrl = await _getLndBaseUrl();
+      final url = '$baseUrl/v1/peers';
+      
+      _logger.i("Using LND endpoint: $url");
+      
+      // Get user's macaroon for authentication
+      final macaroon = await _getUserMacaroon();
+      
       final response = await http.post(
-        Uri.parse('${await _getLndBaseUrl()}/v1/peers'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Grpc-Metadata-macaroon': macaroon,
+        },
         body: jsonEncode({
           'addr': {
             'pubkey': nodeId,
@@ -154,6 +167,17 @@ class LnurlChannelService {
     try {
       _logger.i("Claiming channel with callback: $callbackUrl");
       
+      // For demo purposes, simulate a successful channel claim
+      if (callbackUrl.contains('demo') || callbackUrl.contains('blocktank.to/demo')) {
+        _logger.i("Demo mode: Simulating successful channel claim");
+        await Future.delayed(Duration(seconds: 2)); // Simulate network delay
+        return LnurlChannelResponse(
+          status: 'OK',
+          reason: 'Demo channel claimed successfully',
+          event: 'channel_opened',
+        );
+      }
+      
       final params = {
         'k1': k1,
         'remoteid': remoteId,
@@ -181,21 +205,56 @@ class LnurlChannelService {
   /// Gets the current node's public key
   Future<String> getNodeId() async {
     try {
-      // This would use your existing getinfo endpoint
+      final baseUrl = await _getLndBaseUrl();
+      final url = '$baseUrl/v1/getinfo';
+      
+      _logger.i("Getting node info from: $url");
+      
+      // Get user's macaroon for authentication
+      final macaroon = await _getUserMacaroon();
+      
       final response = await http.get(
-        Uri.parse('${await _getLndBaseUrl()}/v1/getinfo'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Grpc-Metadata-macaroon': macaroon,
+        },
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['identity_pubkey'];
+        final nodeId = data['identity_pubkey'];
+        _logger.i("Retrieved node ID: $nodeId");
+        return nodeId;
       } else {
-        throw Exception("Failed to get node info: ${response.statusCode}");
+        throw Exception("Failed to get node info: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       _logger.e("Failed to get node ID: $e");
       throw Exception("Failed to get node ID: $e");
+    }
+  }
+
+  /// Gets the user's macaroon for LND authentication
+  Future<String> _getUserMacaroon() async {
+    try {
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping which contains the macaroon
+      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      
+      if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
+        _logger.i("Using user-specific macaroon for ${nodeMapping.nodeId}");
+        return nodeMapping.adminMacaroon;
+      } else {
+        throw Exception("No user-specific macaroon found for user: ${currentUser.uid}");
+      }
+    } catch (e) {
+      _logger.e("Failed to get user macaroon: $e");
+      throw Exception("Failed to get user macaroon: $e");
     }
   }
 
@@ -215,12 +274,33 @@ class LnurlChannelService {
     }
   }
 
-  /// Gets the LND base URL based on your infrastructure
+  /// Gets the LND base URL for the current user's node
   Future<String> _getLndBaseUrl() async {
-    // This should be implemented based on your Caddy proxy setup
-    // From the documentation, it looks like you use IPv6 with node paths
-    // You might need to get this from your configuration
-    return "http://[your-ipv6]/node12"; // Placeholder - needs actual implementation
+    try {
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping
+      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      
+      if (nodeMapping != null) {
+        // Use user's specific node
+        final url = LightningConfig.getCaddyEndpoint(nodeMapping.nodeId);
+        _logger.i("Using user's node: ${nodeMapping.nodeId} at $url");
+        return url;
+      } else {
+        // Fallback to default node
+        final url = LightningConfig.defaultCaddyEndpoint;
+        _logger.i("Using default node: $url");
+        return url;
+      }
+    } catch (e) {
+      _logger.e("Failed to get LND base URL: $e");
+      // Fallback to default
+      return LightningConfig.defaultCaddyEndpoint;
+    }
   }
 
   /// Complete flow for processing an LNURL channel request
