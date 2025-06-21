@@ -721,8 +721,7 @@ class _ChartCoreState extends State<ChartCore> {
               ]),
             ),
           ),
-        ),
-      );
+        );
     });
   }
 }
