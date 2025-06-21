@@ -18,6 +18,7 @@ import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/channel/channel_operation.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
@@ -137,7 +138,10 @@ class WalletsController extends BaseController {
       <InternalRebalance>[].obs;
   RxList<Swap> loopOperations_list = <Swap>[].obs; // optional
 
-  List<TransactionItem> allTransactionItems = [];
+  List<TransactionItem> __allTransactionItems = [];
+  List<TransactionItem> get _allTransactionItems => __allTransactionItems;
+  List<TransactionItem> get allTransactionItems => _allTransactionItems;
+  
   RxList<TransactionItemData> allTransactions =
       RxList<TransactionItemData>.empty(growable: true);
   RxList<TransactionItemData> filteredTransactions =
@@ -150,6 +154,7 @@ class WalletsController extends BaseController {
   Rx<ReceivedInvoice?> latestInvoice = Rx<ReceivedInvoice?>(null);
   Rx<LightningPayment?> latestPayment = Rx<LightningPayment?>(null);
   Rx<InternalRebalance?> latestinternalRebalance = Rx<InternalRebalance?>(null);
+  Rx<Map<String, dynamic>?> latestChannelOperation = Rx<Map<String, dynamic>?>(null);
 
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
@@ -269,14 +274,20 @@ class WalletsController extends BaseController {
       futuresCompleted++;
     });
 
+    // FETCH ALL CHANNEL OPERATIONS ON INIT
+    _loadChannelOperations().then((val) {
+      futuresCompleted++;
+    });
+
     // War mal: "if (walletController.futuresCompleted >= 3)"
-    if (futuresCompleted >= 4) {
-      logger.i("All 4 activity futures fetched can put into lists now");
+    // Now we have 5 futures: transactions, payments, invoices, rebalances, channel operations
+    if (futuresCompleted >= 5) {
+      logger.i("All 5 activity futures fetched can put into lists now");
       loadActivity();
     } else {
       futuresCompleted.listen((val) {
-        if (val >= 4) {
-          logger.i("All 4 activity futures fetched can put into lists now");
+        if (val >= 5) {
+          logger.i("All 5 activity futures fetched can put into lists now");
           loadActivity();
         }
       });
@@ -598,12 +609,78 @@ class WalletsController extends BaseController {
       additionalTransactionsLoaded.value = true;
     });
 
+    // --- Channel Operations Stream Listener ---
+    var channelOperationsSubscription = backendRef
+        .doc(Auth().currentUser!.uid)
+        .collection('channel_operations')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .skip(1) // Skip the initial snapshot
+        .listen((query) {
+      Map<String, dynamic>? channelOp;
+      additionalTransactionsLoaded.value = false;
+      
+      try {
+        logger.i("Received channel operation from stream");
+        if (query.docs.isEmpty) return;
+        
+        channelOp = query.docs.first.data();
+        logger.i("Channel operation data: $channelOp");
+        
+        // Convert to ChannelOperation model
+        final operation = ChannelOperation.fromFirestore(channelOp);
+        
+        // Create TransactionItemData for the channel operation
+        TransactionItemData transactionItem = TransactionItemData(
+          timestamp: operation.timestamp,
+          type: TransactionType.channelOpen,
+          direction: TransactionDirection.sent, // Channel opens are like sending funds
+          receiver: operation.displaySubtitle,
+          txHash: operation.channelId,
+          amount: operation.capacity.toString(),
+          fee: 0,
+          status: operation.status == ChannelOperationStatus.active
+              ? TransactionStatus.confirmed
+              : operation.status == ChannelOperationStatus.failed
+                  ? TransactionStatus.failed
+                  : TransactionStatus.pending,
+        );
+        
+        // Add to allTransactions list
+        addOrUpdateTransaction(transactionItem);
+        
+        // Show overlay for new channel operations
+        if (operation.status == ChannelOperationStatus.active) {
+          overlayController.showOverlayTransaction(
+            "Channel opened successfully",
+            transactionItem,
+          );
+        } else if (operation.status == ChannelOperationStatus.pending ||
+                   operation.status == ChannelOperationStatus.opening) {
+          overlayController.showOverlayTransaction(
+            "Channel opening initiated",
+            transactionItem,
+          );
+        }
+        
+      } catch (e, stacktrace) {
+        channelOp = null;
+        logger.e(
+            'Failed to process channel operation: $e\n$stacktrace');
+      }
+      
+      // Update the latest channel operation
+      latestChannelOperation.value = channelOp;
+      additionalTransactionsLoaded.value = true;
+    });
+
     //---------------------------------------------------
     // Track all subscriptions for proper cleanup
     _allSubscriptions.add(invoicesSubscription);
     _allSubscriptions.add(rebalancesSubscription);
     _allSubscriptions.add(paymentsSubscription);
     _allSubscriptions.add(transactionsSubscription);
+    _allSubscriptions.add(channelOperationsSubscription);
     
     // Subscribe to balance and transaction updates
     subscribeToOnchainBalance();
@@ -616,34 +693,87 @@ class WalletsController extends BaseController {
     handleFuturesCompleted(Get.context!);
   }
 
+  // Load channel operations from Firestore
+  Future<void> _loadChannelOperations() async {
+    try {
+      logger.i("Fetching channel operations in wallet_controller");
+      
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        logger.e("No authenticated user for loading channel operations");
+        return;
+      }
+      
+      final QuerySnapshot snapshot = await backendRef
+          .doc(userId)
+          .collection('channel_operations')
+          .orderBy('timestamp', descending: true)
+          .get();
+      
+      for (var doc in snapshot.docs) {
+        try {
+          final data = doc.data() as Map<String, dynamic>;
+          final operation = ChannelOperation.fromFirestore(data);
+          
+          // Create TransactionItemData for the channel operation
+          TransactionItemData transactionItem = TransactionItemData(
+            timestamp: operation.timestamp,
+            type: TransactionType.channelOpen,
+            direction: TransactionDirection.sent,
+            receiver: operation.displaySubtitle,
+            txHash: operation.channelId,
+            amount: operation.capacity.toString(),
+            fee: 0,
+            status: operation.status == ChannelOperationStatus.active
+                ? TransactionStatus.confirmed
+                : operation.status == ChannelOperationStatus.failed
+                    ? TransactionStatus.failed
+                    : TransactionStatus.pending,
+          );
+          
+          // Add to allTransactions list
+          allTransactions.add(transactionItem);
+          
+        } catch (e) {
+          logger.e("Error processing channel operation: $e");
+        }
+      }
+      
+      logger.i("Loaded ${snapshot.docs.length} channel operations");
+      
+    } catch (e) {
+      logger.e("Failed to load channel operations: $e");
+    }
+  }
+
   // Method to add or update transactions in allTransactions list
   void addOrUpdateTransaction(TransactionItemData transaction) {
     // Find the index in allTransactions list
     int index =
         allTransactions.indexWhere((tx) => tx.txHash == transaction.txHash);
 
-    // Find the index in allTransactionItems list
-    int indexForItem = allTransactionItems
+    // Find the index in _allTransactionItems list
+    int indexForItem = _allTransactionItems
         .indexWhere((tx) => tx.data.txHash == transaction.txHash);
 
     if (index != -1 && indexForItem != -1) {
       // Update existing transaction in both lists
       allTransactions[index] = transaction;
-      allTransactionItems[indexForItem] = TransactionItem(data: transaction);
+      _allTransactionItems[indexForItem] = TransactionItem(data: transaction);
       logger.i(
-          "allTransactions and allTransactionItems existing transaction updated ");
+          "allTransactions and _allTransactionItems existing transaction updated ");
     } else if (index == -1 && indexForItem == -1) {
       // Add new transaction to both lists
       allTransactions.insert(0, transaction);
-      allTransactionItems.insert(0, TransactionItem(data: transaction));
-      logger.i("allTransactions and allTransactionItems updated");
+      _allTransactionItems.insert(0, TransactionItem(data: transaction));
+      logger.i("allTransactions and _allTransactionItems updated");
     } else {
       // Handle inconsistent state where one list contains the transaction and the other does not
       logger.i(
           "Inconsistent state: Transaction found in one list but not the other.");
       // Optionally, synchronize the lists
       if (index != -1 && indexForItem == -1) {
-        allTransactionItems.insert(index, TransactionItem(data: transaction));
+        _allTransactionItems.insert(index, TransactionItem(data: transaction));
       } else if (index == -1 && indexForItem != -1) {
         allTransactions.insert(indexForItem, transaction);
       }
@@ -998,9 +1128,9 @@ class WalletsController extends BaseController {
 
     Future.microtask(() {
       // Clear the existing combined list
-      allTransactionItems.clear();
+      _allTransactionItems.clear();
 
-      allTransactionItems.addAll(
+      _allTransactionItems.addAll(
         internalRebalancess_list.map(
           (tx) => TransactionItem(
             data: TransactionItemData(
@@ -1022,7 +1152,7 @@ class WalletsController extends BaseController {
       );
 
       // Combine On-Chain Transactions
-      allTransactionItems.addAll(
+      _allTransactionItems.addAll(
         onchainTransactions_list.map(
           (tx) => TransactionItem(
             data: TransactionItemData(
@@ -1048,7 +1178,7 @@ class WalletsController extends BaseController {
       );
 
       // Combine Lightning Payments
-      allTransactionItems.addAll(
+      _allTransactionItems.addAll(
         lightningPayments_list.map(
           (pmt) => TransactionItem(
             data: TransactionItemData(
@@ -1070,7 +1200,7 @@ class WalletsController extends BaseController {
       );
 
       // Combine Lightning Invoices
-      allTransactionItems.addAll(
+      _allTransactionItems.addAll(
         lightningInvoices_list.map(
           (inv) => TransactionItem(
             data: TransactionItemData(
@@ -1094,12 +1224,12 @@ class WalletsController extends BaseController {
       // we don't need to do a separate pass unless we want a unique display.
 
       // Sort the combined list by timestamp descending
-      allTransactionItems
+      _allTransactionItems
           .sort((a, b) => b.data.timestamp.compareTo(a.data.timestamp));
 
       // Update the reactive allTransactions list
       allTransactions.value =
-          allTransactionItems.map((item) => item.data).toList();
+          _allTransactionItems.map((item) => item.data).toList();
     });
   }
 

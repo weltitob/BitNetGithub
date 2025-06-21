@@ -9,7 +9,7 @@ import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -450,7 +450,7 @@ class NotificationsContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
-        customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+        boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid - 1),
           child: Column(

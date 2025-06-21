@@ -10,7 +10,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -529,7 +529,7 @@ class _LoopScreenState extends State<LoopScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: GlassContainer(
-                            borderRadius: AppTheme.cardRadiusSmall,
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppTheme.elementSpacing * 0.5,
@@ -692,7 +692,7 @@ class CurrencySelector extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showCurrencySelectionSheet(context),
       child: GlassContainer(
-        borderRadius: AppTheme.cardRadiusMid,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
         height: AppTheme.cardPadding * 2,
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -867,7 +867,7 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
 
       return GlassContainer(
         borderRadius: BorderRadius.circular(24),
-        customShadow: isDarkMode ? [] : [
+        boxShadow: isDarkMode ? [] : [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,

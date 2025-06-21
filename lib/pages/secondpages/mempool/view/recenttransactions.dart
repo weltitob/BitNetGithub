@@ -2,7 +2,7 @@
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
@@ -93,7 +93,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
                           child: GlassContainer(
-                            borderRadius: BorderRadius.all(Radius.circular(AppTheme.cardPadding * 0.5)),
+                            borderRadius: AppTheme.cardPadding * 0.5,
                             child: Column(
                               children: [
                                 BitNetListTile(

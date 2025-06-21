@@ -5,7 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/frostedcolorbackground.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
@@ -322,7 +322,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               );
                             },
                             child: GlassContainer(
-                              borderRadius: AppTheme.cardRadiusSmall,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
@@ -331,7 +331,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       width: AppTheme.cardPadding * 2.h,
                                       height: AppTheme.cardPadding * 2.h,
                                       decoration: BoxDecoration(
-                                        borderRadius: AppTheme.cardRadiusSmall,
+                                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primaryContainer,
@@ -452,7 +452,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                     padding: EdgeInsets.symmetric(
                         horizontal: AppTheme.cardPadding, vertical: 8),
                     child: GlassContainer(
-                      borderRadius: AppTheme.cardRadiusSmall,
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(
@@ -461,7 +461,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               width: 56,
                               height: 56,
                               decoration: BoxDecoration(
-                                borderRadius: AppTheme.cardRadiusSmall,
+                                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primaryContainer,

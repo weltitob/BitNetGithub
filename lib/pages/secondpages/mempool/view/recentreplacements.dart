@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
@@ -90,7 +90,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2.0),
                             child: GlassContainer(
-                              borderRadius: BorderRadius.all(Radius.circular(AppTheme.cardPadding * 0.5)),
+                              borderRadius: AppTheme.cardPadding * 0.5,
                               child: Column(
                                 children: [
                                   BitNetListTile(
@@ -142,7 +142,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                               Container(
                                                 padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
                                                 decoration: BoxDecoration(
-                                                    borderRadius: AppTheme.cardRadiusSuperSmall,
+                                                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSuperSmall),
                                                     color: controller.transactionReplacements[index].fullRbf!
                                                         ? AppTheme.colorBitcoin
                                                         : AppTheme.successColor),
@@ -155,7 +155,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                                   ? Container(
                                                       padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
                                                       decoration:
-                                                          BoxDecoration(borderRadius: AppTheme.cardRadiusSuperSmall, color: Colors.green),
+                                                          BoxDecoration(borderRadius: BorderRadius.circular(AppTheme.borderRadiusSuperSmall), color: Colors.green),
                                                       child: Text('${L10n.of(context)!.mined}'),
                                                     )
                                                   : const SizedBox.shrink(),
