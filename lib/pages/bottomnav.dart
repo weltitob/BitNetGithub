@@ -109,7 +109,7 @@ class _BottomNavState extends State<BottomNav>
       final walletController = Get.find<WalletsController>();
       walletController.setHideBalance(
           hide: data.data()?['hide_balance'] ?? false);
-      if (mounted) setState(() {});
+      // Removed unnecessary setState() - no UI update needed here
     } else {
       Map<String, dynamic> data = {
         "theme_mode": "system",
@@ -139,24 +139,24 @@ class _BottomNavState extends State<BottomNav>
   ];
 
   void onItemTapped(int index, ScrollController controller) {
-    setState(() {
-      if (index == _selectedIndex) {
-        // Only scroll if the controller is attached to a position
-        if (controller.hasClients) {
-          try {
-            controller.animateTo(0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut);
-          } catch (e) {
-            print("Error scrolling in BottomNav: $e");
-          }
-        } else {
-          print("ScrollController not attached to any scroll views in BottomNav");
+    if (index == _selectedIndex) {
+      // Only scroll if the controller is attached to a position
+      if (controller.hasClients) {
+        try {
+          controller.animateTo(0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut);
+        } catch (e) {
+          print("Error scrolling in BottomNav: $e");
         }
       } else {
-        _selectedIndex = index;
+        print("ScrollController not attached to any scroll views in BottomNav");
       }
-    });
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -316,9 +316,8 @@ class _BottomNavState extends State<BottomNav>
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      setState(() {
-        String myTheme = value.get("theme");
-      });
+      // Removed setState - myTheme is not used anywhere
+      String myTheme = value.get("theme");
     });
   }
 }

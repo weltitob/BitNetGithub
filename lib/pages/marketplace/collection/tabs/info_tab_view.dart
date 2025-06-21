@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class InfoTabView extends StatelessWidget {
   const InfoTabView({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class InfoTabView extends StatelessWidget {
                     _buildStatDivider(context),
                     _buildClickableStatItem(context, 'Owners', '2.4K', () {
                       // Navigate to owners screen
-                      // TODO: Implement navigation to owners screen
+                      context.push('/marketplace/collection/owners');
                     }),
                     _buildStatDivider(context),
                     _buildStatItem(context, 'Floor', '0.24 BTC'),
