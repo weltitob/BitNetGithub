@@ -45,6 +45,130 @@ class _WebsitesTabState extends State<WebsitesTab>
     );
   }
 
+  // Centralized icon building logic with performance optimizations
+  Widget _buildWebsiteIcon(WebsiteData website, double size) {
+    return RepaintBoundary(
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: _buildIconContent(website, size),
+      ),
+    );
+  }
+  
+  Widget _buildIconContent(WebsiteData website, double size) {
+    // First priority: Use local asset if iconPath is provided
+    if (website.iconPath != null) {
+      final String iconPath = website.iconPath!;
+      if (iconPath.toLowerCase().endsWith('.svg')) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SvgPicture.asset(
+            iconPath,
+            fit: BoxFit.contain,
+            width: size,
+            height: size,
+          ),
+        );
+      } else {
+        return Image.asset(
+          iconPath,
+          fit: BoxFit.contain,
+          width: size,
+          height: size,
+          cacheWidth: (size * 2).toInt(),
+          cacheHeight: (size * 2).toInt(),
+          errorBuilder: (context, error, stackTrace) {
+            print('Error loading icon asset for ${website.name}: $error');
+            return _buildFallbackIcon(website, size);
+          },
+        );
+      }
+    }
+
+    // Second priority: Use fetched favicon bytes
+    return StreamBuilder<Uint8List?>(
+      stream: website.faviconBytesStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Image.memory(
+              snapshot.data!,
+              fit: BoxFit.contain,
+              width: size,
+              height: size,
+              cacheWidth: (size * 2).toInt(),
+              cacheHeight: (size * 2).toInt(),
+              errorBuilder: (context, error, stackTrace) {
+                return _buildFallbackIcon(website, size);
+              },
+            ),
+          );
+        } else {
+          return _buildFallbackIcon(website, size);
+        }
+      },
+    );
+  }
+
+  Widget _buildFallbackIcon(WebsiteData website, double size) {
+    // Show fallback icon if defined
+    if (website.fallbackIconPath != null) {
+      return Image.asset(
+        website.fallbackIconPath!,
+        fit: BoxFit.contain,
+        width: size,
+        height: size,
+        color: Theme.of(context).colorScheme.primary,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildDefaultIcon(website, size);
+        },
+      );
+    }
+    // Use a more sophisticated default icon
+    return _buildDefaultIcon(website, size);
+  }
+  
+  Widget _buildDefaultIcon(WebsiteData website, double size) {
+    // Create a colored container with the first letter of the website
+    final Color backgroundColor = _getColorForWebsite(website.name);
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(size * 0.2),
+      ),
+      child: Center(
+        child: Text(
+          website.name.substring(0, 1).toUpperCase(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: size * 0.5,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Color _getColorForWebsite(String name) {
+    // Generate a consistent color based on the website name
+    final int hash = name.hashCode;
+    final List<Color> colors = [
+      AppTheme.colorBitcoin,
+      Colors.blue,
+      Colors.purple,
+      Colors.green,
+      Colors.orange,
+      Colors.red,
+      Colors.teal,
+      Colors.indigo,
+    ];
+    return colors[hash.abs() % colors.length];
+  }
+
   List<WebsiteData> websites = [
     WebsiteData(
         name: "BitreFill",
@@ -65,7 +189,6 @@ class _WebsitesTabState extends State<WebsitesTab>
     WebsiteData(
         name: "Satoshi's Place",
         url: "https://satoshis.place/",
-        fallbackIconPath: 'assets/images/bitcoin.png',
         description: "Collaborative pixel art canvas where you paint with satoshis"),
     WebsiteData(
         name: "Lnmarkets", 
@@ -125,11 +248,27 @@ class _WebsitesTabState extends State<WebsitesTab>
   @override
   void initState() {
     super.initState();
-    // Preload all favicons in parallel as soon as the widget initializes
-    print('WebsitesTab: Starting to load favicons for ${websites.length} websites');
-    for (final website in websites) {
-      website.loadFaviconBytes();
+    // Only load favicons for visible websites (first 4 in carousel)
+    print('WebsitesTab: Starting to load favicons for first 4 websites');
+    for (int i = 0; i < 4 && i < websites.length; i++) {
+      final website = websites[i];
+      // Load favicon for websites that don't have a local iconPath
+      if (website.iconPath == null) {
+        website.loadFaviconBytes();
+      }
     }
+    
+    // Load remaining favicons with a delay to prevent performance issues
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        for (int i = 4; i < websites.length; i++) {
+          final website = websites[i];
+          if (website.iconPath == null) {
+            website.loadFaviconBytes();
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -180,205 +319,120 @@ class _WebsitesTabState extends State<WebsitesTab>
                     margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
                     customShadow: isDarkMode ? [] : null,
                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding * 0.8),
-                      child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        // Website logo and name
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        // Main content with proper layout
+                        Column(
                           children: [
-                            Container(
-                              height: 48.h,
-                              width: 48.h,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).brightness == Brightness.dark 
-                                    ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-                                  width: 1,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(6),
-                              child: Builder(
-                                builder: (context) {
-                                  // First priority: Use local asset if iconPath is provided
-                                  if (website.iconPath != null) {
-                                    final String iconPath = website.iconPath!;
-                                    if (iconPath
-                                        .toLowerCase()
-                                        .endsWith('.svg')) {
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(4),
-                                        child: SvgPicture.asset(
-                                          iconPath,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      );
-                                    } else {
-                                      return Image.asset(
-                                        iconPath,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Icon(Icons.public, size: 24,
-                                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                        },
-                                      );
-                                    }
-                                  }
-
-                                  // Second priority: Use fetched favicon bytes
-                                  return StreamBuilder<Uint8List?>(
-                                    stream: website.faviconBytesStream,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData &&
-                                          snapshot.data != null) {
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(4),
-                                          child: Image.memory(
-                                            snapshot.data!,
-                                            fit: BoxFit.contain,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Icon(Icons.public,
-                                                  size: 24,
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                            },
-                                          ),
-                                        );
-                                      } else {
-                                        // Show fallback icon while loading or if no favicon
-                                        if (website.fallbackIconPath != null) {
-                                          return Image.asset(
-                                            website.fallbackIconPath!,
-                                            fit: BoxFit.contain,
-                                            color: Theme.of(context).colorScheme.primary,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return Icon(Icons.public, size: 24,
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                            },
-                                          );
-                                        }
-                                        return Icon(Icons.public, size: 24,
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                      }
-                                    },
-                                  );
-
-                                  // Third priority: Use network image
-                                  if (website.useNetworkImage &&
-                                      website.iconPath != null) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.network(
-                                        website.iconPath!,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Icon(Icons.public, size: 24,
-                                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                        },
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return _buildImagePlaceholder(size: 24.0);
-                                        },
-                                      ),
-                                    );
-                                  }
-
-                                  // This should never be reached
-                                  return Icon(Icons.public, size: 24,
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
+                            // Header section with icon and text
+                            Padding(
+                              padding: EdgeInsets.all(AppTheme.cardPadding * 0.8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    website.name,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
+                                  // Website name and URL with icon
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Website icon (same style as in the list below)
+                                      Container(
+                                        width: 48.w,
+                                        height: 48.h,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).brightness == Brightness.dark 
+                                              ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(10.r),
+                                          border: Border.all(
+                                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(8),
+                                        child: _buildWebsiteIcon(website, 32.0),
+                                      ),
+                                      SizedBox(width: 12.w),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              website.name,
+                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(height: 2.h),
+                                            Text(
+                                              website.url
+                                                  .replaceAll('https://', '')
+                                                  .replaceAll('http://', '')
+                                                  .replaceAll('www.', '')
+                                                  .split('/')[0],
+                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                    website.url
-                                        .replaceAll('https://', '')
-                                        .replaceAll('http://', '')
-                                        .replaceAll('www.', '')
-                                        .split('/')[0],
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                                  
+                                  // Description
+                                  if (website.description != null) ...[
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      website.description!,
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                        height: 1.15,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  ],
                                 ],
                               ),
                             ),
+                            
+                            // Banner image takes remaining space
+                            if (website.bannerPath != null)
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(AppTheme.borderRadiusMid),
+                                    bottomRight: Radius.circular(AppTheme.borderRadiusMid),
+                                  ),
+                                  child: Image.asset(
+                                    website.bannerPath!,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Theme.of(context).colorScheme.surface,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                                            size: 40,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                         
-                        // Description
-                        if (website.description != null) ...[
-                          SizedBox(height: 12.h),
-                          Text(
-                            website.description!,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-
-                        // Banner image if available
-                        if (website.bannerPath != null) ...[
-                          SizedBox(height: 12.h),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.r),
-                            child: Image.asset(
-                              website.bannerPath!,
-                              height: 100.h,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 100.h,
-                                  color: Theme.of(context).colorScheme.surface,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),
                 ),
-              ));
+              );
             },
           ),
 
@@ -427,80 +481,20 @@ class _WebsitesTabState extends State<WebsitesTab>
                             )
                           : null,
                       leading: Container(
-                        width: 40.w,
-                        height: 40.h,
+                        width: 52.w,
+                        height: 52.h,
                         decoration: BoxDecoration(
                           color: Theme.of(context).brightness == Brightness.dark 
                               ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
                               : Colors.white,
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(
                             color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
                             width: 1,
                           ),
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: Builder(
-                          builder: (context) {
-                            // Use icon if provided
-                            if (entry.iconPath != null) {
-                              final String iconPath = entry.iconPath!;
-                              if (iconPath.toLowerCase().endsWith('.svg')) {
-                                return SvgPicture.asset(
-                                  iconPath,
-                                  fit: BoxFit.contain,
-                                );
-                              } else {
-                                return Image.asset(
-                                  iconPath,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.public, size: 20);
-                                  },
-                                );
-                              }
-                            }
-
-                            // Use fetched favicon - always use StreamBuilder for dynamic loading
-                            return StreamBuilder<Uint8List?>(
-                              stream: entry.faviconBytesStream,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData && snapshot.data != null) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Image.memory(
-                                      snapshot.data!,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(Icons.public, size: 20,
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  // Show fallback icon while loading or if no favicon
-                                  if (entry.fallbackIconPath != null) {
-                                    return Image.asset(
-                                      entry.fallbackIconPath!,
-                                      fit: BoxFit.contain,
-                                      color: Theme.of(context).colorScheme.primary,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(Icons.public, size: 20,
-                                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5));
-                                      },
-                                    );
-                                  }
-                                  return Icon(Icons.public, size: 20,
-                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5));
-                                }
-                              },
-                            );
-
-                            // This should never be reached now
-                            return Icon(Icons.public, size: 20,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5));
-                          },
-                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: _buildWebsiteIcon(entry, 32.0),
                       ),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
@@ -536,7 +530,6 @@ class WebsiteData {
   Uint8List? faviconBytes;
   final StreamController<Uint8List?> _faviconBytesController = StreamController<Uint8List?>.broadcast();
   Stream<Uint8List?> get faviconBytesStream => _faviconBytesController.stream;
-  Timer? _faviconTimer;
 
   WebsiteData({
     required this.name,
@@ -553,46 +546,41 @@ class WebsiteData {
     // Only fetch favicon if no iconPath is provided
     if (iconPath != null) return;
     
-    // Debug print to track favicon loading
-    print('Loading favicon for $name from $url');
+    // Skip favicon loading if already loaded
+    if (faviconBytes != null) {
+      _faviconBytesController.add(faviconBytes);
+      return;
+    }
     
-    // Delay favicon loading to prevent overwhelming the network
-    _faviconTimer = Timer(Duration(milliseconds: 100 + (name.hashCode % 500)), () async {
-      try {
-        // Extract domain from URL properly
-        final Uri uri = Uri.parse(url);
-        final domain = uri.host.isEmpty ? url : uri.host;
-        
-        // Try direct favicon first, then fall back to Google's service
-        String faviconUrl;
-        if (name == "BitreFill") {
-          faviconUrl = 'https://www.bitrefill.com/favicon.ico';
-        } else if (name == "Fold") {
-          faviconUrl = 'https://foldapp.com/favicon.ico';
-        } else {
-          faviconUrl = 'https://www.google.com/s2/favicons?domain=$domain&sz=128';
-        }
-        print('Fetching favicon from: $faviconUrl');
-        
-        final response = await http.get(Uri.parse(faviconUrl));
-        if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
-          faviconBytes = response.bodyBytes;
-          _faviconBytesController.add(faviconBytes);
-          print('Successfully loaded favicon for $name (${response.bodyBytes.length} bytes)');
-        } else {
-          print('Failed to load favicon for $name - Status: ${response.statusCode}');
-          _faviconBytesController.add(null);
-        }
-      } catch (e) {
-        print('Error loading favicon for $name: $e');
-        // Still emit null to update the stream
+    // Simple async loading without timers
+    try {
+      // Just use Google's favicon service for all websites - it's more reliable
+      final Uri uri = Uri.parse(url);
+      final domain = uri.host.isEmpty ? url : uri.host;
+      final faviconUrl = 'https://www.google.com/s2/favicons?domain=$domain&sz=64';
+      
+      print('Fetching favicon from: $faviconUrl');
+      
+      final response = await http.get(Uri.parse(faviconUrl)).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => http.Response('', 408),
+      );
+      
+      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+        faviconBytes = response.bodyBytes;
+        _faviconBytesController.add(faviconBytes);
+        print('Successfully loaded favicon for $name');
+      } else {
+        print('Failed to load favicon for $name - Status: ${response.statusCode}');
         _faviconBytesController.add(null);
       }
-    });
+    } catch (e) {
+      print('Error loading favicon for $name: $e');
+      _faviconBytesController.add(null);
+    }
   }
 
   void dispose() {
-    _faviconTimer?.cancel();
     _faviconBytesController.close();
   }
 }

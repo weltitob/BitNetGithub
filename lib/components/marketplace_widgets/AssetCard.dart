@@ -97,14 +97,13 @@ class _AssetCardState extends State<AssetCard> {
             },
             child: GlassContainer(
               width: getStandardizedCardWidth().w * widget.scale,
-              // No fixed height to allow content to determine size
+              height: 260.h * widget.scale, // Fixed height for consistent card size
               customShadow:
                   Theme.of(context).brightness == Brightness.light ? [] : null,
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.15),
                 child: Column(
-                  mainAxisSize:
-                      MainAxisSize.min, // Changed to min to prevent overflow
+                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Top section with name and icon
@@ -144,22 +143,22 @@ class _AssetCardState extends State<AssetCard> {
                     SizedBox(height: AppTheme.elementSpacing.h),
 
                     // NFT image/content with RepaintBoundary for better performance
-                    RepaintBoundary(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                        child: Container(
-                          height: 160.h *
-                              widget
-                                  .scale, // Increased height for better proportion
-                          width: double.infinity,
-                          child: firstMediaData != null
-                              ? topWidget(firstMediaData.type, firstMediaData)
-                              : Container(color: Colors.grey.withOpacity(0.3)),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h / 2),
+                        child: RepaintBoundary(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                            child: Container(
+                              width: double.infinity,
+                              child: firstMediaData != null
+                                  ? topWidget(firstMediaData.type, firstMediaData)
+                                  : Container(color: Colors.grey.withOpacity(0.3)),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-
-                    SizedBox(height: AppTheme.elementSpacing.h / 2),
 
                     // Bottom section with either list button (for owner) or price
                     widget.isOwner

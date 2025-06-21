@@ -18,6 +18,8 @@ import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
+import 'package:bitnet/backbone/services/lnurl_channel_service.dart';
+import 'package:bitnet/components/dialogsandsheets/channel_opening_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
@@ -52,6 +54,7 @@ enum SendType {
   OnChain,
   Invoice,
   Bip21,
+  LightningChannel,
   Unknown,
 }
 
@@ -257,6 +260,10 @@ class SendsController extends BaseController {
     ;
     print("isBitcoinValid: $isBitcoinValid");
     final isLnUrl = (encodedString as String).toLowerCase().startsWith("lnurl");
+    
+    // Check for LNURL Channel request
+    final isLnurlChannel = _isLnurlChannelRequest(encodedString);
+    
     late QRTyped qrTyped;
 
     logger.i("Determining the QR type...");
@@ -266,6 +273,8 @@ class SendsController extends BaseController {
       qrTyped = QRTyped.BIP21WithBolt11;
     } else if (isLightningMailValid) {
       qrTyped = QRTyped.LightningMail;
+    } else if (isLnurlChannel) {
+      qrTyped = QRTyped.LightningChannel;
     } else if (isLnUrl) {
       qrTyped = QRTyped.LightningUrl;
     } else if (isStringInvoice) {
@@ -276,6 +285,21 @@ class SendsController extends BaseController {
       qrTyped = QRTyped.Unknown;
     }
     return qrTyped;
+  }
+
+  bool _isLnurlChannelRequest(String encodedString) {
+    try {
+      // Check if it's an LNURL format (starts with lnurl)
+      if (!encodedString.toLowerCase().startsWith('lnurl')) {
+        return false;
+      }
+      
+      // Use the service to check if it's a channel request
+      final channelService = LnurlChannelService();
+      return channelService.isChannelRequest(encodedString);
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> onQRCodeScanned(dynamic encodedString, BuildContext cxt) async {
@@ -296,6 +320,10 @@ class SendsController extends BaseController {
         logger.i("LightningMail was detected");
         // Handle LightningMail QR code
         giveValuesToLnUrl(encodedString, asAddress: true);
+        break;
+      case QRTyped.LightningChannel:
+        logger.i("LightningChannel was detected");
+        await _handleChannelRequest(encodedString, cxt);
         break;
       case QRTyped.OnChain:
         logger.i("OnChain was detected");
@@ -1487,6 +1515,33 @@ class SendsController extends BaseController {
     }
     return null;
   }
+
+  // LNURL Channel handling methods
+  Future<void> _handleChannelRequest(String lnurlString, BuildContext cxt) async {
+    logger.i("Handling LNURL Channel request in send controller: $lnurlString");
+    
+    try {
+      // Show channel opening bottom sheet
+      await _showChannelOpeningSheet(cxt, lnurlString);
+    } catch (e) {
+      logger.e("Error handling channel request: $e");
+      final overlayController = Get.find<OverlayController>();
+      overlayController.showOverlay("Error processing channel request: $e");
+    }
+  }
+
+  Future<void> _showChannelOpeningSheet(BuildContext context, String lnurlString) async {
+    await context.showChannelOpeningSheet(
+      lnurlString,
+      onChannelOpened: () {
+        final overlayController = Get.find<OverlayController>();
+        overlayController.showOverlay("Lightning channel opened successfully!");
+        
+        // Reset the send form
+        resetValues();
+      },
+    );
+  }
 }
 
 class BitcoinApiService implements ApiService {
@@ -1542,6 +1597,7 @@ class BitcoinApiService implements ApiService {
     toString = toString.isEmpty ? "request_error" : toString;
     throw Exception(toString);
   }
+
 }
 
 /// Determines the Bitcoin address type and returns the appropriate address object.

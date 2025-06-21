@@ -16,6 +16,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -56,52 +57,109 @@ class EmailRecoveryPageThree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SettingsController settingsController = Get.find<SettingsController>();
-    return Padding(
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Column(children: [
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPadding),
+        child: Column(
+          children: [
+            SizedBox(height: AppTheme.cardPadding * 2),
+            
+            // Success icon
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.successColor.withOpacity(0.1),
+                border: Border.all(
+                  color: AppTheme.successColor,
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                Icons.check_circle_outline,
+                size: 60,
+                color: AppTheme.successColor,
+              ),
             ),
-            child: Icon(Icons.check, size: 128),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Success! Your email is now verified.',
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Click on Settings -> Recover Account -> Email Recovery when you need to.',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          Divider(indent: 32, endIndent: 32),
-          TextButton(
-            onPressed: () {
-              settingsController.pageControllerEmailRecovery.jumpToPage(0);
-            },
-            child: Text(
-              'Change Email',
+            
+            SizedBox(height: AppTheme.cardPadding),
+            
+            // Success message
+            Text(
+              'Success!',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppTheme.successColor,
+              ),
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(decoration: TextDecoration.underline),
             ),
-          ),
-          SizedBox(height: 8),
-          SizedBox(height: 25),
-        ]));
+            
+            SizedBox(height: AppTheme.elementSpacing),
+            
+            Text(
+              'Your email is now verified.',
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            
+            SizedBox(height: AppTheme.cardPadding),
+            
+            Container(
+              padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 24,
+                  ),
+                  SizedBox(height: AppTheme.elementSpacing / 2),
+                  Text(
+                    'You can now use email recovery to restore your account if needed.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: AppTheme.elementSpacing / 2),
+                  Text(
+                    'Access: Settings → Recover Account → Email Recovery',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            
+            Spacer(),
+            
+            // Change email button
+            TextButton(
+              onPressed: () {
+                settingsController.pageControllerEmailRecovery.jumpToPage(0);
+              },
+              child: Text(
+                'Change Email',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  decoration: TextDecoration.underline,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+            
+            SizedBox(height: AppTheme.cardPadding),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -149,78 +207,119 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
   @override
   Widget build(BuildContext context) {
     SettingsController settingsController = Get.find<SettingsController>();
-    return Padding(
-        padding: EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Column(children: [
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPadding),
+        child: Column(
+          children: [
+            SizedBox(height: AppTheme.cardPadding * 2),
+            
+            // Icon section
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                Icons.email_outlined,
+                size: 60,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
-            child: Icon(Icons.info, size: 128),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'We have sent you a verification email. Please verify your email to continue.',
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          Divider(indent: 32, endIndent: 32),
-          TextButton(
-            onPressed: () {
-              settingsController.pageControllerEmailRecovery.jumpToPage(0);
-            },
-            child: Text(
-              'Change Email',
+            
+            SizedBox(height: AppTheme.cardPadding),
+            
+            // Title and description
+            Text(
+              'Check Your Email',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(decoration: TextDecoration.underline),
             ),
-          ),
-          SizedBox(height: 8),
-          reloading
-              ? dotProgress(context)
-              : TextButton(
-                  onPressed: () async {
-                    reloading = true;
-                    setState(() {});
-                    await Auth().currentUser!.reload();
+            
+            SizedBox(height: AppTheme.elementSpacing),
+            
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: Text(
+                'We have sent you a verification email. Please verify your email to continue.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            
+            Spacer(),
+            
+            // Action buttons
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: reloading
+                      ? Container(
+                          height: 50,
+                          child: Center(child: dotProgress(context)),
+                        )
+                      : LongButtonWidget(
+                          title: 'I\'ve Verified My Email',
+                          onTap: () async {
+                            setState(() {
+                              reloading = true;
+                            });
+                            
+                            await Auth().currentUser!.reload();
 
-                    if (Auth().currentUser!.emailVerified) {
-                      emailRecoveryCollection
-                          .doc(Auth().currentUser!.uid)
-                          .update({'verified': true});
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        Get.find<SettingsController>()
-                            .pageControllerEmailRecovery
-                            .nextPage(
-                                duration: Duration(milliseconds: 100),
-                                curve: Curves.easeIn);
-                      });
-                    }
-                    reloading = false;
-                    setState(() {});
+                            if (Auth().currentUser!.emailVerified) {
+                              emailRecoveryCollection
+                                  .doc(Auth().currentUser!.uid)
+                                  .update({'verified': true});
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Get.find<SettingsController>()
+                                    .pageControllerEmailRecovery
+                                    .nextPage(
+                                        duration: Duration(milliseconds: 100),
+                                        curve: Curves.easeIn);
+                              });
+                            }
+                            
+                            setState(() {
+                              reloading = false;
+                            });
+                          },
+                        ),
+                ),
+                
+                SizedBox(height: AppTheme.elementSpacing),
+                
+                TextButton(
+                  onPressed: () {
+                    settingsController.pageControllerEmailRecovery.jumpToPage(0);
                   },
                   child: Text(
-                    'Reload',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(decoration: TextDecoration.underline),
+                    'Change Email',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
-          SizedBox(height: 25),
-        ]));
+                
+                SizedBox(height: AppTheme.cardPadding),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -234,133 +333,185 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
   String emailError = "";
   String passwordError = "";
   bool loadingSetupRecovery = false;
+  
   @override
   Widget build(BuildContext context) {
     SettingsController settingsController = Get.find<SettingsController>();
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPadding),
+        child: Column(
+          children: [
+            SizedBox(height: AppTheme.cardPadding),
+            
+            // Header section
+            Column(
               children: [
-                SizedBox(
-                  height: AppTheme.cardPadding,
+                Text(
+                  "Setup Email Recovery",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
+                SizedBox(height: AppTheme.elementSpacing),
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                  ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline),
-                      SizedBox(
-                        width: 4,
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
+                      SizedBox(width: AppTheme.elementSpacing / 2),
+                      Expanded(
                         child: Text(
-                          "Use your email and password to encrypt your data...",
-                          maxLines: 2,
-                          softWrap: true,
+                          "Use your email and password to encrypt your recovery data securely.",
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: AppTheme.cardPadding * 2,
-                ),
+              ],
+            ),
+            
+            SizedBox(height: AppTheme.cardPadding * 2),
+            
+            // Form fields
+            Column(
+              children: [
                 FormTextField(
-                  width: AppTheme.cardPadding * 14.ws,
-                  hintText: 'email',
-                  onChanged: (val) {},
+                  width: double.infinity,
+                  hintText: 'Email address',
+                  onChanged: (val) {
+                    if (emailError.isNotEmpty) {
+                      setState(() {
+                        emailError = "";
+                      });
+                    }
+                  },
                   controller: settingsController.emailFieldController,
                   isObscure: false,
                 ),
-                if (emailError.isNotEmpty)
-                  Text(
-                    emailError,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: AppTheme.errorColor),
+                if (emailError.isNotEmpty) ...[
+                  SizedBox(height: AppTheme.elementSpacing / 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      emailError,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.errorColor,
+                      ),
+                    ),
                   ),
-                SizedBox(
-                  height: 32,
-                ),
+                ],
+                
+                SizedBox(height: AppTheme.cardPadding),
+                
                 FormTextField(
-                  prefixText: "         ",
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        obscurePass = !obscurePass;
-                        setState(() {});
-                      },
-                      icon: Icon(obscurePass
-                          ? Icons.visibility_off
-                          : Icons.visibility)),
-                  width: AppTheme.cardPadding * 14.ws,
-                  hintText: 'password',
-                  onChanged: (val) {},
+                  width: double.infinity,
+                  hintText: 'Password',
+                  onChanged: (val) {
+                    if (passwordError.isNotEmpty) {
+                      setState(() {
+                        passwordError = "";
+                      });
+                    }
+                  },
                   controller: settingsController.passwordFieldController,
                   isObscure: obscurePass,
-                ),
-                if (passwordError.isNotEmpty)
-                  Text(
-                    passwordError,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: AppTheme.errorColor),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscurePass = !obscurePass;
+                      });
+                    },
+                    icon: Icon(
+                      obscurePass ? Icons.visibility_off : Icons.visibility,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                    ),
                   ),
+                ),
+                if (passwordError.isNotEmpty) ...[
+                  SizedBox(height: AppTheme.elementSpacing / 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      passwordError,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.errorColor,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: LongButtonWidget(
-              customWidth: MediaQuery.of(context).size.width * 0.9,
-              state:
-                  loadingSetupRecovery ? ButtonState.loading : ButtonState.idle,
-              title: "Setup Recovery",
-              onTap: () async {
-                loadingSetupRecovery = true;
-                setState(() {});
-                validateEmail(settingsController.emailFieldController);
-                validatePassword(settingsController.passwordFieldController);
-                if (emailError.isEmpty && passwordError.isEmpty) {
-                  PrivateData privData =
-                      await getPrivateData(Auth().currentUser!.uid);
-                  await setupEmailRecovery(
-                      settingsController.passwordFieldController.text,
-                      privData.mnemonic,
-                      Auth().currentUser!.uid,
-                      settingsController.emailFieldController.text);
+            
+            Spacer(),
+            
+            // Bottom button
+            Padding(
+              padding: EdgeInsets.only(bottom: AppTheme.cardPadding),
+              child: SizedBox(
+                width: double.infinity,
+                child: LongButtonWidget(
+                  state: loadingSetupRecovery ? ButtonState.loading : ButtonState.idle,
+                  title: "Setup Recovery",
+                  onTap: () async {
+                    setState(() {
+                      loadingSetupRecovery = true;
+                    });
+                    
+                    validateEmail(settingsController.emailFieldController);
+                    validatePassword(settingsController.passwordFieldController);
+                    
+                    if (emailError.isEmpty && passwordError.isEmpty) {
+                      try {
+                        PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+                        await setupEmailRecovery(
+                            settingsController.passwordFieldController.text,
+                            privData.mnemonic,
+                            Auth().currentUser!.uid,
+                            settingsController.emailFieldController.text);
 
-                  String token = generateSecureToken();
-                  emailRecoveryCollection.doc(Auth().currentUser!.uid).update({
-                    'token': token,
-                    'valid_until': Timestamp.fromDate(
-                        DateTime.now().add(Duration(hours: 1))),
-                    'verified': false
-                  });
-                  sendEmail(
-                      settingsController.emailFieldController.text, token, 0);
-                  loadingSetupRecovery = false;
-                  setState(() {});
-                  Get.find<SettingsController>()
-                      .pageControllerEmailRecovery
-                      .nextPage(
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeIn);
-                } else {
-                  loadingSetupRecovery = false;
-                  setState(() {});
-                }
-              }),
-        )
-      ],
+                        String token = generateSecureToken();
+                        emailRecoveryCollection.doc(Auth().currentUser!.uid).update({
+                          'token': token,
+                          'valid_until': Timestamp.fromDate(
+                              DateTime.now().add(Duration(hours: 1))),
+                          'verified': false
+                        });
+                        
+                        await sendEmail(settingsController.emailFieldController.text, token, 0);
+                        
+                        Get.find<SettingsController>()
+                            .pageControllerEmailRecovery
+                            .nextPage(
+                                duration: Duration(milliseconds: 100),
+                                curve: Curves.easeIn);
+                      } catch (e) {
+                        // Handle error
+                      }
+                    }
+                    
+                    setState(() {
+                      loadingSetupRecovery = false;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

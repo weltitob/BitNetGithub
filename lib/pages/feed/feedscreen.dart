@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/feed/appstab_modern.dart';

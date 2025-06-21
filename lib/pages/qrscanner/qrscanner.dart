@@ -7,6 +7,8 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/lnurl_channel_service.dart';
+import 'package:bitnet/components/dialogsandsheets/channel_opening_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
@@ -26,6 +28,7 @@ enum QRTyped {
   Profile,
   RestoreLogin,
   BIP21WithBolt11,
+  LightningChannel,
   Unknown,
 }
 
@@ -49,6 +52,9 @@ class QRScannerController extends State<QrScanner> {
     final isStringInvoice = isStringALNInvoice(encodedString);
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     final isStringPrivateData = isStringPrivateDataFunc(encodedString);
+    
+    // Check for LNURL Channel request
+    final isLnurlChannel = _isLnurlChannelRequest(encodedString);
 
     logger.i("Determining the QR type...");
 
@@ -63,8 +69,25 @@ class QRScannerController extends State<QrScanner> {
       return QRTyped.Invoice;
     } else if (isBitcoinValid) {
       return QRTyped.OnChain;
+    } else if (isLnurlChannel) {
+      return QRTyped.LightningChannel;
     } else {
       return QRTyped.Unknown;
+    }
+  }
+
+  bool _isLnurlChannelRequest(String encodedString) {
+    try {
+      // Check if it's an LNURL format (starts with lnurl)
+      if (!encodedString.toLowerCase().startsWith('lnurl')) {
+        return false;
+      }
+      
+      // Use the service to check if it's a channel request
+      final channelService = LnurlChannelService();
+      return channelService.isChannelRequest(encodedString);
+    } catch (e) {
+      return false;
     }
   }
 
@@ -94,6 +117,10 @@ class QRScannerController extends State<QrScanner> {
         break;
       case QRTyped.RestoreLogin:
         onScannedForSignIn(encodedString);
+        break;
+      case QRTyped.LightningChannel:
+        _handleChannelRequest(encodedString, cxt);
+        break;
       case QRTyped.Unknown:
         //send to unknown qr code page which shows raw data
         //context.go("/error");
@@ -101,6 +128,33 @@ class QRScannerController extends State<QrScanner> {
       default:
       // Handle unknown QR code
     }
+  }
+
+  void _handleChannelRequest(String lnurlString, BuildContext cxt) async {
+    final logger = Get.find<LoggerService>();
+    logger.i("Handling LNURL Channel request: $lnurlString");
+    
+    try {
+      // Close the QR scanner
+      context.pop();
+      
+      // Show channel opening bottom sheet
+      await _showChannelOpeningSheet(cxt, lnurlString);
+    } catch (e) {
+      logger.e("Error handling channel request: $e");
+      final overlayController = Get.find<OverlayController>();
+      overlayController.showOverlay("Error processing channel request: $e");
+    }
+  }
+
+  Future<void> _showChannelOpeningSheet(BuildContext context, String lnurlString) async {
+    await context.showChannelOpeningSheet(
+      lnurlString,
+      onChannelOpened: () {
+        final overlayController = Get.find<OverlayController>();
+        overlayController.showOverlay("Lightning channel opened successfully!");
+      },
+    );
   }
 
   void onScannedForSignIn(dynamic encodedString) async {

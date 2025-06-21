@@ -47,21 +47,21 @@ class TransactionConfirmedDetail {
 
   factory TransactionConfirmedDetail.fromJson(Map<String, dynamic> json) =>
       TransactionConfirmedDetail(
-        id: json["id"],
-        height: json["height"],
-        version: json["version"],
-        timestamp: json["timestamp"],
-        bits: json["bits"],
-        nonce: json["nonce"],
-        difficulty: json["difficulty"]?.toDouble(),
-        merkleRoot: json["merkle_root"],
-        txCount: json["tx_count"],
-        size: json["size"],
-        weight: json["weight"],
-        previousblockhash: json["previousblockhash"],
-        mediantime: json["mediantime"],
-        stale: json["stale"] == null ? false : json["stale"],
-        extras: Extras.fromJson(json["extras"]),
+        id: json["id"] ?? "",
+        height: json["height"] ?? 0,
+        version: json["version"] ?? 0,
+        timestamp: json["timestamp"] ?? 0,
+        bits: json["bits"] ?? 0,
+        nonce: json["nonce"] ?? 0,
+        difficulty: (json["difficulty"] ?? 0).toDouble(),
+        merkleRoot: json["merkle_root"] ?? "",
+        txCount: json["tx_count"] ?? 0,
+        size: json["size"] ?? 0,
+        weight: json["weight"] ?? 0,
+        previousblockhash: json["previousblockhash"] ?? "",
+        mediantime: json["mediantime"] ?? 0,
+        stale: json["stale"] ?? false,
+        extras: Extras.fromJson(json["extras"] ?? {}),
       );
 
   Map<String, dynamic> toJson() => {
@@ -147,37 +147,37 @@ class Extras {
   });
 
   factory Extras.fromJson(Map<String, dynamic> json) => Extras(
-        reward: json["reward"],
-        coinbaseRaw: json["coinbaseRaw"],
-        orphans: List<dynamic>.from(json["orphans"].map((x) => x)),
-        medianFee: json["medianFee"]?.toDouble(),
-        feeRange: List<double>.from(json["feeRange"].map((x) => x?.toDouble())),
-        totalFees: json["totalFees"],
-        avgFee: json["avgFee"],
-        avgFeeRate: json["avgFeeRate"],
-        utxoSetChange: json["utxoSetChange"],
-        avgTxSize: json["avgTxSize"]?.toDouble(),
-        totalInputs: json["totalInputs"],
-        totalOutputs: json["totalOutputs"],
-        totalOutputAmt: json["totalOutputAmt"],
-        segwitTotalTxs: json["segwitTotalTxs"],
-        segwitTotalSize: json["segwitTotalSize"],
-        segwitTotalWeight: json["segwitTotalWeight"],
+        reward: json["reward"] ?? 0,
+        coinbaseRaw: json["coinbaseRaw"] ?? "",
+        orphans: json["orphans"] != null ? List<dynamic>.from(json["orphans"].map((x) => x)) : [],
+        medianFee: (json["medianFee"] ?? 0).toDouble(),
+        feeRange: json["feeRange"] != null 
+            ? List<double>.from(json["feeRange"].map((x) => (x ?? 0).toDouble())) 
+            : [],
+        totalFees: json["totalFees"] ?? 0,
+        avgFee: json["avgFee"] ?? 0,
+        avgFeeRate: json["avgFeeRate"] ?? 0,
+        utxoSetChange: json["utxoSetChange"] ?? 0,
+        avgTxSize: (json["avgTxSize"] ?? 0).toDouble(),
+        totalInputs: json["totalInputs"] ?? 0,
+        totalOutputs: json["totalOutputs"] ?? 0,
+        totalOutputAmt: json["totalOutputAmt"] ?? 0,
+        segwitTotalTxs: json["segwitTotalTxs"] ?? 0,
+        segwitTotalSize: json["segwitTotalSize"] ?? 0,
+        segwitTotalWeight: json["segwitTotalWeight"] ?? 0,
         feePercentiles: json["feePercentiles"],
-        virtualSize: json["virtualSize"]?.toDouble(),
-        coinbaseAddress: json["coinbaseAddress"],
-        coinbaseSignature: json["coinbaseSignature"],
-        coinbaseSignatureAscii: json["coinbaseSignatureAscii"],
-        header: json["header"],
+        virtualSize: (json["virtualSize"] ?? 0).toDouble(),
+        coinbaseAddress: json["coinbaseAddress"] ?? "",
+        coinbaseSignature: json["coinbaseSignature"] ?? "",
+        coinbaseSignatureAscii: json["coinbaseSignatureAscii"] ?? "",
+        header: json["header"] ?? "",
         utxoSetSize: json["utxoSetSize"],
         totalInputAmt: json["totalInputAmt"],
-        pool: Pool.fromJson(json["pool"]),
-        matchRate: json["matchRate"]?.toDouble() ?? 0.0,
-        expectedFees: json["expectedFees"],
-        expectedWeight: json["expectedWeight"],
-        similarity: json["similarity"]?.toDouble() == null
-            ? 0.0
-            : json["similarity"]?.toDouble(),
+        pool: json["pool"] != null ? Pool.fromJson(json["pool"]) : Pool(id: 0, name: "", slug: ""),
+        matchRate: (json["matchRate"] ?? 0).toDouble(),
+        expectedFees: json["expectedFees"] ?? 0,
+        expectedWeight: json["expectedWeight"] ?? 0,
+        similarity: (json["similarity"] ?? 0).toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -225,9 +225,9 @@ class Pool {
   });
 
   factory Pool.fromJson(Map<String, dynamic> json) => Pool(
-        id: json["id"],
-        name: json["name"],
-        slug: json["slug"],
+        id: json["id"] ?? 0,
+        name: json["name"] ?? "",
+        slug: json["slug"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

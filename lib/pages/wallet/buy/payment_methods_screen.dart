@@ -35,7 +35,9 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
         context: context,
         hasBackButton: true,
         text: "Payment Methods",
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () {
+          context.pop();
+        },
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -64,7 +66,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       name: "Credit or Debit Card",
                       id: "credit_debit_card",
                     );
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -93,7 +95,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       name: "Google Pay",
                       id: "google_play",
                     );
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -123,7 +125,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                         name: "Apple Pay",
                         id: "apple_play",
                       );
-                      Navigator.of(context).pop();
+                      context.pop();
                     },
                     leading: Icon(
                       FontAwesomeIcons.applePay,
@@ -152,7 +154,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       name: "PayPal",
                       id: "paypal",
                     );
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   leading: Icon(
                     FontAwesomeIcons.paypal,

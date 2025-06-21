@@ -5,7 +5,6 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -69,7 +68,7 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
   @override
   Widget build(BuildContext context) {
     return GlassContainer(
-      height: 280, // A compact height between 250-300
+      height: 220, // Reduced height for slider design
       customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.cardPadding),
@@ -134,35 +133,103 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                       
                       SizedBox(height: AppTheme.elementSpacing),
                       
-                      // Gauge
-                      AnimatedRadialGauge(
-                        duration: const Duration(seconds: 1),
-                        curve: Curves.elasticOut,
-                        radius: 80, // More compact size
-                        value: fearGearChartModel.fgi?.now?.value?.toDouble() ?? 0,
-                        axis: GaugeAxis(
-                          min: 0,
-                          max: 100,
-                          degrees: 180,
-                          style: GaugeAxisStyle(
-                            thickness: 12, // Slightly thinner
-                            background: Theme.of(context).brightness == Brightness.dark
-                                ? AppTheme.white70
-                                : AppTheme.black60,
-                            segmentSpacing: 2, // Slightly reduced spacing
-                          ),
-                          progressBar: GaugeProgressBar.rounded(
-                            color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
-                                ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
-                                    ? AppTheme.successColor
-                                    : AppTheme.colorBitcoin
-                                : AppTheme.errorColor,
-                          ),
+                      // Slider with gradient background
+                      Container(
+                        height: 60,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Gradient background bar
+                            Container(
+                              height: 16,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppTheme.errorColor,
+                                    AppTheme.errorColor,
+                                    AppTheme.colorBitcoin,
+                                    AppTheme.colorBitcoin,
+                                    AppTheme.successColor,
+                                    AppTheme.successColor,
+                                  ],
+                                  stops: [0.0, 0.25, 0.25, 0.75, 0.75, 1.0],
+                                ),
+                              ),
+                            ),
+                            // Value indicator
+                            Positioned(
+                              left: ((fearGearChartModel.fgi?.now?.value ?? 0) / 100) * 
+                                    (MediaQuery.of(context).size.width - AppTheme.cardPadding * 4),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Value bubble
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
+                                          ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
+                                              ? AppTheme.successColor
+                                              : AppTheme.colorBitcoin
+                                          : AppTheme.errorColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      '${fearGearChartModel.fgi?.now?.value ?? 0}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  // Pointer arrow
+                                  CustomPaint(
+                                    size: Size(12, 6),
+                                    painter: TrianglePainter(
+                                      color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
+                                          ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
+                                              ? AppTheme.successColor
+                                              : AppTheme.colorBitcoin
+                                          : AppTheme.errorColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        builder: (context, child, value) => RadialGaugeLabel(
-                          value: value,
-                          style: Theme.of(context).textTheme.headlineMedium, // Smaller text
-                        ),
+                      ),
+                      
+                      SizedBox(height: AppTheme.elementSpacing),
+                      
+                      // Fear/Greed labels
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Extreme Fear',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppTheme.errorColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            'Extreme Greed',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppTheme.successColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                       
                       // Last updated date
@@ -180,4 +247,28 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
       ),
     );
   }
+}
+
+class TrianglePainter extends CustomPainter {
+  final Color color;
+
+  TrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 2, size.height)
+      ..lineTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

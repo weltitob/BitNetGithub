@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';

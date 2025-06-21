@@ -116,21 +116,19 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               // },
               child: pages[currentview].widget)
           : Container(
-              child: const Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        FontAwesomeIcons.lock,
-                        size: AppTheme.cardPadding * 2,
-                      ),
-                      SizedBox(
-                        height: AppTheme.elementSpacing,
-                      ),
-                      Text("Verify your identity"),
-                    ],
-                  ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.lock,
+                      size: AppTheme.cardPadding * 2,
+                    ),
+                    SizedBox(
+                      height: AppTheme.elementSpacing,
+                    ),
+                    Text("Verify your identity"),
+                  ],
                 ),
               ),
             ),

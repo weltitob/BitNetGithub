@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart' hide GlassContainer;
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:flutter/material.dart';
@@ -145,22 +147,22 @@ class _OwnersTabViewState extends State<OwnersTabView> {
                   ),
                   Expanded(
                     child: GlassContainer(
-                      opacity: 0.1,
+                      customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                       width: MediaQuery.of(context).size.width * 0.77,
-                      margin: EdgeInsets.only(bottom: 8),
+                      margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
                       child: Padding(
-                        padding: EdgeInsets.all(12),
+                        padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                         child: Row(
                           children: [
-                            // Owner avatar
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: Image.asset(
-                                user1Image,
-                                width: 50.w,
-                                height: 50.w,
-                                fit: BoxFit.cover,
-                              ),
+                            // Owner avatar using proper Avatar component
+                            Avatar(
+                              profileId: owner["name"].toString().toLowerCase(),
+                              name: owner["name"].toString(),
+                              size: 50.w,
+                              type: profilePictureType.onchain,
+                              onTap: () {
+                                // Handle owner profile tap
+                              },
                             ),
                             SizedBox(width: 12.w),
                             // Owner details

@@ -101,8 +101,8 @@ class ColumnTabView extends StatelessWidget {
               if (selectedProducts.isNotEmpty) {
                 handleProductClick(item.id, context);
               } else {
-                context.goNamed('/asset_screen',
-                    pathParameters: {'nft_id': item.nftName});
+                context.push('/asset_screen',
+                    extra: {'nft_id': item.id.toString()});
               }
             },
             onLongPress: () {

@@ -26,13 +26,13 @@ import 'package:intl/intl.dart';
 Color _getTypeColor(String type) {
   switch (type) {
     case 'bought':
-      return AppTheme.successColor; // e.g., green
+      return AppTheme.errorColor;    // red for money spent
     case 'sold':
-      return AppTheme.errorColor;   // e.g., red
+      return AppTheme.successColor;  // green for money received
     case 'offer':
-      return Colors.orangeAccent;   // e.g., orange
+      return AppTheme.colorBitcoin;  // bitcoin orange for offers
     default:
-      return Colors.grey;           // fallback
+      return Colors.grey;            // fallback
   }
 }
 
@@ -54,11 +54,11 @@ IconData _getTypeIcon(String type) {
 String _buildNotificationTitle(String type) {
   switch (type) {
     case 'bought':
-      return 'Bought from @xxx';
+      return 'Bought from @username';
     case 'sold':
-      return 'Sold to @xxx';
+      return 'Sold to @username';
     case 'offer':
-      return 'Offer from @xxx';
+      return 'New offer from @username';
     default:
       return 'Transaction';
   }
@@ -206,13 +206,19 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
 
                     Text(
                       category,
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     LongButtonWidget(
-                      title: 'Cancel',
+                      title: 'Cancel All',
                       buttonType: ButtonType.transparent,
-                      customWidth: AppTheme.cardPadding * 3.5,
-                      customHeight: AppTheme.cardPadding * 1.25,
+                      customWidth: 100.w,
+                      customHeight: 32.h,
+                      titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.errorColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                       onTap: () {
                         _buildAreYouSureAll(
                           context,
@@ -252,7 +258,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
                     SizedBox(height: AppTheme.elementSpacing),
                     Text(
                       category,
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     // Optional divider for a cleaner look:
                     // const Divider(),
@@ -290,9 +298,9 @@ class SingleNotificationWidget extends StatelessWidget {
     final color = _getTypeColor(model.type);
     final icon = _getTypeIcon(model.type);
 
-    // Example: amount in SAT
+    // Use absolute value for display, sign is shown by color
     final BitcoinUnitModel unitModel = BitcoinUnitModel(
-      amount: model.amount.toInt(),
+      amount: model.amount.abs().toInt(),
       bitcoinUnit: BitcoinUnits.SAT,
     );
 
@@ -300,19 +308,28 @@ class SingleNotificationWidget extends StatelessWidget {
       onTap: () {
         // handle tapping on a single notification
       },
-      borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.25),
+        padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// Top row: icon + text (title/date) + trailing amount
             Row(
               children: [
-                // Leading icon in a tinted circle
-                CircleAvatar(
-                  backgroundColor: color.withOpacity(0.15),
-                  child: Icon(icon, color: color),
+                // Leading icon in a modern container
+                Container(
+                  width: 44.w,
+                  height: 44.h,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: color,
+                    size: 20.w,
+                  ),
                 ),
                 SizedBox(width: AppTheme.elementSpacing),
                 // Title & date
@@ -322,58 +339,89 @@ class SingleNotificationWidget extends StatelessWidget {
                     children: [
                       Text(
                         _buildNotificationTitle(model.type),
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        DateFormat('yyyy-MM-dd HH:mm').format(model.date),
+                        displayTimeAgoFromInt(model.date.millisecondsSinceEpoch ~/ 1000),
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall
-                            ?.copyWith(color: Colors.grey),
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                            ),
                       ),
                     ],
                   ),
                 ),
-                // Trailing color-coded amount
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: AmountPreviewer(
-                    unitModel: unitModel,
-                    textStyle: Theme.of(context).textTheme.titleMedium!,
-                    textColor: model.amount < 0
-                        ? AppTheme.errorColor
-                        : AppTheme.successColor,
-                  ),
+                // Trailing amount with proper formatting
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (model.amount < 0)
+                          Text(
+                            '- ',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.errorColor,
+                            ),
+                          )
+                        else if (model.amount > 0)
+                          Text(
+                            '+ ',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.successColor,
+                            ),
+                          ),
+                        AmountPreviewer(
+                          unitModel: unitModel,
+                          textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ) ?? TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textColor: model.amount < 0
+                              ? AppTheme.errorColor
+                              : model.amount > 0
+                                  ? AppTheme.successColor
+                                  : Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
 
             /// If it's an offer, show Accept/Cancel buttons
             if (model.type == 'offer' && showButtons) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppTheme.elementSpacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   LongButtonWidget(
                     buttonType: ButtonType.transparent,
-
-                    title: 'Cancel',
-                    customWidth: 80,
-                    customHeight: 30,
+                    title: 'Decline',
+                    customWidth: 90.w,
+                    customHeight: 36.h,
+                    titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                     onTap: () => _buildAreYouSureSingle(context, model),
                   ),
-                  const SizedBox(width: AppTheme.elementSpacing / 2),
+                  SizedBox(width: AppTheme.elementSpacing.w),
                   LongButtonWidget(
-                    buttonType: ButtonType.transparent,
+                    buttonType: ButtonType.solid,
                     title: 'Accept',
-                    customWidth: 80,
-                    customHeight: 30,
+                    customWidth: 90.w,
+                    customHeight: 36.h,
                     onTap: () {
                       // handle accept
                     },
@@ -402,8 +450,24 @@ class NotificationsContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
-        child: Column(
-          children: notifications,
+        customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid - 1),
+          child: Column(
+            children: [
+              for (int i = 0; i < notifications.length; i++) ...[
+                notifications[i],
+                if (i < notifications.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: AppTheme.cardPaddingSmall,
+                    endIndent: AppTheme.cardPaddingSmall,
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                  ),
+              ],
+            ],
+          ),
         ),
       ),
     );

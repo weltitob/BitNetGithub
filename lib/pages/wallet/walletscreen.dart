@@ -1267,6 +1267,29 @@ void _showTimeframeBottomSheet(BuildContext context,
                     return BitNetListTile(
                       text: timespan,
                       selected: isSelected,
+                      titleStyle: isSelected 
+                          ? Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : Theme.of(context).textTheme.titleMedium,
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: isSelected 
+                              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                              : Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          _getTimeframeIcon(timespan),
+                          size: 20,
+                          color: isSelected 
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
                       onTap: () {
                         // Set the selected timespan
                         bitcoinController.pbSelectedtimespan.value = timespan;
@@ -1327,9 +1350,17 @@ void _showTimeframeBottomSheet(BuildContext context,
                         Navigator.of(context).pop();
                       },
                       trailing: isSelected
-                          ? Icon(
-                              Icons.check_circle,
-                              color: Theme.of(context).colorScheme.primary,
+                          ? Container(
+                              padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              child: Icon(
+                                Icons.check,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
                             )
                           : null,
                     );
@@ -1343,4 +1374,21 @@ void _showTimeframeBottomSheet(BuildContext context,
       );
     },
   );
+}
+
+IconData _getTimeframeIcon(String timespan) {
+  switch (timespan) {
+    case "1D":
+      return Icons.today;
+    case "1W":
+      return Icons.date_range;
+    case "1M":
+      return Icons.calendar_month;
+    case "1J":
+      return Icons.calendar_today;
+    case "Max":
+      return Icons.all_inclusive;
+    default:
+      return Icons.access_time;
+  }
 }

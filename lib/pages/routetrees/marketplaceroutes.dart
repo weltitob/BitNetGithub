@@ -48,7 +48,6 @@ const kOwnerScreenRoute = 'owner_screen_route';
 const kSearchScreenRoute = 'search_screen_route';
 const kOwnerDetailScreenRoute = 'owner_detail_screen_route';
 const kActivityScreenRoute = 'activity_screen_route';
-const kProfileEditScreenRoute = 'profile_edit_screen_route';
 const kFavouriteScreenRoute = 'favourite_screen_route';
 const kAboutScreenRoute = 'about_screen_route';
 const kCollectionScreenRoute = 'collection_screen_route';

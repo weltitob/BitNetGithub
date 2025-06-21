@@ -1,0 +1,411 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/lnurl_channel_service.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/lnurl/lnurl_channel_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+class ChannelOpeningSheet extends StatefulWidget {
+  final String lnurlString;
+  final VoidCallback? onChannelOpened;
+
+  const ChannelOpeningSheet({
+    Key? key,
+    required this.lnurlString,
+    this.onChannelOpened,
+  }) : super(key: key);
+
+  @override
+  State<ChannelOpeningSheet> createState() => _ChannelOpeningSheetState();
+}
+
+class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
+  final LnurlChannelService _channelService = LnurlChannelService();
+  
+  LnurlChannelRequest? _channelRequest;
+  ChannelOpeningProgress? _progress;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchChannelDetails();
+  }
+
+  Future<void> _fetchChannelDetails() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final channelRequest = await _channelService.fetchChannelRequest(widget.lnurlString);
+      
+      setState(() {
+        _channelRequest = channelRequest;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _openChannel() async {
+    if (_channelRequest == null) return;
+
+    try {
+      setState(() {
+        _progress = ChannelOpeningProgress.connecting();
+        _errorMessage = null;
+      });
+
+      final result = await _channelService.processChannelRequest(widget.lnurlString);
+      
+      if (result.success) {
+        setState(() {
+          _progress = ChannelOpeningProgress.completed();
+        });
+        
+        // Wait a moment to show success, then close
+        await Future.delayed(Duration(seconds: 2));
+        
+        if (widget.onChannelOpened != null) {
+          widget.onChannelOpened!();
+        }
+        
+        Navigator.of(context).pop();
+      } else {
+        setState(() {
+          _progress = ChannelOpeningProgress.error(result.message);
+          _errorMessage = result.message;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _progress = ChannelOpeningProgress.error(e.toString());
+        _errorMessage = e.toString();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppTheme.borderRadiusMid),
+          topRight: Radius.circular(AppTheme.borderRadiusMid),
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPadding.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurface.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+            ),
+            
+            SizedBox(height: AppTheme.elementSpacing.h),
+            
+            // Title
+            Text(
+              "Open Lightning Channel",
+              style: theme.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
+            
+            SizedBox(height: AppTheme.cardPadding.h),
+            
+            if (_isLoading) ...[
+              _buildLoadingState(),
+            ] else if (_errorMessage != null) ...[
+              _buildErrorState(),
+            ] else if (_progress != null) ...[
+              _buildProgressState(),
+            ] else if (_channelRequest != null) ...[
+              _buildChannelDetails(),
+            ],
+            
+            SizedBox(height: AppTheme.cardPadding.h),
+            
+            // Action buttons
+            if (!_isLoading && _progress?.isCompleted != true) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: LongButtonWidget(
+                      title: "Cancel",
+                      onTap: () => Navigator.of(context).pop(),
+                      buttonType: ButtonType.transparent,
+                    ),
+                  ),
+                  SizedBox(width: AppTheme.elementSpacing.w),
+                  Expanded(
+                    child: LongButtonWidget(
+                      title: _progress != null ? "Opening..." : "Open Channel",
+                      onTap: _progress != null ? null : _openChannel,
+                      buttonType: ButtonType.solid,
+                      state: _progress != null ? ButtonState.loading : ButtonState.idle,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            
+            // Safe area padding
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Container(
+      padding: EdgeInsets.all(AppTheme.cardPadding.w),
+      child: Column(
+        children: [
+          dotProgress(context),
+          SizedBox(height: AppTheme.elementSpacing.h),
+          Text(
+            "Loading channel details...",
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Container(
+      padding: EdgeInsets.all(AppTheme.cardPadding.w),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Theme.of(context).colorScheme.error,
+            size: 48.r,
+          ),
+          SizedBox(height: AppTheme.elementSpacing.h),
+          Text(
+            "Error loading channel details",
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppTheme.elementSpacing.h),
+          Text(
+            _errorMessage ?? "Unknown error occurred",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressState() {
+    final progress = _progress!;
+    final theme = Theme.of(context);
+    
+    return Container(
+      padding: EdgeInsets.all(AppTheme.cardPadding.w),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+      ),
+      child: Column(
+        children: [
+          if (progress.progress != null) ...[
+            LinearProgressIndicator(
+              value: progress.progress,
+              backgroundColor: theme.colorScheme.onSurface.withOpacity(0.1),
+              valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+            ),
+            SizedBox(height: AppTheme.elementSpacing.h),
+          ],
+          
+          if (progress.isCompleted && progress.errorMessage == null) ...[
+            Icon(
+              Icons.check_circle,
+              color: AppTheme.successColor,
+              size: 48.r,
+            ),
+          ] else if (progress.errorMessage != null) ...[
+            Icon(
+              Icons.error,
+              color: theme.colorScheme.error,
+              size: 48.r,
+            ),
+          ] else ...[
+            dotProgress(context),
+          ],
+          
+          SizedBox(height: AppTheme.elementSpacing.h),
+          
+          Text(
+            progress.message,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          
+          if (progress.errorMessage != null) ...[
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Text(
+              progress.errorMessage!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChannelDetails() {
+    final request = _channelRequest!;
+    final theme = Theme.of(context);
+    
+    return Container(
+      padding: EdgeInsets.all(AppTheme.cardPadding.w),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Channel Details",
+            style: theme.textTheme.titleMedium,
+          ),
+          
+          SizedBox(height: AppTheme.elementSpacing.h),
+          
+          _buildDetailRow("Provider", _extractProviderName(request.callback)),
+          
+          if (request.localAmt != null)
+            _buildDetailRow("Local Amount", "${request.localAmt} sats"),
+          
+          if (request.pushAmt != null && request.pushAmt! > 0)
+            _buildDetailRow("Push Amount", "${request.pushAmt} sats"),
+          
+          _buildDetailRow("Channel Type", "Public"),
+          
+          SizedBox(height: AppTheme.elementSpacing.h),
+          
+          Container(
+            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: theme.colorScheme.primary,
+                  size: 20.r,
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w),
+                Expanded(
+                  child: Text(
+                    "This will open a Lightning channel with the provider. You'll be able to send and receive Lightning payments instantly.",
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    final theme = Theme.of(context);
+    
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h * 0.5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+            ),
+          ),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _extractProviderName(String callbackUrl) {
+    try {
+      final uri = Uri.parse(callbackUrl);
+      final host = uri.host;
+      
+      // Extract meaningful provider names
+      if (host.contains('blocktank')) return 'Blocktank';
+      if (host.contains('lnbits')) return 'LNbits';
+      if (host.contains('lightning')) return 'Lightning Service';
+      
+      return host;
+    } catch (e) {
+      return 'Lightning Service Provider';
+    }
+  }
+}
+
+// Extension to show the bottom sheet easily
+extension ChannelOpeningSheetExtension on BuildContext {
+  Future<void> showChannelOpeningSheet(
+    String lnurlString, {
+    VoidCallback? onChannelOpened,
+  }) async {
+    await showModalBottomSheet(
+      context: this,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ChannelOpeningSheet(
+        lnurlString: lnurlString,
+        onChannelOpened: onChannelOpened,
+      ),
+    );
+  }
+}

@@ -72,7 +72,10 @@ class _BuyScreenState extends State<BuyScreen> {
         context: context,
         hasBackButton: true,
         text: L10n.of(context)!.buy,
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () {
+          // Use pop to go back to previous screen
+          context.pop();
+        },
         actions: [
           GetBuilder<BuyController>(
             builder: (_) => Padding(

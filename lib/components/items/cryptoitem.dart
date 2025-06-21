@@ -32,13 +32,21 @@ class Currency {
 class CryptoItem extends StatefulWidget {
   final Currency currency;
   final BuildContext context;
-  final bool hasGlassContainer; // New bool added
+  final bool hasGlassContainer; // New bool added
+  final List<ChartLine>? tokenChartData; // Token-specific chart data
+  final String? tokenPrice; // Token-specific price
+  final String? tokenPriceChange; // Token-specific price change
+  final bool? tokenIsPositive; // Token-specific positive/negative change
 
   const CryptoItem({
     Key? key,
     required this.currency,
     required this.context,
-    this.hasGlassContainer = true, // Default is true
+    this.hasGlassContainer = true, // Default is true
+    this.tokenChartData,
+    this.tokenPrice,
+    this.tokenPriceChange,
+    this.tokenIsPositive,
   }) : super(key: key);
 
   @override
@@ -178,13 +186,13 @@ class _CryptoItemState extends State<CryptoItem> {
                             const MajorTickLines(width: 0)),
                         series: <ChartSeries>[
                           LineSeries<ChartLine, double>(
-                            dataSource: controllerCrypto.onedaychart,
+                            dataSource: widget.tokenChartData ?? controllerCrypto.onedaychart,
                             animationDuration: 0,
                             xValueMapper: (ChartLine crypto, _) =>
                             crypto.time,
                             yValueMapper: (ChartLine crypto, _) =>
                             crypto.price,
-                            color: controllerCrypto.priceChange >= 0
+                            color: (widget.tokenIsPositive ?? (controllerCrypto.priceChange >= 0))
                                 ? AppTheme.successColor
                                 : AppTheme.errorColor,
                           )
@@ -198,8 +206,8 @@ class _CryptoItemState extends State<CryptoItem> {
                   children: [
                     // Using reusable PercentageChangeWidget component
                     PercentageChangeWidget(
-                      percentage: controllerCrypto.priceChangeString.value,
-                      isPositive: controllerCrypto.priceChange.value >= 0,
+                      percentage: widget.tokenPriceChange ?? controllerCrypto.priceChangeString.value,
+                      isPositive: widget.tokenIsPositive ?? (controllerCrypto.priceChange.value >= 0),
                       fontSize: 12,
                     ),
                   ],
@@ -233,8 +241,8 @@ class _CryptoItemState extends State<CryptoItem> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                "${controllerCrypto.currentPriceString}${getCurrency(currency!)}",
-                style: controllerCrypto.currentPriceString.value.length > 8
+                "${widget.tokenPrice ?? controllerCrypto.currentPriceString}${getCurrency(currency!)}",
+                style: (widget.tokenPrice ?? controllerCrypto.currentPriceString.value).length > 8
                     ? AppTheme.textTheme.bodySmall!.copyWith(
                     color: Theme.of(context).brightness == Brightness.light
                         ? AppTheme.black60

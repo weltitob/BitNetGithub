@@ -361,19 +361,65 @@ class _ChartCoreState extends State<ChartCore> {
     final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPrice;
     final priceChange = firstPrice == 0 ? 0 : (lastPrice - firstPrice) / firstPrice;
     
+    // Create trackball behavior with proper callbacks
+    final trackballBehavior = TrackballBehavior(
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      tooltipSettings: InteractiveTooltip(
+        enable: false, // Disable tooltip since we update the header
+      ),
+      hideDelay: 1000,
+      lineType: TrackballLineType.vertical,
+      lineColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+      markerSettings: TrackballMarkerSettings(
+        markerVisibility: TrackballVisibilityMode.visible,
+        height: 8,
+        width: 8,
+        color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
+        borderWidth: 2,
+        borderColor: Colors.white,
+      ),
+    );
+    
     // Use the SAME chart UI as Bitcoin
     return SizedBox(
       height: AppTheme.cardPadding * 16.h,
       child: SfCartesianChart(
-        trackballBehavior: TrackballBehavior(
-          enable: true,
-          activationMode: ActivationMode.singleTap,
-          tooltipSettings: InteractiveTooltip(
-            enable: true,
-            color: Colors.black,
-            textStyle: TextStyle(color: Colors.white),
-          ),
-        ),
+        trackballBehavior: trackballBehavior,
+        onChartTouchInteractionDown: (args) {
+          isTrackballActive = true;
+          setState(() {});
+        },
+        onTrackballPositionChanging: (args) {
+          // Update price display when hovering
+          if (args.chartPointInfo.yPosition != null) {
+            final pointInfoPrice = double.parse(args.chartPointInfo.label!);
+            final pointInfoTime = double.parse(args.chartPointInfo.header!);
+            
+            // Update the CustomWidget state with new price
+            final customWidgetState = widget.chartInfoKey.currentState as _CustomWidgetState?;
+            if (customWidgetState != null && mounted) {
+              // Store the hover values in the state
+              customWidgetState.setState(() {
+                customWidgetState._hoverPrice = pointInfoPrice;
+                customWidgetState._hoverTime = DateTime.fromMillisecondsSinceEpoch(pointInfoTime.round());
+                customWidgetState._isHovering = true;
+              });
+            }
+          }
+        },
+        onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
+          isTrackballActive = false;
+          setState(() {});
+          
+          // Reset to current price when interaction ends
+          final customWidgetState = widget.chartInfoKey.currentState as _CustomWidgetState?;
+          if (customWidgetState != null && mounted) {
+            customWidgetState.setState(() {
+              customWidgetState._isHovering = false;
+            });
+          }
+        },
         plotAreaBorderWidth: 0,
         primaryXAxis: NumericAxis(
           edgeLabelPlacement: EdgeLabelPlacement.none,
@@ -393,15 +439,15 @@ class _ChartCoreState extends State<ChartCore> {
             dataSource: chartData,
             xValueMapper: (ChartLine line, _) => line.time,
             yValueMapper: (ChartLine line, _) => line.price,
-            color: priceChange >= 0 ? Colors.green : Colors.red,
-            borderColor: priceChange >= 0 ? Colors.green : Colors.red,
+            color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
+            borderColor: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
             borderWidth: 2,
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: priceChange >= 0
-                  ? [Colors.green.withOpacity(0.2), Colors.green.withOpacity(0.0)]
-                  : [Colors.red.withOpacity(0.2), Colors.red.withOpacity(0.0)],
+                  ? [AppTheme.successColor.withOpacity(0.2), AppTheme.successColor.withOpacity(0.0)]
+                  : [AppTheme.errorColor.withOpacity(0.2), AppTheme.errorColor.withOpacity(0.0)],
             ),
           ),
         ],
@@ -616,6 +662,11 @@ class _CustomWidgetState extends State<CustomWidget>
   late AnimationController _controller;
   late Animation<Color?> _animation;
   bool _isBlinking = false;
+  
+  // Hover state for token charts
+  bool _isHovering = false;
+  double? _hoverPrice;
+  DateTime? _hoverTime;
 
   void blinkAnimation() {
     if (mounted) {
@@ -688,12 +739,14 @@ class _CustomWidgetState extends State<CustomWidget>
       final tokenName = widget.tokenData!['tokenName'];
       final currentPrice = widget.tokenData!['currentPrice'];
       
-      // For tokens, use simpler date/time display
-      final now = DateTime.now();
+      // Use hover values if hovering, otherwise use current values
+      final displayPrice = _isHovering && _hoverPrice != null ? _hoverPrice! : currentPrice;
+      final displayTime = _isHovering && _hoverTime != null ? _hoverTime! : DateTime.now();
+      
       DateFormat dateFormat = DateFormat("dd.MM.yyyy");
       DateFormat timeFormat = DateFormat("HH:mm");
-      String date = dateFormat.format(now);
-      String time = timeFormat.format(now);
+      String date = dateFormat.format(displayTime);
+      String time = timeFormat.format(displayTime);
       
       return Column(
         children: [
@@ -750,7 +803,7 @@ class _CustomWidgetState extends State<CustomWidget>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "\$${_formatPrice(currentPrice)}",
+                    "\$${_formatPrice(displayPrice)}",
                     style: theme.textTheme.displaySmall,
                   ),
                 ],
@@ -769,8 +822,11 @@ class _CustomWidgetState extends State<CustomWidget>
                     
                     if (periodData.isNotEmpty) {
                       final firstPrice = double.parse(periodData.first['price'].toString());
-                      final lastPrice = double.parse(periodData.last['price'].toString());
-                      final change = ((lastPrice - firstPrice) / firstPrice) * 100;
+                      // Use hover price if hovering, otherwise use last price
+                      final comparePrice = _isHovering && _hoverPrice != null 
+                          ? _hoverPrice! 
+                          : double.parse(periodData.last['price'].toString());
+                      final change = ((comparePrice - firstPrice) / firstPrice) * 100;
                       isPositive = change >= 0;
                       percentage = '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
                     }

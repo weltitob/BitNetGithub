@@ -39,7 +39,9 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
         context: context,
         hasBackButton: true,
         text: "Payment Providers",
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () {
+          context.pop();
+        },
         actions: [
           GetBuilder<BuyController>(
             builder: (_) => Padding(
@@ -76,7 +78,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                       name: "Stripe",
                       id: "stripe",
                     );
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -109,7 +111,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                       name: "MoonPay",
                       id: "moonpay",
                     );
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(8),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/fetchassetmeta.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/universeservice/queryassetstats.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -110,7 +112,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: "NFT Product",
+        text: assetStats?.assetGenesis?.name ?? "Asset Details",
         onTap: () => context.pop(),
       ),
       context: context,
@@ -135,15 +137,14 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         // Text("assetStats: $assetStats"),
                         // Text("meta: ${meta!.data}"),
 
-                        // Enhanced header with better styling
-                        SizedBox(
+                        // Modern asset display section
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                           child: Column(
                             children: [
-                              _buildEnhancedHeader(),
+                              SizedBox(height: AppTheme.cardPadding.h),
                               _buildEnhancedAssetDisplay(),
-
-                              // Enhanced asset display with animations
-                              //SizedBox(height: AppTheme.cardPadding.h),
+                              SizedBox(height: AppTheme.cardPadding.h),
                             ],
                           ),
                         ),
@@ -162,222 +163,292 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         //   ),
                         // ),
 
-                        GlassContainer(
-                          margin: EdgeInsets.all(8),
-                          customColor: primaryColor.withAlpha(150),
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                        // Modern asset info header
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                assetStats?.assetGenesis?.name ?? "Unknown Asset",
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: AppTheme.elementSpacing.h / 2),
+                              Row(
+                                children: [
+                                  Avatar(
+                                    profileId: "creator",
+                                    name: "Creator",
+                                    size: 20.w,
+                                    type: profilePictureType.onchain,
+                                    onTap: () {},
+                                  ),
+                                  SizedBox(width: AppTheme.elementSpacing.w / 2),
+                                  Text(
+                                    "Created by @username",
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                    ),
+                                  ),
+                                  Text(
+                                    " • ",
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                    ),
+                                  ),
+                                  Text(
+                                    displayTimeAgoFromInt(
+                                      (assetStats != null &&
+                                        assetStats!.chainAnchor != null &&
+                                        assetStats!.chainAnchor!.blockHeight != null
+                                          ? _convertBlockHeightToDateTime(
+                                              assetStats!.chainAnchor!.blockHeight!)
+                                          : DateTime.now())
+                                        .millisecondsSinceEpoch ~/ 1000),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: AppTheme.cardPadding.h),
+                            ],
+                          ),
+                        ),
+                        
+                        // Modern price display
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          child: GlassContainer(
+                            customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                            child: Padding(
+                              padding: EdgeInsets.all(AppTheme.cardPadding),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: 30,
-                                        child: Text(
-                                          L10n.of(context)!.currentPrice,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                      Text(
+                                        L10n.of(context)!.currentPrice,
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                         ),
                                       ),
-                                      Spacer(),
-                                      SizedBox(
-                                        height: 30,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              ethereumIcon,
-                                              height: 16.h,
-                                              fit: BoxFit.contain,
+                                      SizedBox(height: 4.h),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          Icon(
+                                            Icons.currency_bitcoin,
+                                            color: AppTheme.colorBitcoin,
+                                            size: 24.w,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Text(
+                                            assetStats?.amount != null ? 
+                                              (int.parse(assetStats!.amount!) / 100000000).toStringAsFixed(8) : 
+                                              '0.00000000',
+                                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            Container(
-                                              margin:
-                                                  EdgeInsets.only(left: 8.w),
-                                              child: Text(
-                                                '12.5',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium!
-                                                    .copyWith(
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                              ),
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Text(
+                                            'BTC',
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                             ),
-                                            Text(
-                                              ' (\$1717.17)',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium!
-                                                  .copyWith(
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.successColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.trending_up,
+                                          color: AppTheme.successColor,
+                                          size: 16.w,
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          '+12.5%',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: AppTheme.successColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 30,
-                        ),
+                        SizedBox(height: AppTheme.cardPadding.h),
+                        
+                        // Modern stats section
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 0),
-                          margin: EdgeInsets.only(bottom: 30.h),
-                          child: Column(
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          child: Row(
                             children: [
-                              // Container(
-                              //   width: size.width,
-                              //   margin: EdgeInsets.only(bottom: 15.h),
-                              //   child: Text(
-                              //     'NFToker #2293',
-                              //     style: Theme.of(context)
-                              //         .textTheme
-                              //         .bodyMedium!
-                              //         .copyWith(
-                              //           fontSize: 28.sp,
-                              //           fontWeight: FontWeight.w700,
-                              //         ),
-                              //   ),
-                              // ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  OwnerDataTextExtra(
-                                    hasText: true,
-                                    ownerDataText: '1',
-                                    ownerDataTitle: L10n.of(context)!.owners,
-                                    ownerDataImg: '',
+                              Expanded(
+                                child: GlassContainer(
+                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.people_outline,
+                                          color: Theme.of(context).colorScheme.primary,
+                                          size: 24.w,
+                                        ),
+                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        Text(
+                                          '1',
+                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          L10n.of(context)!.owners,
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  OwnerDataTextExtra(
-                                    hasText: true,
-                                    ownerDataText: '1',
-                                    ownerDataTitle:
-                                        L10n.of(context)!.itemsTotal,
-                                    ownerDataImg: '',
+                                ),
+                              ),
+                              SizedBox(width: AppTheme.elementSpacing.w),
+                              Expanded(
+                                child: GlassContainer(
+                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.inventory_2_outlined,
+                                          color: Theme.of(context).colorScheme.primary,
+                                          size: 24.w,
+                                        ),
+                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        Text(
+                                          assetStats?.amount ?? '1',
+                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          L10n.of(context)!.itemsTotal,
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  OwnerDataTextExtra(
-                                    hasText: true,
-                                    ownerDataText: '1',
-                                    ownerDataTitle: L10n.of(context)!.views,
-                                    ownerDataImg: '',
+                                ),
+                              ),
+                              SizedBox(width: AppTheme.elementSpacing.w),
+                              Expanded(
+                                child: GlassContainer(
+                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.schedule,
+                                          color: Theme.of(context).colorScheme.primary,
+                                          size: 24.w,
+                                        ),
+                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        Text(
+                                          '${DateTime.now().difference(
+                                            assetStats != null && assetStats!.chainAnchor != null && assetStats!.chainAnchor!.blockHeight != null
+                                              ? _convertBlockHeightToDateTime(assetStats!.chainAnchor!.blockHeight!)
+                                              : DateTime.now()
+                                          ).inDays}',
+                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Days Old',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
                         ),
 
-                        SizedBox(
-                          height: AppTheme.cardPadding * 2,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(bottom: 15.h),
-                                child: Text(
-                                  L10n.of(context)!.createdBy,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 30.h),
-                                child: Row(
+                        // Description section if available
+                        Builder(
+                          builder: (context) {
+                            String? description;
+                            if (meta != null) {
+                              try {
+                                String decodedData = meta!.decodeData();
+                                Map<String, dynamic> jsonMap = jsonDecode(decodedData);
+                                description = jsonMap['description']?.toString();
+                              } catch (e) {
+                                // If not JSON or no description field, use raw decoded data
+                                description = null;
+                              }
+                            }
+                            
+                            if (description != null && description.isNotEmpty) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                                margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      child: Image.asset(
-                                        user1Image,
-                                        width: 120.w,
-                                        height: 120.w,
-                                        fit: BoxFit.contain,
+                                    Text(
+                                      'Description',
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Container(
-                                        height: 120.w,
-                                        margin: EdgeInsets.only(left: 8.w),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.only(top: 5.w),
-                                              child: Text(
-                                                L10n.of(context)!.cryptoPills,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium!
-                                                    .copyWith(
-                                                      fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                              ),
-                                            ),
-                                            Text(
-                                              'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium!
-                                                  .copyWith(
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                            ),
-                                            SizedBox(
-                                              height: 2.w,
-                                            )
-                                          ],
-                                        ),
+                                    SizedBox(height: AppTheme.elementSpacing.h),
+                                    Text(
+                                      description,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                                        height: 1.5,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
+                              );
+                            }
+                            return SizedBox.shrink();
+                          },
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: CommonHeading(
-                            headingText: L10n.of(context)!.priceHistory,
-                            hasButton: false,
-                            collapseBtn: true,
-                            child: const BarChart(),
-                          ),
-                        ),
+                        
+                        SizedBox(height: AppTheme.cardPadding.h),
+                        // Price History section - removed for now as it shows placeholder data
                         // Container(
                         //   padding: EdgeInsets.symmetric(horizontal: 20.w),
                         //   child: CommonHeading(
@@ -409,63 +480,86 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         //     ),
                         //   ),
                         // ),
-                        CommonHeading(
-                          headingText: L10n.of(context)!.chainInfo,
-                          hasButton: false,
-                        ),
+                        // Chain information
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          margin: EdgeInsets.only(bottom: 15.h),
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          margin: EdgeInsets.only(top: AppTheme.cardPadding.h, bottom: 100.h),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ChainInfo(
-                                chainHeading: L10n.of(context)!.contractAddress,
-                                chainPeragraph:
-                                    '0x495f947276749ce646f68ac8c24842004512345478',
-                                hasBtn: true,
+                              Text(
+                                'Chain Information',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                              ChainInfo(
-                                chainHeading: L10n.of(context)!.tokenId,
-                                chainPeragraph:
-                                    '8425989087892580822781084918495798454',
-                                hasBtn: true,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 4.0),
-                                child: ChainInfoHorizontal(
-                                  headingStyle: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          fontSize: 14.sp,
-                                          color: AppTheme.colorBitcoin),
-                                  chainHeading: L10n.of(context)!
-                                      .blockChain
-                                      .toUpperCase(),
-                                  chainPeragraph: L10n.of(context)!.ethereum,
+                              SizedBox(height: AppTheme.elementSpacing.h),
+                              GlassContainer(
+                                customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                child: Padding(
+                                  padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                  child: Column(
+                                    children: [
+                                      _buildInfoRow(context, 'Asset ID', nft_id ?? 'Unknown'),
+                                      if (assetStats?.assetGenesis?.assetType != null)
+                                        _buildInfoRow(context, 'Asset Type', assetStats!.assetGenesis!.assetType!),
+                                      if (assetStats?.chainAnchor?.blockHeight != null)
+                                        _buildInfoRow(context, 'Block Height', assetStats!.chainAnchor!.blockHeight!.toString()),
+                                      if (assetStats?.chainAnchor?.anchorTx != null)
+                                        _buildInfoRow(context, 'Anchor TX', 
+                                          '${assetStats!.chainAnchor!.anchorTx!.substring(0, 8)}...${assetStats!.chainAnchor!.anchorTx!.substring(assetStats!.chainAnchor!.anchorTx!.length - 8)}'),
+                                      _buildInfoRow(context, 'Blockchain', 'Bitcoin (Taproot Assets)'),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        CommonHeading(
-                          headingText: L10n.of(context)!.openOnEtherscan,
-                          hasButton: false,
-                        ),
                       ],
                     ),
                   ),
                 ),
-                BottomButtons(
-                  leftButtonTitle: L10n.of(context)!.buy,
-                  rightButtonTitle: L10n.of(context)!.sell,
-                  onLeftButtonTap: () {
-                    _buildBuySlidingPanel();
-                  },
-                  onRightButtonTap: () {
-                    context.go('/sell');
-                  },
-                ),
+                // Modern bottom action buttons
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(AppTheme.cardPadding),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LongButtonWidget(
+                            title: 'Make Offer',
+                            buttonType: ButtonType.transparent,
+                            onTap: () => _buildBuySlidingPanel(),
+                            customHeight: 50.h,
+                          ),
+                        ),
+                        SizedBox(width: AppTheme.elementSpacing.w),
+                        Expanded(
+                          child: LongButtonWidget(
+                            title: L10n.of(context)!.buyNow,
+                            buttonType: ButtonType.solid,
+                            onTap: () => _buildBuySlidingPanel(),
+                            customHeight: 50.h,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 //const StatusBarBg(),
               ],
             ),
@@ -646,6 +740,33 @@ class _NftProductScreenState extends State<NftProductScreen> {
 
     return Container(
         margin: const EdgeInsets.only(bottom: 0), child: mediaWidget);
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // 1. Better header with asset name and details

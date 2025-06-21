@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/auth/register_individual_node.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';

@@ -7,7 +7,6 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:convert/convert.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';

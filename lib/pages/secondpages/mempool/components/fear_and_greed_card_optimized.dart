@@ -59,25 +59,6 @@ class FearAndGreedCardOptimized extends StatelessWidget {
 
               SizedBox(height: 16),
 
-              // Index explanation
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusSmall,
-                  color: controller.fearGreedLoading.value 
-                      ? Colors.grey.withOpacity(0.1)
-                      : controller.getFearGreedColor(controller.getCurrentFearGreedValue()).withOpacity(0.1),
-                ),
-                child: Text(
-                  "Market sentiment indicator (0-100)",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: controller.fearGreedLoading.value 
-                        ? Colors.grey
-                        : controller.getFearGreedColor(controller.getCurrentFearGreedValue()),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
             ],
           ),
         ),
@@ -114,74 +95,92 @@ class FearAndGreedCardOptimized extends StatelessWidget {
   Widget _buildIndexDisplay(BuildContext context, int currentValue, MempoolController controller) {
     return Column(
       children: [
-        // Large circular indicator with just the number
+        // Horizontal slider/gauge representation
         Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: controller.getFearGreedColor(currentValue).withOpacity(0.1),
-            border: Border.all(
-              color: controller.getFearGreedColor(currentValue),
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  currentValue.toString(),
-                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: controller.getFearGreedColor(currentValue),
+          height: 60,
+          child: Column(
+            children: [
+              // Value display above the slider
+              Text(
+                currentValue.toString(),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: controller.getFearGreedColor(currentValue),
+                ),
+              ),
+              
+              SizedBox(height: 8),
+              
+              // Horizontal gradient slider
+              Container(
+                height: 20,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.errorColor,                    // Red for Extreme Fear
+                      AppTheme.errorColor.withOpacity(0.7),   // Lighter red
+                      Colors.orange,                          // Orange for neutral
+                      AppTheme.successColor.withOpacity(0.7), // Lighter green
+                      AppTheme.successColor,                  // Green for Extreme Greed
+                    ],
+                    stops: [0.0, 0.25, 0.5, 0.75, 1.0],
                   ),
                 ),
-                SizedBox(height: 4),
-                Text(
-                  'INDEX',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: controller.getFearGreedColor(currentValue),
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                  ),
+                child: Stack(
+                  children: [
+                    // Position indicator
+                    Positioned(
+                      left: (currentValue / 100) * (MediaQuery.of(context).size.width - 2 * AppTheme.cardPadding - 2 * AppTheme.cardPadding) - 6,
+                      top: -2,
+                      child: Container(
+                        width: 12,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3), 
+                            width: 1.5
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).shadowColor.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         
-        // Sentiment text
-        Text(
-          controller.fearGreedData.value.fgi?.now?.valueText ?? "Neutral",
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            fontWeight: FontWeight.bold,
-            color: controller.getFearGreedColor(currentValue),
-          ),
-        ),
-        
-        // Last updated
-        if (controller.formattedFearGreedDate.value.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              'Updated ${controller.formattedFearGreedDate.value}',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.white60
-                    : AppTheme.black60,
+        // Sentiment text and change indicator in one row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Sentiment text
+            Text(
+              controller.fearGreedData.value.fgi?.now?.valueText ?? "Neutral",
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: controller.getFearGreedColor(currentValue),
               ),
             ),
-          ),
-        
-        // Simplified historical comparison
-        if (controller.fearGreedData.value.fgi?.previousClose != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: _buildSimpleComparison(context, controller, currentValue),
-          ),
+            
+            // Change indicator
+            if (controller.fearGreedData.value.fgi?.previousClose != null)
+              _buildSimpleComparison(context, controller, currentValue),
+          ],
+        ),
       ],
     );
   }
@@ -193,30 +192,23 @@ class FearAndGreedCardOptimized extends StatelessWidget {
     
     if (change == 0) return SizedBox.shrink();
     
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            isPositive ? Icons.trending_up : Icons.trending_down,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          isPositive ? Icons.trending_up : Icons.trending_down,
+          color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+          size: 14,
+        ),
+        SizedBox(width: 4),
+        Text(
+          '${isPositive ? '+' : ''}${change}',
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
             color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-            size: 16,
+            fontWeight: FontWeight.w600,
           ),
-          SizedBox(width: 6),
-          Text(
-            '${change.abs()} since yesterday',
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

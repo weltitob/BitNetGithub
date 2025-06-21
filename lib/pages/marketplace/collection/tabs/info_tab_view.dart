@@ -1,11 +1,13 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart' hide GlassContainer;
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InfoTabView extends StatelessWidget {
   const InfoTabView({Key? key}) : super(key: key);
@@ -20,102 +22,109 @@ class InfoTabView extends StatelessWidget {
           [
             // Description Section
             Text(
-              "Description",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
+              "About",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              opacity: 0.1,
-              width: double.infinity,
+              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Text(
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  'Bitcoin Punks is one of the first NFT collections on Bitcoin. A fixed set of 10,000 punks released in early 2023. They are 24x24 pixel art images inscribed on satoshis on the Bitcoin blockchain. The project pays homage to the original CryptoPunks while pioneering NFTs on Bitcoin through Ordinals.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    height: 1.5,
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: AppTheme.cardPadding.h),
 
             // Social Links Section
             Text(
-              "Links",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
+              "Links & Socials",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
-            SizedBox(height: 16.h),
-            Wrap(
-              spacing: 6.w,
-              runSpacing: 12.h,
-              children: [
-                OwnerDataText(
-                  ownerDataImg: discordIcon,
-                  ownerDataTitle: 'Discord',
-                  hasImage: true,
-                  onTap: () {
-                    // Open Discord link
-                  },
-                ),
-                OwnerDataText(
-                  ownerDataImg: twitterIcon,
-                  ownerDataTitle: 'Twitter',
-                  hasImage: true,
-                  onTap: () {
-                    // Open Twitter link
-                  },
-                ),
-                OwnerDataText(
-                  ownerDataImg: activityIcon,
-                  ownerDataTitle: 'Website',
-                  hasImage: true,
-                  onTap: () {
-                    // Open website
-                  },
-                ),
-                OwnerDataText(
-                  ownerDataImg: activityIcon,
-                  ownerDataTitle: 'Ordinals Explorer',
-                  hasImage: true,
-                  onTap: () {
-                    // Open Ordinals explorer
-                  },
-                ),
-              ],
+            SizedBox(height: AppTheme.elementSpacing.h),
+            GlassContainer(
+              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              child: Column(
+                children: [
+                  _buildLinkTile(
+                    context,
+                    icon: FontAwesomeIcons.twitter,
+                    title: 'Twitter',
+                    subtitle: '@BitcoinPunks',
+                    color: Color(0xFF1DA1F2),
+                    onTap: () {},
+                  ),
+                  _buildLinkTile(
+                    context,
+                    icon: FontAwesomeIcons.discord,
+                    title: 'Discord',
+                    subtitle: 'Join our community',
+                    color: Color(0xFF5865F2),
+                    onTap: () {},
+                  ),
+                  _buildLinkTile(
+                    context,
+                    icon: FontAwesomeIcons.globe,
+                    title: 'Website',
+                    subtitle: 'bitcoinpunks.com',
+                    color: Theme.of(context).colorScheme.primary,
+                    onTap: () {},
+                  ),
+                  _buildLinkTile(
+                    context,
+                    icon: FontAwesomeIcons.magnifyingGlass,
+                    title: 'Ordinals Explorer',
+                    subtitle: 'View on chain',
+                    color: AppTheme.colorBitcoin,
+                    onTap: () {},
+                    isLast: true,
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: AppTheme.cardPadding.h),
 
             // Details Section
             Text(
-              "Details",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
+              "Collection Details",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              opacity: 0.1,
-              width: double.infinity,
+              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Column(
                   children: [
                     _buildDetailRow(
                         context, "Contract Address", "bc1qwlcazq...k7mtl"),
-                    SizedBox(height: 16.h),
-                    _buildDetailRow(context, "Token Standard", "BRC-20"),
-                    SizedBox(height: 16.h),
-                    _buildDetailRow(context, "Creator Fee", "2.5%"),
-                    SizedBox(height: 16.h),
-                    _buildDetailRow(context, "Chain", "Bitcoin"),
-                    SizedBox(height: 16.h),
-                    _buildDetailRow(context, "Created", "April 2023"),
+                    _buildDetailDivider(context),
+                    _buildDetailRow(context, "Token Standard", "Ordinals"),
+                    _buildDetailDivider(context),
+                    _buildDetailRow(context, "Creator Fee", "5.0%"),
+                    _buildDetailDivider(context),
+                    _buildDetailRow(context, "Blockchain", "Bitcoin"),
+                    _buildDetailDivider(context),
+                    _buildDetailRow(context, "Total Supply", "10,000"),
+                    _buildDetailDivider(context),
+                    _buildDetailRow(context, "Created", "January 2023"),
                   ],
                 ),
               ),
             ),
+            
+            // Add some bottom padding
+            SizedBox(height: AppTheme.cardPadding.h * 2),
           ],
         ),
       ),
@@ -123,26 +132,103 @@ class InfoTabView extends StatelessWidget {
   }
 
   Widget _buildDetailRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).textTheme.bodySmall?.color,
-              ),
-        ),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                 ),
           ),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDetailDivider(BuildContext context) {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+    );
+  }
+  
+  Widget _buildLinkTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+    bool isLast = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: isLast 
+        ? BorderRadius.only(
+            bottomLeft: Radius.circular(AppTheme.borderRadiusMid - 1),
+            bottomRight: Radius.circular(AppTheme.borderRadiusMid - 1),
+          )
+        : null,
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+        child: Row(
+          children: [
+            Container(
+              width: 44.w,
+              height: 44.h,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: 20.w,
+              ),
+            ),
+            SizedBox(width: AppTheme.elementSpacing.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16.w,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
