@@ -109,7 +109,8 @@ class _CryptoItemState extends State<CryptoItem> {
   final LoggerService logger = Get.find();
   
   StreamSubscription? _chartLinesSubscription;
-  late final WalletsController _walletsController;
+  WalletsController? _walletsController;
+  bool _isInitialized = false;
 
 
 
@@ -119,7 +120,14 @@ class _CryptoItemState extends State<CryptoItem> {
     
     super.initState();
     
-    _walletsController = Get.find<WalletsController>();
+    // Initialize the controller before any usage
+    try {
+      _walletsController = Get.find<WalletsController>();
+      _isInitialized = true;
+    } catch (e) {
+      logger.e("WalletsController not found: $e");
+      _isInitialized = false;
+    }
     
   }
 
@@ -129,13 +137,18 @@ class _CryptoItemState extends State<CryptoItem> {
 
     super.didChangeDependencies();
 
+    // Only proceed if controller is initialized
+    if (!_isInitialized || _walletsController == null) {
+      return;
+    }
+    
     updateChart();
     
     // Cancel previous subscription if exists
     _chartLinesSubscription?.cancel();
 
     // Create new subscription
-    _chartLinesSubscription = _walletsController.chartLines.listen((a) {
+    _chartLinesSubscription = _walletsController!.chartLines.listen((a) {
 
       logger.i("updated chart");
 
@@ -161,7 +174,9 @@ class _CryptoItemState extends State<CryptoItem> {
 
   void updateChart() {
 
-    final chartLine = _walletsController.chartLines.value;
+    if (_walletsController == null) return;
+    
+    final chartLine = _walletsController!.chartLines.value;
 
     if (chartLine != null) {
 
@@ -510,7 +525,7 @@ class _CryptoItemState extends State<CryptoItem> {
 
     return Obx(() {
 
-      _walletsController.chartLines.value;
+      _walletsController?.chartLines.value;
 
       return Column(
 

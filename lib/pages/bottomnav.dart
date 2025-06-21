@@ -131,9 +131,9 @@ class _BottomNavState extends State<BottomNav>
   //
   // static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
-  static List<Widget> navItems = <Widget>[
+  static final List<Widget> navItems = <Widget>[
     FeedScreen(),
-    const Wallet(),
+    Wallet(),
     // ComingSoonPage()
     Profile()
   ];
