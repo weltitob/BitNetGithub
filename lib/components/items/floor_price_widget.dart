@@ -26,8 +26,6 @@ class FloorPriceWidget extends StatelessWidget {
           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           width: 1.5,
         ),
-        blurX: 50,
-        blurY: 50,
         opacity: 0.1,
         borderRadius: AppTheme.borderRadiusMid.r,
         child: Container(

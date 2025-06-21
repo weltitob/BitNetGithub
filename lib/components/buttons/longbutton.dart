@@ -102,7 +102,6 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                       : 1.5) == 0 ? null : Border.all(width: widget.state == ButtonState.disabled
                       ? 0
                       : 1.5, color: Theme.of(context).dividerColor), // remove border if not active
-                  blurX: 50, blurY: 50,
                   opacity: 0.1,
                   borderRadius: borderRadius,
                   child: Container(),
