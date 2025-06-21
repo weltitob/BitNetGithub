@@ -1291,8 +1291,8 @@ class WalletsController extends BaseController {
 
   Future<OnchainBalance> getOnchainBalance() async {
     try {
-      // Use empty string for default account instead of user ID
-      RestResponse onchainBalanceRest = await walletBalance(acc: '');
+      RestResponse onchainBalanceRest =
+          await walletBalance(acc: Auth().currentUser!.uid);
       
       logger.i("Onchain balance response: ${onchainBalanceRest.statusCode}");
       logger.d("Onchain balance data: ${onchainBalanceRest.data}");

@@ -614,9 +614,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                         () {
                           final logger = Get.find<LoggerService>();
                           final confirmedBalanceStr = walletController
-                              .onchainBalance.value.confirmedBalance;
+                              .onchainBalance.value.confirmedBalance.obs;
                           final unconfirmedBalanceStr = walletController
-                              .onchainBalance.value.unconfirmedBalance;
+                              .onchainBalance.value.unconfirmedBalance.obs;
 
                           logger.i(
                             "Confirmed Balance onchain: $confirmedBalanceStr",
@@ -626,7 +626,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           );
 
                           return CryptoInfoItem(
-                            balance: confirmedBalanceStr,
+                            balance: confirmedBalanceStr.value,
                             // confirmedBalance: confirmedBalanceStr.value,
                             // unconfirmedBalance: unconfirmedBalanceStr.value,
                             defaultUnit: BitcoinUnits.SAT,

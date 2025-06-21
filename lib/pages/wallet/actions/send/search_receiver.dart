@@ -44,22 +44,23 @@ class SearchReceiver extends GetWidget<SendsController> {
           },
           child: Stack(
             children: [
-              Column(
-                children: [
-                  const SizedBox(
-                    height: AppTheme.cardPadding * 3,
-                  ),
-                  Consumer<ScreenHeight>(
-                    builder: (ctx, res, child) {
-                      if (!res.isOpen) {
-                        controller.myFocusNodeAdressSearch.unfocus();
-                      }
-                      return child!;
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding),
-                      child: SearchFieldWidget(
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: AppTheme.cardPadding * 3,
+                    ),
+                    Consumer<ScreenHeight>(
+                      builder: (ctx, res, child) {
+                        if (!res.isOpen) {
+                          controller.myFocusNodeAdressSearch.unfocus();
+                        }
+                        return child!;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.cardPadding),
+                        child: SearchFieldWidget(
                         hintText: L10n.of(context)!.searchReceipient,
                         onSuffixTap: (ctrler) {
                           ctrler.clear();
@@ -113,9 +114,11 @@ class SearchReceiver extends GetWidget<SendsController> {
                       // Fallback to your normal "featured" or "most used" content
                       return buildRecentFeaturedSection(context);
                     }
-                  })
-
-                ],
+                  }),
+                  // Add padding at the bottom to prevent content from being hidden behind the button
+                  const SizedBox(height: 80),
+                  ],
+                ),
               ),
               BottomCenterButton(
                 onButtonTap: () async {
