@@ -178,11 +178,27 @@ Stream<dynamic> sendPaymentV2Stream(
               if (result is Map<String, dynamic>) {
                 // Map Lightning node status to expected format
                 String status = 'FAILED';
+                bool isStreamFinished = false;
+                
                 if (result['status'] == 'SUCCEEDED' || 
                     result['status'] == 'SUCCESSFUL' || 
                     result['status'] == 'COMPLETED' ||
                     result['status'] == 'SETTLED') {
                   status = 'SUCCEEDED';
+                  isStreamFinished = true; // Definitive success - end stream
+                } else if (result['status'] == 'IN_FLIGHT' || result['status'] == 'PENDING') {
+                  // For IN_FLIGHT status, check if we have payment_hash - indicates successful initiation
+                  if (result['payment_hash'] != null && result['payment_hash'].toString().isNotEmpty) {
+                    logger.i("🟢 IN_FLIGHT payment with payment_hash detected - treating as success");
+                    status = 'SUCCEEDED';
+                    isStreamFinished = true; // Treat as definitive success for LNURL payments
+                  } else {
+                    // Still in flight without payment hash - keep as original status for controller to handle
+                    status = result['status'];
+                  }
+                } else if (result['status'] == 'FAILED') {
+                  status = 'FAILED';
+                  isStreamFinished = true; // Definitive failure - end stream
                 }
                 
                 // Yield payment result in expected format for compatibility
@@ -201,6 +217,12 @@ Stream<dynamic> sendPaymentV2Stream(
                   'fee_msat': ((int.tryParse(result['fee_sat']?.toString() ?? '0') ?? 0) * 1000).toString(),
                   'payment_index': result['payment_index']?.toString() ?? '0',
                 };
+                
+                // End stream if we have a definitive result
+                if (isStreamFinished) {
+                  logger.i("🏁 Payment stream finished with definitive status: $status");
+                  return; // Exit the stream processing loop
+                }
               } else {
                 // If result doesn't have expected structure, treat as failed
                 yield {
@@ -223,6 +245,50 @@ Stream<dynamic> sendPaymentV2Stream(
                 'fee_msat': ((int.tryParse(decoded['payment_fee']?.toString() ?? '0') ?? 0) * 1000).toString(),
                 'payment_index': '0',
               };
+            } else if (decoded.containsKey('status')) {
+              // Handle direct status responses (without 'result' wrapper)
+              final directStatus = decoded['status'];
+              String mappedStatus = 'FAILED';
+              bool isStreamFinished = false;
+              
+              if (directStatus == 'SUCCEEDED' || directStatus == 'SUCCESSFUL' || 
+                  directStatus == 'COMPLETED' || directStatus == 'SETTLED') {
+                mappedStatus = 'SUCCEEDED';
+                isStreamFinished = true;
+              } else if (directStatus == 'IN_FLIGHT' || directStatus == 'PENDING') {
+                // Check if we have payment_hash for IN_FLIGHT
+                if (decoded['payment_hash'] != null && decoded['payment_hash'].toString().isNotEmpty) {
+                  logger.i("🟢 Direct IN_FLIGHT payment with payment_hash detected - treating as success");
+                  mappedStatus = 'SUCCEEDED';
+                  isStreamFinished = true;
+                } else {
+                  mappedStatus = directStatus; // Pass through for controller to handle
+                }
+              } else if (directStatus == 'FAILED') {
+                mappedStatus = 'FAILED';
+                isStreamFinished = true;
+              }
+              
+              yield {
+                'status': mappedStatus,
+                'payment_hash': decoded['payment_hash'] ?? '',
+                'payment_preimage': decoded['payment_preimage'] ?? '',
+                'value_sat': decoded['value_sat']?.toString() ?? amount?.toString() ?? '0',
+                'payment_request': invoiceString,
+                'fee_sat': decoded['fee_sat']?.toString() ?? '0',
+                'creation_date': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                'creation_time_ns': decoded['creation_time_ns'] ?? (DateTime.now().millisecondsSinceEpoch * 1000000).toString(),
+                'htlcs': decoded['htlcs'] ?? [],
+                'value_msat': ((int.tryParse(decoded['value_sat']?.toString() ?? amount?.toString() ?? '0') ?? 0) * 1000).toString(),
+                'fee_msat': ((int.tryParse(decoded['fee_sat']?.toString() ?? '0') ?? 0) * 1000).toString(),
+                'payment_index': decoded['payment_index']?.toString() ?? '0',
+              };
+              
+              // End stream if we have a definitive result
+              if (isStreamFinished) {
+                logger.i("🏁 Direct status stream finished with definitive status: $mappedStatus");
+                return; // Exit the stream processing loop
+              }
             } else {
               // Unknown response format
               yield {
