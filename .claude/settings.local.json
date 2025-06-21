@@ -86,7 +86,8 @@
       "Bash(/mnt/c/src/flutter/bin/cache/dart-sdk/bin/dart.exe test test/integration/receive/lightning_receive_test.dart --timeout=60s --plain-name=\"Lightning Invoice Validation Extract amount from invoice\")",
       "Bash(./test_runner.sh)",
       "Bash(/mnt/c/src/flutter/bin/cache/dart-sdk/bin/dart.exe test_amount_extraction.dart)",
-      "Bash(git revert:*)"
+      "Bash(git revert:*)",
+      "Bash(/dev/null)"
     ],
     "deny": []
   }
