@@ -21,7 +21,7 @@ class OwnersScreen extends StatefulWidget {
 }
 
 class _OwnersScreenState extends State<OwnersScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
   List<OwnerModel> _owners = [];
   List<OwnerModel> _filteredOwners = [];
 
@@ -30,12 +30,10 @@ class _OwnersScreenState extends State<OwnersScreen> {
     super.initState();
     _loadMockOwners();
     _filteredOwners = _owners;
-    _searchController.addListener(_filterOwners);
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -101,12 +99,12 @@ class _OwnersScreenState extends State<OwnersScreen> {
     ];
   }
 
-  void _filterOwners() {
-    final query = _searchController.text.toLowerCase();
+  void _filterOwners(String query) {
+    _searchQuery = query;
     setState(() {
       _filteredOwners = _owners.where((owner) {
-        return owner.username.toLowerCase().contains(query) ||
-               owner.address.toLowerCase().contains(query);
+        return owner.username.toLowerCase().contains(query.toLowerCase()) ||
+               owner.address.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });
   }
@@ -117,7 +115,7 @@ class _OwnersScreenState extends State<OwnersScreen> {
       context: context,
       appBar: bitnetAppBar(
         context: context,
-        title: '${widget.collectionName ?? "Collection"} Holders',
+        text: '${widget.collectionName ?? "Collection"} Holders',
         onTap: () => context.pop(),
       ),
       body: Column(
@@ -135,10 +133,11 @@ class _OwnersScreenState extends State<OwnersScreen> {
                   ),
                 ),
                 SizedBox(height: AppTheme.elementSpacing.h),
-                SearchField(
-                  controller: _searchController,
+                SearchFieldWidget(
                   hintText: 'Search by username or address...',
-                  onChanged: (value) => _filterOwners(),
+                  isSearchEnabled: true,
+                  handleSearch: (value) => _filterOwners(value),
+                  onChanged: (value) => _filterOwners(value),
                 ),
               ],
             ),
