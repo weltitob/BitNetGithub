@@ -262,7 +262,9 @@ class _BottomNavState extends State<BottomNav>
                                 onItemTapped(i, feedController.scrollControllerColumn);
                               } else {
                                 // Fallback if controller not found
-                                setState(() => _selectedIndex = i);
+                                if (_selectedIndex != i) {
+                                  setState(() => _selectedIndex = i);
+                                }
                               }
                             case 1:
                               // Safely get the controller with null check
@@ -288,7 +290,9 @@ class _BottomNavState extends State<BottomNav>
                         } catch (e) {
                           print("Error in bottom nav tap: $e");
                           // Fallback - just update the selected index
-                          setState(() => _selectedIndex = i);
+                          if (_selectedIndex != i) {
+                            setState(() => _selectedIndex = i);
+                          }
                         }
                       },
                       elevation: 0, // Box-Shadow entfernen
