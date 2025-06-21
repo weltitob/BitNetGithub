@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
 import 'package:bitnet/pages/other_profile/widgets/center_widget_icon.dart';
 import 'package:flutter/material.dart';

@@ -181,10 +181,7 @@ class _CryptoItemState extends State<CryptoItem> {
   Widget build(BuildContext context) {
 
     return Obx(() => GlassContainer(
-
-      opacity:widget.hasGlassContainer ? 0.1 : 0.0,
-
-      border: Border.all(width: 1, color: Theme.of(context).dividerColor),
+      opacity: widget.hasGlassContainer ? 0.1 : 0.0,
 
       height: AppTheme.cardPadding * 2.75,
 

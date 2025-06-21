@@ -615,7 +615,7 @@ class WalletsController extends BaseController {
         .collection('channel_operations')
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .skip(1) // Skip the initial snapshot
+        // Don't skip initial snapshot to ensure we get all channel operations
         .listen((query) {
       Map<String, dynamic>? channelOp;
       additionalTransactionsLoaded.value = false;
@@ -633,8 +633,12 @@ class WalletsController extends BaseController {
         // Create TransactionItemData for the channel operation
         TransactionItemData transactionItem = TransactionItemData(
           timestamp: operation.timestamp,
-          type: TransactionType.channelOpen,
-          direction: TransactionDirection.sent, // Channel opens are like sending funds
+          type: operation.type == ChannelOperationType.existing 
+              ? TransactionType.channelDetected // New type for existing channels
+              : TransactionType.channelOpen,
+          direction: operation.type == ChannelOperationType.existing
+              ? TransactionDirection.received // Existing channels are like receiving capacity
+              : TransactionDirection.sent, // Channel opens are like sending funds
           receiver: operation.displaySubtitle,
           txHash: operation.channelId,
           amount: operation.capacity.toString(),
@@ -649,12 +653,19 @@ class WalletsController extends BaseController {
         // Add to allTransactions list
         addOrUpdateTransaction(transactionItem);
         
-        // Show overlay for new channel operations
+        // Show overlay for channel operations
         if (operation.status == ChannelOperationStatus.active) {
-          overlayController.showOverlayTransaction(
-            "Channel opened successfully",
-            transactionItem,
-          );
+          if (operation.type == ChannelOperationType.existing) {
+            overlayController.showOverlayTransaction(
+              "Existing channel detected",
+              transactionItem,
+            );
+          } else {
+            overlayController.showOverlayTransaction(
+              "Channel opened successfully",
+              transactionItem,
+            );
+          }
         } else if (operation.status == ChannelOperationStatus.pending ||
                    operation.status == ChannelOperationStatus.opening) {
           overlayController.showOverlayTransaction(
@@ -718,8 +729,12 @@ class WalletsController extends BaseController {
           // Create TransactionItemData for the channel operation
           TransactionItemData transactionItem = TransactionItemData(
             timestamp: operation.timestamp,
-            type: TransactionType.channelOpen,
-            direction: TransactionDirection.sent,
+            type: operation.type == ChannelOperationType.existing 
+                ? TransactionType.channelDetected // New type for existing channels
+                : TransactionType.channelOpen,
+            direction: operation.type == ChannelOperationType.existing
+                ? TransactionDirection.received // Existing channels are like receiving capacity
+                : TransactionDirection.sent, // Channel opens are like sending funds
             receiver: operation.displaySubtitle,
             txHash: operation.channelId,
             amount: operation.capacity.toString(),
@@ -1043,21 +1058,31 @@ class WalletsController extends BaseController {
     List<String> errorMessages = [];
 
     try {
-      // Start all four loading functions in parallel (adding rebalances):
+      // Start all loading functions in parallel (adding rebalances and channel operations):
       logger.i(
-          "Starting parallel loading of transactions, payments, invoices, and rebalances...");
-      final List<bool> results = await Future.wait([
+          "Starting parallel loading of transactions, payments, invoices, rebalances, and channel operations...");
+      final List<Future<bool>> futures = [
         getOnchainTransactionsList(),
         getLightningPaymentsList(),
         getLightningInvoicesList(),
-        getInternalRebalancesList(), // new
-      ]);
+        getInternalRebalancesList(),
+      ];
+      
+      // Add channel operations loading (convert void to bool)
+      final channelOpsFuture = _loadChannelOperations().then((_) => true).catchError((e) {
+        logger.e("Failed to load channel operations: $e");
+        return false;
+      });
+      futures.add(channelOpsFuture);
+      
+      final List<bool> results = await Future.wait(futures);
 
       // Extract results
       bool onchainSuccess = results[0];
       bool paymentsSuccess = results[1];
       bool invoicesSuccess = results[2];
       bool rebalancesSuccess = results[3];
+      bool channelOpsSuccess = results[4];
 
       // Check each result and record errors if any
       if (!onchainSuccess) {
@@ -1090,6 +1115,14 @@ class WalletsController extends BaseController {
         logger.e("Internal Rebalances failed to load.");
       } else {
         logger.i("Internal Rebalances loaded successfully.");
+      }
+
+      if (!channelOpsSuccess) {
+        errorCount++;
+        errorMessages.add("Failed to load Channel Operations.");
+        logger.e("Channel Operations failed to load.");
+      } else {
+        logger.i("Channel Operations loaded successfully.");
       }
 
       // If there were any errors, handle them

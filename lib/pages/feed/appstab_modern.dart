@@ -143,7 +143,6 @@ class _AppsTabModernState extends State<AppsTabModern>
                               width: 280.w,
                               height: 180.h,
                               opacity: 0.1,
-                              border: Border.all(width: 1, color: Theme.of(context).dividerColor),
                               borderRadius: AppTheme.cardPaddingBig.r,
                               child: Padding(
                                 padding: EdgeInsets.all(20.w),

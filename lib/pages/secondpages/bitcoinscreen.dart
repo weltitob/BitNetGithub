@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/cloudfunctions/stripe/requestclientsecret.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/token_data_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
@@ -80,26 +81,10 @@ String _getMockTokenBalance(String tokenSymbol) {
   }
 }
 
-// Helper to get token image path
+// Helper to get token image path using centralized service
 String _getTokenImagePath(String tokenSymbol) {
-  switch (tokenSymbol) {
-    case 'GENST':
-      return 'assets/tokens/genisisstone.webp';
-    case 'HTDG':
-      return 'assets/tokens/hotdog.webp';
-    case 'CAT':
-      return 'assets/tokens/cat.webp';
-    case 'EMRLD':
-      return 'assets/tokens/emerald.webp';
-    case 'LILA':
-      return 'assets/tokens/lila.webp';
-    case 'MINRL':
-      return 'assets/tokens/mineral.webp';
-    case 'TBLUE':
-      return 'assets/tokens/token_blue.webp';
-    default:
-      return 'assets/images/bitcoin.png';
-  }
+  final metadata = TokenDataService.instance.getTokenMetadata(tokenSymbol);
+  return metadata?['image'] ?? 'assets/images/bitcoin.png';
 }
 
 class _BitcoinScreenState extends State<BitcoinScreen>

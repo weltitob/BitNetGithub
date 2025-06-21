@@ -116,6 +116,8 @@ class ChannelOperation {
         return 'Channel Closing';
       case ChannelOperationType.forceClose:
         return 'Force Closing Channel';
+      case ChannelOperationType.existing:
+        return 'Existing Channel Detected';
     }
   }
 
@@ -165,7 +167,8 @@ enum ChannelOperationStatus {
 enum ChannelOperationType {
   open('open'),
   close('close'),
-  forceClose('force_close');
+  forceClose('force_close'),
+  existing('existing');
 
   final String value;
   const ChannelOperationType(this.value);

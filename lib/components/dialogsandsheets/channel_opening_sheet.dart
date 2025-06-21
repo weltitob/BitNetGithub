@@ -44,41 +44,68 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
 
   Future<void> _fetchChannelDetails() async {
     try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+          _errorMessage = null;
+        });
+      }
 
       if (widget.createBlocktankChannel) {
         // For Blocktank channels, we'll create the order during the opening process
         // Just show a mock request for UI purposes
-        setState(() {
-          _channelRequest = LnurlChannelRequest(
-            tag: 'channelRequest',
-            k1: 'blocktank-order',
-            callback: 'https://api1.blocktank.to/api/channels',
-            uri: 'blocktank-lsp@api1.blocktank.to:9735',
-            nodeId: 'blocktank-lsp',
-            localAmt: widget.localAmount ?? 20000,
-            pushAmt: widget.pushAmount ?? 0,
-          );
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _channelRequest = LnurlChannelRequest(
+              tag: 'channelRequest',
+              k1: 'blocktank-order',
+              callback: 'https://api1.blocktank.to/api/channels',
+              uri: 'blocktank-lsp@api1.blocktank.to:9735',
+              nodeId: 'blocktank-lsp',
+              localAmt: widget.localAmount ?? 20000,
+              pushAmt: widget.pushAmount ?? 0,
+            );
+            _isLoading = false;
+          });
+        }
       } else if (widget.lnurlString != null) {
         final channelRequest = await _channelService.fetchChannelRequest(widget.lnurlString!);
         
-        setState(() {
-          _channelRequest = channelRequest;
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _channelRequest = channelRequest;
+            _isLoading = false;
+          });
+        }
       } else {
         throw Exception("No LNURL string or Blocktank channel option provided");
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
+      }
+      
+      // Log the error to Firebase for debugging purposes
+      try {
+        if (widget.lnurlString != null) {
+          await _channelService.logChannelActivity(
+            nodeId: 'unknown',
+            providerName: 'Unknown Provider',
+            activityType: 'fetch_error',
+            message: 'Failed to fetch channel details: ${e.toString()}',
+            metadata: {
+              'lnurl': widget.lnurlString,
+              'error': e.toString(),
+            },
+          );
+        }
+      } catch (logError) {
+        // Don't let logging errors break the UI
+        print('Failed to log channel fetch error: $logError');
+      }
     }
   }
 
@@ -86,10 +113,12 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
     if (_channelRequest == null) return;
 
     try {
-      setState(() {
-        _progress = ChannelOpeningProgress.connecting();
-        _errorMessage = null;
-      });
+      if (mounted) {
+        setState(() {
+          _progress = ChannelOpeningProgress.connecting();
+          _errorMessage = null;
+        });
+      }
 
       LnurlChannelResult result;
       
@@ -98,14 +127,16 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         result = await _channelService.createAndProcessBlocktankChannel(
           localAmount: widget.localAmount ?? 20000,
           pushAmount: widget.pushAmount ?? 0,
-          isPrivate: false,
+          isPrivate: true,
           onProgress: (progress) {
-            setState(() {
-              _progress = progress;
-              if (progress.errorMessage != null) {
-                _errorMessage = progress.errorMessage;
-              }
-            });
+            if (mounted) {
+              setState(() {
+                _progress = progress;
+                if (progress.errorMessage != null) {
+                  _errorMessage = progress.errorMessage;
+                }
+              });
+            }
           },
         );
       } else {
@@ -113,12 +144,14 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         result = await _channelService.processChannelRequest(
           lnurlString: widget.lnurlString,
           onProgress: (progress) {
-            setState(() {
-              _progress = progress;
-              if (progress.errorMessage != null) {
-                _errorMessage = progress.errorMessage;
-              }
-            });
+            if (mounted) {
+              setState(() {
+                _progress = progress;
+                if (progress.errorMessage != null) {
+                  _errorMessage = progress.errorMessage;
+                }
+              });
+            }
           },
         );
       }
@@ -134,7 +167,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         Navigator.of(context).pop();
       } else {
         // Error state is already handled by the progress callback
-        if (_progress?.errorMessage == null) {
+        if (_progress?.errorMessage == null && mounted) {
           setState(() {
             _progress = ChannelOpeningProgress.error(result.message);
             _errorMessage = result.message;
@@ -142,10 +175,12 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
         }
       }
     } catch (e) {
-      setState(() {
-        _progress = ChannelOpeningProgress.error(e.toString());
-        _errorMessage = e.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _progress = ChannelOpeningProgress.error(e.toString());
+          _errorMessage = e.toString();
+        });
+      }
     }
   }
 
@@ -372,7 +407,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           if (request.pushAmt != null && request.pushAmt! > 0)
             _buildDetailRow("Push Amount", "${request.pushAmt} sats"),
           
-          _buildDetailRow("Channel Type", "Public"),
+          _buildDetailRow("Channel Type", "Private"),
           
           SizedBox(height: AppTheme.elementSpacing.h),
           

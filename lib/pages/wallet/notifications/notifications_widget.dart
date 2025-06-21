@@ -339,7 +339,7 @@ class SingleNotificationWidget extends StatelessWidget {
                     children: [
                       Text(
                         _buildNotificationTitle(model.type),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
                       ),

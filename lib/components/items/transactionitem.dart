@@ -23,6 +23,7 @@ enum TransactionType {
   loopOut,
   internalRebalance,
   channelOpen,
+  channelDetected,
 }
 
 enum TransactionStatus { failed, pending, confirmed }
@@ -141,7 +142,8 @@ class _TransactionItemState extends State<TransactionItem>
                 ),
               ),
             );
-          } else if (widget.data.type == TransactionType.channelOpen) {
+          } else if (widget.data.type == TransactionType.channelOpen || 
+                     widget.data.type == TransactionType.channelDetected) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -237,11 +239,16 @@ class _TransactionItemState extends State<TransactionItem>
                                 height: AppTheme.cardPadding * 0.6,
                                 fit: BoxFit.contain,
                               )
-                                  : widget.data.type == TransactionType.channelOpen
+                                  : (widget.data.type == TransactionType.channelOpen || 
+                                     widget.data.type == TransactionType.channelDetected)
                                   ? Icon(
-                                Icons.account_tree,
+                                widget.data.type == TransactionType.channelDetected 
+                                    ? Icons.visibility // Eye icon for detected channels
+                                    : Icons.account_tree, // Tree icon for new channels
                                 size: AppTheme.cardPadding * 0.6,
-                                color: AppTheme.colorBitcoin,
+                                color: widget.data.type == TransactionType.channelDetected 
+                                    ? AppTheme.successColor // Green for detected
+                                    : AppTheme.colorBitcoin, // Bitcoin orange for new
                               )
                                   : Row(
                                 children: [
@@ -281,7 +288,8 @@ class _TransactionItemState extends State<TransactionItem>
                                   : widget.data.type ==
                                   TransactionType.internalRebalance 
                                   ? 'Lightning' 
-                                  : widget.data.type == TransactionType.channelOpen
+                                  : (widget.data.type == TransactionType.channelOpen ||
+                                     widget.data.type == TransactionType.channelDetected)
                                   ? 'Channel'
                                   : 'Onchain',
                               overflow: TextOverflow.ellipsis,
