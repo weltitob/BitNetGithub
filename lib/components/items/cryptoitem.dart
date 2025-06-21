@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -105,8 +107,21 @@ class _CryptoItemState extends State<CryptoItem> {
   final controllerCrypto = Get.find<CryptoItemController>();
 
   final LoggerService logger = Get.find();
+  
+  StreamSubscription? _chartLinesSubscription;
+  late final WalletsController _walletsController;
 
 
+
+  @override
+  
+  void initState() {
+    
+    super.initState();
+    
+    _walletsController = Get.find<WalletsController>();
+    
+  }
 
   @override
 
@@ -115,8 +130,12 @@ class _CryptoItemState extends State<CryptoItem> {
     super.didChangeDependencies();
 
     updateChart();
+    
+    // Cancel previous subscription if exists
+    _chartLinesSubscription?.cancel();
 
-    Get.find<WalletsController>().chartLines.listen((a) {
+    // Create new subscription
+    _chartLinesSubscription = _walletsController.chartLines.listen((a) {
 
       logger.i("updated chart");
 
@@ -131,12 +150,18 @@ class _CryptoItemState extends State<CryptoItem> {
     });
 
   }
+  
+  @override
+  void dispose() {
+    _chartLinesSubscription?.cancel();
+    super.dispose();
+  }
 
 
 
   void updateChart() {
 
-    final chartLine = Get.find<WalletsController>().chartLines.value;
+    final chartLine = _walletsController.chartLines.value;
 
     if (chartLine != null) {
 
@@ -485,7 +510,7 @@ class _CryptoItemState extends State<CryptoItem> {
 
     return Obx(() {
 
-      Get.find<WalletsController>().chartLines.value;
+      _walletsController.chartLines.value;
 
       return Column(
 

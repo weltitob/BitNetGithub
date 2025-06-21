@@ -41,6 +41,37 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.cardPadding.h),
 
+            // Collection Stats Section
+            Text(
+              "Collection Stats",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            SizedBox(height: AppTheme.elementSpacing.h),
+            GlassContainer(
+              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatItem(context, 'Items', '10,000'),
+                    _buildStatDivider(context),
+                    _buildClickableStatItem(context, 'Owners', '2.4K', () {
+                      // Navigate to owners screen
+                      // TODO: Implement navigation to owners screen
+                    }),
+                    _buildStatDivider(context),
+                    _buildStatItem(context, 'Floor', '0.24 BTC'),
+                    _buildStatDivider(context),
+                    _buildStatItem(context, 'Volume', '124 BTC'),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: AppTheme.cardPadding.h),
+
             // Social Links Section
             Text(
               "Links & Socials",
@@ -127,6 +158,63 @@ class InfoTabView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStatItem(BuildContext context, String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildClickableStatItem(BuildContext context, String label, String value, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.elementSpacing.w / 2),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatDivider(BuildContext context) {
+    return Container(
+      height: 32.h,
+      width: 1,
+      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
     );
   }
 

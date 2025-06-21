@@ -7,7 +7,6 @@ import 'package:bitnet/pages/marketplace/collection/collection_header.dart';
 import 'package:bitnet/pages/marketplace/collection/collection_tab_bar.dart';
 import 'package:bitnet/pages/marketplace/collection/tabs/column_tab_view.dart';
 import 'package:bitnet/pages/marketplace/collection/tabs/info_tab_view.dart';
-import 'package:bitnet/pages/marketplace/collection/tabs/owners_tab_view.dart';
 import 'package:bitnet/pages/marketplace/collection/tabs/price_sales_tab_view.dart';
 import 'package:bitnet/pages/marketplace/collection/tabs/row_tab_view.dart';
 import 'package:bitnet/pages/marketplace/widgets/buy_sliding_panel.dart';
@@ -124,12 +123,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
               // // Price/Sales Tab
               SliverOffstage(
                   offstage: currentTabIndex != 2, sliver: PriceSalesTabView()),
-              // Owners Tab
-              SliverOffstage(
-                  offstage: currentTabIndex != 3, sliver: OwnersTabView()),
               // Info Tab
               SliverOffstage(
-                  offstage: currentTabIndex != 4, sliver: InfoTabView()),
+                  offstage: currentTabIndex != 3, sliver: InfoTabView()),
               
               // Bottom padding for better scrolling
               SliverToBoxAdapter(

@@ -95,38 +95,6 @@ class _CollectionHeaderState extends State<CollectionHeader>
           ),
           SizedBox(height: AppTheme.elementSpacing.h),
           
-          // Stats row
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildStatItem(
-                  context,
-                  'Items',
-                  '${widget.inscriptions.length}',
-                ),
-                _buildDivider(context),
-                _buildStatItem(
-                  context,
-                  'Owners',
-                  '2.4K',
-                ),
-                _buildDivider(context),
-                _buildStatItem(
-                  context,
-                  'Floor',
-                  '0.24 BTC',
-                ),
-                _buildDivider(context),
-                _buildStatItem(
-                  context,
-                  'Volume',
-                  '124 BTC',
-                ),
-              ],
-            ),
-          ),
           
           SizedBox(height: AppTheme.cardPadding.h),
           
