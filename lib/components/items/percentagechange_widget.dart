@@ -18,9 +18,14 @@ class PercentageChangeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Treat 0% as positive (green)
-    final isZeroOrPositive = isPositive || percentage.trim() == "0%" || percentage.trim() == "+0%" || percentage.trim() == "-0%";
-    final color = isZeroOrPositive ? AppTheme.successColor : AppTheme.errorColor;
+    // Debug: Add print for troubleshooting
+    if (percentage.contains("-")) {
+      print("DEBUG: percentage='$percentage', isPositive=$isPositive");
+    }
+    
+    // Fixed logic: Only treat zero percentages as positive, not all positive values
+    final isReallyPositive = isPositive && !percentage.trim().startsWith('-');
+    final color = isReallyPositive ? AppTheme.successColor : AppTheme.errorColor;
     
     return Container(
       padding: EdgeInsets.symmetric(
@@ -36,7 +41,7 @@ class PercentageChangeWidget extends StatelessWidget {
         children: [
           if (showIcon) ...[
             Icon(
-              isPositive ? Icons.arrow_upward : Icons.arrow_downward,
+              isReallyPositive ? Icons.arrow_upward : Icons.arrow_downward,
               color: color,
               size: fontSize * 1.1,
             ),

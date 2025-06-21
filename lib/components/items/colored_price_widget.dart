@@ -25,13 +25,13 @@ class ColoredPriceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Handle zero values as positive (always show green)
+    // Only treat actual zero values as positive, not small decimal values
     bool isZeroValue = false;
     try {
-      // Check if the price is 0 or -0 after removing currency symbols
+      // Check if the price is exactly 0 or -0 after removing currency symbols
       String cleanPrice = price.replaceAll(RegExp(r'[^\d.-]'), '');
       double numValue = double.tryParse(cleanPrice) ?? 0;
-      isZeroValue = numValue.abs() < 0.01; // Treat anything close to zero as zero
+      isZeroValue = numValue == 0.0; // Only treat exactly zero as zero, not small values
     } catch (e) {
       // If parsing fails, continue with original isPositive value
     }
@@ -86,7 +86,7 @@ class ColoredPriceWidget extends StatelessWidget {
       return Row(
         children: [
           Icon(
-            isPositive ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+            (isPositive || isZeroValue) ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
             color: color,
             size: AppTheme.iconSize * iconSize,
           ),

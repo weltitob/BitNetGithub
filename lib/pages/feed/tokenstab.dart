@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/services/token_data_service.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
@@ -30,349 +31,42 @@ class _TokensTabState extends State<TokensTab>
   @override
   bool get wantKeepAlive => true;
   
-  // Get price history for a token (simplified version)
+  // Get price history for a token using centralized service
   Map<String, dynamic> _getTokenPriceHistory(String symbol) {
-    // This should match the data from TokenMarketplaceScreen
-    // In a real app, this would be fetched from a service
-    double currentPrice;
-    switch (symbol) {
-      case 'GENST':
-        currentPrice = 48350.0;
-        break;
-      case 'HTDG':
-        currentPrice = 15.75;
-        break;
-      case 'CAT':
-        currentPrice = 892.50;
-        break;
-      case 'EMRLD':
-        currentPrice = 12450.0;
-        break;
-      case 'LILA':
-        currentPrice = 234.80;
-        break;
-      case 'MINRL':
-        currentPrice = 3567.25;
-        break;
-      case 'TBLUE':
-        currentPrice = 67.90;
-        break;
-      default:
-        currentPrice = 100.0;
-    }
-    return {
-      '1D': _generateSimplePriceHistory(currentPrice, 24, Duration(days: 1)),
-      '1W': _generateSimplePriceHistory(currentPrice, 7 * 24, Duration(days: 7)),
-      '1M': _generateSimplePriceHistory(currentPrice, 30 * 24, Duration(days: 30)),
-      '1J': _generateSimplePriceHistory(currentPrice, 365, Duration(days: 365)),
-      'Max': _generateSimplePriceHistory(currentPrice, 730, Duration(days: 730)),
-    };
+    return TokenDataService.instance.getTokenPriceHistory(symbol);
   }
   
-  List<Map<String, dynamic>> _generateSimplePriceHistory(
-    double currentPrice,
-    int dataPoints,
-    Duration timeRange,
-  ) {
-    List<Map<String, dynamic>> history = [];
-    final now = DateTime.now();
-    final timeStep = timeRange.inMilliseconds / dataPoints;
+  // Token data using centralized service for consistency across the app
+  List<Map<String, dynamic>> get tokenData {
+    final tokenService = TokenDataService.instance;
+    return tokenService.getAllTokenSymbols()
+        .map((symbol) => tokenService.getTokenDisplayData(symbol))
+        .toList();
+  }
 
-    for (int i = 0; i < dataPoints; i++) {
-      final time = now.subtract(Duration(milliseconds: (timeStep * (dataPoints - 1 - i)).toInt()));
-      
-      // Generate realistic price variations
-      final variation = (i / dataPoints - 0.5) * 0.1; // +/- 5% variation
-      final randomFactor = (DateTime.now().millisecondsSinceEpoch % 100) / 1000; // Small random component
-      final price = currentPrice * (1 + variation + randomFactor);
-      
-      history.add({
-        'time': time.millisecondsSinceEpoch.toDouble(),
-        'price': price,
-      });
-    }
-    
-    return history;
+  // Top movers data - references tokenData to ensure consistency
+  List<Map<String, dynamic>> get topMoversData {
+    // Sort tokens by percentage change (descending) and take top 3
+    final sortedTokens = List<Map<String, dynamic>>.from(tokenData);
+    sortedTokens.sort((a, b) {
+      final aChange = double.parse(a['change'].toString().replaceAll('%', '').replaceAll('+', ''));
+      final bChange = double.parse(b['change'].toString().replaceAll('%', '').replaceAll('+', ''));
+      return bChange.compareTo(aChange);
+    });
+    return sortedTokens.take(3).toList();
   }
   
-  // Sample token data with realistic chart patterns - using only available token images
-  final List<Map<String, dynamic>> tokenData = [
-    {
-      'name': 'Genesis Stone',
-      'symbol': 'GENST',
-      'image': 'assets/tokens/genisisstone.webp',
-      'price': '0.000142',
-      'change': '+3.7%',
-      'isPositive': true,
-      'color': Colors.blue,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000120),
-        ChartLine(time: 1.0, price: 0.000125),
-        ChartLine(time: 2.0, price: 0.000130),
-        ChartLine(time: 3.0, price: 0.000128),
-        ChartLine(time: 4.0, price: 0.000133),
-        ChartLine(time: 5.0, price: 0.000138),
-        ChartLine(time: 6.0, price: 0.000135),
-        ChartLine(time: 7.0, price: 0.000140),
-        ChartLine(time: 8.0, price: 0.000141),
-        ChartLine(time: 9.0, price: 0.000142),
-      ]
-    },
-    {
-      'name': 'Cat Token',
-      'symbol': 'CAT',
-      'image': 'assets/tokens/cat.webp',
-      'price': '0.000067',
-      'change': '-2.8%',
-      'isPositive': false,
-      'color': Colors.red.shade400,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000075),
-        ChartLine(time: 1.0, price: 0.000073),
-        ChartLine(time: 2.0, price: 0.000071),
-        ChartLine(time: 3.0, price: 0.000072),
-        ChartLine(time: 4.0, price: 0.000070),
-        ChartLine(time: 5.0, price: 0.000068),
-        ChartLine(time: 6.0, price: 0.000069),
-        ChartLine(time: 7.0, price: 0.000067),
-        ChartLine(time: 8.0, price: 0.000066),
-        ChartLine(time: 9.0, price: 0.000067),
-      ]
-    },
-    {
-      'name': 'Hotdog',
-      'symbol': 'HTDG',
-      'image': 'assets/tokens/hotdog.webp',
-      'price': '0.000089',
-      'change': '+2.1%',
-      'isPositive': true,
-      'color': Colors.orange.shade400,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000082),
-        ChartLine(time: 1.0, price: 0.000083),
-        ChartLine(time: 2.0, price: 0.000085),
-        ChartLine(time: 3.0, price: 0.000084),
-        ChartLine(time: 4.0, price: 0.000086),
-        ChartLine(time: 5.0, price: 0.000087),
-        ChartLine(time: 6.0, price: 0.000088),
-        ChartLine(time: 7.0, price: 0.000087),
-        ChartLine(time: 8.0, price: 0.000088),
-        ChartLine(time: 9.0, price: 0.000089),
-      ]
-    },
-    {
-      'name': 'Emerald',
-      'symbol': 'EMRLD',
-      'image': 'assets/tokens/emerald.webp',
-      'price': '0.000156',
-      'change': '+7.9%',
-      'isPositive': true,
-      'color': Colors.green.shade400,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000135),
-        ChartLine(time: 1.0, price: 0.000140),
-        ChartLine(time: 2.0, price: 0.000145),
-        ChartLine(time: 3.0, price: 0.000143),
-        ChartLine(time: 4.0, price: 0.000148),
-        ChartLine(time: 5.0, price: 0.000151),
-        ChartLine(time: 6.0, price: 0.000153),
-        ChartLine(time: 7.0, price: 0.000154),
-        ChartLine(time: 8.0, price: 0.000155),
-        ChartLine(time: 9.0, price: 0.000156),
-      ]
-    },
-    {
-      'name': 'Lila Token',
-      'symbol': 'LILA',
-      'image': 'assets/tokens/lila.webp',
-      'price': '0.000234',
-      'change': '+4.5%',
-      'isPositive': true,
-      'color': Colors.purple.shade400,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000210),
-        ChartLine(time: 1.0, price: 0.000215),
-        ChartLine(time: 2.0, price: 0.000220),
-        ChartLine(time: 3.0, price: 0.000218),
-        ChartLine(time: 4.0, price: 0.000225),
-        ChartLine(time: 5.0, price: 0.000228),
-        ChartLine(time: 6.0, price: 0.000230),
-        ChartLine(time: 7.0, price: 0.000232),
-        ChartLine(time: 8.0, price: 0.000233),
-        ChartLine(time: 9.0, price: 0.000234),
-      ]
-    },
-    {
-      'name': 'Mineral',
-      'symbol': 'MINRL',
-      'image': 'assets/tokens/mineral.webp',
-      'price': '0.000567',
-      'change': '-1.2%',
-      'isPositive': false,
-      'color': Colors.brown.shade400,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000590),
-        ChartLine(time: 1.0, price: 0.000585),
-        ChartLine(time: 2.0, price: 0.000580),
-        ChartLine(time: 3.0, price: 0.000575),
-        ChartLine(time: 4.0, price: 0.000570),
-        ChartLine(time: 5.0, price: 0.000568),
-        ChartLine(time: 6.0, price: 0.000569),
-        ChartLine(time: 7.0, price: 0.000567),
-        ChartLine(time: 8.0, price: 0.000566),
-        ChartLine(time: 9.0, price: 0.000567),
-      ]
-    },
-    {
-      'name': 'Token Blue',
-      'symbol': 'TBLUE',
-      'image': 'assets/tokens/token_blue.webp',
-      'price': '0.000079',
-      'change': '+6.3%',
-      'isPositive': true,
-      'color': Colors.blue.shade600,
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000068),
-        ChartLine(time: 1.0, price: 0.000070),
-        ChartLine(time: 2.0, price: 0.000072),
-        ChartLine(time: 3.0, price: 0.000074),
-        ChartLine(time: 4.0, price: 0.000075),
-        ChartLine(time: 5.0, price: 0.000076),
-        ChartLine(time: 6.0, price: 0.000077),
-        ChartLine(time: 7.0, price: 0.000078),
-        ChartLine(time: 8.0, price: 0.000078),
-        ChartLine(time: 9.0, price: 0.000079),
-      ]
-    },
-  ];
 
-  // Top movers data - using available token images
-  final List<Map<String, dynamic>> topMoversData = [
-    {
-      'name': 'Emerald',
-      'symbol': 'EMRLD',
-      'image': 'assets/tokens/emerald.webp',
-      'change': '+7.9%',
-      'isPositive': true,
-      'price': '0.000156',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000135),
-        ChartLine(time: 1.0, price: 0.000140),
-        ChartLine(time: 2.0, price: 0.000145),
-        ChartLine(time: 3.0, price: 0.000143),
-        ChartLine(time: 4.0, price: 0.000148),
-        ChartLine(time: 5.0, price: 0.000151),
-        ChartLine(time: 6.0, price: 0.000153),
-        ChartLine(time: 7.0, price: 0.000154),
-        ChartLine(time: 8.0, price: 0.000155),
-        ChartLine(time: 9.0, price: 0.000156),
-      ]
-    },
-    {
-      'name': 'Token Blue',
-      'symbol': 'TBLUE',
-      'image': 'assets/tokens/token_blue.webp',
-      'change': '+6.3%',
-      'isPositive': true,
-      'price': '0.000079',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000068),
-        ChartLine(time: 1.0, price: 0.000070),
-        ChartLine(time: 2.0, price: 0.000072),
-        ChartLine(time: 3.0, price: 0.000074),
-        ChartLine(time: 4.0, price: 0.000075),
-        ChartLine(time: 5.0, price: 0.000076),
-        ChartLine(time: 6.0, price: 0.000077),
-        ChartLine(time: 7.0, price: 0.000078),
-        ChartLine(time: 8.0, price: 0.000078),
-        ChartLine(time: 9.0, price: 0.000079),
-      ]
-    },
-    {
-      'name': 'Lila Token',
-      'symbol': 'LILA',
-      'image': 'assets/tokens/lila.webp',
-      'change': '+4.5%',
-      'isPositive': true,
-      'price': '0.000234',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000210),
-        ChartLine(time: 1.0, price: 0.000215),
-        ChartLine(time: 2.0, price: 0.000220),
-        ChartLine(time: 3.0, price: 0.000218),
-        ChartLine(time: 4.0, price: 0.000225),
-        ChartLine(time: 5.0, price: 0.000228),
-        ChartLine(time: 6.0, price: 0.000230),
-        ChartLine(time: 7.0, price: 0.000232),
-        ChartLine(time: 8.0, price: 0.000233),
-        ChartLine(time: 9.0, price: 0.000234),
-      ]
-    },
-  ];
-
-  // Top volume data - using available token images
-  final List<Map<String, dynamic>> topVolumeData = [
-    {
-      'name': 'Mineral',
-      'symbol': 'MINRL',
-      'image': 'assets/tokens/mineral.webp',
-      'change': '-1.2%',
-      'isPositive': false,
-      'price': '0.000567',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000590),
-        ChartLine(time: 1.0, price: 0.000585),
-        ChartLine(time: 2.0, price: 0.000580),
-        ChartLine(time: 3.0, price: 0.000575),
-        ChartLine(time: 4.0, price: 0.000570),
-        ChartLine(time: 5.0, price: 0.000568),
-        ChartLine(time: 6.0, price: 0.000569),
-        ChartLine(time: 7.0, price: 0.000567),
-        ChartLine(time: 8.0, price: 0.000566),
-        ChartLine(time: 9.0, price: 0.000567),
-      ]
-    },
-    {
-      'name': 'Genesis Stone',
-      'symbol': 'GENST',
-      'image': 'assets/tokens/genisisstone.webp',
-      'change': '+3.7%',
-      'isPositive': true,
-      'price': '0.000142',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000120),
-        ChartLine(time: 1.0, price: 0.000125),
-        ChartLine(time: 2.0, price: 0.000130),
-        ChartLine(time: 3.0, price: 0.000128),
-        ChartLine(time: 4.0, price: 0.000133),
-        ChartLine(time: 5.0, price: 0.000138),
-        ChartLine(time: 6.0, price: 0.000135),
-        ChartLine(time: 7.0, price: 0.000140),
-        ChartLine(time: 8.0, price: 0.000141),
-        ChartLine(time: 9.0, price: 0.000142),
-      ]
-    },
-    {
-      'name': 'Cat Token',
-      'symbol': 'CAT',
-      'image': 'assets/tokens/cat.webp',
-      'change': '-2.8%',
-      'isPositive': false,
-      'price': '0.000067',
-      'chartData': [
-        ChartLine(time: 0.0, price: 0.000075),
-        ChartLine(time: 1.0, price: 0.000073),
-        ChartLine(time: 2.0, price: 0.000071),
-        ChartLine(time: 3.0, price: 0.000072),
-        ChartLine(time: 4.0, price: 0.000070),
-        ChartLine(time: 5.0, price: 0.000068),
-        ChartLine(time: 6.0, price: 0.000069),
-        ChartLine(time: 7.0, price: 0.000067),
-        ChartLine(time: 8.0, price: 0.000066),
-        ChartLine(time: 9.0, price: 0.000067),
-      ]
-    },
-  ];
+  // Top volume data - references main tokenData for consistency
+  List<Map<String, dynamic>> get topVolumeData {
+    // Return specific tokens from main tokenData for volume display
+    final tokens = tokenData;
+    return [
+      tokens.firstWhere((token) => token['symbol'] == 'MINRL'),
+      tokens.firstWhere((token) => token['symbol'] == 'GENST'),
+      tokens.firstWhere((token) => token['symbol'] == 'CAT'),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
