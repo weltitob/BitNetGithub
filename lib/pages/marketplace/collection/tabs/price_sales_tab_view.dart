@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -259,7 +259,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
           },
           child: GlassContainer(
             opacity: isSelected ? 0.3 : 0.1,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: 10,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.elementSpacing * 1,
@@ -362,12 +362,13 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
 
     return Column(
       children: salesData.map((sale) {
-        return GlassContainer(
-          opacity: 0.1,
-          width: double.infinity,
+        return Container(
           margin: EdgeInsets.only(bottom: 12.h),
-          child: Padding(
-            padding: EdgeInsets.all(12),
+          child: GlassContainer(
+            opacity: 0.1,
+            width: double.infinity,
+            child: Padding(
+              padding: EdgeInsets.all(12),
             child: Row(
               children: [
                 // Asset image
@@ -415,6 +416,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   ],
                 ),
               ],
+            ),
             ),
           ),
         );

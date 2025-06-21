@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart' hide GlassContainer;
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +28,7 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Text(
@@ -51,7 +50,7 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Column(
                 children: [
                   _buildLinkTile(
@@ -101,7 +100,7 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Column(

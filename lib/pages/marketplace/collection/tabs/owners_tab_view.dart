@@ -1,9 +1,11 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart' hide GlassContainer;
+
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -120,105 +122,78 @@ class _OwnersTabViewState extends State<OwnersTabView> {
               ),
             ),
 
-          // Owners List
-          Column(
-            children: filteredOwners.asMap().entries.map((item) {
-              int index = item.key + 1;
-              Map<String, Object> owner = item.value;
-              return Row(
-                children: [
-                  Text(
-                    "$index",
-                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                          color: index == 1 ? AppTheme.colorBitcoin : null,
-                          fontWeight:
-                              index == 1 ? FontWeight.w800 : FontWeight.w500,
-                          fontSize: index == 1
-                              ? 30.sp
-                              : index == 2
-                                  ? 24.sp
-                                  : index == 3
-                                      ? 20.sp
-                                      : 12.sp,
-                        ),
+          // Owners List with GlassContainer wrapper for consistency
+          GlassContainer(
+
+            child: Column(
+              children: filteredOwners.asMap().entries.map((item) {
+                int index = item.key;
+                int displayNumber = index + 1;
+                Map<String, Object> owner = item.value;
+                
+                return BitNetListTile(
+                  margin: EdgeInsets.zero,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPaddingSmall,
+                    vertical: AppTheme.elementSpacing,
                   ),
-                  SizedBox(
-                    width: 10,
+                  leading: Avatar(
+                    profileId: owner["name"].toString().toLowerCase(),
+                    name: owner["name"].toString(),
+                    size: 48.w,
+                    type: profilePictureType.onchain,
+                    cornerWidget: displayNumber <= 3 ? NumberIndicator(
+                      number: displayNumber,
+                      size: 0.8,
+                    ) : null,
+                    onTap: () {
+                      // Handle owner profile tap
+                    },
                   ),
-                  Expanded(
-                    child: GlassContainer(
-                      customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
-                      width: MediaQuery.of(context).size.width * 0.77,
-                      margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
-                      child: Padding(
-                        padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
-                        child: Row(
-                          children: [
-                            // Owner avatar using proper Avatar component
-                            Avatar(
-                              profileId: owner["name"].toString().toLowerCase(),
-                              name: owner["name"].toString(),
-                              size: 50.w,
-                              type: profilePictureType.onchain,
-                              onTap: () {
-                                // Handle owner profile tap
-                              },
+                      customTitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            owner["name"].toString(),
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(width: 12.w),
-                            // Owner details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    owner["name"].toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    owner["address"].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            owner["address"].toString(),
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: Theme.of(context).brightness == Brightness.dark 
+                                  ? AppTheme.white60 
+                                  : AppTheme.black60,
                             ),
-                            // Assets count
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "${owner["assets"]} assets",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  owner["percentage"].toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
+                      trailing: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "${owner["assets"]} assets",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            owner["percentage"].toString(),
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                  onTap: () {
+                    // Handle owner tap - navigate to owner detail
+                  },
+                );
+              }).toList(),
+            ),
           ),
         ]),
       ),

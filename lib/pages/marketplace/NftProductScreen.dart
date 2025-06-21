@@ -12,7 +12,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
@@ -222,7 +222,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                           child: GlassContainer(
-                            customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                            boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                             child: Padding(
                               padding: EdgeInsets.all(AppTheme.cardPadding),
                               child: Row(
@@ -305,7 +305,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             children: [
                               Expanded(
                                 child: GlassContainer(
-                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                                   child: Padding(
                                     padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                                     child: Column(
@@ -336,7 +336,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               SizedBox(width: AppTheme.elementSpacing.w),
                               Expanded(
                                 child: GlassContainer(
-                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                                   child: Padding(
                                     padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                                     child: Column(
@@ -367,7 +367,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               SizedBox(width: AppTheme.elementSpacing.w),
                               Expanded(
                                 child: GlassContainer(
-                                  customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                                   child: Padding(
                                     padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                                     child: Column(
@@ -495,7 +495,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               ),
                               SizedBox(height: AppTheme.elementSpacing.h),
                               GlassContainer(
-                                customShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
                                 child: Padding(
                                   padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                                   child: Column(
@@ -602,7 +602,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                     SizedBox(height: AppTheme.cardPadding * 2),
                     // Asset display in a GlassContainer
                     GlassContainer(
-                      borderThickness: 1.5,
+                      border: Border.all(width: 1.5, color: Theme.of(context).dividerColor),
                       child: Padding(
                         padding: const EdgeInsets.all(AppTheme.elementSpacing),
                         child: _buildHorizontalProductWithId(),
@@ -739,7 +739,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 0), child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 0),
+        child: mediaWidget);
   }
 
   Widget _buildInfoRow(BuildContext context, String label, String value) {
