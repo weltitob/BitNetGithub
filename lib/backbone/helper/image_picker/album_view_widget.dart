@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/image_picker/image_picker_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,44 +21,51 @@ class AlbumViewWidget extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Assets container - only shown when NFTs are enabled
-          if (controller.includeNFTs)
-            GestureDetector(
-              onTap: () async {
-                controller.switchToNftView();
-              },
-              child: GlassContainer(
-                width: MediaQuery.sizeOf(context).width * 0.9,
-                child: Column(
-                  children: [
-                    const SizedBox(height: AppTheme.elementSpacing),
-                    Text('Your Assets', style: Theme.of(context).textTheme.bodyLarge),
-                    const SizedBox(height: AppTheme.elementSpacing),
-                    Obx(() => Row(
-                      children: [
-                        for (int i = 0; i < min(controller.currentNFTs.length, 3); i++)
-                          Expanded(
-                            child: Container(
-                              width: AppTheme.cardPadding * 4,
-                              height: AppTheme.cardPadding * 4,
-                              color: (controller.currentNFTs[i].media == null) ? Colors.grey : Colors.transparent,
-                              child: (controller.currentNFTs[i].media == null)
-                                  ? null
-                                  : ImageBuilder(
-                                      radius: BorderRadius.zero,
-                                      encodedData: controller.currentNFTs[i].media!.data,
-                                    ),
-                            ),
+          // Assets container - only shown when NFTs are enabled AND assets are available
+          Obx(() {
+            if (controller.includeNFTs && controller.currentNFTs.isNotEmpty) {
+              return Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      controller.switchToNftView();
+                    },
+                    child: GlassContainer(
+                      width: MediaQuery.sizeOf(context).width * 0.9,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: AppTheme.elementSpacing),
+                          Text('Your Assets', style: Theme.of(context).textTheme.bodyLarge),
+                          const SizedBox(height: AppTheme.elementSpacing),
+                          Row(
+                            children: [
+                              for (int i = 0; i < min(controller.currentNFTs.length, 3); i++)
+                                Expanded(
+                                  child: Container(
+                                    width: AppTheme.cardPadding * 4,
+                                    height: AppTheme.cardPadding * 4,
+                                    color: (controller.currentNFTs[i].media == null) ? Colors.grey : Colors.transparent,
+                                    child: (controller.currentNFTs[i].media == null)
+                                        ? null
+                                        : ImageBuilder(
+                                            radius: BorderRadius.zero,
+                                            encodedData: controller.currentNFTs[i].media!.data,
+                                          ),
+                                  ),
+                                ),
+                            ],
                           ),
-                      ],
-                    )),
-                  ],
-                )
-              ),
-            ),
-
-          if (controller.includeNFTs)
-            const SizedBox(height: AppTheme.cardPadding),
+                        ],
+                      )
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.cardPadding),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }),
 
           // Albums grid
           Obx(() => GridView.builder(
