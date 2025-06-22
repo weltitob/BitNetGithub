@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 
 class AppsTabModern extends StatefulWidget {
   const AppsTabModern({super.key});
@@ -420,18 +421,18 @@ class _AppsTabModernState extends State<AppsTabModern>
         return GestureDetector(
           onTap: () async {
             if (isComingSoon) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Coming soon!'),
-                  duration: Duration(seconds: 2),
-                ),
+              Get.find<OverlayController>().showOverlay(
+                'Coming soon!',
+                color: AppTheme.successColor,
               );
             } else if (isOwned) {
               final url = await app.getUrl();
+              final encodedUrl = Uri.encodeComponent(url);
+              final encodedName = Uri.encodeComponent(app.name);
               context.pushNamed(kWebViewScreenRoute, 
                 pathParameters: {
-                  'url': url,
-                  'name': app.name,
+                  'url': encodedUrl,
+                  'name': encodedName,
                 }, 
                 extra: {"is_app": true}
               );
@@ -537,11 +538,9 @@ class _AppsTabModernState extends State<AppsTabModern>
     return GestureDetector(
       onTap: () async {
         if (isComingSoon) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Coming soon!'),
-              duration: Duration(seconds: 2),
-            ),
+          Get.find<OverlayController>().showOverlay(
+            'Coming soon!',
+            color: AppTheme.successColor,
           );
         } else if (isOwned) {
           final url = await app.getUrl();
@@ -757,11 +756,9 @@ class _AppsTabModernState extends State<AppsTabModern>
     return GestureDetector(
       onTap: () async {
         if (isComingSoon) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Coming soon!'),
-              duration: Duration(seconds: 2),
-            ),
+          Get.find<OverlayController>().showOverlay(
+            'Coming soon!',
+            color: AppTheme.successColor,
           );
         } else if (isOwned) {
           final url = await app.getUrl();

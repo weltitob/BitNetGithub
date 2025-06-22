@@ -18,6 +18,7 @@ import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/token_buy_sheet.dart';
@@ -196,8 +197,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       () {
                         if (widget.tokenData != null) {
                           // For tokens, show a coming soon message or navigate to token send
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Token send coming soon')),
+                          Get.find<OverlayController>().showOverlay(
+                            'Token send coming soon',
+                            color: AppTheme.successColor,
                           );
                         } else {
                           context.go('/wallet/send');
@@ -216,8 +218,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       () {
                         if (widget.tokenData != null) {
                           // For tokens, show a coming soon message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Token receive coming soon')),
+                          Get.find<OverlayController>().showOverlay(
+                            'Token receive coming soon',
+                            color: AppTheme.successColor,
                           );
                         } else {
                           context.go('/wallet/receive');

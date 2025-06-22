@@ -339,8 +339,10 @@ class _AppListTileState extends State<AppListTile> {
             if (widget.appOwned) {
               buttonLoading = true;
               setState(() {});
+              
+              final url = await widget.app.getUrl();
               context.pushNamed(kWebViewScreenRoute, pathParameters: {
-                'url': await widget.app.getUrl(),
+                'url': url,
                 'name': widget.app.name,
               }, extra: {
                 "is_app": true

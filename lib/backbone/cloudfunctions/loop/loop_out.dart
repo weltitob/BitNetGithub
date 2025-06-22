@@ -93,9 +93,9 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
     //"account": base58EncodedString,
     'account': "default",
     "account_addr_type": "TAPROOT_PUBKEY",
-    'amt': "260000", //data['amt'],
-    'max_swap_fee': "1000", //data['swapFee'],
-    'max_swap_routing_fee': "10000", //data['minerFee'], //THIS IS NEW
+    'amt': data['amt'], // Use dynamic amount instead of hardcoded 260000
+    'max_swap_fee': data['swapFee'],
+    'max_swap_routing_fee': "10000", // Keep routing fee limit for safety
     'max_miner_fee': data['minerFee'],
     //'dest': checkedBase58EncodedString, //base58Encode(),
     'max_prepay_amt': data['maxPrepay'],

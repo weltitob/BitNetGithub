@@ -4,12 +4,14 @@ import 'dart:developer';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/get_loopin_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/get_loopout_quote.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/get_loop_terms.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_in.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_out.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -25,6 +27,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/loop/loop_quote_model.dart';
+import 'package:bitnet/models/loop/loop_terms_model.dart';
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +58,11 @@ class LoopGetxController extends GetxController {
 
   var totalBalanceStr = "0".obs;
   var totalBalanceSAT = 0.0.obs;
+
+  // Loop terms for validation
+  var loopInTerms = Rxn<LoopTerms>();
+  var loopOutTerms = Rxn<LoopTerms>();
+  var termsLoading = false.obs;
 
   // Stream subscriptions
   StreamSubscription<List<ReceivedInvoice>>? _invoicesSubscription;
@@ -88,9 +96,10 @@ class LoopGetxController extends GetxController {
       }
     });
 
-    // Fetch initial balances
+    // Fetch initial balances and Loop terms
     fetchOnchainWalletBalance();
     fetchLightningWalletBalance();
+    fetchLoopTerms();
   }
 
   @override
@@ -186,66 +195,165 @@ class LoopGetxController extends GetxController {
     }
   }
 
+  // Fetch Loop Terms for validation
+  Future<void> fetchLoopTerms() async {
+    final logger = Get.find<LoggerService>();
+    termsLoading.value = true;
+    
+    try {
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        logger.e("No user logged in for fetching Loop terms");
+        return;
+      }
+
+      // Fetch both Loop In and Loop Out terms in parallel
+      final results = await Future.wait([
+        getLoopInTerms(userId),
+        getLoopOutTerms(userId),
+      ]);
+
+      final loopInResult = results[0];
+      final loopOutResult = results[1];
+
+      if (loopInResult.statusCode == "200") {
+        loopInTerms.value = LoopTerms.fromJson(loopInResult.data);
+        logger.i("Loop In terms loaded: min=${loopInTerms.value?.minSwapAmount}, max=${loopInTerms.value?.maxSwapAmount}");
+      } else {
+        logger.e("Failed to load Loop In terms: ${loopInResult.message}");
+      }
+
+      if (loopOutResult.statusCode == "200") {
+        loopOutTerms.value = LoopTerms.fromJson(loopOutResult.data);
+        logger.i("Loop Out terms loaded: min=${loopOutTerms.value?.minSwapAmount}, max=${loopOutTerms.value?.maxSwapAmount}");
+      } else {
+        logger.e("Failed to load Loop Out terms: ${loopOutResult.message}");
+      }
+    } catch (e) {
+      logger.e("Error fetching Loop terms: $e");
+    } finally {
+      termsLoading.value = false;
+    }
+  }
+
+  // Validate amount against Loop terms
+  bool validateLoopAmount(int amount, bool isLoopIn) {
+    final terms = isLoopIn ? loopInTerms.value : loopOutTerms.value;
+    if (terms == null) return false;
+    return terms.isAmountValid(amount);
+  }
+
+  // Get formatted error message for invalid amounts
+  String getAmountErrorMessage(int amount, bool isLoopIn) {
+    final terms = isLoopIn ? loopInTerms.value : loopOutTerms.value;
+    final operation = isLoopIn ? "Loop In" : "Loop Out";
+    
+    if (terms == null) {
+      return "Unable to load $operation limits. Please try again.";
+    }
+
+    if (amount < terms.minSwapAmountInt) {
+      return "$operation minimum is ${terms.getFormattedMinAmount()}. You entered ${_formatAmount(amount)}.";
+    } else if (amount > terms.maxSwapAmountInt) {
+      return "$operation maximum is ${terms.getFormattedMaxAmount()}. You entered ${_formatAmount(amount)}.";
+    }
+    
+    return "Invalid amount for $operation.";
+  }
+
+  // Helper method to format amount for display
+  String _formatAmount(int amount) {
+    if (amount >= 100000000) {
+      return '${(amount / 100000000).toStringAsFixed(8)} BTC';
+    } else if (amount >= 1000000) {
+      return '${(amount / 1000000).toStringAsFixed(1)}M sats';
+    } else if (amount >= 1000) {
+      return '${(amount / 1000).toStringAsFixed(0)}k sats';
+    } else {
+      return '$amount sats';
+    }
+  }
+
   // Handle Loop-In Quote
   Future<void> loopInQuote(BuildContext context) async {
     final overlayController = Get.find<OverlayController>();
     log('This is the loop-in amount: ${satController.text}');
-    if (btcController.text != '0') {
-      updateLoadingState(true);
-      int amount = int.tryParse(satController.text) ?? 0;
-      int roundedAmount = amount.round();
-
-      log('Loop-in amount: $roundedAmount');
-      final userId = Auth().currentUser?.uid;
-      if (userId == null) {
-        overlayController.showOverlay('User not authenticated');
-        updateLoadingState(false);
-        return;
-      }
-      final response = await getLoopinQuote(userId, roundedAmount.toString());
-
-      if (response.statusCode == 'error') {
-        overlayController.showOverlay(response.message);
-      } else {
-        final loop = LoopQuoteModel.fromJson(response.data);
-        log('Loop-in swap fee in SAT: ${loop.swapFeeSat}');
-        _buildLoopInDialog(context, loop);
-      }
-      updateLoadingState(false);
-    } else {
-      overlayController.showOverlay('Please enter an amount');
+    
+    if (btcController.text == '0' || satController.text.isEmpty) {
+      overlayController.showOverlay('Please enter an amount', color: AppTheme.errorColor);
+      return;
     }
+
+    int amount = int.tryParse(satController.text) ?? 0;
+    int roundedAmount = amount.round();
+
+    // Validate amount against Loop In terms
+    if (!validateLoopAmount(roundedAmount, true)) {
+      final errorMessage = getAmountErrorMessage(roundedAmount, true);
+      overlayController.showOverlay(errorMessage, color: AppTheme.errorColor);
+      return;
+    }
+
+    updateLoadingState(true);
+    log('Loop-in amount: $roundedAmount');
+    
+    final userId = Auth().currentUser?.uid;
+    if (userId == null) {
+      overlayController.showOverlay('User not authenticated', color: AppTheme.errorColor);
+      updateLoadingState(false);
+      return;
+    }
+    
+    final response = await getLoopinQuote(userId, roundedAmount.toString());
+
+    if (response.statusCode == 'error') {
+      overlayController.showOverlay(response.message, color: AppTheme.errorColor);
+    } else {
+      final loop = LoopQuoteModel.fromJson(response.data);
+      log('Loop-in swap fee in SAT: ${loop.swapFeeSat}');
+      _buildLoopInDialog(context, loop);
+    }
+    updateLoadingState(false);
   }
 
   // Handle Loop-Out Quote
   Future<void> loopOutQuote(BuildContext context) async {
     final overlayController = Get.find<OverlayController>();
-    if (btcController.text != '0') {
-      log('Loop-out amount: ${satController.text}');
-      updateLoadingState(true);
-      int amount = int.tryParse(satController.text) ?? 0;
-      int roundedAmount = amount.round();
-      log('Loop-out amount: $roundedAmount');
-
-      final userId = Auth().currentUser?.uid;
-      if (userId == null) {
-        overlayController.showOverlay('User not authenticated');
-        updateLoadingState(false);
-        return;
-      }
-      final response = await getLoopOutQuote(userId, roundedAmount.toString());
-      if (response.statusCode == 'error') {
-        overlayController.showOverlay(response.message);
-      } else {
-        final loop = LoopQuoteModel.fromJson(response.data);
-        log('Loop-out swap fee in SAT: ${loop.swapFeeSat}');
-        _buildLoopOutDialog(context, loop);
-      }
-      updateLoadingState(false);
-    } else {
-      overlayController.showOverlay('Please enter an amount');
-      updateLoadingState(false);
+    
+    if (btcController.text == '0' || satController.text.isEmpty) {
+      overlayController.showOverlay('Please enter an amount', color: AppTheme.errorColor);
+      return;
     }
+
+    int amount = int.tryParse(satController.text) ?? 0;
+    int roundedAmount = amount.round();
+
+    // Validate amount against Loop Out terms
+    if (!validateLoopAmount(roundedAmount, false)) {
+      final errorMessage = getAmountErrorMessage(roundedAmount, false);
+      overlayController.showOverlay(errorMessage, color: AppTheme.errorColor);
+      return;
+    }
+
+    updateLoadingState(true);
+    log('Loop-out amount: $roundedAmount');
+
+    final userId = Auth().currentUser?.uid;
+    if (userId == null) {
+      overlayController.showOverlay('User not authenticated', color: AppTheme.errorColor);
+      updateLoadingState(false);
+      return;
+    }
+    
+    final response = await getLoopOutQuote(userId, roundedAmount.toString());
+    if (response.statusCode == 'error') {
+      overlayController.showOverlay(response.message, color: AppTheme.errorColor);
+    } else {
+      final loop = LoopQuoteModel.fromJson(response.data);
+      log('Loop-out swap fee in SAT: ${loop.swapFeeSat}');
+      _buildLoopOutDialog(context, loop);
+    }
+    updateLoadingState(false);
   }
 
   // Build Loop-Out Dialog
@@ -488,5 +596,25 @@ class LoopGetxController extends GetxController {
     } finally {
       updateLoadingState(false);
     }
+  }
+
+  // Get formatted limits text for UI display
+  String getLoopLimitsText(bool isLoopIn) {
+    final terms = isLoopIn ? loopInTerms.value : loopOutTerms.value;
+    final operation = isLoopIn ? "Loop In" : "Loop Out";
+    
+    if (terms == null) {
+      return "$operation limits: Loading...";
+    }
+    
+    return "$operation limits: ${terms.getFormattedMinAmount()} - ${terms.getFormattedMaxAmount()}";
+  }
+
+  // Check if terms are loaded
+  bool get areTermsLoaded => loopInTerms.value != null && loopOutTerms.value != null;
+
+  // Refresh terms manually
+  Future<void> refreshTerms() async {
+    await fetchLoopTerms();
   }
 }

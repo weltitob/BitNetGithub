@@ -842,6 +842,36 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
     super.dispose();
   }
 
+  // Helper method to get the correct available balance based on card type
+  String _getAvailableBalance() {
+    // The widget.confirmedBalance already contains the correct balance for each card type:
+    // - Lightning card: contains Lightning balance from walletController.lightningBalance.value.balance
+    // - Onchain card: contains Onchain balance from walletController.onchainBalance.value.confirmedBalance
+    
+    print('🔍 [DEBUG] Card Type: ${widget.cardType}, Raw Balance: ${widget.confirmedBalance}');
+    
+    final balance = double.tryParse(widget.confirmedBalance) ?? 0.0;
+    
+    // Format the balance nicely for display
+    String formattedBalance;
+    if (balance >= 100000000) {
+      // 1 BTC or more - show in BTC
+      formattedBalance = '${(balance / 100000000).toStringAsFixed(8)} BTC';
+    } else if (balance >= 1000000) {
+      // 1M sats or more - show in M sats
+      formattedBalance = '${(balance / 1000000).toStringAsFixed(2)}M sats';
+    } else if (balance >= 1000) {
+      // 1k sats or more - show in k sats
+      formattedBalance = '${(balance / 1000).toStringAsFixed(0)}k sats';
+    } else {
+      // Less than 1k sats - show in sats
+      formattedBalance = '${balance.toStringAsFixed(0)} sats';
+    }
+    
+    print('🔍 [DEBUG] Card Type: ${widget.cardType}, Formatted Balance: $formattedBalance');
+    return formattedBalance;
+  }
+
   //0 for inbound, 1 for overbound, 2 for underbound
   @override
   Widget build(BuildContext context) {
@@ -882,12 +912,12 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Available balance at the top
+                  // Available balance at the top - show correct balance based on card type
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Available: ${widget.confirmedBalance}",
+                        "Available: ${_getAvailableBalance()}",
                         style: TextStyle(
                           fontSize: 14,
                           color:

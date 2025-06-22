@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:get/get.dart';
 
 class ReportMobileView extends StatelessWidget {
   final ReportMobileController controller;
@@ -149,11 +151,17 @@ class ReportMobileView extends StatelessWidget {
                             onTap: () async {
                               if (controller.contactInfoController.text.isEmpty || controller.complaintController.text.isEmpty) {
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out all fields first.')));
+                                  Get.find<OverlayController>().showOverlay(
+                                    'Please fill out all fields first.',
+                                    color: AppTheme.errorColor,
+                                  );
                                 }
                               } else if (controller.issueType == '') {
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select an issue type first.')));
+                                  Get.find<OverlayController>().showOverlay(
+                                    'Please select an issue type first.',
+                                    color: AppTheme.errorColor,
+                                  );
                                 }
                               } else {
                                 //initiate upload.
@@ -172,7 +180,10 @@ class ReportMobileView extends StatelessWidget {
                                 await ref.update({'image_urls': imageUrls});
                                 controller.setSubmitting(false);
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Your report was sent successfully.')));
+                                  Get.find<OverlayController>().showOverlay(
+                                    'Your report was sent successfully.',
+                                    color: AppTheme.successColor,
+                                  );
                                 }
                               }
                             }),

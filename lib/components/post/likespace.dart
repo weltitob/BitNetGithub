@@ -16,6 +16,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 
 enum likeSpaceType { Post, News, Crypto }
 
@@ -92,15 +93,9 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   }
 
   void handleSharePost() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sharing post...'),
-        duration: Duration(milliseconds: 800),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
+    Get.find<OverlayController>().showOverlay(
+      'Sharing post...',
+      color: AppTheme.successColor,
     );
   }
 

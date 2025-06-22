@@ -88,7 +88,9 @@
       "Bash(/mnt/c/src/flutter/bin/cache/dart-sdk/bin/dart.exe test_amount_extraction.dart)",
       "Bash(git revert:*)",
       "Bash(/dev/null)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "WebFetch(domain:docs.lightning.engineering)",
+      "WebFetch(domain:lightningloop.io)"
     ],
     "deny": []
   }

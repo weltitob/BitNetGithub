@@ -18,6 +18,8 @@ import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -2512,14 +2514,9 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   // Handle trade execution
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Trade initiated with ${offer[isBuyingFromSeller
-                              ? 'seller'
-                              : 'buyer']}'),
-                      backgroundColor: AppTheme.successColor,
-                    ),
+                  Get.find<OverlayController>().showOverlay(
+                    'Trade initiated with ${offer[isBuyingFromSeller ? 'seller' : 'buyer']}',
+                    color: AppTheme.successColor,
                   );
                 },
                 child: Text(isBuyingFromSeller ? 'Buy' : 'Sell'),

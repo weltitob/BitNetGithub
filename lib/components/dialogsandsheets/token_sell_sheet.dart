@@ -9,6 +9,8 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/items/floor_price_widget.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/backbone/services/token_data_service.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:get/get.dart';
 
 // Share the same mock data with buy sheet
 final Map<String, Map<String, dynamic>> tokenMarketData = {
@@ -485,12 +487,9 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
           buttonState: ButtonState.idle,
           onButtonTap: () {
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Successfully listed $selectedAmount ${widget.tokenSymbol} at \$$selectedPrice per token'),
-                backgroundColor: AppTheme.successColor,
-                duration: Duration(seconds: 3),
-              ),
+            Get.find<OverlayController>().showOverlay(
+              'Successfully listed $selectedAmount ${widget.tokenSymbol} at \$$selectedPrice per token',
+              color: AppTheme.successColor,
             );
           },
         ),
