@@ -330,21 +330,21 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.white.withOpacity(0.8),
                             ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            
-            // App Info Cards
-            Padding(
-              padding: EdgeInsets.all(AppTheme.cardPadding.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                  
+                  // App Info Cards
+                  Padding(
+                    padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                   // Stats Row
                   Row(
                     children: [
