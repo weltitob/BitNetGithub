@@ -472,6 +472,7 @@ class _ChartCoreState extends State<ChartCore> {
       height: AppTheme.cardPadding * 16.h,
       child: SfCartesianChart(
         trackballBehavior: trackballBehavior,
+        enableAxisAnimation: false, // Disable animation to match Bitcoin chart behavior
         onChartTouchInteractionDown: (args) {
           isTrackballActive = true;
           setState(() {});
@@ -662,7 +663,7 @@ class _ChartCoreState extends State<ChartCore> {
                 bitcoinController.trackBallValueTime = datetime;
                 //bitcoinController.trackBallValueDate = date.toString();
               },
-              enableAxisAnimation: true,
+              enableAxisAnimation: false, // Disable animation for consistent UX
               plotAreaBorderWidth: 0,
               primaryXAxis: NumericAxis(
                   //labelPlacement: LabelPlacement.onTicks,

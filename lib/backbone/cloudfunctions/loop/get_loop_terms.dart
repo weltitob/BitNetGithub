@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
@@ -56,22 +56,26 @@ Future<RestResponse> getLoopInTerms(String userId) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    final DioClient dioClient = Get.find<DioClient>();
-
     logger.i('GET: $url');
-    var response = await dioClient.get(url: url, headers: headers);
-    logger.i('Loop In Terms Response: ${response.data}');
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    logger.i('Loop In Terms Response: ${response.body}');
 
     if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved Loop In Terms",
-          data: response.data);
+          data: responseData);
     } else {
-      logger.e('Failed to get Loop In terms: ${response.statusCode}, ${response.data}');
-      Map<String, dynamic> decodedBody = response.data;
+      logger.e('Failed to get Loop In terms: ${response.statusCode}, ${response.body}');
+      final decodedBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
       return RestResponse(
-          statusCode: "error", message: decodedBody['message'], data: {});
+          statusCode: "error", 
+          message: decodedBody['message'] ?? "Failed to get Loop In terms", 
+          data: decodedBody);
     }
   } catch (e) {
     logger.e('Error getting Loop In terms: $e');
@@ -126,22 +130,26 @@ Future<RestResponse> getLoopOutTerms(String userId) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    final DioClient dioClient = Get.find<DioClient>();
-
     logger.i('GET: $url');
-    var response = await dioClient.get(url: url, headers: headers);
-    logger.i('Loop Out Terms Response: ${response.data}');
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    logger.i('Loop Out Terms Response: ${response.body}');
 
     if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved Loop Out Terms",
-          data: response.data);
+          data: responseData);
     } else {
-      logger.e('Failed to get Loop Out terms: ${response.statusCode}, ${response.data}');
-      Map<String, dynamic> decodedBody = response.data;
+      logger.e('Failed to get Loop Out terms: ${response.statusCode}, ${response.body}');
+      final decodedBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
       return RestResponse(
-          statusCode: "error", message: decodedBody['message'], data: {});
+          statusCode: "error", 
+          message: decodedBody['message'] ?? "Failed to get Loop Out terms", 
+          data: decodedBody);
     }
   } catch (e) {
     logger.e('Error getting Loop Out terms: $e');
