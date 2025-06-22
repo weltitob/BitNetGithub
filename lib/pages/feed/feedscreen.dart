@@ -72,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen>
   late Function() scrollListener;
   
   // Track which tabs have been initialized for lazy loading
-  final List<bool> _tabsInitialized = List.filled(5, false);
+  final List<bool> _tabsInitialized = List.filled(4, false); // Changed from 5 to 4 (removed People tab)
   
   @override
   void initState() {
@@ -141,10 +141,8 @@ class _FeedScreenState extends State<FeedScreen>
                           hintText:
                               "Paste walletaddress, transactionid or blockid...",
                           onChanged: (v) {
-                            // Only update search for people tab
-                            if (controller.tabController!.index == 3) {
-                              controller.filterSearchResults(v);
-                            }
+                            // Search functionality removed with People tab
+                            // Can be re-enabled when People tab is restored
                           },
                           handleSearch: (text) {},
                         );
@@ -168,8 +166,8 @@ class _FeedScreenState extends State<FeedScreen>
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
                 
-                // Ensure currentIndex is within valid range (0-4)
-                if (currentIndex < 0 || currentIndex >= 5) {
+                // Ensure currentIndex is within valid range (0-3)
+                if (currentIndex < 0 || currentIndex >= 4) {
                   // Reset to first tab if out of bounds
                   controller.currentTabIndex.value = 0;
                   return const SizedBox.shrink();
@@ -181,15 +179,16 @@ class _FeedScreenState extends State<FeedScreen>
                 print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
                 
                 return IndexedStack(
-                  index: currentIndex.clamp(0, 4), // Ensure index is always within bounds
+                  index: currentIndex.clamp(0, 3), // Ensure index is always within bounds
                   sizing: StackFit.expand,
                   children: [
                     // Lazy-loading tabs for better performance
                     _buildLazyTab(0, const AppsTabModern()),
                     _buildLazyTab(1, const TokensTab()),
                     _buildLazyTab(2, const AssetsTab()),
-                    _buildLazyTab(3, const SearchResultWidget()),
-                    _buildLazyTab(4, MempoolHome(isFromHome: true)),
+                    // Commented out People tab - can be re-enabled later
+                    // _buildLazyTab(3, const SearchResultWidget()),
+                    _buildLazyTab(3, MempoolHome(isFromHome: true)),
                   ],
                 );
               }),
@@ -224,7 +223,7 @@ class _FeedScreenState extends State<FeedScreen>
   
   // Safe tab initialization that defers state updates outside build cycle
   void _initializeTabSafely(int currentIndex) {
-    // Ensure currentIndex is within bounds (0-4 for 5 tabs)
+    // Ensure currentIndex is within bounds (0-3 for 4 tabs)
     if (currentIndex >= 0 && currentIndex < _tabsInitialized.length && 
         !_tabsInitialized[currentIndex] && mounted) {
       // Use WidgetsBinding to defer state update until after build cycle

@@ -1,27 +1,15 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/appstandards/optioncontainer.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/token_buy_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/token_sell_sheet.dart';
-import 'package:bitnet/components/items/colored_price_widget.dart';
-import 'package:bitnet/components/items/floor_price_widget.dart';
-import 'package:bitnet/components/items/percentagechange_widget.dart';
-import 'package:bitnet/components/items/token_action_buttons.dart';
-import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/feed/components/token_marketplace_header.dart';
+import 'package:bitnet/pages/feed/components/token_marketplace_tab_bar.dart';
+import 'package:bitnet/pages/feed/components/tabs/token_offers_tab_view.dart';
+import 'package:bitnet/pages/feed/components/tabs/token_analytics_tab_view.dart';
+import 'package:bitnet/pages/feed/components/tabs/token_info_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 
 class TokenMarketplaceScreen extends StatefulWidget {
   final String tokenSymbol;
@@ -38,23 +26,11 @@ class TokenMarketplaceScreen extends StatefulWidget {
 }
 
 class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
-  // Controllers for amount input
-  late TextEditingController btcController;
-  late TextEditingController currController;
-  late TextEditingController satController;
-  late FocusNode focusNode;
-
-  // Buy flow state
-  int buyStep = 1; // 1 = amount, 2 = best matches
-  String buyAmount = '';
+  final RxInt currentTab = 0.obs;
 
   @override
   void initState() {
     super.initState();
-    btcController = TextEditingController();
-    currController = TextEditingController();
-    satController = TextEditingController();
-    focusNode = FocusNode();
   }
 
   // Generate realistic price history for tokens (to be deleted later only to mock user workflow)
@@ -109,11 +85,6 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
 
   @override
   void dispose() {
-    btcController.dispose();
-    currController.dispose();
-    satController.dispose();
-    focusNode.dispose();
-
     super.dispose();
   }
 
@@ -2075,278 +2046,65 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme
-        .of(context)
-        .brightness == Brightness.dark;
-
-    // Get token image based on symbol
-    String tokenImage = 'assets/images/bitcoin.png';
-    if (widget.tokenSymbol == 'GENST') {
-      tokenImage = 'assets/tokens/genisisstone.webp';
-    } else if (widget.tokenSymbol == 'HTDG') {
-      tokenImage = 'assets/tokens/hotdog.webp';
-    }
-
+    final Size size = MediaQuery.of(context).size;
+    final tokenData = _getCurrentTokenData();
+    
     return bitnetScaffold(
-      context: context,
+      extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: widget.tokenName,
+        onTap: () => context.pop(),
       ),
-      body: VerticalFadeListView(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            // Token header info
-            Container(
-              padding: EdgeInsets.all(AppTheme.cardPadding.w),
-              child: GlassContainer(
-                child: Padding(
-                  padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                  child: Row(
-                    children: [
-                      // Token icon
-                      Container(
-                        height: 60.h,
-                        width: 60.w,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: 2,
-                              )
-                            ]
-                        ),
-                        child: ClipOval(
-                          child: Image.asset(
-                            tokenImage,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: AppTheme.elementSpacing.w),
-                      // Token info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.tokenName,
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .headlineMedium,
-                            ),
-                            Text(
-                              widget.tokenSymbol,
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                color: isDarkMode ? AppTheme.white60 : AppTheme
-                                    .black60,
-                              ),
-                            ),
-                            SizedBox(height: AppTheme.elementSpacing.h * 0.5),
-                            Row(
-                              children: [
-                                ColoredPriceWidget(
-                                  price: '48,224.65',
-                                  isPositive: true,
-                                ),
-                                SizedBox(width: AppTheme.elementSpacing.w),
-                                PercentageChangeWidget(
-                                  percentage: '+5.2%',
-                                  isPositive: true,
-                                  fontSize: 14,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+      context: context,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              // Header
+              TokenMarketplaceHeader(
+                size: size,
+                tokenSymbol: widget.tokenSymbol,
+                tokenName: widget.tokenName,
+                currentPrice: tokenData['currentPrice'].toString(),
+                priceChange: '+5.2%',
+                isPositive: true,
               ),
-            ),
-
-            // Currency tile for chart navigation
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              child: GestureDetector(
-                onTap: () {
-                  // Navigate to BitcoinScreen with token data
-                  // Ensure price history is generated
-                  final priceHistory = tokenPriceHistory[widget.tokenSymbol];
-                  final currentPrice = _getCurrentTokenData()['currentPrice'];
-
-                  final navigationData = {
-                    'isToken': true,
-                    'tokenSymbol': widget.tokenSymbol,
-                    'tokenName': widget.tokenName,
-                    'priceHistory': priceHistory,
-                    'currentPrice': currentPrice is double
-                        ? currentPrice
-                        : currentPrice.toDouble(),
-                  };
-
-                  print('Navigating to BitcoinScreen with:');
-                  print('Symbol: ${widget.tokenSymbol}');
-                  print('Name: ${widget.tokenName}');
-                  print('Current Price: $currentPrice');
-                  print('Price History exists: ${priceHistory != null}');
-
-                  context.push(
-                    '/wallet/bitcoinscreen',
-                    extra: navigationData,
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.all(AppTheme.cardPadding.w * 0.75),
-                  decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface
-                        .withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadiusMid),
-                    border: Border.all(
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .outline
-                          .withOpacity(0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.show_chart,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .primary,
-                        size: 24,
-                      ),
-                      SizedBox(width: AppTheme.elementSpacing.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'View Price Chart',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .titleMedium,
-                            ),
-                            Text(
-                              'Track ${widget.tokenSymbol} price movements',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                color: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.color
-                                    ?.withOpacity(0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.5),
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                ),
+              // Tab content
+              Expanded(
+                child: Obx(() {
+                  switch (currentTab.value) {
+                    case 0:
+                      return TokenOffersTabView(
+                        tokenSymbol: widget.tokenSymbol,
+                        sellOffers: List<Map<String, dynamic>>.from(tokenData['sellOffers']),
+                      );
+                    case 1:
+                      return TokenAnalyticsTabView(
+                        tokenSymbol: widget.tokenSymbol,
+                        tokenName: widget.tokenName,
+                        tokenData: tokenData,
+                        priceHistory: tokenPriceHistory,
+                      );
+                    case 2:
+                      return TokenInfoTabView(
+                        tokenSymbol: widget.tokenSymbol,
+                        tokenName: widget.tokenName,
+                      );
+                    default:
+                      return const SizedBox();
+                  }
+                }),
               ),
-            ),
-
-            SizedBox(height: AppTheme.cardPadding.h),
-
-            // Buy/Sell buttons using shared widget
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              child: TokenActionButtons(
-                onBuyTap: _showTokenBuyBottomSheet,
-                onSellTap: _showTokenSellBottomSheet,
-              ),
-            ),
-
-            SizedBox(height: AppTheme.cardPadding.h),
-
-            // Sell offers section
-            CommonHeading(
-              headingText: '💰 Sell Offers',
-              hasButton: false,
-            ),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              child: GlassContainer(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: AppTheme.elementSpacing * 0.5),
-                  child: Column(
-                    children: _getCurrentTokenData()['sellOffers']
-                        .take(5)
-                        .map<
-                        Widget>((offer) => _buildOfferTile(offer, true))
-                        .toList(),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: AppTheme.cardPadding.h),
-
-            // Buy offers section
-            CommonHeading(
-              headingText: '🛒 Buy Offers',
-              hasButton: false,
-            ),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              child: GlassContainer(
-                boxShadow: isDarkMode ? [] : null,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: AppTheme.elementSpacing * 0.5),
-                  child: Column(
-                    children: _getCurrentTokenData()['buyOffers']
-                        .take(5)
-                        .map<
-                        Widget>((offer) => _buildOfferTile(offer, false))
-                        .toList(),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: AppTheme.cardPadding.h * 2),
-          ],
-        ),
+            ],
+          ),
+          // Tab bar positioned at bottom like profile screen
+          TokenMarketplaceTabBar(
+            currentTab: currentTab,
+            onTabChanged: (index) {
+              currentTab.value = index;
+            },
+          ),
+        ],
       ),
     );
   }
@@ -2356,188 +2114,5 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     return tokenMarketData[widget.tokenSymbol] ?? tokenMarketData['GENST']!;
   }
 
-  Widget _buildOfferTile(Map<String, dynamic> offer, bool isSellOffer) {
-    final bool isDarkMode = Theme
-        .of(context)
-        .brightness == Brightness.dark;
-
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: AppTheme.cardPadding.w,
-        vertical: AppTheme.elementSpacing.h * 0.5,
-      ),
-      leading: CircleAvatar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .primary
-            .withOpacity(0.1),
-        child: Text(
-          offer[isSellOffer ? 'seller' : 'buyer'][0],
-          style: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                offer[isSellOffer ? 'seller' : 'buyer'],
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleMedium,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    size: 14,
-                    color: AppTheme.colorBitcoin,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    '${offer['rating']} (${offer['trades']} trades)',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(
-                      color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${offer['amount']} ${widget.tokenSymbol}',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleSmall,
-              ),
-              Text(
-                '\$${offer['price']} each',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(
-                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      subtitle: Padding(
-        padding: EdgeInsets.only(top: AppTheme.elementSpacing.h * 0.5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Total: \$${offer['total']}',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            LongButtonWidget(
-              buttonType: ButtonType.solid,
-              title: isSellOffer ? 'Buy' : 'Sell',
-              customHeight: 32.h,
-              customWidth: 80.w,
-              onTap: () {
-                // Handle buy/sell action
-                _showTradeDialog(offer, isSellOffer);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showTradeDialog(Map<String, dynamic> offer, bool isBuyingFromSeller) {
-    showDialog(
-      context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(isBuyingFromSeller
-                ? 'Buy ${widget.tokenSymbol}'
-                : 'Sell ${widget.tokenSymbol}'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${isBuyingFromSeller
-                    ? 'Seller'
-                    : 'Buyer'}: ${offer[isBuyingFromSeller
-                    ? 'seller'
-                    : 'buyer']}'),
-                Text('Amount: ${offer['amount']} ${widget.tokenSymbol}'),
-                Text('Price per token: \$${offer['price']}'),
-                Text('Total: \$${offer['total']}'),
-                SizedBox(height: AppTheme.elementSpacing.h),
-                Text(
-                  'Are you sure you want to ${isBuyingFromSeller
-                      ? 'buy'
-                      : 'sell'} this amount?',
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyMedium,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // Handle trade execution
-                  Get.find<OverlayController>().showOverlay(
-                    'Trade initiated with ${offer[isBuyingFromSeller ? 'seller' : 'buyer']}',
-                    color: AppTheme.successColor,
-                  );
-                },
-                child: Text(isBuyingFromSeller ? 'Buy' : 'Sell'),
-              ),
-            ],
-          ),
-    );
-  }
-
-  void _showTokenBuyBottomSheet() {
-    TokenBuySheet.show(
-      context,
-      tokenSymbol: widget.tokenSymbol,
-    );
-  }
-
-  void _showTokenSellBottomSheet() {
-    TokenSellSheet.show(
-      context,
-      tokenSymbol: widget.tokenSymbol,
-    );
-  }
 
 }

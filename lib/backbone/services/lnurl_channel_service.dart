@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
@@ -480,18 +481,35 @@ class LnurlChannelService {
   /// Gets the current node's public key
   Future<String> getNodeId() async {
     try {
-      final baseUrl = await _getLndBaseUrl();
-      final url = '$baseUrl/v1/getinfo';
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping
+      final nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      if (nodeMapping == null) {
+        throw Exception("No node mapping found for user");
+      }
+
+      final nodeId = nodeMapping.nodeId;
+      final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/getinfo';
       
       _logger.i("Getting node info from: $url");
       
-      // Get user's macaroon for authentication
-      final macaroon = await _getUserMacaroon();
+      // Get user's macaroon for authentication  
+      final macaroonBase64 = nodeMapping.adminMacaroon;
+      if (macaroonBase64.isEmpty) {
+        throw Exception("No macaroon found for node: $nodeId");
+      }
+      
+      // Convert base64 macaroon to hex format
+      final macaroonBytes = base64.decode(macaroonBase64);
+      final macaroon = bytesToHex(macaroonBytes);
       
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'Content-Type': 'application/json',
           'Grpc-Metadata-macaroon': macaroon,
         },
       );
@@ -613,18 +631,35 @@ class LnurlChannelService {
   /// Lists all channels for the current node
   Future<List<Map<String, dynamic>>> listChannels() async {
     try {
-      final baseUrl = await _getLndBaseUrl();
-      final url = '$baseUrl/v1/channels';
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping
+      final nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      if (nodeMapping == null) {
+        throw Exception("No node mapping found for user");
+      }
+
+      final nodeId = nodeMapping.nodeId;
+      final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/channels';
       
       _logger.i("Listing channels from: $url");
       
       // Get user's macaroon for authentication
-      final macaroon = await _getUserMacaroon();
+      final macaroonBase64 = nodeMapping.adminMacaroon;
+      if (macaroonBase64.isEmpty) {
+        throw Exception("No macaroon found for node: $nodeId");
+      }
+      
+      // Convert base64 macaroon to hex format
+      final macaroonBytes = base64.decode(macaroonBase64);
+      final macaroon = bytesToHex(macaroonBytes);
       
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'Content-Type': 'application/json',
           'Grpc-Metadata-macaroon': macaroon,
         },
       );
@@ -739,18 +774,35 @@ class LnurlChannelService {
   /// Gets detailed information about a specific channel
   Future<Map<String, dynamic>?> getChannelInfo(String channelPoint) async {
     try {
-      final baseUrl = await _getLndBaseUrl();
-      final url = '$baseUrl/v1/graph/edge/$channelPoint';
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping
+      final nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      if (nodeMapping == null) {
+        throw Exception("No node mapping found for user");
+      }
+
+      final nodeId = nodeMapping.nodeId;
+      final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/graph/edge/$channelPoint';
       
       _logger.i("Getting channel info for: $channelPoint");
       
       // Get user's macaroon for authentication
-      final macaroon = await _getUserMacaroon();
+      final macaroonBase64 = nodeMapping.adminMacaroon;
+      if (macaroonBase64.isEmpty) {
+        throw Exception("No macaroon found for node: $nodeId");
+      }
+      
+      // Convert base64 macaroon to hex format
+      final macaroonBytes = base64.decode(macaroonBase64);
+      final macaroon = bytesToHex(macaroonBytes);
       
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'Content-Type': 'application/json',
           'Grpc-Metadata-macaroon': macaroon,
         },
       );
@@ -772,18 +824,35 @@ class LnurlChannelService {
   /// Finds a pending channel with the specified remote node
   Future<Map<String, dynamic>?> findPendingChannel(String remoteNodeId) async {
     try {
-      final baseUrl = await _getLndBaseUrl();
-      final url = '$baseUrl/v1/channels/pending';
+      final currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        throw Exception("No authenticated user");
+      }
+
+      // Get user's node mapping
+      final nodeMapping = await NodeMappingService.getUserNodeMapping(currentUser.uid);
+      if (nodeMapping == null) {
+        throw Exception("No node mapping found for user");
+      }
+
+      final nodeId = nodeMapping.nodeId;
+      final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/channels/pending';
       
       _logger.i("Checking pending channels for remote node: $remoteNodeId");
       
       // Get user's macaroon for authentication
-      final macaroon = await _getUserMacaroon();
+      final macaroonBase64 = nodeMapping.adminMacaroon;
+      if (macaroonBase64.isEmpty) {
+        throw Exception("No macaroon found for node: $nodeId");
+      }
+      
+      // Convert base64 macaroon to hex format
+      final macaroonBytes = base64.decode(macaroonBase64);
+      final macaroon = bytesToHex(macaroonBytes);
       
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'Content-Type': 'application/json',
           'Grpc-Metadata-macaroon': macaroon,
         },
       );

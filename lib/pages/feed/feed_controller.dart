@@ -142,11 +142,12 @@ class FeedController extends GetxController
       'Assets',
       'Assets',
     ),
-    WalletCategory(
-      'assets/images/friends.png',
-      'People',
-      'People',
-    ),
+    // Commented out People tab - can be re-enabled later
+    // WalletCategory(
+    //   'assets/images/friends.png',
+    //   'People',
+    //   'People',
+    // ),
     WalletCategory(
       'assets/images/bitcoin.png',
       'Blockchain',
@@ -223,7 +224,7 @@ class FeedController extends GetxController
     }
 
     // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 6, vsync: this);
+    tabController = TabController(length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
 
     // Enhanced tab controller listener with better error handling
     tabController!.addListener(() {

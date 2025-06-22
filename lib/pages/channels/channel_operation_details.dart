@@ -206,7 +206,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
         context: context,
         onTap: () => Navigator.of(context).pop(),
       ),
-      body: VerticalFadeListView.standardPage(
+      body: VerticalFadeListView.standardTab(
         child: _isLoading
             ? Center(child: dotProgress(context))
             : _errorMessage != null
@@ -468,6 +468,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                     color: theme.colorScheme.onSurface.withOpacity(0.5),
                   ),
                 ],
+                ),
               ),
             ),
           ),

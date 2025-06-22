@@ -591,7 +591,6 @@ class _ChartCoreState extends State<ChartCore> {
           }
         },
         plotAreaBorderWidth: 0,
-        enableAxisAnimation: false, // Disable animation for consistent UX
         primaryXAxis: NumericAxis(
           edgeLabelPlacement: EdgeLabelPlacement.none,
           isVisible: false,

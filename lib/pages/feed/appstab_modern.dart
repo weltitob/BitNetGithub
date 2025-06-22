@@ -221,98 +221,109 @@ class _AppsTabModernState extends State<AppsTabModern>
                       final isOwned = ownedApps.contains(app.docId);
                       
                       return RepaintBoundary(
-                        child: GestureDetector(
-                          onTap: () {
-                            context.go("/feed/" + kAppPageRoute, extra: app.toJson());
-                          },
-                          child: GlassContainer(
-                            width: getStandardizedCardWidth().w,
-                            margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
-                            child: Padding(
-                              padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                        child: GlassContainer(
+                          width: getStandardizedCardWidth().w,
+                          margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                          child: Padding(
+                            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // App info section
+                                GestureDetector(
+                                  onTap: () {
+                                    context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        width: 50.w,
-                                        height: 50.h,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).colorScheme.surface,
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          border: Border.all(
-                                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-                                          ),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          child: Center(
-                                            child: CachedAppImage(
-                                              app: app,
-                                              width: 35.w,
-                                              height: 35.h,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 12.w),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              app.name,
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.bold,
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 50.w,
+                                            height: 50.h,
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.surface,
+                                              borderRadius: BorderRadius.circular(12.r),
+                                              border: Border.all(
+                                                color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
                                               ),
                                             ),
-                                            Text(
-                                              'BitNET Community',
-                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(12.r),
+                                              child: Center(
+                                                child: CachedAppImage(
+                                                  app: app,
+                                                  width: 35.w,
+                                                  height: 35.h,
+                                                ),
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  app.name,
+                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'BitNET Community',
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      LongButtonWidget(
-                                        title: isOwned ? 'Open' : 'Get',
-                                        customWidth: 65.w,
-                                        customHeight: 32.h,
-                                        buttonType: ButtonType.transparent,
-                                        titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          fontWeight: FontWeight.bold,
+                                      SizedBox(height: 12.h),
+                                      Text(
+                                        app.desc,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                                          height: 1.3,
                                         ),
-                                        onTap: () async {
-                                          if (isOwned) {
-                                            final url = await app.getUrl();
-                                            context.pushNamed(kWebViewScreenRoute, 
-                                              pathParameters: {
-                                                'url': url,
-                                                'name': app.name,
-                                              }, 
-                                              extra: {"is_app": true}
-                                            );
-                                          } else {
-                                            context.go("/feed/" + kAppPageRoute, extra: app.toJson());
-                                          }
-                                        },
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 12.h),
-                                  Text(
-                                    app.desc,
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                                      height: 1.3,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                ),
+                                
+                                // Spacer to push button to bottom
+                                Spacer(),
+                                
+                                // Button at the bottom
+                                SizedBox(height: 16.h),
+                                LongButtonWidget(
+                                  title: isOwned ? 'Open' : 'Get',
+                                  customHeight: 36.h, // Smaller height for thinner button
+                                  buttonType: isOwned ? ButtonType.solid : ButtonType.transparent,
+                                  titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              ),
+                                  onTap: () async {
+                                    if (isOwned) {
+                                      final url = await app.getUrl();
+                                      context.pushNamed(kWebViewScreenRoute, 
+                                        pathParameters: {
+                                          'url': url,
+                                          'name': app.name,
+                                        }, 
+                                        extra: {"is_app": true}
+                                      );
+                                    } else {
+                                      context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ),
