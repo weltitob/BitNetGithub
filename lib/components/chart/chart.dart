@@ -345,10 +345,26 @@ class _ChartCoreState extends State<ChartCore> {
   Widget _buildTokenChart(BuildContext context) {
     // Safely get token data with null checks
     if (widget.tokenData == null) {
-      return Center(
-        child: Text(
-          'No token data available',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Token data unavailable',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -360,19 +376,51 @@ class _ChartCoreState extends State<ChartCore> {
     
     // Add validation for required fields
     if (tokenSymbol == null || currentPrice == null) {
-      return Center(
-        child: Text(
-          'Invalid token data',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.warning_amber_outlined,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Invalid token data',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
     
     if (priceHistory == null || priceHistory.isEmpty) {
-      return Center(
-        child: Text(
-          'Price history not available',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.timeline,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Price history not available',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -381,16 +429,47 @@ class _ChartCoreState extends State<ChartCore> {
     final periodDataRaw = priceHistory[selectedPeriod];
     List<Map<String, dynamic>>? periodData;
     
+    // Debug: Log what we're trying to access
+    print('Debug Chart: Selected period: $selectedPeriod');
+    print('Debug Chart: Available periods: ${priceHistory.keys}');
+    print('Debug Chart: Period data type: ${periodDataRaw.runtimeType}');
+    
     // Handle different data types safely
     if (periodDataRaw is List) {
       periodData = periodDataRaw.cast<Map<String, dynamic>>().toList();
+      print('Debug Chart: Converted to list with ${periodData.length} items');
+    } else {
+      print('Debug Chart: Period data is not a List, it is: $periodDataRaw');
     }
     
     if (periodData == null || periodData.isEmpty) {
-      return Center(
-        child: Text(
-          'No data for selected period',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h, // Same height as normal chart
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.show_chart,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Chart data loading...',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+              SizedBox(height: AppTheme.elementSpacing / 2),
+              Text(
+                'Please try switching timeframes',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
