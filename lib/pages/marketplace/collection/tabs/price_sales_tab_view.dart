@@ -313,7 +313,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         yValueMapper: (ChartLine data, _) => data.price,
                         color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
                         width: 3,
-                        animationDuration: 1000,
+                        animationDuration: 0, // Disable animation for consistent UX
                       ),
                       // Area fill for better visual appeal
                       AreaSeries<ChartLine, DateTime>(
@@ -331,7 +331,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         ),
                         borderColor: isPositive ? AppTheme.successColor : AppTheme.errorColor,
                         borderWidth: 0,
-                        animationDuration: 1000,
+                        animationDuration: 0, // Disable animation for consistent UX
                       ),
                     ],
                   ),

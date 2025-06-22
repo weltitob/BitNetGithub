@@ -20,6 +20,9 @@ import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/items/number_indicator.dart';
 
 class AppsTabModern extends StatefulWidget {
   const AppsTabModern({super.key});
@@ -69,31 +72,71 @@ class _AppsTabModernState extends State<AppsTabModern>
     // Preload images for featured apps
     _preloadImages();
     
-    // Add some coming soon apps
+    // Add website apps as coming soon (they work via WebView)
     comingSoonApps = [
+      // Real websites integrated as apps with automatic favicon loading
       AppData(
-        docId: 'coming_soon_1',
-        url: '',
-        name: 'Lightning Chess',
-        desc: 'Play chess and win sats in real-time matches',
-        iconPath: 'assets/images/bitcoin.png',
-        useNetworkImage: false,
+        docId: 'website_satoshis_place',
+        url: 'https://satoshis.place/',
+        name: "Satoshi's Place",
+        desc: 'Collaborative pixel art canvas where you paint with satoshis',
+        useNetworkImage: true, // Auto-fetch favicon
       ),
       AppData(
-        docId: 'coming_soon_2',
-        url: '',
-        name: 'Sat Streamer',
-        desc: 'Stream content and earn Bitcoin from your audience',
-        iconPath: 'assets/images/lightning.png',
-        useNetworkImage: false,
+        docId: 'website_lnmarkets',
+        url: 'https://lnmarkets.com',
+        name: 'LN Markets',
+        desc: 'Bitcoin derivatives trading platform using Lightning Network',
+        useNetworkImage: true, // Auto-fetch favicon
       ),
       AppData(
-        docId: 'coming_soon_3',
-        url: '',
-        name: 'Node Monitor',
-        desc: 'Professional Lightning node monitoring and analytics',
-        iconPath: 'assets/images/bitcoin.png',
-        useNetworkImage: false,
+        docId: 'website_fold',
+        url: 'https://foldapp.com/',
+        name: 'Fold App',
+        desc: 'Earn Bitcoin rewards when you shop at your favorite places',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_azteco',
+        url: 'https://azte.co/',
+        name: 'Azteco',
+        desc: 'Buy Bitcoin vouchers to fund your wallet instantly',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_boltz',
+        url: 'https://boltz.exchange/',
+        name: 'Boltz Exchange',
+        desc: 'Non-custodial cryptocurrency exchange with Lightning support',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_geyser',
+        url: 'https://geyser.fund/',
+        name: 'Geyser Fund',
+        desc: 'Fund open-source Bitcoin projects through crowdfunding',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_lightsats',
+        url: 'https://lightsats.com/',
+        name: 'Lightsats',
+        desc: 'Send Bitcoin tips and onboard new users easily',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_lnpizza',
+        url: 'https://ln.pizza/',
+        name: 'LN Pizza',
+        desc: 'Order pizza with Bitcoin Lightning payments',
+        useNetworkImage: true, // Auto-fetch favicon
+      ),
+      AppData(
+        docId: 'website_sms4sats',
+        url: 'https://sms4sats.com/',
+        name: 'SMS4Sats',
+        desc: 'Get an SMS number with Bitcoin Lightning payments',
+        useNetworkImage: true, // Auto-fetch favicon
       ),
     ];
     
@@ -165,129 +208,116 @@ class _AppsTabModernState extends State<AppsTabModern>
               children: [
                 SizedBox(height: AppTheme.cardPadding.h),
                 
-                // Featured Section
+                // Featured Apps Carousel Section
                 if (!loading && featuredApps.isNotEmpty) ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                    child: Text(
-                      'Featured',
-                      style: Theme.of(context).textTheme.titleLarge,
+                  SizedBox(height: AppTheme.cardPadding * 0.5.h),
+                  CarouselSlider.builder(
+                    options: getStandardizedCarouselOptions(
+                      autoPlayIntervalSeconds: 5
                     ),
-                  ),
-                  SizedBox(height: AppTheme.elementSpacing.h),
-                  SizedBox(
-                    height: 180.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                      itemCount: featuredApps.length,
-                      itemBuilder: (context, index) {
-                        final app = featuredApps[index];
-                        final isOwned = ownedApps.contains(app.docId);
-                        
-                        return Padding(
-                          padding: EdgeInsets.only(right: 16.w),
-                          child: GestureDetector(
-                            onTap: () {
-                              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
-                            },
-                            child: GlassContainer(
-                              width: 280.w,
-                              height: 180.h,
-                              opacity: 0.1,
-                              borderRadius: AppTheme.cardPaddingBig.r,
-                              child: Padding(
-                                padding: EdgeInsets.all(20.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 50.w,
-                                          height: 50.h,
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.surface,
-                                            borderRadius: BorderRadius.circular(12.r),
-                                            border: Border.all(
-                                              color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-                                            ),
+                    itemCount: featuredApps.length,
+                    itemBuilder: (context, index, _) {
+                      final app = featuredApps[index];
+                      final isOwned = ownedApps.contains(app.docId);
+                      
+                      return RepaintBoundary(
+                        child: GestureDetector(
+                          onTap: () {
+                            context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                          },
+                          child: GlassContainer(
+                            width: getStandardizedCardWidth().w,
+                            margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                            child: Padding(
+                              padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 50.w,
+                                        height: 50.h,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.surface,
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          border: Border.all(
+                                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
                                           ),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(12.r),
-                                            child: Center(
-                                              child: CachedAppImage(
-                                                app: app,
-                                                width: 35.w,
-                                                height: 35.h,
-                                              ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          child: Center(
+                                            child: CachedAppImage(
+                                              app: app,
+                                              width: 35.w,
+                                              height: 35.h,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 12.w),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                app.name,
-                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                'BitNET Community',
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        // Small button consistent with app design
-                                        LongButtonWidget(
-                                          title: isOwned ? 'Open' : 'Get',
-                                          customWidth: 65.w,
-                                          customHeight: 32.h,
-                                          buttonType: ButtonType.transparent,
-                                          titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          onTap: () async {
-                                            if (isOwned) {
-                                              final url = await app.getUrl();
-                                              context.pushNamed(kWebViewScreenRoute, 
-                                                pathParameters: {
-                                                  'url': url,
-                                                  'name': app.name,
-                                                }, 
-                                                extra: {"is_app": true}
-                                              );
-                                            } else {
-                                              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      app.desc,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                                        height: 1.3,
                                       ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                      SizedBox(width: 12.w),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              app.name,
+                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'BitNET Community',
+                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      LongButtonWidget(
+                                        title: isOwned ? 'Open' : 'Get',
+                                        customWidth: 65.w,
+                                        customHeight: 32.h,
+                                        buttonType: ButtonType.transparent,
+                                        titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        onTap: () async {
+                                          if (isOwned) {
+                                            final url = await app.getUrl();
+                                            context.pushNamed(kWebViewScreenRoute, 
+                                              pathParameters: {
+                                                'url': url,
+                                                'name': app.name,
+                                              }, 
+                                              extra: {"is_app": true}
+                                            );
+                                          } else {
+                                            context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Text(
+                                    app.desc,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                                      height: 1.3,
                                     ),
-                                  ],
-                                ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: AppTheme.cardPadding.h),
                 ],
@@ -309,14 +339,15 @@ class _AppsTabModernState extends State<AppsTabModern>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                     child: GlassContainer(
-                      child: Column(
-                        children: [
-                          _buildTrendingAppTile(1, "Bitrefill", "https://www.bitrefill.com", "Buy gift cards and mobile refills with Bitcoin", 'assets/images/bitcoin.png'),
-                          Divider(height: 1, color: Theme.of(context).dividerColor.withOpacity(0.3)),
-                          _buildTrendingAppTile(2, "Wavlake", "https://wavlake.com/", "Stream music and support artists with Bitcoin", 'assets/images/lightning.png'),
-                          Divider(height: 1, color: Theme.of(context).dividerColor.withOpacity(0.3)),
-                          _buildTrendingAppTile(3, "Flipit", "https://flipittoken.eth.limo/", "Decentralized gaming platform built on Bitcoin", 'assets/images/bitcoin.png'),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: AppTheme.elementSpacing),
+                        child: Column(
+                          children: [
+                            _buildTrendingAppTile(1, "Bitrefill", "https://www.bitrefill.com", "Buy gift cards and mobile refills with Bitcoin", 'assets/images/bitrefill_banner.png'),
+                            _buildTrendingAppTile(2, "Wavlake", "https://wavlake.com/", "Stream music and support artists with Bitcoin", 'assets/images/wavlake_banner.png'),
+                            _buildTrendingAppTile(3, "Flipit", "https://flipittoken.eth.limo/", "Decentralized gaming platform built on Bitcoin", 'assets/images/flipit_banner.png'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -429,7 +460,9 @@ class _AppsTabModernState extends State<AppsTabModern>
                           return _buildIOSAppIcon(app, isOwned, false);
                         } else {
                           final app = comingSoonApps[index - availableApps.length];
-                          return _buildIOSAppIcon(app, false, true);
+                          // Website apps are functional, not coming soon
+                          final isComingSoon = app.docId.startsWith('coming_soon_');
+                          return _buildIOSAppIcon(app, false, isComingSoon);
                         }
                       },
                     ),
@@ -459,14 +492,20 @@ class _AppsTabModernState extends State<AppsTabModern>
               );
             } else if (isOwned) {
               final url = await app.getUrl();
-              final encodedUrl = Uri.encodeComponent(url);
-              final encodedName = Uri.encodeComponent(app.name);
               context.pushNamed(kWebViewScreenRoute, 
                 pathParameters: {
-                  'url': encodedUrl,
-                  'name': encodedName,
+                  'url': url,
+                  'name': app.name,
                 }, 
                 extra: {"is_app": true}
+              );
+            } else if (app.docId.startsWith('website_')) {
+              // Handle website apps - open directly in WebView
+              context.pushNamed(kWebViewScreenRoute,
+                pathParameters: {
+                  'url': app.url,
+                  'name': app.name,
+                },
               );
             } else {
               context.go("/feed/" + kAppPageRoute, extra: app.toJson());
@@ -884,36 +923,10 @@ class _AppsTabModernState extends State<AppsTabModern>
   }
   
   Widget _buildTrendingAppTile(int position, String name, String url, String description, String iconPath) {
-    return BitNetListTile(
-      leading: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Position badge
-          Container(
-            width: 28.w,
-            height: 28.h,
-            decoration: BoxDecoration(
-              color: position == 1 
-                  ? Colors.amber 
-                  : position == 2 
-                      ? Colors.grey[400] 
-                      : Color(0xFFCD7F32), // Bronze
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '$position',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.sp,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          // App icon
-          Container(
+    return Stack(
+      children: [
+        BitNetListTile(
+          leading: Container(
             width: 40.w,
             height: 40.h,
             decoration: BoxDecoration(
@@ -927,42 +940,54 @@ class _AppsTabModernState extends State<AppsTabModern>
               borderRadius: BorderRadius.circular(8.r),
               child: Image.asset(
                 iconPath,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(Icons.public, size: 20);
                 },
               ),
             ),
           ),
-        ],
-      ),
-      text: name,
-      subtitle: description,
-      trailing: LongButtonWidget(
-        title: 'Open',
-        customWidth: 70.w,
-        customHeight: 36.h,
-        buttonType: ButtonType.transparent,
-        titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
-        onTap: () {
-          context.pushNamed(kWebViewScreenRoute,
-            pathParameters: {
-              'url': url,
-              'name': name,
+          text: name,
+          subtitle: Text(
+            description,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: LongButtonWidget(
+            title: 'Open',
+            customWidth: 70.w,
+            customHeight: 36.h,
+            buttonType: ButtonType.transparent,
+            titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            onTap: () {
+              context.pushNamed(kWebViewScreenRoute,
+                pathParameters: {
+                  'url': url,
+                  'name': name,
+                },
+              );
             },
-          );
-        },
-      ),
-      onTap: () {
-        context.pushNamed(kWebViewScreenRoute,
-          pathParameters: {
-            'url': url,
-            'name': name,
+          ),
+          onTap: () {
+            context.pushNamed(kWebViewScreenRoute,
+              pathParameters: {
+                'url': url,
+                'name': name,
+              },
+            );
           },
-        );
-      },
+        ),
+        Positioned(
+          left: 16.w,
+          top: 16.h,
+          child: NumberIndicator(number: position, size: 0.6),
+        ),
+      ],
     );
   }
 }

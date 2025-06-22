@@ -131,7 +131,7 @@ class FeedController extends GetxController
   ];
 
   final List<WalletCategory> walletcategorys = [
-    WalletCategory('assets/images/bitcoin.png', "Websites", "Websites"),
+    WalletCategory('assets/images/bitcoin.png', "Apps", "Apps"),
     WalletCategory(
       'assets/images/paper_wallet.png',
       'Tokens',
@@ -152,7 +152,6 @@ class FeedController extends GetxController
       'Blockchain',
       'Blockchain',
     ),
-    WalletCategory('assets/images/bitcoin.png', "Apps", "Apps")
   ];
 
   // Properly typed controllers for better performance

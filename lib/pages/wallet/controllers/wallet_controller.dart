@@ -624,61 +624,82 @@ class WalletsController extends BaseController {
     });
 
     // --- Channel Operations Stream Listener ---
+    // Track processed channel operations to prevent duplicates
+    final Set<String> _processedChannelOps = <String>{};
+    
     var channelOperationsSubscription = backendRef
         .doc(Auth().currentUser!.uid)
         .collection('channel_operations')
         .orderBy('timestamp', descending: true)
         .snapshots()
-        // Don't skip initial snapshot to ensure we get all channel operations
         .listen((query) {
-      Map<String, dynamic>? channelOp;
+      Map<String, dynamic>? latestChannelOp;
       additionalTransactionsLoaded.value = false;
       
       try {
-        logger.i("Received channel operation from stream");
+        logger.i("Received channel operations from stream: ${query.docs.length} docs");
         if (query.docs.isEmpty) return;
         
-        channelOp = query.docs.first.data();
-        logger.i("Channel operation data: $channelOp");
+        // Process only new or changed documents to prevent duplicates
+        for (final docChange in query.docChanges) {
+          if (docChange.type == DocumentChangeType.removed) {
+            // Remove from processed set and transactions
+            _processedChannelOps.remove(docChange.doc.id);
+            removeTransactionByTxHash(docChange.doc.id);
+            continue;
+          }
+          
+          final docId = docChange.doc.id;
+          final channelOpData = docChange.doc.data();
+          
+          if (channelOpData == null) continue;
+          
+          // Only process if it's a new document or significant change
+          if (docChange.type == DocumentChangeType.added || 
+              docChange.type == DocumentChangeType.modified) {
+            
+            logger.i("Processing channel operation: $docId");
+            
+            // Convert to ChannelOperation model
+            final operation = ChannelOperation.fromFirestore(channelOpData);
+            
+            // Create TransactionItemData for the channel operation
+            TransactionItemData transactionItem = TransactionItemData(
+              timestamp: operation.timestamp,
+              type: operation.type == ChannelOperationType.existing 
+                  ? TransactionType.channelDetected
+                  : TransactionType.channelOpen,
+              direction: operation.type == ChannelOperationType.existing
+                  ? TransactionDirection.received
+                  : TransactionDirection.sent,
+              receiver: operation.displaySubtitle,
+              txHash: operation.channelId,
+              amount: operation.capacity.toString(),
+              fee: 0,
+              status: operation.status == ChannelOperationStatus.active
+                  ? TransactionStatus.confirmed
+                  : operation.status == ChannelOperationStatus.failed
+                      ? TransactionStatus.failed
+                      : TransactionStatus.pending,
+            );
+            
+            // Add/update transaction (this handles duplicates internally)
+            addOrUpdateTransaction(transactionItem);
+            _processedChannelOps.add(docId);
+          }
+        }
         
-        // Convert to ChannelOperation model
-        final operation = ChannelOperation.fromFirestore(channelOp);
-        
-        // Create TransactionItemData for the channel operation
-        TransactionItemData transactionItem = TransactionItemData(
-          timestamp: operation.timestamp,
-          type: operation.type == ChannelOperationType.existing 
-              ? TransactionType.channelDetected // New type for existing channels
-              : TransactionType.channelOpen,
-          direction: operation.type == ChannelOperationType.existing
-              ? TransactionDirection.received // Existing channels are like receiving capacity
-              : TransactionDirection.sent, // Channel opens are like sending funds
-          receiver: operation.displaySubtitle,
-          txHash: operation.channelId,
-          amount: operation.capacity.toString(),
-          fee: 0,
-          status: operation.status == ChannelOperationStatus.active
-              ? TransactionStatus.confirmed
-              : operation.status == ChannelOperationStatus.failed
-                  ? TransactionStatus.failed
-                  : TransactionStatus.pending,
-        );
-        
-        // Add to allTransactions list
-        addOrUpdateTransaction(transactionItem);
-        
-        // Completely disable automatic channel operation overlays to prevent spam
-        // User will see channel status in the wallet transaction list instead
-        // Remove all overlay notifications for channel operations
+        // Keep track of latest operation for backward compatibility
+        if (query.docs.isNotEmpty) {
+          latestChannelOp = query.docs.first.data();
+        }
         
       } catch (e, stacktrace) {
-        channelOp = null;
-        logger.e(
-            'Failed to process channel operation: $e\n$stacktrace');
+        logger.e('Failed to process channel operations: $e\n$stacktrace');
       }
       
       // Update the latest channel operation
-      latestChannelOperation.value = channelOp;
+      latestChannelOperation.value = latestChannelOp;
       additionalTransactionsLoaded.value = true;
     });
 
@@ -789,6 +810,25 @@ class WalletsController extends BaseController {
       } else if (index == -1 && indexForItem != -1) {
         allTransactions.insert(indexForItem, transaction);
       }
+    }
+
+    // Re-combine the transactions to update the combined list
+    combineTransactions();
+  }
+
+  void removeTransactionByTxHash(String txHash) {
+    // Remove from allTransactions list
+    int index = allTransactions.indexWhere((tx) => tx.txHash == txHash);
+    if (index != -1) {
+      allTransactions.removeAt(index);
+      logger.i("Removed transaction from allTransactions: $txHash");
+    }
+
+    // Remove from _allTransactionItems list
+    int indexForItem = _allTransactionItems.indexWhere((tx) => tx.data.txHash == txHash);
+    if (indexForItem != -1) {
+      _allTransactionItems.removeAt(indexForItem);
+      logger.i("Removed transaction from _allTransactionItems: $txHash");
     }
 
     // Re-combine the transactions to update the combined list

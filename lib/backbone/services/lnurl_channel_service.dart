@@ -888,11 +888,11 @@ class LnurlChannelService {
 
       // Step 1a: ALWAYS create activity item first - before any checks
       // This ensures user sees activity even if process fails
-      operationId = await _createOrUpdateChannelActivity(
+      operationId = await _saveOrUpdateChannelOperation(
         channelRequest: request,
         status: ChannelOperationStatus.pending,
+        nodeId: _extractNodeIdFromUri(request.uri),
         message: "Analyzing channel request...",
-        lnurlString: lnurlString,
       );
 
       // Step 2: Extract node info from URI
@@ -904,17 +904,35 @@ class LnurlChannelService {
       final hostPort = uriParts[1];
 
       // Step 3: Comprehensive pre-flight checks (like your manual process)
-      await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Performing pre-flight checks...");
+      await _saveOrUpdateChannelOperation(
+        channelRequest: request,
+        status: ChannelOperationStatus.pending,
+        nodeId: nodeId,
+        message: "Performing pre-flight checks...",
+        existingOperationId: operationId,
+      );
       onProgress?.call(ChannelOpeningProgress.checkingConnection());
       
       // 3a. Check peer connection status
       final peerConnected = await isPeerConnected(nodeId);
       if (peerConnected) {
         _logger.i("✅ Already connected as peers with node $nodeId");
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Peer connection: ✅ Connected");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.pending,
+          nodeId: nodeId,
+          message: "Peer connection: ✅ Connected",
+          existingOperationId: operationId,
+        );
       } else {
         _logger.i("⚠️ Not connected as peers with node $nodeId");
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Peer connection: ⚠️ Not connected, will establish");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.pending,
+          nodeId: nodeId,
+          message: "Peer connection: ⚠️ Not connected, will establish",
+          existingOperationId: operationId,
+        );
       }
       
       // 3b. Check for existing active channels
@@ -926,14 +944,13 @@ class LnurlChannelService {
         
         if (isActive) {
           _logger.i("✅ Active channel already exists: $channelPoint ($capacity sats)");
-          await _updateChannelActivity(operationId!, ChannelOperationStatus.active, "✅ Active channel already exists ($capacity sats)", existingChannel);
-          
-          // Save the final channel operation result to Firebase
-          await _saveChannelOperationToFirebase(
+          await _saveOrUpdateChannelOperation(
             channelRequest: request,
             status: ChannelOperationStatus.active,
             nodeId: nodeId,
+            message: "✅ Active channel already exists ($capacity sats)",
             existingChannel: existingChannel,
+            existingOperationId: operationId,
           );
           
           onProgress?.call(ChannelOpeningProgress.completed());
@@ -948,11 +965,23 @@ class LnurlChannelService {
           );
         } else {
           _logger.i("⚠️ Inactive channel exists: $channelPoint");
-          await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Inactive channel exists, will open new channel");
+          await _saveOrUpdateChannelOperation(
+            channelRequest: request,
+            status: ChannelOperationStatus.pending,
+            nodeId: nodeId,
+            message: "Inactive channel exists, will open new channel",
+            existingOperationId: operationId,
+          );
         }
       } else {
         _logger.i("ℹ️ No existing channel found with this peer");
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "No existing channel found");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.pending,
+          nodeId: nodeId,
+          message: "No existing channel found",
+          existingOperationId: operationId,
+        );
       }
       
       // 3c. Check for pending channels
@@ -962,7 +991,14 @@ class LnurlChannelService {
         // Create a safe copy of pendingChannel without null values
         final safePendingChannel = Map<String, dynamic>.from(pendingChannel)
           ..removeWhere((key, value) => value == null);
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.opening, "Channel already opening on-chain", safePendingChannel);
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.opening,
+          nodeId: nodeId,
+          message: "Channel already opening on-chain",
+          existingChannel: safePendingChannel,
+          existingOperationId: operationId,
+        );
         
         onProgress?.call(ChannelOpeningProgress.completed());
         return LnurlChannelResult(
@@ -976,7 +1012,13 @@ class LnurlChannelService {
         );
       } else {
         _logger.i("ℹ️ No pending channel found with this peer");
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "No pending channel found, ready to proceed");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.pending,
+          nodeId: nodeId,
+          message: "No pending channel found, ready to proceed",
+          existingOperationId: operationId,
+        );
       }
 
       // Step 4: Ensure we're connected as peers (required before opening channel)
@@ -1031,12 +1073,13 @@ class LnurlChannelService {
                 _logger.i("✅ Found active channel despite claim error - order was already executed");
                 
                 // Log this as a successful existing channel detection
-                await _saveChannelOperationToFirebase(
+                await _saveOrUpdateChannelOperation(
                   channelRequest: request,
                   status: ChannelOperationStatus.active,
                   nodeId: nodeId,
+                  message: "Channel order was already executed, but channel is active",
                   existingChannel: existingChannel,
-                  errorMessage: 'Channel order was already executed, but channel is active',
+                  existingOperationId: operationId,
                 );
                 
                 onProgress?.call(ChannelOpeningProgress.completed());
@@ -1062,12 +1105,12 @@ class LnurlChannelService {
         onProgress?.call(errorProgress);
         
         // Still log the failed attempt to Firebase for user visibility
-        await _saveChannelOperationToFirebase(
+        await _saveOrUpdateChannelOperation(
           channelRequest: request,
           status: ChannelOperationStatus.failed,
           nodeId: nodeId,
-          existingChannel: null,
           errorMessage: errorMessage,
+          existingOperationId: operationId,
         );
         
         return LnurlChannelResult(
@@ -1102,11 +1145,13 @@ class LnurlChannelService {
           _logger.i("Found pending channel - it's being opened on-chain");
           
           // Update Firebase status to opening
-          await _saveChannelOperationToFirebase(
+          await _saveOrUpdateChannelOperation(
             channelRequest: request,
             status: ChannelOperationStatus.opening,
             nodeId: nodeId,
+            message: "Channel opening on-chain",
             existingChannel: pendingChannel,
+            existingOperationId: operationId,
           );
           
           onProgress?.call(ChannelOpeningProgress.completed());
@@ -1135,11 +1180,13 @@ class LnurlChannelService {
       _logger.i("✅ Channel successfully created and verified");
       
       // Save channel operation to Firebase
-      await _saveChannelOperationToFirebase(
+      await _saveOrUpdateChannelOperation(
         channelRequest: request,
         status: ChannelOperationStatus.active,
         nodeId: nodeId,
+        message: "Channel created and verified successfully",
         existingChannel: existingChannel,
+        existingOperationId: operationId,
       );
       
       return LnurlChannelResult(
@@ -1161,7 +1208,13 @@ class LnurlChannelService {
         } else if (cleanErrorMessage.length > 200) {
           cleanErrorMessage = cleanErrorMessage.substring(0, 200) + "...";
         }
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "❌ Process failed: $cleanErrorMessage");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.failed,
+          nodeId: _extractNodeIdFromUri(request.uri),
+          errorMessage: "Process failed: $cleanErrorMessage",
+          existingOperationId: operationId,
+        );
       }
       
       onProgress?.call(ChannelOpeningProgress.error(e.toString()));
@@ -1174,20 +1227,26 @@ class LnurlChannelService {
     }
   }
 
-  /// Saves channel operation to Firebase
-  Future<void> _saveChannelOperationToFirebase({
+  /// Saves or updates channel operation to Firebase with consistent ID
+  Future<String> _saveOrUpdateChannelOperation({
     required LnurlChannelRequest channelRequest,
     required ChannelOperationStatus status,
     required String nodeId,
+    String? message,
     Map<String, dynamic>? existingChannel,
     String? errorMessage,
+    String? existingOperationId,
   }) async {
     try {
       final userId = Auth().currentUser?.uid;
       if (userId == null) {
         _logger.e("No authenticated user to save channel operation");
-        return;
+        return 'fallback_${DateTime.now().millisecondsSinceEpoch}';
       }
+
+      // Use consistent ID generation - prefer order-based ID for same operation
+      final orderId = channelRequest.k1;
+      final operationId = existingOperationId ?? 'order_${orderId}_${userId}';
 
       // Extract provider name from callback URL
       String providerName = 'Lightning Service Provider';
@@ -1200,14 +1259,11 @@ class LnurlChannelService {
         _logger.w("Could not extract provider name from callback URL");
       }
 
-      // Generate a unique ID for this channel operation
-      final channelId = '${nodeId}_${DateTime.now().millisecondsSinceEpoch}';
-
       // Use actual channel data if available, otherwise fall back to request data
       int actualCapacity = channelRequest.localAmt ?? 0;
       int actualLocalBalance = channelRequest.localAmt ?? 0;
       String? actualChannelPoint = existingChannel?['channel_point'];
-      bool actualIsPrivate = true; // Default to private based on working implementation
+      bool actualIsPrivate = true;
       
       // If we have existing channel data, use real values
       if (existingChannel != null) {
@@ -1218,7 +1274,7 @@ class LnurlChannelService {
       }
 
       final channelOperation = ChannelOperation(
-        channelId: channelId,
+        channelId: operationId,
         remoteNodeId: nodeId,
         remoteNodeAlias: providerName,
         capacity: actualCapacity,
@@ -1227,47 +1283,38 @@ class LnurlChannelService {
         timestamp: DateTime.now().millisecondsSinceEpoch,
         status: status,
         type: status == ChannelOperationStatus.active && existingChannel != null 
-            ? ChannelOperationType.existing  // Mark as existing if we found an active channel
+            ? ChannelOperationType.existing
             : ChannelOperationType.open,
-        txHash: channelRequest.k1, // Use k1 as a reference
+        txHash: orderId,
         channelPoint: actualChannelPoint,
         isPrivate: actualIsPrivate,
         errorMessage: errorMessage,
         metadata: {
           'callback': channelRequest.callback,
           'uri': channelRequest.uri,
+          'current_message': message ?? status.value,
+          'last_updated': DateTime.now().millisecondsSinceEpoch,
           'detection_method': existingChannel != null ? 'existing_channel_found' : 'new_channel_created',
           if (existingChannel != null) 'channel_details': existingChannel,
         },
       );
 
-      // Save to Firestore
+      // Use merge: true to update existing document instead of creating new one
       await FirebaseFirestore.instance
           .collection('backend')
           .doc(userId)
           .collection('channel_operations')
-          .doc(channelId)
-          .set(channelOperation.toFirestore());
+          .doc(operationId)
+          .set(channelOperation.toFirestore(), SetOptions(merge: true));
 
-      _logger.i("✅ Channel operation saved to Firebase: $channelId");
+      _logger.i("✅ Channel operation saved/updated to Firebase: $operationId");
+      return operationId;
     } catch (e) {
       _logger.e("Failed to save channel operation to Firebase: $e");
-      // Don't throw - this is not critical for the channel opening process
+      return 'fallback_${DateTime.now().millisecondsSinceEpoch}';
     }
   }
 
-  /// Saves pending channel operation when starting the process
-  Future<void> _savePendingChannelOperation({
-    required LnurlChannelRequest channelRequest,
-    required String nodeId,
-  }) async {
-    await _saveChannelOperationToFirebase(
-      channelRequest: channelRequest,
-      status: ChannelOperationStatus.pending,
-      nodeId: nodeId,
-      existingChannel: null,
-    );
-  }
   
   /// Creates a simplified activity log for user awareness
   Future<void> logChannelActivity({
@@ -1305,144 +1352,5 @@ class LnurlChannelService {
     }
   }
 
-  /// Creates or updates a channel activity item for tracking retries of same LNURL/order
-  Future<String> _createOrUpdateChannelActivity({
-    required LnurlChannelRequest channelRequest,
-    required ChannelOperationStatus status,
-    required String message,
-    String? lnurlString,
-    Map<String, dynamic>? existingChannel,
-  }) async {
-    try {
-      final userId = Auth().currentUser?.uid;
-      if (userId == null) {
-        throw Exception("No authenticated user");
-      }
 
-      final nodeId = _extractNodeIdFromUri(channelRequest.uri);
-      final orderId = channelRequest.k1;
-      
-      // Create a consistent ID based on order ID or LNURL for retries
-      final operationId = 'order_${orderId}_${userId}';
-      
-      // Extract provider name
-      String providerName = 'Lightning Service Provider';
-      try {
-        final uri = Uri.parse(channelRequest.callback);
-        if (uri.host.contains('blocktank')) providerName = 'Blocktank';
-        else if (uri.host.contains('lnbits')) providerName = 'LNbits';
-        else providerName = uri.host;
-      } catch (e) {
-        _logger.w("Could not extract provider name from callback URL");
-      }
-
-      // Use actual channel data if available
-      int actualCapacity = channelRequest.localAmt ?? 0;
-      int actualLocalBalance = channelRequest.localAmt ?? 0;
-      String? actualChannelPoint = existingChannel?['channel_point'];
-      bool actualIsPrivate = true;
-      
-      if (existingChannel != null) {
-        actualCapacity = int.tryParse(existingChannel['capacity']?.toString() ?? '0') ?? 0;
-        actualLocalBalance = int.tryParse(existingChannel['local_balance']?.toString() ?? '0') ?? 0;
-        actualChannelPoint = existingChannel['channel_point'];
-        actualIsPrivate = existingChannel['private'] ?? true;
-      }
-
-      final channelOperation = ChannelOperation(
-        channelId: operationId,
-        remoteNodeId: nodeId,
-        remoteNodeAlias: providerName,
-        capacity: actualCapacity,
-        localBalance: actualLocalBalance,
-        pushAmount: channelRequest.pushAmt ?? 0,
-        timestamp: DateTime.now().millisecondsSinceEpoch,
-        status: status,
-        type: existingChannel != null && status == ChannelOperationStatus.active
-            ? ChannelOperationType.existing
-            : ChannelOperationType.open,
-        txHash: orderId,
-        channelPoint: actualChannelPoint,
-        isPrivate: actualIsPrivate,
-        errorMessage: status == ChannelOperationStatus.failed ? message : null,
-        metadata: {
-          'callback': channelRequest.callback,
-          'uri': channelRequest.uri,
-          'current_message': message,
-          'last_updated': DateTime.now().millisecondsSinceEpoch,
-          if (lnurlString != null) 'lnurl': lnurlString,
-          if (existingChannel != null) 'channel_details': existingChannel,
-        },
-      );
-
-      // Save/update to Firestore with consistent ID for retries
-      await FirebaseFirestore.instance
-          .collection('backend')
-          .doc(userId)
-          .collection('channel_operations')
-          .doc(operationId)
-          .set(channelOperation.toFirestore(), SetOptions(merge: true));
-
-      _logger.i("✅ Channel activity created/updated: $operationId - $message");
-      return operationId;
-      
-    } catch (e) {
-      _logger.e("Failed to create/update channel activity: $e");
-      return 'fallback_${DateTime.now().millisecondsSinceEpoch}';
-    }
-  }
-
-  /// Updates an existing channel activity with new status and message
-  Future<void> _updateChannelActivity(
-    String operationId,
-    ChannelOperationStatus status,
-    String message, [
-    Map<String, dynamic>? existingChannel,
-  ]) async {
-    try {
-      final userId = Auth().currentUser?.uid;
-      if (userId == null) return;
-
-      final updateData = <String, dynamic>{
-        'status': status.value,
-        'metadata.current_message': message,
-        'metadata.last_updated': DateTime.now().millisecondsSinceEpoch,
-        'updated_at': FieldValue.serverTimestamp(),
-      };
-      
-      if (status == ChannelOperationStatus.failed) {
-        updateData['error_message'] = message;
-      }
-      
-      if (existingChannel != null && existingChannel.isNotEmpty) {
-        updateData['capacity'] = int.tryParse(existingChannel['capacity']?.toString() ?? '0') ?? 0;
-        updateData['local_balance'] = int.tryParse(existingChannel['local_balance']?.toString() ?? '0') ?? 0;
-        updateData['channel_point'] = existingChannel['channel_point'] ?? '';
-        
-        // Clean the existingChannel data to avoid null values
-        final cleanChannelDetails = <String, dynamic>{};
-        existingChannel.forEach((key, value) {
-          if (value != null) {
-            cleanChannelDetails[key] = value;
-          }
-        });
-        updateData['metadata.channel_details'] = cleanChannelDetails;
-        
-        updateData['type'] = status == ChannelOperationStatus.active 
-            ? ChannelOperationType.existing.value 
-            : ChannelOperationType.open.value;
-      }
-
-      await FirebaseFirestore.instance
-          .collection('backend')
-          .doc(userId)
-          .collection('channel_operations')
-          .doc(operationId)
-          .update(updateData);
-
-      _logger.i("✅ Channel activity updated: $operationId - $message");
-    } catch (e) {
-      _logger.e("Failed to update channel activity: $e");
-    }
-  }
 }

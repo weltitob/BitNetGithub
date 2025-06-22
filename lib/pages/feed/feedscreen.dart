@@ -10,7 +10,6 @@ import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
 import 'package:bitnet/pages/feed/tokenstab.dart';
 import 'package:bitnet/pages/feed/assetstab.dart';
-import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -73,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen>
   late Function() scrollListener;
   
   // Track which tabs have been initialized for lazy loading
-  final List<bool> _tabsInitialized = List.filled(6, false);
+  final List<bool> _tabsInitialized = List.filled(5, false);
   
   @override
   void initState() {
@@ -97,7 +96,7 @@ class _FeedScreenState extends State<FeedScreen>
     final endTime = DateTime.now();
     final loadTime = endTime.difference(startTime).inMilliseconds;
     print('[PERFORMANCE] FeedScreen initState completed in: ${loadTime}ms');
-    print('[PERFORMANCE] Lazy loading enabled - only 1 of 6 tabs initialized');
+    print('[PERFORMANCE] Lazy loading enabled - only 1 of 5 tabs initialized');
   }
 
   @override
@@ -169,22 +168,28 @@ class _FeedScreenState extends State<FeedScreen>
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
                 
+                // Ensure currentIndex is within valid range (0-4)
+                if (currentIndex < 0 || currentIndex >= 5) {
+                  // Reset to first tab if out of bounds
+                  controller.currentTabIndex.value = 0;
+                  return const SizedBox.shrink();
+                }
+                
                 // Mark current tab as initialized when it's selected - SAFE VERSION
                 _initializeTabSafely(currentIndex);
                 
                 print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
                 
                 return IndexedStack(
-                  index: currentIndex,
+                  index: currentIndex.clamp(0, 4), // Ensure index is always within bounds
                   sizing: StackFit.expand,
                   children: [
                     // Lazy-loading tabs for better performance
-                    _buildLazyTab(0, const WebsitesTab()),
+                    _buildLazyTab(0, const AppsTabModern()),
                     _buildLazyTab(1, const TokensTab()),
                     _buildLazyTab(2, const AssetsTab()),
                     _buildLazyTab(3, const SearchResultWidget()),
                     _buildLazyTab(4, MempoolHome(isFromHome: true)),
-                    _buildLazyTab(5, const AppsTabModern())
                   ],
                 );
               }),
@@ -219,10 +224,12 @@ class _FeedScreenState extends State<FeedScreen>
   
   // Safe tab initialization that defers state updates outside build cycle
   void _initializeTabSafely(int currentIndex) {
-    if (!_tabsInitialized[currentIndex] && mounted) {
+    // Ensure currentIndex is within bounds (0-4 for 5 tabs)
+    if (currentIndex >= 0 && currentIndex < _tabsInitialized.length && 
+        !_tabsInitialized[currentIndex] && mounted) {
       // Use WidgetsBinding to defer state update until after build cycle
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && !_tabsInitialized[currentIndex]) {
+        if (mounted && currentIndex < _tabsInitialized.length && !_tabsInitialized[currentIndex]) {
           setState(() {
             _tabsInitialized[currentIndex] = true;
           });
@@ -235,6 +242,11 @@ class _FeedScreenState extends State<FeedScreen>
   Widget _buildLazyTab(int index, Widget tabContent) {
     final controller = Get.find<FeedController>();
     final isCurrentTab = controller.currentTabIndex.value == index;
+    
+    // Ensure index is within bounds
+    if (index >= _tabsInitialized.length) {
+      return const SizedBox.shrink();
+    }
     
     // If tab is not initialized and not current, return minimal placeholder
     if (!_tabsInitialized[index] && !isCurrentTab) {

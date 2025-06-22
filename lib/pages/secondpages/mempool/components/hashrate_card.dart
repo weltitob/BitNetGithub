@@ -213,7 +213,7 @@ class HashrateCard extends StatelessWidget {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       margin: EdgeInsets.only(left: 8, bottom: 8),
-      enableAxisAnimation: true,
+      enableAxisAnimation: false, // Disable animation for consistent UX
       trackballBehavior: TrackballBehavior(
         lineColor: Colors.grey[400],
         enable: true,
@@ -259,7 +259,7 @@ class HashrateCard extends StatelessWidget {
           dataSource: controller.hashrateChartData,
           splineType: SplineType.cardinal,
           cardinalSplineTension: 0.7,
-          animationDuration: 1000,
+          animationDuration: 0, // Disable animation for consistent UX
           width: 2,
           color: AppTheme.colorBitcoin,
           xValueMapper: (ChartLine sales, _) =>

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/services/api_rate_limiter.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -14,6 +15,8 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BitcoinController extends GetxController {
+  LoggerService logger = Get.find();
+  
   late TrackballBehavior trackballBehavior;
   late List<ChartLine> chartData;
   late List<ChartLine> maxchart;
@@ -192,14 +195,40 @@ class BitcoinController extends GetxController {
       days: "max",
     );
 
-    // Call getChartData for each in parallel
-    await Future.wait([
-      chartClassDay.getChartData(),
-      chartClassWeek.getChartData(),
-      chartClassMonth.getChartData(),
-      chartClassYear.getChartData(),
-      chartClassMax.getChartData(),
-    ]);
+    // Call getChartData sequentially to prevent API rate limits
+    logger.i('🔄 Starting sequential chart data loading to prevent API rate limits');
+    
+    final charts = [
+      {'chart': chartClassDay, 'period': '1D'},
+      {'chart': chartClassWeek, 'period': '1W'}, 
+      {'chart': chartClassMonth, 'period': '1M'},
+      {'chart': chartClassYear, 'period': '1Y'},
+      {'chart': chartClassMax, 'period': 'MAX'},
+    ];
+    
+    for (int i = 0; i < charts.length; i++) {
+      final chartInfo = charts[i];
+      final chart = chartInfo['chart'] as dynamic;
+      final period = chartInfo['period'] as String;
+      
+      logger.d('📊 Loading chart data for period: $period (${i + 1}/${charts.length})');
+      
+      try {
+        await chart.getChartData();
+        logger.d('✅ Successfully loaded chart data for period: $period');
+        
+        // Add delay between requests to prevent rate limiting
+        if (i < charts.length - 1) {
+          await Future.delayed(const Duration(milliseconds: 200));
+          logger.d('⏱️  Applied 200ms delay before next chart request');
+        }
+      } catch (e) {
+        logger.e('❌ Failed to load chart data for period $period: $e');
+        // Continue with other periods even if one fails
+      }
+    }
+    
+    logger.i('🏁 Completed sequential chart data loading');
 
     if (chartClassDay.chartLine.isNotEmpty) {
       Get.find<CryptoItemController>().firstPrice.value =
@@ -723,5 +752,94 @@ class BitcoinController extends GetxController {
     result.sort((a, b) => a.time.compareTo(b.time));
     
     return result;
+  }
+
+  /// Rate-limited version of chart loading for scenarios with potential loop-in-loop API calls
+  Future<void> getChartLineWithRateLimit(String currency) async {
+    logger.i('🚦 Starting rate-limited chart data loading');
+    
+    final rateLimiter = ApiRateLimiter.to;
+    
+    // Create chart classes for each timeframe
+    final chartConfigs = [
+      {'period': '1D', 'days': '1'},
+      {'period': '1W', 'days': '7'},
+      {'period': '1M', 'days': '30'},
+      {'period': '1Y', 'days': '365'},
+      {'period': 'MAX', 'days': 'max'},
+    ];
+    
+    List<CryptoChartLine> chartClasses = [];
+    for (var config in chartConfigs) {
+      chartClasses.add(CryptoChartLine(
+        crypto: "bitcoin",
+        currency: currency,
+        days: config['days']!,
+      ));
+    }
+    
+    // Queue all chart data requests with rate limiting
+    logger.i('📋 Queueing ${chartClasses.length} chart data requests with rate limiting');
+    
+    final futures = <Future<void>>[];
+    for (int i = 0; i < chartClasses.length; i++) {
+      final chartClass = chartClasses[i];
+      final period = chartConfigs[i]['period']!;
+      
+      final future = rateLimiter.enqueue<void>(
+        request: () async {
+          logger.d('📊 Fetching chart data for period: $period');
+          await chartClass.getChartData();
+          logger.d('✅ Completed chart data for period: $period');
+        },
+        endpoint: '/coins/bitcoin/market_chart',
+        apiProvider: 'coingecko',
+        priority: 1,
+      );
+      
+      futures.add(future);
+    }
+    
+    // Wait for all requests to complete
+    try {
+      await Future.wait(futures);
+      logger.i('🎉 All rate-limited chart data requests completed successfully');
+      
+      // Process the loaded data similar to the original method
+      if (chartClasses[0].chartLine.isNotEmpty) {
+        Get.find<CryptoItemController>().firstPrice.value =
+            chartClasses[0].chartLine.first.price;
+
+        Get.find<WalletsController>().chartLines.value =
+            chartClasses[0].chartLine.last;
+
+        onedaychart = chartClasses[0].chartLine;
+        oneweekchart = chartClasses[1].chartLine;
+        onemonthchart = chartClasses[2].chartLine;
+        oneyearchart = chartClasses[3].chartLine;
+        maxchart = chartClasses[4].chartLine;
+        
+        // Standard processing
+        currentline.value = onedaychart;
+        liveChart.value = onedaychart.last;
+        setValues();
+        
+        double priceChange = currentline.value.first.price == 0 ? 0 :
+            (currentline.value.last.price - currentline.value.first.price) /
+                currentline.value.first.price;
+        overallPriceChange.value = toPercent(priceChange);
+
+        loading.value = false;
+        
+        logger.i('🔄 Chart data processing completed');
+      }
+    } catch (e) {
+      logger.e('❌ Rate-limited chart loading failed: $e');
+      throw e;
+    }
+    
+    // Log rate limiter status for debugging
+    final queueStatus = rateLimiter.getQueueStatus();
+    logger.d('📊 Rate limiter status: $queueStatus');
   }
 }

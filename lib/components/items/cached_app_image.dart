@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:bitnet/backbone/services/app_image_cache_service.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -105,17 +106,16 @@ class _CachedAppImageState extends State<CachedAppImage> {
   }
   
   Widget _buildErrorWidget() {
-    return Container(
+    return GlassContainer(
       width: widget.width,
       height: widget.height,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(
-        Icons.public,
-        size: widget.width * 0.6,
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+      borderRadius: BorderRadius.circular(8),
+      child: Center(
+        child: Icon(
+          Icons.public,
+          size: widget.width * 0.5,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+        ),
       ),
     );
   }
