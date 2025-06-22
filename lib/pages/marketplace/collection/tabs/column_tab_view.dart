@@ -85,8 +85,7 @@ class ColumnTabView extends StatelessWidget {
             crossAxisCount: 2, // 2 items per row
             mainAxisSpacing: AppTheme.elementSpacing.h,
             crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-            childAspectRatio:
-                (size.width / 2) / 240.w, // Adjust according to your design
+            childAspectRatio: (size.width / 2) / 240.w, // Match profile screen ratio
           ),
           itemCount: sortedGridList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -115,18 +114,10 @@ class ColumnTabView extends StatelessWidget {
                   scale: 0.75,
                   nftName: item.nftName,
                   nftMainName: item.nftMainName,
+                  assetId: item.id.toString(),
+                  hasListForSale: index < 2, // First 2 items are listed for sale
+                  isOwner: index < 2, // First 2 items are owned by user
                   cryptoText: item.cryptoText,
-                  rank: item.rank.toString(),
-                  hasPrice: true,
-                  hasLiked: selectedProducts.contains(item.id),
-                  hasListForSale: false,
-                  postId: item.id.toString(),
-                  onLikeChanged: (isLiked) {
-                    handleProductClick(item.id, context);
-                  },
-                  onPriceClicked: (id) {
-                    showBuyPanel(id);
-                  },
                 ),
               ],
             ),

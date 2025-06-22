@@ -1456,7 +1456,13 @@ class SendsController extends BaseController {
           }
           return true;
         } else {
-          overlayController.showOverlay("Transaction failed: ${sendResult.message}");
+          // Check for specific error messages and provide user-friendly explanations
+          String errorMessage = sendResult.message ?? "Unknown error";
+          if (errorMessage.toLowerCase().contains("dust")) {
+            overlayController.showOverlay("Amount too small! Bitcoin network requires at least 546 sats for onchain transactions.");
+          } else {
+            overlayController.showOverlay("Transaction failed: $errorMessage");
+          }
           isFinished.value = false;
           return false;
         }
@@ -1884,7 +1890,13 @@ class SendsController extends BaseController {
                 }
               }
             } else {
-              overlayController.showOverlay("Transaction failed: ${sendResult.message}");
+              // Check for specific error messages and provide user-friendly explanations
+              String errorMessage = sendResult.message ?? "Unknown error";
+              if (errorMessage.toLowerCase().contains("dust")) {
+                overlayController.showOverlay("Amount too small! Bitcoin network requires at least 546 sats for onchain transactions.");
+              } else {
+                overlayController.showOverlay("Transaction failed: $errorMessage");
+              }
               isFinished.value = false;
             }
           } catch (e) {

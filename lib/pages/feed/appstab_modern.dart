@@ -436,7 +436,9 @@ class _AppsTabModernState extends State<AppsTabModern>
                 extra: {"is_app": true}
               );
             } else {
-              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+              final appJson = app.toJson();
+              print('Navigating to app details with data: $appJson');
+              context.go("/feed/" + kAppPageRoute, extra: appJson);
             }
           },
           child: Column(
