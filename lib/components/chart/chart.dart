@@ -337,9 +337,11 @@ class _ChartCoreState extends State<ChartCore> {
   String selectedPeriod = '1D';
   
   void updateSelectedPeriod(String period) {
+    print('Debug ChartCore: updateSelectedPeriod called with: $period');
     setState(() {
       selectedPeriod = period;
     });
+    print('Debug ChartCore: selectedPeriod set to: $selectedPeriod');
   }
   
   Widget _buildTokenChart(BuildContext context) {

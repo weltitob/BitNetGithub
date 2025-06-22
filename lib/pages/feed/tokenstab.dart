@@ -195,7 +195,7 @@ class _TokensTabState extends State<TokensTab>
                               // Line series - using correct color based on token performance
                               AreaSeries<ChartLine, double>(
                                 dataSource: chartData,
-                                animationDuration: 1500,
+                                animationDuration: 0, // Disable animation for smooth tab switching
                                 xValueMapper: (ChartLine data, _) => data.time,
                                 yValueMapper: (ChartLine data, _) => data.price,
                                 color: token['isPositive'] 

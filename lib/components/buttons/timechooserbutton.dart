@@ -131,9 +131,11 @@ class _CustomizableTimeChooserState extends State<CustomizableTimeChooser> {
   }
 
   void _handleButtonPress(String period) {
+    print('Debug TimeChooser: Button pressed with period: $period');
     setState(() {
       selectedPeriod = period;
     });
+    print('Debug TimeChooser: Calling onTimePeriodSelected with: $period');
     widget.onTimePeriodSelected(period);
   }
 }

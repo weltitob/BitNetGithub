@@ -360,7 +360,7 @@ class _CryptoItemState extends State<CryptoItem> {
 
                       child: SfCartesianChart(
 
-                          enableAxisAnimation: true,
+                          enableAxisAnimation: false, // Disable animation for smooth tab switching
 
                           plotAreaBorderWidth: 0,
 

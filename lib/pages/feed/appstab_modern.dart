@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -286,6 +287,37 @@ class _AppsTabModernState extends State<AppsTabModern>
                           ),
                         );
                       },
+                    ),
+                  ),
+                  SizedBox(height: AppTheme.cardPadding.h),
+                ],
+                
+                // Trending Apps Section  
+                if (!loading) ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    child: Row(
+                      children: [
+                        Text(
+                          '🔥 Trending Apps',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: AppTheme.elementSpacing.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    child: GlassContainer(
+                      child: Column(
+                        children: [
+                          _buildTrendingAppTile(1, "Bitrefill", "https://www.bitrefill.com", "Buy gift cards and mobile refills with Bitcoin", 'assets/images/bitcoin.png'),
+                          Divider(height: 1, color: Theme.of(context).dividerColor.withOpacity(0.3)),
+                          _buildTrendingAppTile(2, "Wavlake", "https://wavlake.com/", "Stream music and support artists with Bitcoin", 'assets/images/lightning.png'),
+                          Divider(height: 1, color: Theme.of(context).dividerColor.withOpacity(0.3)),
+                          _buildTrendingAppTile(3, "Flipit", "https://flipittoken.eth.limo/", "Decentralized gaming platform built on Bitcoin", 'assets/images/bitcoin.png'),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: AppTheme.cardPadding.h),
@@ -848,6 +880,89 @@ class _AppsTabModernState extends State<AppsTabModern>
           ),
         ),
       ),
+    );
+  }
+  
+  Widget _buildTrendingAppTile(int position, String name, String url, String description, String iconPath) {
+    return BitNetListTile(
+      leading: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Position badge
+          Container(
+            width: 28.w,
+            height: 28.h,
+            decoration: BoxDecoration(
+              color: position == 1 
+                  ? Colors.amber 
+                  : position == 2 
+                      ? Colors.grey[400] 
+                      : Color(0xFFCD7F32), // Bronze
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '$position',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          // App icon
+          Container(
+            width: 40.w,
+            height: 40.h,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.asset(
+                iconPath,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(Icons.public, size: 20);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+      text: name,
+      subtitle: description,
+      trailing: LongButtonWidget(
+        title: 'Open',
+        customWidth: 70.w,
+        customHeight: 36.h,
+        buttonType: ButtonType.transparent,
+        titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+        onTap: () {
+          context.pushNamed(kWebViewScreenRoute,
+            pathParameters: {
+              'url': url,
+              'name': name,
+            },
+          );
+        },
+      ),
+      onTap: () {
+        context.pushNamed(kWebViewScreenRoute,
+          pathParameters: {
+            'url': url,
+            'name': name,
+          },
+        );
+      },
     );
   }
 }
