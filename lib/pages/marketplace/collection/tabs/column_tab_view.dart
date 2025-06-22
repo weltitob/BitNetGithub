@@ -85,7 +85,7 @@ class ColumnTabView extends StatelessWidget {
             crossAxisCount: 2, // 2 items per row
             mainAxisSpacing: AppTheme.elementSpacing.h,
             crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-            childAspectRatio: (size.width / 2) / 240.w, // Match profile screen ratio
+            childAspectRatio: (size.width / 2) / (260.h * 0.75), // Correct ratio for AssetCard height
           ),
           itemCount: sortedGridList.length,
           itemBuilder: (BuildContext context, int index) {

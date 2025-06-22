@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
+import 'package:bitnet/components/items/cached_app_image.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +237,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
       context: context,
       appBar: bitnetAppBar(
         context: context,
-        text: "",
+        text: widget.app.name,
       ),
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
@@ -291,7 +292,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24.r),
-                              child: AppImageBuilder(
+                              child: CachedAppImage(
                                 app: widget.app,
                                 width: 80.w,
                                 height: 80.h,
