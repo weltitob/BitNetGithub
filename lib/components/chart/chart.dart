@@ -899,6 +899,12 @@ class _CustomWidgetState extends State<CustomWidget>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Cache Theme to avoid multiple expensive calls
     final theme = Theme.of(context);

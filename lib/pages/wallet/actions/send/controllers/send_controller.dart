@@ -1926,14 +1926,25 @@ class SendsController extends BaseController {
     }
     _subscriptions.clear();
     
+    // Dispose all focus nodes
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
+    
+    // Dispose all text controllers
     btcController.dispose();
     satController.dispose();
     currencyController.dispose();
     bip21InvoiceSatController.dispose();
     bip21InvoiceBtcController.dispose();
     bip21InvoiceCurrencyController.dispose();
+    // FIXED: Add missing BIP21 onchain controllers
+    bip21OnchainSatController.dispose();
+    bip21OnchainBtcController.dispose();
+    bip21OnchainCurrencyController.dispose();
+    
+    // FIXED: Add missing scroll controller
+    sendScrollerController.dispose();
+    
     foundUsers.clear();
     super.dispose();
   }
