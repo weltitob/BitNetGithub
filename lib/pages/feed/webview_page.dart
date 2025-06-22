@@ -47,8 +47,8 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
     super.initState();
-    name = widget.routerState.pathParameters['name']!;
-    url = widget.routerState.pathParameters['url']!;
+    name = Uri.decodeComponent(widget.routerState.pathParameters['name']!);
+    url = Uri.decodeComponent(widget.routerState.pathParameters['url']!);
     isApp = widget.routerState.extra is Map
         ? (widget.routerState.extra as Map)['is_app']
         : false;
