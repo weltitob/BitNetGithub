@@ -32,7 +32,16 @@ class _CachedAppImageState extends State<CachedAppImage> {
   @override
   void initState() {
     super.initState();
-    _cacheService = Get.find<AppImageCacheService>();
+    
+    // Initialize cache service with safety check
+    try {
+      _cacheService = Get.find<AppImageCacheService>();
+    } catch (e) {
+      // If service not found, register it
+      Get.put(AppImageCacheService(), permanent: true);
+      _cacheService = Get.find<AppImageCacheService>();
+    }
+    
     _loadImage();
   }
   

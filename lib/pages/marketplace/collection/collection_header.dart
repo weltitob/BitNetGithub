@@ -28,51 +28,75 @@ class _CollectionHeaderState extends State<CollectionHeader>
     super.build(context);
     return Container(
       padding: EdgeInsets.only(
-          top: AppTheme.cardPadding.h * 2, bottom: AppTheme.cardPadding.h),
+          top: AppTheme.cardPadding.h, bottom: AppTheme.elementSpacing.h),
       child: Column(
         children: [
-          // Hero image section
+          // Modern compact header with avatar
           Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.bottomCenter,
             children: [
-              // Banner image
+              // Simplified banner with gradient overlay
               Container(
                 width: widget.size.width,
-                height: 200.h,
+                height: 120.h,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
+                    bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                  ),
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      Theme.of(context).colorScheme.surface.withOpacity(0.3),
-                      Theme.of(context).scaffoldBackgroundColor,
+                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      Theme.of(context).colorScheme.primary.withOpacity(0.05),
                     ],
                   ),
                 ),
-                child: ClipRRect(
-                  child: Image.asset(
-                    nftImage5,
-                    width: widget.size.width,
-                    height: 200.h,
-                    fit: BoxFit.cover,
-                  ),
+                child: Stack(
+                  children: [
+                    // Subtle pattern overlay
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
+                          bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                        ),
+                        child: Opacity(
+                          opacity: 0.03,
+                          child: Image.asset(
+                            nftImage5,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // Profile image using proper Avatar component
-              Transform.translate(
-                offset: Offset(0, 40),
+              // Avatar positioned at the bottom edge
+              Positioned(
+                bottom: -(AppTheme.cardPadding * 1.5),
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 4,
+                      width: 3,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Avatar(
                     profileId: "bitcoinpunks",
                     name: widget.name ?? "Bitcoin Punks",
-                    size: 80.w,
+                    size: AppTheme.cardPadding * 3,
                     isNft: true,
                     type: profilePictureType.none,
                     onTap: () {
@@ -83,33 +107,40 @@ class _CollectionHeaderState extends State<CollectionHeader>
               ),
             ],
           ),
-          SizedBox(height: 48.h),
+          SizedBox(height: AppTheme.cardPadding * 2),
           
-          // Collection name
-          Text(
-            widget.name != null ? widget.name! : L10n.of(context)!.unknown,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          SizedBox(height: AppTheme.elementSpacing.h),
-          
-          
-          SizedBox(height: AppTheme.cardPadding.h),
-          
-          // Description
-          Padding(
+          // Modern title and description layout
+          Container(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-            child: Text(
-              _getProjectDescription(widget.name),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                height: 1.4,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              children: [
+                // Collection name with modern styling
+                Text(
+                  widget.name != null ? widget.name! : L10n.of(context)!.unknown,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                
+                // Minimal description with better typography
+                Container(
+                  constraints: BoxConstraints(maxWidth: 280.w),
+                  child: Text(
+                    _getProjectDescription(widget.name),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      height: 1.5,
+                      letterSpacing: 0.1,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

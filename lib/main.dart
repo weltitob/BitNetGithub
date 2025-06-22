@@ -137,6 +137,11 @@ Future<void> _initializeWebServices() async {
     // Initialize only minimal services needed for web
     Get.put(LoggerService(), permanent: true);
     Get.put(DioClient(), permanent: true);
+    
+    // Initialize cache services for web
+    Get.put(ApiCacheService(), permanent: true);
+    Get.put(FaviconCacheService(), permanent: true);
+    Get.put(AppImageCacheService(), permanent: true);
 
     // Try to initialize remote config if possible, but catch errors
     try {

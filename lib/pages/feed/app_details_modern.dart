@@ -27,25 +27,227 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
   bool loading = true;
   bool appOwned = false;
   bool buttonLoading = false;
+  double userRating = 0;
+  double averageRating = 0;
+  int totalRatings = 0;
+  bool hasRated = false;
+  int downloadCount = 0;
+  String appSize = 'Web App';
+  String developerName = 'BitNET Community';
   
   @override
   void initState() {
     super.initState();
     checkOwnership();
+    fetchRatings();
+    fetchDownloadStats();
+    fetchDeveloperInfo();
   }
   
   Future<void> checkOwnership() async {
-    final doc = await Databaserefs.appsRef.doc(Auth().currentUser!.uid).get();
-    if (doc.exists && doc.data() != null && doc.data()!['apps'] != null) {
-      List appIds = doc.data()!['apps'] as List;
-      appOwned = appIds.contains(widget.app.docId);
+    try {
+      final doc = await Databaserefs.appsRef.doc(Auth().currentUser!.uid).get();
+      if (doc.exists && doc.data() != null && doc.data()!['apps'] != null) {
+        List appIds = doc.data()!['apps'] as List;
+        appOwned = appIds.contains(widget.app.docId);
+      }
+    } catch (e) {
+      print('Error checking ownership: $e');
+    } finally {
+      loading = false;
+      if (mounted) setState(() {});
     }
-    loading = false;
-    if (mounted) setState(() {});
+  }
+  
+  Future<void> fetchRatings() async {
+    try {
+      // Fetch app ratings
+      final ratingsDoc = await FirebaseFirestore.instance
+          .collection('app_ratings')
+          .doc(widget.app.docId)
+          .get();
+      
+      if (ratingsDoc.exists) {
+        final data = ratingsDoc.data()!;
+        averageRating = (data['average_rating'] ?? 0).toDouble();
+        totalRatings = data['total_ratings'] ?? 0;
+      }
+      
+      // Check if current user has rated
+      final userRatingDoc = await FirebaseFirestore.instance
+          .collection('app_ratings')
+          .doc(widget.app.docId)
+          .collection('user_ratings')
+          .doc(Auth().currentUser!.uid)
+          .get();
+      
+      if (userRatingDoc.exists) {
+        hasRated = true;
+        userRating = (userRatingDoc.data()!['rating'] ?? 0).toDouble();
+      }
+      
+      if (mounted) setState(() {});
+    } catch (e) {
+      print('Error fetching ratings: $e');
+    }
+  }
+  
+  Future<void> fetchDownloadStats() async {
+    try {
+      // Fetch app statistics
+      final statsDoc = await FirebaseFirestore.instance
+          .collection('app_stats')
+          .doc(widget.app.docId)
+          .get();
+      
+      if (statsDoc.exists) {
+        final data = statsDoc.data()!;
+        downloadCount = data['download_count'] ?? 0;
+      }
+      
+      // Try to fetch app size from app metadata if available
+      final appDoc = await Databaserefs.appsRef
+          .doc("total_apps")
+          .collection("apps")
+          .doc(widget.app.docId)
+          .get();
+      
+      if (appDoc.exists && appDoc.data() != null) {
+        final sizeInBytes = appDoc.data()!['size_bytes'];
+        if (sizeInBytes != null) {
+          appSize = _formatBytes(sizeInBytes);
+        }
+      }
+      
+      if (mounted) setState(() {});
+    } catch (e) {
+      print('Error fetching download stats: $e');
+    }
+  }
+  
+  Future<void> fetchDeveloperInfo() async {
+    try {
+      // First try to get app data to find ownerId
+      final appDoc = await Databaserefs.appsRef
+          .doc("total_apps")
+          .collection("apps")
+          .doc(widget.app.docId)
+          .get();
+      
+      if (appDoc.exists && appDoc.data() != null) {
+        final ownerId = appDoc.data()!['ownerId'];
+        if (ownerId != null) {
+          // Fetch owner's profile to get their username
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(ownerId)
+              .get();
+          
+          if (userDoc.exists && userDoc.data() != null) {
+            final username = userDoc.data()!['username'];
+            if (username != null && username.isNotEmpty) {
+              developerName = username;
+            }
+          }
+        }
+      }
+      
+      if (mounted) setState(() {});
+    } catch (e) {
+      print('Error fetching developer info: $e');
+    }
+  }
+  
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1048576) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    if (bytes < 1073741824) return '${(bytes / 1048576).toStringAsFixed(1)} MB';
+    return '${(bytes / 1073741824).toStringAsFixed(1)} GB';
+  }
+  
+  String _formatDownloadCount(int count) {
+    if (count < 1000) return count.toString();
+    if (count < 1000000) return '${(count / 1000).toStringAsFixed(1)}K';
+    return '${(count / 1000000).toStringAsFixed(1)}M';
+  }
+  
+  Future<void> submitRating(double rating) async {
+    try {
+      final userId = Auth().currentUser!.uid;
+      final batch = FirebaseFirestore.instance.batch();
+      
+      // Save user's rating
+      final userRatingRef = FirebaseFirestore.instance
+          .collection('app_ratings')
+          .doc(widget.app.docId)
+          .collection('user_ratings')
+          .doc(userId);
+      
+      batch.set(userRatingRef, {
+        'rating': rating,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      
+      // Update average rating
+      final appRatingRef = FirebaseFirestore.instance
+          .collection('app_ratings')
+          .doc(widget.app.docId);
+      
+      if (hasRated) {
+        // User is updating their rating
+        final newAverage = ((averageRating * totalRatings) - userRating + rating) / totalRatings;
+        batch.update(appRatingRef, {
+          'average_rating': newAverage,
+          'last_updated': FieldValue.serverTimestamp(),
+        });
+      } else {
+        // New rating
+        final newTotal = totalRatings + 1;
+        final newAverage = ((averageRating * totalRatings) + rating) / newTotal;
+        batch.set(appRatingRef, {
+          'average_rating': newAverage,
+          'total_ratings': newTotal,
+          'last_updated': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+      
+      await batch.commit();
+      
+      // Update local state
+      userRating = rating;
+      hasRated = true;
+      await fetchRatings(); // Refresh ratings
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Rating submitted successfully!')),
+        );
+      }
+    } catch (e) {
+      print('Error submitting rating: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit rating')),
+        );
+      }
+    }
   }
   
   @override
   Widget build(BuildContext context) {
+    if (loading) {
+      return bitnetScaffold(
+        context: context,
+        appBar: bitnetAppBar(
+          context: context,
+          text: "",
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(
@@ -124,7 +326,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                           SizedBox(height: 8.h),
                           // App Developer
                           Text(
-                            'BitNET Community',
+                            developerName,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.white.withOpacity(0.8),
                             ),
@@ -147,11 +349,14 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard(
-                          context,
-                          icon: Icons.star_rounded,
-                          value: '4.8',
-                          label: 'Rating',
+                        child: GestureDetector(
+                          onTap: appOwned ? () => _showRatingDialog() : null,
+                          child: _buildStatCard(
+                            context,
+                            icon: Icons.star_rounded,
+                            value: averageRating > 0 ? averageRating.toStringAsFixed(1) : 'N/A',
+                            label: totalRatings > 0 ? '$totalRatings ratings' : 'No ratings',
+                          ),
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -159,7 +364,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                         child: _buildStatCard(
                           context,
                           icon: Icons.download_rounded,
-                          value: '10K+',
+                          value: downloadCount > 0 ? _formatDownloadCount(downloadCount) : '0',
                           label: 'Downloads',
                         ),
                       ),
@@ -168,7 +373,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                         child: _buildStatCard(
                           context,
                           icon: Icons.code_rounded,
-                          value: '2.3MB',
+                          value: appSize,
                           label: 'Size',
                         ),
                       ),
@@ -209,9 +414,9 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                   ),
                   SizedBox(height: 12.h),
                   _buildFeatureItem(context, Icons.flash_on, 'Lightning fast transactions'),
-                  _buildFeatureItem(context, Icons.security, 'Secure and private'),
                   _buildFeatureItem(context, Icons.cloud_off, 'Works offline'),
                   _buildFeatureItem(context, Icons.language, 'Multi-language support'),
+                  _buildFeatureItem(context, Icons.attach_money, 'Bitcoin integrated'),
                   
                   SizedBox(height: 100.h), // Space for bottom button
                 ],
@@ -221,7 +426,11 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
         ),
       ),
       bottomSheet: Container(
-        padding: EdgeInsets.all(AppTheme.cardPadding.w),
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: AppTheme.cardPadding.w,
+          vertical: AppTheme.elementSpacing.h,
+        ),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           boxShadow: [
@@ -233,39 +442,102 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
           ],
         ),
         child: SafeArea(
-          child: LongButtonWidget(
-            title: appOwned ? 'Open' : 'Get',
-            state: buttonLoading ? ButtonState.loading : ButtonState.idle,
-            onTap: () async {
-              if (appOwned) {
-                buttonLoading = true;
-                setState(() {});
-                
-                final url = await widget.app.getUrl();
-                context.pushNamed(kWebViewScreenRoute,
-                  pathParameters: {
-                    'url': url,
-                    'name': widget.app.name,
-                  },
-                  extra: {'is_app': true}
-                );
-                
-                buttonLoading = false;
-                if (mounted) setState(() {});
-              } else {
-                buttonLoading = true;
-                setState(() {});
-                
-                await addAppToUser(widget.app);
-                appOwned = true;
-                
-                buttonLoading = false;
-                if (mounted) setState(() {});
-              }
-            },
+          child: Center(
+            child: LongButtonWidget(
+              title: appOwned ? 'Open' : 'Get',
+              customWidth: MediaQuery.of(context).size.width - (AppTheme.cardPadding.w * 2),
+              state: buttonLoading ? ButtonState.loading : ButtonState.idle,
+              onTap: () async {
+                if (appOwned) {
+                  buttonLoading = true;
+                  setState(() {});
+                  
+                  final url = await widget.app.getUrl();
+                  context.pushNamed(kWebViewScreenRoute,
+                    pathParameters: {
+                      'url': url,
+                      'name': widget.app.name,
+                    },
+                    extra: {'is_app': true}
+                  );
+                  
+                  buttonLoading = false;
+                  if (mounted) setState(() {});
+                } else {
+                  buttonLoading = true;
+                  setState(() {});
+                  
+                  await addAppToUser(widget.app);
+                  appOwned = true;
+                  await fetchDownloadStats(); // Refresh download count
+                  
+                  buttonLoading = false;
+                  if (mounted) setState(() {});
+                }
+              },
+            ),
           ),
         ),
       ),
+    );
+  }
+  
+  void _showRatingDialog() {
+    double tempRating = userRating > 0 ? userRating : 0;
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Rate ${widget.app.name}'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    hasRated ? 'Update your rating' : 'How would you rate this app?',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  SizedBox(height: 20.h),
+                  StarRating(
+                    rating: tempRating,
+                    size: 40,
+                    onRatingChanged: (rating) {
+                      setState(() {
+                        tempRating = rating;
+                      });
+                    },
+                  ),
+                  if (tempRating > 0)
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.h),
+                      child: Text(
+                        '${tempRating.toStringAsFixed(0)} star${tempRating > 1 ? 's' : ''}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: tempRating > 0
+                      ? () {
+                          Navigator.of(context).pop();
+                          submitRating(tempRating);
+                        }
+                      : null,
+                  child: Text(hasRated ? 'Update' : 'Submit'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
   
@@ -357,4 +629,44 @@ class PatternPainter extends CustomPainter {
   
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class StarRating extends StatelessWidget {
+  final double rating;
+  final double size;
+  final Function(double)? onRatingChanged;
+  final bool interactive;
+  
+  const StarRating({
+    Key? key,
+    required this.rating,
+    this.size = 30,
+    this.onRatingChanged,
+    this.interactive = true,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        final starValue = index + 1;
+        final filled = rating >= starValue;
+        final halfFilled = rating > index && rating < starValue;
+        
+        return GestureDetector(
+          onTap: interactive && onRatingChanged != null 
+              ? () => onRatingChanged!(starValue.toDouble()) 
+              : null,
+          child: Icon(
+            halfFilled ? Icons.star_half : Icons.star,
+            size: size,
+            color: filled || halfFilled 
+                ? AppTheme.colorBitcoin 
+                : Colors.grey.withOpacity(0.3),
+          ),
+        );
+      }),
+    );
+  }
 }

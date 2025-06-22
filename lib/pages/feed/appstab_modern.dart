@@ -44,7 +44,16 @@ class _AppsTabModernState extends State<AppsTabModern>
   @override
   void initState() {
     super.initState();
-    _imageCacheService = Get.find<AppImageCacheService>();
+    
+    // Initialize image cache service with safety check
+    try {
+      _imageCacheService = Get.find<AppImageCacheService>();
+    } catch (e) {
+      // If service not found, register it
+      Get.put(AppImageCacheService(), permanent: true);
+      _imageCacheService = Get.find<AppImageCacheService>();
+    }
+    
     loadAsync();
   }
 

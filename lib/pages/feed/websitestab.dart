@@ -252,8 +252,14 @@ class _WebsitesTabState extends State<WebsitesTab>
   void initState() {
     super.initState();
     
-    // Initialize favicon cache service
-    _faviconCache = Get.find<FaviconCacheService>();
+    // Initialize favicon cache service with safety check
+    try {
+      _faviconCache = Get.find<FaviconCacheService>();
+    } catch (e) {
+      // If service not found, register it
+      Get.put(FaviconCacheService(), permanent: true);
+      _faviconCache = Get.find<FaviconCacheService>();
+    }
     
     // Load favicons using the cache service
     _loadFaviconsWithCache();

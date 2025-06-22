@@ -1426,33 +1426,7 @@ class SendsController extends BaseController {
         final feeSat = feeEstimate.data['fee_sat'] ?? 0;
         logger.i("Estimated fee: $feeSat sats");
         
-        // Show confirmation dialog
-        bool? confirmed = await Get.dialog<bool>(
-          AlertDialog(
-            title: Text('Confirm BIP21 Onchain Transaction'),
-            content: Text(
-              'Send ${amountSat} sats to\n${address.substring(0, 10)}...${address.substring(address.length - 10)}\n\nFee: $feeSat sats\nTotal: ${amountSat + feeSat} sats',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(result: false),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Get.back(result: true),
-                child: Text('Confirm'),
-              ),
-            ],
-          ),
-          barrierDismissible: false,
-        );
-        
-        if (confirmed != true) {
-          isFinished.value = false;
-          return false;
-        }
-        
-        // Send the transaction
+        // Send the transaction directly without confirmation
         final sendResult = await sendCoins(
           userId: Auth().currentUser!.uid,
           address: address,
@@ -1465,11 +1439,21 @@ class SendsController extends BaseController {
           logger.i("BIP21 onchain transaction sent! TXID: $txid");
           
           Get.find<WalletsController>().fetchOnchainWalletBalance();
-          overlayController.showOverlay(
-            "BIP21 onchain transaction sent!\nTXID: ${txid.substring(0, 8)}..."
-          );
+          overlayController.showOverlay("We sent your transaction! It will take around 10-60 minutes to arrive.");
           
-          context.go("/");
+          // Always navigate to wallet screen for successful payments
+          try {
+            GoRouter.of(context).go("/");
+            logger.i("✅ Successfully navigated to wallet screen");
+          } catch (e) {
+            logger.e("❌ Navigation failed: $e");
+            try {
+              Get.offAllNamed("/");
+              logger.i("✅ Fallback navigation successful");
+            } catch (e2) {
+              logger.e("❌ Fallback navigation also failed: $e2");
+            }
+          }
           return true;
         } else {
           overlayController.showOverlay("Transaction failed: ${sendResult.message}");
@@ -1871,33 +1855,7 @@ class SendsController extends BaseController {
             final feeSat = feeEstimate.data['fee_sat'] ?? 0;
             logger.i("Estimated fee: $feeSat sats");
             
-            // Show confirmation dialog
-            bool? confirmed = await Get.dialog<bool>(
-              AlertDialog(
-                title: Text('Confirm Transaction'),
-                content: Text(
-                  'Send ${amountInSat} sats to\n${bitcoinReceiverAdress.substring(0, 10)}...${bitcoinReceiverAdress.substring(bitcoinReceiverAdress.length - 10)}\n\nFee: $feeSat sats\nTotal: ${amountInSat + feeSat} sats',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Get.back(result: false),
-                    child: Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => Get.back(result: true),
-                    child: Text('Confirm'),
-                  ),
-                ],
-              ),
-              barrierDismissible: false,
-            );
-            
-            if (confirmed != true) {
-              isFinished.value = false;
-              return;
-            }
-            
-            // Send the transaction
+            // Send the transaction directly without confirmation
             final sendResult = await sendCoins(
               userId: Auth().currentUser!.uid,
               address: bitcoinReceiverAdress,
@@ -1910,12 +1868,20 @@ class SendsController extends BaseController {
               logger.i("Transaction sent successfully! TXID: $txid");
               
               Get.find<WalletsController>().fetchOnchainWalletBalance();
-              overlayController.showOverlay(
-                "Onchain transaction sent!\nTXID: ${txid.substring(0, 8)}..."
-              );
+              overlayController.showOverlay("We sent your transaction! It will take around 10-60 minutes to arrive.");
               
-              if (canNavigate) {
-                context.go("/");
+              // Always navigate to wallet screen for successful payments
+              try {
+                GoRouter.of(context).go("/");
+                logger.i("✅ Successfully navigated to wallet screen");
+              } catch (e) {
+                logger.e("❌ Navigation failed: $e");
+                try {
+                  Get.offAllNamed("/");
+                  logger.i("✅ Fallback navigation successful");
+                } catch (e2) {
+                  logger.e("❌ Fallback navigation also failed: $e2");
+                }
               }
             } else {
               overlayController.showOverlay("Transaction failed: ${sendResult.message}");
@@ -1926,15 +1892,6 @@ class SendsController extends BaseController {
             overlayController.showOverlay("Error: $e");
             isFinished.value = false;
           }
-          
-
-          
-          // NEW: One user one node approach - Bitcoin transaction handling for individual nodes
-          logger.i("OLD sendBTC OnChain function called - needs new one user one node implementation since old version will not work anymore");
-          // TODO: Implement new Bitcoin transaction handling for individual user nodes via Caddy
-          // This will require new Bitcoin key derivation compatible with BIP39 and individual node architecture
-          overlayController.showOverlay("OnChain transactions need reimplementation for individual nodes");
-          isFinished.value = false;
         } else {
           logger.i("Unknown sendType");
         }

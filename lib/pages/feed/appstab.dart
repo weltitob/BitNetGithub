@@ -880,9 +880,37 @@ class AppImageBuilder extends StatelessWidget {
 }
 
 Future<void> addAppToUser(AppData app) async {
-  await Databaserefs.appsRef.doc(Auth().currentUser!.uid).set({
+  final userId = Auth().currentUser!.uid;
+  final batch = FirebaseFirestore.instance.batch();
+  
+  // Add app to user's collection
+  final userRef = Databaserefs.appsRef.doc(userId);
+  batch.set(userRef, {
     'apps': FieldValue.arrayUnion([app.docId]),
   }, SetOptions(merge: true));
+  
+  // Update app download statistics
+  final appStatsRef = FirebaseFirestore.instance
+      .collection('app_stats')
+      .doc(app.docId);
+  
+  // Add user to downloaders list
+  final downloadersRef = appStatsRef
+      .collection('downloaders')
+      .doc(userId);
+  
+  batch.set(downloadersRef, {
+    'downloaded_at': FieldValue.serverTimestamp(),
+    'user_id': userId,
+  });
+  
+  // Increment download count
+  batch.set(appStatsRef, {
+    'download_count': FieldValue.increment(1),
+    'last_download': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+  
+  await batch.commit();
 }
 
 Future<List<AppData>> getAvailableApps() async {
