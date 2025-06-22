@@ -418,7 +418,10 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                   _buildFeatureItem(context, Icons.language, 'Multi-language support'),
                   _buildFeatureItem(context, Icons.attach_money, 'Bitcoin integrated'),
                   
-                  SizedBox(height: 100.h), // Space for bottom button
+                        SizedBox(height: 100.h), // Space for bottom button
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
