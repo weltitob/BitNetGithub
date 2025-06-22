@@ -2,9 +2,11 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class TokenOffersTabView extends StatefulWidget {
   final String tokenSymbol;
@@ -23,6 +25,7 @@ class TokenOffersTabView extends StatefulWidget {
 class _TokenOffersTabViewState extends State<TokenOffersTabView> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _filteredOffers = [];
+  String _sortBy = 'default';
 
   @override
   void initState() {
@@ -40,10 +43,12 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
   void _filterOffers() {
     final query = _searchController.text.toLowerCase();
     setState(() {
+      List<Map<String, dynamic>> filtered;
+      
       if (query.isEmpty) {
-        _filteredOffers = widget.sellOffers;
+        filtered = List.from(widget.sellOffers);
       } else {
-        _filteredOffers = widget.sellOffers.where((offer) {
+        filtered = widget.sellOffers.where((offer) {
           final seller = offer['seller'].toString().toLowerCase();
           final price = offer['price'].toString().toLowerCase();
           final amount = offer['amount'].toString().toLowerCase();
@@ -53,49 +58,77 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                  amount.contains(query);
         }).toList();
       }
+      
+      // Apply sorting
+      _sortOffers(filtered);
+      _filteredOffers = filtered;
     });
+  }
+  
+  void _sortOffers(List<Map<String, dynamic>> offers) {
+    switch (_sortBy) {
+      case 'price_low':
+        offers.sort((a, b) {
+          final priceA = double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceB = double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
+          return priceA.compareTo(priceB);
+        });
+        break;
+      case 'price_high':
+        offers.sort((a, b) {
+          final priceA = double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceB = double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
+          return priceB.compareTo(priceA);
+        });
+        break;
+      case 'amount_low':
+        offers.sort((a, b) {
+          final amountA = double.tryParse(a['amount'].toString()) ?? 0;
+          final amountB = double.tryParse(b['amount'].toString()) ?? 0;
+          return amountA.compareTo(amountB);
+        });
+        break;
+      case 'amount_high':
+        offers.sort((a, b) {
+          final amountA = double.tryParse(a['amount'].toString()) ?? 0;
+          final amountB = double.tryParse(b['amount'].toString()) ?? 0;
+          return amountB.compareTo(amountA);
+        });
+        break;
+      case 'rating_high':
+        offers.sort((a, b) {
+          final ratingA = a['rating'] ?? 0;
+          final ratingB = b['rating'] ?? 0;
+          return ratingB.compareTo(ratingA);
+        });
+        break;
+    }
   }
 
   Widget _buildSearchBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+      child: SearchFieldWidget(
+        hintText: 'Search offers by seller, price, or amount...',
+        isSearchEnabled: true,
+        handleSearch: (value) {
+          _filterOffers();
+        },
+        onChanged: (value) {
+          _searchController.text = value;
+          _filterOffers();
+        },
+        suffixIcon: IconButton(
+          icon: Icon(
+            FontAwesomeIcons.filter,
+            color: isDark ? AppTheme.white60 : AppTheme.black60,
+            size: AppTheme.cardPadding * 0.75,
           ),
-        ),
-        child: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search offers by seller, price, or amount...',
-            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-            ),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-            ),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: Icon(
-                      Icons.clear,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                    ),
-                    onPressed: () {
-                      _searchController.clear();
-                    },
-                  )
-                : null,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: AppTheme.elementSpacing.w,
-              vertical: AppTheme.elementSpacing.h,
-            ),
-          ),
-          style: Theme.of(context).textTheme.bodyMedium,
+          onPressed: () {
+            _showFilterBottomSheet();
+          },
         ),
       ),
     );
@@ -313,6 +346,118 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
           child: SizedBox(height: AppTheme.cardPadding.h * 2),
         ),
       ],
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppTheme.borderRadiusBig.r),
+          topRight: Radius.circular(AppTheme.borderRadiusBig.r),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(AppTheme.cardPadding.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+              ),
+              SizedBox(height: AppTheme.cardPadding.h),
+              Text(
+                'Filter Offers',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: AppTheme.cardPadding.h),
+              
+              // Filter options
+              Text(
+                'Sort by',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: AppTheme.elementSpacing.h),
+              
+              ListTile(
+                leading: Icon(Icons.attach_money),
+                title: Text('Price: Low to High'),
+                trailing: _sortBy == 'price_low' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                onTap: () {
+                  setState(() {
+                    _sortBy = 'price_low';
+                    _filterOffers();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.attach_money),
+                title: Text('Price: High to Low'),
+                trailing: _sortBy == 'price_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                onTap: () {
+                  setState(() {
+                    _sortBy = 'price_high';
+                    _filterOffers();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.inventory_2),
+                title: Text('Amount: Low to High'),
+                trailing: _sortBy == 'amount_low' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                onTap: () {
+                  setState(() {
+                    _sortBy = 'amount_low';
+                    _filterOffers();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.inventory_2),
+                title: Text('Amount: High to Low'),
+                trailing: _sortBy == 'amount_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                onTap: () {
+                  setState(() {
+                    _sortBy = 'amount_high';
+                    _filterOffers();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.star),
+                title: Text('Rating: High to Low'),
+                trailing: _sortBy == 'rating_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                onTap: () {
+                  setState(() {
+                    _sortBy = 'rating_high';
+                    _filterOffers();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              
+              SizedBox(height: AppTheme.cardPadding.h),
+            ],
+          ),
+        );
+      },
     );
   }
 }

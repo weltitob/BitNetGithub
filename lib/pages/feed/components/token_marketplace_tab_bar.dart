@@ -25,31 +25,27 @@ class TokenMarketplaceTabBar extends StatelessWidget {
         ? Colors.black.withOpacity(0.2)
         : Colors.white.withOpacity(0.2);
 
-    return Positioned(
-      bottom: 0,
-      child: Container(
-        width: containerWidth,
-        height: 65,
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 10,
-              offset: const Offset(0, -1),
-            ),
-          ],
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+    return Container(
+      width: containerWidth,
+      height: 56.h,
+      margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-        ),
+        ],
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+      ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _TabIcon(
               label: 'Offers',
-              iconData: Icons.local_offer_outlined,
+              iconData: Icons.grid_view_rounded,
               index: 0,
               currentTab: currentTab,
               onTap: () => onTabChanged(0),
@@ -70,7 +66,6 @@ class TokenMarketplaceTabBar extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
@@ -109,7 +104,7 @@ class _TabIcon extends StatelessWidget {
               // Icon
               Icon(
                 iconData,
-                size: 26,
+                size: 24.sp,
                 color: isSelected
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurface.withOpacity(0.5),

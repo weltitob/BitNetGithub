@@ -139,20 +139,19 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                       ),
                     ],
                   ),
-                  child: ClipOval(
-                    child: Container(
-                      width: AppTheme.cardPadding * 3,
-                      height: AppTheme.cardPadding * 3,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.w),
-                        child: Image.asset(
-                          _getTokenImage(),
-                          fit: BoxFit.contain,
-                        ),
+                  child: Container(
+                    width: AppTheme.cardPadding * 3,
+                    height: AppTheme.cardPadding * 3,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      shape: BoxShape.circle,
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        _getTokenImage(),
+                        fit: BoxFit.cover,
+                        width: AppTheme.cardPadding * 3,
+                        height: AppTheme.cardPadding * 3,
                       ),
                     ),
                   ),
