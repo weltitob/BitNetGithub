@@ -240,10 +240,23 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
         text: widget.app.name,
       ),
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: Column(
+        children: [
+          Container(
+            color: Colors.red,
+            height: 50,
+            child: Center(
+              child: Text(
+                'THIS IS APP DETAILS MODERN!',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
             // Hero Header
             Container(
               height: 300.h,
@@ -407,8 +420,8 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomSheet: Container(
         width: double.infinity,
