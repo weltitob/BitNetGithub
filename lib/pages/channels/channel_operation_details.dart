@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -199,20 +201,18 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
     return bitnetScaffold(
       context: context,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Channel Details',
-          style: theme.textTheme.headlineMedium,
-        ),
-        centerTitle: true,
+      appBar: bitnetAppBar(
+        text: 'Channel Details',
+        context: context,
+        onTap: () => Navigator.of(context).pop(),
       ),
-      body: _isLoading
-          ? Center(child: dotProgress(context))
-          : _errorMessage != null
-              ? _buildErrorState()
-              : _buildContent(),
+      body: VerticalFadeListView.standardPage(
+        child: _isLoading
+            ? Center(child: dotProgress(context))
+            : _errorMessage != null
+                ? _buildErrorState()
+                : _buildContent(),
+      ),
     );
   }
 
@@ -220,32 +220,37 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppTheme.cardPadding.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Theme.of(context).colorScheme.error,
-              size: 64.r,
+        child: GlassContainer(
+          child: Padding(
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Theme.of(context).colorScheme.error,
+                  size: 64.r,
+                ),
+                SizedBox(height: AppTheme.elementSpacing.h),
+                Text(
+                  'Error loading channel details',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: AppTheme.elementSpacing.h),
+                Text(
+                  _errorMessage ?? 'Unknown error',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: AppTheme.cardPadding.h),
+                LongButtonWidget(
+                  title: 'Retry',
+                  onTap: _loadChannelOperation,
+                  buttonType: ButtonType.solid,
+                ),
+              ],
             ),
-            SizedBox(height: AppTheme.elementSpacing.h),
-            Text(
-              'Error loading channel details',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            SizedBox(height: AppTheme.elementSpacing.h),
-            Text(
-              _errorMessage ?? 'Unknown error',
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: AppTheme.cardPadding.h),
-            LongButtonWidget(
-              title: 'Retry',
-              onTap: _loadChannelOperation,
-              buttonType: ButtonType.solid,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -259,22 +264,14 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
     return RefreshIndicator(
       onRefresh: _loadChannelOperation,
-      child: SingleChildScrollView(
+      child: ListView(
         physics: AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.all(AppTheme.cardPadding.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Status Card
-            Container(
+        children: [
+          // Status Card
+          GlassContainer(
+            child: Padding(
               padding: EdgeInsets.all(AppTheme.cardPadding.w),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                border: Border.all(
-                  color: theme.colorScheme.onSurface.withOpacity(0.1),
-                ),
-              ),
               child: Column(
                 children: [
                   Row(
@@ -317,25 +314,22 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                 ],
               ),
             ),
+          ),
 
-            SizedBox(height: AppTheme.cardPadding.h),
+          SizedBox(height: AppTheme.cardPadding.h),
 
-            // Channel Info
-            Container(
+          // Channel Info
+          GlassContainer(
+            child: Padding(
               padding: EdgeInsets.all(AppTheme.cardPadding.w),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                border: Border.all(
-                  color: theme.colorScheme.onSurface.withOpacity(0.1),
-                ),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Channel Information',
-                    style: theme.textTheme.titleMedium,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: AppTheme.elementSpacing.h),
                   _buildInfoRow('Remote Node', op.remoteNodeAlias),
@@ -353,26 +347,23 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                 ],
               ),
             ),
+          ),
 
-            if (op.txHash != null || op.channelPoint != null) ...[
-              SizedBox(height: AppTheme.cardPadding.h),
+          if (op.txHash != null || op.channelPoint != null) ...[
+            SizedBox(height: AppTheme.cardPadding.h),
 
-              // Technical Details
-              Container(
+            // Technical Details
+            GlassContainer(
+              child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                  border: Border.all(
-                    color: theme.colorScheme.onSurface.withOpacity(0.1),
-                  ),
-                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Technical Details',
-                      style: theme.textTheme.titleMedium,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: AppTheme.elementSpacing.h),
                     if (op.remoteNodeId.isNotEmpty)
@@ -384,22 +375,24 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                   ],
                 ),
               ),
-            ],
-
-            SizedBox(height: AppTheme.cardPadding.h),
-
-            // Action Buttons
-            if (op.status == ChannelOperationStatus.pending ||
-                op.status == ChannelOperationStatus.opening) ...[
-              LongButtonWidget(
-                title: 'Check Status',
-                onTap: _isUpdating ? null : _checkChannelStatus,
-                buttonType: ButtonType.solid,
-                state: _isUpdating ? ButtonState.loading : ButtonState.idle,
-              ),
-            ],
+            ),
           ],
-        ),
+
+          SizedBox(height: AppTheme.cardPadding.h),
+
+          // Action Buttons
+          if (op.status == ChannelOperationStatus.pending ||
+              op.status == ChannelOperationStatus.opening) ...[
+            LongButtonWidget(
+              title: 'Check Status',
+              onTap: _isUpdating ? null : _checkChannelStatus,
+              buttonType: ButtonType.solid,
+              state: _isUpdating ? ButtonState.loading : ButtonState.idle,
+            ),
+          ],
+
+          SizedBox(height: AppTheme.cardPadding.h),
+        ],
       ),
     );
   }
@@ -454,13 +447,11 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                 duration: Duration(seconds: 2),
               );
             },
-            child: Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.onSurface.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
-              ),
-              child: Row(
+            child: GlassContainer(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+                child: Row(
                 children: [
                   Expanded(
                     child: Text(
