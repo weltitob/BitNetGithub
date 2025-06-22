@@ -233,6 +233,8 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
   
   @override
   Widget build(BuildContext context) {
+    print('=== APP DETAILS MODERN BUILD CALLED ===');
+    print('App name: ${widget.app.name}');
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(
