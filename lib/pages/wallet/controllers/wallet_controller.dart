@@ -1291,24 +1291,26 @@ class WalletsController extends BaseController {
 
   Future<OnchainBalance> getOnchainBalance() async {
     try {
-      RestResponse onchainBalanceRest =
-          await walletBalance(acc: Auth().currentUser!.uid);
+      // FIXED: Remove the acc parameter - LND API doesn't use account filtering this way
+      RestResponse onchainBalanceRest = await walletBalance();
       
-      logger.i("Onchain balance response: ${onchainBalanceRest.statusCode}");
-      logger.d("Onchain balance data: ${onchainBalanceRest.data}");
+      logger.i("🔍 [DEBUG] WalletController - Onchain balance response: ${onchainBalanceRest.statusCode}");
+      logger.i("🔍 [DEBUG] WalletController - Onchain balance data: ${onchainBalanceRest.data}");
 
       if (onchainBalanceRest.statusCode != "error" && !onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
             OnchainBalance.fromJson(onchainBalanceRest.data);
 
         this.onchainBalance.value = onchainBalance;
-        logger.i("Onchain balance updated: confirmed=${onchainBalance.confirmedBalance}, unconfirmed=${onchainBalance.unconfirmedBalance}");
+        logger.i("🔍 [DEBUG] WalletController - Onchain balance updated: confirmed=${onchainBalance.confirmedBalance}, unconfirmed=${onchainBalance.unconfirmedBalance}");
+        logger.i("Confirmed Balance onchain: ${onchainBalance.confirmedBalance}");
+        logger.i("Unconfirmed Balance onchain: ${onchainBalance.unconfirmedBalance}");
       } else {
-        logger.e("Failed to get onchain balance: ${onchainBalanceRest.message}");
+        logger.e("🔍 [DEBUG] WalletController - Failed to get onchain balance: ${onchainBalanceRest.message}");
       }
       changeTotalBalanceStr();
     } catch (e) {
-      logger.e("Error in getOnchainBalance: $e");
+      logger.e("🔍 [DEBUG] WalletController - Error in getOnchainBalance: $e");
     }
 
     return this.onchainBalance.value;

@@ -299,6 +299,7 @@ class _LoopScreenState extends State<LoopScreen> {
 
       // Format the predicted balance to 8 decimal places
       final formattedBalance = predictedBalance.toStringAsFixed(8);
+      
       return {
         'satController': lightningSatController,
         'btcController': lightningBtcController,
@@ -843,33 +844,13 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
   }
 
   // Helper method to get the correct available balance based on card type
-  String _getAvailableBalance() {
-    // The widget.confirmedBalance already contains the correct balance for each card type:
-    // - Lightning card: contains Lightning balance from walletController.lightningBalance.value.balance
-    // - Onchain card: contains Onchain balance from walletController.onchainBalance.value.confirmedBalance
-    
-    print('🔍 [DEBUG] Card Type: ${widget.cardType}, Raw Balance: ${widget.confirmedBalance}');
-    
+  String _getAvailableBalance(CardType cardType) {
+    // Use the confirmedBalance that was passed to this widget
+    // This balance should already be the correct one for the card type
     final balance = double.tryParse(widget.confirmedBalance) ?? 0.0;
     
-    // Format the balance nicely for display
-    String formattedBalance;
-    if (balance >= 100000000) {
-      // 1 BTC or more - show in BTC
-      formattedBalance = '${(balance / 100000000).toStringAsFixed(8)} BTC';
-    } else if (balance >= 1000000) {
-      // 1M sats or more - show in M sats
-      formattedBalance = '${(balance / 1000000).toStringAsFixed(2)}M sats';
-    } else if (balance >= 1000) {
-      // 1k sats or more - show in k sats
-      formattedBalance = '${(balance / 1000).toStringAsFixed(0)}k sats';
-    } else {
-      // Less than 1k sats - show in sats
-      formattedBalance = '${balance.toStringAsFixed(0)} sats';
-    }
-    
-    print('🔍 [DEBUG] Card Type: ${widget.cardType}, Formatted Balance: $formattedBalance');
-    return formattedBalance;
+    // Show the actual raw values in sats - no fancy formatting
+    return '${balance.toStringAsFixed(0)} sats';
   }
 
   //0 for inbound, 1 for overbound, 2 for underbound
@@ -917,7 +898,7 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Available: ${_getAvailableBalance()}",
+                        "Available: ${_getAvailableBalance(widget.cardType)}",
                         style: TextStyle(
                           fontSize: 14,
                           color:

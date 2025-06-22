@@ -82,6 +82,7 @@ class LoopGetxController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
     // Initialize Text Controllers and Focus Nodes
     satController = TextEditingController();
     btcController = TextEditingController();

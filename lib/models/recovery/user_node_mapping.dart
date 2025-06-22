@@ -12,6 +12,7 @@ class UserNodeMapping {
   final String caddyEndpoint;      // http://[ipv6]/node4 (Caddy routing endpoint)
   final String adminMacaroon;      // Base64 admin macaroon for node access
   final String? invoiceTrackingMacaroon; // Limited macaroon for invoice tracking (backend services)
+  final String? loopMacaroon;      // Base64 Loop macaroon for Loop operations
   final DateTime createdAt;        // When the mapping was created
   final DateTime lastAccessed;     // Last time user accessed this node
   final String status;             // active, inactive, migrating
@@ -24,6 +25,7 @@ class UserNodeMapping {
     required this.caddyEndpoint,
     required this.adminMacaroon,
     this.invoiceTrackingMacaroon,
+    this.loopMacaroon,
     required this.createdAt,
     required this.lastAccessed,
     this.status = 'active',
@@ -41,6 +43,7 @@ class UserNodeMapping {
       caddyEndpoint: data['caddy_endpoint'] ?? '',
       adminMacaroon: data['admin_macaroon'] ?? '',
       invoiceTrackingMacaroon: data['invoice_tracking_macaroon'],
+      loopMacaroon: data['loop_macaroon'],
       createdAt: (data['created_at'] as Timestamp?)?.toDate() ?? DateTime.now(),
       lastAccessed: (data['last_accessed'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: data['status'] ?? 'active',
@@ -57,6 +60,7 @@ class UserNodeMapping {
       caddyEndpoint: data['caddy_endpoint'] ?? '',
       adminMacaroon: data['admin_macaroon'] ?? '',
       invoiceTrackingMacaroon: data['invoice_tracking_macaroon'],
+      loopMacaroon: data['loop_macaroon'],
       createdAt: data['created_at'] is Timestamp 
           ? (data['created_at'] as Timestamp).toDate()
           : DateTime.parse(data['created_at'] ?? DateTime.now().toIso8601String()),
@@ -77,6 +81,7 @@ class UserNodeMapping {
       'caddy_endpoint': caddyEndpoint,
       'admin_macaroon': adminMacaroon,
       'invoice_tracking_macaroon': invoiceTrackingMacaroon,
+      'loop_macaroon': loopMacaroon,
       'created_at': Timestamp.fromDate(createdAt),
       'last_accessed': Timestamp.fromDate(lastAccessed),
       'status': status,
@@ -93,6 +98,7 @@ class UserNodeMapping {
       'caddy_endpoint': caddyEndpoint,
       'admin_macaroon': adminMacaroon,
       'invoice_tracking_macaroon': invoiceTrackingMacaroon,
+      'loop_macaroon': loopMacaroon,
       'created_at': createdAt.toIso8601String(),
       'last_accessed': lastAccessed.toIso8601String(),
       'status': status,
@@ -108,6 +114,7 @@ class UserNodeMapping {
     String? caddyEndpoint,
     String? adminMacaroon,
     String? invoiceTrackingMacaroon,
+    String? loopMacaroon,
     DateTime? createdAt,
     DateTime? lastAccessed,
     String? status,
@@ -120,6 +127,7 @@ class UserNodeMapping {
       caddyEndpoint: caddyEndpoint ?? this.caddyEndpoint,
       adminMacaroon: adminMacaroon ?? this.adminMacaroon,
       invoiceTrackingMacaroon: invoiceTrackingMacaroon ?? this.invoiceTrackingMacaroon,
+      loopMacaroon: loopMacaroon ?? this.loopMacaroon,
       createdAt: createdAt ?? this.createdAt,
       lastAccessed: lastAccessed ?? this.lastAccessed,
       status: status ?? this.status,
