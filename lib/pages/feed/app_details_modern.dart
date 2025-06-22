@@ -24,7 +24,6 @@ class AppDetailsModern extends StatefulWidget {
 }
 
 class _AppDetailsModernState extends State<AppDetailsModern> {
-  bool loading = true;
   bool appOwned = false;
   bool buttonLoading = false;
   double userRating = 0;
@@ -53,10 +52,8 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
       }
     } catch (e) {
       print('Error checking ownership: $e');
-    } finally {
-      loading = false;
-      if (mounted) setState(() {});
     }
+    if (mounted) setState(() {});
   }
   
   Future<void> fetchRatings() async {
@@ -235,19 +232,6 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
   
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return bitnetScaffold(
-        context: context,
-        appBar: bitnetAppBar(
-          context: context,
-          text: "",
-        ),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-    
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(

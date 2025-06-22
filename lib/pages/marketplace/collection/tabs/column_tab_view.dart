@@ -43,7 +43,7 @@ class ColumnTabView extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding.w,
+                  horizontal: AppTheme.elementSpacing.w,
                 ),
                 child: SearchFieldWidget(
                   hintText: "Search...",
@@ -79,12 +79,12 @@ class ColumnTabView extends StatelessWidget {
         height: AppTheme.cardPadding.h,
       )),
       SliverPadding(
-        padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+        padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
         sliver: SliverGrid.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, // 2 items per row
             mainAxisSpacing: AppTheme.elementSpacing.h,
-            crossAxisSpacing: AppTheme.elementSpacing.w,
+            crossAxisSpacing: AppTheme.elementSpacing.w / 6,
             childAspectRatio:
                 (size.width / 2) / 240.w, // Adjust according to your design
           ),

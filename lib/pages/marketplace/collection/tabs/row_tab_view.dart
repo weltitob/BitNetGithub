@@ -59,24 +59,20 @@ class RowTabView extends StatelessWidget {
             rockets["current_user"] = true;
           }
 
-          // Wrap PostComponent in a Transform to reduce horizontal space
-          return Transform.scale(
-            scaleX: 0.95, // Slightly reduce horizontal scale to prevent overflow
-            alignment: Alignment.center,
-            child: PostComponent(
-              postId: item.id.toString(),
-              ownerId: "marketplace_owner", // Placeholder owner ID
-              username: "marketplace", // Placeholder username
-              displayname: item.nftMainName,
-              rockets: rockets,
-              medias: [media],
-              timestamp: DateTime.now(), // Use current time as placeholder
-              postName: item.nftName,
-              onTap: () {
-                context.push('/asset_screen',
-                    extra: {'nft_id': item.id.toString()});
-              },
-            ),
+          // Use PostComponent directly without transform, matching profile screen
+          return PostComponent(
+            postId: item.id.toString(),
+            ownerId: "marketplace_owner", // Placeholder owner ID
+            username: "marketplace", // Placeholder username
+            displayname: item.nftMainName,
+            rockets: rockets,
+            medias: [media],
+            timestamp: DateTime.now(), // Use current time as placeholder
+            postName: item.nftName,
+            onTap: () {
+              context.push('/asset_screen',
+                  extra: {'nft_id': item.id.toString()});
+            },
           );
         }).toList(),
       ),

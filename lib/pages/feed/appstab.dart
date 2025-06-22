@@ -419,7 +419,7 @@ class AppData {
       'storage_name': storageName,
       'parameters': parameters,
       if (iconPath != null) 'iconPath': iconPath,
-      if (ownerId != null) 'owner_id': ownerId
+      if (ownerId != null) 'ownerId': ownerId
     };
   }
 
@@ -429,6 +429,7 @@ class AppData {
         url: map['url'],
         name: map['name'],
         desc: map['desc'],
+        useNetworkImage: map['useNetworkImage'] ?? true,
         useNetworkAsset: map['useNetworkAsset'] ?? false,
         storageName: map['storage_name'],
         parameters: map['parameters'],

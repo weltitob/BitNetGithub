@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/get_loopin_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/get_loopout_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_in.dart';
@@ -195,7 +196,13 @@ class LoopGetxController extends GetxController {
       int roundedAmount = amount.round();
 
       log('Loop-in amount: $roundedAmount');
-      final response = await getLoopinQuote(roundedAmount.toString());
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        overlayController.showOverlay('User not authenticated');
+        updateLoadingState(false);
+        return;
+      }
+      final response = await getLoopinQuote(userId, roundedAmount.toString());
 
       if (response.statusCode == 'error') {
         overlayController.showOverlay(response.message);
@@ -220,7 +227,13 @@ class LoopGetxController extends GetxController {
       int roundedAmount = amount.round();
       log('Loop-out amount: $roundedAmount');
 
-      final response = await getLoopOutQuote(roundedAmount.toString());
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        overlayController.showOverlay('User not authenticated');
+        updateLoadingState(false);
+        return;
+      }
+      final response = await getLoopOutQuote(userId, roundedAmount.toString());
       if (response.statusCode == 'error') {
         overlayController.showOverlay(response.message);
       } else {
@@ -321,7 +334,7 @@ class LoopGetxController extends GetxController {
                   'dest': data.swapPaymentDest,
                   'maxPrepay': data.prepayAmtSat,
                 };
-                loopOut(mapData);
+                loopOutFunc(mapData);
               },
             ),
           ],
@@ -401,7 +414,7 @@ class LoopGetxController extends GetxController {
                           'swapFee': data.swapFeeSat,
                           'minerFee': data.htlcPublishFeeSat,
                         };
-                        loopin_func(mapData);
+                        loopInFunc(mapData);
                       },
                     ),
                     const SizedBox(
@@ -425,14 +438,20 @@ class LoopGetxController extends GetxController {
   }
 
   // Add any additional methods like loopin and loopOut here
-  Future<void> loopin_func(Map<String, dynamic> data) async {
+  Future<void> loopInFunc(Map<String, dynamic> data) async {
     // Implement the loop-in functionality
     // Example:
     final overlayController = Get.find<OverlayController>();
     updateLoadingState(true);
     try {
       // Call your loop-in function
-      await loopin(data);
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        overlayController.showOverlay('User not authenticated');
+        return;
+      }
+      // Call your loop-in function
+      await loopin(userId, data);
       overlayController.showOverlay('Loop-In successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();
@@ -445,14 +464,20 @@ class LoopGetxController extends GetxController {
     }
   }
 
-  Future<void> loopOut(Map<String, dynamic> data) async {
+  Future<void> loopOutFunc(Map<String, dynamic> data) async {
     // Implement the loop-out functionality
     // Example:
     updateLoadingState(true);
     final overlayController = Get.find<OverlayController>();
     try {
       // Call your loop-out function
-      await loopOut(data);
+      final userId = Auth().currentUser?.uid;
+      if (userId == null) {
+        overlayController.showOverlay('User not authenticated');
+        return;
+      }
+      // Call your loop-out function
+      await loopOut(userId, data);
       overlayController.showOverlay('Loop-Out successful!');
       // Optionally, refresh balances
       await fetchOnchainWalletBalance();

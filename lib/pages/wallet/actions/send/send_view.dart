@@ -176,7 +176,10 @@ class SendBTCScreen extends GetWidget<SendsController> {
                             Column(
                               children: [
                                 SizedBox(height: AppTheme.cardPadding * 4),
-                                Center(child: _buildBitcoinWidget(context)),
+                                Center(child: Obx(() => _buildBitcoinWidget(context, 
+                                    isLightning: isLightningPayment || 
+                                        (controller.sendType == SendType.Bip21 && 
+                                         controller.bip21Mode.value == "lightning")))),
                                 const SizedBox(
                                     height: AppTheme.cardPadding * 3.5),
                                 Padding(
@@ -366,10 +369,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
                     }
                   }
                 : null,
-            enabled: () => isLightning
-                ? (double.parse(usedSatController.text) == 0 ||
-                    controller.sendType == SendType.LightningUrl)
-                : true,
+            enabled: () => controller.moneyTextFieldIsEnabled.value,
             btcController: usedBtcController,
             satController: usedSatController,
             currController: usedCurrencyController,

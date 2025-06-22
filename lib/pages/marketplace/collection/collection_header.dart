@@ -56,18 +56,34 @@ class _CollectionHeaderState extends State<CollectionHeader>
                 ),
                 child: Stack(
                   children: [
-                    // Subtle pattern overlay
+                    // Collection banner image
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
                           bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
                         ),
-                        child: Opacity(
-                          opacity: 0.03,
-                          child: Image.asset(
-                            nftImage5,
-                            fit: BoxFit.cover,
+                        child: Image.asset(
+                          nftImage5,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    // Gradient overlay for better text readability
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
+                            bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                          ),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
+                            ],
                           ),
                         ),
                       ),

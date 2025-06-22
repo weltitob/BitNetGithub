@@ -49,9 +49,10 @@ Future<ByteData> loadMacaroonAsset() async {
   return byteData;
 }
 
-Future<ByteData> loadLoopMacaroonAsset() async {
-  return await rootBundle.load('assets/keys/loop.macaroon');
-}
+// Deprecated: Use loadMacaroonAsset() instead for user-specific macaroons
+// Future<ByteData> loadLoopMacaroonAsset() async {
+//   return await rootBundle.load('assets/keys/loop.macaroon');
+// }
 
 Future<ByteData> loadTapdMacaroonAsset() async {
   final LoggerService logger = Get.find();
