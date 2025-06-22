@@ -1022,23 +1022,47 @@ class LnurlChannelService {
       }
 
       // Step 4: Ensure we're connected as peers (required before opening channel)
-      await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Establishing peer connection...");
+      await _saveOrUpdateChannelOperation(
+        channelRequest: request,
+        status: ChannelOperationStatus.pending,
+        nodeId: nodeId,
+        message: "Establishing peer connection...",
+        existingOperationId: operationId,
+      );
       onProgress?.call(ChannelOpeningProgress.connecting());
       
       if (!peerConnected) {
         final connected = await connectToPeer(nodeId, hostPort);
         if (!connected) {
-          await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "❌ Failed to connect to LSP node as peer");
+          await _saveOrUpdateChannelOperation(
+            channelRequest: request,
+            status: ChannelOperationStatus.failed,
+            nodeId: nodeId,
+            errorMessage: "Failed to connect to LSP node as peer",
+            existingOperationId: operationId,
+          );
           throw Exception("Failed to connect to LSP node as peer");
         }
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "✅ Peer connection established");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.pending,
+          nodeId: nodeId,
+          message: "✅ Peer connection established",
+          existingOperationId: operationId,
+        );
       }
 
       // Step 5: Get our node ID
       final myNodeId = await getNodeId();
 
       // Step 6: Claim the channel
-      await _updateChannelActivity(operationId!, ChannelOperationStatus.pending, "Claiming channel with LSP...");
+      await _saveOrUpdateChannelOperation(
+        channelRequest: request,
+        status: ChannelOperationStatus.pending,
+        nodeId: nodeId,
+        message: "Claiming channel with LSP...",
+        existingOperationId: operationId,
+      );
       onProgress?.call(ChannelOpeningProgress.claiming());
       final channelResponse = await claimChannel(
         request.callback,
@@ -1052,13 +1076,25 @@ class LnurlChannelService {
         _logger.w("Channel claim failed: $errorMessage");
         
         // Update activity with error details
-        await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "❌ Channel claim failed: $errorMessage");
+        await _saveOrUpdateChannelOperation(
+          channelRequest: request,
+          status: ChannelOperationStatus.failed,
+          nodeId: nodeId,
+          errorMessage: "Channel claim failed: $errorMessage",
+          existingOperationId: operationId,
+        );
         
         // Check if the error is due to order state issues
         if (errorMessage.toLowerCase().contains('not in the right state')) {
           // Specific handling for Blocktank order state errors
           if (errorMessage.toLowerCase().contains('paid')) {
-            await _updateChannelActivity(operationId!, ChannelOperationStatus.failed, "💳 Order needs to be paid first");
+            await _saveOrUpdateChannelOperation(
+              channelRequest: request,
+              status: ChannelOperationStatus.failed,
+              nodeId: nodeId,
+              errorMessage: "Order needs to be paid first",
+              existingOperationId: operationId,
+            );
             throw Exception("💳 This channel order needs to be paid first.\n\nPlease complete the payment (usually via Lightning invoice) before scanning this LNURL again.");
           } else if (errorMessage.toLowerCase().contains('executed') || 
                      errorMessage.toLowerCase().contains('already')) {
@@ -1199,8 +1235,8 @@ class LnurlChannelService {
     } catch (e) {
       _logger.e("Failed to process channel request: $e");
       
-      // Update activity with final error if we have an operation ID
-      if (operationId != null) {
+      // Update activity with final error if we have an operation ID and a valid request
+      if (operationId != null && (channelRequest != null || lnurlString != null)) {
         // Clean up the error message to avoid UI errors being saved
         String cleanErrorMessage = e.toString();
         if (cleanErrorMessage.contains('setState() called after dispose()')) {
@@ -1208,13 +1244,27 @@ class LnurlChannelService {
         } else if (cleanErrorMessage.length > 200) {
           cleanErrorMessage = cleanErrorMessage.substring(0, 200) + "...";
         }
-        await _saveOrUpdateChannelOperation(
-          channelRequest: request,
-          status: ChannelOperationStatus.failed,
-          nodeId: _extractNodeIdFromUri(request.uri),
-          errorMessage: "Process failed: $cleanErrorMessage",
-          existingOperationId: operationId,
-        );
+        
+        // Use the provided channelRequest or try to fetch it if we have lnurlString
+        LnurlChannelRequest? requestForError = channelRequest;
+        if (requestForError == null && lnurlString != null) {
+          try {
+            requestForError = await fetchChannelRequest(lnurlString);
+          } catch (_) {
+            // If we can't fetch the request, we can't update the operation
+            _logger.w("Could not update channel operation with error - request unavailable");
+          }
+        }
+        
+        if (requestForError != null) {
+          await _saveOrUpdateChannelOperation(
+            channelRequest: requestForError,
+            status: ChannelOperationStatus.failed,
+            nodeId: _extractNodeIdFromUri(requestForError.uri),
+            errorMessage: "Process failed: $cleanErrorMessage",
+            existingOperationId: operationId,
+          );
+        }
       }
       
       onProgress?.call(ChannelOpeningProgress.error(e.toString()));
