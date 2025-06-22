@@ -1178,7 +1178,7 @@ class WalletChartWidget extends StatelessWidget {
         bool isPositive = bitcoinController.isPriceChangePositive.value;
 
         return SfCartesianChart(
-          enableAxisAnimation: true,
+          enableAxisAnimation: false, // Disable animation for consistent UX
           plotAreaBorderWidth: 0,
           primaryXAxis: CategoryAxis(
             labelPlacement: LabelPlacement.onTicks,

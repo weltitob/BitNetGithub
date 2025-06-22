@@ -179,6 +179,7 @@ class _TokensTabState extends State<TokensTab>
                         child: Container(
                           color: Colors.transparent,
                           child: SfCartesianChart(
+                            enableAxisAnimation: false, // Disable axis animations
                             plotAreaBorderWidth: 0,
                             margin: EdgeInsets.zero,
                             primaryXAxis: CategoryAxis(

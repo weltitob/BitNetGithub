@@ -274,6 +274,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   child: SfCartesianChart(
                     margin: EdgeInsets.zero,
                     plotAreaBorderWidth: 0,
+                    enableAxisAnimation: false, // Disable animation for consistent UX
                     primaryXAxis: DateTimeAxis(
                       isVisible: false,
                       majorGridLines: const MajorGridLines(width: 0),

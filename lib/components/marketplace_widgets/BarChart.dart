@@ -116,6 +116,7 @@ class _BarChartState extends State<BarChart> {
           SfCartesianChart(
             margin: EdgeInsets.all(0.w),
             plotAreaBorderWidth: 0,
+            enableAxisAnimation: false, // Disable animation for consistent UX
             primaryXAxis: CategoryAxis(
               minorTickLines: const MinorTickLines(color: Colors.transparent),
               majorTickLines: const MajorTickLines(color: Colors.transparent),
@@ -157,6 +158,7 @@ class _BarChartState extends State<BarChart> {
                 xValueMapper: (_ChartData data, _) => data.x,
                 yValueMapper: (_ChartData data, _) => data.y,
                 color: const Color.fromRGBO(97, 90, 232, 1),
+                animationDuration: 0, // Disable animation for consistent UX
               ),
             ],
           ),

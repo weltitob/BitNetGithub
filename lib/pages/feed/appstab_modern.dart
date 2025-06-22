@@ -321,7 +321,7 @@ class _AppsTabModernState extends State<AppsTabModern>
                   ),
                   SizedBox(height: AppTheme.cardPadding.h),
                 ],
-                
+                SizedBox(height: AppTheme.cardPadding * 1.h,),
                 // Trending Apps Section  
                 if (!loading) ...[
                   Padding(
@@ -335,7 +335,7 @@ class _AppsTabModernState extends State<AppsTabModern>
                       ],
                     ),
                   ),
-                  SizedBox(height: AppTheme.elementSpacing.h),
+                  SizedBox(height: AppTheme.cardPadding.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                     child: GlassContainer(
@@ -983,9 +983,9 @@ class _AppsTabModernState extends State<AppsTabModern>
           },
         ),
         Positioned(
-          left: 16.w,
-          top: 16.h,
-          child: NumberIndicator(number: position, size: 0.6),
+          left: 10,
+          top: 10,
+          child: NumberIndicator(number: position),
         ),
       ],
     );

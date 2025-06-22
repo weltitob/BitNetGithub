@@ -551,10 +551,12 @@ class _ChartCoreState extends State<ChartCore> {
     // Use the SAME chart UI as Bitcoin
     return SizedBox(
       height: AppTheme.cardPadding * 16.h,
-      child: SfCartesianChart(
-        trackballBehavior: trackballBehavior,
-        enableAxisAnimation: false, // Disable animation to match Bitcoin chart behavior
-        onChartTouchInteractionDown: (args) {
+      child: RepaintBoundary(
+        child: SfCartesianChart(
+          key: ValueKey('token-chart-$selectedPeriod'), // Force rebuild on period change
+          trackballBehavior: trackballBehavior,
+          enableAxisAnimation: false, // Disable animation to match Bitcoin chart behavior
+          onChartTouchInteractionDown: (args) {
           isTrackballActive = true;
           setState(() {});
         },
@@ -589,6 +591,7 @@ class _ChartCoreState extends State<ChartCore> {
           }
         },
         plotAreaBorderWidth: 0,
+        enableAxisAnimation: false, // Disable animation for consistent UX
         primaryXAxis: NumericAxis(
           edgeLabelPlacement: EdgeLabelPlacement.none,
           isVisible: false,
@@ -605,6 +608,7 @@ class _ChartCoreState extends State<ChartCore> {
           AreaSeries<ChartLine, double>(
             name: 'Price',
             dataSource: chartData,
+            animationDuration: 0, // Disable animation for token charts
             xValueMapper: (ChartLine line, _) => line.time,
             yValueMapper: (ChartLine line, _) => line.price,
             color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
@@ -619,6 +623,7 @@ class _ChartCoreState extends State<ChartCore> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -829,28 +834,36 @@ class _CustomWidgetState extends State<CustomWidget>
     }
   }
 
-  late AnimationController _controller;
-  late Animation<Color?> _animation;
+  AnimationController? _controller;
+  Animation<Color?>? _animation;
   bool _isBlinking = false;
   
   // Hover state for token charts
   bool _isHovering = false;
   double? _hoverPrice;
   DateTime? _hoverTime;
+  
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the animation controller on init
+    _controller = AnimationController(
+      vsync: this, 
+      duration: const Duration(milliseconds: 1000)
+    );
+  }
 
   void blinkAnimation() {
-    if (mounted) {
-      _controller = AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 1000));
+    if (mounted && _controller != null) {
       _animation =
           ColorTween(begin: initAnimationColor, end: Colors.transparent)
-              .animate(_controller)
+              .animate(_controller!)
             ..addStatusListener((status) {
               if (status == AnimationStatus.completed) {
                 setState(() {
                   _isBlinking = false;
                 });
-                _controller.reverse();
+                _controller!.reverse();
               }
             });
       setState(() {
@@ -900,7 +913,7 @@ class _CustomWidgetState extends State<CustomWidget>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 

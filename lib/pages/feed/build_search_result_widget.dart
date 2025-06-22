@@ -21,61 +21,52 @@ class SearchResultWidget extends StatelessWidget {
 
   // Mock data for demonstration
   static List<UserData> getMockUsers(String category) {
-    // Base list of mock users
+    // Base list of mock users with working placeholder images
     final List<Map<String, String>> mockData = [
       {
         'username': 'satoshi',
         'did': 'did:key:z6MknKdJ',
-        'profileImageUrl':
-            'https://img.freepik.com/premium-vector/bitcoin-technology-logo-template_79169-137.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'vitalik',
         'did': 'did:key:z6MknLmK',
-        'profileImageUrl':
-            'https://upload.wikimedia.org/wikipedia/commons/1/1c/Vitalik_Buterin_TechCrunch_London_2015_%28cropped%29.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'nakamoto',
         'did': 'did:key:z6MknOpQ',
-        'profileImageUrl':
-            'https://miro.medium.com/v2/resize:fit:1400/1*LFOnoZXCIEDAifD_7KyGkQ.jpeg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'andreas',
         'did': 'did:key:z6MknRsT',
-        'profileImageUrl':
-            'https://bitcoinmagazine.com/.image/t_share/MTc5Mjk3ODEyMDcyNzU3Mjgy/interview-andreas-m-antonopoulos-how-bitcoin-can-help-financially-excluded-communities.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'hal_finney',
         'did': 'did:key:z6MknXyZ',
-        'profileImageUrl':
-            'https://static01.nyt.com/images/2022/02/25/business/00roose-finney-print1/merlin_202999180_46ec97d9-25ff-43db-b1e9-f1f8dd3028b0-superJumbo.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'adamback',
         'did': 'did:key:z6MknAaB',
-        'profileImageUrl':
-            'https://pbs.twimg.com/profile_images/1654127645837729792/ggwwwcIb_400x400.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'elon_btc',
         'did': 'did:key:z6MknCcD',
-        'profileImageUrl':
-            'https://upload.wikimedia.org/wikipedia/commons/9/99/Elon_Musk_Colorado_2022_%28cropped%29.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'gavin_wood',
         'did': 'did:key:z6MknEeF',
-        'profileImageUrl':
-            'https://upload.wikimedia.org/wikipedia/commons/8/83/Gavin_Wood.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
       {
         'username': 'btc_trader',
         'did': 'did:key:z6MknGgH',
-        'profileImageUrl':
-            'https://png.pngtree.com/png-vector/20191027/ourmid/pngtree-crypto-trader-icon-simple-style-png-image_1886630.jpg'
+        'profileImageUrl': '' // Will use fallback avatar
       },
     ];
 
