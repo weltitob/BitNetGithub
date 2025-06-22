@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/token_data_service.dart';
 
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 
@@ -467,34 +468,16 @@ class _CryptoItemState extends State<CryptoItem> {
 
               onTap: () {
                 // Check if this is a token (not Bitcoin)
-                if (widget.currency.code != 'BTC' && widget.tokenChartData != null) {
-                  // Create tokenData structure for navigation
+                if (widget.currency.code != 'BTC') {
+                  // Use TokenDataService for comprehensive price history across all timeframes
+                  final priceHistory = TokenDataService.instance.getTokenPriceHistory(widget.currency.code);
+                  final currentPrice = double.tryParse(widget.tokenPrice?.replaceAll(',', '') ?? '0') ?? 0.0;
+                  
                   final tokenData = {
                     'tokenSymbol': widget.currency.code,
                     'tokenName': widget.currency.name,
-                    'currentPrice': double.tryParse(widget.tokenPrice?.replaceAll(',', '') ?? '0') ?? 0.0,
-                    'priceHistory': {
-                      '1D': widget.tokenChartData!.map((chartLine) => {
-                        'time': chartLine.time,
-                        'price': chartLine.price,
-                      }).toList(),
-                      '1W': widget.tokenChartData!.map((chartLine) => {
-                        'time': chartLine.time,
-                        'price': chartLine.price,
-                      }).toList(),
-                      '1M': widget.tokenChartData!.map((chartLine) => {
-                        'time': chartLine.time,
-                        'price': chartLine.price,
-                      }).toList(),
-                      '1J': widget.tokenChartData!.map((chartLine) => {
-                        'time': chartLine.time,
-                        'price': chartLine.price,
-                      }).toList(),
-                      'Max': widget.tokenChartData!.map((chartLine) => {
-                        'time': chartLine.time,
-                        'price': chartLine.price,
-                      }).toList(),
-                    },
+                    'currentPrice': currentPrice,
+                    'priceHistory': priceHistory, // Use comprehensive TokenDataService data
                   };
                   context.push('/wallet/bitcoinscreen', extra: tokenData);
                 } else {
