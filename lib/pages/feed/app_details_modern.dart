@@ -259,37 +259,37 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-            // Hero Header
-            Container(
-              height: 300.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                    Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  // Pattern overlay
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: PatternPainter(
-                        color: Colors.white.withOpacity(0.05),
+                  // Hero Header
+                  Container(
+                    height: 300.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                          Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                        ],
                       ),
                     ),
-                  ),
-                  // Content
-                  SafeArea(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                    child: Stack(
+                      children: [
+                        // Pattern overlay
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: PatternPainter(
+                              color: Colors.white.withOpacity(0.05),
+                            ),
+                          ),
+                        ),
+                        // Content
+                        SafeArea(
+                          child: Padding(
+                            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
                           // App Icon
                           Container(
                             width: 100.w,
