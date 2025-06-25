@@ -7,7 +7,8 @@ class GlassContainer extends StatelessWidget {
   final Widget child;
   final double blur;
   final double opacity;
-  final dynamic borderRadius; // Support both double and BorderRadius for compatibility
+  final dynamic
+      borderRadius; // Support both double and BorderRadius for compatibility
   final double? height;
   final double? width;
   final double borderThickness;
@@ -44,14 +45,16 @@ class GlassContainer extends StatelessWidget {
     // Handle dynamic borderRadius - support both double and BorderRadius for backward compatibility
     BorderRadius radius;
     if (borderRadius == null) {
-      radius = const BorderRadius.all(Radius.circular(AppTheme.cardPadding * 2.5 / 3)); // Original default from yesterday
+      radius = const BorderRadius.all(Radius.circular(
+          AppTheme.cardPadding * 2.5 / 3)); // Original default from yesterday
     } else if (borderRadius is double) {
       radius = BorderRadius.circular(borderRadius);
     } else if (borderRadius is BorderRadius) {
       radius = borderRadius;
     } else {
       // Fallback for any other type
-      radius = const BorderRadius.all(Radius.circular(AppTheme.cardPadding * 2.5 / 3));
+      radius = const BorderRadius.all(
+          Radius.circular(AppTheme.cardPadding * 2.5 / 3));
     }
 
     // Performance optimization: use RepaintBoundary to isolate repaints
@@ -66,7 +69,9 @@ class GlassContainer extends StatelessWidget {
                   ? boxShadow!
                   : Theme.of(context).brightness == Brightness.light
                       ? [] // No shadows in light mode
-                      : [AppTheme.boxShadowSuperSmall], // Minimal shadow in dark mode
+                      : [
+                          AppTheme.boxShadowSuperSmall
+                        ], // Minimal shadow in dark mode
         ),
         child: ClipRRect(
           borderRadius: radius,
@@ -76,8 +81,8 @@ class GlassContainer extends StatelessWidget {
             decoration: BoxDecoration(
               // Simplified color calculation for better performance
               color: customColor ??
-                  (Theme.of(context).brightness == Brightness.light 
-                      ? Colors.white.withOpacity(0.9) 
+                  (Theme.of(context).brightness == Brightness.light
+                      ? Colors.white.withOpacity(0.9)
                       : Colors.white.withOpacity(opacity)),
               borderRadius: radius,
               // border: border,

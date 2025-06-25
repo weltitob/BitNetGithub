@@ -135,14 +135,14 @@ class MiningInfoCard extends StatelessWidget {
       ),
     );
   }
-  
+
   // Helper method to darken a color
   Color _darken(Color color, [int amount = 10]) {
     assert(amount >= 0 && amount <= 100);
-    
+
     final hsl = HSLColor.fromColor(color);
     final lightness = (hsl.lightness - (amount / 100)).clamp(0.0, 1.0);
-    
+
     return hsl.withLightness(lightness).toColor();
   }
 }

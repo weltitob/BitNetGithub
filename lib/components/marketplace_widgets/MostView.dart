@@ -23,9 +23,11 @@ class _MostViewState extends State<MostView> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w, vertical: AppTheme.elementSpacing.h * 0.5),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppTheme.elementSpacing.w,
+          vertical: AppTheme.elementSpacing.h * 0.5),
       margin: EdgeInsets.symmetric(vertical: 4.h),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.cardPadding),
@@ -37,8 +39,8 @@ class _MostViewState extends State<MostView> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: isDarkMode 
-                        ? Colors.black26 
+                    color: isDarkMode
+                        ? Colors.black26
                         : Colors.grey.withOpacity(0.3),
                     blurRadius: 2,
                     offset: Offset(0, 1),
@@ -69,14 +71,12 @@ class _MostViewState extends State<MostView> {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-
                   Text(
                     widget.nftPrice,
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
-
-                          color: isDarkMode ? AppTheme.white90 : AppTheme.black80,
+                          color:
+                              isDarkMode ? AppTheme.white90 : AppTheme.black80,
                         ),
-
                   ),
                 ],
               ),

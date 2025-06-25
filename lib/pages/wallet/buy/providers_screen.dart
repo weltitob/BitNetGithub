@@ -21,16 +21,17 @@ class ProvidersScreen extends StatefulWidget {
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
   late BuyController buyController;
-  
+
   @override
   void initState() {
     super.initState();
     buyController = Get.find<BuyController>();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     return bitnetScaffold(
@@ -63,15 +64,15 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            
+
             // Stripe
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlassContainer(
                 opacity: 0.05,
                 child: BitNetListTile(
-                  contentPadding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                   text: "Stripe",
                   onTap: () {
                     buyController.setProvider(
@@ -90,21 +91,21 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   ),
                   trailing: GetBuilder<BuyController>(
                     builder: (_) => buyController.providerId.value == "stripe"
-                      ? Icon(Icons.check_circle, color: AppTheme.successColor)
-                      : SizedBox.shrink(),
+                        ? Icon(Icons.check_circle, color: AppTheme.successColor)
+                        : SizedBox.shrink(),
                   ),
                 ),
               ),
             ),
-            
+
             // MoonPay
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlassContainer(
                 opacity: 0.05,
                 child: BitNetListTile(
-                  contentPadding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                   text: "MoonPay",
                   onTap: () {
                     buyController.setProvider(
@@ -121,33 +122,33 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                       height: 32,
                     ),
                   ),
-                  trailing: GetBuilder<BuyController>(
-                    builder: (_) {
-                      if (buyController.providerId.value == "moonpay") {
-                        if (buyController.moonpayQuoteCurrPrice.value > 0) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(buyController.moonpayQuoteCurrPrice.value.toString()),
-                                  Icon(getCurrencyIcon(BitcoinUnits.BTC.name))
-                                ],
-                              ),
-                              Text(
+                  trailing: GetBuilder<BuyController>(builder: (_) {
+                    if (buyController.providerId.value == "moonpay") {
+                      if (buyController.moonpayQuoteCurrPrice.value > 0) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(buyController.moonpayQuoteCurrPrice.value
+                                    .toString()),
+                                Icon(getCurrencyIcon(BitcoinUnits.BTC.name))
+                              ],
+                            ),
+                            Text(
                                 "= ${buyController.moonpayBaseCurrPrice.value.toStringAsFixed(2)} ${getCurrency(currency ?? 'USD')}")
-                            ],
-                          );
-                        } else {
-                          return Icon(Icons.check_circle, color: AppTheme.successColor);
-                        }
+                          ],
+                        );
                       } else {
-                        return SizedBox.shrink();
+                        return Icon(Icons.check_circle,
+                            color: AppTheme.successColor);
                       }
+                    } else {
+                      return SizedBox.shrink();
                     }
-                  ),
+                  }),
                 ),
               ),
             ),

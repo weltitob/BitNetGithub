@@ -260,7 +260,8 @@ class AppRoutes {
                     name: 'collection_owners',
                     builder: (ctx, state) {
                       // Import the OwnersScreen
-                      final collectionName = state.pathParameters['collection_id'] ?? '';
+                      final collectionName =
+                          state.pathParameters['collection_id'] ?? '';
                       return OwnersScreen(collectionName: collectionName);
                     },
                   ),
@@ -276,11 +277,13 @@ class AppRoutes {
               ),
               GoRoute(
                   path: kAppPageRoute,
-                  builder: (context, state) => ModernAppDetailsPage(routerState: state)),
+                  builder: (context, state) =>
+                      ModernAppDetailsPage(routerState: state)),
               GoRoute(
                   path: 'app-details/:id',
                   name: 'app-details',
-                  builder: (context, state) => ModernAppDetailsPage(routerState: state)),
+                  builder: (context, state) =>
+                      ModernAppDetailsPage(routerState: state)),
               GoRoute(
                   name: kMyAppsPageRoute,
                   path: kMyAppsPageRoute,
@@ -290,7 +293,8 @@ class AppRoutes {
                   routes: [
                     GoRoute(
                         path: kAppPageRoute,
-                        builder: (context, state) => ModernAppDetailsPage(routerState: state))
+                        builder: (context, state) =>
+                            ModernAppDetailsPage(routerState: state))
                   ]),
               GoRoute(
                   path: kWebViewScreenRoute + "/:url/:name",
@@ -321,8 +325,8 @@ class AppRoutes {
                 name: 'bitcoin',
                 builder: _dynamicTransition == null
                     ? (ctx, state) => BitcoinScreen(
-                        tokenData: state.extra as Map<String, dynamic>?,
-                      )
+                          tokenData: state.extra as Map<String, dynamic>?,
+                        )
                     : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) => CustomTransitionPage(

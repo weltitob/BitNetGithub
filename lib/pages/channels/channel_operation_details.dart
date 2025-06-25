@@ -25,7 +25,8 @@ class ChannelOperationDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ChannelOperationDetails> createState() => _ChannelOperationDetailsState();
+  State<ChannelOperationDetails> createState() =>
+      _ChannelOperationDetailsState();
 }
 
 class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
@@ -102,9 +103,10 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
       if (existingChannel != null) {
         final isActive = existingChannel['active'] as bool? ?? false;
         final channelPoint = existingChannel['channel_point'] as String?;
-        
+
         // Update status if changed
-        if (isActive && _channelOperation!.status != ChannelOperationStatus.active) {
+        if (isActive &&
+            _channelOperation!.status != ChannelOperationStatus.active) {
           await _updateChannelStatus(
             ChannelOperationStatus.active,
             channelPoint: channelPoint,
@@ -115,7 +117,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
         final pendingChannel = await _channelService.findPendingChannel(
           _channelOperation!.remoteNodeId,
         );
-        
+
         if (pendingChannel != null) {
           await _updateChannelStatus(ChannelOperationStatus.opening);
         }
@@ -340,15 +342,17 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                   SizedBox(height: AppTheme.elementSpacing.h),
                   _buildInfoRow('Remote Node', op.remoteNodeAlias),
                   _buildInfoRow('Capacity', '${op.capacity.toString()} sats'),
-                  _buildInfoRow('Local Balance', '${op.localBalance.toString()} sats'),
+                  _buildInfoRow(
+                      'Local Balance', '${op.localBalance.toString()} sats'),
                   if (op.pushAmount > 0)
-                    _buildInfoRow('Push Amount', '${op.pushAmount.toString()} sats'),
+                    _buildInfoRow(
+                        'Push Amount', '${op.pushAmount.toString()} sats'),
                   _buildInfoRow('Type', op.isPrivate ? 'Private' : 'Public'),
                   _buildInfoRow(
                     'Created',
                     DateFormat.yMMMd().add_jm().format(
-                      DateTime.fromMillisecondsSinceEpoch(op.timestamp),
-                    ),
+                          DateTime.fromMillisecondsSinceEpoch(op.timestamp),
+                        ),
                   ),
                 ],
               ),
@@ -362,7 +366,8 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                 padding: EdgeInsets.all(AppTheme.cardPadding.w),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                  borderRadius:
+                      BorderRadius.circular(AppTheme.borderRadiusMid.r),
                   border: Border.all(
                     color: theme.colorScheme.onSurface.withOpacity(0.1),
                   ),
@@ -406,7 +411,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
   Widget _buildInfoRow(String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
       child: Row(
@@ -431,7 +436,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
   Widget _buildCopyableRow(String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
       child: Column(
@@ -458,7 +463,8 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
                 color: theme.colorScheme.onSurface.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                borderRadius:
+                    BorderRadius.circular(AppTheme.borderRadiusSmall.r),
               ),
               child: Row(
                 children: [

@@ -10,13 +10,16 @@ import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, bool isGrouped) async {
+Future<MintAssetResponse?> mintAsset(
+    String assetName, String assetDataBase64, bool isGrouped) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -52,11 +55,11 @@ Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, b
     'short_response': false,
   };
 
-  String url = 
-  // kDebugMode
-  //     ? ''
-  //     :
-        'https://$restHost/v1/taproot-assets/assets';
+  String url =
+      // kDebugMode
+      //     ? ''
+      //     :
+      'https://$restHost/v1/taproot-assets/assets';
 
   try {
     var response = await http.post(
@@ -69,13 +72,16 @@ Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, b
 
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);
-      MintAssetResponse mintAssetResponse = MintAssetResponse.fromJson(responseData);
+      MintAssetResponse mintAssetResponse =
+          MintAssetResponse.fromJson(responseData);
       return mintAssetResponse;
     } else if (response.statusCode == 500) {
-      logger.e("Failed to mint asset (name probably is already in another item in the batch): ${response.statusCode}");
+      logger.e(
+          "Failed to mint asset (name probably is already in another item in the batch): ${response.statusCode}");
       return null;
     } else {
-      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response.body}');
+      logger.e(
+          'Failed to load Taproot asset data: ${response.statusCode}, ${response.body}');
     }
   } catch (e) {
     logger.e('Error requesting taproot assets: $e');

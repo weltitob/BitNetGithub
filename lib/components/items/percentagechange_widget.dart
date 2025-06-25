@@ -22,11 +22,12 @@ class PercentageChangeWidget extends StatelessWidget {
     if (percentage.contains("-")) {
       print("DEBUG: percentage='$percentage', isPositive=$isPositive");
     }
-    
+
     // Fixed logic: Only treat zero percentages as positive, not all positive values
     final isReallyPositive = isPositive && !percentage.trim().startsWith('-');
-    final color = isReallyPositive ? AppTheme.successColor : AppTheme.errorColor;
-    
+    final color =
+        isReallyPositive ? AppTheme.successColor : AppTheme.errorColor;
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppTheme.elementSpacing * 0.5,
@@ -49,15 +50,17 @@ class PercentageChangeWidget extends StatelessWidget {
           ],
           Text(
             // Fix -0% display: always show 0% as positive
-            percentage.trim() == "-0%" ? "0%" : 
-            percentage.trim() == "0%" ? "0%" : 
-            percentage,
+            percentage.trim() == "-0%"
+                ? "0%"
+                : percentage.trim() == "0%"
+                    ? "0%"
+                    : percentage,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: fontSize.sp,
-              color: color,
-            ),
+                  fontWeight: FontWeight.bold,
+                  fontSize: fontSize.sp,
+                  color: color,
+                ),
           ),
         ],
       ),

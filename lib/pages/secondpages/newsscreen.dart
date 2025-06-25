@@ -26,7 +26,7 @@ class _NewsScreenState extends State<NewsScreen> {
     // Define the API endpoint URL for the News API with the required parameters
     var url = Uri.parse(
         "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&language=de&apiKey=be561302ff234a908ac60730ef999db6");
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     // Send a GET request to the API endpoint URL and wait for the response
     var response = await dioClient.get(url: url.path);

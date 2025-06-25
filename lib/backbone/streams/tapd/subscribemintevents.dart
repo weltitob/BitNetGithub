@@ -13,8 +13,10 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   ByteData byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -25,9 +27,9 @@ Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
   };
 
   String url =
-  //  kDebugMode
-  //     ? ''
-  //     : 
+      //  kDebugMode
+      //     ? ''
+      //     :
       'https://$restHost/v1/taproot-assets/events/asset-mint';
 
   Map<String, dynamic> data = {
@@ -52,13 +54,22 @@ Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
           var jsonResponse = json.decode(accumulatedData.toString());
           accumulatedData.clear();
 
-          yield RestResponse(statusCode: "success", message: "Asset minted", data: jsonResponse);
+          yield RestResponse(
+              statusCode: "success",
+              message: "Asset minted",
+              data: jsonResponse);
         } catch (e) {
-          yield RestResponse(statusCode: "error", message: "Error during JSON processing: $e", data: {});
+          yield RestResponse(
+              statusCode: "error",
+              message: "Error during JSON processing: $e",
+              data: {});
         }
       }
     }
   } catch (e) {
-    yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
+    yield RestResponse(
+        statusCode: "error",
+        message: "Error during network call: $e",
+        data: {});
   }
 }

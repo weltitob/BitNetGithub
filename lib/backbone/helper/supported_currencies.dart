@@ -1,4 +1,3 @@
-
 const Map<String, String> supportedCurrencies = {
   "USD": "United States Dollar",
   "AED": "United Arab Emirates Dirham",

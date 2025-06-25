@@ -10,14 +10,12 @@ class CurrencyTypeProvider extends ChangeNotifier {
 
   // Method to update the first currency and its corresponding Firestore document
   void setCurrencyType(bool type) {
-    settingsCollection
-        .doc(FirebaseAuth.instance.currentUser!.uid).update({
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       "showCoin": type,
     });
     _coin = type;
     notifyListeners();
   }
-
 
   // Clear method adjusted to reset currency values
   void clearCurrencyType() {

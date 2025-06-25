@@ -36,7 +36,6 @@ Map<String, dynamic> derivePrivateMasterKey(Uint8List seed) {
   };
 }
 
-
 Uint8List deriveMasterPublicKey(ECPrivateKey privateKey,
     {bool compressed = true}) {
   var domain = privateKey.parameters;

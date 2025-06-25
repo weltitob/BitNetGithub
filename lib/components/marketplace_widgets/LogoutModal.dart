@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:flutter/material.dart';
@@ -137,9 +136,7 @@ class LogoutModal extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.pushNamed(
-                                  context,
-                                  route.kInitialRoute
-                                );
+                                    context, route.kInitialRoute);
                               },
                               style: TextButton.styleFrom(
                                 //primary: const Color.fromRGBO(24, 31, 39, 1),

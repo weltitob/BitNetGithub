@@ -102,7 +102,7 @@ class _OwnersScreenState extends State<OwnersScreen> {
         final queryLower = query.toLowerCase();
         _filteredOwners = _owners.where((owner) {
           return owner.name.toLowerCase().contains(queryLower) ||
-                 owner.address.toLowerCase().contains(queryLower);
+              owner.address.toLowerCase().contains(queryLower);
         }).toList();
       }
     });
@@ -119,14 +119,16 @@ class _OwnersScreenState extends State<OwnersScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: AppTheme.cardPadding.w, vertical: AppTheme.cardPadding.h),
+            horizontal: AppTheme.cardPadding.w,
+            vertical: AppTheme.cardPadding.h),
         child: Column(
           children: [
             // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Top Owners", style: Theme.of(context).textTheme.titleLarge),
+                Text("Top Owners",
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             SizedBox(height: 12.h),
@@ -165,7 +167,7 @@ class _OwnersScreenState extends State<OwnersScreen> {
                     itemBuilder: (context, index) {
                       final owner = _filteredOwners[index];
                       final displayNumber = index + 1;
-                      
+
                       return BitNetListTile(
                         margin: EdgeInsets.zero,
                         contentPadding: EdgeInsets.symmetric(
@@ -177,10 +179,12 @@ class _OwnersScreenState extends State<OwnersScreen> {
                           name: owner.name,
                           size: 48.w,
                           type: profilePictureType.onchain,
-                          cornerWidget: displayNumber <= 3 ? NumberIndicator(
-                            number: displayNumber,
-                            size: 0.8,
-                          ) : null,
+                          cornerWidget: displayNumber <= 3
+                              ? NumberIndicator(
+                                  number: displayNumber,
+                                  size: 0.8,
+                                )
+                              : null,
                           onTap: () {
                             // Handle owner profile tap
                           },
@@ -190,18 +194,25 @@ class _OwnersScreenState extends State<OwnersScreen> {
                           children: [
                             Text(
                               owner.name,
-                              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                             SizedBox(height: 4.h),
                             Text(
                               owner.address,
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).brightness == Brightness.dark 
-                                    ? AppTheme.white60 
-                                    : AppTheme.black60,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppTheme.white60
+                                        : AppTheme.black60,
+                                  ),
                             ),
                           ],
                         ),
@@ -216,10 +227,14 @@ class _OwnersScreenState extends State<OwnersScreen> {
                             SizedBox(height: 4.h),
                             Text(
                               owner.percentage,
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                           ],
                         ),
@@ -236,7 +251,6 @@ class _OwnersScreenState extends State<OwnersScreen> {
       ),
     );
   }
-
 }
 
 class OwnerModel {

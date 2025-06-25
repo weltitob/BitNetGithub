@@ -48,7 +48,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    
+
     try {
       // Initialize required controllers for web
       if (kIsWeb) {
@@ -56,15 +56,15 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         if (!Get.isRegistered<LoggerService>()) {
           Get.put(LoggerService(), permanent: true);
         }
-        
+
         // Make sure WidgetTreeController is registered
         if (!Get.isRegistered<WidgetTreeController>()) {
           Get.put(WidgetTreeController(), permanent: true);
         }
       }
-      
+
       WidgetsBinding.instance.addObserver(this);
-      
+
       // Safe route listener
       try {
         final router = widget.child as Router;
@@ -77,9 +77,10 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
           });
         }
       } catch (e) {
-        print('Error setting up route listener (safe to ignore in web preview): $e');
+        print(
+            'Error setting up route listener (safe to ignore in web preview): $e');
       }
-      
+
       // Defer initialization to allow build to complete first
       Future.microtask(() {
         if (mounted) {
@@ -88,17 +89,19 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
           } catch (e) {
             print('Error in initMatrix (safe to ignore in web preview): $e');
           }
-          
+
           try {
             initLoadingDialog();
           } catch (e) {
-            print('Error in initLoadingDialog (safe to ignore in web preview): $e');
+            print(
+                'Error in initLoadingDialog (safe to ignore in web preview): $e');
           }
-          
+
           try {
             initAuthListener();
           } catch (e) {
-            print('Error in initAuthListener (safe to ignore in web preview): $e');
+            print(
+                'Error in initAuthListener (safe to ignore in web preview): $e');
           }
         }
       });
@@ -151,7 +154,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       });
       return;
     }
-    
+
     // Safe initialization for mobile
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
@@ -198,7 +201,8 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         print('AppLifecycleState = $state (LoggerService not available)');
       }
     } catch (e) {
-      print('Error in didChangeAppLifecycleState (safe to ignore in web preview): $e');
+      print(
+          'Error in didChangeAppLifecycleState (safe to ignore in web preview): $e');
     }
   }
 
@@ -237,7 +241,8 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       Auth().authStateChanges.listen((val) async {
         try {
           if (val == null) {
-            String? savedUser = LocalStorage.instance.getString("most_recent_user");
+            String? savedUser =
+                LocalStorage.instance.getString("most_recent_user");
             if (savedUser != null && savedUser != "") {
               String? token = await generateCustomToken(savedUser);
               if (token != null) {
@@ -246,11 +251,13 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
             }
           }
         } catch (e) {
-          print('Error in auth listener callback (safe to ignore in web preview): $e');
+          print(
+              'Error in auth listener callback (safe to ignore in web preview): $e');
         }
       });
     } catch (e) {
-      print('Error initializing auth listener (safe to ignore in web preview): $e');
+      print(
+          'Error initializing auth listener (safe to ignore in web preview): $e');
     }
   }
 }
@@ -271,7 +278,7 @@ class _WebBuilderState extends State<WebBuilder> {
   @override
   void initState() {
     super.initState();
-    
+
     // Make sure WidgetTreeController is registered
     if (!Get.isRegistered<WidgetTreeController>()) {
       Get.put(WidgetTreeController(), permanent: true);
@@ -282,10 +289,10 @@ class _WebBuilderState extends State<WebBuilder> {
   Widget build(BuildContext context) {
     // Get the current screen size
     final screenSize = MediaQuery.of(context).size;
-    
+
     // Determine if this is a narrow screen that should use mobile layout
     final isMobileWidth = screenSize.width < 768;
-    
+
     // For small screens, use mobile layout with fixed width
     // For larger screens, use a responsive layout with constraints
     return Container(
@@ -308,20 +315,19 @@ class _WebBuilderState extends State<WebBuilder> {
       child: ClipRRect(
         child: Center(
           child: isMobileWidth
-            // On narrow screens, show as a fixed-width mobile UI
-            ? SizedBox(width: 375, child: widget.widget.child)
-            // On wider screens, use a responsive layout with constraints
-            : ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 1200, // Maximum width for very large screens
-                  minWidth: 768,  // Minimum width
+              // On narrow screens, show as a fixed-width mobile UI
+              ? SizedBox(width: 375, child: widget.widget.child)
+              // On wider screens, use a responsive layout with constraints
+              : ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: 1200, // Maximum width for very large screens
+                    minWidth: 768, // Minimum width
+                  ),
+                  child: widget.widget.child,
                 ),
-                child: widget.widget.child,
-              ),
         ),
       ),
     );
-
   }
 
   // This method is no longer used but kept for reference

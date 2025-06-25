@@ -35,7 +35,7 @@ class HomeController extends BaseController {
   int _reconnectAttempts = 0;
   static const int _maxReconnectAttempts = 5;
   static const Duration _reconnectDelay = Duration(seconds: 5);
-  
+
   // Loading states
   RxBool loadingDetail = false.obs;
   int? blockHeight;
@@ -54,11 +54,11 @@ class HomeController extends BaseController {
   int selectedIndexData = -1;
   RxBool daLoading = false.obs;
   RxDouble scrollValue = 1250.0.obs;
-  
+
   // Data collections with size limits to prevent unbounded growth
   static const int _maxListSize = 1000;
   static const int _maxBlockTransactions = 500;
-  
+
   List<BlockData> bitcoinData = [];
   List<TransactionDetailsModel> txDetails = [];
   List<TransactionDetailsModel> txDetailsFound = [];
@@ -81,7 +81,7 @@ class HomeController extends BaseController {
   String baseUrl = 'https://mempool.space/api/';
   final GlobalKey containerKey = GlobalKey();
   List<PostsDataModel>? postsDataList = [];
-  
+
   // Block transactions with bounds checking
   List blockTransactions = [];
 
@@ -111,7 +111,7 @@ class HomeController extends BaseController {
       await getWebSocketData();
       await getData();
       await callApiWithDelay();
-      
+
       // Safe access to first bitcoin data with null checks
       if (bitcoinData.isNotEmpty && bitcoinData.first.id != null) {
         final firstBlockId = bitcoinData.first.id!;
@@ -152,13 +152,16 @@ class HomeController extends BaseController {
     }
 
     int mid = (text.length / 1.5).toInt();
-    String truncatedString = "${text.substring(0, mid - 1)}...${text.substring(mid + 2)}";
+    String truncatedString =
+        "${text.substring(0, mid - 1)}...${text.substring(mid + 2)}";
     return truncatedString;
   }
 
   int getTotalTxOutput(TransactionDetailsModel tx) {
     return tx.vout
-        .map((Vout v) => v.value ?? 0) // Use the null-aware operator ?? to handle null values
+        .map((Vout v) =>
+            v.value ??
+            0) // Use the null-aware operator ?? to handle null values
         .reduce((int a, int b) => a + b);
   }
 
@@ -201,7 +204,8 @@ class HomeController extends BaseController {
     return dollarPerRate.value;
   }
 
-  List<BlockData> removeElementsBefore<BlockData>(List<BlockData> list, BlockData element) {
+  List<BlockData> removeElementsBefore<BlockData>(
+      List<BlockData> list, BlockData element) {
     int index = list.indexWhere((e) => e == element);
 
     // If the element is found, remove elements before it
@@ -319,36 +323,36 @@ class HomeController extends BaseController {
   /// Safe WebSocket initialization with proper error handling and disposal
   Future<void> getWebSocketData() async {
     if (_isDisposed) return;
-    
+
     try {
       socketLoading.value = true;
       transactionLoading.value = true;
-      
+
       // Close existing connection if any
       await _closeWebSocket();
-      
+
       // Create new WebSocket connection
       _channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
-      
+
       // Set up ping timer for keep-alive
       _pingTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
         _sendSafeMessage('{"action":"ping"}');
       });
-      
+
       // Initialize connection
       _sendSafeMessage('{"action":"init"}');
-      _sendSafeMessage('{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
+      _sendSafeMessage(
+          '{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
       _sendSafeMessage('{"track-rbf-summary":true}');
-      
+
       // Set up stream listener with proper error handling
       _setupWebSocketListener();
-      
     } catch (e) {
       logger.e('WebSocket initialization failed: $e');
       _handleWebSocketError(e);
     }
   }
-  
+
   /// Send message safely with null checks
   void _sendSafeMessage(String message) {
     try {
@@ -359,16 +363,16 @@ class HomeController extends BaseController {
       logger.e('Failed to send WebSocket message: $e');
     }
   }
-  
+
   /// Public method to send WebSocket messages
   void sendWebSocketMessage(String message) {
     _sendSafeMessage(message);
   }
-  
+
   /// Set up WebSocket stream listener with error recovery
   void _setupWebSocketListener() {
     if (_channel?.stream == null || _isDisposed) return;
-    
+
     _subscription = _channel!.stream.listen(
       (message) {
         if (_isDisposed) return;
@@ -387,55 +391,55 @@ class HomeController extends BaseController {
       cancelOnError: false,
     );
   }
-  
+
   /// Process WebSocket message safely in isolate to avoid blocking UI
   void _processWebSocketMessage(dynamic message) {
     try {
       // Parse message safely
       if (message == null || message.toString().isEmpty) return;
-      
+
       Map<String, dynamic> data = jsonDecode(message.toString());
-      
+
       // Handle projected block transactions with bounds checking
       _handleProjectedBlockTransactions(data);
-      
+
       // Handle mempool model data
       _handleMempoolModelData(data, message.toString());
-      
     } catch (e) {
       logger.e('Error processing WebSocket message: $e');
     }
   }
-  
+
   /// Handle projected block transactions with bounds checking
   void _handleProjectedBlockTransactions(Map<String, dynamic> data) {
     try {
       if (data['projected-block-transactions'] != null) {
         final projectedBlockTx = data['projected-block-transactions'];
-        
+
         // Update block transactions if provided
         if (projectedBlockTx['blockTransactions'] != null) {
           blockTransactions.clear();
           final newTransactions = projectedBlockTx['blockTransactions'];
           if (newTransactions is List) {
             // Apply size limit to prevent unbounded growth
-            final limitedTransactions = newTransactions.length > _maxBlockTransactions
-                ? newTransactions.sublist(0, _maxBlockTransactions)
-                : newTransactions;
+            final limitedTransactions =
+                newTransactions.length > _maxBlockTransactions
+                    ? newTransactions.sublist(0, _maxBlockTransactions)
+                    : newTransactions;
             blockTransactions.addAll(limitedTransactions);
           }
         }
-        
+
         // Handle delta changes with bounds checking
         if (projectedBlockTx['delta'] != null) {
           final delta = projectedBlockTx['delta'];
-          
+
           // Handle added transactions with size limit
           if (delta['added'] != null && delta['added'] is List) {
             final toAdd = delta['added'] as List;
             final currentSize = blockTransactions.length;
             final availableSpace = _maxBlockTransactions - currentSize;
-            
+
             if (availableSpace > 0) {
               final limitedAdd = toAdd.length > availableSpace
                   ? toAdd.sublist(0, availableSpace)
@@ -449,8 +453,8 @@ class HomeController extends BaseController {
             final remove = delta['removed'] as List;
             // Remove from the end to avoid index shifting issues
             for (int i = blockTransactions.length - 1; i >= 0; i--) {
-              if (i < blockTransactions.length && 
-                  blockTransactions[i] is List && 
+              if (i < blockTransactions.length &&
+                  blockTransactions[i] is List &&
                   (blockTransactions[i] as List).isNotEmpty) {
                 final txData = blockTransactions[i] as List;
                 if (txData.isNotEmpty && remove.contains(txData.first)) {
@@ -465,12 +469,12 @@ class HomeController extends BaseController {
       logger.e('Error handling projected block transactions: $e');
     }
   }
-  
+
   /// Handle mempool model data with safe parsing and null safety
   void _handleMempoolModelData(Map<String, dynamic> data, String rawMessage) {
     try {
       MemPoolModel memPool = MemPoolModel.fromJson(data);
-      
+
       // Safe transaction position update
       if (memPool.txPosition?.position?.block != null) {
         txPosition.value = memPool.txPosition!.position.block;
@@ -481,7 +485,7 @@ class HomeController extends BaseController {
         isRbfTransaction.value = true;
         replacedTx.value = memPool.rbfTransaction!.txid;
       }
-      
+
       // Safe currency conversion with validation
       if (memPool.conversions?.uSD != null) {
         final usdValue = memPool.conversions!.uSD;
@@ -489,7 +493,7 @@ class HomeController extends BaseController {
           currentUSD.value = usdValue.toInt();
         }
       }
-      
+
       // Safe mempool blocks update with size limit
       if (memPool.mempoolBlocks != null && memPool.mempoolBlocks!.isNotEmpty) {
         mempoolBlocks.clear();
@@ -507,7 +511,7 @@ class HomeController extends BaseController {
             : memPool.transactions!;
         transaction.addAll(limitedTransactions);
       }
-      
+
       // Safe fees update
       if (memPool.fees?.fastestFee != null) {
         fees = memPool.fees;
@@ -521,8 +525,7 @@ class HomeController extends BaseController {
         try {
           DateTime currentDate = DateTime.now();
           DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(
-            memPool.da!.estimatedRetargetDate!.toInt()
-          );
+              memPool.da!.estimatedRetargetDate!.toInt());
           Duration difference = targetDate.difference(currentDate);
           days = '${difference.inDays + 1} days';
         } catch (e) {
@@ -531,7 +534,7 @@ class HomeController extends BaseController {
         }
         daLoading.value = false;
       }
-      
+
       // Safe RBF summary updates with size limits
       if (memPool.rbfSummary != null && memPool.rbfSummary!.isNotEmpty) {
         transactionReplacements.clear();
@@ -541,7 +544,8 @@ class HomeController extends BaseController {
         transactionReplacements.addAll(limitedSummary);
       }
 
-      if (memPool.rbfLatestSummary != null && memPool.rbfLatestSummary!.isNotEmpty) {
+      if (memPool.rbfLatestSummary != null &&
+          memPool.rbfLatestSummary!.isNotEmpty) {
         transactionReplacements.clear();
         final limitedLatestSummary = memPool.rbfLatestSummary!.length > 50
             ? memPool.rbfLatestSummary!.sublist(0, 50)
@@ -552,7 +556,6 @@ class HomeController extends BaseController {
       // Update loading states
       socketLoading.value = false;
       transactionLoading.value = false;
-      
     } catch (e) {
       logger.e('Error handling mempool model data: $e');
       // Set error state but don't crash
@@ -560,49 +563,50 @@ class HomeController extends BaseController {
       transactionLoading.value = false;
     }
   }
-  
+
   /// Handle WebSocket errors with exponential backoff
   void _handleWebSocketError(dynamic error) {
     logger.e('WebSocket error: $error');
     socketLoading.value = false;
     transactionLoading.value = false;
-    
+
     if (!_isDisposed) {
       _attemptReconnection();
     }
   }
-  
+
   /// Attempt WebSocket reconnection with exponential backoff
   void _attemptReconnection() {
     if (_isDisposed || _reconnectAttempts >= _maxReconnectAttempts) {
       logger.w('Max reconnection attempts reached or controller disposed');
       return;
     }
-    
+
     _reconnectAttempts++;
-    final delay = Duration(seconds: _reconnectDelay.inSeconds * _reconnectAttempts);
-    
-    logger.i('Attempting WebSocket reconnection in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)');
-    
+    final delay =
+        Duration(seconds: _reconnectDelay.inSeconds * _reconnectAttempts);
+
+    logger.i(
+        'Attempting WebSocket reconnection in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)');
+
     _reconnectTimer = Timer(delay, () {
       if (!_isDisposed) {
         getWebSocketData();
       }
     });
   }
-  
+
   /// Close WebSocket connection safely
   Future<void> _closeWebSocket() async {
     try {
       _reconnectTimer?.cancel();
       _pingTimer?.cancel();
-      
+
       await _subscription?.cancel();
       _subscription = null;
-      
+
       await _channel?.sink.close();
       _channel = null;
-      
     } catch (e) {
       logger.e('Error closing WebSocket: $e');
     }
@@ -610,24 +614,24 @@ class HomeController extends BaseController {
 
   callApiWithDelay() async {
     if (_isDisposed) return;
-    
+
     try {
       String url = 'https://mempool.space/api/v1/blocks';
       final response = await dioClient.get(url: url);
-      
+
       // Null safety and bounds checking
       if (response.data == null || response.data is! List) {
         logger.w('Invalid response data from blocks API');
         isLoading.value = false;
         return;
       }
-      
+
       bitcoinData.clear();
-      
+
       // Apply size limit to prevent unbounded growth - only store latest 100 blocks
       final dataList = response.data as List;
       final maxBlocks = 100;
-      final limitedData = dataList.length > maxBlocks 
+      final limitedData = dataList.length > maxBlocks
           ? dataList.sublist(0, maxBlocks)
           : dataList;
 
@@ -642,7 +646,7 @@ class HomeController extends BaseController {
           // Continue with other blocks even if one fails
         }
       }
-      
+
       dollarRate();
       isLoading.value = false;
       Get.forceAppUpdate();
@@ -663,39 +667,42 @@ class HomeController extends BaseController {
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
       final response = await dioClient.get(url: url);
-      
+
       // Null safety check for response data
       if (response.data == null) {
         logger.w('Received null response data for getBlockHeight');
         return null;
       }
-      
+
       // Validate response data structure
       final responseData = response.data;
       if (responseData is! Map<String, dynamic>) {
         logger.w('Invalid response data type for getBlockHeight');
         return null;
       }
-      
+
       // Check if height field exists and is valid
-      if (!responseData.containsKey('height') || responseData['height'] == null) {
+      if (!responseData.containsKey('height') ||
+          responseData['height'] == null) {
         logger.w('Missing or null height field in getBlockHeight response');
         return null;
       }
-      
+
       // Validate height field type
       final heightValue = responseData['height'];
       if (heightValue is! int && heightValue is! num) {
-        logger.w('Invalid height field type in getBlockHeight: ${heightValue.runtimeType}');
+        logger.w(
+            'Invalid height field type in getBlockHeight: ${heightValue.runtimeType}');
         return null;
       }
-      
+
       // Safely parse the full object if we need it for other purposes
       try {
         txDetailsConfirmed = TransactionConfirmedDetail.fromJson(responseData);
         return txDetailsConfirmed!.height;
       } catch (parseError) {
-        logger.e('Error parsing full TransactionConfirmedDetail in getBlockHeight: $parseError');
+        logger.e(
+            'Error parsing full TransactionConfirmedDetail in getBlockHeight: $parseError');
         // Still return the height even if full parsing fails
         return heightValue is int ? heightValue : (heightValue as num).toInt();
       }
@@ -715,12 +722,12 @@ class HomeController extends BaseController {
       loadingDetail.value = false;
       return;
     }
-    
+
     loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
       final response = await dioClient.get(url: url);
-      
+
       // Null safety check for response data
       if (response.data == null) {
         logger.w('Received null response data for txDetailsConfirmedF');
@@ -728,7 +735,7 @@ class HomeController extends BaseController {
         isLoading.value = false;
         return;
       }
-      
+
       // Validate response data structure before parsing
       final responseData = response.data;
       if (responseData is! Map<String, dynamic>) {
@@ -737,29 +744,44 @@ class HomeController extends BaseController {
         isLoading.value = false;
         return;
       }
-      
+
       // Check for required fields to prevent null assignment to non-nullable types
-      final requiredFields = ['id', 'height', 'version', 'timestamp', 'bits', 'nonce', 
-                             'difficulty', 'merkle_root', 'tx_count', 'size', 'weight', 
-                             'previousblockhash', 'mediantime', 'extras'];
-      
+      final requiredFields = [
+        'id',
+        'height',
+        'version',
+        'timestamp',
+        'bits',
+        'nonce',
+        'difficulty',
+        'merkle_root',
+        'tx_count',
+        'size',
+        'weight',
+        'previousblockhash',
+        'mediantime',
+        'extras'
+      ];
+
       for (String field in requiredFields) {
         if (!responseData.containsKey(field) || responseData[field] == null) {
-          logger.w('Missing or null required field "$field" in txDetailsConfirmedF response');
+          logger.w(
+              'Missing or null required field "$field" in txDetailsConfirmedF response');
           loadingDetail.value = false;
           isLoading.value = false;
           return;
         }
       }
-      
+
       // Validate specific field types that commonly cause issues
       if (responseData['height'] is! int && responseData['height'] is! num) {
-        logger.w('Invalid height field type in txDetailsConfirmedF: ${responseData['height'].runtimeType}');
+        logger.w(
+            'Invalid height field type in txDetailsConfirmedF: ${responseData['height'].runtimeType}');
         loadingDetail.value = false;
         isLoading.value = false;
         return;
       }
-      
+
       txDetailsConfirmed = TransactionConfirmedDetail.fromJson(responseData);
       isLoading.value = false;
       update();
@@ -787,7 +809,7 @@ class HomeController extends BaseController {
       logger.w('txDetailsF called with null or empty txId');
       return;
     }
-    
+
     try {
       isLoadingTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
@@ -799,18 +821,18 @@ class HomeController extends BaseController {
         logger.w('Received null response data for txDetailsF');
         return;
       }
-      
+
       final responseData = response.data;
       if (responseData is! List) {
         logger.w('Response data is not a List');
         return;
       }
-      
+
       txDetails.clear();
       txDetailsFound.clear();
       txDetailsReset.clear();
       opReturns.clear();
-      
+
       // Safe iteration with null checks
       for (int i = 0; i < responseData.length && i < _maxListSize; i++) {
         final txData = responseData[i];
@@ -822,7 +844,7 @@ class HomeController extends BaseController {
           }
         }
       }
-      
+
       txDetailsFound = List.from(txDetails);
       txDetailsReset = List.from(txDetails);
       isLoadingTx.value = false;
@@ -838,14 +860,14 @@ class HomeController extends BaseController {
     }
   }
 
-/// Returns amount loaded, if less than 25, we are at the final page.
+  /// Returns amount loaded, if less than 25, we are at the final page.
   /// Returns -1 on error
   Future<int> txDetailsMore(String? txId, int page) async {
     if (txId == null || txId.isEmpty) {
       logger.w('txDetailsMore called with null or empty txId');
       return -1;
     }
-    
+
     try {
       isLoadingMoreTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
@@ -858,19 +880,21 @@ class HomeController extends BaseController {
         isLoadingMoreTx.value = false;
         return -1;
       }
-      
+
       final responseData = response.data;
       if (responseData is! List) {
         logger.w('Response data is not a List');
         isLoadingMoreTx.value = false;
         return -1;
       }
-      
+
       int addedCount = 0;
       // Check if we have space for more transactions
       final availableSpace = _maxListSize - txDetails.length;
-      
-      for (int i = 0; i < responseData.length && addedCount < availableSpace; i++) {
+
+      for (int i = 0;
+          i < responseData.length && addedCount < availableSpace;
+          i++) {
         final txData = responseData[i];
         if (txData != null) {
           try {
@@ -881,7 +905,7 @@ class HomeController extends BaseController {
           }
         }
       }
-      
+
       txDetailsFound = List.from(txDetails);
       txDetailsReset = List.from(txDetails);
       isLoadingMoreTx.value = false;
@@ -906,7 +930,8 @@ class HomeController extends BaseController {
 
   String timeFormat(int millisecondsString, int median) {
     DateTime medianDate = DateTime.now();
-    DateTime targetDate = DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
+    DateTime targetDate =
+        DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
     Duration difference = targetDate.difference(medianDate);
     return formatTimeAgo(targetDate);
   }
@@ -914,10 +939,20 @@ class HomeController extends BaseController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> createPost(
-      String postId, bool hasLiked, bool hasPrice, bool hasLikeButton, String nftName, String nftMainName, String cryptoText) async {
+      String postId,
+      bool hasLiked,
+      bool hasPrice,
+      bool hasLikeButton,
+      String nftName,
+      String nftMainName,
+      String cryptoText) async {
     try {
       // Check if a post with the given postId already exists
-      QuerySnapshot existingPost = await firestore.collection('postsNew').where('postId', isEqualTo: postId).limit(1).get();
+      QuerySnapshot existingPost = await firestore
+          .collection('postsNew')
+          .where('postId', isEqualTo: postId)
+          .limit(1)
+          .get();
 
       DocumentReference documentReference;
 
@@ -932,16 +967,20 @@ class HomeController extends BaseController {
       }
 
       // Set or update the post with the current time as createdAt
-      await documentReference.set({
-        'postId': postId,
-        'hasLiked': hasLiked,
-        'hasPrice': hasPrice,
-        'hasLikeButton': hasLikeButton,
-        'nftName': nftName,
-        'nftMainName': nftMainName,
-        'cryptoText': cryptoText,
-        'createdAt': DateTime.now().millisecondsSinceEpoch,
-      }, SetOptions(merge: true)); // Using SetOptions to merge the data instead of overwriting
+      await documentReference.set(
+          {
+            'postId': postId,
+            'hasLiked': hasLiked,
+            'hasPrice': hasPrice,
+            'hasLikeButton': hasLikeButton,
+            'nftName': nftName,
+            'nftMainName': nftMainName,
+            'cryptoText': cryptoText,
+            'createdAt': DateTime.now().millisecondsSinceEpoch,
+          },
+          SetOptions(
+              merge:
+                  true)); // Using SetOptions to merge the data instead of overwriting
     } catch (e) {
       print('Error adding post: $e');
     }
@@ -950,12 +989,18 @@ class HomeController extends BaseController {
   Future<List<PostsDataModel>?> fetchPosts() async {
     try {
       final currentTime = DateTime.now();
-      final oneWeekAgo = currentTime.subtract(const Duration(days: 7)).millisecondsSinceEpoch;
+      final oneWeekAgo =
+          currentTime.subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('postsNew').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('postsNew')
+          .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+          .get();
 
-      return querySnapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>)).toList();
+      return querySnapshot.docs
+          .map((doc) =>
+              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       logger.e(e);
       return null;
@@ -980,12 +1025,17 @@ class HomeController extends BaseController {
       String userId = Auth().currentUser!.uid;
 
       // Check if a like with the given postId and userId already exists
-      QuerySnapshot existingLike =
-          await firestore.collection('postsLike').where('postId', isEqualTo: postId).where('userId', isEqualTo: userId).limit(1).get();
+      QuerySnapshot existingLike = await firestore
+          .collection('postsLike')
+          .where('postId', isEqualTo: postId)
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
 
       if (existingLike.docs.isEmpty) {
         // If no document exists, create a new like
-        DocumentReference documentReference = firestore.collection('postsLike').doc();
+        DocumentReference documentReference =
+            firestore.collection('postsLike').doc();
         String likeId = documentReference.id;
         await documentReference.set({
           'likeId': likeId,
@@ -1013,7 +1063,8 @@ class HomeController extends BaseController {
         print('The posts collection does not exist.');
         return;
       }
-      QuerySnapshot querySnapshot = await postsCollection.where('postId', isEqualTo: postId).get();
+      QuerySnapshot querySnapshot =
+          await postsCollection.where('postId', isEqualTo: postId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference docRef = querySnapshot.docs.first.reference;
@@ -1029,14 +1080,18 @@ class HomeController extends BaseController {
 
   Future<bool?> fetchHasLiked(String postId, String userId) async {
     try {
-      QuerySnapshot collectionSnapshot = await firestore.collection('postsLike').limit(1).get();
+      QuerySnapshot collectionSnapshot =
+          await firestore.collection('postsLike').limit(1).get();
       if (collectionSnapshot.docs.isEmpty) {
         print('The postLikes collection does not exist.');
         return false;
       }
 
-      QuerySnapshot querySnapshot =
-          await firestore.collection('postsLike').where('postId', isEqualTo: postId).where('userId', isEqualTo: userId).get();
+      QuerySnapshot querySnapshot = await firestore
+          .collection('postsLike')
+          .where('postId', isEqualTo: postId)
+          .where('userId', isEqualTo: userId)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return true;
@@ -1052,12 +1107,16 @@ class HomeController extends BaseController {
 
   Future<void> createClicks(String postId) async {
     try {
-      DocumentReference documentReference = firestore.collection('postsClick').doc();
+      DocumentReference documentReference =
+          firestore.collection('postsClick').doc();
       String clickId = documentReference.id;
       String currentUserId = Auth().currentUser!.uid;
 
-      QuerySnapshot querySnapshot =
-          await firestore.collection('postsClick').where('postId', isEqualTo: postId).where('userId', isEqualTo: currentUserId).get();
+      QuerySnapshot querySnapshot = await firestore
+          .collection('postsClick')
+          .where('postId', isEqualTo: postId)
+          .where('userId', isEqualTo: currentUserId)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference existingDocRef = querySnapshot.docs.first.reference;
@@ -1078,10 +1137,13 @@ class HomeController extends BaseController {
   }
 
   Future<Map<String, int>> getMostLikedPostIds() async {
-    final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
+    final oneWeekAgo =
+        DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('postsLike').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('postsLike')
+        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+        .get();
 
     Map<String, int> likeCountMap = {};
 
@@ -1096,10 +1158,13 @@ class HomeController extends BaseController {
   }
 
   Future<Map<String, int>> getMostClickedPostIds() async {
-    final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
+    final oneWeekAgo =
+        DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('postsClick').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('postsClick')
+        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+        .get();
 
     Map<String, int> clickCountMap = {};
 
@@ -1134,9 +1199,11 @@ class HomeController extends BaseController {
     }
 
     // Sort by total interactions
-    final sortedPostIds = totalCountMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final sortedPostIds = totalCountMap.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
-    final sortedRelevantPostIds = sortedPostIds.map((entry) => entry.key).toList();
+    final sortedRelevantPostIds =
+        sortedPostIds.map((entry) => entry.key).toList();
     // print(sortedRelevantPostIds);
 
     if (sortedRelevantPostIds.isEmpty) {
@@ -1150,12 +1217,19 @@ class HomeController extends BaseController {
     for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
       var chunk = sortedRelevantPostIds.sublist(
         i,
-        i + chunkSize > sortedRelevantPostIds.length ? sortedRelevantPostIds.length : i + chunkSize,
+        i + chunkSize > sortedRelevantPostIds.length
+            ? sortedRelevantPostIds.length
+            : i + chunkSize,
       );
       // print(chunk);
 
-      final snapshot = await FirebaseFirestore.instance.collection('postsNew').where('postId', whereIn: chunk).get();
-      allPosts.addAll(snapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data())).toList());
+      final snapshot = await FirebaseFirestore.instance
+          .collection('postsNew')
+          .where('postId', whereIn: chunk)
+          .get();
+      allPosts.addAll(snapshot.docs
+          .map((doc) => PostsDataModel.fromJson(doc.data()))
+          .toList());
       // print(allPosts);
     }
 
@@ -1165,17 +1239,17 @@ class HomeController extends BaseController {
   @override
   void onClose() {
     _isDisposed = true;
-    
+
     // Clean up WebSocket resources
     _closeWebSocket();
-    
+
     // Cancel reconnection timers
     _reconnectTimer?.cancel();
     _pingTimer?.cancel();
-    
+
     // Dispose text controllers
     searchCtrl.dispose();
-    
+
     // Clear data collections to free memory
     bitcoinData.clear();
     txDetails.clear();
@@ -1188,7 +1262,7 @@ class HomeController extends BaseController {
     transaction.clear();
     transactionReplacements.clear();
     postsDataList?.clear();
-    
+
     logger.i('HomeController disposed successfully');
     super.onClose();
   }

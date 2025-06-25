@@ -43,7 +43,8 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _scrollListener() {
-    if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent &&
+    if (controller.scrollController.position.pixels ==
+            controller.scrollController.position.maxScrollExtent &&
         !controller.assetsLoading.value) {
       _loadMoreData();
     }
@@ -69,12 +70,13 @@ class _ProfileViewState extends State<ProfileView> {
       body: Obx(() {
         // Debug logging
         print('ProfileView - isUserLoading: ${controller.isUserLoading.value}');
-        print('ProfileView - profileLoadError: ${controller.profileLoadError.value}');
-        
+        print(
+            'ProfileView - profileLoadError: ${controller.profileLoadError.value}');
+
         if (controller.isUserLoading.value) {
           return Center(child: dotProgress(context));
         }
-        
+
         // Show error message if profile failed to load
         if (controller.profileLoadError.value.isNotEmpty) {
           return Center(
@@ -125,7 +127,7 @@ class _ProfileViewState extends State<ProfileView> {
             ),
           );
         }
-        
+
         return CustomScrollView(
           controller: controller.scrollController,
           slivers: [
@@ -142,7 +144,8 @@ class _ProfileViewState extends State<ProfileView> {
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 0.75),
+          padding:
+              const EdgeInsets.only(bottom: AppTheme.elementSpacing * 0.75),
           child: LongButtonWidget(
             buttonType: ButtonType.solid,
             customHeight: AppTheme.cardPadding * 1.7,
@@ -150,11 +153,12 @@ class _ProfileViewState extends State<ProfileView> {
             leadingIcon: Icon(
               FontAwesomeIcons.add,
               size: AppTheme.cardPadding * 0.75,
-              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
-                  ? Colors.white 
-                  : Theme.of(context).brightness == Brightness.light 
-                      ? AppTheme.white70 
-                      : AppTheme.black60,
+              color:
+                  Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                      ? Colors.white
+                      : Theme.of(context).brightness == Brightness.light
+                          ? AppTheme.white70
+                          : AppTheme.black60,
             ),
             title: 'Create',
             onTap: () {

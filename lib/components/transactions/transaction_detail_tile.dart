@@ -7,7 +7,7 @@ class TransactionDetailTile extends StatelessWidget {
   final Widget? leading;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? contentPadding;
-  
+
   const TransactionDetailTile({
     required this.text,
     this.trailing,
@@ -16,14 +16,15 @@ class TransactionDetailTile extends StatelessWidget {
     this.contentPadding,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: contentPadding ?? const EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing * 0.75,
-        vertical: AppTheme.elementSpacing * 0.5,
-      ),
+      contentPadding: contentPadding ??
+          const EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing * 0.75,
+            vertical: AppTheme.elementSpacing * 0.5,
+          ),
       onTap: onTap,
       title: Text(
         text,

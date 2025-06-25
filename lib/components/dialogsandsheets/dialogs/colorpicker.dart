@@ -10,17 +10,16 @@ Future<bool?> showColorPickerDialouge({
   required Function() actionright,
   required onColorChanged,
 }) {
-
   return showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(200.0),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(200.0),
               topRight: Radius.circular(200.0),
               bottomRight: Radius.circular(24),
-              bottomLeft: Radius.circular(24)
-          ),
+              bottomLeft: Radius.circular(24)),
         ),
         backgroundColor: Theme.of(context).colorScheme.surface,
         content: Column(
@@ -47,7 +46,8 @@ Future<bool?> showColorPickerDialouge({
                   customHeight: AppTheme.cardPadding * 2,
                   buttonType: ButtonType.transparent,
                   textColor: AppTheme.errorColor,
-                  leadingIcon: Icon(Icons.stop_rounded, color: AppTheme.errorColor, size: 16),
+                  leadingIcon: Icon(Icons.stop_rounded,
+                      color: AppTheme.errorColor, size: 16),
                 ),
                 LongButtonWidget(
                   title: "Apply",
@@ -56,7 +56,8 @@ Future<bool?> showColorPickerDialouge({
                   customHeight: AppTheme.cardPadding * 2,
                   buttonType: ButtonType.transparent,
                   textColor: AppTheme.successColor,
-                  leadingIcon: Icon(Icons.done_rounded, color: AppTheme.successColor, size: 16),
+                  leadingIcon: Icon(Icons.done_rounded,
+                      color: AppTheme.successColor, size: 16),
                 ),
               ],
             ),

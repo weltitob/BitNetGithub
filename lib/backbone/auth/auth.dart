@@ -48,7 +48,7 @@ Authentication and Cloud Firestore.
 class Auth {
   // Initialize FirebaseAuth instance with web safety
   final fbAuth.FirebaseAuth _firebaseAuth;
-  
+
   // Safe constructor for web
   Auth() : _firebaseAuth = fbAuth.FirebaseAuth.instance {
     // No additional initialization needed
@@ -172,20 +172,24 @@ class Auth {
       logger.i("🔥 Step 2: Generating challenge...");
       logger.i("🔥 📤 === CALLING CREATE_CHALLENGE CLOUD FUNCTION ===");
       logger.i("🔥 📤 Request DID: '${user.did}'");
-      logger.i("🔥 📤 Request Challenge Type: ${ChallengeType.default_registration}");
+      logger.i(
+          "🔥 📤 Request Challenge Type: ${ChallengeType.default_registration}");
       logger.i("🔥 📤 About to call create_challenge()...");
-      
-      userChallengeResponse = await create_challenge(user.did, ChallengeType.default_registration);
-      
+
+      userChallengeResponse =
+          await create_challenge(user.did, ChallengeType.default_registration);
+
       logger.i("🔥 📥 === CREATE_CHALLENGE CLOUD FUNCTION RESPONSE ===");
-      logger.i("🔥 📥 Response received: ${userChallengeResponse != null ? 'NOT NULL' : 'NULL'}");
+      logger.i(
+          "🔥 📥 Response received: ${userChallengeResponse != null ? 'NOT NULL' : 'NULL'}");
 
       if (userChallengeResponse == null) {
         logger.e("❌ Challenge creation returned null");
         throw Exception("Challenge creation failed: null response");
       }
 
-      logger.i('🔥 📥 Challenge response type: ${userChallengeResponse.runtimeType}');
+      logger.i(
+          '🔥 📥 Challenge response type: ${userChallengeResponse.runtimeType}');
       logger.i('🔥 📥 Challenge response toString: $userChallengeResponse');
       logger.i('✅ Created challenge for user ${user.did}');
 
@@ -199,7 +203,8 @@ class Auth {
       logger.e("❌ Stack trace: $stackTrace");
       logger.e("❌ Error type: ${e.runtimeType}");
       if (e is StateError) {
-        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from create_challenge!");
+        logger.e(
+            "❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from create_challenge!");
       }
       throw Exception("Failed to create challenge: $e");
     }
@@ -207,49 +212,57 @@ class Auth {
     // Step 3: Get private data (skip retrieval during registration)
     if (mnemonicForRegistration != null) {
       logger.i("🔥 Step 3: Using provided mnemonic for registration...");
-      logger.i("🔥 Registration mnemonic length: ${mnemonicForRegistration.split(' ').length} words");
-      logger.i("🔥 ✅ Skipping getPrivateData() call during registration - using direct mnemonic");
-      
+      logger.i(
+          "🔥 Registration mnemonic length: ${mnemonicForRegistration.split(' ').length} words");
+      logger.i(
+          "🔥 ✅ Skipping getPrivateData() call during registration - using direct mnemonic");
+
       // Create temporary PrivateData object for registration
-      privateData = PrivateData(did: user.did, mnemonic: mnemonicForRegistration);
+      privateData =
+          PrivateData(did: user.did, mnemonic: mnemonicForRegistration);
     } else {
       logger.i("🔥 Step 3: Retrieving stored private data for login...");
       try {
         logger.i("🔥 Looking for DID: ${user.did}");
         privateData = await getPrivateData(user.did);
         logger.i('✅ Retrieved private data for user ${user.did}');
-        logger.i('Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
+        logger.i(
+            'Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
       } catch (e, stackTrace) {
         logger.e("❌ Failed to retrieve private data: $e");
-        logger.e("❌ This is likely where the 'Bad state: No element' error occurs!");
+        logger.e(
+            "❌ This is likely where the 'Bad state: No element' error occurs!");
         throw Exception("Failed to retrieve private data: $e");
       }
     }
 
-    
     // Determine the working node ID from user's specific node mapping
     String workingNodeId;
     try {
       logger.i('🔥 Looking up user\'s specific node mapping...');
-      String recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
-      UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
-      
+      String recoveryDid =
+          RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+      UserNodeMapping? nodeMapping =
+          await NodeMappingService.getUserNodeMapping(recoveryDid);
+
       if (nodeMapping != null) {
         workingNodeId = nodeMapping.nodeId;
         logger.i('🔥 ✅ Found user\'s assigned node: $workingNodeId');
       } else {
-        logger.e('🔥 ❌ No node mapping found for user - this violates one-user-one-node architecture');
-        throw Exception("No exclusive Lightning node found for user. Each user must have their own dedicated node.");
+        logger.e(
+            '🔥 ❌ No node mapping found for user - this violates one-user-one-node architecture');
+        throw Exception(
+            "No exclusive Lightning node found for user. Each user must have their own dedicated node.");
       }
     } catch (e) {
       logger.e('🔥 ❌ Error retrieving node mapping: $e');
       throw Exception("Failed to find user's exclusive Lightning node: $e");
     }
     logger.i('🔥 Using working node ID: $workingNodeId');
-    
+
     // Lightning-native authentication using user's specific node
     logger.i("🔥 === LIGHTNING-NATIVE AUTHENTICATION ===");
-    
+
     String? lightningSignature;
     try {
       // Step 4: Sign the challenge with Lightning node using user's specific macaroon
@@ -259,31 +272,33 @@ class Auth {
       logger.i("🔥 📤 Using node ID: $workingNodeId");
       logger.i("🔥 📤 User DID: ${user.did}");
       logger.i("🔥 📤 About to call signLightningMessage()...");
-      
+
       lightningSignature = await signLightningMessage(
         challengeData,
         nodeId: workingNodeId,
         userDid: user.did, // Pass user DID to use their specific macaroon
       );
-      
+
       logger.i("🔥 📥 === SIGN_LIGHTNING_MESSAGE CLOUD FUNCTION RESPONSE ===");
-      logger.i("🔥 📥 Response received: ${lightningSignature != null ? 'NOT NULL' : 'NULL'}");
-      
+      logger.i(
+          "🔥 📥 Response received: ${lightningSignature != null ? 'NOT NULL' : 'NULL'}");
+
       if (lightningSignature == null) {
         logger.e("❌ Lightning signing returned null signature");
         throw Exception("Lightning signing failed: null signature returned");
       }
-      
+
       logger.i("🔥 📥 Signature type: ${lightningSignature.runtimeType}");
       logger.i("🔥 📥 Signature length: ${lightningSignature.length}");
-      logger.i("✅ Lightning signature created: ${lightningSignature.substring(0, 20)}...");
+      logger.i(
+          "✅ Lightning signature created: ${lightningSignature.substring(0, 20)}...");
     } catch (e, stackTrace) {
       logger.e("❌ Lightning signing failed: $e");
       logger.e("❌ Stack trace: $stackTrace");
       logger.e("❌ Error type: ${e.runtimeType}");
       throw Exception("Lightning signing failed: $e");
     }
-    
+
     dynamic customAuthToken;
     try {
       // Step 5: Verify with Lightning verification
@@ -291,22 +306,24 @@ class Auth {
       logger.i("🔥 📤 === CALLING VERIFY_MESSAGE CLOUD FUNCTION ===");
       logger.i("🔥 📤 Request DID: ${user.did}");
       logger.i("🔥 📤 Request Challenge ID: $challengeId");
-      logger.i("🔥 📤 Request Signature: ${lightningSignature.substring(0, 20)}...");
+      logger.i(
+          "🔥 📤 Request Signature: ${lightningSignature.substring(0, 20)}...");
       logger.i("🔥 📤 Request Node ID: $workingNodeId");
       logger.i("🔥 📤 About to call verifyMessage()...");
-      
+
       customAuthToken = await verifyMessage(
         user.did, // Use DID for Lightning verification
         challengeId.toString(),
         lightningSignature,
         nodeId: workingNodeId, // Send node_id to backend
       );
-      
+
       logger.i("🔥 📥 === VERIFY_MESSAGE CLOUD FUNCTION RESPONSE ===");
-      logger.i("🔥 📥 Response received: ${customAuthToken != null ? 'NOT NULL' : 'NULL'}");
+      logger.i(
+          "🔥 📥 Response received: ${customAuthToken != null ? 'NOT NULL' : 'NULL'}");
       logger.i("🔥 📥 Response type: ${customAuthToken.runtimeType}");
       logger.i("✅ Verify message response: ${customAuthToken.toString()}");
-      
+
       if (customAuthToken == null) {
         logger.e("❌ Lightning verification returned null token");
         throw Exception("Lightning verification failed: null token returned");
@@ -316,7 +333,8 @@ class Auth {
       logger.e("❌ Stack trace: $stackTrace");
       logger.e("❌ Error type: ${e.runtimeType}");
       if (e is StateError) {
-        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from verifyMessage!");
+        logger.e(
+            "❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from verifyMessage!");
       }
       throw Exception("Lightning verification failed: $e");
     }
@@ -324,24 +342,28 @@ class Auth {
     try {
       // Step 6: Register individual Lightning node (replaces genLitdAccount)
       logger.i("🔥 Step 6: Registering individual Lightning node...");
-      
+
       // Get Lightning node info for registration
       String caddyEndpoint = LightningConfig.getCaddyEndpoint(workingNodeId);
-      
+
       // Get the node mapping to access the admin macaroon
-      String recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
-      UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
-      
+      String recoveryDid =
+          RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+      UserNodeMapping? nodeMapping =
+          await NodeMappingService.getUserNodeMapping(recoveryDid);
+
       if (nodeMapping != null) {
         // Call getNodeInfo to get the Lightning pubkey
         RestResponse nodeInfoResponse = await getNodeInfo(
           nodeId: workingNodeId,
           adminMacaroon: nodeMapping.adminMacaroon,
         );
-        
-        if (nodeInfoResponse.statusCode == "200" && nodeInfoResponse.data != null) {
-          String lightningPubkey = nodeInfoResponse.data['identity_pubkey'] ?? '';
-          
+
+        if (nodeInfoResponse.statusCode == "200" &&
+            nodeInfoResponse.data != null) {
+          String lightningPubkey =
+              nodeInfoResponse.data['identity_pubkey'] ?? '';
+
           if (lightningPubkey.isNotEmpty) {
             // Register the individual Lightning node
             bool registrationSuccess = await registerIndividualLightningNode(
@@ -351,7 +373,7 @@ class Auth {
               lightningPubkey: lightningPubkey,
               caddyEndpoint: caddyEndpoint,
             );
-            
+
             if (registrationSuccess) {
               logger.i("✅ Individual Lightning node registered successfully");
             } else {
@@ -376,19 +398,21 @@ class Auth {
     try {
       logger.i("🔥 Step 7: Signing in with Firebase custom token...");
       logger.i("🔥 📤 === CALLING FIREBASE SIGN_IN_WITH_TOKEN ===");
-      logger.i("🔥 📤 Custom token: ${customAuthToken.toString().substring(0, 50)}...");
+      logger.i(
+          "🔥 📤 Custom token: ${customAuthToken.toString().substring(0, 50)}...");
       logger.i("🔥 📤 About to call signInWithToken()...");
-      
+
       currentuser = await signInWithToken(customToken: customAuthToken);
-      
+
       logger.i("🔥 📥 === FIREBASE SIGN_IN_WITH_TOKEN RESPONSE ===");
-      logger.i("🔥 📥 Response received: ${currentuser != null ? 'NOT NULL' : 'NULL'}");
-      
+      logger.i(
+          "🔥 📥 Response received: ${currentuser != null ? 'NOT NULL' : 'NULL'}");
+
       if (currentuser == null) {
         logger.e("❌ Firebase sign-in returned null user");
         throw Exception("Firebase sign-in failed: null user returned");
       }
-      
+
       logger.i("🔥 📥 User credential type: ${currentuser.runtimeType}");
       logger.i("🔥 📥 User UID: ${currentuser.user?.uid}");
       logger.i("✅ Firebase sign-in successful: ${currentuser.user?.uid}");
@@ -397,14 +421,16 @@ class Auth {
       logger.e("❌ Stack trace: $stackTrace");
       logger.e("❌ Error type: ${e.runtimeType}");
       if (e is StateError) {
-        logger.e("❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from Firebase sign-in!");
+        logger.e(
+            "❌ 🚨 THIS IS A STATE ERROR - likely the 'Bad state: No element' from Firebase sign-in!");
       }
       throw Exception("Firebase sign-in failed: $e");
     }
 
     try {
       logger.i("🔥 Step 8: Fetching remote config...");
-      final remoteConfigController = Get.put(RemoteConfigController(), permanent: true);
+      final remoteConfigController =
+          Get.put(RemoteConfigController(), permanent: true);
       await remoteConfigController.fetchRemoteConfigData();
       logger.i("✅ Remote config fetched successfully");
     } catch (e) {
@@ -548,7 +574,8 @@ class Auth {
     logger.i("Signing in user...");
 
     // SIMPLIFIED: Use mnemonic-based DID generation consistently
-    final String did = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+    final String did =
+        RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
     logger.i("Generated DID from mnemonic: $did");
 
     try {
@@ -582,16 +609,19 @@ class Auth {
       //now check if user has an individual node or uses the old LITD account system
       try {
         final userId = did.toString();
-        
+
         // Generate recovery DID from the mnemonic for individual node users
-        final recoveryDid = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
-        
+        final recoveryDid =
+            RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
+
         // First check if user has an individual node mapping using recovery DID
-        final userNodeMapping = await NodeMappingService.getUserNodeMapping(recoveryDid);
-            
+        final userNodeMapping =
+            await NodeMappingService.getUserNodeMapping(recoveryDid);
+
         if (userNodeMapping != null) {
           // User has an individual node - skip LITD account retrieval
-          logger.i("User has individual node mapping - skipping LITD account retrieval");
+          logger.i(
+              "User has individual node mapping - skipping LITD account retrieval");
           logger.i("Node ID: ${userNodeMapping.nodeId}");
           logger.i("Lightning Pubkey: ${userNodeMapping.shortLightningPubkey}");
         } else {

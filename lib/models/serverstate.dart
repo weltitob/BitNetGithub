@@ -5,7 +5,8 @@ class ServerStateModel {
   final Map<String, dynamic>? subServers; // from SubServersStatus
   final DateTime lastUpdated;
   final String? mnemonicSeed; // Optional: store mnemonic if you want
-  final String? macaroonRootKey; // Optional: store macaroon root key if you want
+  final String?
+      macaroonRootKey; // Optional: store macaroon root key if you want
 
   ServerStateModel({
     required this.publicIp,
@@ -31,7 +32,8 @@ class ServerStateModel {
     return ServerStateModel(
       publicIp: map['publicIp'] ?? '',
       isActive: map['isActive'] ?? false,
-      lastUpdated: DateTime.tryParse(map['lastUpdated'] ?? '') ?? DateTime.now(),
+      lastUpdated:
+          DateTime.tryParse(map['lastUpdated'] ?? '') ?? DateTime.now(),
       subServers: map['subServers'] as Map<String, dynamic>?,
       mnemonicSeed: map['mnemonicSeed'],
       macaroonRootKey: map['macaroonRootKey'],

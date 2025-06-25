@@ -17,13 +17,17 @@ class EditEyeRight extends StatelessWidget {
               child: IconButton(
                 color: AppTheme.white90,
                 onPressed: () {
-                  controller.showFollwers!.value = !controller.showFollwers!.value;
-                  controller.updateShowFollowers(controller.showFollwers!.value);
+                  controller.showFollwers!.value =
+                      !controller.showFollwers!.value;
+                  controller
+                      .updateShowFollowers(controller.showFollwers!.value);
                 },
                 icon: controller.showFollwers == null
                     ? Container()
                     : Icon(
-                        controller.showFollwers!.value ? Icons.remove_red_eye_rounded : Icons.cancel,
+                        controller.showFollwers!.value
+                            ? Icons.remove_red_eye_rounded
+                            : Icons.cancel,
                       ),
               ),
             )

@@ -25,7 +25,7 @@ class CenterWidgetIcon extends StatelessWidget {
 
     return Obx(() {
       final bool isSelected = (controller.currentview.value == index);
-      
+
       return GestureDetector(
         onTap: onTap,
         child: Container(
@@ -42,7 +42,7 @@ class CenterWidgetIcon extends StatelessWidget {
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurface.withOpacity(0.5),
               ),
-              
+
               // Indicator bar
               AnimatedContainer(
                 duration: AppTheme.animationDuration,

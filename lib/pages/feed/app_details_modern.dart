@@ -16,7 +16,7 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 
 class AppDetailsModern extends StatefulWidget {
   final AppData app;
-  
+
   const AppDetailsModern({
     Key? key,
     required this.app,
@@ -37,7 +37,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
   int downloadCount = 0;
   // appSize entfernt - wird nicht mehr angezeigt
   String developerName = 'BitNET Community';
-  
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +45,7 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
     fetchRatings();
     fetchDownloadStats();
   }
-  
+
   Future<void> checkOwnership() async {
     final doc = await Databaserefs.appsRef.doc(Auth().currentUser!.uid).get();
     if (doc.exists && doc.data() != null && doc.data()!['apps'] != null) {
@@ -55,84 +55,86 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
     loading = false;
     if (mounted) setState(() {});
   }
-  
+
   Future<void> fetchRatings() async {
     try {
       final ratingsDoc = await FirebaseFirestore.instance
           .collection('app_ratings')
           .doc(widget.app.docId)
           .get();
-      
+
       if (ratingsDoc.exists) {
         final data = ratingsDoc.data()!;
         averageRating = (data['average_rating'] ?? 0).toDouble();
         totalRatings = data['total_ratings'] ?? 0;
       }
-      
+
       final userRatingDoc = await FirebaseFirestore.instance
           .collection('app_ratings')
           .doc(widget.app.docId)
           .collection('user_ratings')
           .doc(Auth().currentUser!.uid)
           .get();
-      
+
       if (userRatingDoc.exists) {
         hasRated = true;
         userRating = (userRatingDoc.data()!['rating'] ?? 0).toDouble();
       }
-      
+
       if (mounted) setState(() {});
     } catch (e) {
       print('Error fetching ratings: $e');
     }
   }
-  
+
   Future<void> fetchDownloadStats() async {
     try {
       final statsDoc = await FirebaseFirestore.instance
           .collection('app_stats')
           .doc(widget.app.docId)
           .get();
-      
+
       if (statsDoc.exists) {
         final data = statsDoc.data()!;
         downloadCount = data['download_count'] ?? 0;
       }
-      
+
       if (mounted) setState(() {});
     } catch (e) {
       print('Error fetching download stats: $e');
     }
   }
-  
+
   String _formatDownloadCount(int count) {
     if (count < 1000) return count.toString();
     if (count < 1000000) return '${(count / 1000).toStringAsFixed(1)}K';
     return '${(count / 1000000).toStringAsFixed(1)}M';
   }
-  
+
   Future<void> submitRating(double rating) async {
     try {
       final userId = Auth().currentUser!.uid;
       final batch = FirebaseFirestore.instance.batch();
-      
+
       final userRatingRef = FirebaseFirestore.instance
           .collection('app_ratings')
           .doc(widget.app.docId)
           .collection('user_ratings')
           .doc(userId);
-      
+
       batch.set(userRatingRef, {
         'rating': rating,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      
+
       final appRatingRef = FirebaseFirestore.instance
           .collection('app_ratings')
           .doc(widget.app.docId);
-      
+
       if (hasRated) {
-        final newAverage = ((averageRating * totalRatings) - userRating + rating) / totalRatings;
+        final newAverage =
+            ((averageRating * totalRatings) - userRating + rating) /
+                totalRatings;
         batch.update(appRatingRef, {
           'average_rating': newAverage,
           'last_updated': FieldValue.serverTimestamp(),
@@ -140,19 +142,22 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
       } else {
         final newTotal = totalRatings + 1;
         final newAverage = ((averageRating * totalRatings) + rating) / newTotal;
-        batch.set(appRatingRef, {
-          'average_rating': newAverage,
-          'total_ratings': newTotal,
-          'last_updated': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
+        batch.set(
+            appRatingRef,
+            {
+              'average_rating': newAverage,
+              'total_ratings': newTotal,
+              'last_updated': FieldValue.serverTimestamp(),
+            },
+            SetOptions(merge: true));
       }
-      
+
       await batch.commit();
-      
+
       userRating = rating;
       hasRated = true;
       await fetchRatings();
-      
+
       if (mounted) {
         final overlayController = Get.find<OverlayController>();
         overlayController.showOverlay('Rating submitted successfully!');
@@ -161,11 +166,12 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
       print('Error submitting rating: $e');
       if (mounted) {
         final overlayController = Get.find<OverlayController>();
-        overlayController.showOverlay('Failed to submit rating', color: AppTheme.errorColor);
+        overlayController.showOverlay('Failed to submit rating',
+            color: AppTheme.errorColor);
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -181,224 +187,244 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-            // Hero Header
-            Container(
-              height: 300.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                    Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  // Pattern overlay
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: PatternPainter(
-                        color: Colors.white.withOpacity(0.05),
-                      ),
+                // Hero Header
+                Container(
+                  height: 300.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                        Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      ],
                     ),
                   ),
-                  // Content
-                  SafeArea(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // App Icon
-                          Container(
-                            width: 100.w,
-                            height: 100.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24.r),
-                              child: CachedAppImage(
-                                app: widget.app,
-                                width: 80.w,
-                                height: 80.h,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20.h),
-                          // App Name
-                          Text(
-                            widget.app.name,
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          // App Developer
-                          Text(
-                            'BitNET Community',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // App Info Cards
-            Padding(
-              padding: EdgeInsets.all(AppTheme.cardPadding.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Stats Row
-                  Row(
+                  child: Stack(
                     children: [
-                      Expanded(
-                        child: _buildStatCard(
-                          context,
-                          icon: Icons.star_rounded,
-                          value: averageRating > 0 ? averageRating.toStringAsFixed(1) : 'N/A',
-                          label: totalRatings > 0 ? '$totalRatings ratings' : 'No ratings',
-                          isRating: true,
+                      // Pattern overlay
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: PatternPainter(
+                            color: Colors.white.withOpacity(0.05),
+                          ),
                         ),
                       ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: _buildStatCard(
-                          context,
-                          icon: Icons.download_rounded,
-                          value: downloadCount > 0 ? _formatDownloadCount(downloadCount) : '0',
-                          label: 'Downloads',
+                      // Content
+                      SafeArea(
+                        child: Padding(
+                          padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // App Icon
+                              Container(
+                                width: 100.w,
+                                height: 100.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 20,
+                                      offset: Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(24.r),
+                                  child: CachedAppImage(
+                                    app: widget.app,
+                                    width: 80.w,
+                                    height: 80.h,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
+                              // App Name
+                              Text(
+                                widget.app.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              SizedBox(height: 8.h),
+                              // App Developer
+                              Text(
+                                'BitNET Community',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  
-                  SizedBox(height: 24.h),
-                  
-                  // Description
-                  Text(
-                    'About this app',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  SizedBox(height: 12.h),
-                  Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                ),
+
+                // App Info Cards
+                Padding(
+                  padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Stats Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildStatCard(
+                              context,
+                              icon: Icons.star_rounded,
+                              value: averageRating > 0
+                                  ? averageRating.toStringAsFixed(1)
+                                  : 'N/A',
+                              label: totalRatings > 0
+                                  ? '$totalRatings ratings'
+                                  : 'No ratings',
+                              isRating: true,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: _buildStatCard(
+                              context,
+                              icon: Icons.download_rounded,
+                              value: downloadCount > 0
+                                  ? _formatDownloadCount(downloadCount)
+                                  : '0',
+                              label: 'Downloads',
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    child: Text(
-                      widget.app.desc,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        height: 1.5,
+
+                      SizedBox(height: 24.h),
+
+                      // Description
+                      Text(
+                        'About this app',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                    ),
+                      SizedBox(height: 12.h),
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withOpacity(0.1),
+                          ),
+                        ),
+                        child: Text(
+                          widget.app.desc,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    height: 1.5,
+                                  ),
+                        ),
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      // Features
+                      Text(
+                        'Features',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(height: 12.h),
+                      _buildFeatureItem(context, Icons.flash_on,
+                          'Lightning fast transactions'),
+                      _buildFeatureItem(
+                          context, Icons.security, 'Secure and private'),
+                      _buildFeatureItem(
+                          context, Icons.cloud_off, 'Works offline'),
+                      _buildFeatureItem(
+                          context, Icons.language, 'Multi-language support'),
+
+                      SizedBox(height: 100.h), // Space for bottom button
+                    ],
                   ),
-                  
-                  SizedBox(height: 24.h),
-                  
-                  // Features
-                  Text(
-                    'Features',
-                    style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
+          ),
+          // Bottom Button - BitNET Style
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding.w,
+                vertical: AppTheme.cardPadding.h,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: Offset(0, -5),
                   ),
-                  SizedBox(height: 12.h),
-                  _buildFeatureItem(context, Icons.flash_on, 'Lightning fast transactions'),
-                  _buildFeatureItem(context, Icons.security, 'Secure and private'),
-                  _buildFeatureItem(context, Icons.cloud_off, 'Works offline'),
-                  _buildFeatureItem(context, Icons.language, 'Multi-language support'),
-                  
-                  SizedBox(height: 100.h), // Space for bottom button
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-      // Bottom Button - BitNET Style
-      Positioned(
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppTheme.cardPadding.w,
-            vertical: AppTheme.cardPadding.h,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, -5),
+              child: SafeArea(
+                top: false,
+                child: LongButtonWidget(
+                  title: appOwned ? 'Open' : 'Get',
+                  customWidth: double.infinity,
+                  state: buttonLoading ? ButtonState.loading : ButtonState.idle,
+                  onTap: () async {
+                    if (appOwned) {
+                      buttonLoading = true;
+                      setState(() {});
+
+                      final url = await widget.app.getUrl();
+                      context.pushNamed(kWebViewScreenRoute, pathParameters: {
+                        'url': url,
+                        'name': widget.app.name,
+                      }, extra: {
+                        'is_app': true
+                      });
+
+                      buttonLoading = false;
+                      if (mounted) setState(() {});
+                    } else {
+                      buttonLoading = true;
+                      setState(() {});
+
+                      await addAppToUser(widget.app);
+                      appOwned = true;
+
+                      buttonLoading = false;
+                      if (mounted) setState(() {});
+                    }
+                  },
+                ),
               ),
-            ],
-          ),
-          child: SafeArea(
-            top: false,
-            child: LongButtonWidget(
-              title: appOwned ? 'Open' : 'Get',
-              customWidth: double.infinity,
-              state: buttonLoading ? ButtonState.loading : ButtonState.idle,
-              onTap: () async {
-                if (appOwned) {
-                  buttonLoading = true;
-                  setState(() {});
-                  
-                  final url = await widget.app.getUrl();
-                  context.pushNamed(kWebViewScreenRoute,
-                    pathParameters: {
-                      'url': url,
-                      'name': widget.app.name,
-                    },
-                    extra: {'is_app': true}
-                  );
-                  
-                  buttonLoading = false;
-                  if (mounted) setState(() {});
-                } else {
-                  buttonLoading = true;
-                  setState(() {});
-                  
-                  await addAppToUser(widget.app);
-                  appOwned = true;
-                  
-                  buttonLoading = false;
-                  if (mounted) setState(() {});
-                }
-              },
             ),
           ),
-        ),
-      ),
         ],
       ),
     );
   }
-  
-  Widget _buildStatCard(BuildContext context, {
+
+  Widget _buildStatCard(
+    BuildContext context, {
     required IconData icon,
     required String value,
     required String label,
@@ -431,28 +457,29 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
           Text(
             value,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
           ),
           if (isRating && !appOwned)
             Text(
               'Get app to rate',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontSize: 10.sp,
-              ),
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 10.sp,
+                  ),
             ),
         ],
       ),
     );
   }
-  
+
   Widget _buildFeatureItem(BuildContext context, IconData icon, String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
@@ -485,25 +512,25 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
 // Pattern painter for background
 class PatternPainter extends CustomPainter {
   final Color color;
-  
+
   PatternPainter({required this.color});
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-    
+
     final spacing = 30.0;
     final radius = 2.0;
-    
+
     for (double x = 0; x < size.width; x += spacing) {
       for (double y = 0; y < size.height; y += spacing) {
         canvas.drawCircle(Offset(x, y), radius, paint);
       }
     }
   }
-  
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
@@ -513,7 +540,7 @@ class StarRating extends StatelessWidget {
   final double size;
   final Function(double)? onRatingChanged;
   final bool interactive;
-  
+
   const StarRating({
     Key? key,
     required this.rating,
@@ -521,7 +548,7 @@ class StarRating extends StatelessWidget {
     this.onRatingChanged,
     this.interactive = true,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -530,16 +557,16 @@ class StarRating extends StatelessWidget {
         final starValue = index + 1;
         final filled = rating >= starValue;
         final halfFilled = rating > index && rating < starValue;
-        
+
         return GestureDetector(
-          onTap: interactive && onRatingChanged != null 
-              ? () => onRatingChanged!(starValue.toDouble()) 
+          onTap: interactive && onRatingChanged != null
+              ? () => onRatingChanged!(starValue.toDouble())
               : null,
           child: Icon(
             halfFilled ? Icons.star_half : Icons.star,
             size: size,
-            color: filled || halfFilled 
-                ? AppTheme.colorBitcoin 
+            color: filled || halfFilled
+                ? AppTheme.colorBitcoin
                 : Colors.grey.withOpacity(0.3),
           ),
         );

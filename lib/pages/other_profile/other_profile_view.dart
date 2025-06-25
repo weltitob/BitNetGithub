@@ -34,7 +34,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
   }
 
   void _scrollListener() {
-    if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent &&
+    if (controller.scrollController.position.pixels ==
+            controller.scrollController.position.maxScrollExtent &&
         !controller.assetsLoading.value) {
       _loadMoreData();
     }
@@ -91,7 +92,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                 : CustomScrollView(
                     controller: controller.scrollController,
                     slivers: [
-                      const SliverToBoxAdapter(child: const OtherProfileHeader()),
+                      const SliverToBoxAdapter(
+                          child: const OtherProfileHeader()),
                       const SliverToBoxAdapter(
                         child: const SizedBox(
                           height: AppTheme.cardPadding * 0.75,

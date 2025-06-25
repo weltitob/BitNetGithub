@@ -124,13 +124,12 @@ class _OwnersTabViewState extends State<OwnersTabView> {
 
           // Owners List with GlassContainer wrapper for consistency
           GlassContainer(
-
             child: Column(
               children: filteredOwners.asMap().entries.map((item) {
                 int index = item.key;
                 int displayNumber = index + 1;
                 Map<String, Object> owner = item.value;
-                
+
                 return BitNetListTile(
                   margin: EdgeInsets.zero,
                   contentPadding: EdgeInsets.symmetric(
@@ -142,52 +141,56 @@ class _OwnersTabViewState extends State<OwnersTabView> {
                     name: owner["name"].toString(),
                     size: 48.w,
                     type: profilePictureType.onchain,
-                    cornerWidget: displayNumber <= 3 ? NumberIndicator(
-                      number: displayNumber,
-                      size: 0.8,
-                    ) : null,
+                    cornerWidget: displayNumber <= 3
+                        ? NumberIndicator(
+                            number: displayNumber,
+                            size: 0.8,
+                          )
+                        : null,
                     onTap: () {
                       // Handle owner profile tap
                     },
                   ),
-                      customTitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            owner["name"].toString(),
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            owner["address"].toString(),
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Theme.of(context).brightness == Brightness.dark 
-                                  ? AppTheme.white60 
+                  customTitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        owner["name"].toString(),
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        owner["address"].toString(),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? AppTheme.white60
                                   : AppTheme.black60,
                             ),
-                          ),
-                        ],
                       ),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "${owner["assets"]} assets",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            owner["percentage"].toString(),
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    ],
+                  ),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${owner["assets"]} assets",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        owner["percentage"].toString(),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ],
                       ),
+                    ],
+                  ),
                   onTap: () {
                     // Handle owner tap - navigate to owner detail
                   },

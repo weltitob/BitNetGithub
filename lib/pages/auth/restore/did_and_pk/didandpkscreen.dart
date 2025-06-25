@@ -21,14 +21,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-
 // izak: TO BE DELETED
-
-
-
-
-
-
 
 // Random random = new Random();
 

@@ -122,11 +122,11 @@ class ProfileController extends BaseController {
       EditProfileTab(),
     ];
     _setupUsernameListener();
-    
+
     // Clear any previous error state
     profileLoadError.value = '';
     isUserLoading.value = true;
-    
+
     loadData();
     fetchTaprootAssets();
   }
@@ -160,28 +160,29 @@ class ProfileController extends BaseController {
   Future<void> getUserId() async {
     final logger = Get.find<LoggerService>();
     logger.i("getUserId() called");
-    
+
     // Check if user is authenticated
     if (Auth().currentUser == null) {
       logger.e("No authenticated user found");
       profileId = "";
       throw Exception("Please log in to view your profile");
     }
-    
+
     final uid = Auth().currentUser!.uid;
     logger.i("Getting user id for profile page: $uid");
-    
+
     // In BitNET, the document ID should be the Firebase UID
     // So we directly use the UID as the profile ID
     profileId = uid;
-    
+
     // Verify the document exists
     try {
       logger.i("Checking if user document exists for UID: $uid");
       final doc = await usersCollection.doc(uid).get();
       if (!doc.exists) {
         logger.e("User document not found for UID: $uid");
-        throw Exception("User profile not found. Please complete your profile setup.");
+        throw Exception(
+            "User profile not found. Please complete your profile setup.");
       }
       logger.i("User document exists, profileId set to: $profileId");
     } catch (e) {
@@ -193,26 +194,26 @@ class ProfileController extends BaseController {
   void fetchTaprootAssets() async {
     final logger = Get.find<LoggerService>();
     logger.i('Fetching taproot assets...');
-    
+
     // Don't reload if already loading
     if (assetsLoading.value) return;
-    
+
     isLoading.value = true;
     assetsLoading.value = true;
-    
+
     try {
       List<Asset> fetchedAssets = await listTaprootAssets();
-      
+
       // Only update if data has changed
       if (fetchedAssets.length != assets.length) {
         List<Asset> reversedAssets = fetchedAssets.reversed.toList();
         assets.value = reversedAssets;
-        
+
         // Load initial batch of metadata
         await fetchNext20Metas(0, 10);
         assetsLazyLoading.value = assets.take(10).toList();
       }
-      
+
       isLoading.value = false;
     } catch (e) {
       logger.e('Error fetching taproot assets: $e');
@@ -254,15 +255,15 @@ class ProfileController extends BaseController {
   loadData() async {
     final logger = Get.find<LoggerService>();
     logger.i("Loading data for profile page");
-    
+
     try {
       // Reset error state
       profileLoadError.value = '';
       isUserLoading.value = true;
-      
+
       // First get user ID as it's required for other operations
       await getUserId();
-      
+
       // Run these operations in parallel
       await Future.wait<void>([
         getUser(),
@@ -270,12 +271,12 @@ class ProfileController extends BaseController {
         getFollowing(),
         checkIfFollowing(),
       ]);
-      
+
       // Initialize recovery options (non-critical, don't await)
       socialRecoveryInit();
       emailRecoveryInit();
       wordRecoveryInit();
-      
+
       // Add listeners only if not already initialized
       if (!_listenersInitialized) {
         addFocusNodeListenerAndUpdate(focusNodeUsername, updateUsername);
@@ -283,7 +284,7 @@ class ProfileController extends BaseController {
         addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
         _listenersInitialized = true;
       }
-      
+
       logger.i("Profile data loaded successfully");
     } catch (e) {
       logger.e("Error loading profile data: $e");
@@ -306,17 +307,17 @@ class ProfileController extends BaseController {
     try {
       logger.i("Getting user data for $profileId from firebase");
       isUserLoading.value = true;
-      
+
       if (profileId.isEmpty) {
         throw Exception("Invalid profile ID");
       }
-      
+
       DocumentSnapshot? doc = await usersCollection.doc(profileId).get();
-      
+
       if (!doc.exists) {
         throw Exception("User profile not found");
       }
-      
+
       userData = UserData.fromDocument(doc).obs;
 
       displayNameController.text = userData.value.displayName;
@@ -331,7 +332,7 @@ class ProfileController extends BaseController {
       showFollwers.value = userData.value.showFollowers;
       _backgroundImage.value = userData.value.backgroundImageUrl;
       _profileImage.value = userData.value.profileImageUrl;
-      
+
       // Only add text controller listeners once
       if (!_listenersInitialized) {
         displayNameController.addListener(() {
@@ -344,7 +345,7 @@ class ProfileController extends BaseController {
           changingBio.value = bioController.text;
         });
       }
-      
+
       isUserLoading.value = false;
     } catch (e) {
       logger.e("Error getting user data: $e");
@@ -461,7 +462,8 @@ class ProfileController extends BaseController {
     } catch (e, tr) {
       logger.e("Error getting followers: $e");
       logger.e("Stack trace: $tr");
-      gotFollowerCount.value = true; // Set to true even on error to prevent infinite loading
+      gotFollowerCount.value =
+          true; // Set to true even on error to prevent infinite loading
       rethrow; // Re-throw to be caught by loadData
     }
   }
@@ -481,7 +483,8 @@ class ProfileController extends BaseController {
     } catch (e, tr) {
       logger.e("Error getting following: $e");
       logger.e("Stack trace: $tr");
-      gotFollowingCount.value = true; // Set to true even on error to prevent infinite loading
+      gotFollowingCount.value =
+          true; // Set to true even on error to prevent infinite loading
       rethrow; // Re-throw to be caught by loadData
     }
   }
@@ -505,7 +508,8 @@ class ProfileController extends BaseController {
     } catch (e, tr) {
       logger.e("Error checking if following: $e");
       logger.e("Stack trace: $tr");
-      gotIsFollowing.value = true; // Set to true even on error to prevent infinite loading
+      gotIsFollowing.value =
+          true; // Set to true even on error to prevent infinite loading
       rethrow; // Re-throw to be caught by loadData
     }
   }
@@ -709,15 +713,15 @@ class ProfileController extends BaseController {
     displayNameController.dispose();
     userNameController.dispose();
     bioController.dispose();
-    
+
     // Dispose focus nodes
     focusNodeDisplayName.dispose();
     focusNodeUsername.dispose();
     focusNodeBio.dispose();
-    
+
     // Dispose scroll controller
     scrollController.dispose();
-    
+
     super.onClose();
   }
 }

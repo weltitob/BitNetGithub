@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({Key? key}) : super(key: key);
 
@@ -37,7 +36,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       leftIconWidth: 50.w,
                       leftIcon: GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, route.kMainScreenRoute);
+                          Navigator.pushReplacementNamed(
+                              context, route.kMainScreenRoute);
                         },
                         child: Row(
                           children: [
@@ -90,7 +90,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     itemCount: categoriesListData.length,
                     itemBuilder: (context, index) {
                       return CategoriesList(
-                        categoriesText: categoriesListData[index].categoriesText,
+                        categoriesText:
+                            categoriesListData[index].categoriesText,
                       );
                     },
                   ),

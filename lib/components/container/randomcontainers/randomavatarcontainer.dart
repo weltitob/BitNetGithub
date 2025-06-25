@@ -76,8 +76,8 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
       }
 
       return Future.doWhile(() async {
-        await Future.delayed(
-            const Duration(milliseconds: 250)); // Delay between each avatar spawn
+        await Future.delayed(const Duration(
+            milliseconds: 250)); // Delay between each avatar spawn
 
         if (avatarCounter >= 30) return false;
 
@@ -103,7 +103,8 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
         final avatar = AnimatedAvatar(
           position: newPos,
           vsync: this,
-          uri: 'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png',
+          uri:
+              'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png',
         );
 
         avatar.size =

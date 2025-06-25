@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:flutter/material.dart';
@@ -14,10 +13,7 @@ class CategoriesList extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(
-          context,
-            route.kCategoriesDetailScreenRoute
-        );
+        Navigator.pushNamed(context, route.kCategoriesDetailScreenRoute);
       },
       child: Container(
         padding: EdgeInsets.only(bottom: 16.h),
@@ -51,7 +47,8 @@ class CategoriesList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100.r),
                 color: const Color.fromRGBO(255, 255, 255, 0.1),
               ),
-              padding: EdgeInsets.only(top: 7.h, bottom: 7.h, right: 8.w, left: 10.w),
+              padding: EdgeInsets.only(
+                  top: 7.h, bottom: 7.h, right: 8.w, left: 10.w),
               child: Image.asset(
                 rightArrowIcon,
                 width: 10.w,

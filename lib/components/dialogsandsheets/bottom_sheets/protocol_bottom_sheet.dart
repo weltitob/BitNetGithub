@@ -85,13 +85,16 @@ class ProtocolBottomSheetWidget extends StatelessWidget {
             width: AppTheme.cardPadding * 2.25,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onSurface,
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+              borderRadius:
+                  BorderRadius.circular(AppTheme.borderRadiusCircular),
             ),
           ),
           const SizedBox(height: AppTheme.elementSpacing * 0.75),
           Expanded(
             child: Container(
-              height: height != null ? (height! - AppTheme.cardPadding * 3) : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
+              height: height != null
+                  ? (height! - AppTheme.cardPadding * 3)
+                  : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -99,18 +102,49 @@ class ProtocolBottomSheetWidget extends StatelessWidget {
                   stops: [0.0, 0.25, 0.5, 0.75, 1.0],
                   colors: Theme.of(context).brightness == Brightness.light
                       ? [
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.9),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.7),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.4),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.0001),
+                          lighten(
+                              Theme.of(context).colorScheme.primaryContainer,
+                              40),
+                          lighten(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  40)
+                              .withOpacity(0.9),
+                          lighten(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  40)
+                              .withOpacity(0.7),
+                          lighten(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  40)
+                              .withOpacity(0.4),
+                          lighten(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  40)
+                              .withOpacity(0.0001),
                         ]
                       : [
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.9),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.7),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.4),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.0001),
+                          darken(Theme.of(context).colorScheme.primaryContainer,
+                              70),
+                          darken(Theme.of(context).colorScheme.primaryContainer,
+                                  70)
+                              .withOpacity(0.9),
+                          darken(Theme.of(context).colorScheme.primaryContainer,
+                                  70)
+                              .withOpacity(0.7),
+                          darken(Theme.of(context).colorScheme.primaryContainer,
+                                  70)
+                              .withOpacity(0.4),
+                          darken(Theme.of(context).colorScheme.primaryContainer,
+                                  70)
+                              .withOpacity(0.0001),
                         ],
                 ),
                 borderRadius: BorderRadius.only(
@@ -119,7 +153,9 @@ class ProtocolBottomSheetWidget extends StatelessWidget {
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(borderRadius), topRight: Radius.circular(borderRadius)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(borderRadius),
+                    topRight: Radius.circular(borderRadius)),
                 child: Column(
                   children: [
                     Expanded(child: child),

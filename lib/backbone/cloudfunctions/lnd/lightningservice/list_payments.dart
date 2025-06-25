@@ -59,13 +59,14 @@ Future<List<LightningPayment>> listPayments(String acc) async {
   final logger = Get.find<LoggerService>();
   logger.i("Calling listPayments() with account $acc");
   QuerySnapshot<Map<String, dynamic>> query =
-  await backendRef.doc(acc).collection('payments').get();
+      await backendRef.doc(acc).collection('payments').get();
   List<LightningPayment> payments =
-  query.docs.map((map) => LightningPayment.fromJson(map.data())).toList();
+      query.docs.map((map) => LightningPayment.fromJson(map.data())).toList();
   return payments;
 }
 
-Future<List<InternalRebalance>> listInternalRebalances(String userPubKey) async {
+Future<List<InternalRebalance>> listInternalRebalances(
+    String userPubKey) async {
   final logger = Get.find<LoggerService>();
   logger.i("Fetching internal rebalances for account: $userPubKey");
 
@@ -73,12 +74,11 @@ Future<List<InternalRebalance>> listInternalRebalances(String userPubKey) async 
     QuerySnapshot<Map<String, dynamic>> query = await backendRef
         .doc(userPubKey)
         .collection('internalRebalances')
-        .orderBy('timestamp', descending: true)  // Optional: sort by timestamp
+        .orderBy('timestamp', descending: true) // Optional: sort by timestamp
         .get();
 
-    List<InternalRebalance> rebalances = query.docs
-        .map((doc) => InternalRebalance.fromFirestore(doc))
-        .toList();
+    List<InternalRebalance> rebalances =
+        query.docs.map((doc) => InternalRebalance.fromFirestore(doc)).toList();
 
     logger.i("Found ${rebalances.length} internal rebalances");
     return rebalances;
@@ -134,12 +134,14 @@ class InternalRebalance {
       timestamp: json['timestamp'] is int
           ? json['timestamp']
           : json['timestamp'] is Timestamp
-          ? (json['timestamp'] as Timestamp).seconds
-          : 0,
+              ? (json['timestamp'] as Timestamp).seconds
+              : 0,
       paymentNetwork: json['paymentnetwork'] ?? '',
       rebalanceServer: json['rebalanceServer'] ?? '',
-      senderResponseRebalanceServer: json['sender_response_rebalance_server'] ?? {},
-      receiverResponseRebalanceServer: json['receiver_response_rebalance_server'] ?? {},
+      senderResponseRebalanceServer:
+          json['sender_response_rebalance_server'] ?? {},
+      receiverResponseRebalanceServer:
+          json['receiver_response_rebalance_server'] ?? {},
     );
   }
 
@@ -178,15 +180,20 @@ class InternalRebalance {
     return InternalRebalance(
       senderUserUid: senderUserUid ?? this.senderUserUid,
       receiverUserUid: receiverUserUid ?? this.receiverUserUid,
-      internalAccountIdReceiver: internalAccountIdReceiver ?? this.internalAccountIdReceiver,
-      internalAccountIdSender: internalAccountIdSender ?? this.internalAccountIdSender,
+      internalAccountIdReceiver:
+          internalAccountIdReceiver ?? this.internalAccountIdReceiver,
+      internalAccountIdSender:
+          internalAccountIdSender ?? this.internalAccountIdSender,
       amountSatoshi: amountSatoshi ?? this.amountSatoshi,
-      lightningAddressResolved: lightningAddressResolved ?? this.lightningAddressResolved,
+      lightningAddressResolved:
+          lightningAddressResolved ?? this.lightningAddressResolved,
       timestamp: timestamp ?? this.timestamp,
       paymentNetwork: paymentNetwork ?? this.paymentNetwork,
       rebalanceServer: rebalanceServer ?? this.rebalanceServer,
-      senderResponseRebalanceServer: senderResponseRebalanceServer ?? this.senderResponseRebalanceServer,
-      receiverResponseRebalanceServer: receiverResponseRebalanceServer ?? this.receiverResponseRebalanceServer,
+      senderResponseRebalanceServer:
+          senderResponseRebalanceServer ?? this.senderResponseRebalanceServer,
+      receiverResponseRebalanceServer: receiverResponseRebalanceServer ??
+          this.receiverResponseRebalanceServer,
     );
   }
 }
@@ -203,7 +210,7 @@ class InternalRebalancesList {
     return InternalRebalancesList(
       rebalances: json['rebalances'] != null
           ? List<InternalRebalance>.from(
-          json['rebalances'].map((x) => InternalRebalance.fromJson(x)))
+              json['rebalances'].map((x) => InternalRebalance.fromJson(x)))
           : [],
     );
   }

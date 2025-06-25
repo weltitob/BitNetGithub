@@ -39,13 +39,19 @@ class _AppsTabModernState extends State<AppsTabModern>
   bool loading = true;
   String selectedCategory = 'All';
   late final AppImageCacheService _imageCacheService;
-  
-  final List<String> categories = ['All', 'Finance', 'Games', 'Tools', 'Social'];
+
+  final List<String> categories = [
+    'All',
+    'Finance',
+    'Games',
+    'Tools',
+    'Social'
+  ];
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize image cache service with safety check
     try {
       _imageCacheService = Get.find<AppImageCacheService>();
@@ -54,20 +60,20 @@ class _AppsTabModernState extends State<AppsTabModern>
       Get.put(AppImageCacheService(), permanent: true);
       _imageCacheService = Get.find<AppImageCacheService>();
     }
-    
+
     loadAsync();
   }
 
   Future<void> loadAsync() async {
     // Load actual apps from Firebase
     availableApps = await getAvailableApps();
-    
+
     // Set featured apps (first 3 apps)
     featuredApps = availableApps.take(3).toList();
-    
+
     // Preload images for featured apps
     _preloadImages();
-    
+
     // Add some coming soon apps
     comingSoonApps = [
       AppData(
@@ -95,44 +101,45 @@ class _AppsTabModernState extends State<AppsTabModern>
         useNetworkImage: false,
       ),
     ];
-    
+
     // Get user's apps
     final doc = await Databaserefs.appsRef.doc(Auth().currentUser!.uid).get();
     if (doc.data() != null && doc.data()!['apps'] != null) {
       List appIds = doc.data()!['apps'];
-      myApps = availableApps.where((app) => appIds.contains(app.docId)).toList();
+      myApps =
+          availableApps.where((app) => appIds.contains(app.docId)).toList();
     }
-    
+
     loading = false;
     if (mounted) setState(() {});
   }
-  
+
   Future<void> _preloadImages() async {
     // Preload featured app images
     final storageNames = featuredApps
         .where((app) => app.useNetworkAsset && app.storageName != null)
         .map((app) => app.storageName!)
         .toList();
-    
+
     final urls = featuredApps
         .where((app) => app.useNetworkImage)
         .map((app) => app.url)
         .toList();
-    
+
     await _imageCacheService.preloadImages(storageNames, urls);
-    
+
     // Preload visible apps (first 6)
     final visibleApps = availableApps.take(6).toList();
     final visibleStorageNames = visibleApps
         .where((app) => app.useNetworkAsset && app.storageName != null)
         .map((app) => app.storageName!)
         .toList();
-    
+
     final visibleUrls = visibleApps
         .where((app) => app.useNetworkImage)
         .map((app) => app.url)
         .toList();
-    
+
     // Delay preloading of remaining apps
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -141,11 +148,10 @@ class _AppsTabModernState extends State<AppsTabModern>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
     return bitnetScaffold(
       context: context,
       body: VerticalFadeListView.standardTab(
@@ -155,19 +161,24 @@ class _AppsTabModernState extends State<AppsTabModern>
             List<String> ownedApps = [];
             if (snapshot.hasData && snapshot.data!.data() != null) {
               List? dataList = snapshot.data!.data()!['apps'] as List?;
-              ownedApps = dataList?.map((item) => item as String).toList() ?? [];
-              myApps = availableApps.where((app) => ownedApps.contains(app.docId)).toList();
+              ownedApps =
+                  dataList?.map((item) => item as String).toList() ?? [];
+              myApps = availableApps
+                  .where((app) => ownedApps.contains(app.docId))
+                  .toList();
             }
 
             return ListView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
               children: [
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 // Featured Section
                 if (!loading && featuredApps.isNotEmpty) ...[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding.w),
                     child: Text(
                       'Featured',
                       style: Theme.of(context).textTheme.titleLarge,
@@ -178,17 +189,19 @@ class _AppsTabModernState extends State<AppsTabModern>
                     height: 180.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding.w),
                       itemCount: featuredApps.length,
                       itemBuilder: (context, index) {
                         final app = featuredApps[index];
                         final isOwned = ownedApps.contains(app.docId);
-                        
+
                         return Padding(
                           padding: EdgeInsets.only(right: 16.w),
                           child: GestureDetector(
                             onTap: () {
-                              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                              context.go("/feed/" + kAppPageRoute,
+                                  extra: app.toJson());
                             },
                             child: GlassContainer(
                               width: 280.w,
@@ -206,14 +219,21 @@ class _AppsTabModernState extends State<AppsTabModern>
                                           width: 50.w,
                                           height: 50.h,
                                           decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.surface,
-                                            borderRadius: BorderRadius.circular(12.r),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
                                             border: Border.all(
-                                              color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline
+                                                  .withOpacity(0.1),
                                             ),
                                           ),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(12.r),
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
                                             child: Center(
                                               child: CachedAppImage(
                                                 app: app,
@@ -226,19 +246,30 @@ class _AppsTabModernState extends State<AppsTabModern>
                                         SizedBox(width: 12.w),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 app.name,
-                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                               ),
                                               Text(
                                                 'BitNET Community',
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                                ),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurface
+                                                          .withOpacity(0.6),
+                                                    ),
                                               ),
                                             ],
                                           ),
@@ -249,21 +280,28 @@ class _AppsTabModernState extends State<AppsTabModern>
                                           customWidth: 65.w,
                                           customHeight: 32.h,
                                           buttonType: ButtonType.transparent,
-                                          titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          titleStyle: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                           onTap: () async {
                                             if (isOwned) {
                                               final url = await app.getUrl();
-                                              context.pushNamed(kWebViewScreenRoute, 
-                                                pathParameters: {
-                                                  'url': url,
-                                                  'name': app.name,
-                                                }, 
-                                                extra: {"is_app": true}
-                                              );
+                                              context.pushNamed(
+                                                  kWebViewScreenRoute,
+                                                  pathParameters: {
+                                                    'url': url,
+                                                    'name': app.name,
+                                                  },
+                                                  extra: {
+                                                    "is_app": true
+                                                  });
                                             } else {
-                                              context.go("/feed/" + kAppPageRoute, extra: app.toJson());
+                                              context.go(
+                                                  "/feed/" + kAppPageRoute,
+                                                  extra: app.toJson());
                                             }
                                           },
                                         ),
@@ -272,10 +310,16 @@ class _AppsTabModernState extends State<AppsTabModern>
                                     Spacer(),
                                     Text(
                                       app.desc,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                                        height: 1.3,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.8),
+                                            height: 1.3,
+                                          ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -290,11 +334,12 @@ class _AppsTabModernState extends State<AppsTabModern>
                   ),
                   SizedBox(height: AppTheme.cardPadding.h),
                 ],
-                
+
                 // My Apps Section
                 if (loading || myApps.isNotEmpty) ...[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -306,15 +351,22 @@ class _AppsTabModernState extends State<AppsTabModern>
                           TextButton(
                             onPressed: () {
                               context.goNamed(kMyAppsPageRoute,
-                                  extra: myApps.map((app) => app.toJson()).toList());
+                                  extra: myApps
+                                      .map((app) => app.toJson())
+                                      .toList());
                             },
                             child: Row(
                               children: [
                                 Text(
                                   'See All',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
                                 ),
                                 SizedBox(width: 4.w),
                                 Icon(
@@ -328,18 +380,18 @@ class _AppsTabModernState extends State<AppsTabModern>
                       ],
                     ),
                   ),
-                  
                   SizedBox(height: AppTheme.elementSpacing.h),
-                  
                   if (loading)
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding.w),
                       child: dotProgress(context),
                     )
                   else if (myApps.isNotEmpty)
                     Container(
                       height: myApps.length <= 3 ? 120.h : 240.h,
-                      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding.w),
                       child: GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -355,30 +407,32 @@ class _AppsTabModernState extends State<AppsTabModern>
                         },
                       ),
                     ),
-                  
                   SizedBox(height: AppTheme.cardPadding.h),
                 ],
-                
+
                 // Available Apps Section
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                   child: Text(
                     'All Apps',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 if (loading)
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding.w),
                     child: dotProgress(context),
                   )
                 else ...[
                   // Available Apps Grid - iOS Style
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding.w),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -393,17 +447,18 @@ class _AppsTabModernState extends State<AppsTabModern>
                         if (index < availableApps.length) {
                           final app = availableApps[index];
                           final isOwned = ownedApps.contains(app.docId);
-                          
+
                           return _buildIOSAppIcon(app, isOwned, false);
                         } else {
-                          final app = comingSoonApps[index - availableApps.length];
+                          final app =
+                              comingSoonApps[index - availableApps.length];
                           return _buildIOSAppIcon(app, false, true);
                         }
                       },
                     ),
                   ),
                 ],
-                
+
                 SizedBox(height: AppTheme.cardPadding * 2.h),
               ],
             );
@@ -412,12 +467,12 @@ class _AppsTabModernState extends State<AppsTabModern>
       ),
     );
   }
-  
+
   Widget _buildIOSAppIcon(AppData app, bool isOwned, bool isComingSoon) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final iconSize = constraints.maxWidth * 0.75;
-        
+
         return GestureDetector(
           onTap: () async {
             if (isComingSoon) {
@@ -429,13 +484,12 @@ class _AppsTabModernState extends State<AppsTabModern>
               final url = await app.getUrl();
               final encodedUrl = Uri.encodeComponent(url);
               final encodedName = Uri.encodeComponent(app.name);
-              context.pushNamed(kWebViewScreenRoute, 
-                pathParameters: {
-                  'url': encodedUrl,
-                  'name': encodedName,
-                }, 
-                extra: {"is_app": true}
-              );
+              context.pushNamed(kWebViewScreenRoute, pathParameters: {
+                'url': encodedUrl,
+                'name': encodedName,
+              }, extra: {
+                "is_app": true
+              });
             } else {
               context.go("/feed/" + kAppPageRoute, extra: app.toJson());
             }
@@ -453,66 +507,70 @@ class _AppsTabModernState extends State<AppsTabModern>
                         width: iconSize,
                         height: iconSize,
                         child: GlassContainer(
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                        opacity: 0.1,
-                        border: Border.all(width: 1, color: Theme.of(context).dividerColor),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.borderRadiusMid.r),
+                          opacity: 0.1,
+                          border: Border.all(
+                              width: 1, color: Theme.of(context).dividerColor),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                AppTheme.borderRadiusMid.r),
+                            child: Container(
+                              width: iconSize,
+                              height: iconSize,
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: SizedBox(
+                                  width: iconSize,
+                                  height: iconSize,
+                                  child: CachedAppImage(
+                                    app: app,
+                                    width: iconSize,
+                                    height: iconSize,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Coming Soon Overlay
+                      if (isComingSoon)
+                        Positioned.fill(
                           child: Container(
                             width: iconSize,
                             height: iconSize,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: iconSize,
-                                height: iconSize,
-                                child: CachedAppImage(
-                                  app: app,
-                                  width: iconSize,
-                                  height: iconSize,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusMid.r),
+                            ),
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 4.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                child: Text(
+                                  'SOON',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    
-                    // Coming Soon Overlay
-                    if (isComingSoon)
-                      Positioned.fill(
-                        child: Container(
-                          width: iconSize,
-                          height: iconSize,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                          ),
-                          child: Center(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Text(
-                                'SOON',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    
                     ],
                   ),
                 ),
               ),
-              
+
               // App Name
               Expanded(
                 flex: 1,
@@ -534,7 +592,8 @@ class _AppsTabModernState extends State<AppsTabModern>
     );
   }
 
-  Widget _buildModernAppCard(AppData app, bool isOwned, bool isComingSoon, List<String> ownedApps) {
+  Widget _buildModernAppCard(
+      AppData app, bool isOwned, bool isComingSoon, List<String> ownedApps) {
     return GestureDetector(
       onTap: () async {
         if (isComingSoon) {
@@ -544,13 +603,12 @@ class _AppsTabModernState extends State<AppsTabModern>
           );
         } else if (isOwned) {
           final url = await app.getUrl();
-          context.pushNamed(kWebViewScreenRoute, 
-            pathParameters: {
-              'url': url,
-              'name': app.name,
-            }, 
-            extra: {"is_app": true}
-          );
+          context.pushNamed(kWebViewScreenRoute, pathParameters: {
+            'url': url,
+            'name': app.name,
+          }, extra: {
+            "is_app": true
+          });
         } else {
           context.go("/feed/" + kAppPageRoute, extra: app.toJson());
         }
@@ -583,13 +641,18 @@ class _AppsTabModernState extends State<AppsTabModern>
                   height: 65.h,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.background,
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusSmall.r),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .outline
+                          .withOpacity(0.1),
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusSmall.r),
                     child: Center(
                       child: AppImageBuilder(
                         app: app,
@@ -604,16 +667,18 @@ class _AppsTabModernState extends State<AppsTabModern>
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.borderRadiusSmall.r),
                       ),
                       child: Center(
                         child: Text(
                           'SOON',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.sp,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10.sp,
+                                  ),
                         ),
                       ),
                     ),
@@ -642,9 +707,9 @@ class _AppsTabModernState extends State<AppsTabModern>
                   ),
               ],
             ),
-            
+
             SizedBox(width: AppTheme.elementSpacing.w),
-            
+
             // App Info
             Expanded(
               child: Column(
@@ -655,72 +720,92 @@ class _AppsTabModernState extends State<AppsTabModern>
                       Expanded(
                         child: Text(
                           app.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       if (isComingSoon)
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Text(
                             'Coming Soon',
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.6),
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         )
                       else if (isOwned)
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Text(
                             'Owned',
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ),
                     ],
                   ),
-                  
                   SizedBox(height: 4.h),
-                  
                   Text(
                     'BitNET Community',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
                   ),
-                  
                   SizedBox(height: 6.h),
-                  
                   Text(
                     app.desc,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                      height: 1.3,
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.8),
+                          height: 1.3,
+                        ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            
+
             SizedBox(width: AppTheme.elementSpacing.w),
-            
+
             // Action Button
             if (!isComingSoon)
               LongButtonWidget(
@@ -729,18 +814,17 @@ class _AppsTabModernState extends State<AppsTabModern>
                 customHeight: 36.h,
                 buttonType: isOwned ? ButtonType.solid : ButtonType.transparent,
                 titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
                 onTap: () async {
                   if (isOwned) {
                     final url = await app.getUrl();
-                    context.pushNamed(kWebViewScreenRoute, 
-                      pathParameters: {
-                        'url': url,
-                        'name': app.name,
-                      }, 
-                      extra: {"is_app": true}
-                    );
+                    context.pushNamed(kWebViewScreenRoute, pathParameters: {
+                      'url': url,
+                      'name': app.name,
+                    }, extra: {
+                      "is_app": true
+                    });
                   } else {
                     context.go("/feed/" + kAppPageRoute, extra: app.toJson());
                   }
@@ -762,13 +846,12 @@ class _AppsTabModernState extends State<AppsTabModern>
           );
         } else if (isOwned) {
           final url = await app.getUrl();
-          context.pushNamed(kWebViewScreenRoute, 
-            pathParameters: {
-              'url': url,
-              'name': app.name,
-            }, 
-            extra: {"is_app": true}
-          );
+          context.pushNamed(kWebViewScreenRoute, pathParameters: {
+            'url': url,
+            'name': app.name,
+          }, extra: {
+            "is_app": true
+          });
         } else {
           context.go("/feed/" + kAppPageRoute, extra: app.toJson());
         }
@@ -789,7 +872,8 @@ class _AppsTabModernState extends State<AppsTabModern>
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.1),
                   ),
                 ),
                 child: Stack(
@@ -816,11 +900,14 @@ class _AppsTabModernState extends State<AppsTabModern>
                           child: Center(
                             child: Text(
                               'SOON',
-                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 9.sp,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 9.sp,
+                                  ),
                             ),
                           ),
                         ),
@@ -835,9 +922,9 @@ class _AppsTabModernState extends State<AppsTabModern>
                   child: Text(
                     app.name,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10.sp,
-                      height: 1.2,
-                    ),
+                          fontSize: 10.sp,
+                          height: 1.2,
+                        ),
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

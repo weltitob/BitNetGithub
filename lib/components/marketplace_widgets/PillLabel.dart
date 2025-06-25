@@ -20,23 +20,22 @@ class _PillLabelState extends State<PillLabel> {
   Widget build(BuildContext context) {
     return Obx(() {
       return InkWell(
-        onTap: () {
-          controller.toggleFilter(widget.labelText);
-        },
-        child: GlassContainer(
-                opacity:  controller.selectedFilters.contains(widget.labelText) ? 0.1 : 0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing.w * 0.75,
-                      vertical: AppTheme.elementSpacing.h * 0.5),
-                  child: Text(
-                    widget.labelText,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ),
-              )
-
-      );
+          onTap: () {
+            controller.toggleFilter(widget.labelText);
+          },
+          child: GlassContainer(
+            opacity:
+                controller.selectedFilters.contains(widget.labelText) ? 0.1 : 0,
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppTheme.elementSpacing.w * 0.75,
+                  vertical: AppTheme.elementSpacing.h * 0.5),
+              child: Text(
+                widget.labelText,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+          ));
     });
   }
 }

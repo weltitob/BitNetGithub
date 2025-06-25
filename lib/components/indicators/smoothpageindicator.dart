@@ -27,7 +27,8 @@ class CustomIndicator extends StatelessWidget {
     this.radius = 16.0,
     this.strokeWidth = 1.0,
     this.paintStyle = PaintingStyle.fill,
-    this.activeDotColor = AppTheme.colorBitcoin, this.onClickIndicator, // Define this in your app theme
+    this.activeDotColor = AppTheme.colorBitcoin,
+    this.onClickIndicator, // Define this in your app theme
   }) : super(key: key);
 
   @override
@@ -47,7 +48,8 @@ class CustomIndicator extends StatelessWidget {
         activeDotColor: Theme.of(context).colorScheme.primary,
         dotColor: Theme.of(context).brightness == Brightness.light
             ? AppTheme.white60
-            : AppTheme.glassMorphColorLight, // Define these colors in your app theme
+            : AppTheme
+                .glassMorphColorLight, // Define these colors in your app theme
       ),
       onDotClicked: onClickIndicator,
     );

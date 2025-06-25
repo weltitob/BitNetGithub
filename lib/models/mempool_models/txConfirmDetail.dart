@@ -149,10 +149,13 @@ class Extras {
   factory Extras.fromJson(Map<String, dynamic> json) => Extras(
         reward: json["reward"] ?? 0,
         coinbaseRaw: json["coinbaseRaw"] ?? "",
-        orphans: json["orphans"] != null ? List<dynamic>.from(json["orphans"].map((x) => x)) : [],
+        orphans: json["orphans"] != null
+            ? List<dynamic>.from(json["orphans"].map((x) => x))
+            : [],
         medianFee: (json["medianFee"] ?? 0).toDouble(),
-        feeRange: json["feeRange"] != null 
-            ? List<double>.from(json["feeRange"].map((x) => (x ?? 0).toDouble())) 
+        feeRange: json["feeRange"] != null
+            ? List<double>.from(
+                json["feeRange"].map((x) => (x ?? 0).toDouble()))
             : [],
         totalFees: json["totalFees"] ?? 0,
         avgFee: json["avgFee"] ?? 0,
@@ -173,7 +176,9 @@ class Extras {
         header: json["header"] ?? "",
         utxoSetSize: json["utxoSetSize"],
         totalInputAmt: json["totalInputAmt"],
-        pool: json["pool"] != null ? Pool.fromJson(json["pool"]) : Pool(id: 0, name: "", slug: ""),
+        pool: json["pool"] != null
+            ? Pool.fromJson(json["pool"])
+            : Pool(id: 0, name: "", slug: ""),
         matchRate: (json["matchRate"] ?? 0).toDouble(),
         expectedFees: json["expectedFees"] ?? 0,
         expectedWeight: json["expectedWeight"] ?? 0,

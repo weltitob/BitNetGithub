@@ -74,7 +74,7 @@ Future<void> main() async {
   // Set up error handler to catch various initialization errors
   FlutterError.onError = (FlutterErrorDetails details) {
     // Handle errors gracefully without crashing the app
-    if (details.exception is PlatformException && 
+    if (details.exception is PlatformException &&
         details.exception.toString().contains('MissingPluginException')) {
       // Only log to console, don't crash the app for plugin errors
       print('Plugin error (handled gracefully): ${details.exception}');
@@ -137,7 +137,7 @@ Future<void> _initializeWebServices() async {
     // Initialize only minimal services needed for web
     Get.put(LoggerService(), permanent: true);
     Get.put(DioClient(), permanent: true);
-    
+
     // Initialize cache services for web
     Get.put(ApiCacheService(), permanent: true);
     Get.put(FaviconCacheService(), permanent: true);
@@ -188,9 +188,9 @@ Future<void> _initializeFirebaseServices() async {
   } else {
     logger = Get.find<LoggerService>();
   }
-  
+
   logger.i('Initializing Firebase');
-  
+
   await Firebase.initializeApp(
     options: const FirebaseOptions(
         apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
@@ -201,7 +201,7 @@ Future<void> _initializeFirebaseServices() async {
   );
 
   logger.i('Initializing Firebase App Check');
-  
+
   try {
     await FirebaseAppCheck.instance.activate(
       // For older versions of firebase_app_check
@@ -228,17 +228,16 @@ Future<void> _initializeControllers() async {
   if (!Get.isRegistered<LoggerService>()) {
     Get.put(LoggerService(), permanent: true);
   }
-  
+
   if (!Get.isRegistered<DioClient>()) {
     Get.put(DioClient(), permanent: true);
   }
 
   try {
     // Initialize and fetch remote config
-    final remoteConfigController = 
-        Get.isRegistered<RemoteConfigController>() ? 
-        Get.find<RemoteConfigController>() : 
-        Get.put(RemoteConfigController(), permanent: true);
+    final remoteConfigController = Get.isRegistered<RemoteConfigController>()
+        ? Get.find<RemoteConfigController>()
+        : Get.put(RemoteConfigController(), permanent: true);
     await remoteConfigController.fetchRemoteConfigData();
   } catch (e) {
     print('Error initializing RemoteConfig: $e');

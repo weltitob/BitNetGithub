@@ -51,7 +51,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BitcoinScreen extends StatefulWidget {
   final Map<String, dynamic>? tokenData;
-  
+
   const BitcoinScreen({
     Key? key,
     this.tokenData,
@@ -93,14 +93,13 @@ String _getTokenImagePath(String tokenSymbol) {
 class _BitcoinScreenState extends State<BitcoinScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
+
   // Controllers for buy/sell bottom sheets
   final TextEditingController btcController = TextEditingController();
   final TextEditingController satController = TextEditingController();
   final TextEditingController currController = TextEditingController();
   final FocusNode focusNode = FocusNode();
-  
-  
+
   final controller = Get.put(BitcoinScreenController());
   final homeController = Get.put(HomeController());
   final transactionController = Get.put(TransactionController());
@@ -117,7 +116,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       });
     });
     scrollController = ScrollController();
-    
+
     // Debug: Check if token data is being received
     if (widget.tokenData != null) {
       print('BitcoinScreen received token data: ${widget.tokenData}');
@@ -149,9 +148,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: bitnetAppBar(
-        text: widget.tokenData != null 
-          ? '${widget.tokenData!['tokenName']} Chart'
-          : L10n.of(context)!.bitcoinChart,
+        text: widget.tokenData != null
+            ? '${widget.tokenData!['tokenName']} Chart'
+            : L10n.of(context)!.bitcoinChart,
         context: context,
         onTap: () {
           // Use context.canPop() to determine if we can safely go back in history
@@ -173,76 +172,74 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               SliverToBoxAdapter(
                 child: SizedBox(height: AppTheme.cardPadding * 3),
               ),
-              
+
               // Chart Section (moved to correct position)
               SliverToBoxAdapter(
                 child: ChartWidget(
                   tokenData: widget.tokenData,
                 ),
               ),
-              
+
               SliverToBoxAdapter(
                 child: SizedBox(height: AppTheme.cardPadding.h * 2),
               ),
-              
+
               // Show buttons for both Bitcoin and tokens
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
                   child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BitNetImageWithTextButton(
-                      L10n.of(context)!.send,
-                      () {
-                        if (widget.tokenData != null) {
-                          // For tokens, show a coming soon message or navigate to token send
-                          Get.find<OverlayController>().showOverlay(
-                            'Token send coming soon',
-                            color: AppTheme.successColor,
-                          );
-                        } else {
-                          context.go('/wallet/send');
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            Get.find<SendsController>().getClipboardData();
-                          });
-                        }
-                      },
-                      // image: "assets/images/send_image.png",
-                      width: AppTheme.cardPadding * 2.5.h,
-                      height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: Icons.arrow_upward_rounded,
-                    ),
-                    BitNetImageWithTextButton(
-                      L10n.of(context)!.receive,
-                      () {
-                        if (widget.tokenData != null) {
-                          // For tokens, show a coming soon message
-                          Get.find<OverlayController>().showOverlay(
-                            'Token receive coming soon',
-                            color: AppTheme.successColor,
-                          );
-                        } else {
-                          context.go('/wallet/receive');
-                        }
-                      },
-                      // image: "assets/images/receive_image.png",
-                      width: AppTheme.cardPadding * 2.5.h,
-                      height: AppTheme.cardPadding * 2.5.h,
-                      fallbackIcon: Icons.arrow_downward_rounded,
-                    ),
-                    // Use shared token action buttons for tokens
-                    if (widget.tokenData != null) 
-                      ...[
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BitNetImageWithTextButton(
+                        L10n.of(context)!.send,
+                        () {
+                          if (widget.tokenData != null) {
+                            // For tokens, show a coming soon message or navigate to token send
+                            Get.find<OverlayController>().showOverlay(
+                              'Token send coming soon',
+                              color: AppTheme.successColor,
+                            );
+                          } else {
+                            context.go('/wallet/send');
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Get.find<SendsController>().getClipboardData();
+                            });
+                          }
+                        },
+                        // image: "assets/images/send_image.png",
+                        width: AppTheme.cardPadding * 2.5.h,
+                        height: AppTheme.cardPadding * 2.5.h,
+                        fallbackIcon: Icons.arrow_upward_rounded,
+                      ),
+                      BitNetImageWithTextButton(
+                        L10n.of(context)!.receive,
+                        () {
+                          if (widget.tokenData != null) {
+                            // For tokens, show a coming soon message
+                            Get.find<OverlayController>().showOverlay(
+                              'Token receive coming soon',
+                              color: AppTheme.successColor,
+                            );
+                          } else {
+                            context.go('/wallet/receive');
+                          }
+                        },
+                        // image: "assets/images/receive_image.png",
+                        width: AppTheme.cardPadding * 2.5.h,
+                        height: AppTheme.cardPadding * 2.5.h,
+                        fallbackIcon: Icons.arrow_downward_rounded,
+                      ),
+                      // Use shared token action buttons for tokens
+                      if (widget.tokenData != null) ...[
                         Expanded(
                           child: TokenActionButtons(
                             onBuyTap: _showTokenBuyBottomSheet,
                             onSellTap: _showTokenSellBottomSheet,
                           ),
                         ),
-                      ]
-                    else
-                      ...[
+                      ] else ...[
                         BitNetImageWithTextButton(
                           "Swap",
                           () {
@@ -265,8 +262,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           fallbackIconSize: AppTheme.iconSize * 1.5,
                         ),
                       ],
-                  ],
-                ),
+                    ],
+                  ),
                 ),
               ),
               // Cryptos section for both Bitcoin and tokens
@@ -275,7 +272,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding,
                   ),
-                  child:Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: AppTheme.cardPadding.h * 2),
@@ -287,13 +284,15 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       if (widget.tokenData != null) ...[
                         // Token balance display with mock data
                         CryptoInfoItem(
-                          balance: _getMockTokenBalance(widget.tokenData!['tokenSymbol']),
+                          balance: _getMockTokenBalance(
+                              widget.tokenData!['tokenSymbol']),
                           defaultUnit: BitcoinUnits.SAT,
                           currency: Currency(
                             code: widget.tokenData!['tokenSymbol'],
                             name: widget.tokenData!['tokenName'],
                             icon: Image.asset(
-                              _getTokenImagePath(widget.tokenData!['tokenSymbol']),
+                              _getTokenImagePath(
+                                  widget.tokenData!['tokenSymbol']),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -310,7 +309,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       ] else ...[
                         // Bitcoin balances
                         Obx(
-                              () {
+                          () {
                             final logger = Get.find<LoggerService>();
                             final confirmedBalanceStr = walletController
                                 .onchainBalance.value.confirmedBalance.obs;
@@ -347,8 +346,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                         ),
                         SizedBox(height: AppTheme.elementSpacing.h),
                         Obx(() {
-                          final confirmedBalanceStr =
-                              walletController.lightningBalance.value.balance.obs;
+                          final confirmedBalanceStr = walletController
+                              .lightningBalance.value.balance.obs;
                           return CryptoInfoItem(
                             balance: confirmedBalanceStr.value,
                             // confirmedBalance: confirmedBalanceStr.value,
@@ -376,139 +375,167 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                 ),
               ),
-              
+
               // Go to Marketplace button for tokens
               if (widget.tokenData != null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding.w,
-                    vertical: AppTheme.cardPadding.h,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigate to token marketplace
-                      context.push('/feed/token_marketplace/${widget.tokenData!['tokenSymbol']}/${widget.tokenData!['tokenName']}');
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                            Theme.of(context).colorScheme.primary.withOpacity(0.05),
-                          ],
-                        ),
-                        borderRadius: AppTheme.cardRadiusMid,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(AppTheme.cardPadding),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(AppTheme.elementSpacing),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(
-                                  Icons.storefront_rounded,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 24,
-                                ),
-                              ),
-                              SizedBox(width: AppTheme.elementSpacing),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Go to Marketplace',
-                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Buy or sell ${widget.tokenData!['tokenSymbol']} tokens',
-                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding.w,
+                      vertical: AppTheme.cardPadding.h,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Navigate to token marketplace
+                        context.push(
+                            '/feed/token_marketplace/${widget.tokenData!['tokenSymbol']}/${widget.tokenData!['tokenName']}');
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.1),
+                              Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.05),
                             ],
                           ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                            size: 16,
+                          borderRadius: AppTheme.cardRadiusMid,
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.2),
+                            width: 1,
                           ),
-                        ],
+                        ),
+                        padding: EdgeInsets.all(AppTheme.cardPadding),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding:
+                                      EdgeInsets.all(AppTheme.elementSpacing),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    Icons.storefront_rounded,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    size: 24,
+                                  ),
+                                ),
+                                SizedBox(width: AppTheme.elementSpacing),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Go to Marketplace',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    Text(
+                                      'Buy or sell ${widget.tokenData!['tokenSymbol']} tokens',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.color
+                                                ?.withOpacity(0.7),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.5),
+                              size: 16,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              
+
               // Wallet Balances - Tab Bar
               if (widget.tokenData == null)
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding,
-                    left: AppTheme.cardPadding,
-                    right: AppTheme.cardPadding,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Your Wallets",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      BitNetListTile(
-                          text: "Addresses",
-                          trailing: LongButtonWidget(
-                              buttonType: ButtonType.transparent,
-                              customWidth: AppTheme.cardPadding * 3,
-                              customHeight: AppTheme.cardPadding * 1.25,
-                              title: "Show",
-                              onTap: () async {
-                                BitNetBottomSheet(
-                                    context: context,
-                                    height:
-                                    MediaQuery.of(context).size.height *
-                                        0.65.h,
-                                    borderRadius: AppTheme.borderRadiusBig,
-                                    child: const AddressesWidget());
-                              }),
-                          onTap: () async {
-                            BitNetBottomSheet(
-                                context: context,
-                                height: MediaQuery.of(context).size.height *
-                                    0.65.h,
-                                borderRadius: AppTheme.borderRadiusBig,
-                                child: const AddressesWidget());
-                          }),
-                    ],
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top: AppTheme.cardPadding,
+                      left: AppTheme.cardPadding,
+                      right: AppTheme.cardPadding,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Your Wallets",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        BitNetListTile(
+                            text: "Addresses",
+                            trailing: LongButtonWidget(
+                                buttonType: ButtonType.transparent,
+                                customWidth: AppTheme.cardPadding * 3,
+                                customHeight: AppTheme.cardPadding * 1.25,
+                                title: "Show",
+                                onTap: () async {
+                                  BitNetBottomSheet(
+                                      context: context,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.65.h,
+                                      borderRadius: AppTheme.borderRadiusBig,
+                                      child: const AddressesWidget());
+                                }),
+                            onTap: () async {
+                              BitNetBottomSheet(
+                                  context: context,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.65.h,
+                                  borderRadius: AppTheme.borderRadiusBig,
+                                  child: const AddressesWidget());
+                            }),
+                      ],
+                    ),
                   ),
                 ),
-              ),
               // Bitcoin/Token Info
               SliverToBoxAdapter(
                 child: InformationWidget(
-                  title: widget.tokenData != null 
-                    ? 'About ${widget.tokenData!['tokenName']}'
-                    : L10n.of(context)!.about,
+                  title: widget.tokenData != null
+                      ? 'About ${widget.tokenData!['tokenName']}'
+                      : L10n.of(context)!.about,
                   description: widget.tokenData != null
-                    ? '${widget.tokenData!['tokenName']} (${widget.tokenData!['tokenSymbol']}) is a digital asset with a current price of \$${widget.tokenData!['currentPrice']}.'
-                    : L10n.of(context)!.bitcoinDescription,
+                      ? '${widget.tokenData!['tokenName']} (${widget.tokenData!['tokenSymbol']}) is a digital asset with a current price of \$${widget.tokenData!['currentPrice']}.'
+                      : L10n.of(context)!.bitcoinDescription,
                 ),
               ),
               // Cryptos
@@ -532,12 +559,12 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                 ),
                 // Transactions list
                 Transactions(
-                hideLightning: isOnchainSelected,
-                hideOnchain: !isOnchainSelected,
-                filters: isOnchainSelected
-                    ? [L10n.of(context)!.onchain]
-                    : ['Lightning'],
-                scrollController: scrollController,
+                  hideLightning: isOnchainSelected,
+                  hideOnchain: !isOnchainSelected,
+                  filters: isOnchainSelected
+                      ? [L10n.of(context)!.onchain]
+                      : ['Lightning'],
+                  scrollController: scrollController,
                 ),
               ],
               // Bottom padding
@@ -561,7 +588,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           //   onRightButtonTap: () {
           //     Get.delete<SellSheetController>();
           //     Get.put<SellSheetController>(SellSheetController());
-          //     
+          //
           //     BitNetBottomSheet(
           //         height: MediaQuery.of(context).size.height * 0.85,
           //         context: context,
@@ -626,90 +653,228 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       ),
     );
   }
-  
+
   // Token marketplace mock data (same as in token_marketplace_screen.dart)
   final Map<String, Map<String, dynamic>> tokenMarketData = {
     'GENST': {
       'floorPrice': 45000.0,
       'currentPrice': 48350.0,
       'sellOffers': [
-        {'seller': 'GenesisKeeper', 'amount': '3', 'price': '46,500', 'rating': 4.9, 'trades': 342},
-        {'seller': 'StoneCollector', 'amount': '5', 'price': '47,200', 'rating': 4.8, 'trades': 267},
-        {'seller': 'CryptoVault', 'amount': '2', 'price': '47,800', 'rating': 5.0, 'trades': 523},
+        {
+          'seller': 'GenesisKeeper',
+          'amount': '3',
+          'price': '46,500',
+          'rating': 4.9,
+          'trades': 342
+        },
+        {
+          'seller': 'StoneCollector',
+          'amount': '5',
+          'price': '47,200',
+          'rating': 4.8,
+          'trades': 267
+        },
+        {
+          'seller': 'CryptoVault',
+          'amount': '2',
+          'price': '47,800',
+          'rating': 5.0,
+          'trades': 523
+        },
       ],
       'buyOffers': [
-        {'buyer': 'TokenWhale', 'amount': '10', 'price': '45,000', 'rating': 4.8, 'trades': 156},
-        {'buyer': 'GenesisHunter', 'amount': '4', 'price': '44,500', 'rating': 4.7, 'trades': 234},
+        {
+          'buyer': 'TokenWhale',
+          'amount': '10',
+          'price': '45,000',
+          'rating': 4.8,
+          'trades': 156
+        },
+        {
+          'buyer': 'GenesisHunter',
+          'amount': '4',
+          'price': '44,500',
+          'rating': 4.7,
+          'trades': 234
+        },
       ]
     },
     'HTDG': {
       'floorPrice': 14.50,
       'currentPrice': 15.75,
       'sellOffers': [
-        {'seller': 'HotdogKing', 'amount': '500', 'price': '15.00', 'rating': 4.9, 'trades': 876},
-        {'seller': 'FoodToken', 'amount': '750', 'price': '15.50', 'rating': 4.7, 'trades': 432},
+        {
+          'seller': 'HotdogKing',
+          'amount': '500',
+          'price': '15.00',
+          'rating': 4.9,
+          'trades': 876
+        },
+        {
+          'seller': 'FoodToken',
+          'amount': '750',
+          'price': '15.50',
+          'rating': 4.7,
+          'trades': 432
+        },
       ],
       'buyOffers': [
-        {'buyer': 'HotdogFan', 'amount': '300', 'price': '14.00', 'rating': 4.8, 'trades': 234},
+        {
+          'buyer': 'HotdogFan',
+          'amount': '300',
+          'price': '14.00',
+          'rating': 4.8,
+          'trades': 234
+        },
       ]
     },
     'CAT': {
       'floorPrice': 825.0,
       'currentPrice': 892.50,
       'sellOffers': [
-        {'seller': 'CatLover', 'amount': '25', 'price': '850', 'rating': 5.0, 'trades': 567},
-        {'seller': 'FelineTrader', 'amount': '40', 'price': '875', 'rating': 4.8, 'trades': 345},
+        {
+          'seller': 'CatLover',
+          'amount': '25',
+          'price': '850',
+          'rating': 5.0,
+          'trades': 567
+        },
+        {
+          'seller': 'FelineTrader',
+          'amount': '40',
+          'price': '875',
+          'rating': 4.8,
+          'trades': 345
+        },
       ],
       'buyOffers': [
-        {'buyer': 'CatCollector', 'amount': '50', 'price': '820', 'rating': 4.9, 'trades': 423},
+        {
+          'buyer': 'CatCollector',
+          'amount': '50',
+          'price': '820',
+          'rating': 4.9,
+          'trades': 423
+        },
       ]
     },
     'EMRLD': {
       'floorPrice': 11500.0,
       'currentPrice': 12450.0,
       'sellOffers': [
-        {'seller': 'EmeraldVault', 'amount': '8', 'price': '12,000', 'rating': 4.9, 'trades': 234},
-        {'seller': 'GemTrader', 'amount': '12', 'price': '12,300', 'rating': 4.8, 'trades': 456},
+        {
+          'seller': 'EmeraldVault',
+          'amount': '8',
+          'price': '12,000',
+          'rating': 4.9,
+          'trades': 234
+        },
+        {
+          'seller': 'GemTrader',
+          'amount': '12',
+          'price': '12,300',
+          'rating': 4.8,
+          'trades': 456
+        },
       ],
       'buyOffers': [
-        {'buyer': 'EmeraldSeeker', 'amount': '15', 'price': '11,500', 'rating': 4.7, 'trades': 189},
+        {
+          'buyer': 'EmeraldSeeker',
+          'amount': '15',
+          'price': '11,500',
+          'rating': 4.7,
+          'trades': 189
+        },
       ]
     },
     'LILA': {
       'floorPrice': 215.0,
       'currentPrice': 234.80,
       'sellOffers': [
-        {'seller': 'LilaHolder', 'amount': '100', 'price': '225', 'rating': 4.8, 'trades': 678},
-        {'seller': 'PurpleToken', 'amount': '150', 'price': '230', 'rating': 4.9, 'trades': 543},
+        {
+          'seller': 'LilaHolder',
+          'amount': '100',
+          'price': '225',
+          'rating': 4.8,
+          'trades': 678
+        },
+        {
+          'seller': 'PurpleToken',
+          'amount': '150',
+          'price': '230',
+          'rating': 4.9,
+          'trades': 543
+        },
       ],
       'buyOffers': [
-        {'buyer': 'LilaInvestor', 'amount': '200', 'price': '215', 'rating': 4.9, 'trades': 345},
+        {
+          'buyer': 'LilaInvestor',
+          'amount': '200',
+          'price': '215',
+          'rating': 4.9,
+          'trades': 345
+        },
       ]
     },
     'MINRL': {
       'floorPrice': 3200.0,
       'currentPrice': 3567.25,
       'sellOffers': [
-        {'seller': 'MineralMaster', 'amount': '20', 'price': '3,400', 'rating': 5.0, 'trades': 892},
-        {'seller': 'RockCollector', 'amount': '35', 'price': '3,500', 'rating': 4.9, 'trades': 654},
+        {
+          'seller': 'MineralMaster',
+          'amount': '20',
+          'price': '3,400',
+          'rating': 5.0,
+          'trades': 892
+        },
+        {
+          'seller': 'RockCollector',
+          'amount': '35',
+          'price': '3,500',
+          'rating': 4.9,
+          'trades': 654
+        },
       ],
       'buyOffers': [
-        {'buyer': 'MineralWhale', 'amount': '50', 'price': '3,200', 'rating': 4.8, 'trades': 432},
+        {
+          'buyer': 'MineralWhale',
+          'amount': '50',
+          'price': '3,200',
+          'rating': 4.8,
+          'trades': 432
+        },
       ]
     },
     'TBLUE': {
       'floorPrice': 62.0,
       'currentPrice': 67.90,
       'sellOffers': [
-        {'seller': 'BlueTrader', 'amount': '400', 'price': '65.00', 'rating': 4.7, 'trades': 321},
-        {'seller': 'TokenBlue', 'amount': '600', 'price': '67.00', 'rating': 4.8, 'trades': 456},
+        {
+          'seller': 'BlueTrader',
+          'amount': '400',
+          'price': '65.00',
+          'rating': 4.7,
+          'trades': 321
+        },
+        {
+          'seller': 'TokenBlue',
+          'amount': '600',
+          'price': '67.00',
+          'rating': 4.8,
+          'trades': 456
+        },
       ],
       'buyOffers': [
-        {'buyer': 'BlueBuyer', 'amount': '800', 'price': '62.00', 'rating': 4.6, 'trades': 234},
+        {
+          'buyer': 'BlueBuyer',
+          'amount': '800',
+          'price': '62.00',
+          'rating': 4.6,
+          'trades': 234
+        },
       ]
     },
   };
-  
+
   void _showTokenBuyBottomSheet() {
     TokenBuySheet.show(
       context,
@@ -717,7 +882,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       tokenData: widget.tokenData,
     );
   }
-  
+
   void _showTokenSellBottomSheet() {
     TokenSellSheet.show(
       context,
@@ -840,7 +1005,7 @@ class SellSheet extends GetWidget<SellSheetController> {
   @override
   Widget build(BuildContext context) {
     final logger = Get.find<LoggerService>();
-    
+
     return RepaintBoundary(
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
@@ -895,29 +1060,30 @@ class SellSheet extends GetWidget<SellSheetController> {
   }
 
   /// Optimized sell action with proper error handling and debouncing
-  Future<void> _handleSellAction(SellSheetController controller, LoggerService logger) async {
+  Future<void> _handleSellAction(
+      SellSheetController controller, LoggerService logger) async {
     // Prevent multiple taps
     if (controller.buttonState.value == ButtonState.loading) {
       return;
     }
-    
+
     try {
       controller.buttonState.value = ButtonState.loading;
-      
+
       // Use debouncing to prevent rapid fire actions
       await Future.delayed(const Duration(milliseconds: 300));
-      
+
       bool hasStripeAccount = false;
-      
+
       if (!hasStripeAccount) {
         logger.i("Creating a new stripe account for the user...");
-        
+
         // Get the link for the user with timeout
         String accountlink = await createStripeAccount("USERIDNEW", "DE")
             .timeout(const Duration(seconds: 30));
-        
+
         logger.i("Opening the link now... $accountlink");
-        
+
         // Convert the link to a url with validation
         final uri = Uri.tryParse(accountlink);
         if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {

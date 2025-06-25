@@ -15,14 +15,16 @@ class SpotifyBuilder extends StatelessWidget {
         height: AppTheme.cardPadding * 1.5,
         child: Row(
           children: [
-            IconButton(onPressed: (){}, icon: const Icon(FontAwesomeIcons.spotify)),
+            IconButton(
+                onPressed: () {}, icon: const Icon(FontAwesomeIcons.spotify)),
             Container(
               width: AppTheme.cardPadding * 12,
               child: Text(
-                "$spotifyUrl", overflow: TextOverflow.ellipsis,),
+                "$spotifyUrl",
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ));
   }
 }
-

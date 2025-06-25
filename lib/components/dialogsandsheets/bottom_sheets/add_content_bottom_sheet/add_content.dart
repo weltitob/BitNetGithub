@@ -8,7 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AddContentWidget extends StatelessWidget {
   final controller;
 
-  const AddContentWidget({Key? key, required this.controller}) : super(key: key);
+  const AddContentWidget({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,6 @@ class AddContentWidget extends StatelessWidget {
               mediaType: MediaType.youtube_url,
               onTap: (mediaType) => controller.addMedia(mediaType),
             ),
-
           ],
         ),
         const SizedBox(height: AppTheme.elementSpacing),
@@ -55,8 +55,6 @@ class AddContentWidget extends StatelessWidget {
               mediaType: MediaType.document,
               onTap: (mediaType) => controller.addMedia(mediaType),
             ),
-
-
             IconCreationWidget(
               icon: Icons.insert_photo,
               color: Colors.orange,
@@ -64,7 +62,6 @@ class AddContentWidget extends StatelessWidget {
               mediaType: MediaType.image_data,
               onTap: (mediaType) => controller.addMedia(mediaType),
             ),
-
             IconCreationWidget(
               icon: Icons.qr_code_rounded,
               color: Colors.orange,
@@ -130,7 +127,6 @@ class AddContentWidget extends StatelessWidget {
     );
   }
 }
-
 
 class IconCreationWidget extends StatelessWidget {
   final IconData icon;

@@ -1,4 +1,3 @@
-
 class LightningBalance {
   String balance;
   String pendingOpenBalance;

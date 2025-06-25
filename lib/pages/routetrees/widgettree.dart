@@ -26,15 +26,15 @@ class WidgetTree extends StatelessWidget {
   // Store the previous column mode to avoid unnecessary rebuilds
   bool? _previousColumnMode;
   WidgetTreeController? _controller;
-  
+
   // Memoize theme data to avoid rebuilds
   ThemeData? _lightTheme;
   ThemeData? _darkTheme;
-  
+
   ThemeData _getLightTheme(Color? primaryColor) {
     return _lightTheme ??= AppTheme.customTheme(Brightness.light, primaryColor);
   }
-  
+
   ThemeData _getDarkTheme(Color? primaryColor) {
     return _darkTheme ??= AppTheme.customTheme(Brightness.dark, primaryColor);
   }
@@ -45,29 +45,30 @@ class WidgetTree extends StatelessWidget {
   // Safe Firebase initialization for web
   Future<void> _ensureFirebaseInitialized() async {
     if (_safeFirebaseInitialized) return;
-    
+
     try {
       // Check if Firebase is available and initialized
       if (kIsWeb && !Firebase.apps.isNotEmpty) {
         try {
           await Firebase.initializeApp(
             options: const FirebaseOptions(
-              apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
-              appId: '466393582939',
-              messagingSenderId: '01',
-              projectId: 'bitnet-cb34f',
-              storageBucket: 'bitnet-cb34f.appspot.com'
-            ),
+                apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
+                appId: '466393582939',
+                messagingSenderId: '01',
+                projectId: 'bitnet-cb34f',
+                storageBucket: 'bitnet-cb34f.appspot.com'),
           );
           print('Firebase successfully initialized in web mode');
         } catch (e) {
-          print('Firebase initialization error (safe to ignore in web preview): $e');
+          print(
+              'Firebase initialization error (safe to ignore in web preview): $e');
         }
       }
     } catch (e) {
-      print('Firebase availability check error (safe to ignore in web preview): $e');
+      print(
+          'Firebase availability check error (safe to ignore in web preview): $e');
     }
-    
+
     _safeFirebaseInitialized = true;
   }
 
@@ -75,9 +76,9 @@ class WidgetTree extends StatelessWidget {
   Widget build(BuildContext context) {
     // Try to initialize Firebase safely
     _ensureFirebaseInitialized();
-    
+
     final provider = Provider.of<LocalProvider>(context);
-    
+
     // Initialize required services if not already initialized
     // 1. Initialize LoggerService
     LoggerService logger;
@@ -86,12 +87,12 @@ class WidgetTree extends StatelessWidget {
     } else {
       logger = Get.find<LoggerService>();
     }
-    
+
     // 2. Initialize DioClient
     if (!Get.isRegistered<DioClient>()) {
       Get.put(DioClient());
     }
-    
+
     // 3. Initialize WidgetTreeController safely
     try {
       if (!Get.isRegistered<WidgetTreeController>()) {
@@ -99,13 +100,15 @@ class WidgetTree extends StatelessWidget {
       }
       _controller ??= Get.find<WidgetTreeController>();
     } catch (e) {
-      print('Error initializing WidgetTreeController (safe to ignore in web preview): $e');
+      print(
+          'Error initializing WidgetTreeController (safe to ignore in web preview): $e');
       // Create an emergency backup controller if needed
       if (_controller == null) {
-        _controller = WidgetTreeController(); // Create locally without registering
+        _controller =
+            WidgetTreeController(); // Create locally without registering
       }
     }
-    
+
     final controller = _controller!;
 
     return ThemeBuilder(
@@ -113,23 +116,24 @@ class WidgetTree extends StatelessWidget {
         // Memoize theme data
         final lightTheme = _getLightTheme(primaryColor);
         final darkTheme = _getDarkTheme(primaryColor);
-        
+
         return LayoutBuilder(
           builder: (context, constraints) {
-            final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
-            
+            final isColumnMode =
+                AppTheme.isColumnModeByWidth(constraints.maxWidth);
+
             // Only update column mode if it changed to avoid unnecessary rebuilds
             if (_previousColumnMode != isColumnMode) {
               _previousColumnMode = isColumnMode;
               logger.i('Set Column Mode = $isColumnMode');
-              
+
               // Avoid unnecessary Flutter tree rebuilds by using microtask
               Future.microtask(() {
                 // In web mode, ensure we have a default route that works
                 if (kIsWeb) {
                   // Force a web-safe route for initial loading (use root path)
                   controller.initialUrl!.value = "/";
-                } 
+                }
                 // For non-web, use loading only if empty
                 else if (controller.initialUrl!.value.isEmpty) {
                   controller.initialUrl!.value = "/loading";
@@ -137,7 +141,7 @@ class WidgetTree extends StatelessWidget {
                 controller.columnMode!.value = isColumnMode;
               });
             }
-            
+
             return ScreenUtilInit(
               designSize: const Size(375, 812),
               minTextAdapt: false,

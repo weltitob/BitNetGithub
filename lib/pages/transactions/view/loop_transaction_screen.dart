@@ -30,19 +30,26 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
   @override
   Widget build(BuildContext context) {
     log('This is the loop transaction screen now');
-    final String formattedDate = displayTimeAgoFromInt(transactionItemData.timestamp);
+    final String formattedDate =
+        displayTimeAgoFromInt(transactionItemData.timestamp);
     final String time = convertIntoDateFormat(transactionItemData.timestamp);
     final chartLine = Get.find<WalletsController>().chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     print('cooin ${coin.coin}');
     currency = currency ?? "USD";
-    final TransactionController transactionController = Get.put(TransactionController());
+    final TransactionController transactionController =
+        Get.put(TransactionController());
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent =
-        bitcoinPrice != null ? (double.parse(transactionItemData.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-    final currencyEquivalentFee =
-        bitcoinPrice != null ? (transactionItemData.fee.toDouble() / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(transactionItemData.amount) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
+    final currencyEquivalentFee = bitcoinPrice != null
+        ? (transactionItemData.fee.toDouble() / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
     final overlayController = Get.find<OverlayController>();
 
     return bitnetScaffold(
@@ -88,11 +95,17 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                                 width: AppTheme.cardPadding * 0.75,
                               ),
                               Transform.rotate(
-                                angle: transactionItemData.type == TransactionType.loopOut ? 3.14 : 0,
+                                angle: transactionItemData.type ==
+                                        TransactionType.loopOut
+                                    ? 3.14
+                                    : 0,
                                 child: Icon(
                                   Icons.double_arrow_rounded,
                                   size: AppTheme.cardPadding * 2.5,
-                                  color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white80 : AppTheme.black60,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? AppTheme.white80
+                                      : AppTheme.black60,
                                 ),
                               ),
                               const SizedBox(
@@ -108,21 +121,26 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                           controller.hideBalance.value
                               ? Text(
                                   '*****',
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 )
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                                        coin.setCurrencyType(coin.coin != null
+                                            ? !coin.coin!
+                                            : false);
                                       },
                                       child: Text(
                                           coin.coin ?? true
                                               ? '${transactionController.formatPrice(transactionItemData.amount)}'
                                               : "${currencyEquivalent} ${getCurrency(currency!)}",
                                           overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context).textTheme.displayMedium!),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayMedium!),
                                     ),
                                     coin.coin ?? true
                                         ? Icon(
@@ -144,7 +162,8 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                         await Clipboard.setData(ClipboardData(
                           text: transactionItemData.txHash,
                         ));
-                        overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
+                        overlayController
+                            .showOverlay(L10n.of(context)!.copiedToClipboard);
                       },
                       child: Row(
                         children: [
@@ -179,7 +198,8 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                                 scale: 1.1,
                                 child: GestureDetector(
                                   onTap: () {
-                                    controller.showInfo.value = !controller.showInfo.value;
+                                    controller.showInfo.value =
+                                        !controller.showInfo.value;
                                     BitNetBottomSheet(
                                       context: context,
                                       child: bitnetScaffold(
@@ -191,7 +211,8 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                                         context: context,
                                         body: Padding(
                                           padding: const EdgeInsets.only(
-                                              top: AppTheme.cardPaddingBigger * 5,
+                                              top: AppTheme.cardPaddingBigger *
+                                                  5,
                                               left: AppTheme.cardPaddingBig,
                                               right: AppTheme.cardPaddingBig),
                                           child: Text(
@@ -199,7 +220,9 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                             maxLines: 3,
-                                            style: Theme.of(context).textTheme.titleMedium!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!,
                                           ),
                                         ),
                                       ),
@@ -214,7 +237,9 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                                     ),
                                     child: Center(
                                       child: Icon(
-                                        controller.showInfo.value ? Icons.info : Icons.info_outline,
+                                        controller.showInfo.value
+                                            ? Icons.info
+                                            : Icons.info_outline,
                                         color: AppTheme.white60,
                                       ),
                                     ),
@@ -227,18 +252,23 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                         width: 10.w,
                       ),
                       Text(
-                        transactionItemData.status == TransactionStatus.confirmed
+                        transactionItemData.status ==
+                                TransactionStatus.confirmed
                             ? 'Received'
-                            : transactionItemData.status == TransactionStatus.pending
-                            ? 'Pending'
-                            : 'Error',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: transactionItemData.status == TransactionStatus.confirmed
-                              ? AppTheme.successColor
-                              : transactionItemData.status == TransactionStatus.pending
-                              ? AppTheme.colorBitcoin
-                              : AppTheme.errorColor,
-                        ),
+                            : transactionItemData.status ==
+                                    TransactionStatus.pending
+                                ? 'Pending'
+                                : 'Error',
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: transactionItemData.status ==
+                                          TransactionStatus.confirmed
+                                      ? AppTheme.successColor
+                                      : transactionItemData.status ==
+                                              TransactionStatus.pending
+                                          ? AppTheme.colorBitcoin
+                                          : AppTheme.errorColor,
+                                ),
                       ),
                     ],
                   ),
@@ -253,7 +283,9 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                         )
                       : Row(
                           children: [
-                            Image.asset("assets/images/lightning.png", width: AppTheme.cardPadding * 1, height: AppTheme.cardPadding * 1),
+                            Image.asset("assets/images/lightning.png",
+                                width: AppTheme.cardPadding * 1,
+                                height: AppTheme.cardPadding * 1),
                             const Text('  ↔  '),
                             Image.asset(
                               "assets/images/bitcoin.png",
@@ -277,15 +309,20 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                            coin.setCurrencyType(
+                                coin.coin != null ? !coin.coin! : false);
                           },
                           child: Text(
-                            coin.coin ?? true ? '${transactionItemData.fee}' : "$currencyEquivalentFee ${getCurrency(currency!)}",
+                            coin.coin ?? true
+                                ? '${transactionItemData.fee}'
+                                : "$currencyEquivalentFee ${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
-                        coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : const SizedBox.shrink(),
+                        coin.coin ?? true
+                            ? Icon(AppTheme.satoshiIcon)
+                            : const SizedBox.shrink(),
                       ],
                     )),
               ],

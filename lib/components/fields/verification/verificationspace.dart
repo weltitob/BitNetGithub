@@ -105,13 +105,13 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                 child: widget.loading
                     ? dotProgress(context)
                     : Text(
-                  widget.hasError ? widget.errorText : "",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: AppTheme.errorColor,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
+                        widget.hasError ? widget.errorText : "",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: AppTheme.errorColor,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
               ),
             ],
           ),

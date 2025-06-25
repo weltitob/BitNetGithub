@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 
 /// Unit tests for string utility functions
-/// 
+///
 /// These tests verify string manipulation and utility functions
 /// including random string generation, percentage formatting,
 /// color generation, and numeric validation.
-/// 
+///
 /// Test categories:
 /// 1. Random string generation
 /// 2. Percentage formatting
@@ -36,7 +36,7 @@ void main() {
       final string1 = getRandomString(20);
       final string2 = getRandomString(20);
       final string3 = getRandomString(20);
-      
+
       // While theoretically they could be the same, it's extremely unlikely
       expect(string1 == string2 && string2 == string3, isFalse);
     });
@@ -44,7 +44,7 @@ void main() {
     test('should handle edge cases', () {
       // Zero length
       expect(getRandomString(0), equals(''));
-      
+
       // Negative length (typically returns empty string in most implementations)
       final negativeResult = getRandomString(-1);
       expect(negativeResult.isEmpty, isTrue);
@@ -53,10 +53,10 @@ void main() {
     test('should contain mix of letters and numbers', () {
       // Generate a longer string to ensure mix
       final randomString = getRandomString(1000);
-      
+
       // Check for at least one letter
       expect(RegExp(r'[a-zA-Z]').hasMatch(randomString), isTrue);
-      
+
       // Check for at least one number
       expect(RegExp(r'[0-9]').hasMatch(randomString), isTrue);
     });
@@ -96,13 +96,12 @@ void main() {
     test('should remove trailing zeros after decimal', () {
       expect(toPercent(0.01), equals('+1%')); // Not '1.0%'
       expect(toPercent(0.5), equals('+50%')); // Not '50.0%'
-      
+
       // But keep significant decimals
       expect(toPercent(0.015), equals('+1.5%'));
       expect(toPercent(0.0150), equals('+1.5%')); // Remove trailing zero
     });
   });
-
 
   group('String Utils - Six Integer Validation', () {
     test('should validate strings with exactly 6 consecutive digits', () {
@@ -146,9 +145,12 @@ void main() {
 
     test('should handle multiple sets of 6 digits separated by non-digits', () {
       // Should find exactly 6 digits when separated by non-digits
-      expect(containsSixIntegers('123456abc789012'), isTrue); // Has exactly 6 digits followed by letters
-      expect(containsSixIntegers('abc123456def789012'), isTrue); // Has exactly 6 digits between letters
-      expect(containsSixIntegers('123456 789012'), isTrue); // Has exactly 6 digits followed by space
+      expect(containsSixIntegers('123456abc789012'),
+          isTrue); // Has exactly 6 digits followed by letters
+      expect(containsSixIntegers('abc123456def789012'),
+          isTrue); // Has exactly 6 digits between letters
+      expect(containsSixIntegers('123456 789012'),
+          isTrue); // Has exactly 6 digits followed by space
     });
   });
 
@@ -206,7 +208,7 @@ void main() {
     test('should return consistent viewport fraction', () {
       final fraction = getStandardizedViewportFraction();
       expect(fraction, equals(0.7));
-      
+
       // Should always return the same value
       expect(getStandardizedViewportFraction(), equals(fraction));
     });
@@ -214,7 +216,7 @@ void main() {
     test('should return consistent enlarge factor', () {
       final factor = getStandardizedEnlargeFactor();
       expect(factor, equals(0.25));
-      
+
       // Should always return the same value
       expect(getStandardizedEnlargeFactor(), equals(factor));
     });

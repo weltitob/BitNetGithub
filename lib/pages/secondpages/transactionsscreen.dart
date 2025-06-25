@@ -13,7 +13,8 @@ class LastTransactions extends StatefulWidget {
   State<LastTransactions> createState() => _LastTransactionsState();
 }
 
-class _LastTransactionsState extends State<LastTransactions> with SingleTickerProviderStateMixin {
+class _LastTransactionsState extends State<LastTransactions>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -31,7 +32,6 @@ class _LastTransactionsState extends State<LastTransactions> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Container();
-
 
     //   GlassContainer(
     //   height: 600,

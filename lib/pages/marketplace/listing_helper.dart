@@ -20,10 +20,11 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
   final satController = TextEditingController();
   final focusNode = FocusNode();
   final platformFee = 1.0; // $1 platform fee
-  
+
   BitNetBottomSheet(
     context: context,
-    height: MediaQuery.of(context).size.height * 0.85, // Increased height to take up more screen
+    height: MediaQuery.of(context).size.height *
+        0.85, // Increased height to take up more screen
     backgroundColor: Theme.of(context).colorScheme.surface,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +35,7 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
           text: "List NFT",
           hasBackButton: false,
         ),
-        
+
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -48,35 +49,38 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                   children: [
                     // Asset image
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.borderRadiusSmall),
                       child: Container(
                         width: 80,
                         height: 80,
                         color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.grey.shade100
-                          : Colors.grey.shade800,
+                            ? Colors.grey.shade100
+                            : Colors.grey.shade800,
                         child: asset.imageUrl.isNotEmpty
-                          ? Image.network(
-                              asset.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Icon(
+                            ? Image.network(
+                                asset.imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Icon(
+                                  Icons.image_not_supported,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white60,
+                                ),
+                              )
+                            : Icon(
                                 Icons.image_not_supported,
-                                color: Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.black60
-                                  : AppTheme.white60,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? AppTheme.black60
+                                    : AppTheme.white60,
                               ),
-                            )
-                          : Icon(
-                              Icons.image_not_supported,
-                              color: Theme.of(context).brightness == Brightness.light
-                                ? AppTheme.black60
-                                : AppTheme.white60,
-                            ),
                       ),
                     ),
-                    
+
                     const SizedBox(width: AppTheme.elementSpacing),
-                    
+
                     // Asset details
                     Expanded(
                       child: Column(
@@ -92,11 +96,15 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                           const SizedBox(height: 4),
                           Text(
                             asset.collection,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).brightness == Brightness.light 
-                                ? AppTheme.black60
-                                : AppTheme.white60,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white60,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -105,9 +113,9 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: AppTheme.elementSpacing * 2),
-                
+
                 // Set price (small label)
                 Align(
                   alignment: Alignment.centerLeft,
@@ -121,17 +129,18 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                       Text(
                         "• \$1 platform fee",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).brightness == Brightness.light 
-                            ? AppTheme.black60
-                            : AppTheme.white60,
-                        ),
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white60,
+                            ),
                       ),
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: AppTheme.elementSpacing),
-                
+
                 // AmountWidget for price input
                 AmountWidget(
                   context: context,
@@ -143,10 +152,10 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                   autoConvert: true,
                   swapped: true, // Start with USD by default
                 ),
-                
+
                 // Spacer to push buttons to bottom
                 const Spacer(),
-                
+
                 // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -163,11 +172,11 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                         currController.dispose();
                         satController.dispose();
                         focusNode.dispose();
-                        
+
                         Navigator.of(context).pop();
                       },
                     ),
-                    
+
                     // Preview listing button (right)
                     LongButtonWidget(
                       title: "Continue",
@@ -177,7 +186,7 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                       onTap: () {
                         // Get the current price
                         final listingPriceText = currController.text.trim();
-                        
+
                         // Simple price validation
                         if (listingPriceText.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -189,9 +198,10 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                           );
                           return;
                         }
-                        
-                        final listingPrice = double.tryParse(listingPriceText) ?? 0;
-                        
+
+                        final listingPrice =
+                            double.tryParse(listingPriceText) ?? 0;
+
                         if (listingPrice <= 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -202,24 +212,23 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
                           );
                           return;
                         }
-                        
+
                         // Close current sheet and show confirmation
                         Navigator.of(context).pop();
-                        
+
                         // Show confirmation bottom sheet
                         _showListingConfirmation(
-                          context, 
-                          asset, 
-                          listingPrice,
-                          btcController.text,
-                          satController.text,
-                          currController.text
-                        );
+                            context,
+                            asset,
+                            listingPrice,
+                            btcController.text,
+                            satController.text,
+                            currController.text);
                       },
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),
@@ -231,17 +240,12 @@ void showListingBottomSheet(BuildContext context, NFTAsset asset) {
 }
 
 /// Shows a confirmation bottom sheet for the final listing step
-void _showListingConfirmation(
-  BuildContext context, 
-  NFTAsset asset, 
-  double listingPrice,
-  String btcValue,
-  String satValue,
-  String currValue
-) {
+void _showListingConfirmation(BuildContext context, NFTAsset asset,
+    double listingPrice, String btcValue, String satValue, String currValue) {
   BitNetBottomSheet(
     context: context,
-    height: MediaQuery.of(context).size.height * 0.85, // Increased height to match first sheet
+    height: MediaQuery.of(context).size.height *
+        0.85, // Increased height to match first sheet
     backgroundColor: Theme.of(context).colorScheme.surface,
     child: Column(
       children: [
@@ -263,35 +267,38 @@ void _showListingConfirmation(
                   children: [
                     // Asset image
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.borderRadiusSmall),
                       child: Container(
                         width: 60,
                         height: 60,
                         color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.grey.shade100
-                          : Colors.grey.shade800,
+                            ? Colors.grey.shade100
+                            : Colors.grey.shade800,
                         child: asset.imageUrl.isNotEmpty
-                          ? Image.network(
-                              asset.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Icon(
+                            ? Image.network(
+                                asset.imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Icon(
+                                  Icons.image_not_supported,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white60,
+                                ),
+                              )
+                            : Icon(
                                 Icons.image_not_supported,
-                                color: Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.black60
-                                  : AppTheme.white60,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? AppTheme.black60
+                                    : AppTheme.white60,
                               ),
-                            )
-                          : Icon(
-                              Icons.image_not_supported,
-                              color: Theme.of(context).brightness == Brightness.light
-                                ? AppTheme.black60
-                                : AppTheme.white60,
-                            ),
                       ),
                     ),
-                    
+
                     const SizedBox(width: AppTheme.elementSpacing),
-                    
+
                     // Asset details
                     Expanded(
                       child: Column(
@@ -307,11 +314,15 @@ void _showListingConfirmation(
                           const SizedBox(height: 4),
                           Text(
                             asset.collection,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).brightness == Brightness.light 
-                                ? AppTheme.black60
-                                : AppTheme.white60,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black60
+                                      : AppTheme.white60,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -320,16 +331,17 @@ void _showListingConfirmation(
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: AppTheme.cardPadding),
-                
+
                 // Pricing details
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
                         ? Colors.grey.shade100
                         : Colors.grey.shade800.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusSmall),
                   ),
                   padding: EdgeInsets.all(AppTheme.cardPadding),
                   child: Column(
@@ -344,9 +356,10 @@ void _showListingConfirmation(
                         context,
                         "Platform fee",
                         "-\$1.00",
-                        valueColor: Theme.of(context).brightness == Brightness.light 
-                            ? AppTheme.black60
-                            : AppTheme.white60,
+                        valueColor:
+                            Theme.of(context).brightness == Brightness.light
+                                ? AppTheme.black60
+                                : AppTheme.white60,
                       ),
                       const SizedBox(height: AppTheme.elementSpacing),
                       const Divider(),
@@ -360,9 +373,9 @@ void _showListingConfirmation(
                     ],
                   ),
                 ),
-                
+
                 const Spacer(),
-                
+
                 // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -379,7 +392,7 @@ void _showListingConfirmation(
                         showListingBottomSheet(context, asset);
                       },
                     ),
-                    
+
                     // List button (right)
                     LongButtonWidget(
                       title: "List NFT",
@@ -388,19 +401,13 @@ void _showListingConfirmation(
                       customHeight: AppTheme.cardPadding * 2.25,
                       onTap: () {
                         // Handle listing confirmation
-                        _handleListingConfirmation(
-                          context, 
-                          asset, 
-                          listingPrice,
-                          btcValue,
-                          satValue,
-                          currValue
-                        );
+                        _handleListingConfirmation(context, asset, listingPrice,
+                            btcValue, satValue, currValue);
                       },
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),
@@ -412,28 +419,27 @@ void _showListingConfirmation(
 }
 
 Widget _buildPriceRow(
-  BuildContext context, 
-  String label, 
-  String value, 
-  {
-    bool isBold = false,
-    Color? valueColor,
-  }
-) {
+  BuildContext context,
+  String label,
+  String value, {
+  bool isBold = false,
+  Color? valueColor,
+}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(
         label,
-        style: isBold 
-            ? Theme.of(context).textTheme.titleMedium 
+        style: isBold
+            ? Theme.of(context).textTheme.titleMedium
             : Theme.of(context).textTheme.bodyMedium,
       ),
       Text(
         value,
-        style: (isBold 
-            ? Theme.of(context).textTheme.titleMedium 
-            : Theme.of(context).textTheme.bodyMedium)?.copyWith(
+        style: (isBold
+                ? Theme.of(context).textTheme.titleMedium
+                : Theme.of(context).textTheme.bodyMedium)
+            ?.copyWith(
           color: valueColor,
         ),
       ),
@@ -441,14 +447,8 @@ Widget _buildPriceRow(
   );
 }
 
-void _handleListingConfirmation(
-  BuildContext context, 
-  NFTAsset asset, 
-  double listingPrice,
-  String btcValue,
-  String satValue,
-  String currValue
-) {
+void _handleListingConfirmation(BuildContext context, NFTAsset asset,
+    double listingPrice, String btcValue, String satValue, String currValue) {
   // Show loading indicator
   showDialog(
     context: context,
@@ -494,7 +494,7 @@ void _handleListingConfirmation(
 
   // Get current user ID
   final userId = Auth().currentUser?.uid;
-  
+
   // Generate timestamp
   final timestamp = DateTime.now().millisecondsSinceEpoch;
 
@@ -515,29 +515,30 @@ void _handleListingConfirmation(
   // Store BuildContext for later use
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigatorState = Navigator.of(context);
-  
+
   // Execute Firestore operation
   Future(() async {
     try {
       // Write to Firestore
       final firestore = FirebaseFirestore.instance;
       final listingsCollection = firestore.collection('listed_assets');
-      
+
       // Add the listing data
       await listingsCollection.add(listingData);
-      
+
       // Delay to show loading indicator (at least 1 second)
       await Future.delayed(Duration(seconds: 1));
-      
+
       // Close loading dialog first
       if (navigatorState.canPop()) {
         navigatorState.pop();
       }
-      
+
       // Show success message
       scaffoldMessenger.showSnackBar(
         SnackBar(
-          content: Text("NFT listed successfully for \$${listingPrice.toStringAsFixed(2)}!"),
+          content: Text(
+              "NFT listed successfully for \$${listingPrice.toStringAsFixed(2)}!"),
           backgroundColor: AppTheme.successColor,
           duration: Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
@@ -551,18 +552,17 @@ void _handleListingConfirmation(
           ),
         ),
       );
-      
+
       // Close the confirmation sheet
       if (navigatorState.canPop()) {
         navigatorState.pop();
       }
-      
     } catch (e) {
       // Close loading dialog first
       if (navigatorState.canPop()) {
         navigatorState.pop();
       }
-      
+
       // Show error message
       scaffoldMessenger.showSnackBar(
         SnackBar(

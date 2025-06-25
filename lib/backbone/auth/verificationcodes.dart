@@ -9,7 +9,7 @@ Future<void> generateAndStoreVerificationCodes({
   required String issuer,
   required CollectionReference codesCollection,
 }) async {
-  try{
+  try {
     List<String> codes = [];
 
     for (var i = 0; i < numCodes; i++) {
@@ -28,7 +28,7 @@ Future<void> generateAndStoreVerificationCodes({
     });
 
     print('Generated and stored verification codes');
-  } catch (e){
+  } catch (e) {
     print("Error trying to generate new verification codes: $e");
   }
 }
@@ -39,7 +39,7 @@ Future<void> markVerificationCodeAsUsed({
   required String receiver,
   required CollectionReference codesCollection,
 }) async {
-  try{
+  try {
     print("Marking verification code as used...");
     VerificationCode newCode = VerificationCode(
       issuer: code.issuer,
@@ -51,7 +51,7 @@ Future<void> markVerificationCodeAsUsed({
     print("Code being used: ${code.code}");
     await codesCollection.doc(code.code).update(newCode.toJson());
     print('Marked verification code as used');
-  } catch (e){
+  } catch (e) {
     print("Error trying to mark verification code: $e");
   }
 }

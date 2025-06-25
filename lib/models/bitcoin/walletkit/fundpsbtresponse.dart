@@ -13,7 +13,8 @@ class FundedPsbtResponse {
 
   factory FundedPsbtResponse.fromJson(Map<String, dynamic> json) {
     var utxosFromJson = json['locked_utxos'] as List;
-    List<LockedUtxo> utxosList = utxosFromJson.map((utxoJson) => LockedUtxo.fromJson(utxoJson)).toList();
+    List<LockedUtxo> utxosList =
+        utxosFromJson.map((utxoJson) => LockedUtxo.fromJson(utxoJson)).toList();
 
     return FundedPsbtResponse(
       fundedPsbt: json['funded_psbt'],

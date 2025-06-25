@@ -37,23 +37,24 @@ class _HashrateWidgetState extends State<HashrateWidget> {
       isLoading = true;
       errorMessage = null;
     });
-    
+
     var dio = Dio();
     try {
-      var response = await dio.get(
-          'https://mempool.space/api/v1/mining/hashrate/3Y');
-      
+      var response =
+          await dio.get('https://mempool.space/api/v1/mining/hashrate/3Y');
+
       if (response.statusCode == 200) {
         List<ChartLine> line = [];
         line.clear();
         chartData.clear();
         difficulty.clear();
-        
+
         HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
         difficulty.addAll(hashChartModel.difficulty ?? []);
         for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
           line.add(ChartLine(
-            time: double.parse(hashChartModel.hashrates![i].timestamp.toString()),
+            time:
+                double.parse(hashChartModel.hashrates![i].timestamp.toString()),
             price: hashChartModel.hashrates![i].avgHashrate!,
           ));
         }
@@ -72,8 +73,9 @@ class _HashrateWidgetState extends State<HashrateWidget> {
   }
 
   void setData() {
-    DateTime range = DateTime.now().subtract(const Duration(days: 90)); // Default to 3M
-    switch(selectedMonth) {
+    DateTime range =
+        DateTime.now().subtract(const Duration(days: 90)); // Default to 3M
+    switch (selectedMonth) {
       case '3M':
         range = DateTime.now().subtract(const Duration(days: 90));
         break;
@@ -84,22 +86,22 @@ class _HashrateWidgetState extends State<HashrateWidget> {
         range = DateTime.now().subtract(const Duration(days: 365));
         break;
     }
-        
+
     currentChartData = chartData.where((test) {
       DateTime time = DateTime.fromMillisecondsSinceEpoch(
-        (test.time * 1000).round(),
-        isUtc: false);
-        return time.isAfter(range) || time.isAtSameMomentAs(range);
+          (test.time * 1000).round(),
+          isUtc: false);
+      return time.isAfter(range) || time.isAtSameMomentAs(range);
     }).toList();
-    
+
     currentDifficulty = difficulty.where((test) {
-      if(test.time == null) {
+      if (test.time == null) {
         return false;
       }
       DateTime time = DateTime.fromMillisecondsSinceEpoch(
-        (test.time! * 1000).round(),
-        isUtc: false);
-        return time.isAfter(range) || time.isAtSameMomentAs(range);
+          (test.time! * 1000).round(),
+          isUtc: false);
+      return time.isAfter(range) || time.isAtSameMomentAs(range);
     }).toList();
     setState(() {});
   }
@@ -142,14 +144,13 @@ class _HashrateWidgetState extends State<HashrateWidget> {
                   child: Text(
                     "View more",
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
               ],
             ),
           ),
-          
           if (isLoading)
             Expanded(
               child: Center(
@@ -165,8 +166,8 @@ class _HashrateWidgetState extends State<HashrateWidget> {
                     errorMessage!,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                   ),
                 ),
               ),
@@ -181,7 +182,6 @@ class _HashrateWidgetState extends State<HashrateWidget> {
                 ),
               ),
             ),
-          
           CustomizableTimeChooser(
             timePeriods: ['3M', '6M', '1Y'],
             initialSelectedPeriod: selectedMonth,

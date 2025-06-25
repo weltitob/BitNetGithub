@@ -178,9 +178,11 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
         text: "OnChain Transaction",
         context: context,
         onTap: () {
-          controller.homeController.sendWebSocketMessage('{"track-rbf-summary":true}');
+          controller.homeController
+              .sendWebSocketMessage('{"track-rbf-summary":true}');
           controller.homeController.sendWebSocketMessage('{"track-tx":"stop"}');
-          controller.homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+          controller.homeController.sendWebSocketMessage(
+              '{"action":"want","data":["blocks","mempool-blocks"]}');
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
         },
@@ -188,9 +190,11 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
       body: PopScope(
         canPop: true,
         onPopInvoked: (bool didPop) {
-          controller.homeController.sendWebSocketMessage('{"track-rbf-summary":true}');
+          controller.homeController
+              .sendWebSocketMessage('{"track-rbf-summary":true}');
           controller.homeController.sendWebSocketMessage('{"track-tx":"stop"}');
-          controller.homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+          controller.homeController.sendWebSocketMessage(
+              '{"action":"want","data":["blocks","mempool-blocks"]}');
           controller.homeController.isRbfTransaction.value = false;
         },
         child: Obx(() {

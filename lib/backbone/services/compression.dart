@@ -11,9 +11,7 @@ compressImage(file, postId) async {
     final compressedImageFile = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile!, quality: 85));
     return compressedImageFile;
-  }
-  catch(e)
-  {
+  } catch (e) {
     return file;
   }
 }

@@ -39,8 +39,7 @@ class AppsTab extends StatefulWidget {
   State<AppsTab> createState() => _AppsTabState();
 }
 
-class _AppsTabState extends State<AppsTab>
-    with AutomaticKeepAliveClientMixin {
+class _AppsTabState extends State<AppsTab> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   List<AppData> myApps = List.empty();
@@ -339,7 +338,7 @@ class _AppListTileState extends State<AppListTile> {
             if (widget.appOwned) {
               buttonLoading = true;
               setState(() {});
-              
+
               final url = await widget.app.getUrl();
               context.pushNamed(kWebViewScreenRoute, pathParameters: {
                 'url': url,
@@ -757,34 +756,37 @@ class AppImageBuilder extends StatelessWidget {
 Future<void> addAppToUser(AppData app) async {
   final userId = Auth().currentUser!.uid;
   final batch = FirebaseFirestore.instance.batch();
-  
+
   // Add app to user's collection
   final userRef = Databaserefs.appsRef.doc(userId);
-  batch.set(userRef, {
-    'apps': FieldValue.arrayUnion([app.docId]),
-  }, SetOptions(merge: true));
-  
+  batch.set(
+      userRef,
+      {
+        'apps': FieldValue.arrayUnion([app.docId]),
+      },
+      SetOptions(merge: true));
+
   // Update app download statistics
-  final appStatsRef = FirebaseFirestore.instance
-      .collection('app_stats')
-      .doc(app.docId);
-  
+  final appStatsRef =
+      FirebaseFirestore.instance.collection('app_stats').doc(app.docId);
+
   // Add user to downloaders list
-  final downloadersRef = appStatsRef
-      .collection('downloaders')
-      .doc(userId);
-  
+  final downloadersRef = appStatsRef.collection('downloaders').doc(userId);
+
   batch.set(downloadersRef, {
     'downloaded_at': FieldValue.serverTimestamp(),
     'user_id': userId,
   });
-  
+
   // Increment download count
-  batch.set(appStatsRef, {
-    'download_count': FieldValue.increment(1),
-    'last_download': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-  
+  batch.set(
+      appStatsRef,
+      {
+        'download_count': FieldValue.increment(1),
+        'last_download': FieldValue.serverTimestamp(),
+      },
+      SetOptions(merge: true));
+
   await batch.commit();
 }
 

@@ -20,21 +20,23 @@ import 'package:provider/provider.dart';
 
 abstract class BaseTransactionDetails extends StatefulWidget {
   final TransactionItemData data;
-  
-  const BaseTransactionDetails({required this.data, Key? key}) : super(key: key);
-  
+
+  const BaseTransactionDetails({required this.data, Key? key})
+      : super(key: key);
+
   @override
   BaseTransactionDetailsState createState();
 }
 
-abstract class BaseTransactionDetailsState<T extends BaseTransactionDetails> extends State<T> {
+abstract class BaseTransactionDetailsState<T extends BaseTransactionDetails>
+    extends State<T> {
   // Common properties
   late String formattedDate;
   late String time;
   late String currencyEquivalent;
   late String currencyEquivalentFee;
   final overlayController = Get.find<OverlayController>();
-  
+
   // Methods to be implemented by subclasses
   Widget buildNetworkSpecificDetails();
   String getHeaderTitle();
@@ -58,41 +60,42 @@ abstract class BaseTransactionDetailsState<T extends BaseTransactionDetails> ext
       body: buildTransactionDetailsBody(),
     );
   }
-  
+
   Widget buildTransactionDetailsBody() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-        child: Column(
-          children: [
-            const SizedBox(height: AppTheme.cardPadding * 3),
-            buildMainContainer(),
-          ],
-        ),
-      )
-    );
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+      child: Column(
+        children: [
+          const SizedBox(height: AppTheme.cardPadding * 3),
+          buildMainContainer(),
+        ],
+      ),
+    ));
   }
-  
+
   Widget buildMainContainer();
-  
+
   // Helper methods
   void updateFormattedValues() {
     formattedDate = displayTimeAgoFromInt(widget.data.timestamp);
     time = convertIntoDateFormat(widget.data.timestamp);
-    
+
     final controller = Get.find<WalletsController>();
     final chartLine = controller.chartLines.value;
     final bitcoinPrice = chartLine?.price;
-    
+
     currencyEquivalent = bitcoinPrice != null
-        ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2)
+        ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
         : "0.00";
-        
+
     currencyEquivalentFee = bitcoinPrice != null
-        ? (widget.data.fee.toDouble() / 100000000 * bitcoinPrice).toStringAsFixed(2)
+        ? (widget.data.fee.toDouble() / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
         : "0.00";
   }
-  
+
   Widget buildCopyableText(String text) {
     return GestureDetector(
       onTap: () async {

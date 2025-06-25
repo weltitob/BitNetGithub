@@ -8,7 +8,11 @@ class OtherCenterWidgetIcon extends StatelessWidget {
   final IconData iconData;
   final int index;
   final Function() onTap;
-  const OtherCenterWidgetIcon({required this.iconData, required this.index, required this.onTap, super.key});
+  const OtherCenterWidgetIcon(
+      {required this.iconData,
+      required this.index,
+      required this.onTap,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,10 @@ class OtherCenterWidgetIcon extends StatelessWidget {
             size: AppTheme.iconSize,
             color: controller.currentview.value == index
                 ? Theme.of(context).colorScheme.onPrimaryContainer
-                : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.3),
+                : Theme.of(context)
+                    .colorScheme
+                    .onPrimaryContainer
+                    .withOpacity(0.3),
           ),
         ),
       );

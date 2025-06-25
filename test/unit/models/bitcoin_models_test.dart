@@ -6,11 +6,11 @@ import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 
 /// Unit tests for Bitcoin model classes
-/// 
+///
 /// These tests verify the serialization/deserialization logic for
 /// Bitcoin-related data models including fees, invoices, and address
 /// validation components.
-/// 
+///
 /// Test categories:
 /// 1. Fee model serialization
 /// 2. Invoice model serialization
@@ -25,7 +25,7 @@ void main() {
         fees_medium: '20',
         fees_high: '30',
       );
-      
+
       expect(fees.fees_low, equals('10'));
       expect(fees.fees_medium, equals('20'));
       expect(fees.fees_high, equals('30'));
@@ -37,7 +37,7 @@ void main() {
         fees_medium: '',
         fees_high: '',
       );
-      
+
       expect(fees.fees_low, equals(''));
       expect(fees.fees_medium, equals(''));
       expect(fees.fees_high, equals(''));
@@ -49,21 +49,21 @@ void main() {
         fees_medium: '100',
         fees_high: '999999',
       );
-      
+
       expect(fees.fees_low, equals('0'));
       expect(fees.fees_medium, equals('100'));
       expect(fees.fees_high, equals('999999'));
     });
-    
+
     test('should create Fees from JSON', () {
       final json = {
         'fees_low': 10,
         'fees_medium': 20,
         'fees_high': 30,
       };
-      
+
       final fees = Fees.fromJson(json);
-      
+
       expect(fees.fees_low, equals('10'));
       expect(fees.fees_medium, equals('20'));
       expect(fees.fees_high, equals('30'));
@@ -79,7 +79,7 @@ void main() {
         payment_addr: 'payment_addr_123',
         state: 'SETTLED',
       );
-      
+
       expect(invoice.r_hash, equals('hash123'));
       expect(invoice.payment_request, equals('lnbc1000...'));
       expect(invoice.add_index, equals('1'));
@@ -89,19 +89,19 @@ void main() {
 
     test('should handle different invoice states', () {
       final states = ['OPEN', 'SETTLED', 'CANCELED', 'ACCEPTED'];
-      
+
       for (final state in states) {
         final invoice = InvoiceModel(
           r_hash: 'hash123',
           payment_request: 'lnbc1000...',
-          add_index: '1', 
+          add_index: '1',
           payment_addr: 'payment_addr_123',
           state: state,
         );
         expect(invoice.state, equals(state));
       }
     });
-    
+
     test('should convert InvoiceModel to/from JSON', () {
       final json = {
         'r_hash': 'hash123',
@@ -110,15 +110,15 @@ void main() {
         'payment_addr': 'payment_addr_123',
         'state': 'SETTLED',
       };
-      
+
       final invoice = InvoiceModel.fromJson(json);
-      
+
       expect(invoice.r_hash, equals('hash123'));
       expect(invoice.payment_request, equals('lnbc1000...'));
       expect(invoice.add_index, equals('1'));
       expect(invoice.payment_addr, equals('payment_addr_123'));
       expect(invoice.state, equals('SETTLED'));
-      
+
       final map = invoice.toMap();
       expect(map['r_hash'], equals('hash123'));
       expect(map['state'], equals('SETTLED'));
@@ -142,7 +142,7 @@ void main() {
         amtPaidSat: 1000,
         amtPaidMsat: 1000000,
       );
-      
+
       expect(invoice.memo, equals('Test payment'));
       expect(invoice.value, equals(1000));
       expect(invoice.settled, isTrue);
@@ -166,9 +166,9 @@ void main() {
         amtPaidSat: 0,
         amtPaidMsat: 0,
       );
-      
+
       final json = invoice.toJson();
-      
+
       expect(json['memo'], equals('Coffee payment'));
       expect(json['value'], equals(2000));
       expect(json['settled'], isFalse);
@@ -192,9 +192,9 @@ void main() {
         'amt_paid_sat': '5000',
         'amt_paid_msat': '5000000',
       };
-      
+
       final invoice = ReceivedInvoice.fromJson(json);
-      
+
       expect(invoice.memo, equals('Test invoice'));
       expect(invoice.value, equals(5000));
       expect(invoice.settled, isTrue);
@@ -235,14 +235,14 @@ void main() {
           amtPaidMsat: 2000000,
         ),
       ];
-      
+
       final list = ReceivedInvoicesList(invoices: invoices);
-      
+
       expect(list.invoices.length, equals(2));
       expect(list.invoices[0].memo, equals('Invoice 1'));
       expect(list.invoices[1].value, equals(2000));
     });
-    
+
     test('should convert ReceivedInvoicesList from JSON', () {
       final json = {
         'invoices': [
@@ -278,7 +278,7 @@ void main() {
           },
         ],
       };
-      
+
       final list = ReceivedInvoicesList.fromJson(json);
       expect(list.invoices.length, equals(2));
       expect(list.invoices[0].memo, equals('Test 1'));
@@ -295,9 +295,10 @@ void main() {
         isscript: false,
         iswitness: true,
       );
-      
+
       expect(model.isvalid, isTrue);
-      expect(model.address, equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
+      expect(
+          model.address, equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
       expect(model.iswitness, isTrue);
       expect(model.isscript, isFalse);
     });
@@ -310,16 +311,18 @@ void main() {
         'isscript': false,
         'iswitness': true,
       };
-      
+
       final model = ValidateAddressComponentModel.fromJson(json);
-      
+
       expect(model.isvalid, isTrue);
-      expect(model.address, equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
+      expect(
+          model.address, equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
       expect(model.iswitness, isTrue);
-      
+
       final toJson = model.toJson();
       expect(toJson['isvalid'], isTrue);
-      expect(toJson['address'], equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
+      expect(toJson['address'],
+          equals('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'));
     });
 
     test('should handle different address types', () {
@@ -333,7 +336,7 @@ void main() {
       );
       expect(p2pkh.isscript, isFalse);
       expect(p2pkh.iswitness, isFalse);
-      
+
       // P2SH address
       final p2sh = ValidateAddressComponentModel(
         isvalid: true,
@@ -344,7 +347,7 @@ void main() {
       );
       expect(p2sh.isscript, isTrue);
       expect(p2sh.iswitness, isFalse);
-      
+
       // Bech32 address
       final bech32 = ValidateAddressComponentModel(
         isvalid: true,
@@ -360,8 +363,14 @@ void main() {
   group('Bitcoin Models - Bitcoin Units', () {
     test('should convert BitcoinUnits enum to string correctly', () {
       // Only BTC and SAT units exist in the actual enum
-      expect(BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0).bitcoinUnitAsString, equals('BTC'));
-      expect(BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 100).bitcoinUnitAsString, equals('SAT'));
+      expect(
+          BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0)
+              .bitcoinUnitAsString,
+          equals('BTC'));
+      expect(
+          BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 100)
+              .bitcoinUnitAsString,
+          equals('SAT'));
     });
 
     test('should handle unit conversions with amount', () {
@@ -372,7 +381,7 @@ void main() {
       expect(btcModel.bitcoinUnit, equals(BitcoinUnits.BTC));
       expect(btcModel.amount, equals(1.0));
       expect(btcModel.bitcoinUnitAsString, equals('BTC'));
-      
+
       final satModel = BitcoinUnitModel(
         bitcoinUnit: BitcoinUnits.SAT,
         amount: 100000000,
@@ -383,9 +392,11 @@ void main() {
     });
 
     test('should create consistent models', () {
-      final model1 = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0);
-      final model2 = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0);
-      
+      final model1 =
+          BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0);
+      final model2 =
+          BitcoinUnitModel(bitcoinUnit: BitcoinUnits.BTC, amount: 1.0);
+
       expect(model1.bitcoinUnit, equals(model2.bitcoinUnit));
       expect(model1.bitcoinUnitAsString, equals(model2.bitcoinUnitAsString));
     });

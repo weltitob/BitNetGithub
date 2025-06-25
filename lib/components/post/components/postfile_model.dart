@@ -7,7 +7,5 @@ class PostFile {
   final File? file;
   final MediaType type;
 
-  PostFile(
-      this.type,
-      {this.file, this.text});
+  PostFile(this.type, {this.file, this.text});
 }

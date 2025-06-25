@@ -13,16 +13,15 @@ import 'package:get/get.dart';
 
 Future<RestResponse> listSwaps(String userId) async {
   final logger = Get.find<LoggerService>();
-  
+
   // Get user's node mapping
   final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -33,16 +32,15 @@ Future<RestResponse> listSwaps(String userId) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
   String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/swaps';
   logger.i("List Swaps URL: $url");

@@ -10,14 +10,12 @@ class CardChangeProvider extends ChangeNotifier {
 
   // Method to update the first currency and its corresponding Firestore document
   void setCardInDatabase(String selectedCard) {
-    settingsCollection
-        .doc(FirebaseAuth.instance.currentUser?.uid).update({
+    settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).update({
       "selected_card": selectedCard,
     });
     _selectedCard = selectedCard;
     notifyListeners();
   }
-
 
   // Clear method adjusted to reset currency values
   void clearCard() {

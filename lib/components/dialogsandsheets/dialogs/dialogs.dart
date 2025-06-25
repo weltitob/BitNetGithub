@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //All diffrent dialogs go here, they should have a consistent design
 
-
-
 // Classic dialog 2 options
 Future<bool?> showDialogue({
   required BuildContext context,
@@ -34,7 +32,9 @@ Future<bool?> showDialogue({
             opacity: 0.1,
             borderRadius: AppTheme.cardRadiusBig,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding,
+                  vertical: AppTheme.elementSpacing),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -45,7 +45,8 @@ Future<bool?> showDialogue({
                   ),
                   Container(
                       padding: const EdgeInsets.only(
-                          top: AppTheme.elementSpacing * 1.5, bottom: AppTheme.elementSpacing),
+                          top: AppTheme.elementSpacing * 1.5,
+                          bottom: AppTheme.elementSpacing),
                       height: AppTheme.elementSpacing * 12,
                       width: AppTheme.elementSpacing * 12,
                       child: Image.asset(image)),
@@ -59,8 +60,10 @@ Future<bool?> showDialogue({
                             Navigator.pop(context);
                           },
                           iconData: FontAwesomeIcons.cancel,
-                          gradientColors: [AppTheme.errorColorGradient, AppTheme.errorColor,]
-                      ),
+                          gradientColors: [
+                            AppTheme.errorColorGradient,
+                            AppTheme.errorColor,
+                          ]),
                       personalActionButton(
                           context: context,
                           onPressed: () {
@@ -68,8 +71,10 @@ Future<bool?> showDialogue({
                             Navigator.pop(context);
                           },
                           iconData: FontAwesomeIcons.circleCheck,
-                          gradientColors: [AppTheme.successColorGradient, AppTheme.successColor,]
-                      ),
+                          gradientColors: [
+                            AppTheme.successColorGradient,
+                            AppTheme.successColor,
+                          ]),
                     ],
                   ),
                 ],
@@ -97,7 +102,7 @@ Future<bool?> showDialogueMultipleOptions({
       int length = texts.length;
       List<Widget> optionContainers = List.generate(
         length,
-            (index) {
+        (index) {
           if (index < length &&
               texts[index] != null &&
               images[index] != null &&
@@ -107,7 +112,9 @@ Future<bool?> showDialogueMultipleOptions({
               height: AppTheme.cardPadding * 4.5,
               width: AppTheme.cardPadding * 4.5,
               texts[index]!,
-            (){actions[index]!(context);},
+              () {
+                actions[index]!(context);
+              },
               image: images[index]!,
             );
           } else {
@@ -130,7 +137,8 @@ Future<bool?> showDialogueMultipleOptions({
             ],
           ),
         );
-        if (i + 2 < optionContainers.length) rows.add(const SizedBox(height: AppTheme.elementSpacing));
+        if (i + 2 < optionContainers.length)
+          rows.add(const SizedBox(height: AppTheme.elementSpacing));
       }
 
       return AlertDialog(
@@ -147,16 +155,16 @@ Future<bool?> showDialogueMultipleOptions({
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              bitnetAppBar(context: context, text: title ?? "Choose an option", customIcon: Icons.close,
+              bitnetAppBar(
+                  context: context,
+                  text: title ?? "Choose an option",
+                  customIcon: Icons.close,
                   onTap: () {
                     Navigator.pop(context);
                   }),
               Padding(
                 padding: const EdgeInsets.all(AppTheme.cardPadding),
-                child: Column(
-                  children:
-                    rows
-                ),
+                child: Column(children: rows),
               ),
             ],
           ),

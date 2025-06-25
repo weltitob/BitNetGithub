@@ -22,7 +22,6 @@ Future<double> getBitcoinPrice() async {
         Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
     currency = currency ?? "USD";
 
-
     // Define the Firestore path: chart_data > EUR > live > data
     DocumentReference dataRef = firestore
         .collection('chart_data')

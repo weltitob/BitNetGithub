@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class UserChallengeResponse {
   final String userId;
   final Challenge challenge;
@@ -13,7 +12,8 @@ class UserChallengeResponse {
   factory UserChallengeResponse.fromJson(Map<String, dynamic> json) {
     return UserChallengeResponse(
       userId: json['user_id'],
-      challenge: Challenge.fromJson(Map<String, dynamic>.from(json['challenge'])),
+      challenge:
+          Challenge.fromJson(Map<String, dynamic>.from(json['challenge'])),
     );
   }
 

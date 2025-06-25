@@ -30,13 +30,15 @@ class ChannelOpeningSheet extends StatefulWidget {
 
 class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   final LnurlChannelService _channelService = LnurlChannelService();
-  
+
   LnurlChannelRequest? _channelRequest;
   ChannelOpeningProgress? _progress;
   bool _isLoading = true;
   String? _errorMessage;
-  bool _isProcessing = false; // Flag to prevent multiple simultaneous operations
-  bool _shouldCancel = false; // Flag to cancel operations when widget is disposed
+  bool _isProcessing =
+      false; // Flag to prevent multiple simultaneous operations
+  bool _shouldCancel =
+      false; // Flag to cancel operations when widget is disposed
 
   @override
   void initState() {
@@ -71,8 +73,9 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           });
         }
       } else if (widget.lnurlString != null) {
-        final channelRequest = await _channelService.fetchChannelRequest(widget.lnurlString!);
-        
+        final channelRequest =
+            await _channelService.fetchChannelRequest(widget.lnurlString!);
+
         if (mounted) {
           setState(() {
             _channelRequest = channelRequest;
@@ -89,7 +92,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           _isLoading = false;
         });
       }
-      
+
       // Log the error to Firebase for debugging purposes
       try {
         if (widget.lnurlString != null) {
@@ -124,7 +127,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
       }
 
       LnurlChannelResult result;
-      
+
       if (widget.createBlocktankChannel) {
         // Create and process Blocktank channel
         result = await _channelService.createAndProcessBlocktankChannel(
@@ -158,18 +161,18 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           },
         );
       }
-      
+
       if (result.success) {
         // Wait a moment to show success, then close
         await Future.delayed(Duration(seconds: 2));
-        
+
         // Only call onChannelOpened for truly new channels, not existing ones
-        if (widget.onChannelOpened != null && 
+        if (widget.onChannelOpened != null &&
             !result.message.toLowerCase().contains('already exists') &&
             !result.message.toLowerCase().contains('detected')) {
           widget.onChannelOpened!();
         }
-        
+
         Navigator.of(context).pop();
       } else {
         // Error state is already handled by the progress callback
@@ -201,7 +204,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -227,18 +230,20 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
                 ),
               ),
             ),
-            
+
             SizedBox(height: AppTheme.elementSpacing.h),
-            
+
             // Title
             Text(
-              widget.createBlocktankChannel ? "Create Blocktank Channel" : "Open Lightning Channel",
+              widget.createBlocktankChannel
+                  ? "Create Blocktank Channel"
+                  : "Open Lightning Channel",
               style: theme.textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding.h),
-            
+
             if (_isLoading) ...[
               _buildLoadingState(),
             ] else if (_errorMessage != null) ...[
@@ -248,9 +253,9 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
             ] else if (_channelRequest != null) ...[
               _buildChannelDetails(),
             ],
-            
+
             SizedBox(height: AppTheme.cardPadding.h),
-            
+
             // Action buttons
             if (!_isLoading && _progress?.isCompleted != true) ...[
               Row(
@@ -268,13 +273,15 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
                       title: _progress != null ? "Opening..." : "Open Channel",
                       onTap: _progress != null ? null : _openChannel,
                       buttonType: ButtonType.solid,
-                      state: _progress != null ? ButtonState.loading : ButtonState.idle,
+                      state: _progress != null
+                          ? ButtonState.loading
+                          : ButtonState.idle,
                     ),
                   ),
                 ],
               ),
             ],
-            
+
             // Safe area padding
             SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
@@ -324,8 +331,8 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           Text(
             _errorMessage ?? "Unknown error occurred",
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.error,
-            ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -336,7 +343,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   Widget _buildProgressState() {
     final progress = _progress!;
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: EdgeInsets.all(AppTheme.cardPadding.w),
       decoration: BoxDecoration(
@@ -349,11 +356,11 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
             LinearProgressIndicator(
               value: progress.progress,
               backgroundColor: theme.colorScheme.onSurface.withOpacity(0.1),
-              valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
           ],
-          
           if (progress.isCompleted && progress.errorMessage == null) ...[
             Icon(
               Icons.check_circle,
@@ -369,15 +376,12 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
           ] else ...[
             dotProgress(context),
           ],
-          
           SizedBox(height: AppTheme.elementSpacing.h),
-          
           Text(
             progress.message,
             style: theme.textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
-          
           if (progress.errorMessage != null) ...[
             SizedBox(height: AppTheme.elementSpacing.h),
             Text(
@@ -396,7 +400,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
   Widget _buildChannelDetails() {
     final request = _channelRequest!;
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: EdgeInsets.all(AppTheme.cardPadding.w),
       decoration: BoxDecoration(
@@ -410,21 +414,14 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
             "Channel Details",
             style: theme.textTheme.titleMedium,
           ),
-          
           SizedBox(height: AppTheme.elementSpacing.h),
-          
           _buildDetailRow("Provider", _extractProviderName(request.callback)),
-          
           if (request.localAmt != null)
             _buildDetailRow("Local Amount", "${request.localAmt} sats"),
-          
           if (request.pushAmt != null && request.pushAmt! > 0)
             _buildDetailRow("Push Amount", "${request.pushAmt} sats"),
-          
           _buildDetailRow("Channel Type", "Private"),
-          
           SizedBox(height: AppTheme.elementSpacing.h),
-          
           Container(
             padding: EdgeInsets.all(AppTheme.elementSpacing.w),
             decoration: BoxDecoration(
@@ -455,7 +452,7 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
 
   Widget _buildDetailRow(String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h * 0.5),
       child: Row(
@@ -482,12 +479,12 @@ class _ChannelOpeningSheetState extends State<ChannelOpeningSheet> {
     try {
       final uri = Uri.parse(callbackUrl);
       final host = uri.host;
-      
+
       // Extract meaningful provider names
       if (host.contains('blocktank')) return 'Blocktank';
       if (host.contains('lnbits')) return 'LNbits';
       if (host.contains('lightning')) return 'Lightning Service';
-      
+
       return host;
     } catch (e) {
       return 'Lightning Service Provider';
@@ -511,7 +508,7 @@ extension ChannelOpeningSheetExtension on BuildContext {
       ),
     );
   }
-  
+
   Future<void> showBlocktankChannelSheet({
     int localAmount = 20000,
     int pushAmount = 0,

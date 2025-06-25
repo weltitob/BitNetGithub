@@ -60,7 +60,9 @@ class ReportMobileView extends StatelessWidget {
                       //email optional
                       Container(
                         width: AppTheme.cardPadding * 18,
-                        child: FormTextField(hintText: L10n.of(context)!.contactInfoHint, controller: controller.contactInfoController),
+                        child: FormTextField(
+                            hintText: L10n.of(context)!.contactInfoHint,
+                            controller: controller.contactInfoController),
                       ),
                       const SizedBox(
                         height: AppTheme.elementSpacing,
@@ -94,13 +96,19 @@ class ReportMobileView extends StatelessWidget {
                               height: AppTheme.cardPadding * 2,
                               borderThickness: 4,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 2.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(controller.issueType == '' ? "Select The Type of Issue" : controller.issueType,
-                                        style: Theme.of(context).textTheme.bodyLarge),
+                                    Text(
+                                        controller.issueType == ''
+                                            ? "Select The Type of Issue"
+                                            : controller.issueType,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge),
                                     const Icon(Icons.arrow_drop_down_outlined)
                                   ],
                                 ),
@@ -116,8 +124,10 @@ class ReportMobileView extends StatelessWidget {
                             width: AppTheme.cardPadding * 18,
                             //height: AppTheme.cardPadding * 12,
                             constraints: const BoxConstraints(
-                              minHeight: 60, // Minimum height that the container starts with
-                              maxHeight: 300, // Maximum height that the container can expand to
+                              minHeight:
+                                  60, // Minimum height that the container starts with
+                              maxHeight:
+                                  300, // Maximum height that the container can expand to
                             ),
                             child: FormTextField(
                                 isMultiline: true,
@@ -128,7 +138,9 @@ class ReportMobileView extends StatelessWidget {
                             bottom: AppTheme.elementSpacing,
                             right: AppTheme.elementSpacing,
                             child: GestureDetector(
-                              onTap: () {controller.onAddButton(context);},
+                              onTap: () {
+                                controller.onAddButton(context);
+                              },
                               child: GlassContainer(
                                   height: AppTheme.cardPadding * 1.25,
                                   width: AppTheme.cardPadding * 1.25,
@@ -149,7 +161,9 @@ class ReportMobileView extends StatelessWidget {
                             title: L10n.of(context)!.submitReport,
                             customWidth: AppTheme.cardPadding * 18,
                             onTap: () async {
-                              if (controller.contactInfoController.text.isEmpty || controller.complaintController.text.isEmpty) {
+                              if (controller
+                                      .contactInfoController.text.isEmpty ||
+                                  controller.complaintController.text.isEmpty) {
                                 if (context.mounted) {
                                   Get.find<OverlayController>().showOverlay(
                                     'Please fill out all fields first.',
@@ -166,16 +180,25 @@ class ReportMobileView extends StatelessWidget {
                               } else {
                                 //initiate upload.
                                 controller.setSubmitting(true);
-                                DocumentReference ref = await issueCollection.add({
-                                  'contact_info': controller.contactInfoController.text,
+                                DocumentReference ref =
+                                    await issueCollection.add({
+                                  'contact_info':
+                                      controller.contactInfoController.text,
                                   'issue_type': controller.issueType,
-                                  'complaint': controller.complaintController.text
+                                  'complaint':
+                                      controller.complaintController.text
                                 });
-                                List<String> imageUrls = List.empty(growable: true);
-                                for (int i = 0; i < controller.imageList.length; i++) {
-                                  Reference imageFile = storageRef.child('${ref.id}/$i');
-                                  await imageFile.putData(controller.imageList[i]);
-                                  imageUrls.add(await imageFile.getDownloadURL());
+                                List<String> imageUrls =
+                                    List.empty(growable: true);
+                                for (int i = 0;
+                                    i < controller.imageList.length;
+                                    i++) {
+                                  Reference imageFile =
+                                      storageRef.child('${ref.id}/$i');
+                                  await imageFile
+                                      .putData(controller.imageList[i]);
+                                  imageUrls
+                                      .add(await imageFile.getDownloadURL());
                                 }
                                 await ref.update({'image_urls': imageUrls});
                                 controller.setSubmitting(false);
@@ -198,7 +221,9 @@ class ReportMobileView extends StatelessWidget {
                       ],
                       const SizedBox(height: AppTheme.elementSpacing),
                       ...controller.imageList
-                          .mapIndexed((index, data) => ReportImage(data: data, delete: () => controller.deleteImage(index)))
+                          .mapIndexed((index, data) => ReportImage(
+                              data: data,
+                              delete: () => controller.deleteImage(index)))
                           .toList(),
                     ],
                   ),
@@ -253,7 +278,10 @@ class ReportImage extends StatelessWidget {
           Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: Container(decoration: const BoxDecoration(color: Colors.black, shape: BoxShape.circle), child: const Icon(Icons.close)),
+                icon: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.black, shape: BoxShape.circle),
+                    child: const Icon(Icons.close)),
                 onPressed: delete,
               ))
         ]),
@@ -278,7 +306,9 @@ class IssueTypeColumn extends StatelessWidget {
               width: AppTheme.cardPadding * 18,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Complaint", style: TextStyle(color: Colors.white)),
@@ -320,7 +350,9 @@ class IssueTypeColumn extends StatelessWidget {
               width: AppTheme.cardPadding * 18,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Other", style: TextStyle(color: Colors.white)),

@@ -10,7 +10,8 @@ class LocalProvider extends ChangeNotifier {
   Locale? _locale;
   Locale get locale => _locale ?? PlatformDispatcher.instance.locale;
 
-  void setLocaleInDatabase(String langCode, Locale locale, {bool isUser = true}) {
+  void setLocaleInDatabase(String langCode, Locale locale,
+      {bool isUser = true}) {
     if (!L10n.supportedLocales.contains(locale)) {
       return;
     }

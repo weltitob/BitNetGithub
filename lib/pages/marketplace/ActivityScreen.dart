@@ -110,11 +110,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     ),
                   ),
                   CommonHeading(
-                    headingText: L10n.of(context)!.priceHistory,
-                    hasButton: false,
-                    collapseBtn: true,
-                    child: const BarChart()
-                  ),
+                      headingText: L10n.of(context)!.priceHistory,
+                      hasButton: false,
+                      collapseBtn: true,
+                      child: const BarChart()),
                   CommonHeading(
                     headingText: L10n.of(context)!.tradingHistory,
                     hasButton: false,
@@ -132,8 +131,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             nftName: tradingHistoryListData[index].nftName,
                             fromText: tradingHistoryListData[index].fromText,
                             toText: tradingHistoryListData[index].toText,
-                            cryptoIcon: tradingHistoryListData[index].cryptoIcon,
-                            cryptoText: tradingHistoryListData[index].cryptoText,
+                            cryptoIcon:
+                                tradingHistoryListData[index].cryptoIcon,
+                            cryptoText:
+                                tradingHistoryListData[index].cryptoText,
                             dateText: tradingHistoryListData[index].dateText,
                           );
                         },

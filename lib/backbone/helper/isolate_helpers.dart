@@ -4,7 +4,6 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 
 /// Helper class for running heavy computations in isolates
 class IsolateHelpers {
-  
   /// Clean old chart data in an isolate
   static Future<List<ChartLine>> cleanChartData({
     required List<ChartLine> chartData,
@@ -41,7 +40,7 @@ List<ChartLine> _cleanChartDataIsolate(Map<String, dynamic> params) {
   final chartData = params['chartData'] as List<ChartLine>;
   final maxAgeMs = params['maxAge'] as int;
   final now = DateTime.now();
-  
+
   return chartData.where((point) {
     final pointTime = DateTime.fromMillisecondsSinceEpoch(point.time.round());
     return now.difference(pointTime).inMilliseconds <= maxAgeMs;
@@ -51,7 +50,7 @@ List<ChartLine> _cleanChartDataIsolate(Map<String, dynamic> params) {
 Map<String, dynamic> _processChartDataIsolate(Map<String, dynamic> params) {
   final chartData = params['chartData'] as List<ChartLine>;
   final timespan = params['timespan'] as String;
-  
+
   if (chartData.isEmpty) {
     return {
       'average': 0.0,
@@ -61,27 +60,27 @@ Map<String, dynamic> _processChartDataIsolate(Map<String, dynamic> params) {
       'changePercent': '0%',
     };
   }
-  
+
   // Calculate statistics
   double sum = 0;
   double min = chartData.first.price;
   double max = chartData.first.price;
-  
+
   for (final point in chartData) {
     sum += point.price;
     if (point.price < min) min = point.price;
     if (point.price > max) max = point.price;
   }
-  
+
   final average = sum / chartData.length;
   final firstPrice = chartData.first.price;
   final lastPrice = chartData.last.price;
   final change = lastPrice - firstPrice;
   final changePercent = firstPrice == 0 ? 0 : (change / firstPrice) * 100;
-  
+
   // Reduce data points for better performance
   final reducedData = _reduceDataPoints(chartData, timespan);
-  
+
   return {
     'average': average,
     'min': min,
@@ -96,7 +95,7 @@ Map<String, dynamic> _processChartDataIsolate(Map<String, dynamic> params) {
 
 List<ChartLine> _reduceDataPoints(List<ChartLine> data, String timespan) {
   if (data.length <= 100) return data;
-  
+
   // Determine target points based on timespan
   int targetPoints;
   switch (timespan) {
@@ -115,26 +114,27 @@ List<ChartLine> _reduceDataPoints(List<ChartLine> data, String timespan) {
     default:
       targetPoints = 100;
   }
-  
+
   if (data.length <= targetPoints) return data;
-  
+
   // Simple reduction - take every nth point
   final step = (data.length / targetPoints).ceil();
   final reduced = <ChartLine>[];
-  
+
   for (int i = 0; i < data.length; i += step) {
     reduced.add(data[i]);
   }
-  
+
   // Always include the last point
   if (reduced.last != data.last) {
     reduced.add(data.last);
   }
-  
+
   return reduced;
 }
 
-Map<String, dynamic> _calculateTransactionStatsIsolate(List<dynamic> transactions) {
+Map<String, dynamic> _calculateTransactionStatsIsolate(
+    List<dynamic> transactions) {
   if (transactions.isEmpty) {
     return {
       'totalReceived': 0,
@@ -145,28 +145,28 @@ Map<String, dynamic> _calculateTransactionStatsIsolate(List<dynamic> transaction
       'categoryCounts': <String, int>{},
     };
   }
-  
+
   int totalReceived = 0;
   int totalSent = 0;
   int totalFees = 0;
   final categoryCounts = <String, int>{};
-  
+
   for (final tx in transactions) {
     // Assuming transaction has amount, type, and fee fields
     final amount = tx['amount'] as int? ?? 0;
     final type = tx['type'] as String? ?? 'unknown';
     final fee = tx['fee'] as int? ?? 0;
-    
+
     if (amount > 0) {
       totalReceived += amount;
     } else {
       totalSent += amount.abs();
     }
-    
+
     totalFees += fee;
     categoryCounts[type] = (categoryCounts[type] ?? 0) + 1;
   }
-  
+
   return {
     'totalReceived': totalReceived,
     'totalSent': totalSent,

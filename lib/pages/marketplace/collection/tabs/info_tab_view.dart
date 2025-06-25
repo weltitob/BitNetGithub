@@ -30,14 +30,15 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow:
+                  Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Text(
                   'Bitcoin Punks is one of the first NFT collections on Bitcoin. A fixed set of 10,000 punks released in early 2023. They are 24x24 pixel art images inscribed on satoshis on the Bitcoin blockchain. The project pays homage to the original CryptoPunks while pioneering NFTs on Bitcoin through Ordinals.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    height: 1.5,
-                  ),
+                        height: 1.5,
+                      ),
                 ),
               ),
             ),
@@ -52,7 +53,8 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow:
+                  Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding.w),
                 child: Row(
@@ -89,7 +91,8 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow:
+                  Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Column(
                 children: [
                   _buildLinkTile(
@@ -139,7 +142,8 @@ class InfoTabView extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.elementSpacing.h),
             GlassContainer(
-              boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+              boxShadow:
+                  Theme.of(context).brightness == Brightness.dark ? [] : null,
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.cardPadding),
                 child: Column(
@@ -160,7 +164,7 @@ class InfoTabView extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // Add some bottom padding
             SizedBox(height: AppTheme.cardPadding.h * 2),
           ],
@@ -175,21 +179,22 @@ class InfoTabView extends StatelessWidget {
         Text(
           value,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         SizedBox(height: 4.h),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-          ),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
         ),
       ],
     );
   }
 
-  Widget _buildClickableStatItem(BuildContext context, String label, String value, VoidCallback onTap) {
+  Widget _buildClickableStatItem(
+      BuildContext context, String label, String value, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -200,17 +205,17 @@ class InfoTabView extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
             SizedBox(height: 4.h),
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
           ],
         ),
@@ -235,7 +240,8 @@ class InfoTabView extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                 ),
           ),
           Flexible(
@@ -252,7 +258,7 @@ class InfoTabView extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildDetailDivider(BuildContext context) {
     return Divider(
       height: 1,
@@ -260,7 +266,7 @@ class InfoTabView extends StatelessWidget {
       color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
     );
   }
-  
+
   Widget _buildLinkTile(
     BuildContext context, {
     required IconData icon,
@@ -272,12 +278,12 @@ class InfoTabView extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: isLast 
-        ? BorderRadius.only(
-            bottomLeft: Radius.circular(AppTheme.borderRadiusMid - 1),
-            bottomRight: Radius.circular(AppTheme.borderRadiusMid - 1),
-          )
-        : null,
+      borderRadius: isLast
+          ? BorderRadius.only(
+              bottomLeft: Radius.circular(AppTheme.borderRadiusMid - 1),
+              bottomRight: Radius.circular(AppTheme.borderRadiusMid - 1),
+            )
+          : null,
       child: Padding(
         padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
         child: Row(
@@ -303,15 +309,18 @@ class InfoTabView extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
                   ),
                 ],
               ),

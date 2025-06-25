@@ -31,14 +31,17 @@ class ColoredPriceWidget extends StatelessWidget {
       // Check if the price is exactly 0 or -0 after removing currency symbols
       String cleanPrice = price.replaceAll(RegExp(r'[^\d.-]'), '');
       double numValue = double.tryParse(cleanPrice) ?? 0;
-      isZeroValue = numValue == 0.0; // Only treat exactly zero as zero, not small values
+      isZeroValue =
+          numValue == 0.0; // Only treat exactly zero as zero, not small values
     } catch (e) {
       // If parsing fails, continue with original isPositive value
     }
-    
-    final color = (isPositive || isZeroValue) ? AppTheme.successColor : AppTheme.errorColor;
+
+    final color = (isPositive || isZeroValue)
+        ? AppTheme.successColor
+        : AppTheme.errorColor;
     WalletsController controller = Get.find<WalletsController>();
-    
+
     return Obx(() {
       // Calculate satoshi equivalent of the price
       double priceValue = 0;
@@ -54,17 +57,17 @@ class ColoredPriceWidget extends StatelessWidget {
       } catch (e) {
         priceValue = 0;
       }
-      
+
       // Force dependency on timeframe changes for proper updates
       controller.timeframeChangeCounter.value;
-      
+
       // Get Bitcoin price from controller
       final chartLine = controller.chartLines.value;
       final bitcoinPrice = chartLine?.price ?? 0;
-      
+
       // Calculate satoshi value (if price is in fiat)
       int satoshiValue = 0;
-      
+
       // Initialize with a default non-zero value if we're showing BTC and price is missing
       if (controller.coin.value && priceValue <= 0) {
         // If we're in satoshi mode but don't have the price yet, show 0
@@ -73,55 +76,62 @@ class ColoredPriceWidget extends StatelessWidget {
         // Convert fiat amount to BTC then to satoshis
         double btcAmount = priceValue / bitcoinPrice;
         satoshiValue = (btcAmount * 100000000).round();
-      } else if (currencySymbol == '\$' || currencySymbol == '€' || currencySymbol == '£') {
+      } else if (currencySymbol == '\$' ||
+          currencySymbol == '€' ||
+          currencySymbol == '£') {
         // If it's a fiat currency but we don't have a bitcoin price
         satoshiValue = 0;
       } else {
         // If it's already in sats or other cases
         satoshiValue = priceValue > 0 ? priceValue.round() : 0;
       }
-      
+
       String satoshiText = satoshiValue.toString();
-      
+
       return Row(
         children: [
           Icon(
-            (isPositive || isZeroValue) ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+            (isPositive || isZeroValue)
+                ? Icons.arrow_drop_up_rounded
+                : Icons.arrow_drop_down_rounded,
             color: color,
             size: AppTheme.iconSize * iconSize,
           ),
-          controller.hideBalance.value && shouldHideAmount 
-            ? Text(
-                "******",
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: color,
-                ),
-              )
-            : controller.coin.value
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      satoshiText,
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+          controller.hideBalance.value && shouldHideAmount
+              ? Text(
+                  "******",
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: color,
                       ),
-                    ),
-                    SizedBox(width: 2),
-                    Icon(
-                      AppTheme.satoshiIcon,
-                      size: 16,
-                      color: color,
-                    ),
-                  ],
                 )
-              : Text(
-                  // Convert -0.00 to 0.00 for display
-                  (isZeroValue && price.contains('-')) ? price.replaceAll('-', '') + currencySymbol : "$price$currencySymbol",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: color,
-                  ),
-                ),
+              : controller.coin.value
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          satoshiText,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    color: color,
+                                  ),
+                        ),
+                        SizedBox(width: 2),
+                        Icon(
+                          AppTheme.satoshiIcon,
+                          size: 16,
+                          color: color,
+                        ),
+                      ],
+                    )
+                  : Text(
+                      // Convert -0.00 to 0.00 for display
+                      (isZeroValue && price.contains('-'))
+                          ? price.replaceAll('-', '') + currencySymbol
+                          : "$price$currencySymbol",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: color,
+                          ),
+                    ),
         ],
       );
     });
@@ -141,7 +151,7 @@ class BitNetPercentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPositive = !priceChange.contains('-');
-    
+
     return Container(
       margin: const EdgeInsets.only(
         top: AppTheme.elementSpacing,

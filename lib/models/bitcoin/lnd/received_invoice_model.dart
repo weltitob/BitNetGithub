@@ -1,5 +1,3 @@
-
-
 class ReceivedInvoice {
   final String memo;
   final String rPreimage;
@@ -104,13 +102,15 @@ class ReceivedInvoicesList {
       throw ArgumentError('JSON data or "invoices" key is missing or null');
     }
     return ReceivedInvoicesList(
-      invoices: List<ReceivedInvoice>.from((json['invoices'] as List).map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>))),
+      invoices: List<ReceivedInvoice>.from((json['invoices'] as List)
+          .map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>))),
     );
   }
 
   factory ReceivedInvoicesList.fromList(List<Map<String, dynamic>> json) {
     return ReceivedInvoicesList(
-      invoices: List<ReceivedInvoice>.from(json.map((x) => ReceivedInvoice.fromJson(x))),
+      invoices: List<ReceivedInvoice>.from(
+          json.map((x) => ReceivedInvoice.fromJson(x))),
     );
   }
 }

@@ -81,7 +81,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
           controller.usersQuery.value = '';
           controller.resetValues();
           controller.handleSearch('');
-          
+
           // For cases where we need to go back to search receiver
           if (shouldPop) {
             // Reset the hasReceiver flag to show SearchReceiver again
@@ -123,7 +123,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
             controller.usersQuery.value = '';
             controller.resetValues();
             controller.handleSearch('');
-            
+
             // For cases where we need to go back to search receiver
             if (shouldPop) {
               // Reset the hasReceiver flag to show SearchReceiver again
@@ -176,10 +176,14 @@ class SendBTCScreen extends GetWidget<SendsController> {
                             Column(
                               children: [
                                 SizedBox(height: AppTheme.cardPadding * 4),
-                                Center(child: Obx(() => _buildBitcoinWidget(context, 
-                                    isLightning: isLightningPayment || 
-                                        (controller.sendType == SendType.Bip21 && 
-                                         controller.bip21Mode.value == "lightning")))),
+                                Center(
+                                    child: Obx(() => _buildBitcoinWidget(
+                                        context,
+                                        isLightning: isLightningPayment ||
+                                            (controller.sendType ==
+                                                    SendType.Bip21 &&
+                                                controller.bip21Mode.value ==
+                                                    "lightning")))),
                                 const SizedBox(
                                     height: AppTheme.cardPadding * 3.5),
                                 Padding(

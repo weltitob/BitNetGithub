@@ -65,62 +65,62 @@ class SearchReceiver extends GetWidget<SendsController> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: AppTheme.cardPadding),
                         child: SearchFieldWidget(
-                        hintText: L10n.of(context)!.searchReceipient,
-                        onSuffixTap: (ctrler) {
-                          ctrler.clear();
-                          controller.usersQuery.value = '';
-                          controller.handleSearch('');
-                          //clear found users
-                          controller.clearFoundUsers();
-                        },
-                        isSearchEnabled: true,
-                        handleSearch: (d) {
-                          if ((d as String).isEmpty) {
+                          hintText: L10n.of(context)!.searchReceipient,
+                          onSuffixTap: (ctrler) {
+                            ctrler.clear();
                             controller.usersQuery.value = '';
-                            controller.handleSearch(d);
-                            controller.handleSearchPeople(d);
-                          } else {
-                            controller.handleSearch(d);
-                            controller.handleSearchPeople(d);
-                            controller.usersQuery.value = d;
-                            controller.queriedUsers = controller.resendUsers
-                                .where((user) =>
-                                    user.userName.contains(d) ||
-                                    user.address.contains(d))
-                                .toList();
-                          }
-                        },
-                        node: controller.myFocusNodeAdressSearch,
+                            controller.handleSearch('');
+                            //clear found users
+                            controller.clearFoundUsers();
+                          },
+                          isSearchEnabled: true,
+                          handleSearch: (d) {
+                            if ((d as String).isEmpty) {
+                              controller.usersQuery.value = '';
+                              controller.handleSearch(d);
+                              controller.handleSearchPeople(d);
+                            } else {
+                              controller.handleSearch(d);
+                              controller.handleSearchPeople(d);
+                              controller.usersQuery.value = d;
+                              controller.queriedUsers = controller.resendUsers
+                                  .where((user) =>
+                                      user.userName.contains(d) ||
+                                      user.address.contains(d))
+                                  .toList();
+                            }
+                          },
+                          node: controller.myFocusNodeAdressSearch,
+                        ),
                       ),
                     ),
-                  ),
-                  Obx(() {
-                    if (controller.foundUsers.isNotEmpty) {
-                      // Show your user results in a ListView or GridView
-                      return  SingleChildScrollView(
-                        child: Column(
-                          children: controller.foundUsers.map((user) {
-                            return UserSearchResult(
-                              customWidth: MediaQuery.of(context).size.width - AppTheme.cardPadding * 2,
-                              userData: user,
-                              onTap: () {
-                                controller.onQRCodeScanned(
-                                  "${user.username}@lnurl.bitnet.ai",
-                                  context,
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      );
-
-                    } else {
-                      // Fallback to your normal "featured" or "most used" content
-                      return buildRecentFeaturedSection(context);
-                    }
-                  }),
-                  // Add padding at the bottom to prevent content from being hidden behind the button
-                  const SizedBox(height: 80),
+                    Obx(() {
+                      if (controller.foundUsers.isNotEmpty) {
+                        // Show your user results in a ListView or GridView
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: controller.foundUsers.map((user) {
+                              return UserSearchResult(
+                                customWidth: MediaQuery.of(context).size.width -
+                                    AppTheme.cardPadding * 2,
+                                userData: user,
+                                onTap: () {
+                                  controller.onQRCodeScanned(
+                                    "${user.username}@lnurl.bitnet.ai",
+                                    context,
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      } else {
+                        // Fallback to your normal "featured" or "most used" content
+                        return buildRecentFeaturedSection(context);
+                      }
+                    }),
+                    // Add padding at the bottom to prevent content from being hidden behind the button
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),
@@ -139,138 +139,116 @@ class SearchReceiver extends GetWidget<SendsController> {
     );
   }
 
-  Widget buildRecentFeaturedSection(BuildContext context){
+  Widget buildRecentFeaturedSection(BuildContext context) {
     return Obx(
-          () => Container(
-            alignment: Alignment.topCenter,
+      () => Container(
+        alignment: Alignment.topCenter,
         height: MediaQuery.of(context).size.height * 0.7,
         child: controller.usersQuery.value.isNotEmpty
             ? GridView.builder(
-          gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-          itemBuilder: (ctx, i) {
-            return UserSendWidget(
-                user: controller.queriedUsers[i],
-                controller: controller);
-          },
-          itemCount: controller.queriedUsers.length,
-        )
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemBuilder: (ctx, i) {
+                  return UserSendWidget(
+                      user: controller.queriedUsers[i], controller: controller);
+                },
+                itemCount: controller.queriedUsers.length,
+              )
             : ListView(
-            controller: controller.sendScrollerController,
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  right: AppTheme.cardPadding,
-                  left: AppTheme.cardPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-                  mainAxisAlignment:
-                  MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Featured",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge,
-                      textAlign: TextAlign.left,
+                controller: controller.sendScrollerController,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        right: AppTheme.cardPadding,
+                        left: AppTheme.cardPadding,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Featured",
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(
+                            height: AppTheme.cardPadding.h,
+                          ),
+                          GlassContainer(
+                            width: MediaQuery.of(context).size.width,
+                            height: AppTheme.cardPadding * 7.5.h,
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.all(AppTheme.elementSpacing),
+                              child: MostPopularWidget(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    SizedBox(height: AppTheme.cardPadding * 2.h),
+
+                    Padding(
+                        padding:
+                            const EdgeInsets.only(left: AppTheme.cardPadding),
+                        child: Text("Most often used",
+                            style: Theme.of(context).textTheme.titleLarge)),
                     SizedBox(
                       height: AppTheme.cardPadding.h,
                     ),
-                    GlassContainer(
-                      width: MediaQuery.of(context)
-                          .size
-                          .width,
-                      height:
-                      AppTheme.cardPadding * 7.5.h,
-                      child: Container(
-                        margin: const EdgeInsets.all(
-                            AppTheme.elementSpacing),
-                        child: MostPopularWidget(),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 100,
+                      child: HorizontalFadeListView(
+                        child: Obx(
+                          () => ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: controller.resendUsers.length,
+                              itemBuilder: (context, i) {
+                                return UserSendWidget(
+                                  user: controller.resendUsers[i],
+                                  controller: controller,
+                                );
+                              }),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                  height: AppTheme.cardPadding * 2.h),
-
-              Padding(
-                  padding: const EdgeInsets.only(
-                      left: AppTheme.cardPadding),
-                  child: Text("Most often used",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge)),
-              SizedBox(
-                height: AppTheme.cardPadding.h,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 100,
-                child: HorizontalFadeListView(
-                  child: Obx(
-                        () => ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount:
-                        controller.resendUsers.length,
-                        itemBuilder: (context, i) {
-                          return UserSendWidget(
-                            user:
-                            controller.resendUsers[i],
-                            controller: controller,
-                          );
-                        }),
-                  ),
-                ),
-              ),
-              //space
-              const SizedBox(
-                  height: AppTheme.cardPadding * 2),
-              if (controller.resendUsers.isNotEmpty) ...[
-                Padding(
-                    padding: const EdgeInsets.only(
-                        left: AppTheme.cardPadding),
-                    child: Text("Send Again",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge)),
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
-                Container(
-                  //color: Colors.green,
-                  width:
-                  MediaQuery.of(context).size.width,
-                  height: 100,
-                  child: HorizontalFadeListView(
-                    child: Obx(
-                          () => ListView.builder(
-                          scrollDirection:
-                          Axis.horizontal,
-                          itemCount: controller
-                              .resendUsers.length,
-                          itemBuilder: (context, i) {
-                            return UserSendWidget(
-                              user: controller
-                                  .resendUsers[i],
-                              controller: controller,
-                            );
-                          }),
-                    ),
-                  ),
-                ),
-              ],
-            ]),
+                    //space
+                    const SizedBox(height: AppTheme.cardPadding * 2),
+                    if (controller.resendUsers.isNotEmpty) ...[
+                      Padding(
+                          padding:
+                              const EdgeInsets.only(left: AppTheme.cardPadding),
+                          child: Text("Send Again",
+                              style: Theme.of(context).textTheme.titleLarge)),
+                      SizedBox(
+                        height: AppTheme.cardPadding.h,
+                      ),
+                      Container(
+                        //color: Colors.green,
+                        width: MediaQuery.of(context).size.width,
+                        height: 100,
+                        child: HorizontalFadeListView(
+                          child: Obx(
+                            () => ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: controller.resendUsers.length,
+                                itemBuilder: (context, i) {
+                                  return UserSendWidget(
+                                    user: controller.resendUsers[i],
+                                    controller: controller,
+                                  );
+                                }),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ]),
       ),
     );
-
   }
 }
 
@@ -367,7 +345,8 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                 Avatar(
                   size: AppTheme.cardPadding * 2.75,
                   name: "BitNet",
-                  mxContent: Uri.parse("https://a.pinatafarm.com/220x224/6a2830baad/sad-man.jpg"),
+                  mxContent: Uri.parse(
+                      "https://a.pinatafarm.com/220x224/6a2830baad/sad-man.jpg"),
                   isNft: false,
                   onTap: () {
                     Get.find<SendsController>()

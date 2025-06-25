@@ -25,7 +25,7 @@ Future<RestResponse> sendCoins({
   try {
     // Get user's node mapping - userId is the recovery DID
     final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
-    
+
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
       return RestResponse(
@@ -34,10 +34,10 @@ Future<RestResponse> sendCoins({
         data: {},
       );
     }
-    
+
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for onchain send");
-    
+
     // Get the admin macaroon from node mapping (stored as base64)
     final macaroonBase64 = nodeMapping.adminMacaroon;
     if (macaroonBase64.isEmpty) {
@@ -48,16 +48,16 @@ Future<RestResponse> sendCoins({
         data: {},
       );
     }
-    
+
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = bytesToHex(macaroonBytes);
-    
+
     // Get Caddy URL for the user's node using LightningConfig
     final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/transactions';
-    
+
     logger.i("Sending coins via: $url");
-    
+
     // Prepare request data
     final Map<String, dynamic> data = {
       'addr': address,
@@ -65,34 +65,34 @@ Future<RestResponse> sendCoins({
       'target_conf': targetConf,
       'send_all': sendAll,
     };
-    
+
     // Add fee rate if specified
     if (satPerVbyte != null) {
       data['sat_per_vbyte'] = satPerVbyte.toString();
     }
-    
+
     // Set up headers
     final headers = {
       'Grpc-Metadata-macaroon': macaroon,
       'Content-Type': 'application/json',
     };
-    
+
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();
-    
+
     // Make the request
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
       body: jsonEncode(data),
     );
-    
+
     logger.i("Response status: ${response.statusCode}");
     logger.i("Response body: ${response.body}");
-    
+
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
-      
+
       return RestResponse(
         statusCode: "success",
         message: "Transaction sent successfully",
@@ -106,11 +106,13 @@ Future<RestResponse> sendCoins({
       );
     } else {
       final error = jsonDecode(response.body);
-      logger.e("Failed to send coins: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
-      
+      logger.e(
+          "Failed to send coins: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+
       return RestResponse(
         statusCode: "error",
-        message: error['message'] ?? error['error'] ?? 'Failed to send transaction',
+        message:
+            error['message'] ?? error['error'] ?? 'Failed to send transaction',
         data: error,
       );
     }
@@ -137,7 +139,7 @@ Future<RestResponse> estimateFee({
   try {
     // Get user's node mapping - userId is the recovery DID
     final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
-    
+
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
       return RestResponse(
@@ -146,10 +148,10 @@ Future<RestResponse> estimateFee({
         data: {},
       );
     }
-    
+
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for fee estimation");
-    
+
     // Get the admin macaroon from node mapping (stored as base64)
     final macaroonBase64 = nodeMapping.adminMacaroon;
     if (macaroonBase64.isEmpty) {
@@ -160,54 +162,58 @@ Future<RestResponse> estimateFee({
         data: {},
       );
     }
-    
+
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = bytesToHex(macaroonBytes);
-    logger.i("🔑 Using user-specific macaroon for ${nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
-    
-    // Get Caddy URL for the user's node using LightningConfig  
+    logger.i(
+        "🔑 Using user-specific macaroon for ${nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
+
+    // Get Caddy URL for the user's node using LightningConfig
     // Use the same format as the old working version: GET with path parameter
-    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee/$targetConf';
+    final url =
+        '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/estimatefee/$targetConf';
     logger.i("Fee estimation URL: $url");
-    
+
     // Set up headers (same as old version)
     final headers = {
       'Grpc-Metadata-macaroon': macaroon,
     };
-    
+
     logger.i("Fee estimation headers: ${headers.keys.toList()}");
-    
+
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();
-    
+
     logger.i("Making GET request for fee estimation (like old version)...");
-    
+
     // Make the request using GET (like old version)
     final response = await http.get(
       Uri.parse(url),
       headers: headers,
     );
-    
+
     logger.i("Fee estimation response status: ${response.statusCode}");
     logger.i("Fee estimation response body: ${response.body}");
     logger.i("Fee estimation response headers: ${response.headers}");
-    
+
     if (response.statusCode == 200) {
       try {
         final decoded = jsonDecode(response.body);
         logger.i("Successfully decoded fee estimation response: $decoded");
-        
+
         // Convert sat_per_kw to sat_per_vbyte
         // 1 kw (kilo-weight) = 4 vbytes, so sat_per_kw / 4 = sat_per_vbyte
-        int satPerKw = int.tryParse(decoded['sat_per_kw']?.toString() ?? '0') ?? 0;
+        int satPerKw =
+            int.tryParse(decoded['sat_per_kw']?.toString() ?? '0') ?? 0;
         double satPerVbyte = satPerKw / 4.0;
-        
+
         // Don't calculate total fee here - just return the fee rate
         // The controller will calculate the actual fee based on transaction size
-        
-        logger.i("Converted fee rate: $satPerKw sat/kw → $satPerVbyte sat/vbyte");
-        
+
+        logger
+            .i("Converted fee rate: $satPerKw sat/kw → $satPerVbyte sat/vbyte");
+
         return RestResponse(
           statusCode: "success",
           message: "Fee estimated successfully",
@@ -229,14 +235,16 @@ Future<RestResponse> estimateFee({
     } else {
       logger.e("Fee estimation failed with status ${response.statusCode}");
       logger.e("Error response body: ${response.body}");
-      
+
       try {
         final error = jsonDecode(response.body);
-        logger.e("Parsed error: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
-        
+        logger.e(
+            "Parsed error: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+
         return RestResponse(
           statusCode: "error",
-          message: error['message'] ?? error['error'] ?? 'Failed to estimate fee',
+          message:
+              error['message'] ?? error['error'] ?? 'Failed to estimate fee',
           data: error,
         );
       } catch (e) {
@@ -244,7 +252,10 @@ Future<RestResponse> estimateFee({
         return RestResponse(
           statusCode: "error",
           message: "Failed to estimate fee: HTTP ${response.statusCode}",
-          data: {'raw_response': response.body, 'status_code': response.statusCode},
+          data: {
+            'raw_response': response.body,
+            'status_code': response.statusCode
+          },
         );
       }
     }

@@ -27,9 +27,9 @@ class DescriptionBuilder extends StatelessWidget {
                 correctEncoding(description),
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                ),
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
               ),
             ),
           ],

@@ -7,17 +7,17 @@ class ApiCacheService extends GetxService {
   late Dio dio;
   late CacheStore cacheStore;
   late GetStorage localStorage;
-  
+
   @override
   void onInit() {
     super.onInit();
-    
+
     // Initialize GetStorage for persistent cache
     localStorage = GetStorage('api_cache');
-    
+
     // Setup memory + disk cache
     cacheStore = MemCacheStore(maxSize: 10485760); // 10MB
-    
+
     final cacheOptions = CacheOptions(
       store: cacheStore,
       policy: CachePolicy.forceCache, // or CachePolicy.request
@@ -28,11 +28,10 @@ class ApiCacheService extends GetxService {
       keyBuilder: CacheOptions.defaultCacheKeyBuilder,
       allowPostMethod: false,
     );
-    
-    dio = Dio()
-      ..interceptors.add(DioCacheInterceptor(options: cacheOptions));
+
+    dio = Dio()..interceptors.add(DioCacheInterceptor(options: cacheOptions));
   }
-  
+
   // Helper method to build cache options
   Options buildCacheOptions(Duration maxAge, {bool forceRefresh = false}) {
     return Options(
@@ -46,9 +45,10 @@ class ApiCacheService extends GetxService {
       },
     );
   }
-  
+
   // Example: Cached API call
-  Future<Map<String, dynamic>> getCachedData(String url, {
+  Future<Map<String, dynamic>> getCachedData(
+    String url, {
     Duration? maxAge,
     bool forceRefresh = false,
   }) async {
@@ -56,42 +56,43 @@ class ApiCacheService extends GetxService {
       Duration(minutes: maxAge?.inMinutes ?? 15),
       forceRefresh: forceRefresh,
     );
-    
+
     final response = await dio.get(url, options: options);
     return response.data;
   }
-  
+
   // For BitNet specific caching
   Future<double> getBitcoinPrice({bool forceRefresh = false}) async {
     final cacheKey = 'bitcoin_price';
-    
+
     // Check GetStorage first for quick access
     if (!forceRefresh && localStorage.hasData(cacheKey)) {
       final cached = localStorage.read(cacheKey);
       final timestamp = localStorage.read('${cacheKey}_timestamp') ?? 0;
-      
+
       // Cache valid for 1 minute
       if (DateTime.now().millisecondsSinceEpoch - timestamp < 60000) {
         return cached;
       }
     }
-    
+
     // Fetch from API with dio cache
     final data = await getCachedData(
       'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
       maxAge: Duration(minutes: 1),
       forceRefresh: forceRefresh,
     );
-    
+
     final price = data['bitcoin']['usd'].toDouble();
-    
+
     // Store in GetStorage for next app launch
     localStorage.write(cacheKey, price);
-    localStorage.write('${cacheKey}_timestamp', DateTime.now().millisecondsSinceEpoch);
-    
+    localStorage.write(
+        '${cacheKey}_timestamp', DateTime.now().millisecondsSinceEpoch);
+
     return price;
   }
-  
+
   // Clear all caches
   Future<void> clearCache() async {
     await cacheStore.clean();

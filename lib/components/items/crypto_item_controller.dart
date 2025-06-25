@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class CryptoItemController extends GetxController with GetSingleTickerProviderStateMixin {
+class CryptoItemController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   late List<ChartLine> onedaychart = <ChartLine>[].obs;
   RxBool loading = true.obs;
   Color animationColor = Colors.transparent;
@@ -35,21 +36,23 @@ class CryptoItemController extends GetxController with GetSingleTickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
-    animation = ColorTween(begin: animationColor, end: Colors.transparent).animate(controller)
+    animation = ColorTween(begin: animationColor, end: Colors.transparent)
+        .animate(controller)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           isBlinking.value = false;
           controller.reverse();
-          animation = ColorTween(begin: animationColor, end: Colors.transparent).animate(controller);
+          animation = ColorTween(begin: animationColor, end: Colors.transparent)
+              .animate(controller);
           controller.reset();
         }
       });
   }
 
-
   // This function "awaits" until selectedCurrency is not null
   Future<void> waitForCurrencyAndFetchLine() async {
-    final currencyProvider = Provider.of<CurrencyChangeProvider>(Get.context!, listen: false);
+    final currencyProvider =
+        Provider.of<CurrencyChangeProvider>(Get.context!, listen: false);
     while (currencyProvider.selectedCurrency == null) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -76,13 +79,17 @@ class CryptoItemController extends GetxController with GetSingleTickerProviderSt
         onedaychart = chartClassDay.chartLine;
         currentPrice.value = chartClassDayMin.chartLine.last.price;
         currentPriceString.value = currentPrice.toStringAsFixed(2);
-        priceOneTimestampAgo.value = double.parse(currentPrice.toStringAsFixed(2));
+        priceOneTimestampAgo.value =
+            double.parse(currentPrice.toStringAsFixed(2));
         firstPrice.value = chartClassDayMin.chartLine.first.price;
-        priceChange.value = (currentPrice - firstPrice.value) / firstPrice.value;
+        priceChange.value =
+            (currentPrice - firstPrice.value) / firstPrice.value;
         priceChangeString.value = toPercent(priceChange.value);
         loading.value = false;
       } catch (e) {
-        logger.e("Charts could not be created for cryptoitem resulting in error" + e.toString());
+        logger.e(
+            "Charts could not be created for cryptoitem resulting in error" +
+                e.toString());
         //loading.value = false;
       }
     } else {

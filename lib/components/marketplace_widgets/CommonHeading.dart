@@ -39,10 +39,14 @@ class _CommonHeadingState extends State<CommonHeading> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: AppTheme.elementSpacing,),
+        SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
         Container(
           color: Colors.transparent,
-          padding: widget.collapseBtn ? EdgeInsets.all(0.w) : EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+          padding: widget.collapseBtn
+              ? EdgeInsets.all(0.w)
+              : EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
           margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
           child: Row(
             children: [
@@ -56,7 +60,8 @@ class _CommonHeadingState extends State<CommonHeading> {
                   ? RoundedButtonWidget(
                       size: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
-                      iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      iconColor:
+                          Theme.of(context).colorScheme.onPrimaryContainer,
                       onTap: () {
                         if (widget.onPress is String) {
                           context.pushNamed(widget.onPress);
@@ -71,7 +76,9 @@ class _CommonHeadingState extends State<CommonHeading> {
                   ? RoundedButtonWidget(
                       size: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
-                      iconData: widget.isCollapsed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
+                      iconData: widget.isCollapsed
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_right,
                       onTap: () {
                         setState(() {
                           widget.isCollapsed = !widget.isCollapsed;
@@ -116,7 +123,9 @@ class _CommonHeadingState extends State<CommonHeading> {
             ],
           ),
         ),
-        SizedBox(height: AppTheme.elementSpacing * 0.5,),
+        SizedBox(
+          height: AppTheme.elementSpacing * 0.5,
+        ),
         widget.collapseBtn
             ? widget.isCollapsed
                 ? widget.child

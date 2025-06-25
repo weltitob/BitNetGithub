@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
- 
+
 class LoggerInterceptor extends Interceptor {
   LoggerService logger = Get.find();
 

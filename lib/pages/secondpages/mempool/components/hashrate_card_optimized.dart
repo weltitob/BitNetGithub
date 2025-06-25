@@ -18,7 +18,7 @@ class HashrateCardOptimized extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MempoolController());
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
@@ -56,7 +56,7 @@ class HashrateCardOptimized extends StatelessWidget {
                 if (controller.hashrateLoading.value) {
                   return _buildLoadingState();
                 }
-                
+
                 final hashrateInfo = controller.getCurrentHashrateInfo();
                 return _buildHashrateDisplay(context, hashrateInfo);
               }),
@@ -86,8 +86,8 @@ class HashrateCardOptimized extends StatelessWidget {
                 child: Text(
                   "Higher hashrate = stronger network security",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: AppTheme.colorBitcoin,
-                  ),
+                        color: AppTheme.colorBitcoin,
+                      ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -124,14 +124,15 @@ class HashrateCardOptimized extends StatelessWidget {
     );
   }
 
-  Widget _buildHashrateDisplay(BuildContext context, Map<String, dynamic> hashrateInfo) {
+  Widget _buildHashrateDisplay(
+      BuildContext context, Map<String, dynamic> hashrateInfo) {
     return Column(
       children: [
         Text(
           hashrateInfo['currentHashrate'],
           style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         if (hashrateInfo['changePercentage'].isNotEmpty)
           Padding(
@@ -151,10 +152,7 @@ class HashrateCardOptimized extends StatelessWidget {
                 SizedBox(width: 4),
                 Text(
                   hashrateInfo['changePercentage'],
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: hashrateInfo['isPositive']
                             ? AppTheme.successColor
                             : AppTheme.errorColor,
@@ -184,8 +182,8 @@ class HashrateCardOptimized extends StatelessWidget {
             Text(
               "No data available",
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey,
-              ),
+                    color: Colors.grey,
+                  ),
             ),
           ],
         ),
@@ -193,13 +191,14 @@ class HashrateCardOptimized extends StatelessWidget {
     );
   }
 
-  Widget _buildSimplifiedChart(BuildContext context, MempoolController controller) {
+  Widget _buildSimplifiedChart(
+      BuildContext context, MempoolController controller) {
     // Use a lightweight sparkline chart instead of full chart
     final chartData = controller.hashrateChartData;
-    
+
     // Sample data to reduce points for better performance
     final sampledData = _sampleData(chartData, maxPoints: 50);
-    
+
     return Container(
       height: 80,
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -224,19 +223,19 @@ class HashrateCardOptimized extends StatelessWidget {
   // Helper method to sample data for better performance
   List<ChartLine> _sampleData(List<ChartLine> data, {int maxPoints = 50}) {
     if (data.length <= maxPoints) return data;
-    
+
     final List<ChartLine> sampled = [];
     final step = data.length ~/ maxPoints;
-    
+
     for (int i = 0; i < data.length; i += step) {
       sampled.add(data[i]);
     }
-    
+
     // Always include the last point
     if (sampled.last != data.last) {
       sampled.add(data.last);
     }
-    
+
     return sampled;
   }
 }

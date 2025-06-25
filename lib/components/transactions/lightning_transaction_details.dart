@@ -21,15 +21,17 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class LightningTransactionDetails extends BaseTransactionDetails {
-  const LightningTransactionDetails({required TransactionItemData data, Key? key})
+  const LightningTransactionDetails(
+      {required TransactionItemData data, Key? key})
       : super(data: data, key: key);
 
   @override
-  LightningTransactionDetailsState createState() => LightningTransactionDetailsState();
+  LightningTransactionDetailsState createState() =>
+      LightningTransactionDetailsState();
 }
 
-class LightningTransactionDetailsState extends BaseTransactionDetailsState<LightningTransactionDetails> {
-  
+class LightningTransactionDetailsState
+    extends BaseTransactionDetailsState<LightningTransactionDetails> {
   @override
   String getHeaderTitle() => 'Lightning Transaction';
 
@@ -51,16 +53,15 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
           children: [
             // Transaction header with sender/receiver
             TransactionHeaderWidget(data: widget.data),
-            
+
             // Amount display
             TransactionAmountWidget(data: widget.data),
-            
+
             // Details container
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.elementSpacing * 0.5, 
-                vertical: AppTheme.elementSpacing
-              ),
+                  horizontal: AppTheme.elementSpacing * 0.5,
+                  vertical: AppTheme.elementSpacing),
               child: TransactionDetailsContainer(
                 nested: true,
                 child: Padding(
@@ -77,23 +78,21 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
                         text: 'Status',
                         trailing: buildStatusIndicator(),
                       ),
-                      
+
                       // Transaction ID
                       TransactionDetailTile(
                         text: 'TransactionID',
                         trailing: buildCopyableText(widget.data.txHash),
                       ),
-                      
+
                       // Payment Network
                       TransactionDetailTile(
                         text: "Payment Network",
                         trailing: Row(
                           children: [
-                            Image.asset(
-                              "assets/images/lightning.png",
-                              width: AppTheme.cardPadding * 1,
-                              height: AppTheme.cardPadding * 1
-                            ),
+                            Image.asset("assets/images/lightning.png",
+                                width: AppTheme.cardPadding * 1,
+                                height: AppTheme.cardPadding * 1),
                             const SizedBox(width: AppTheme.elementSpacing / 2),
                             Text(
                               'Lightning',
@@ -102,7 +101,7 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
                           ],
                         ),
                       ),
-                      
+
                       // Time
                       TransactionDetailTile(
                         text: 'Time',
@@ -110,8 +109,8 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
                           Icons.access_time,
                           size: AppTheme.cardPadding * 0.75,
                           color: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black60,
+                              ? AppTheme.white60
+                              : AppTheme.black60,
                         ),
                         trailing: SizedBox(
                           width: AppTheme.cardPadding * 7.w,
@@ -124,7 +123,7 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
                           ),
                         ),
                       ),
-                      
+
                       // Fee
                       TransactionDetailTile(
                         text: 'Fee',
@@ -140,49 +139,50 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
       ),
     );
   }
-  
+
   Widget buildStatusIndicator() {
     final controller = Get.find<WalletsController>();
-    
+
     return Row(
       children: [
         widget.data.status == TransactionStatus.pending
-          ? Obx(() => GestureDetector(
-              onTap: () {
-                controller.showInfo.value = !controller.showInfo.value;
-                BitNetBottomSheet(
-                  context: context,
-                  child: _buildInfoBottomSheet(),
-                );
-              },
-              child: Container(
-                alignment: Alignment.topRight,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppTheme.black60,
-                ),
-                child: Center(
-                  child: Icon(
-                    controller.showInfo.value
-                      ? Icons.info
-                      : Icons.info_outline,
-                    color: AppTheme.white60,
+            ? Obx(() => GestureDetector(
+                  onTap: () {
+                    controller.showInfo.value = !controller.showInfo.value;
+                    BitNetBottomSheet(
+                      context: context,
+                      child: _buildInfoBottomSheet(),
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.topRight,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppTheme.black60,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        controller.showInfo.value
+                            ? Icons.info
+                            : Icons.info_outline,
+                        color: AppTheme.white60,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ))
-          : const SizedBox.shrink(),
+                ))
+            : const SizedBox.shrink(),
         SizedBox(width: 10.w),
         TransactionStatusIndicator(status: widget.data.status),
       ],
     );
   }
-  
+
   Widget buildFeeDisplay() {
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency ?? "USD";
-    
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency ?? "USD";
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -192,19 +192,19 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
           },
           child: Text(
             coin.coin ?? true
-              ? '${widget.data.fee}'
-              : "$currencyEquivalentFee ${getCurrency(currency)}",
+                ? '${widget.data.fee}'
+                : "$currencyEquivalentFee ${getCurrency(currency)}",
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
         coin.coin ?? true
-          ? Icon(AppTheme.satoshiIcon)
-          : const SizedBox.shrink(),
+            ? Icon(AppTheme.satoshiIcon)
+            : const SizedBox.shrink(),
       ],
     );
   }
-  
+
   Widget _buildInfoBottomSheet() {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
@@ -216,10 +216,9 @@ class LightningTransactionDetailsState extends BaseTransactionDetailsState<Light
       context: context,
       body: Padding(
         padding: const EdgeInsets.only(
-          top: AppTheme.cardPaddingBigger * 5,
-          left: AppTheme.cardPaddingBig,
-          right: AppTheme.cardPaddingBig
-        ),
+            top: AppTheme.cardPaddingBigger * 5,
+            left: AppTheme.cardPaddingBig,
+            right: AppTheme.cardPaddingBig),
         child: Text(
           'When the lightning invoice wont get trough the payment will be canceled and the user will receive the funds back',
           overflow: TextOverflow.ellipsis,

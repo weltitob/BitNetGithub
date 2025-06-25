@@ -13,20 +13,21 @@ import 'dart:async';
 class MockLoggerService extends LoggerService {
   @override
   void i(Object message) {}
-  
+
   @override
   void e(Object message) {}
-  
+
   @override
   void d(Object message) {}
-  
+
   @override
   void w(Object message) {}
 }
 
 class MockOverlayController extends OverlayController {
   @override
-  Future<void> showOverlay(String? message, {Color color = const Color(0xFF5DE165)}) async {}
+  Future<void> showOverlay(String? message,
+      {Color color = const Color(0xFF5DE165)}) async {}
 }
 
 class MockWalletsController extends WalletsController {
@@ -34,13 +35,13 @@ class MockWalletsController extends WalletsController {
   Future<List<String>> getOnchainAddresses() async {
     return ['bc1qtest123address456'];
   }
-  
+
   @override
   final List<String> btcAddresses = [];
 }
 
 /// Unit tests for ReceiveController
-/// 
+///
 /// These tests verify the core receive functionality including:
 /// 1. Timer management and formatting
 /// 2. Receive type switching
@@ -82,53 +83,63 @@ void main() {
   group('ReceiveController - Timer Management', () {
     test('should format duration correctly', () {
       // Test various durations
-      expect(receiveController.formatDuration(Duration(minutes: 0, seconds: 0)), equals('00:00'));
-      expect(receiveController.formatDuration(Duration(minutes: 1, seconds: 30)), equals('01:30'));
-      expect(receiveController.formatDuration(Duration(minutes: 10, seconds: 5)), equals('10:05'));
-      expect(receiveController.formatDuration(Duration(minutes: 59, seconds: 59)), equals('59:59'));
-      expect(receiveController.formatDuration(Duration(hours: 1, minutes: 5, seconds: 30)), equals('05:30'));
+      expect(receiveController.formatDuration(Duration(minutes: 0, seconds: 0)),
+          equals('00:00'));
+      expect(
+          receiveController.formatDuration(Duration(minutes: 1, seconds: 30)),
+          equals('01:30'));
+      expect(
+          receiveController.formatDuration(Duration(minutes: 10, seconds: 5)),
+          equals('10:05'));
+      expect(
+          receiveController.formatDuration(Duration(minutes: 59, seconds: 59)),
+          equals('59:59'));
+      expect(
+          receiveController
+              .formatDuration(Duration(hours: 1, minutes: 5, seconds: 30)),
+          equals('05:30'));
     });
 
     test('should handle timer updates correctly', () {
       // Set initial duration
       receiveController.duration = Duration(minutes: 2, seconds: 30);
-      
+
       // Create a real timer (but cancel it immediately to avoid hanging tests)
       late Timer timer;
       timer = Timer.periodic(Duration(seconds: 1), (t) {
         t.cancel();
       });
-      
+
       // Test initial state
       expect(receiveController.duration.inSeconds, equals(150));
-      
+
       // Simulate timer update
       receiveController.updateTimer(timer);
-      
+
       // Should decrease by 1 second
       expect(receiveController.duration.inSeconds, equals(149));
       expect(receiveController.min.value, equals('02'));
       expect(receiveController.sec.value, equals('29'));
-      
+
       timer.cancel();
     });
 
     test('should handle timer cancellation logic', () {
       // Set duration to 1 second
       receiveController.duration = Duration(seconds: 1);
-      
+
       late Timer timer;
       timer = Timer.periodic(Duration(seconds: 1), (t) {
         t.cancel();
       });
-      
+
       // First update - should go to 0
       receiveController.updateTimer(timer);
       expect(receiveController.duration.inSeconds, equals(0));
-      
+
       // Timer should be cancelled (no exception thrown)
       expect(() => receiveController.updateTimer(timer), returnsNormally);
-      
+
       timer.cancel();
     });
   });
@@ -137,13 +148,16 @@ void main() {
     test('should set receive type correctly', () {
       // Test setting different receive types
       receiveController.setReceiveType(ReceiveType.Lightning_b11);
-      expect(receiveController.receiveType.value, equals(ReceiveType.Lightning_b11));
+      expect(receiveController.receiveType.value,
+          equals(ReceiveType.Lightning_b11));
 
       receiveController.setReceiveType(ReceiveType.OnChain_taproot);
-      expect(receiveController.receiveType.value, equals(ReceiveType.OnChain_taproot));
+      expect(receiveController.receiveType.value,
+          equals(ReceiveType.OnChain_taproot));
 
       receiveController.setReceiveType(ReceiveType.Combined_b11_taproot);
-      expect(receiveController.receiveType.value, equals(ReceiveType.Combined_b11_taproot));
+      expect(receiveController.receiveType.value,
+          equals(ReceiveType.Combined_b11_taproot));
     });
 
     test('should verify all receive types are handled', () {
@@ -158,25 +172,26 @@ void main() {
   group('ReceiveController - Bitcoin Unit Conversion', () {
     test('should handle SAT unit correctly in invoice generation', () {
       receiveController.bitcoinUnit.value = BitcoinUnits.SAT;
-      
+
       // Test amount conversion logic (simulating getInvoice behavior)
       int testAmount = 100000; // 100k sats
-      int finalAmount = receiveController.bitcoinUnit.value == BitcoinUnits.SAT 
-          ? testAmount 
-          : CurrencyConverter.convertBitcoinToSats(testAmount.toDouble()).toInt();
-      
+      int finalAmount = receiveController.bitcoinUnit.value == BitcoinUnits.SAT
+          ? testAmount
+          : CurrencyConverter.convertBitcoinToSats(testAmount.toDouble())
+              .toInt();
+
       expect(finalAmount, equals(100000));
     });
 
     test('should handle BTC unit correctly in invoice generation', () {
       receiveController.bitcoinUnit.value = BitcoinUnits.BTC;
-      
+
       // Test amount conversion logic (simulating getInvoice behavior)
       double testAmount = 0.001; // 0.001 BTC = 100k sats
-      int finalAmount = receiveController.bitcoinUnit.value == BitcoinUnits.SAT 
+      int finalAmount = receiveController.bitcoinUnit.value == BitcoinUnits.SAT
           ? testAmount.toInt()
           : CurrencyConverter.convertBitcoinToSats(testAmount).toInt();
-      
+
       expect(finalAmount, equals(100000));
     });
   });
@@ -214,25 +229,30 @@ void main() {
   group('ReceiveController - QR Data String Management', () {
     test('should initialize QR data strings as empty', () {
       expect(receiveController.qrCodeDataStringLightning.value, equals(''));
-      expect(receiveController.qrCodeDataStringLightningCombined.value, equals(''));
+      expect(receiveController.qrCodeDataStringLightningCombined.value,
+          equals(''));
       expect(receiveController.qrCodeDataStringOnchain.value, equals(''));
     });
 
     test('should update QR data strings correctly', () {
-      const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+      const testInvoice =
+          'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
       const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
 
       receiveController.qrCodeDataStringLightning.value = testInvoice;
       receiveController.qrCodeDataStringOnchain.value = testAddress;
 
-      expect(receiveController.qrCodeDataStringLightning.value, equals(testInvoice));
-      expect(receiveController.qrCodeDataStringOnchain.value, equals(testAddress));
+      expect(receiveController.qrCodeDataStringLightning.value,
+          equals(testInvoice));
+      expect(
+          receiveController.qrCodeDataStringOnchain.value, equals(testAddress));
     });
   });
 
   group('ReceiveController - BIP21 URI Generation', () {
     test('should generate correct BIP21 URI without amount', () {
-      const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+      const testInvoice =
+          'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
       const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
 
       receiveController.qrCodeDataStringLightningCombined.value = testInvoice;
@@ -241,14 +261,15 @@ void main() {
 
       // Simulate BIP21 generation logic from copyAddress method
       String bip21Data = "bitcoin:$testAddress?lightning=$testInvoice";
-      
+
       expect(bip21Data, equals("bitcoin:$testAddress?lightning=$testInvoice"));
       expect(bip21Data.startsWith('bitcoin:'), isTrue);
       expect(bip21Data.contains('lightning='), isTrue);
     });
 
     test('should generate correct BIP21 URI with amount', () {
-      const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+      const testInvoice =
+          'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
       const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
       const testAmount = '0.001';
 
@@ -260,10 +281,12 @@ void main() {
       String bip21Data = "bitcoin:$testAddress?lightning=$testInvoice";
       double? btcAmount = double.tryParse(testAmount);
       if (btcAmount != null && btcAmount > 0) {
-        bip21Data = "bitcoin:$testAddress?amount=$btcAmount?lightning=$testInvoice";
+        bip21Data =
+            "bitcoin:$testAddress?amount=$btcAmount?lightning=$testInvoice";
       }
-      
-      expect(bip21Data, equals("bitcoin:$testAddress?amount=0.001?lightning=$testInvoice"));
+
+      expect(bip21Data,
+          equals("bitcoin:$testAddress?amount=0.001?lightning=$testInvoice"));
       expect(bip21Data.contains('amount=0.001'), isTrue);
     });
   });
@@ -271,12 +294,13 @@ void main() {
   group('ReceiveController - Address Copy Logic', () {
     test('should format onchain address without amount correctly', () {
       const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-      
+
       receiveController.qrCodeDataStringOnchain.value = testAddress;
       receiveController.btcControllerOnChain.text = '0';
 
       // Simulate copy logic for onchain addresses
-      double? btcAmount = double.tryParse(receiveController.btcControllerOnChain.text);
+      double? btcAmount =
+          double.tryParse(receiveController.btcControllerOnChain.text);
       final addressData = btcAmount != null && btcAmount > 0
           ? 'bitcoin:${receiveController.qrCodeDataStringOnchain.value}?amount=${btcAmount}'
           : receiveController.qrCodeDataStringOnchain.value;
@@ -287,12 +311,13 @@ void main() {
     test('should format onchain address with amount correctly', () {
       const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
       const testAmount = '0.5';
-      
+
       receiveController.qrCodeDataStringOnchain.value = testAddress;
       receiveController.btcControllerOnChain.text = testAmount;
 
       // Simulate copy logic for onchain addresses
-      double? btcAmount = double.tryParse(receiveController.btcControllerOnChain.text);
+      double? btcAmount =
+          double.tryParse(receiveController.btcControllerOnChain.text);
       final addressData = btcAmount != null && btcAmount > 0
           ? 'bitcoin:${receiveController.qrCodeDataStringOnchain.value}?amount=${btcAmount}'
           : receiveController.qrCodeDataStringOnchain.value;
@@ -301,14 +326,15 @@ void main() {
     });
 
     test('should handle lightning invoice copy correctly', () {
-      const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
-      
+      const testInvoice =
+          'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+
       receiveController.qrCodeDataStringLightning.value = testInvoice;
       receiveController.receiveType.value = ReceiveType.Lightning_b11;
 
       // For Lightning, we just copy the invoice directly
       final copyData = receiveController.qrCodeDataStringLightning.value;
-      
+
       expect(copyData, equals(testInvoice));
     });
   });
@@ -320,7 +346,8 @@ void main() {
 
       // Simulate tapGenerateInvoice logic for Lightning
       if (receiveController.receiveType.value == ReceiveType.Lightning_b11) {
-        final amount = (double.parse(receiveController.satController.text)).toInt();
+        final amount =
+            (double.parse(receiveController.satController.text)).toInt();
         expect(amount, equals(100000));
       }
     });
@@ -330,15 +357,18 @@ void main() {
       receiveController.satControllerCombined.text = '50000';
 
       // Simulate tapGenerateInvoice logic for Combined
-      if (receiveController.receiveType.value == ReceiveType.Combined_b11_taproot) {
-        final amount = (double.parse(receiveController.satControllerCombined.text)).toInt();
+      if (receiveController.receiveType.value ==
+          ReceiveType.Combined_b11_taproot) {
+        final amount =
+            (double.parse(receiveController.satControllerCombined.text))
+                .toInt();
         expect(amount, equals(50000));
       }
     });
 
     test('should handle different address types for onchain', () {
       receiveController.receiveType.value = ReceiveType.OnChain_segwit;
-      
+
       // Simulate tapGenerateInvoice logic for SegWit
       if (receiveController.receiveType.value == ReceiveType.OnChain_segwit) {
         const expectedAddressType = 'WITNESS_PUBKEY_HASH';
@@ -346,7 +376,7 @@ void main() {
       }
 
       receiveController.receiveType.value = ReceiveType.OnChain_taproot;
-      
+
       // Simulate tapGenerateInvoice logic for Taproot
       if (receiveController.receiveType.value == ReceiveType.OnChain_taproot) {
         const expectedAddressType = 'TAPROOT_PUBKEY';
@@ -357,7 +387,8 @@ void main() {
 
   group('ReceiveController - State Management', () {
     test('should initialize with correct default values', () {
-      expect(receiveController.receiveType.value, equals(ReceiveType.Combined_b11_taproot));
+      expect(receiveController.receiveType.value,
+          equals(ReceiveType.Combined_b11_taproot));
       expect(receiveController.bitcoinUnit.value, equals(BitcoinUnits.SAT));
       expect(receiveController.isUnlocked.value, isTrue);
       expect(receiveController.updatingText.value, isFalse);
@@ -400,7 +431,7 @@ void main() {
     test('should handle empty QR data strings', () {
       receiveController.qrCodeDataStringLightning.value = '';
       receiveController.qrCodeDataStringOnchain.value = '';
-      
+
       expect(receiveController.qrCodeDataStringLightning.value.isEmpty, isTrue);
       expect(receiveController.qrCodeDataStringOnchain.value.isEmpty, isTrue);
     });

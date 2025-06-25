@@ -10,7 +10,8 @@ dynamic registerUserWithEcsTask(String userId) async {
   final logger = Get.find<LoggerService>();
   try {
     try {
-      final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
+      final appCheckToken =
+          await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       logger.i("App Check Token: $appCheckToken");
       logger.i("New App Check Token: $newAppCheckToken");
@@ -28,7 +29,7 @@ dynamic registerUserWithEcsTask(String userId) async {
     );
 
     final dynamic response = await callable.call(<String, dynamic>{
-      'user_id': userId,  // Adapted to align with Python function expectations
+      'user_id': userId, // Adapted to align with Python function expectations
     });
 
     print("Response FROM SERVER: ${response}");
@@ -38,7 +39,7 @@ dynamic registerUserWithEcsTask(String userId) async {
     } else {
       responseData = {'message': response.data};
     }
-    try{
+    try {
       final RestResponse restResponse = RestResponse.fromJson(responseData);
       logger.i("Cloud Function Callback: ${restResponse.toString()}");
       logger.i("Callback Message: ${restResponse.message}");
@@ -48,12 +49,13 @@ dynamic registerUserWithEcsTask(String userId) async {
       Map<String, dynamic> bodyData = jsonDecode(messageMap['body']);
       int statusCode = messageMap['statusCode'];
 
-      EcsTaskRegistrationResponse ecsResponse = EcsTaskRegistrationResponse.fromJson(bodyData);
-      if(statusCode != 200) {
-        logger.e("Error registering user with ECS task: ${ecsResponse.details?.message}");
+      EcsTaskRegistrationResponse ecsResponse =
+          EcsTaskRegistrationResponse.fromJson(bodyData);
+      if (statusCode != 200) {
+        logger.e(
+            "Error registering user with ECS task: ${ecsResponse.details?.message}");
         return statusCode;
-      }
-      else{
+      } else {
         return statusCode;
       }
     } catch (e) {
@@ -65,7 +67,6 @@ dynamic registerUserWithEcsTask(String userId) async {
   }
 }
 
-
 class EcsTaskRegistrationResponse {
   final int? statusCode;
   final EcsTaskDetails? details;
@@ -75,7 +76,9 @@ class EcsTaskRegistrationResponse {
   factory EcsTaskRegistrationResponse.fromJson(Map<String, dynamic> json) {
     return EcsTaskRegistrationResponse(
       statusCode: json['statusCode'],
-      details: json['body'] != null ? EcsTaskDetails.fromJson(jsonDecode(json['body'])) : null,
+      details: json['body'] != null
+          ? EcsTaskDetails.fromJson(jsonDecode(json['body']))
+          : null,
     );
   }
 

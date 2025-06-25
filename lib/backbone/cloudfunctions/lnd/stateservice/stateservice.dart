@@ -70,7 +70,8 @@ Future<WalletState> requestState() async {
   String url = 'https://$restHost/v1/state';
 
   // Read the macaroon file and convert it to a hexadecimal string
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

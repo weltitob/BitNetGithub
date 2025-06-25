@@ -18,7 +18,8 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/tx';
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);

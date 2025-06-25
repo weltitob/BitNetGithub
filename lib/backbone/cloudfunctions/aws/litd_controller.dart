@@ -39,12 +39,12 @@ class LitdController extends GetxController {
     super.onInit();
     // If not running in release mode, force the litd_baseurl to the AppTheme debug value and never update it
 
-    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    final RemoteConfigController remoteConfigController =
+        Get.find<RemoteConfigController>();
 
-    litd_baseurl.value = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+    litd_baseurl.value =
+        remoteConfigController.baseUrlLightningTerminalWithPort.value;
     publicIp.value = remoteConfigController.baseUrlLightningTerminal.value;
-
-
 
     // loadServerStateFromFirestore();
   }

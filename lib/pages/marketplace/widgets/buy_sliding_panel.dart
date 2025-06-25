@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 class BuySlidingPanel extends StatelessWidget {
   final int itemId;
   final List<GridListModal> sortedGridList;
-  
+
   const BuySlidingPanel({
     Key? key,
     required this.itemId,
@@ -100,15 +100,17 @@ class BuySlidingPanel extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildHorizontalProduct() {
-    var gridIndex = sortedGridList.indexWhere((element) => element.id == itemId);
+    var gridIndex =
+        sortedGridList.indexWhere((element) => element.id == itemId);
     if (gridIndex == -1) return Container();
-    
+
     return HorizontalProduct(item: sortedGridList[gridIndex]);
   }
-  
-  static Future<T?> show<T>(BuildContext context, int itemId, List<GridListModal> sortedGridList) {
+
+  static Future<T?> show<T>(
+      BuildContext context, int itemId, List<GridListModal> sortedGridList) {
     return BitNetBottomSheet(
       context: context,
       child: BuySlidingPanel(

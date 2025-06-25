@@ -51,7 +51,10 @@ class _UserResultState extends State<UserResult> {
     return Container(
       height: AppTheme.cardPadding * 2.75,
       child: GlassContainer(
-        border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+        border: Border.all(
+            width: 1.5,
+            color:
+                Theme.of(context).dividerColor), // remove border if not active
         opacity: 0.1,
         borderRadius: AppTheme.cardPadding * 2.75 / 3,
         child: InkWell(
@@ -79,14 +82,21 @@ class _UserResultState extends State<UserResult> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          widget.obscureUsername ? "@${widget.userData.username.substring(0, 3)}***" : "@${widget.userData.username}",
+                          widget.obscureUsername
+                              ? "@${widget.userData.username.substring(0, 3)}***"
+                              : "@${widget.userData.username}",
                           style: Theme.of(context).textTheme.titleSmall,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          widget.model == 3 ? 'this account no longer exists...' : widget.userData.did,
+                          widget.model == 3
+                              ? 'this account no longer exists...'
+                              : widget.userData.did,
                           style: widget.model == 3
-                              ? Theme.of(context).textTheme.bodySmall!.copyWith(color: AppTheme.errorColor)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(color: AppTheme.errorColor)
                               : Theme.of(context).textTheme.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -116,7 +126,8 @@ class _UserResultState extends State<UserResult> {
                                     // Content area with padding
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(AppTheme.cardPadding),
+                                        padding: const EdgeInsets.all(
+                                            AppTheme.cardPadding),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -125,27 +136,46 @@ class _UserResultState extends State<UserResult> {
                                               height: AppTheme.cardPadding * 3,
                                               width: AppTheme.cardPadding * 3,
                                               decoration: BoxDecoration(
-                                                color: AppTheme.errorColor.withOpacity(0.1),
-                                                borderRadius: BorderRadius.circular(AppTheme.cardPadding * 1.5),
+                                                color: AppTheme.errorColor
+                                                    .withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        AppTheme.cardPadding *
+                                                            1.5),
                                               ),
                                               child: Icon(
                                                 FontAwesomeIcons.trash,
                                                 color: AppTheme.errorColor,
-                                                size: AppTheme.cardPadding * 1.2,
+                                                size:
+                                                    AppTheme.cardPadding * 1.2,
                                               ),
                                             ),
-                                            SizedBox(height: AppTheme.elementSpacing),
+                                            SizedBox(
+                                                height:
+                                                    AppTheme.elementSpacing),
                                             Text(
                                               'Delete saved account from device?',
-                                              style: Theme.of(context).textTheme.titleLarge,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
                                               textAlign: TextAlign.center,
                                             ),
-                                            SizedBox(height: AppTheme.elementSpacing / 2),
+                                            SizedBox(
+                                                height:
+                                                    AppTheme.elementSpacing /
+                                                        2),
                                             Text(
                                               'This will remove the account from this device. You can still recover it later using your mnemonic phrase.',
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.color
+                                                        ?.withOpacity(0.7),
+                                                  ),
                                               textAlign: TextAlign.center,
                                             ),
                                           ],
@@ -156,7 +186,8 @@ class _UserResultState extends State<UserResult> {
                                     BottomButtons(
                                       leftButtonTitle: 'Cancel',
                                       rightButtonTitle: 'Delete',
-                                      onLeftButtonTap: () => Navigator.of(context).pop(),
+                                      onLeftButtonTap: () =>
+                                          Navigator.of(context).pop(),
                                       onRightButtonTap: () {
                                         Navigator.of(context).pop();
                                         widget.onDelete();
@@ -170,9 +201,13 @@ class _UserResultState extends State<UserResult> {
                               height: AppTheme.cardPadding * 1.5,
                               width: AppTheme.cardPadding * 1.5,
                               child: GlassContainer(
-                                border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+                                border: Border.all(
+                                    width: 1.5,
+                                    color: Theme.of(context)
+                                        .dividerColor), // remove border if not active
                                 opacity: 0.1,
-                                borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                                borderRadius: BorderRadius.circular(
+                                    AppTheme.borderRadiusMid),
                                 child: Icon(
                                   FontAwesomeIcons.remove,
                                   size: AppTheme.elementSpacing * 1.5,
@@ -182,11 +217,13 @@ class _UserResultState extends State<UserResult> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing),
                             child: InkWell(
                               onTap: () async {
                                 final logger = Get.find<LoggerService>();
-                                logger.i("Login for user ${widget.userData.did} pressed");
+                                logger.i(
+                                    "Login for user ${widget.userData.did} pressed");
                                 setState(() {
                                   _loading = true;
                                   logger.i("Loading set to true");
@@ -205,9 +242,13 @@ class _UserResultState extends State<UserResult> {
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+                                  border: Border.all(
+                                      width: 1.5,
+                                      color: Theme.of(context)
+                                          .dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                                  borderRadius: BorderRadius.circular(
+                                      AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     FontAwesomeIcons.key,
                                     size: AppTheme.elementSpacing * 1.5,
@@ -220,7 +261,8 @@ class _UserResultState extends State<UserResult> {
                         ],
                         if (widget.model == 1) ...[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing),
                             child: InkWell(
                               onTap: () async {
                                 setState(() {
@@ -240,9 +282,13 @@ class _UserResultState extends State<UserResult> {
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+                                  border: Border.all(
+                                      width: 1.5,
+                                      color: Theme.of(context)
+                                          .dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                                  borderRadius: BorderRadius.circular(
+                                      AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     widget.onTapIcon ?? Icons.person_add,
                                     size: AppTheme.elementSpacing * 1.5,
@@ -255,16 +301,21 @@ class _UserResultState extends State<UserResult> {
                         ],
                         if (widget.model == 4) ...[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.elementSpacing),
                             child: InkWell(
                               onTap: () async {},
                               child: Container(
                                 height: AppTheme.cardPadding * 1.5,
                                 width: AppTheme.cardPadding * 1.5,
                                 child: GlassContainer(
-                                  border: Border.all(width: 1.5, color: Theme.of(context).dividerColor), // remove border if not active
+                                  border: Border.all(
+                                      width: 1.5,
+                                      color: Theme.of(context)
+                                          .dividerColor), // remove border if not active
                                   opacity: 0.1,
-                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                                  borderRadius: BorderRadius.circular(
+                                      AppTheme.borderRadiusCircular),
                                   child: Icon(
                                     FontAwesomeIcons.key,
                                     size: AppTheme.elementSpacing * 1.5,

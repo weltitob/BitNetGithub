@@ -6,19 +6,26 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 /// Simplified unit tests for ReceiveController logic only
-/// 
+///
 /// These tests focus on pure logic without GetX dependencies
 void main() {
   group('ReceiveController - Pure Logic Tests', () {
     group('Timer Management', () {
       test('should format duration correctly', () {
         final controller = ReceiveController();
-        
-        expect(controller.formatDuration(Duration(minutes: 0, seconds: 0)), equals('00:00'));
-        expect(controller.formatDuration(Duration(minutes: 1, seconds: 30)), equals('01:30'));
-        expect(controller.formatDuration(Duration(minutes: 10, seconds: 5)), equals('10:05'));
-        expect(controller.formatDuration(Duration(minutes: 59, seconds: 59)), equals('59:59'));
-        expect(controller.formatDuration(Duration(hours: 1, minutes: 5, seconds: 30)), equals('05:30'));
+
+        expect(controller.formatDuration(Duration(minutes: 0, seconds: 0)),
+            equals('00:00'));
+        expect(controller.formatDuration(Duration(minutes: 1, seconds: 30)),
+            equals('01:30'));
+        expect(controller.formatDuration(Duration(minutes: 10, seconds: 5)),
+            equals('10:05'));
+        expect(controller.formatDuration(Duration(minutes: 59, seconds: 59)),
+            equals('59:59'));
+        expect(
+            controller
+                .formatDuration(Duration(hours: 1, minutes: 5, seconds: 30)),
+            equals('05:30'));
       });
     });
 
@@ -39,39 +46,43 @@ void main() {
       test('should handle SAT unit correctly', () {
         // Test amount conversion logic (simulating getInvoice behavior)
         int testAmount = 100000; // 100k sats
-        int finalAmount = BitcoinUnits.SAT == BitcoinUnits.SAT 
-            ? testAmount 
-            : CurrencyConverter.convertBitcoinToSats(testAmount.toDouble()).toInt();
-        
+        int finalAmount = BitcoinUnits.SAT == BitcoinUnits.SAT
+            ? testAmount
+            : CurrencyConverter.convertBitcoinToSats(testAmount.toDouble())
+                .toInt();
+
         expect(finalAmount, equals(100000));
       });
 
       test('should handle BTC unit correctly', () {
         // Test amount conversion logic (simulating getInvoice behavior)
         double testAmount = 0.001; // 0.001 BTC = 100k sats
-        int finalAmount = BitcoinUnits.BTC == BitcoinUnits.SAT 
+        int finalAmount = BitcoinUnits.BTC == BitcoinUnits.SAT
             ? testAmount.toInt()
             : CurrencyConverter.convertBitcoinToSats(testAmount).toInt();
-        
+
         expect(finalAmount, equals(100000));
       });
     });
 
     group('BIP21 URI Generation Logic', () {
       test('should generate correct BIP21 URI without amount', () {
-        const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+        const testInvoice =
+            'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
         const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
 
         // Simulate BIP21 generation logic from copyAddress method
         String bip21Data = "bitcoin:$testAddress?lightning=$testInvoice";
-        
-        expect(bip21Data, equals("bitcoin:$testAddress?lightning=$testInvoice"));
+
+        expect(
+            bip21Data, equals("bitcoin:$testAddress?lightning=$testInvoice"));
         expect(bip21Data.startsWith('bitcoin:'), isTrue);
         expect(bip21Data.contains('lightning='), isTrue);
       });
 
       test('should generate correct BIP21 URI with amount', () {
-        const testInvoice = 'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
+        const testInvoice =
+            'lnbc1000n1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq';
         const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
         const testAmount = '0.001';
 
@@ -79,10 +90,12 @@ void main() {
         String bip21Data = "bitcoin:$testAddress?lightning=$testInvoice";
         double? btcAmount = double.tryParse(testAmount);
         if (btcAmount != null && btcAmount > 0) {
-          bip21Data = "bitcoin:$testAddress?amount=$btcAmount?lightning=$testInvoice";
+          bip21Data =
+              "bitcoin:$testAddress?amount=$btcAmount?lightning=$testInvoice";
         }
-        
-        expect(bip21Data, equals("bitcoin:$testAddress?amount=0.001?lightning=$testInvoice"));
+
+        expect(bip21Data,
+            equals("bitcoin:$testAddress?amount=0.001?lightning=$testInvoice"));
         expect(bip21Data.contains('amount=0.001'), isTrue);
       });
     });
@@ -104,7 +117,7 @@ void main() {
       test('should format onchain address with amount correctly', () {
         const testAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
         const testAmount = '0.5';
-        
+
         // Simulate copy logic for onchain addresses
         double? btcAmount = double.tryParse(testAmount);
         final addressData = btcAmount != null && btcAmount > 0

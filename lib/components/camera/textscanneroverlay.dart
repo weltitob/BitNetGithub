@@ -9,11 +9,11 @@ class TextScannerOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double scanAreaHeight = (MediaQuery.of(context).size.width < 200 * 0.65 ||
-        MediaQuery.of(context).size.height < 200 * 0.65)
+            MediaQuery.of(context).size.height < 200 * 0.65)
         ? 120.0 * 0.65
         : 175.0 * 0.65;
     double scanAreaWidth = (MediaQuery.of(context).size.width < 450 ||
-        MediaQuery.of(context).size.height < 450)
+            MediaQuery.of(context).size.height < 450)
         ? 320.0
         : 420.0;
     return Stack(children: [

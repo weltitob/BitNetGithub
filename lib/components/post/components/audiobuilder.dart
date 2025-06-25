@@ -27,7 +27,6 @@ class AdjustSpeedContainer extends StatelessWidget {
   }
 }
 
-
 class AudioBuilderLocal extends StatefulWidget {
   final PostFile postfile;
   const AudioBuilderLocal({
@@ -54,8 +53,8 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
     }
     player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-          print('A stream error occurred: $e');
-        });
+      print('A stream error occurred: $e');
+    });
     super.initState();
   }
 
@@ -80,7 +79,7 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
           player.positionStream,
           player.bufferedPositionStream,
           player.durationStream,
-              (position, bufferedPosition, duration) => PositionData(
+          (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
   @override
@@ -115,7 +114,8 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
                       stream: player.speedStream,
                       builder: (context, snapshot) => GestureDetector(
                         child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                         onTap: () {
                           showSliderDialog(
                             context: context,
@@ -139,7 +139,7 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
                         duration: positionData?.duration ?? Duration.zero,
                         position: positionData?.position ?? Duration.zero,
                         bufferedPosition:
-                        positionData?.bufferedPosition ?? Duration.zero,
+                            positionData?.bufferedPosition ?? Duration.zero,
                         onChangeEnd: player.seek,
                       );
                     },
@@ -152,7 +152,7 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
       ),
     );
   }
-  
+
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
@@ -187,8 +187,8 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
     }
     player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-          print('A stream error occurred: $e');
-        });
+      print('A stream error occurred: $e');
+    });
     super.initState();
   }
 
@@ -210,7 +210,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
           player.positionStream,
           player.bufferedPositionStream,
           player.durationStream,
-              (position, bufferedPosition, duration) => PositionData(
+          (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
   @override
@@ -254,7 +254,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
                   duration: positionData?.duration ?? Duration.zero,
                   position: positionData?.position ?? Duration.zero,
                   bufferedPosition:
-                  positionData?.bufferedPosition ?? Duration.zero,
+                      positionData?.bufferedPosition ?? Duration.zero,
                   onChangeEnd: player.seek,
                 );
               },
@@ -277,57 +277,56 @@ class AudioControlButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         StreamBuilder<PlayerState>(
-        stream: player.playerStateStream,
-        builder: (context, snapshot) {
-          final playerState = snapshot.data;
-          final processingState = playerState?.processingState;
-          final playing = playerState?.playing;
-          if (processingState == ProcessingState.loading ||
-              processingState == ProcessingState.buffering) {
-            return avatarGlowProgressAudio(context);
-          } else if (playing != true) {
-            return AudioButton(
-              onTap: player.play,
-              iconData: Icons.play_arrow_rounded,
-            );
-          } else if (processingState != ProcessingState.completed) {
-            return AudioButton(
-              onTap: player.pause,
-              iconData: Icons.pause_rounded,
-            );
-          } else {
-            return AudioButton(
-              onTap: () => player.seek(Duration.zero),
-              iconData: Icons.replay_rounded,
-            );
-          }
-        },
-      )
+          stream: player.playerStateStream,
+          builder: (context, snapshot) {
+            final playerState = snapshot.data;
+            final processingState = playerState?.processingState;
+            final playing = playerState?.playing;
+            if (processingState == ProcessingState.loading ||
+                processingState == ProcessingState.buffering) {
+              return avatarGlowProgressAudio(context);
+            } else if (playing != true) {
+              return AudioButton(
+                onTap: player.play,
+                iconData: Icons.play_arrow_rounded,
+              );
+            } else if (processingState != ProcessingState.completed) {
+              return AudioButton(
+                onTap: player.pause,
+                iconData: Icons.pause_rounded,
+              );
+            } else {
+              return AudioButton(
+                onTap: () => player.seek(Duration.zero),
+                iconData: Icons.replay_rounded,
+              );
+            }
+          },
+        )
       ],
     );
   }
-
 }
 
 class AudioButton extends StatelessWidget {
   final VoidCallback onTap;
   final IconData iconData;
 
-  const AudioButton({required this.onTap, required this.iconData, Key? key}) : super(key: key);
+  const AudioButton({required this.onTap, required this.iconData, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10.0),
       child: RoundedButtonWidget(
-          iconData: iconData, onTap: onTap,
+        iconData: iconData,
+        onTap: onTap,
         size: AppTheme.cardPadding * 1.5,
-
-        ),
+      ),
     );
   }
 }
-
 
 class AudioComponentShape extends SliderComponentShape {
   @override
@@ -335,19 +334,19 @@ class AudioComponentShape extends SliderComponentShape {
 
   @override
   void paint(
-      PaintingContext context,
-      Offset center, {
-        required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow,
-      }) {}
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {}
 }
 
 class AudioSeekBar extends StatefulWidget {
@@ -458,8 +457,8 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
             bottom: 2.5,
             child: Text(
                 RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                    .firstMatch("$_remaining")
-                    ?.group(1) ??
+                        .firstMatch("$_remaining")
+                        ?.group(1) ??
                     '$_remaining',
                 style: Theme.of(context).textTheme.bodySmall),
           ),
@@ -467,6 +466,7 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
       ),
     );
   }
+
   Duration get _remaining => widget.duration - widget.position;
 }
 
@@ -477,7 +477,6 @@ class PositionData {
 
   PositionData(this.position, this.bufferedPosition, this.duration);
 }
-
 
 void showSliderDialog({
   required BuildContext context,

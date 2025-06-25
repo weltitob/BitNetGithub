@@ -12,7 +12,7 @@ class OverlayController extends GetxController
     with SingleGetTickerProviderMixin {
   // Rx variable to manage the current overlay entry
   Rx<OverlayEntry?> overlayEntry = Rx<OverlayEntry?>(null);
-  
+
   // Store timers for proper disposal
   Timer? _connectivityTimer;
 
@@ -59,10 +59,15 @@ class OverlayController extends GetxController
               ),
               child: Center(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding * 1, horizontal: AppTheme.cardPadding),
+                  margin: const EdgeInsets.symmetric(
+                      vertical: AppTheme.cardPadding * 1,
+                      horizontal: AppTheme.cardPadding),
                   child: Text(
                     message ?? 'Success!',
-                    style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(color, 90)),
+                    style: Theme.of(Get.context!)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: darken(color, 90)),
                   ),
                 ),
               ),
@@ -127,7 +132,10 @@ class OverlayController extends GetxController
               child: Center(
                 child: Text(
                   message ?? 'Transaction received!',
-                  style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(color, 70)),
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: darken(color, 70)),
                 ),
               ),
             ),
@@ -141,7 +149,8 @@ class OverlayController extends GetxController
 
     // Check connectivity every 2 seconds and remove overlay once online
     _connectivityTimer?.cancel(); // Cancel any existing timer
-    _connectivityTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+    _connectivityTimer =
+        Timer.periodic(const Duration(seconds: 2), (timer) async {
       final connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         overlay.remove();
@@ -211,7 +220,10 @@ class OverlayController extends GetxController
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(
                         message ?? 'Transaction received!',
-                        style: Theme.of(Get.context!).textTheme.titleMedium!.copyWith(color: darken(AppTheme.successColor, 90)),
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: darken(AppTheme.successColor, 90)),
                       ),
                     ],
                   ),
@@ -248,7 +260,7 @@ class OverlayController extends GetxController
     overlayEntry.value?.remove();
     overlayEntry.value = null;
   }
-  
+
   @override
   void onClose() {
     _connectivityTimer?.cancel();

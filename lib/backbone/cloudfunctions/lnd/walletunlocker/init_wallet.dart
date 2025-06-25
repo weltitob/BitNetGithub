@@ -12,23 +12,21 @@ import 'package:http/http.dart' as http;
 import 'package:convert/convert.dart';
 // import 'package:pointycastle/export.dart'; // No longer needed after removing BIP39 derivation
 
-
 // BIP39-related deriveSeedFromMnemonic function removed - no longer needed for Lightning native aezeed format
 
-
-
-
-Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) async {
+Future<RestResponse> initWallet(List<String> mnemonicSeed,
+    {String? nodeId}) async {
   LoggerService logger = Get.find();
-  
+
   // Original litd controller approach (commented out for Caddy MVP)
   // final litdController = Get.find<LitdController>();
   // final String restHost = litdController.litd_baseurl.value;
   // String url = 'https://$restHost/v1/initwallet';
-  
+
   // Use centralized Lightning configuration
   String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
-  String url = LightningConfig.getLightningUrl('v1/initwallet', nodeId: selectedNode);
+  String url =
+      LightningConfig.getLightningUrl('v1/initwallet', nodeId: selectedNode);
 
   logger.i("=== INIT WALLET DEBUG INFO ===");
   logger.i("Target URL: $url");
@@ -65,7 +63,8 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   logger.i("  stateless_init: false");
   logger.i("");
   logger.i("Python working request (for comparison):");
-  logger.i("  wallet_password: base64.b64encode(b'development_password_dj83zb').decode('utf-8')");
+  logger.i(
+      "  wallet_password: base64.b64encode(b'development_password_dj83zb').decode('utf-8')");
   logger.i("  cipher_seed_mnemonic: mnemonic_seed (from genseed response)");
   logger.i("  recovery_window: 0");
   logger.i("  channel_backups: None");
@@ -74,12 +73,14 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   logger.i("Full request data: ${json.encode(data)}");
 
   // Load and convert the macaroon asset
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
-  logger.i("Admin macaroon loaded: ${macaroon.substring(0, 20)}... (truncated)");
+  logger
+      .i("Admin macaroon loaded: ${macaroon.substring(0, 20)}... (truncated)");
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
@@ -102,11 +103,13 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
   logger.i("About to make POST request to: $url");
 
   try {
-    var response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: json.encode(data),
-    ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
+    var response = await http
+        .post(
+          Uri.parse(url),
+          headers: headers,
+          body: json.encode(data),
+        )
+        .timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
     logger.i("=== HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");
@@ -120,14 +123,17 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
         logger.i("=== PARSED RESPONSE DATA ===");
         responseData.forEach((key, value) {
           if (key == 'admin_macaroon' && value != null) {
-            logger.i("$key: ${value.toString().substring(0, 20)}... (truncated)");
+            logger
+                .i("$key: ${value.toString().substring(0, 20)}... (truncated)");
           } else {
             logger.i("$key: $value");
           }
         });
-        
-        String adminMacaroon = responseData['admin_macaroon'] ?? 'Admin macaroon not found';
-        logger.i("Admin Macaroon extracted successfully: ${adminMacaroon.isNotEmpty ? 'YES' : 'NO'}");
+
+        String adminMacaroon =
+            responseData['admin_macaroon'] ?? 'Admin macaroon not found';
+        logger.i(
+            "Admin Macaroon extracted successfully: ${adminMacaroon.isNotEmpty ? 'YES' : 'NO'}");
 
         return RestResponse(
           statusCode: "${response.statusCode}",
@@ -148,11 +154,15 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
       logger.e("Status Text: ${response.reasonPhrase}");
       logger.e("Response Body: ${response.body}");
       logger.e("Response Headers: ${response.headers}");
-      
+
       return RestResponse(
         statusCode: "error",
-        message: "Failed to initialize wallet: ${response.statusCode}, ${response.body}",
-        data: {"status_code": response.statusCode, "raw_response": response.body},
+        message:
+            "Failed to initialize wallet: ${response.statusCode}, ${response.body}",
+        data: {
+          "status_code": response.statusCode,
+          "raw_response": response.body
+        },
       );
     }
   } catch (e, stackTrace) {
@@ -160,17 +170,21 @@ Future<RestResponse> initWallet(List<String> mnemonicSeed, {String? nodeId}) asy
     logger.e("Exception Type: ${e.runtimeType}");
     logger.e("Exception Message: $e");
     logger.e("Stack Trace: $stackTrace");
-    
+
     if (e.toString().contains('timeout')) {
       logger.e("CONNECTION TIMEOUT - Check if Caddy server is running on $url");
     } else if (e.toString().contains('connection')) {
-      logger.e("CONNECTION ERROR - Check network connectivity and server availability");
+      logger.e(
+          "CONNECTION ERROR - Check network connectivity and server availability");
     }
-    
+
     return RestResponse(
       statusCode: "error",
       message: "Failed to initialize wallet: $e",
-      data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
+      data: {
+        "exception_type": e.runtimeType.toString(),
+        "exception_message": e.toString()
+      },
     );
   }
 }

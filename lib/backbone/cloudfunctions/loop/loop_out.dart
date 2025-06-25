@@ -15,7 +15,8 @@ import 'package:blockchain_utils/base58/base58_base.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
   final logger = Get.find<LoggerService>();
 
   // Get user's node mapping
@@ -23,10 +24,9 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -37,16 +37,15 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
   String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/out';
   logger.i("Loop Out URL: $url");
@@ -69,8 +68,6 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
 
   // Convert input string to Uint8List using base64.decode
   Uint8List inputBytes = base64.decode(inputString);
-
-
 
   // Encode the Uint8List to a Base58 string using the provided encoder with checksum
   String base58EncodedString = Base58Encoder.encode(inputBytes);
@@ -102,10 +99,9 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
   };
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
-    var response =
-        await dioClient.post(url:url, headers: headers, data: data);
+    var response = await dioClient.post(url: url, headers: headers, data: data);
     print('Raw Response: ${response.data}');
 
     if (response.statusCode == 200) {
@@ -129,8 +125,6 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
   }
 }
 
-
-
 //  {
 //     "swap_fee_sat": <int64>,
 //     "prepay_amt_sat": <int64>,
@@ -139,4 +133,3 @@ Future<RestResponse> loopOut(String userId, Map<String, dynamic> data) async {
 //     "cltv_delta": <int32>,
 //     "conf_target": <int32>,
 // }
-

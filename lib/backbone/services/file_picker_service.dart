@@ -10,22 +10,24 @@ class FilePickerService {
 
   Future<File?> pickFile() async {
     if (mediaType == MediaType.image || mediaType == MediaType.image_data) {
-      final file = await ImagePicker().pickImage(
-          source: ImageSource.gallery, imageQuality: 10
-      );
-      if (file ==  null)return null;
+      final file = await ImagePicker()
+          .pickImage(source: ImageSource.gallery, imageQuality: 10);
+      if (file == null) return null;
       return File(file.path);
     }
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: _getFileTypeFromMediaType(),
-        allowedExtensions: _getAllowedExtensionFromMediaType(), // ['jpg', 'pdf', 'doc'],
-        allowMultiple: false,);
-        if (result == null  || result.files.isEmpty)return null;
-        return File(result.files.first.path!) ;
+      type: _getFileTypeFromMediaType(),
+      allowedExtensions:
+          _getAllowedExtensionFromMediaType(), // ['jpg', 'pdf', 'doc'],
+      allowMultiple: false,
+    );
+    if (result == null || result.files.isEmpty) return null;
+    return File(result.files.first.path!);
   }
 
   FileType _getFileTypeFromMediaType() {
-    if (mediaType == MediaType.image || mediaType == MediaType.image_data) return FileType.image;
+    if (mediaType == MediaType.image || mediaType == MediaType.image_data)
+      return FileType.image;
 
     if (mediaType == MediaType.audio) return FileType.audio;
     return FileType.custom;

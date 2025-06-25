@@ -261,7 +261,7 @@ class InsiderWidget extends StatelessWidget {
                             size: 12,
                           ),
                           Text(
-                          L10n.of(context)!.dateBehavior,
+                            L10n.of(context)!.dateBehavior,
                             style: TextStyle(
                               color: Colors.grey[400],
                               fontWeight: FontWeight.bold,
@@ -322,17 +322,20 @@ class InsiderWidget extends StatelessWidget {
                               "${snapshot.data![0].fullName}",
                               "${snapshot.data![0].filingDate}",
                               "${snapshot.data![0].transactionValue}\$",
-                              false,context),
+                              false,
+                              context),
                           ChildbuildWhaleBehavior(
                               "${snapshot.data![1].fullName}",
                               "${snapshot.data![1].filingDate}",
                               "${snapshot.data![1].transactionValue}\$",
-                              false,context),
+                              false,
+                              context),
                           ChildbuildWhaleBehavior(
                               "${snapshot.data![2].fullName}",
                               "${snapshot.data![2].filingDate}",
                               "${snapshot.data![2].transactionValue}\$",
-                              false,context),
+                              false,
+                              context),
                         ],
                       );
                     }
@@ -348,7 +351,7 @@ class InsiderWidget extends StatelessWidget {
                     } else
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child:   Text(L10n.of(context)!.noResultsFound,
+                        child: Text(L10n.of(context)!.noResultsFound,
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.bold)),
@@ -361,7 +364,8 @@ class InsiderWidget extends StatelessWidget {
     );
   }
 
-  Widget ChildbuildWhaleBehavior(String name, String date, String value, type, BuildContext context) {
+  Widget ChildbuildWhaleBehavior(
+      String name, String date, String value, type, BuildContext context) {
     return Column(
       children: [
         const Padding(

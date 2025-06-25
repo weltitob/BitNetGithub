@@ -38,8 +38,12 @@ class FloorPriceWidget extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(AppTheme.elementSpacing.w * 0.75),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.borderRadiusSmall),
                     ),
                     child: Icon(
                       Icons.insights_rounded,
@@ -61,9 +65,14 @@ class FloorPriceWidget extends StatelessWidget {
                         SizedBox(height: 2.h),
                         Text(
                           'Lowest available price',
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                  ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -77,16 +86,21 @@ class FloorPriceWidget extends StatelessWidget {
                       Text(
                         price,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ),
                       if (tokenSymbol != null)
                         Text(
                           tokenSymbol!,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                  ),
                         ),
                     ],
                   ),

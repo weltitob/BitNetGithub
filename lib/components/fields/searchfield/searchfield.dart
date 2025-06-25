@@ -33,13 +33,11 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: GlassContainer(
-
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
         child: Container(
           height: AppTheme.cardPadding * 1.75,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-
           ),
           child: TextFormField(
             enabled: widget.isSearchEnabled,
@@ -88,7 +86,8 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 border: OutlineInputBorder(
                     borderSide:
                         const BorderSide(width: 0, style: BorderStyle.none),
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid))),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusMid))),
           ),
         ),
       ),

@@ -32,7 +32,8 @@ class _FiatCardInfoScreenState extends State<FiatCardInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     return bitnetScaffold(
@@ -58,7 +59,8 @@ class _FiatCardInfoScreenState extends State<FiatCardInfoScreen> {
                 padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                 child: Container(
                   height: AppTheme.cardPadding * 7.5,
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding),
                   child: const FiatCard(),
                 ),
               ),

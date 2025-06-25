@@ -37,11 +37,19 @@ class PrivateIONKey {
   }
 
   factory PrivateIONKey.fromString(String keyString) {
-    keyString = keyString.replaceAll('{', '{"').replaceAll(': ', '": "').replaceAll(', ', '", "').replaceAll('}', '"}');
+    keyString = keyString
+        .replaceAll('{', '{"')
+        .replaceAll(': ', '": "')
+        .replaceAll(', ', '", "')
+        .replaceAll('}', '"}');
 
     Map<String, dynamic> keyMap = jsonDecode(keyString);
 
-    if (keyMap.containsKey('kty') && keyMap.containsKey('d') && keyMap.containsKey('crv') && keyMap.containsKey('x') && keyMap.containsKey('y')) {
+    if (keyMap.containsKey('kty') &&
+        keyMap.containsKey('d') &&
+        keyMap.containsKey('crv') &&
+        keyMap.containsKey('x') &&
+        keyMap.containsKey('y')) {
       return PrivateIONKey(
         kty: keyMap['kty'],
         d: keyMap['d'],
@@ -54,10 +62,8 @@ class PrivateIONKey {
     }
   }
 
-
   @override
   String toString() {
     return '{kty: $kty, d: $d, crv: $crv, x: $x, y: $y}';
   }
-
 }

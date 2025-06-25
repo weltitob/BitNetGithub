@@ -90,7 +90,7 @@ class _AmountWidgetState extends State<AmountWidget> {
   Widget build(BuildContext context) {
     // Cache Theme to avoid multiple expensive calls
     final theme = Theme.of(context);
-    
+
     String? currencyType =
         controller.swapped ? "USD" : controller.currentUnit.name;
     String? currency =
@@ -265,16 +265,15 @@ class _AmountWidgetState extends State<AmountWidget> {
                                       getCurrencyIcon(
                                           controller.currentUnit.name),
                                       size: AppTheme.cardPadding * 1.25,
-                                      color: theme.brightness ==
-                                              Brightness.light
-                                          ? AppTheme.black70
-                                          : AppTheme.white90),
+                                      color:
+                                          theme.brightness == Brightness.light
+                                              ? AppTheme.black70
+                                              : AppTheme.white90),
                               border: InputBorder.none,
                               counterText: "",
                               hintText: "0.0",
                               hintStyle: TextStyle(
-                                  color: theme.brightness ==
-                                          Brightness.light
+                                  color: theme.brightness == Brightness.light
                                       ? AppTheme.black60
                                       : AppTheme.white60),
                             ),
@@ -283,14 +282,10 @@ class _AmountWidgetState extends State<AmountWidget> {
                                 widget.satController,
                                 widget.currController),
                             autofocus: false,
-                            style: theme
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(
-                                    color: theme.brightness ==
-                                            Brightness.light
-                                        ? AppTheme.black70
-                                        : AppTheme.white90),
+                            style: theme.textTheme.displayLarge!.copyWith(
+                                color: theme.brightness == Brightness.light
+                                    ? AppTheme.black70
+                                    : AppTheme.white90),
                           );
                         },
                       ),

@@ -7,7 +7,7 @@ import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:get/get.dart';
 
 /// Node Mapping Service
-/// 
+///
 /// Handles storage and retrieval of user→Lightning node mappings.
 /// This is critical for account recovery - allows users to find their
 /// Lightning node using only their mnemonic phrase.
@@ -16,20 +16,21 @@ class NodeMappingService {
   static LoggerService get _logger => Get.find<LoggerService>();
 
   /// Collection references
-  static CollectionReference get _userNodeMappings => 
+  static CollectionReference get _userNodeMappings =>
       _firestore.collection('user_node_mappings');
-  
-  static CollectionReference get _mnemonicRecoveryIndex => 
+
+  static CollectionReference get _mnemonicRecoveryIndex =>
       _firestore.collection('mnemonic_recovery_index');
 
   /// Store a new user→node mapping
-  /// 
+  ///
   /// This creates the critical link between a recovery DID (derived from mnemonic)
   /// and the specific Lightning node assigned to that user.
   static Future<void> storeUserNodeMapping(UserNodeMapping mapping) async {
     try {
       _logger.i("Storing user node mapping for ${mapping.recoveryDid}");
-      _logger.d("Node ID: ${mapping.nodeId}, Lightning pubkey: ${mapping.shortLightningPubkey}");
+      _logger.d(
+          "Node ID: ${mapping.nodeId}, Lightning pubkey: ${mapping.shortLightningPubkey}");
 
       // Validate mapping before storing
       if (!mapping.isValid) {
@@ -42,7 +43,6 @@ class NodeMappingService {
           .set(mapping.toFirestore());
 
       _logger.i("✅ User node mapping stored successfully");
-      
     } catch (e) {
       _logger.e("❌ Error storing user node mapping: $e");
       throw Exception("Failed to store user node mapping: $e");
@@ -50,26 +50,25 @@ class NodeMappingService {
   }
 
   /// Store mnemonic recovery index entry
-  /// 
+  ///
   /// Creates a searchable index that maps mnemonic hashes to recovery DIDs
   /// without exposing the actual mnemonic.
-  static Future<void> storeMnemonicRecoveryIndex(String mnemonic, String recoveryDid) async {
+  static Future<void> storeMnemonicRecoveryIndex(
+      String mnemonic, String recoveryDid) async {
     try {
       String mnemonicHash = RecoveryIdentity.generateMnemonicHash(mnemonic);
-      
+
       _logger.d("Storing mnemonic recovery index");
-      _logger.d("Mnemonic hash: ${mnemonicHash.substring(0, 16)}... (truncated)");
+      _logger
+          .d("Mnemonic hash: ${mnemonicHash.substring(0, 16)}... (truncated)");
       _logger.d("Recovery DID: $recoveryDid");
 
-      await _mnemonicRecoveryIndex
-          .doc(mnemonicHash)
-          .set({
-            'recovery_did': recoveryDid,
-            'created_at': FieldValue.serverTimestamp(),
-          });
+      await _mnemonicRecoveryIndex.doc(mnemonicHash).set({
+        'recovery_did': recoveryDid,
+        'created_at': FieldValue.serverTimestamp(),
+      });
 
       _logger.i("✅ Mnemonic recovery index stored");
-      
     } catch (e) {
       _logger.e("❌ Error storing mnemonic recovery index: $e");
       throw Exception("Failed to store mnemonic recovery index: $e");
@@ -77,17 +76,15 @@ class NodeMappingService {
   }
 
   /// Get user node mapping by recovery DID
-  /// 
+  ///
   /// Primary method for finding a user's Lightning node during recovery.
   static Future<UserNodeMapping?> getUserNodeMapping(String recoveryDid) async {
     _logger.i("🗺️ ✅ GETUSERNMAPPING FUNCTION CALLED");
-    
+
     try {
       _logger.i("Looking up node mapping for recovery DID: $recoveryDid");
 
-      DocumentSnapshot doc = await _userNodeMappings
-          .doc(recoveryDid)
-          .get();
+      DocumentSnapshot doc = await _userNodeMappings.doc(recoveryDid).get();
 
       if (!doc.exists) {
         _logger.w("No node mapping found for recovery DID: $recoveryDid");
@@ -95,13 +92,13 @@ class NodeMappingService {
       }
 
       UserNodeMapping mapping = UserNodeMapping.fromFirestore(doc);
-      _logger.i("✅ Found node mapping: ${mapping.nodeId} → ${mapping.shortLightningPubkey}");
-      
+      _logger.i(
+          "✅ Found node mapping: ${mapping.nodeId} → ${mapping.shortLightningPubkey}");
+
       // Update last accessed timestamp
       await _updateLastAccessed(recoveryDid);
-      
+
       return mapping;
-      
     } catch (e) {
       _logger.e("❌ Error retrieving user node mapping: $e");
       throw Exception("Failed to retrieve user node mapping: $e");
@@ -109,10 +106,11 @@ class NodeMappingService {
   }
 
   /// Get user node mapping by mnemonic
-  /// 
+  ///
   /// Convenience method that generates recovery DID from mnemonic
   /// and then looks up the node mapping.
-  static Future<UserNodeMapping?> getUserNodeMappingByMnemonic(String mnemonic) async {
+  static Future<UserNodeMapping?> getUserNodeMappingByMnemonic(
+      String mnemonic) async {
     try {
       String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonic);
       return await getUserNodeMapping(recoveryDid);
@@ -125,10 +123,8 @@ class NodeMappingService {
   /// Check if a user exists by recovery DID
   static Future<bool> userExists(String recoveryDid) async {
     try {
-      DocumentSnapshot doc = await _userNodeMappings
-          .doc(recoveryDid)
-          .get();
-      
+      DocumentSnapshot doc = await _userNodeMappings.doc(recoveryDid).get();
+
       return doc.exists;
     } catch (e) {
       _logger.e("❌ Error checking if user exists: $e");
@@ -148,7 +144,8 @@ class NodeMappingService {
   }
 
   /// Update user node mapping
-  static Future<void> updateUserNodeMapping(String recoveryDid, UserNodeMapping updatedMapping) async {
+  static Future<void> updateUserNodeMapping(
+      String recoveryDid, UserNodeMapping updatedMapping) async {
     try {
       _logger.i("Updating node mapping for $recoveryDid");
 
@@ -157,7 +154,6 @@ class NodeMappingService {
           .update(updatedMapping.toFirestore());
 
       _logger.i("✅ Node mapping updated successfully");
-      
     } catch (e) {
       _logger.e("❌ Error updating user node mapping: $e");
       throw Exception("Failed to update user node mapping: $e");
@@ -167,11 +163,9 @@ class NodeMappingService {
   /// Update the last accessed timestamp for a mapping
   static Future<void> _updateLastAccessed(String recoveryDid) async {
     try {
-      await _userNodeMappings
-          .doc(recoveryDid)
-          .update({
-            'last_accessed': FieldValue.serverTimestamp(),
-          });
+      await _userNodeMappings.doc(recoveryDid).update({
+        'last_accessed': FieldValue.serverTimestamp(),
+      });
     } catch (e) {
       _logger.w("Failed to update last accessed timestamp: $e");
       // Don't throw - this is not critical
@@ -179,23 +173,20 @@ class NodeMappingService {
   }
 
   /// Get all node mappings for a specific node ID
-  /// 
+  ///
   /// Useful for node management and migration.
   static Future<List<UserNodeMapping>> getMappingsForNode(String nodeId) async {
     try {
       _logger.i("Getting all mappings for node: $nodeId");
 
-      QuerySnapshot query = await _userNodeMappings
-          .where('node_id', isEqualTo: nodeId)
-          .get();
+      QuerySnapshot query =
+          await _userNodeMappings.where('node_id', isEqualTo: nodeId).get();
 
-      List<UserNodeMapping> mappings = query.docs
-          .map((doc) => UserNodeMapping.fromFirestore(doc))
-          .toList();
+      List<UserNodeMapping> mappings =
+          query.docs.map((doc) => UserNodeMapping.fromFirestore(doc)).toList();
 
       _logger.i("Found ${mappings.length} mappings for node $nodeId");
       return mappings;
-      
     } catch (e) {
       _logger.e("❌ Error getting mappings for node: $e");
       throw Exception("Failed to get mappings for node: $e");
@@ -203,20 +194,18 @@ class NodeMappingService {
   }
 
   /// Deactivate a node mapping
-  static Future<void> deactivateMapping(String recoveryDid, {String reason = 'deactivated'}) async {
+  static Future<void> deactivateMapping(String recoveryDid,
+      {String reason = 'deactivated'}) async {
     try {
       _logger.i("Deactivating mapping for $recoveryDid: $reason");
 
-      await _userNodeMappings
-          .doc(recoveryDid)
-          .update({
-            'status': 'inactive',
-            'deactivated_at': FieldValue.serverTimestamp(),
-            'deactivation_reason': reason,
-          });
+      await _userNodeMappings.doc(recoveryDid).update({
+        'status': 'inactive',
+        'deactivated_at': FieldValue.serverTimestamp(),
+        'deactivation_reason': reason,
+      });
 
       _logger.i("✅ Mapping deactivated");
-      
     } catch (e) {
       _logger.e("❌ Error deactivating mapping: $e");
       throw Exception("Failed to deactivate mapping: $e");
@@ -228,11 +217,10 @@ class NodeMappingService {
     try {
       // Get total mappings
       QuerySnapshot allMappings = await _userNodeMappings.get();
-      
+
       // Get active mappings
-      QuerySnapshot activeMappings = await _userNodeMappings
-          .where('status', isEqualTo: 'active')
-          .get();
+      QuerySnapshot activeMappings =
+          await _userNodeMappings.where('status', isEqualTo: 'active').get();
 
       // Count mappings per node
       Map<String, int> nodeStats = {};
@@ -245,10 +233,10 @@ class NodeMappingService {
       return {
         'total_mappings': allMappings.docs.length,
         'active_mappings': activeMappings.docs.length,
-        'inactive_mappings': allMappings.docs.length - activeMappings.docs.length,
+        'inactive_mappings':
+            allMappings.docs.length - activeMappings.docs.length,
         ...nodeStats.map((key, value) => MapEntry('node_$key', value)),
       };
-      
     } catch (e) {
       _logger.e("❌ Error getting node mapping stats: $e");
       return {'error': 1};
@@ -256,7 +244,7 @@ class NodeMappingService {
   }
 
   /// Migrate user from one node to another
-  /// 
+  ///
   /// Useful for load balancing or node maintenance.
   static Future<void> migrateUserToNode({
     required String recoveryDid,
@@ -291,9 +279,8 @@ class NodeMappingService {
 
       // Update the mapping
       await updateUserNodeMapping(recoveryDid, updatedMapping);
-      
+
       _logger.i("✅ User migrated successfully to node $newNodeId");
-      
     } catch (e) {
       _logger.e("❌ Error migrating user to new node: $e");
       throw Exception("Failed to migrate user to new node: $e");
@@ -301,16 +288,16 @@ class NodeMappingService {
   }
 
   /// Assign an unused Lightning node to a new user (strict one-user-one-node)
-  /// 
+  ///
   /// This method enforces the one-user-one-node architecture by ensuring
   /// that no Lightning node can ever be assigned to more than one user.
   static Future<String> assignUnusedNode(String recoveryDid) async {
     try {
       _logger.i("🔒 Assigning unused node for user: $recoveryDid");
-      
+
       // Get available Lightning nodes from LightningConfig
       List<String> availableNodes = LightningConfig.getAllNodeIds();
-      
+
       // Check each node to find the first unused one
       for (String nodeId in availableNodes) {
         QuerySnapshot nodeQuery = await _userNodeMappings
@@ -318,7 +305,7 @@ class NodeMappingService {
             .where('status', isEqualTo: 'occupied')
             .limit(1)
             .get();
-        
+
         if (nodeQuery.docs.isEmpty) {
           // This node is not occupied by any user
           _logger.i("✅ Found unused node: $nodeId");
@@ -327,11 +314,12 @@ class NodeMappingService {
           _logger.d("❌ Node $nodeId is already occupied");
         }
       }
-      
+
       // If we get here, all nodes are occupied
-      _logger.e("🚨 All Lightning nodes are occupied! Cannot assign node to user $recoveryDid");
-      throw Exception("All Lightning nodes are currently occupied. Please try again later or contact support.");
-      
+      _logger.e(
+          "🚨 All Lightning nodes are occupied! Cannot assign node to user $recoveryDid");
+      throw Exception(
+          "All Lightning nodes are currently occupied. Please try again later or contact support.");
     } catch (e) {
       _logger.e("❌ Error assigning unused node: $e");
       throw Exception("Failed to assign unused node: $e");
@@ -346,11 +334,11 @@ class NodeMappingService {
           .where('status', isEqualTo: 'occupied')
           .limit(1)
           .get();
-      
+
       bool available = nodeQuery.docs.isEmpty;
-      _logger.i("Node $nodeId availability: ${available ? 'available' : 'occupied'}");
+      _logger.i(
+          "Node $nodeId availability: ${available ? 'available' : 'occupied'}");
       return available;
-      
     } catch (e) {
       _logger.e("❌ Error checking node availability: $e");
       return false;
@@ -358,28 +346,27 @@ class NodeMappingService {
   }
 
   /// Release a node (mark as available for reassignment)
-  /// 
+  ///
   /// Use this when a user account is deleted or migrated
   static Future<void> releaseNode(String recoveryDid) async {
     try {
       _logger.i("🔓 Releasing node for user: $recoveryDid");
-      
+
       UserNodeMapping? mapping = await getUserNodeMapping(recoveryDid);
       if (mapping == null) {
-        _logger.w("No mapping found for user $recoveryDid - nothing to release");
+        _logger
+            .w("No mapping found for user $recoveryDid - nothing to release");
         return;
       }
-      
+
       // Mark as released instead of deleting (for audit purposes)
-      await _userNodeMappings
-          .doc(recoveryDid)
-          .update({
-            'status': 'released',
-            'released_at': FieldValue.serverTimestamp(),
-          });
-      
-      _logger.i("✅ Node ${mapping.nodeId} released and available for reassignment");
-      
+      await _userNodeMappings.doc(recoveryDid).update({
+        'status': 'released',
+        'released_at': FieldValue.serverTimestamp(),
+      });
+
+      _logger.i(
+          "✅ Node ${mapping.nodeId} released and available for reassignment");
     } catch (e) {
       _logger.e("❌ Error releasing node: $e");
       throw Exception("Failed to release node: $e");
@@ -389,10 +376,9 @@ class NodeMappingService {
   /// Get list of all occupied nodes
   static Future<List<String>> getOccupiedNodes() async {
     try {
-      QuerySnapshot occupiedQuery = await _userNodeMappings
-          .where('status', isEqualTo: 'occupied')
-          .get();
-      
+      QuerySnapshot occupiedQuery =
+          await _userNodeMappings.where('status', isEqualTo: 'occupied').get();
+
       Set<String> occupiedNodes = {};
       for (var doc in occupiedQuery.docs) {
         Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
@@ -401,10 +387,10 @@ class NodeMappingService {
           occupiedNodes.add(nodeId);
         }
       }
-      
-      _logger.i("Found ${occupiedNodes.length} occupied nodes: ${occupiedNodes.toList()}");
+
+      _logger.i(
+          "Found ${occupiedNodes.length} occupied nodes: ${occupiedNodes.toList()}");
       return occupiedNodes.toList();
-      
     } catch (e) {
       _logger.e("❌ Error getting occupied nodes: $e");
       return [];

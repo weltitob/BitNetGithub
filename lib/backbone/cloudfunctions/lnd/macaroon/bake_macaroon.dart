@@ -17,67 +17,72 @@ Future<String> bakeLimitedMacaroon({
 }) async {
   final logger = Get.find<LoggerService>();
   logger.i("bakeLimitedMacaroon: Creating limited macaroon for node $nodeId");
-  
+
   try {
     // Get Caddy URL
     final litdController = Get.find<LitdController>();
     final baseUrl = litdController.litd_baseurl.value;
     final url = 'https://$baseUrl/$nodeId/v1/macaroon';
-    
+
     logger.i("Baking macaroon at: $url");
-    
+
     // Default permissions for invoice tracking
-    final macaroonPermissions = permissions ?? [
-      'invoices:read',      // Can list and read invoices
-      'offchain:read',      // Can read payment status
-      'info:read',          // Can read node info
-    ];
-    
+    final macaroonPermissions = permissions ??
+        [
+          'invoices:read', // Can list and read invoices
+          'offchain:read', // Can read payment status
+          'info:read', // Can read node info
+        ];
+
     // LND expects permissions in a specific format
-    final permissionsList = macaroonPermissions.map((perm) => {
-      'entity': perm.split(':')[0],
-      'action': perm.split(':')[1],
-    }).toList();
-    
+    final permissionsList = macaroonPermissions
+        .map((perm) => {
+              'entity': perm.split(':')[0],
+              'action': perm.split(':')[1],
+            })
+        .toList();
+
     // Prepare request data
     final Map<String, dynamic> data = {
       'permissions': permissionsList,
-      'root_key_id': '0',  // Use default root key
+      'root_key_id': '0', // Use default root key
       'allow_external_permissions': false,
     };
-    
+
     // Set up headers
     final headers = {
       'Grpc-Metadata-macaroon': adminMacaroon,
       'Content-Type': 'application/json',
     };
-    
+
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();
-    
+
     // Make the request
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
       body: jsonEncode(data),
     );
-    
+
     logger.i("Response status: ${response.statusCode}");
-    
+
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       final bakedMacaroon = decoded['macaroon'] ?? '';
-      
+
       if (bakedMacaroon.isEmpty) {
         logger.e("Received empty macaroon from bake request");
         return '';
       }
-      
-      logger.i("✅ Successfully baked limited macaroon with permissions: $macaroonPermissions");
+
+      logger.i(
+          "✅ Successfully baked limited macaroon with permissions: $macaroonPermissions");
       return bakedMacaroon;
     } else {
       final error = jsonDecode(response.body);
-      logger.e("Failed to bake macaroon: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+      logger.e(
+          "Failed to bake macaroon: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
       return '';
     }
   } catch (e) {
@@ -94,7 +99,7 @@ class MacaroonPermissions {
     'offchain:read',
     'info:read',
   ];
-  
+
   /// Payment sending permissions
   static const List<String> paymentSending = [
     'invoices:write',
@@ -102,7 +107,7 @@ class MacaroonPermissions {
     'offchain:read',
     'info:read',
   ];
-  
+
   /// Read-only wallet permissions
   static const List<String> walletRead = [
     'onchain:read',

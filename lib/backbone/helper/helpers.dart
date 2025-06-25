@@ -139,25 +139,27 @@ bool isValidBitcoinTransactionID(String input) {
 
 bool isValidBitcoinAddressHash(String input) {
   if (input.isEmpty) return false;
-  
+
   // P2PKH addresses (start with 1, length 26-35, base58)
   if (input.startsWith('1')) {
-    return RegExp(r'^1[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) && 
-           input.length >= 26 && input.length <= 35;
+    return RegExp(r'^1[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) &&
+        input.length >= 26 &&
+        input.length <= 35;
   }
-  
+
   // P2SH addresses (start with 3, length 26-35, base58)
   if (input.startsWith('3')) {
-    return RegExp(r'^3[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) && 
-           input.length >= 26 && input.length <= 35;
+    return RegExp(r'^3[1-9A-HJ-NP-Za-km-z]{25,34}$').hasMatch(input) &&
+        input.length >= 26 &&
+        input.length <= 35;
   }
-  
+
   // Bech32 addresses (start with bc1, lowercase)
   if (input.startsWith('bc1')) {
-    return RegExp(r'^bc1[a-z0-9]{39,59}$').hasMatch(input) && 
-           input.length >= 42;
+    return RegExp(r'^bc1[a-z0-9]{39,59}$').hasMatch(input) &&
+        input.length >= 42;
   }
-  
+
   return false;
 }
 
@@ -186,9 +188,9 @@ bool isBip21WithBolt11(String input) {
       String? lightningParam = uri.queryParameters["lightning"];
 
       if (lightningParam != null) {
-        if ((lightningParam.toUpperCase().startsWith("LNBC") || 
-             lightningParam.toUpperCase().startsWith("LNTB") || 
-             lightningParam.toUpperCase().startsWith("LNBCRT")) &&
+        if ((lightningParam.toUpperCase().startsWith("LNBC") ||
+                lightningParam.toUpperCase().startsWith("LNTB") ||
+                lightningParam.toUpperCase().startsWith("LNBCRT")) &&
             isValidBitcoinAddressHash(uri.path)) {
           return true;
         }
@@ -259,7 +261,7 @@ getaverage(dynamic currentline) {
   if (currentline == null || currentline.isEmpty) {
     return 0;
   }
-  
+
   // Handle both lists of numbers and lists of objects with price property
   if (currentline[0] is num) {
     // Direct list of numbers

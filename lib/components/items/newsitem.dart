@@ -7,15 +7,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 class NewsTile extends StatelessWidget {
   final String imgUrl, title, desc, content, posturl, author, publishedAt;
 
-  const NewsTile({
-    required this.imgUrl,
-    required this.desc,
-    required this.title,
-    required this.publishedAt,
-    required this.content,
-    required this.author,
-    required this.posturl
-  });
+  const NewsTile(
+      {required this.imgUrl,
+      required this.desc,
+      required this.title,
+      required this.publishedAt,
+      required this.content,
+      required this.author,
+      required this.posturl});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +26,18 @@ class NewsTile extends StatelessWidget {
         child: Container(
           height: AppTheme.cardPadding * 4,
           width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+          margin: const EdgeInsets.symmetric(
+              vertical: AppTheme.elementSpacing * 0.5),
           child: Row(
             children: [
-              NewsPicture(imgUrl: imgUrl,),
+              NewsPicture(
+                imgUrl: imgUrl,
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      right: AppTheme.elementSpacing * 1.25,),
+                    right: AppTheme.elementSpacing * 1.25,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,15 +48,14 @@ class NewsTile extends StatelessWidget {
                           Container(
                             width: 150,
                             child: Text(
-                                posturl.replaceAll("https://", "").replaceAll("www.", ""),
+                                posturl
+                                    .replaceAll("https://", "")
+                                    .replaceAll("www.", ""),
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.labelSmall
-                            ),
+                                style: Theme.of(context).textTheme.labelSmall),
                           ),
-                          Text(
-                            displayTimeAgoFromTimestamp(publishedAt),
-                            style: Theme.of(context).textTheme.bodySmall
-                          ),
+                          Text(displayTimeAgoFromTimestamp(publishedAt),
+                              style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                       Text(
@@ -80,8 +82,7 @@ class NewsPicture extends StatelessWidget {
   const NewsPicture({
     Key? key,
     required this.imgUrl,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

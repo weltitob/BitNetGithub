@@ -7,13 +7,13 @@ class BackgroundGradient extends StatefulWidget {
   final Color colorprimary;
   final Color colorsecondary;
   final BorderRadius borderRadius;
-  const BackgroundGradient({
-    Key? key,
-    required this.child,
-    required this.colorprimary,
-    required this.colorsecondary,
-    required this.borderRadius
-  }) : super(key: key);
+  const BackgroundGradient(
+      {Key? key,
+      required this.child,
+      required this.colorprimary,
+      required this.colorsecondary,
+      required this.borderRadius})
+      : super(key: key);
 
   @override
   State<BackgroundGradient> createState() => _BackgroundGradientState();
@@ -21,7 +21,6 @@ class BackgroundGradient extends StatefulWidget {
 
 // Create a State class for the background animation
 class _BackgroundGradientState extends State<BackgroundGradient> {
-
   @override
   void initState() {
     super.initState();
@@ -35,8 +34,9 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
   @override
   Widget build(BuildContext context) {
     // Check if we should use the Bitcoin gradient
-    final bool useBitcoinGradient = widget.colorprimary == AppTheme.colorBitcoin;
-    
+    final bool useBitcoinGradient =
+        widget.colorprimary == AppTheme.colorBitcoin;
+
     return Stack(
       children: [
         Container(
@@ -60,22 +60,22 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: useBitcoinGradient
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppTheme.colorBitcoin,
-                        AppTheme.colorPrimaryGradient,
-                      ],
-                    )
-                  : LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        widget.colorprimary,
-                        widget.colorsecondary,
-                      ],
-                    ),
+                    ? LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppTheme.colorBitcoin,
+                          AppTheme.colorPrimaryGradient,
+                        ],
+                      )
+                    : LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          widget.colorprimary,
+                          widget.colorsecondary,
+                        ],
+                      ),
               ),
             ),
           ),

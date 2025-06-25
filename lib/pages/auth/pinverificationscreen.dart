@@ -76,32 +76,35 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   void checkIfCodeIsValid(String currentCode) async {
     final logger = Get.find<LoggerService>();
     logger.i('Attempting to validate pin code: $currentCode');
-    
+
     setState(() {
       _loading = true;
     });
-    
+
     try {
       formKey.currentState?.validate();
       logger.i('Pin code form validation passed');
-      
+
       try {
         logger.i('Querying Firestore for pin code');
-        QuerySnapshot snapshot = await codesCollection.where("code", isEqualTo: currentCode).get();
-        
+        QuerySnapshot snapshot =
+            await codesCollection.where("code", isEqualTo: currentCode).get();
+
         if (snapshot.docs.isEmpty) {
           logger.e('No matching codes found in Firestore');
           throw Exception('No matching codes found');
         }
-        
+
         logger.i('Found matching code in Firestore');
-        VerificationCode code = VerificationCode.fromDocument(snapshot.docs.first);
-        logger.d('Code details: ${code.code}, issuer: ${code.issuer}, used: ${code.used}');
-        
+        VerificationCode code =
+            VerificationCode.fromDocument(snapshot.docs.first);
+        logger.d(
+            'Code details: ${code.code}, issuer: ${code.issuer}, used: ${code.used}');
+
         if (code.used == false) {
           logger.i('Code is valid and unused, proceeding to account creation');
           _loading = false;
-          
+
           context.go(Uri(
                   path: '/authhome/pinverification/createaccount',
                   queryParameters: {'code': code.code, 'issuer': code.issuer})
@@ -118,7 +121,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       } catch (firestoreError) {
         logger.e('Firestore query error: $firestoreError');
         // This could be related to App Check blocking the Firestore query
-        logger.e('This might be related to Firebase App Check blocking the request');
+        logger.e(
+            'This might be related to Firebase App Check blocking the request');
         throw firestoreError; // Re-throw to be caught by outer catch
       }
     } catch (error) {

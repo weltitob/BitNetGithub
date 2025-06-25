@@ -178,7 +178,7 @@ class NFTAsset {
     this.owner,
     this.isListed = false,
   });
-  
+
   /// Create an NFTAsset from an AssetCard
   static NFTAsset fromAssetCard({
     required String? assetId,
@@ -197,7 +197,7 @@ class NFTAsset {
       owner: owner ?? '',
     );
   }
-  
+
   /// Create an NFTAsset from a post with image media
   static NFTAsset fromPost({
     required String postId,

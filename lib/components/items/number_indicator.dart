@@ -29,7 +29,7 @@ class NumberIndicator extends StatelessWidget {
     Color borderColor;
     Color textColor;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Use medal-themed colors for rankings
     if (number == 1) {
       badgeColor = const Color(0xFFFFD700); // Gold
@@ -45,10 +45,11 @@ class NumberIndicator extends StatelessWidget {
       textColor = Colors.white;
     } else {
       badgeColor = isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
-      gradientEndColor = isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400;
+      gradientEndColor =
+          isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400;
       textColor = isDarkMode ? Colors.white : Colors.black87;
     }
-    
+
     // Apply darkening if requested (for better contrast)
     if (useDarkVariant) {
       badgeColor = darken(badgeColor, 0.15);
@@ -57,7 +58,7 @@ class NumberIndicator extends StatelessWidget {
     } else {
       borderColor = darken(badgeColor, 0.1);
     }
-    
+
     return Container(
       width: AppTheme.cardPadding * size,
       height: AppTheme.cardPadding * size,
@@ -75,14 +76,16 @@ class NumberIndicator extends StatelessWidget {
           color: borderColor,
           width: 1,
         ),
-        boxShadow: showBorder ? [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 3,
-            offset: const Offset(0, 1),
-            spreadRadius: 0.5,
-          ),
-        ] : null,
+        boxShadow: showBorder
+            ? [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1),
+                  spreadRadius: 0.5,
+                ),
+              ]
+            : null,
       ),
       child: Center(
         child: Text(

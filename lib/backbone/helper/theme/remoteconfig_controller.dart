@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
-
 class RemoteConfigController extends GetxController {
   // Instance of Firebase Remote Config
   final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
@@ -38,13 +37,18 @@ class RemoteConfigController extends GetxController {
       // Assign values to observables
       // baseUrlCoinGecko.value = _remoteConfig.getString('baseUrlCoinGecko');
       // baseUrlCoinGeckoApiPro.value = _remoteConfig.getString('baseUrlCoinGeckoApiPro');
-      baseUrlLightningTerminal.value = _remoteConfig.getString('baseUrlLightningTerminal');
-      baseUrlLightningTerminalWithPort.value = _remoteConfig.getString('baseUrlLightningTerminalWithPort');
-      baseUrlMemPoolSpaceApi.value = _remoteConfig.getString('baseUrlMemPoolSpaceApi');
+      baseUrlLightningTerminal.value =
+          _remoteConfig.getString('baseUrlLightningTerminal');
+      baseUrlLightningTerminalWithPort.value =
+          _remoteConfig.getString('baseUrlLightningTerminalWithPort');
+      baseUrlMemPoolSpaceApi.value =
+          _remoteConfig.getString('baseUrlMemPoolSpaceApi');
       // coinGeckoApiKey.value = _remoteConfig.getString('coinGeckoApiKey');
-      exchangeRatesBaseUrl.value = _remoteConfig.getString('exchangerates_baseUrl');
+      exchangeRatesBaseUrl.value =
+          _remoteConfig.getString('exchangerates_baseUrl');
       exchangeRatesMyKey.value = _remoteConfig.getString('exchangerates_mykey');
-      exchangeRatesRatesUrl.value = _remoteConfig.getString('exchangerates_ratesUrl');
+      exchangeRatesRatesUrl.value =
+          _remoteConfig.getString('exchangerates_ratesUrl');
       stripeLiveKey.value = _remoteConfig.getString('stripeLiveKey');
       stripeTestKey.value = _remoteConfig.getString('stripeTestKey');
 
@@ -85,7 +89,6 @@ class RemoteConfigController extends GetxController {
       return int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16);
     });
   }
-
 
   @override
   void onInit() {

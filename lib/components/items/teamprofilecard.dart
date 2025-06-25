@@ -5,9 +5,6 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
-
 class TeamProfileCard extends StatefulWidget {
   final String avatarUrl;
   final String name;
@@ -44,8 +41,8 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
         });
       },
       child: AnimatedScale(
-          duration: const Duration(milliseconds: 200),
-          scale: isHovered ? 1.0 : 0.9, // your widget tree
+        duration: const Duration(milliseconds: 200),
+        scale: isHovered ? 1.0 : 0.9, // your widget tree
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +53,8 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
                     size: AppTheme.cardPadding * 7,
                     mxContent: Uri.parse(widget.avatarUrl),
                     name: widget.name,
-                    profileId: "did:ethr:0x1234567890123456789012345678901234567890",
+                    profileId:
+                        "did:ethr:0x1234567890123456789012345678901234567890",
                     isNft: false,
                   ),
                 ],
@@ -74,33 +72,45 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: AppTheme.cardPadding),
-              widget.isYou ? Container() : Container(
-                width: AppTheme.cardPadding * 9,
-                child: isHovered ? BitNetShaderMask(
-                  child: Text(
-                    widget.quote,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white,
+              widget.isYou
+                  ? Container()
+                  : Container(
+                      width: AppTheme.cardPadding * 9,
+                      child: isHovered
+                          ? BitNetShaderMask(
+                              child: Text(
+                                widget.quote,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.white,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : Text(
+                              widget.quote,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ) : Text(
-                  widget.quote,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              widget.isYou ?
-              LongButtonWidget(title: "Contribute now!",
-                  buttonType: ButtonType.transparent,
-                  customHeight: AppTheme.cardPadding * 1.5,
-                  customWidth: AppTheme.cardPadding * 7.5,
-                  onTap: (){
-                context.go('/website/submitidea');
-              }) : Container(),
+              widget.isYou
+                  ? LongButtonWidget(
+                      title: "Contribute now!",
+                      buttonType: ButtonType.transparent,
+                      customHeight: AppTheme.cardPadding * 1.5,
+                      customWidth: AppTheme.cardPadding * 7.5,
+                      onTap: () {
+                        context.go('/website/submitidea');
+                      })
+                  : Container(),
             ],
           ),
         ),

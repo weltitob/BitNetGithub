@@ -61,7 +61,8 @@ class MnemonicGenScreen extends StatelessWidget {
                   height: AppTheme.cardPadding.h,
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.ws),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.ws),
                   child: Text(
                     L10n.of(context)!.saveYourmnemonicSecurelyDescription,
                     textAlign: TextAlign.center,
@@ -97,7 +98,7 @@ class MnemonicGenScreen extends StatelessWidget {
           BottomCenterButton(
               buttonTitle: L10n.of(context)!.continues,
               buttonState: ButtonState.idle,
-              onButtonTap: (){
+              onButtonTap: () {
                 mnemonicController.changeWrittenDown();
               }),
         ],

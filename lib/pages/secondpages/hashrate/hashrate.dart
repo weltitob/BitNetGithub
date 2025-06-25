@@ -11,15 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 
-
 class HashrateScreen extends StatefulWidget {
   const HashrateScreen({super.key});
 
   @override
   State<HashrateScreen> createState() => _HashrateScreenState();
 }
-class _HashrateScreenState extends State<HashrateScreen> {
 
+class _HashrateScreenState extends State<HashrateScreen> {
   @override
   void initState() {
     super.initState();
@@ -32,8 +31,6 @@ The hashrate is a key metric in the Bitcoin network, measuring the computing pow
 A higher hashrate indicates more miners are participating, making the network more secure against potential attacks. As hashrate increases, the network automatically adjusts mining difficulty to maintain a consistent block time. As the hashrate grows, so does the cost and difficulty of attempting to manipulate the blockchain, thereby enhancing Bitcoin's security and immutability.
   """;
 
-
-
   List<ChartLine> chartData = [];
   List<Difficulty> difficulty = [];
   List<ChartLine> currentChartData = [];
@@ -44,11 +41,10 @@ A higher hashrate indicates more miners are participating, making the network mo
   getData() async {
     var dio = Dio();
     try {
-      var response = await dio.get(
-          'https://mempool.space/api/v1/mining/hashrate/3Y');
+      var response =
+          await dio.get('https://mempool.space/api/v1/mining/hashrate/3Y');
       print(response.data);
       if (response.statusCode == 200) {
-
         List<ChartLine> line = [];
         line.clear();
         chartData.clear();
@@ -58,7 +54,7 @@ A higher hashrate indicates more miners are participating, making the network mo
         for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
           line.add(ChartLine(
             time:
-            double.parse(hashChartModel.hashrates![i].timestamp.toString()),
+                double.parse(hashChartModel.hashrates![i].timestamp.toString()),
             price: hashChartModel.hashrates![i].avgHashrate!,
           ));
         }
@@ -75,7 +71,7 @@ A higher hashrate indicates more miners are participating, making the network mo
 
   void setData() {
     DateTime range = DateTime.now().subtract(const Duration(days: 365 * 3));
-    switch(selectedMonth) {
+    switch (selectedMonth) {
       case '3M':
         range = DateTime.now().subtract(const Duration(days: 90));
         break;
@@ -95,23 +91,23 @@ A higher hashrate indicates more miners are participating, making the network mo
         range = DateTime.now().subtract(const Duration(days: 365 * 3));
         break;
     }
-        
+
     currentChartData = chartData.where((test) {
       DateTime time = DateTime.fromMillisecondsSinceEpoch(
-        (test.time * 1000).round(),
-        isUtc: false);
-        return time.isAfter(range) || time.isAtSameMomentAs(range);
-    }  ).toList();
-     currentDifficulty = difficulty.where((test) {
-      if(test.time == null) {
+          (test.time * 1000).round(),
+          isUtc: false);
+      return time.isAfter(range) || time.isAtSameMomentAs(range);
+    }).toList();
+    currentDifficulty = difficulty.where((test) {
+      if (test.time == null) {
         return false;
       }
       DateTime time = DateTime.fromMillisecondsSinceEpoch(
-        (test.time! * 1000).round(),
-        isUtc: false);
-        return time.isAfter(range) || time.isAtSameMomentAs(range);
-    }  ).toList();
-    setState((){});
+          (test.time! * 1000).round(),
+          isUtc: false);
+      return time.isAfter(range) || time.isAtSameMomentAs(range);
+    }).toList();
+    setState(() {});
   }
 
   @override
@@ -123,7 +119,7 @@ A higher hashrate indicates more miners are participating, making the network mo
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvoked: (bool) {
-        if(bool) {
+        if (bool) {
           context.pop();
         }
       },
@@ -178,7 +174,6 @@ A higher hashrate indicates more miners are participating, making the network mo
             const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
-
           ],
         ),
       ),

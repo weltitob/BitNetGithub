@@ -20,19 +20,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
-
 /// A top-level helper to color-code each notification type
 Color _getTypeColor(String type) {
   switch (type) {
     case 'bought':
-      return AppTheme.errorColor;    // red for money spent
+      return AppTheme.errorColor; // red for money spent
     case 'sold':
-      return AppTheme.successColor;  // green for money received
+      return AppTheme.successColor; // green for money received
     case 'offer':
-      return AppTheme.colorBitcoin;  // bitcoin orange for offers
+      return AppTheme.colorBitcoin; // bitcoin orange for offers
     default:
-      return Colors.grey;            // fallback
+      return Colors.grey; // fallback
   }
 }
 
@@ -83,20 +81,21 @@ class NotificationsWidget extends StatefulWidget {
   State<NotificationsWidget> createState() => _NotificationsWidgetState();
 }
 
-class _NotificationsWidgetState extends State<NotificationsWidget> with AutomaticKeepAliveClientMixin {
+class _NotificationsWidgetState extends State<NotificationsWidget>
+    with AutomaticKeepAliveClientMixin {
   final List<NotificationModel> fakeNotifications = [
-    NotificationModel(amount: 500,  type: 'sold',   date: DateTime(2024, 9, 8)),
-    NotificationModel(amount: 700,  type: 'sold',   date: DateTime(2024, 9, 7)),
+    NotificationModel(amount: 500, type: 'sold', date: DateTime(2024, 9, 8)),
+    NotificationModel(amount: 700, type: 'sold', date: DateTime(2024, 9, 7)),
     NotificationModel(amount: -500, type: 'bought', date: DateTime(2024, 9, 6)),
-    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 9, 5)),
-    NotificationModel(amount: 300,  type: 'sold',   date: DateTime(2024, 7, 8)),
+    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 9, 5)),
+    NotificationModel(amount: 300, type: 'sold', date: DateTime(2024, 7, 8)),
     NotificationModel(amount: -500, type: 'bought', date: DateTime(2024, 6, 8)),
-    NotificationModel(amount: 100,  type: 'sold',   date: DateTime(2024, 6, 7)),
-    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 6, 6)),
-    NotificationModel(amount: 500,  type: 'offer',  date: DateTime(2024, 9, 8)),
-    NotificationModel(amount: 1500, type: 'sold',   date: DateTime(2024, 5, 8)),
-    NotificationModel(amount: 200,  type: 'sold',   date: DateTime(2024, 5, 7)),
-    NotificationModel(amount: 900,  type: 'sold',   date: DateTime(2024, 5, 6)),
+    NotificationModel(amount: 100, type: 'sold', date: DateTime(2024, 6, 7)),
+    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 6, 6)),
+    NotificationModel(amount: 500, type: 'offer', date: DateTime(2024, 9, 8)),
+    NotificationModel(amount: 1500, type: 'sold', date: DateTime(2024, 5, 8)),
+    NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 5, 7)),
+    NotificationModel(amount: 900, type: 'sold', date: DateTime(2024, 5, 6)),
   ];
 
   @override
@@ -112,19 +111,20 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
     return controller.isLoadingNotifs
         ? SliverToBoxAdapter(child: dotProgress(context))
         : SliverList(
-      delegate: SliverChildBuilderDelegate(
-            (ctx, index) {
-          // Add some spacing at the bottom
-          if (index == controller.organizedNotifications.length) {
-            return const SizedBox(height: 80);
-          } else if (index == controller.organizedNotifications.length + 1) {
-            return null;
-          }
-          return controller.organizedNotifications[index];
-        },
-        childCount: controller.organizedNotifications.length + 2,
-      ),
-    );
+            delegate: SliverChildBuilderDelegate(
+              (ctx, index) {
+                // Add some spacing at the bottom
+                if (index == controller.organizedNotifications.length) {
+                  return const SizedBox(height: 80);
+                } else if (index ==
+                    controller.organizedNotifications.length + 1) {
+                  return null;
+                }
+                return controller.organizedNotifications[index];
+              },
+              childCount: controller.organizedNotifications.length + 2,
+            ),
+          );
   }
 
   Future<void> getNotifications() async {
@@ -163,7 +163,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
       } else if (date.isAfter(startOfThisMonth)) {
         // If it's after the start of this month, display time-ago or date
         String timeTag =
-        displayTimeAgoFromInt(item.date.millisecondsSinceEpoch ~/ 1000);
+            displayTimeAgoFromInt(item.date.millisecondsSinceEpoch ~/ 1000);
         controller.categorizedNotifications
             .putIfAbsent(timeTag, () => [])
             .add(SingleNotificationWidget(model: item));
@@ -175,8 +175,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
             .add(SingleNotificationWidget(model: item));
       } else {
         // Group by Year + Month
-        String yearMonth =
-            '${date.year}, ${DateFormat('MMMM').format(date)}';
+        String yearMonth = '${date.year}, ${DateFormat('MMMM').format(date)}';
         controller.categorizedNotifications
             .putIfAbsent(yearMonth, () => [])
             .add(SingleNotificationWidget(model: item));
@@ -196,29 +195,29 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
           Builder(
             builder: (context) {
               return Padding(
-                padding:  EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: AppTheme.cardPadding.w,
                   vertical: AppTheme.elementSpacing.w,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     Text(
                       category,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     LongButtonWidget(
                       title: 'Cancel All',
                       buttonType: ButtonType.transparent,
                       customWidth: 100.w,
                       customHeight: 32.h,
-                      titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.errorColor,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      titleStyle:
+                          Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppTheme.errorColor,
+                                fontWeight: FontWeight.w500,
+                              ),
                       onTap: () {
                         _buildAreYouSureAll(
                           context,
@@ -227,10 +226,10 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
                             notifications: notifications
                                 .map(
                                   (item) => SingleNotificationWidget(
-                                model: item.model,
-                                showButtons: false,
-                              ),
-                            )
+                                    model: item.model,
+                                    showButtons: false,
+                                  ),
+                                )
                                 .toList(),
                           ),
                         );
@@ -259,8 +258,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
                     Text(
                       category,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     // Optional divider for a cleaner look:
                     // const Divider(),
@@ -340,17 +339,18 @@ class SingleNotificationWidget extends StatelessWidget {
                       Text(
                         _buildNotificationTitle(model.type),
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        displayTimeAgoFromInt(model.date.millisecondsSinceEpoch ~/ 1000),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        displayTimeAgoFromInt(
+                            model.date.millisecondsSinceEpoch ~/ 1000),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6),
                             ),
                       ),
                     ],
@@ -366,27 +366,35 @@ class SingleNotificationWidget extends StatelessWidget {
                         if (model.amount < 0)
                           Text(
                             '- ',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.errorColor,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.errorColor,
+                                ),
                           )
                         else if (model.amount > 0)
                           Text(
                             '+ ',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.successColor,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.successColor,
+                                ),
                           ),
                         AmountPreviewer(
                           unitModel: unitModel,
-                          textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ) ?? TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          textStyle:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ) ??
+                                  TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                           textColor: model.amount < 0
                               ? AppTheme.errorColor
                               : model.amount > 0
@@ -411,9 +419,10 @@ class SingleNotificationWidget extends StatelessWidget {
                     title: 'Decline',
                     customWidth: 90.w,
                     customHeight: 36.h,
-                    titleStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    titleStyle:
+                        Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                     onTap: () => _buildAreYouSureSingle(context, model),
                   ),
                   SizedBox(width: AppTheme.elementSpacing.w),
@@ -463,7 +472,8 @@ class NotificationsContainer extends StatelessWidget {
                     thickness: 1,
                     indent: AppTheme.cardPaddingSmall,
                     endIndent: AppTheme.cardPaddingSmall,
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.1),
                   ),
               ],
             ],
@@ -498,7 +508,7 @@ _buildAreYouSureSingle(BuildContext context, NotificationModel model) {
                   children: [
                     Text(
                       'Would you really like to cancel this offer worth '
-                          '${model.amount.toInt()} ',
+                      '${model.amount.toInt()} ',
                       style: Theme.of(context).textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -538,7 +548,8 @@ _buildAreYouSureSingle(BuildContext context, NotificationModel model) {
 }
 
 /// Bottom sheet confirmation for multiple offers
-_buildAreYouSureAll(BuildContext context, int amount, NotificationsContainer widget) {
+_buildAreYouSureAll(
+    BuildContext context, int amount, NotificationsContainer widget) {
   return BitNetBottomSheet(
     context: context,
     child: bitnetScaffold(

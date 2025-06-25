@@ -44,7 +44,8 @@ dynamic importAccount(String name, String exPubKey, String fingerprint) async {
       'address_type': 'WITNESS_PUBKEY_HASH'
     });
 
-    logger.i("Repsonse from import Account firebase function: ${response.data}");
+    logger
+        .i("Repsonse from import Account firebase function: ${response.data}");
     Map<String, dynamic> responseData;
 
     if (response.data is Map) {

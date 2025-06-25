@@ -9,7 +9,6 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
-
 // Future<ByteData> loadAdminMacaroonAsset() async {
 //   return await rootBundle.load('assets/keys/lnd_admin.macaroon');
 // }
@@ -17,7 +16,6 @@ import 'package:get/get.dart';
 // Diese Funktion ersetzt den bisherigen loadMacaroonAsset-Aufruf
 // Sie liest den Macaroon aus dem Secure Storage für den aktuell eingelogten User aus.
 Future<ByteData> loadMacaroonAsset() async {
-
   final userId = Auth().currentUser?.uid;
   if (userId == null) {
     throw Exception('No user logged in.');
@@ -28,7 +26,7 @@ Future<ByteData> loadMacaroonAsset() async {
 
   // Find the account for the current user
   final Map<String, dynamic> account = accounts.firstWhere(
-        (acc) => acc['userId'] == userId,
+    (acc) => acc['userId'] == userId,
     orElse: () => <String, dynamic>{},
   );
 
