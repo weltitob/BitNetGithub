@@ -476,6 +476,7 @@ class _WebViewPageState extends State<WebViewPage> {
         }
 
         PaymentPayload payload = PaymentPayload(
+          originAppName: ORIGIN_APP_NAME,
           apiVersion: MINI_APP_API_VERSION,
           appId: url,
           amount: amount,
@@ -765,6 +766,7 @@ class _ConfirmPaymentSheetWidgetState extends State<ConfirmPaymentSheetWidget> {
 }
 
 class PaymentPayload {
+  final String originAppName;
   final String apiVersion;
   final String appId;
   final double amount;
@@ -774,7 +776,8 @@ class PaymentPayload {
   final String note;
 
   PaymentPayload(
-      {required this.apiVersion,
+      {required this.originAppName,
+      required this.apiVersion,
       required this.appId,
       required this.amount,
       required this.currency,
@@ -784,14 +787,16 @@ class PaymentPayload {
 
   factory PaymentPayload.fromJson(Map<String, dynamic> data) {
     return PaymentPayload(
-        apiVersion: data['api_version'],
-        appId: data['app_id'],
-        amount: data['data']['amount'] is int
-            ? (data['data']['amount'] as int).toDouble()
-            : data['data']['amount'],
-        currency: data['data']['currency'],
-        targetCurrency: data['data']['target_currency'],
-        depositAddress: data['data']['deposit_address'],
-        note: data['data']['note']);
+      originAppName: data['origin_app_name'],
+      apiVersion: data['api_version'],
+      appId: data['app_id'],
+      amount: data['data']['amount'] is int
+          ? (data['data']['amount'] as int).toDouble()
+          : data['data']['amount'],
+      currency: data['data']['currency'],
+      targetCurrency: data['data']['target_currency'],
+      depositAddress: data['data']['deposit_address'],
+      note: data['data']['note'],
+    );
   }
 }
