@@ -73,47 +73,47 @@ jobs:
     name: Build Application
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
+
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.5'
         channel: 'stable'
         cache: true
-        
+
     - name: Get dependencies
       run: |
         flutter --version
         dart --version
         flutter pub get
-      
+
     - name: Build APK (Debug)
       run: flutter build apk --debug
-      
+
     - name: Build APK (Release)
       run: flutter build apk --release
-      
+
     - name: Build App Bundle
       run: flutter build appbundle --release
-      
+
     - name: Upload debug APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: debug-apk
         path: build/app/outputs/flutter-apk/app-debug.apk
-        
+
     - name: Upload release APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
-        
+
     - name: Upload app bundle artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-bundle
         path: build/app/outputs/bundle/release/app-release.aab
