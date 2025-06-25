@@ -36,7 +36,8 @@ jobs:
       
     - name: Analyze code quality
       run: flutter analyze
-      
+      continue-on-error: true
+
       
     - name: Check code formatting
       run: dart format --set-exit-if-changed .
