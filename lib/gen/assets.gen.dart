@@ -12,8 +12,15 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/bip21.png
+  AssetGenImage get bip21 => const AssetGenImage('assets/images/bip21.png');
+
   /// File path: assets/images/bitcoin.png
   AssetGenImage get bitcoin => const AssetGenImage('assets/images/bitcoin.png');
+
+  /// File path: assets/images/bitrefill_banner.png
+  AssetGenImage get bitrefillBanner =>
+      const AssetGenImage('assets/images/bitrefill_banner.png');
 
   /// File path: assets/images/blockchain.png
   AssetGenImage get blockchain =>
@@ -25,6 +32,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/fagi.png
   AssetGenImage get fagi => const AssetGenImage('assets/images/fagi.png');
+
+  /// File path: assets/images/flipit_banner.png
+  AssetGenImage get flipitBanner =>
+      const AssetGenImage('assets/images/flipit_banner.png');
 
   /// File path: assets/images/friends.png
   AssetGenImage get friends => const AssetGenImage('assets/images/friends.png');
@@ -71,9 +82,15 @@ class $AssetsImagesGen {
   AssetGenImage get metaverseFb =>
       const AssetGenImage('assets/images/metaverse_fb.png');
 
+  /// File path: assets/images/monkey.webp
+  AssetGenImage get monkey => const AssetGenImage('assets/images/monkey.webp');
+
   /// File path: assets/images/moon_theme.png
   AssetGenImage get moonTheme =>
       const AssetGenImage('assets/images/moon_theme.png');
+
+  /// File path: assets/images/moonpay.png
+  AssetGenImage get moonpay => const AssetGenImage('assets/images/moonpay.png');
 
   /// File path: assets/images/new_chat.png
   AssetGenImage get newChat =>
@@ -116,6 +133,13 @@ class $AssetsImagesGen {
   AssetGenImage get sendImage =>
       const AssetGenImage('assets/images/send_image.png');
 
+  /// File path: assets/images/stripe.png
+  AssetGenImage get stripePng =>
+      const AssetGenImage('assets/images/stripe.png');
+
+  /// File path: assets/images/stripe.svg
+  String get stripeSvg => 'assets/images/stripe.svg';
+
   /// File path: assets/images/sun_theme.png
   AssetGenImage get sunTheme =>
       const AssetGenImage('assets/images/sun_theme.png');
@@ -123,6 +147,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/system_theme.png
   AssetGenImage get systemTheme =>
       const AssetGenImage('assets/images/system_theme.png');
+
+  /// File path: assets/images/thebitcoincompany_logo.jpeg
+  AssetGenImage get thebitcoincompanyLogo =>
+      const AssetGenImage('assets/images/thebitcoincompany_logo.jpeg');
 
   /// File path: assets/images/trash.png
   AssetGenImage get trash => const AssetGenImage('assets/images/trash.png');
@@ -133,6 +161,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/wallet.png
   AssetGenImage get wallet => const AssetGenImage('assets/images/wallet.png');
 
+  /// File path: assets/images/wavlake_banner.png
+  AssetGenImage get wavlakeBanner =>
+      const AssetGenImage('assets/images/wavlake_banner.png');
+
   /// File path: assets/images/whale.png
   AssetGenImage get whale => const AssetGenImage('assets/images/whale.png');
 
@@ -140,11 +172,14 @@ class $AssetsImagesGen {
   AssetGenImage get x => const AssetGenImage('assets/images/x.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
+        bip21,
         bitcoin,
+        bitrefillBanner,
         blockchain,
         errorCharacter,
         fagi,
+        flipitBanner,
         friends,
         hashrate,
         ion,
@@ -157,7 +192,9 @@ class $AssetsImagesGen {
         mastercard,
         metaverse,
         metaverseFb,
+        monkey,
         moonTheme,
+        moonpay,
         newChat,
         news,
         paperWallet,
@@ -169,11 +206,15 @@ class $AssetsImagesGen {
         scanQrDevice,
         screenshotSmall,
         sendImage,
+        stripePng,
+        stripeSvg,
         sunTheme,
         systemTheme,
+        thebitcoincompanyLogo,
         trash,
         visa,
         wallet,
+        wavlakeBanner,
         whale,
         x
       ];
@@ -191,11 +232,25 @@ class $AssetsKeysGen {
   /// File path: assets/keys/loop.macaroon
   String get loop => 'assets/keys/loop.macaroon';
 
+  /// File path: assets/keys/private_key_mnemonic_incoming.pem
+  String get privateKeyMnemonicIncoming =>
+      'assets/keys/private_key_mnemonic_incoming.pem';
+
+  /// File path: assets/keys/public_key_mnemonic.pem
+  String get publicKeyMnemonic => 'assets/keys/public_key_mnemonic.pem';
+
   /// File path: assets/keys/tapd_admin.macaroon
   String get tapdAdmin => 'assets/keys/tapd_admin.macaroon';
 
   /// List of all assets
-  List<String> get values => [fullchain, lndAdmin, loop, tapdAdmin];
+  List<String> get values => [
+        fullchain,
+        lndAdmin,
+        loop,
+        privateKeyMnemonicIncoming,
+        publicKeyMnemonic,
+        tapdAdmin
+      ];
 }
 
 class $AssetsLottiefilesGen {
@@ -590,6 +645,13 @@ class $AssetsTextfilesGen {
 class $AssetsTokensGen {
   const $AssetsTokensGen();
 
+  /// File path: assets/tokens/cat.webp
+  AssetGenImage get cat => const AssetGenImage('assets/tokens/cat.webp');
+
+  /// File path: assets/tokens/emerald.webp
+  AssetGenImage get emerald =>
+      const AssetGenImage('assets/tokens/emerald.webp');
+
   /// File path: assets/tokens/genisisstone.webp
   AssetGenImage get genisisstone =>
       const AssetGenImage('assets/tokens/genisisstone.webp');
@@ -597,12 +659,24 @@ class $AssetsTokensGen {
   /// File path: assets/tokens/hotdog.webp
   AssetGenImage get hotdog => const AssetGenImage('assets/tokens/hotdog.webp');
 
+  /// File path: assets/tokens/lila.webp
+  AssetGenImage get lila => const AssetGenImage('assets/tokens/lila.webp');
+
+  /// File path: assets/tokens/mineral.webp
+  AssetGenImage get mineral =>
+      const AssetGenImage('assets/tokens/mineral.webp');
+
+  /// File path: assets/tokens/token_blue.webp
+  AssetGenImage get tokenBlue =>
+      const AssetGenImage('assets/tokens/token_blue.webp');
+
   /// List of all assets
-  List<AssetGenImage> get values => [genisisstone, hotdog];
+  List<AssetGenImage> get values =>
+      [cat, emerald, genisisstone, hotdog, lila, mineral, tokenBlue];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const AssetGenImage colors = AssetGenImage('assets/colors.png');
   static const $AssetsImagesGen images = $AssetsImagesGen();
@@ -614,12 +688,13 @@ class Assets {
       AssetGenImage('assets/logo_foreground.png');
   static const $AssetsLottiefilesGen lottiefiles = $AssetsLottiefilesGen();
   static const $AssetsMarketplaceGen marketplace = $AssetsMarketplaceGen();
+  static const AssetGenImage splash = AssetGenImage('assets/splash.png');
   static const $AssetsTextfilesGen textfiles = $AssetsTextfilesGen();
   static const $AssetsTokensGen tokens = $AssetsTokensGen();
 
   /// List of all assets
   static List<dynamic> get values =>
-      [colors, keysZip, logo, logoBlack, logoForeground];
+      [colors, keysZip, logo, logoBlack, logoForeground, splash];
 }
 
 class AssetGenImage {
@@ -652,10 +727,10 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
