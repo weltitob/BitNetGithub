@@ -31,10 +31,10 @@ class WebViewPage extends StatefulWidget {
   final GoRouterState routerState;
 
   @override
-  State<WebViewPage> createState() => _WebViewPageState();
+  State<WebViewPage> createState() => WebViewPageState();
 }
 
-class _WebViewPageState extends State<WebViewPage> {
+class WebViewPageState extends State<WebViewPage> {
   late String url;
   late String name;
   late WebViewController controller;
@@ -43,6 +43,8 @@ class _WebViewPageState extends State<WebViewPage> {
   bool jsQRLoaded = false;
   bool handlingData = false;
   Set<String> handledQRCodes = {};
+  //for testing purposes
+  Set<String> foundQRCodes = {};
 
   @override
   void initState() {
@@ -272,6 +274,7 @@ class _WebViewPageState extends State<WebViewPage> {
         await injectJsQRLibrary();
       } else if (result != "null") {
         logger.i("QR Code found");
+        foundQRCodes.add(result.toString());
         // Process the QR code here
         processQRCode(result.toString());
       } else {
@@ -403,18 +406,14 @@ class _WebViewPageState extends State<WebViewPage> {
     }
   }
 
-  /// Handles text that was copied by the user in the WebView
-  void handleCopiedText(String text) async {
+  Future<List<dynamic>> processCopiedText(
+      String text, SendsController sendsController) async {
     LoggerService logger = Get.find<LoggerService>();
-    if (text.isEmpty || handlingData) return;
+    if (text.isEmpty || handlingData) return [];
 
     logger.i("Handling copied text: $text");
 
     // Get or create the sends controller
-    if (!Get.isRegistered<SendsController>()) {
-      Get.put(SendsController(context: context, getClipOnInit: false));
-    }
-    SendsController sendsController = Get.find<SendsController>();
 
     // Run onQRCodeScanned to determine the type and set up the controller
     await sendsController.onQRCodeScanned(text, context);
@@ -455,6 +454,22 @@ class _WebViewPageState extends State<WebViewPage> {
         break;
     }
 
+    return [qrType, hasEmbeddedAmount];
+  }
+
+  /// Handles text that was copied by the user in the WebView
+  Future<void> handleCopiedText(String text) async {
+    LoggerService logger = Get.find<LoggerService>();
+
+    if (!Get.isRegistered<SendsController>()) {
+      Get.put(SendsController(context: context, getClipOnInit: false));
+    }
+    SendsController sendsController = Get.find<SendsController>();
+
+    List<dynamic> textOutput = await processCopiedText(text, sendsController);
+    if (textOutput.isEmpty) return;
+    QRTyped qrType = textOutput[0];
+    bool hasEmbeddedAmount = textOutput[1];
     if (hasEmbeddedAmount) {
       // Show bottom sheet for addresses with embedded amounts
       try {
@@ -476,6 +491,7 @@ class _WebViewPageState extends State<WebViewPage> {
         }
 
         PaymentPayload payload = PaymentPayload(
+          originAppName: ORIGIN_APP_NAME,
           apiVersion: MINI_APP_API_VERSION,
           appId: url,
           amount: amount,
@@ -765,6 +781,7 @@ class _ConfirmPaymentSheetWidgetState extends State<ConfirmPaymentSheetWidget> {
 }
 
 class PaymentPayload {
+  final String originAppName;
   final String apiVersion;
   final String appId;
   final double amount;
@@ -774,7 +791,8 @@ class PaymentPayload {
   final String note;
 
   PaymentPayload(
-      {required this.apiVersion,
+      {required this.originAppName,
+      required this.apiVersion,
       required this.appId,
       required this.amount,
       required this.currency,
@@ -784,14 +802,16 @@ class PaymentPayload {
 
   factory PaymentPayload.fromJson(Map<String, dynamic> data) {
     return PaymentPayload(
-        apiVersion: data['api_version'],
-        appId: data['app_id'],
-        amount: data['data']['amount'] is int
-            ? (data['data']['amount'] as int).toDouble()
-            : data['data']['amount'],
-        currency: data['data']['currency'],
-        targetCurrency: data['data']['target_currency'],
-        depositAddress: data['data']['deposit_address'],
-        note: data['data']['note']);
+      originAppName: data['origin_app_name'],
+      apiVersion: data['api_version'],
+      appId: data['app_id'],
+      amount: data['data']['amount'] is int
+          ? (data['data']['amount'] as int).toDouble()
+          : data['data']['amount'],
+      currency: data['data']['currency'],
+      targetCurrency: data['data']['target_currency'],
+      depositAddress: data['data']['deposit_address'],
+      note: data['data']['note'],
+    );
   }
 }

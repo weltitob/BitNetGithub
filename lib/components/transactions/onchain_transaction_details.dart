@@ -9,8 +9,6 @@ import 'package:bitnet/components/transactions/transaction_amount_widget.dart';
 import 'package:bitnet/components/transactions/transaction_detail_tile.dart';
 import 'package:bitnet/components/transactions/transaction_details_container.dart';
 import 'package:bitnet/components/transactions/transaction_header_widget.dart';
-import 'package:bitnet/components/transactions/transaction_status_indicator.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -60,9 +58,10 @@ class OnChainTransactionDetailsState
   @override
   void dispose() {
     // Stop tracking transaction when screen is closed
-    channel.sink.add('{"track-rbf-summary":true}');
-    channel.sink.add('{"track-tx":"stop"}');
-    channel.sink.add('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage('{"track-rbf-summary":true}');
+    homeController.sendWebSocketMessage('{"track-tx":"stop"}');
+    homeController.sendWebSocketMessage(
+        '{"action":"want","data":["blocks","mempool-blocks"]}');
     homeController.isRbfTransaction.value = false;
     super.dispose();
   }
