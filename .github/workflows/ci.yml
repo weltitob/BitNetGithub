@@ -2,9 +2,9 @@ name: BitNET CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, izak ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, izak ]
 
 jobs:
   test:
