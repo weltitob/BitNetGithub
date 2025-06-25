@@ -6,7 +6,6 @@ import 'dart:core';
 
 import 'dart:convert';
 
-
 dynamic stopUserTask(String userId) async {
   final stopwatch = Stopwatch()..start();
 
@@ -15,7 +14,8 @@ dynamic stopUserTask(String userId) async {
 
     // AppCheck-Token erhalten
     try {
-      final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
+      final appCheckToken =
+          await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       print("App Check Token: $appCheckToken");
       print("New App Check Token: $newAppCheckToken");

@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 Future<XFile?> urlToXFile(String url) async {
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     // Downloading the file from the URL
     final response = await dioClient.get(url: url);

@@ -1,5 +1,3 @@
-
-
 bool isCompleteJson(String data) {
   int braceCount = 0;
   bool isInString = false;

@@ -56,7 +56,6 @@ class MnemonicController extends State<MnemonicGen> {
   bool isLoadingSignUp = false;
   bool hasFinishedGenWallet = false;
 
-
   late String mnemonicString;
   TextEditingController mnemonicTextController = TextEditingController();
 
@@ -76,7 +75,7 @@ class MnemonicController extends State<MnemonicGen> {
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
     logger.i("🔍 URL Query Parameters: $parameters");
-    
+
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
       logger.i("✅ Code found in URL: $code");
@@ -85,7 +84,7 @@ class MnemonicController extends State<MnemonicGen> {
       code = 'DEFAULT_REG_CODE';
       logger.w("⚠️ No 'code' parameter in URL, using default: $code");
     }
-    
+
     if (parameters.containsKey('issuer')) {
       issuer = parameters['issuer']!;
       logger.i("✅ Issuer found in URL: $issuer");
@@ -109,8 +108,6 @@ class MnemonicController extends State<MnemonicGen> {
       // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
       // String mnemonic = bip39.generateMnemonic(strength: 256);
 
-
-
       // print("Mnemonic: $mnemonic");
       // print("Mnemonic sentence: ${mnemonic.sentence}");
       //
@@ -120,13 +117,14 @@ class MnemonicController extends State<MnemonicGen> {
 
       RestResponse seedResponse = await generateSeed();
       logger.i("Resp from gen Seed: $seedResponse");
-      
+
       if (seedResponse.statusCode != "200") {
         throw Exception("Failed to generate seed: ${seedResponse.message}");
       }
-      
+
       // Extract cipher_seed_mnemonic from response data
-      List<dynamic> mnemonicWordsList = seedResponse.data['cipher_seed_mnemonic'];
+      List<dynamic> mnemonicWordsList =
+          seedResponse.data['cipher_seed_mnemonic'];
       mnemonicString = mnemonicWordsList.join(' ');
       logger.i("Extracted mnemonic: $mnemonicString");
 
@@ -140,49 +138,57 @@ class MnemonicController extends State<MnemonicGen> {
       // logger.i('Master Public Key: $masterPublicKey\n');
       // did = masterPublicKey;
       // logger.i("DID updated to: $did");
-      
+
       logger.i("=== STRICT ONE-USER-ONE-NODE ASSIGNMENT ===");
-      
+
       // Step 1: Generate recovery DID from aezeed mnemonic (no BIP39 validation needed)
       String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
       logger.i("Recovery DID: $recoveryDid");
-      
+
       // Step 2: Assign a completely unused Lightning node (strict one-to-one)
-      String assignedNodeId = await NodeMappingService.assignUnusedNode(recoveryDid);
+      String assignedNodeId =
+          await NodeMappingService.assignUnusedNode(recoveryDid);
       if (assignedNodeId.isEmpty) {
-        throw Exception("No available Lightning nodes for assignment - all nodes are occupied");
+        throw Exception(
+            "No available Lightning nodes for assignment - all nodes are occupied");
       }
       logger.i("✅ Assigned unused node: $assignedNodeId");
-      
+
       // Step 3: Initialize Lightning wallet with aezeed mnemonic on assigned node
       List<String> mnemonicWords = mnemonicString.split(' ');
-      RestResponse initResponse = await initWallet(mnemonicWords, nodeId: assignedNodeId);
-      
+      RestResponse initResponse =
+          await initWallet(mnemonicWords, nodeId: assignedNodeId);
+
       if (initResponse.statusCode != "200") {
-        throw Exception("Failed to initialize Lightning wallet: ${initResponse.message}");
+        throw Exception(
+            "Failed to initialize Lightning wallet: ${initResponse.message}");
       }
-      
+
       String adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
       if (adminMacaroon.isEmpty) {
-        throw Exception("No admin macaroon received from Lightning wallet initialization");
+        throw Exception(
+            "No admin macaroon received from Lightning wallet initialization");
       }
-      
+
       logger.i("✅ Lightning wallet initialized on node $assignedNodeId");
-      
+
       // Step 4: Get Lightning node identity from assigned node
-      RestResponse nodeInfo = await getNodeInfo(adminMacaroon: adminMacaroon, nodeId: assignedNodeId);
-      
+      RestResponse nodeInfo = await getNodeInfo(
+          adminMacaroon: adminMacaroon, nodeId: assignedNodeId);
+
       if (nodeInfo.statusCode != "200") {
-        throw Exception("Failed to get Lightning node info: ${nodeInfo.message}");
+        throw Exception(
+            "Failed to get Lightning node info: ${nodeInfo.message}");
       }
-      
+
       String lightningPubkey = nodeInfo.data['identity_pubkey'] ?? '';
       if (lightningPubkey.isEmpty) {
         throw Exception("No identity pubkey received from Lightning node");
       }
-      
-      logger.i("✅ Lightning node identity retrieved: ${lightningPubkey.substring(0, 20)}...");
-      
+
+      logger.i(
+          "✅ Lightning node identity retrieved: ${lightningPubkey.substring(0, 20)}...");
+
       // Step 5: Lock the node exclusively for this user (ONE USER ONLY)
       UserNodeMapping nodeMapping = UserNodeMapping(
         recoveryDid: recoveryDid,
@@ -192,13 +198,15 @@ class MnemonicController extends State<MnemonicGen> {
         adminMacaroon: adminMacaroon,
         createdAt: DateTime.now(),
         lastAccessed: DateTime.now(),
-        status: 'occupied', // Mark as occupied - cannot be assigned to anyone else
+        status:
+            'occupied', // Mark as occupied - cannot be assigned to anyone else
       );
-      
+
       // Store the exclusive mapping - this node is now LOCKED to this user
       await NodeMappingService.storeUserNodeMapping(nodeMapping);
-      logger.i("✅ Node $assignedNodeId is now exclusively locked to user $recoveryDid");
-      
+      logger.i(
+          "✅ Node $assignedNodeId is now exclusively locked to user $recoveryDid");
+
       // Use recovery DID as the primary user DID
       did = recoveryDid;
 
@@ -250,7 +258,7 @@ class MnemonicController extends State<MnemonicGen> {
     print("🟢 SIGNUP METHOD CALLED - ENTRY POINT");
     LoggerService logger = Get.find();
     logger.i("🟢 SIGNUP METHOD CALLED - ENTRY POINT");
-    
+
     setState(() {
       isLoadingSignUp = true;
     });
@@ -259,20 +267,20 @@ class MnemonicController extends State<MnemonicGen> {
       // Wait for wallet generation to complete (if not already done)
       logger.i("🔥 Checking wallet generation status...");
       logger.i("🔥 hasFinishedGenWallet: $hasFinishedGenWallet");
-      
+
       if (!hasFinishedGenWallet) {
         logger.i("🔥 Waiting for wallet generation to complete...");
         while (!hasFinishedGenWallet) {
           await Future.delayed(Duration(milliseconds: 100));
         }
       }
-      
+
       logger.i("🔥 Wallet generation confirmed complete");
       logger.i("🔥 Creating UserData object...");
       logger.i("🔥 DID: $did");
       logger.i("🔥 Code: $code");
       logger.i("🔥 Issuer: $issuer");
-      
+
       final userdata = UserData(
           backgroundImageUrl: '',
           isPrivate: false,
@@ -291,10 +299,10 @@ class MnemonicController extends State<MnemonicGen> {
           nft_background_id: '',
           setupQrCodeRecovery: false,
           setupWordRecovery: false);
-          
+
       logger.i("🔥 UserData created successfully");
       logger.i("🔥 UserData DID: ${userdata.did}");
-      
+
       // Use the did for the verification codes
       logger.i("🔥 Creating VerificationCode object...");
       VerificationCode verificationCode = VerificationCode(
@@ -303,7 +311,7 @@ class MnemonicController extends State<MnemonicGen> {
         issuer: issuer,
         receiver: userdata.did,
       );
-      
+
       logger.i("🔥 VerificationCode created successfully");
       logger.i("🔥 Verification Code: ${verificationCode.code}");
 
@@ -312,10 +320,11 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("🔥 Verification Code: ${verificationCode.code}");
       logger.i("🔥 Verification Code Receiver: ${verificationCode.receiver}");
       logger.i("🔥 About to call firebaseAuthentication()...");
-      
+
       UserData? currentuserwallet;
       try {
-        currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+        currentuserwallet =
+            await firebaseAuthentication(userdata, verificationCode);
         logger.i("🔥 ✅ Firebase authentication completed successfully");
         logger.i("🔥 Returned user: ${currentuserwallet?.did}");
       } catch (e, stackTrace) {
@@ -324,7 +333,8 @@ class MnemonicController extends State<MnemonicGen> {
         logger.e("🔥 ❌ Stack trace: $stackTrace");
         if (e.toString().contains("Bad state: No element")) {
           logger.e("🔥 ❌ This is the 'Bad state: No element' error!");
-          logger.e("🔥 ❌ Error likely in Auth().createUser() -> getPrivateData()");
+          logger.e(
+              "🔥 ❌ Error likely in Auth().createUser() -> getPrivateData()");
         }
         rethrow;
       }
@@ -382,7 +392,8 @@ class MnemonicController extends State<MnemonicGen> {
       logger.e("🔥 ❌ Error toString: ${e.toString()}");
       logger.e("🔥 ❌ Stack trace: $stackTrace");
       if (e is StateError) {
-        logger.e("🔥 ❌ This is a StateError - likely the 'Bad state: No element' issue!");
+        logger.e(
+            "🔥 ❌ This is a StateError - likely the 'Bad state: No element' issue!");
         logger.e("🔥 ❌ StateError message: ${e.message}");
       }
 
@@ -400,7 +411,7 @@ class MnemonicController extends State<MnemonicGen> {
     LoggerService logger = Get.find();
     logger.i("🟡 FIREBASE_AUTHENTICATION CALLED - ENTRY POINT");
     logger.i("🔥 ✅ FIREBASE_AUTHENTICATION FUNCTION CALLED");
-    
+
     try {
       logger.i("🔥 === INSIDE FIREBASE AUTHENTICATION METHOD ===");
       logger.i("🔥 Received UserData DID: ${userData.did}");
@@ -412,7 +423,8 @@ class MnemonicController extends State<MnemonicGen> {
       final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
-        mnemonicForRegistration: mnemonicString, // Pass mnemonic to skip getPrivateData()
+        mnemonicForRegistration:
+            mnemonicString, // Pass mnemonic to skip getPrivateData()
       );
 
       logger.i("🔥 Auth().createUser() completed successfully");

@@ -73,7 +73,10 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                 : controller.transactionReplacements.isEmpty
                     ? const Text(
                         'Something went wrong!',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 22),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 22),
                       )
                     : ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
@@ -82,10 +85,17 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                         reverse: false,
                         itemCount: controller.transactionReplacements.length,
                         itemBuilder: (context, index) {
-                          BitcoinTransaction? ownedTransaction = widget.ownedTransactions.firstWhereOrNull((tx) =>
-                              tx.blockHash == controller.transactionReplacements[index].txid ||
-                              tx.txHash == controller.transactionReplacements[index].txid ||
-                              tx.rawTxHex == controller.transactionReplacements[index].txid);
+                          BitcoinTransaction? ownedTransaction =
+                              widget.ownedTransactions.firstWhereOrNull((tx) =>
+                                  tx.blockHash ==
+                                      controller.transactionReplacements[index]
+                                          .txid ||
+                                  tx.txHash ==
+                                      controller.transactionReplacements[index]
+                                          .txid ||
+                                  tx.rawTxHex ==
+                                      controller
+                                          .transactionReplacements[index].txid);
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -97,16 +107,24 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                     onTap: () {
                                       final controllerTransaction = Get.put(
                                         TransactionController(
-                                          txID: controller.transactionReplacements[index].txid.toString(),
+                                          txID: controller
+                                              .transactionReplacements[index]
+                                              .txid
+                                              .toString(),
                                         ),
                                       );
-                                      controllerTransaction.txID = controller.transactionReplacements[index].txid.toString();
-                                      controllerTransaction.getSingleTransaction(controllerTransaction.txID!);
+                                      controllerTransaction.txID = controller
+                                          .transactionReplacements[index].txid
+                                          .toString();
+                                      controllerTransaction
+                                          .getSingleTransaction(
+                                              controllerTransaction.txID!);
                                       controllerTransaction.changeSocket();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const SingleTransactionScreen(),
+                                          builder: (context) =>
+                                              const SingleTransactionScreen(),
                                         ),
                                       );
                                     },
@@ -117,20 +135,26 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                       width: 200,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           if (ownedTransaction != null) ...[
                                             Container(
                                               width: 45,
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
                                                 color: AppTheme.colorBitcoin,
                                               ),
-                                              padding: const EdgeInsets.symmetric(vertical: 2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2),
                                               child: const Center(
                                                 child: Text(
                                                   'has Tx',
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
                                                 ),
                                               ),
                                             ),
@@ -140,23 +164,44 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Container(
-                                                padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                                                padding: const EdgeInsets.all(
+                                                    AppTheme.elementSpacing /
+                                                        2),
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSuperSmall),
-                                                    color: controller.transactionReplacements[index].fullRbf!
+                                                    borderRadius: BorderRadius
+                                                        .circular(AppTheme
+                                                            .borderRadiusSuperSmall),
+                                                    color: controller
+                                                            .transactionReplacements[
+                                                                index]
+                                                            .fullRbf!
                                                         ? AppTheme.colorBitcoin
-                                                        : AppTheme.successColor),
-                                                child: Text(controller.transactionReplacements[index].fullRbf!
+                                                        : AppTheme
+                                                            .successColor),
+                                                child: Text(controller
+                                                        .transactionReplacements[
+                                                            index]
+                                                        .fullRbf!
                                                     ? L10n.of(context)!.fullRbf
                                                     : L10n.of(context)!.rbf),
                                               ),
                                               const SizedBox(width: 10),
-                                              controller.transactionReplacements[index].mined!
+                                              controller
+                                                      .transactionReplacements[
+                                                          index]
+                                                      .mined!
                                                   ? Container(
-                                                      padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
-                                                      decoration:
-                                                          BoxDecoration(borderRadius: BorderRadius.circular(AppTheme.borderRadiusSuperSmall), color: Colors.green),
-                                                      child: Text('${L10n.of(context)!.mined}'),
+                                                      padding: const EdgeInsets
+                                                          .all(
+                                                          AppTheme.elementSpacing /
+                                                              2),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius
+                                                              .circular(AppTheme
+                                                                  .borderRadiusSuperSmall),
+                                                          color: Colors.green),
+                                                      child: Text(
+                                                          '${L10n.of(context)!.mined}'),
                                                     )
                                                   : const SizedBox.shrink(),
                                             ],
@@ -174,29 +219,46 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Theme.of(context).brightness == Brightness.light
+                                                color: Theme.of(context)
+                                                            .brightness ==
+                                                        Brightness.light
                                                     ? Colors.black.withAlpha(50)
-                                                    : Colors.white.withAlpha(50)),
-                                            borderRadius: BorderRadius.circular(AppTheme.cardPadding * 0.2)),
+                                                    : Colors.white
+                                                        .withAlpha(50)),
+                                            borderRadius: BorderRadius.circular(
+                                                AppTheme.cardPadding * 0.2)),
                                         child: TransactionItem(
                                             data: TransactionItemData(
-                                              timestamp: ownedTransaction.timeStamp,
-                                              status: ownedTransaction.numConfirmations > 0
-                                                  ? TransactionStatus.confirmed
-                                                  : TransactionStatus.pending,
-                                              type: TransactionType.onChain,
-                                              direction: ownedTransaction.amount!.contains("-")
-                                                  ? TransactionDirection.sent
-                                                  : TransactionDirection.received,
-                                              receiver: ownedTransaction.amount!.contains("-")
-                                                  ? ownedTransaction.destAddresses.last.toString()
-                                                  : ownedTransaction.destAddresses.first.toString(),
-                                              txHash: ownedTransaction.txHash.toString(),
-                                              fee: 0,
-                                              amount: ownedTransaction.amount!.contains("-")
-                                                  ? ownedTransaction.amount.toString()
-                                                  : "+" + ownedTransaction.amount.toString(),
-                                            )),
+                                          timestamp: ownedTransaction.timeStamp,
+                                          status: ownedTransaction
+                                                      .numConfirmations >
+                                                  0
+                                              ? TransactionStatus.confirmed
+                                              : TransactionStatus.pending,
+                                          type: TransactionType.onChain,
+                                          direction: ownedTransaction.amount!
+                                                  .contains("-")
+                                              ? TransactionDirection.sent
+                                              : TransactionDirection.received,
+                                          receiver: ownedTransaction.amount!
+                                                  .contains("-")
+                                              ? ownedTransaction
+                                                  .destAddresses.last
+                                                  .toString()
+                                              : ownedTransaction
+                                                  .destAddresses.first
+                                                  .toString(),
+                                          txHash: ownedTransaction.txHash
+                                              .toString(),
+                                          fee: 0,
+                                          amount: ownedTransaction.amount!
+                                                  .contains("-")
+                                              ? ownedTransaction.amount
+                                                  .toString()
+                                              : "+" +
+                                                  ownedTransaction.amount
+                                                      .toString(),
+                                        )),
                                       ),
                                     )
                                   ]

@@ -49,7 +49,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
     Key? key,
@@ -75,7 +74,7 @@ class CreateAccountController extends State<CreateAccount> {
   bool isDefaultPlatform =
       (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
   void login() => context.go('/authhome/login');
-  
+
   // Store subscription for proper disposal
   StreamSubscription? _profileLoadingSubscription;
 
@@ -117,44 +116,48 @@ class CreateAccountController extends State<CreateAccount> {
         // logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
         // // context.go("/persona)")
 
-
-
         //Update the username in our database for the user
         print('create account called');
-        
+
         try {
           await generateAccount(username: localpart);
           logger.i("✅ Account generation completed successfully");
         } catch (e) {
           logger.e("❌ Account generation failed: $e");
-          
+
           // Handle specific error for existing user on node
-          String friendlyErrorMessage = "Account creation failed. Please try again.";
+          String friendlyErrorMessage =
+              "Account creation failed. Please try again.";
           if (e.toString().contains("already has a registered user")) {
-            friendlyErrorMessage = "A user is already registered on this Lightning node. Please use 'Login' or 'Recover Account' instead.";
-          } else if (e.toString().contains("Account already exists for this mnemonic")) {
-            friendlyErrorMessage = "An account already exists. Please use 'Recover Account' to restore your wallet.";
+            friendlyErrorMessage =
+                "A user is already registered on this Lightning node. Please use 'Login' or 'Recover Account' instead.";
+          } else if (e
+              .toString()
+              .contains("Account already exists for this mnemonic")) {
+            friendlyErrorMessage =
+                "An account already exists. Please use 'Recover Account' to restore your wallet.";
           }
-          
+
           setState(() {
             isLoading = false;
             errorMessage = friendlyErrorMessage;
           });
           return; // Exit early, don't proceed with ProfileController
         }
-        
+
         // Verify authentication completed successfully before proceeding
         if (Auth().currentUser == null) {
-          logger.e("❌ Authentication verification failed - currentUser is null");
+          logger
+              .e("❌ Authentication verification failed - currentUser is null");
           setState(() {
             isLoading = false;
             errorMessage = "Authentication failed. Please try again.";
           });
           return; // Exit early, don't proceed with ProfileController
         }
-        
+
         logger.i("✅ Authentication verified, proceeding with profile setup");
-        
+
         // Sichere ProfileController-Initialisierung
         ProfileController profileController;
         try {
@@ -164,9 +167,10 @@ class CreateAccountController extends State<CreateAccount> {
           logger.i("Creating new ProfileController instance");
           profileController = Get.put(ProfileController());
         }
-        
+
         profileController.userNameController.text = localpart;
-        _profileLoadingSubscription = profileController.isUserLoading.listen((val) {
+        _profileLoadingSubscription =
+            profileController.isUserLoading.listen((val) {
           if (!val) {
             profileController.updateUsername();
             if (image != null) {
@@ -219,9 +223,10 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   /// Store node data with macaroon for the user
-  Future<void> storeNodeData(String did, String nodeId, String adminMacaroon, String nodeHost) async {
+  Future<void> storeNodeData(
+      String did, String nodeId, String adminMacaroon, String nodeHost) async {
     LoggerService logger = Get.find<LoggerService>();
-    
+
     try {
       // Store node information in the user's document
       Map<String, dynamic> nodeData = {
@@ -232,13 +237,13 @@ class CreateAccountController extends State<CreateAccount> {
         'created_at': DateTime.now().toIso8601String(),
         'status': 'initialized'
       };
-      
+
       await usersCollection
           .doc(did)
           .collection('node_data')
           .doc(nodeId)
           .set(nodeData);
-          
+
       logger.i("Node data stored successfully for user $did on node $nodeId");
     } catch (e) {
       logger.e("Error storing node data: $e");
@@ -249,14 +254,14 @@ class CreateAccountController extends State<CreateAccount> {
   /// Retrieve node data for a user
   Future<Map<String, dynamic>?> getNodeData(String did, String nodeId) async {
     LoggerService logger = Get.find<LoggerService>();
-    
+
     try {
       DocumentSnapshot doc = await usersCollection
           .doc(did)
           .collection('node_data')
           .doc(nodeId)
           .get();
-          
+
       if (doc.exists) {
         return doc.data() as Map<String, dynamic>?;
       }
@@ -276,20 +281,20 @@ class CreateAccountController extends State<CreateAccount> {
     try {
       // NEW APPROACH: Find an unused Lightning node (one user per node)
       logger.i("=== STEP 1: FINDING UNUSED LIGHTNING NODE FOR NEW USER ===");
-      
+
       // Find available nodes that aren't occupied
       List<String> occupiedNodes = await NodeMappingService.getOccupiedNodes();
       logger.i("Currently occupied nodes: $occupiedNodes");
-      
+
       // Get available Lightning nodes from LightningConfig
       List<String> availableNodes = LightningConfig.getAllNodeIds();
       logger.i("Available nodes from config: $availableNodes");
-      
+
       // Check if preferred node is specified and available
       String? workingNodeId;
       if (preferredNodeId != null) {
         logger.i("Checking preferred node: $preferredNodeId");
-        
+
         // Validate the preferred node ID format
         if (LightningConfig.isValidNodeId(preferredNodeId)) {
           if (!occupiedNodes.contains(preferredNodeId)) {
@@ -302,7 +307,7 @@ class CreateAccountController extends State<CreateAccount> {
           logger.w("❌ Invalid preferred node ID format: $preferredNodeId");
         }
       }
-      
+
       // If no preferred node or preferred node not available, find first available
       if (workingNodeId == null) {
         for (String nodeId in availableNodes) {
@@ -313,23 +318,27 @@ class CreateAccountController extends State<CreateAccount> {
           }
         }
       }
-      
+
       if (workingNodeId == null) {
-        throw Exception("All Lightning nodes are currently occupied. Please try again later or contact support.");
+        throw Exception(
+            "All Lightning nodes are currently occupied. Please try again later or contact support.");
       }
-      
-      logger.i("✅ Selected unused node: $workingNodeId (strict one-user-one-node)");
-      
+
+      logger.i(
+          "✅ Selected unused node: $workingNodeId (strict one-user-one-node)");
+
       // Verify the node is actually working by testing basic connectivity
       logger.i("Verifying node $workingNodeId is responsive...");
-      
+
       // Test the assigned node specifically
-      Map<String, bool> nodeStatus = await LightningNodeFinder.getAllNodeStatus(timeoutSeconds: 5);
+      Map<String, bool> nodeStatus =
+          await LightningNodeFinder.getAllNodeStatus(timeoutSeconds: 5);
       bool isAssignedNodeWorking = nodeStatus[workingNodeId] ?? false;
-      
+
       if (!isAssignedNodeWorking) {
-        logger.w("⚠️ Selected node $workingNodeId is not responding, need to find alternative...");
-        
+        logger.w(
+            "⚠️ Selected node $workingNodeId is not responding, need to find alternative...");
+
         // Find available working nodes that aren't occupied
         String? alternativeNode;
         for (String nodeId in nodeStatus.keys) {
@@ -339,36 +348,41 @@ class CreateAccountController extends State<CreateAccount> {
             break;
           }
         }
-        
+
         if (alternativeNode != null) {
           workingNodeId = alternativeNode;
           logger.i("✅ Using alternative available node: $workingNodeId");
         } else {
-          throw Exception("No working Lightning nodes are available for assignment. All nodes are either down or occupied.");
+          throw Exception(
+              "No working Lightning nodes are available for assignment. All nodes are either down or occupied.");
         }
       } else {
         logger.i("✅ Selected node $workingNodeId is responsive and ready");
       }
-      
+
       logger.i("=== STEP 2: GENERATING SEED VIA LIGHTNING NODE ===");
       RestResponse seedResponse = await generateSeed(nodeId: workingNodeId);
-      
+
       List<String> mnemonicWords;
       String mnemonicString;
       String adminMacaroon = '';
-      
+
       // Check if wallet is already unlocked (expected in one-user-one-node approach)
-      if (seedResponse.statusCode != "200" && seedResponse.data['raw_response'] != null) {
+      if (seedResponse.statusCode != "200" &&
+          seedResponse.data['raw_response'] != null) {
         String responseBody = seedResponse.data['raw_response'];
         Map<String, dynamic> errorData = jsonDecode(responseBody);
-        
+
         if (errorData['message']?.contains('wallet already unlocked') == true) {
-          logger.i("🔍 WALLET ALREADY UNLOCKED - User should already exist for this node");
-          logger.i("=== STEP 2B: CHECKING FOR EXISTING USER ON NODE $workingNodeId ===");
-          
+          logger.i(
+              "🔍 WALLET ALREADY UNLOCKED - User should already exist for this node");
+          logger.i(
+              "=== STEP 2B: CHECKING FOR EXISTING USER ON NODE $workingNodeId ===");
+
           // In one-user-one-node approach, an unlocked wallet means a user already exists
-          List<UserNodeMapping> existingMappings = await NodeMappingService.getUsersForNode(workingNodeId);
-          
+          List<UserNodeMapping> existingMappings =
+              await NodeMappingService.getUsersForNode(workingNodeId);
+
           if (existingMappings.isNotEmpty) {
             logger.i("Found existing user(s) for node $workingNodeId:");
             for (var mapping in existingMappings) {
@@ -376,25 +390,26 @@ class CreateAccountController extends State<CreateAccount> {
               logger.i("- Status: ${mapping.status}");
               logger.i("- Created: ${mapping.createdAt}");
             }
-            
+
             // For account creation with existing user, this should not happen
             // User should be using the login/recovery flow instead
-            logger.e("❌ Cannot create new account: Node $workingNodeId already has registered user(s)");
-            logger.e("User should use login or account recovery instead of account creation");
-            
+            logger.e(
+                "❌ Cannot create new account: Node $workingNodeId already has registered user(s)");
+            logger.e(
+                "User should use login or account recovery instead of account creation");
+
             throw Exception(
-              "This Lightning node already has a registered user. "
-              "Please use 'Login' or 'Recover Account' instead of creating a new account."
-            );
+                "This Lightning node already has a registered user. "
+                "Please use 'Login' or 'Recover Account' instead of creating a new account.");
           } else {
             // This is unexpected: wallet is unlocked but no user mappings found
-            logger.w("⚠️ UNEXPECTED STATE: Wallet unlocked but no user mappings found for node $workingNodeId");
-            logger.e("This indicates a serious data inconsistency or improper node configuration");
-            
-            throw Exception(
-              "Lightning node is in an inconsistent state. "
-              "Please contact support or try again later."
-            );
+            logger.w(
+                "⚠️ UNEXPECTED STATE: Wallet unlocked but no user mappings found for node $workingNodeId");
+            logger.e(
+                "This indicates a serious data inconsistency or improper node configuration");
+
+            throw Exception("Lightning node is in an inconsistent state. "
+                "Please contact support or try again later.");
           }
         } else {
           throw Exception("Failed to generate seed: ${seedResponse.message}");
@@ -402,35 +417,41 @@ class CreateAccountController extends State<CreateAccount> {
       } else if (seedResponse.statusCode == "200") {
         // Normal path: Extract seed data from Lightning node response
         Map<String, dynamic> seedData = seedResponse.data;
-        List<dynamic> cipherSeedMnemonic = seedData['cipher_seed_mnemonic'] ?? [];
+        List<dynamic> cipherSeedMnemonic =
+            seedData['cipher_seed_mnemonic'] ?? [];
         String encipheredSeed = seedData['enciphered_seed'] ?? '';
-        
+
         logger.i("Lightning node generated seed successfully:");
         logger.i("- Cipher seed mnemonic: ${cipherSeedMnemonic.length} words");
-        logger.i("- Enciphered seed: ${encipheredSeed.substring(0, 20)}... (truncated)");
-        
+        logger.i(
+            "- Enciphered seed: ${encipheredSeed.substring(0, 20)}... (truncated)");
+
         // Convert to string list for our internal use
         mnemonicWords = cipherSeedMnemonic.cast<String>();
         mnemonicString = mnemonicWords.join(' ');
-        
+
         logger.i("=== STEP 3: INITIALIZING WALLET WITH LIGHTNING SEED ===");
-        
-        logger.i("Using Lightning node's native cipher seed mnemonic for init_wallet");
-        
+
+        logger.i(
+            "Using Lightning node's native cipher seed mnemonic for init_wallet");
+
         try {
-          RestResponse initResponse = await initWallet(mnemonicWords, nodeId: workingNodeId);
-          
+          RestResponse initResponse =
+              await initWallet(mnemonicWords, nodeId: workingNodeId);
+
           if (initResponse.statusCode == "200") {
             logger.i("Lightning node initialized successfully");
-            
+
             // Extract admin macaroon from response
             adminMacaroon = initResponse.data['admin_macaroon'] ?? '';
             if (adminMacaroon.isNotEmpty) {
               logger.i("Successfully retrieved admin macaroon");
             }
           } else {
-            logger.e("Failed to initialize Lightning node: ${initResponse.message}");
-            throw Exception("Failed to initialize Lightning node: ${initResponse.message}");
+            logger.e(
+                "Failed to initialize Lightning node: ${initResponse.message}");
+            throw Exception(
+                "Failed to initialize Lightning node: ${initResponse.message}");
           }
         } catch (e) {
           logger.e("Error initializing Lightning node: $e");
@@ -441,33 +462,35 @@ class CreateAccountController extends State<CreateAccount> {
       }
 
       logger.i("=== STEP 4: LIGHTNING WALLET INITIALIZATION COMPLETE ===");
-      logger.i("✅ Lightning wallet created successfully - continuing with mnemonic-based authentication");
-      logger.i("Note: Lightning services will initialize in background, but authentication doesn't depend on them");
-      
-      
+      logger.i(
+          "✅ Lightning wallet created successfully - continuing with mnemonic-based authentication");
+      logger.i(
+          "Note: Lightning services will initialize in background, but authentication doesn't depend on them");
+
       logger.i("=== STEP 4: GENERATING RECOVERY DID ===");
-      
+
       // Generate recovery DID from mnemonic (always derivable for recovery)
       String recoveryDid = RecoveryIdentity.generateRecoveryDid(mnemonicString);
       logger.i("Generated recovery DID from mnemonic: $recoveryDid");
-      
-      
+
       // Check if user already exists with this mnemonic
       bool userAlreadyExists = await NodeMappingService.userExists(recoveryDid);
       if (userAlreadyExists) {
         logger.e("User already exists with this mnemonic!");
-        throw Exception("Account already exists for this mnemonic. Use recovery instead.");
+        throw Exception(
+            "Account already exists for this mnemonic. Use recovery instead.");
       }
-      
+
       // For now, we'll use a placeholder Lightning pubkey
-      String lightningPubkey = 'placeholder_pubkey_${recoveryDid.substring(0, 8)}';
+      String lightningPubkey =
+          'placeholder_pubkey_${recoveryDid.substring(0, 8)}';
       logger.i("Using placeholder Lightning pubkey: $lightningPubkey");
 
       // Use recovery DID as the primary identifier
       String did = recoveryDid;
 
       logger.i("=== STEP 6: CREATING NODE MAPPING (SIMPLIFIED) ===");
-      
+
       // Create the critical recovery mapping with simplified structure
       UserNodeMapping nodeMapping = UserNodeMapping(
         recoveryDid: recoveryDid,
@@ -485,12 +508,13 @@ class CreateAccountController extends State<CreateAccount> {
           'working_node_found': workingNodeId,
         },
       );
-      
+
       // Store the node mapping BEFORE storing private data
       await NodeMappingService.storeUserNodeMapping(nodeMapping);
-      await NodeMappingService.storeMnemonicRecoveryIndex(mnemonicString, recoveryDid);
+      await NodeMappingService.storeMnemonicRecoveryIndex(
+          mnemonicString, recoveryDid);
       logger.i("✅ Node mapping stored successfully");
-      
+
       // Store the admin macaroon locally in secure storage
       if (adminMacaroon.isNotEmpty) {
         logger.i("=== STORING ADMIN MACAROON LOCALLY ===");
@@ -502,7 +526,7 @@ class CreateAccountController extends State<CreateAccount> {
           logger.e("❌ Failed to store admin macaroon locally: $e");
           // Don't fail the entire registration, but log the error
         }
-        
+
         // TODO: Bake limited invoice tracking macaroon
         // This macaroon will only have permissions to:
         // - List invoices (invoices:read)
@@ -514,7 +538,7 @@ class CreateAccountController extends State<CreateAccount> {
         //   adminMacaroon: adminMacaroon,
         //   permissions: ['invoices:read', 'offchain:read'],
         // );
-        // 
+        //
         // if (invoiceTrackingMacaroon.isNotEmpty) {
         //   // Update node mapping with tracking macaroon
         //   await FirebaseFirestore.instance
@@ -531,32 +555,42 @@ class CreateAccountController extends State<CreateAccount> {
       logger.i("=== STEP 7: STORING PRIVATE DATA ===");
       logger.i("Recovery DID: $did");
       logger.i("Mnemonic length: ${mnemonicString.split(' ').length} words");
-      logger.i("Mnemonic (first 3 words): ${mnemonicString.split(' ').take(3).join(' ')}...");
+      logger.i(
+          "Mnemonic (first 3 words): ${mnemonicString.split(' ').take(3).join(' ')}...");
       final privateData = PrivateData(did: did, mnemonic: mnemonicString);
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
-      
+
       // Verify that we can immediately retrieve the stored data
       logger.i("=== VERIFYING STORED DATA ===");
       // Add a small delay to ensure secure storage write completes
       await Future.delayed(Duration(milliseconds: 100));
       try {
         final retrievedData = await getPrivateData(did);
-        logger.i("✅ Successfully retrieved stored data for DID: ${retrievedData.did}");
-        logger.i("✅ Retrieved mnemonic matches: ${retrievedData.mnemonic == mnemonicString}");
+        logger.i(
+            "✅ Successfully retrieved stored data for DID: ${retrievedData.did}");
+        logger.i(
+            "✅ Retrieved mnemonic matches: ${retrievedData.mnemonic == mnemonicString}");
       } catch (e) {
         logger.e("❌ Failed to retrieve just-stored data: $e");
       }
 
       // OPTIONAL: Store additional node data in legacy format (if needed for compatibility)
       logger.i("=== STEP 8: STORING LEGACY NODE DATA (Optional) ===");
-      
+
       try {
         if (adminMacaroon.isNotEmpty) {
           logger.i("Storing legacy node data for compatibility");
-          
+
           // Store node data with macaroon for user (legacy format)
-          await storeNodeData(did, workingNodeId, adminMacaroon, LightningConfig.caddyBaseUrl.replaceAll('http://', '').replaceAll('[', '').replaceAll(']', ''));
+          await storeNodeData(
+              did,
+              workingNodeId,
+              adminMacaroon,
+              LightningConfig.caddyBaseUrl
+                  .replaceAll('http://', '')
+                  .replaceAll('[', '')
+                  .replaceAll(']', ''));
           logger.i("Legacy node data stored");
         } else {
           logger.w("No admin macaroon available for legacy storage");
@@ -566,17 +600,19 @@ class CreateAccountController extends State<CreateAccount> {
         // Don't fail the entire process for legacy data
       }
 
-      logger.i("User registration and setup completed with mnemonic-based DID architecture.");
-      
+      logger.i(
+          "User registration and setup completed with mnemonic-based DID architecture.");
+
       logger.i("=== STEP 9: STARTING FIREBASE AUTHENTICATION ===");
       logger.i("DID: $did");
       logger.i("Code: '${code.isEmpty ? '(EMPTY)' : code}'");
       logger.i("Issuer: '${issuer.isEmpty ? '(EMPTY)' : issuer}'");
-      
+
       if (code.isEmpty) {
-        logger.w("⚠️ Code is empty - this might cause issues in authentication");
+        logger
+            .w("⚠️ Code is empty - this might cause issues in authentication");
       }
-      
+
       try {
         await signUp(did, code, username);
         logger.i("✅ Firebase authentication completed successfully");
@@ -584,12 +620,12 @@ class CreateAccountController extends State<CreateAccount> {
         logger.e("❌ Error in signUp: $signUpError");
         throw signUpError;
       }
-
     } catch (e) {
       logger.e("Error in generateAccount: $e");
       logger.e("Error type: ${e.runtimeType}");
       if (e is StateError) {
-        logger.e("StateError details: This usually means firstWhere() found no matching elements");
+        logger.e(
+            "StateError details: This usually means firstWhere() found no matching elements");
       }
       // Handle errors (e.g., show user-friendly error message)
       rethrow; // Important: rethrow so the calling code knows it failed
@@ -606,11 +642,12 @@ class CreateAccountController extends State<CreateAccount> {
       final litdAccountData = await getLitdAccountData(did);
       String? macaroonStr = litdAccountData?['macaroon'];
       String? accountId = litdAccountData?['accountId'];
-      
+
       if (macaroonStr != null && accountId != null) {
         logger.i("Found stored litd account: $accountId with macaroon");
       } else {
-        logger.w("No litd account found for user, will continue without lightning functionality");
+        logger.w(
+            "No litd account found for user, will continue without lightning functionality");
       }
 
       final userdata = UserData(
@@ -618,10 +655,12 @@ class CreateAccountController extends State<CreateAccount> {
           isPrivate: false,
           showFollowers: false,
           did: did,
-          displayName: username ?? did,  // Use username if provided, otherwise fall back to DID
+          displayName: username ??
+              did, // Use username if provided, otherwise fall back to DID
           bio: L10n.of(context)!.joinedRevolution,
           customToken: "customToken",
-          username: username ?? did,      // Use username if provided, otherwise fall back to DID
+          username: username ??
+              did, // Use username if provided, otherwise fall back to DID
           profileImageUrl: '',
           createdAt: Timestamp.fromDate(DateTime.now()),
           updatedAt: Timestamp.fromDate(DateTime.now()),
@@ -631,7 +670,7 @@ class CreateAccountController extends State<CreateAccount> {
           nft_background_id: '',
           setupQrCodeRecovery: false,
           setupWordRecovery: false);
-          
+
       // Use the did for the verification codes
       VerificationCode verificationCode = VerificationCode(
         used: false,
@@ -645,7 +684,7 @@ class CreateAccountController extends State<CreateAccount> {
         // Here you could modify the authentication process to include macaroon verification
         // or store additional data in a separate collection
         logger.i("Including litd account data in user authentication");
-        
+
         // Add code here to handle the macaroon during authentication if needed
         // For example, you might want to validate it with the lightning node
         // or store a reference to it in the user's document
@@ -653,8 +692,8 @@ class CreateAccountController extends State<CreateAccount> {
 
       // Pass the mnemonic to firebaseAuthentication for registration flow
       final PrivateData privateData = await getPrivateData(did);
-      final UserData? currentuserwallet =
-          await firebaseAuthentication(userdata, verificationCode, privateData.mnemonic);
+      final UserData? currentuserwallet = await firebaseAuthentication(
+          userdata, verificationCode, privateData.mnemonic);
       LocalStorage.instance.setString(userdata.did, "most_recent_user");
       // // Temporary bypass due to temporary auth system
       // LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -691,11 +730,12 @@ class CreateAccountController extends State<CreateAccount> {
       });
 
       logger.i("Navigating to homescreen now...");
-      
+
       // After successful signup, we could also initialize the Lightning wallet if needed
       // This would involve using the macaroon to authenticate with the Lightning node
       if (macaroonStr != null && accountId != null) {
-        logger.i("Lightning functionality is ready to use with account $accountId");
+        logger.i(
+            "Lightning functionality is ready to use with account $accountId");
       }
 
       // context
@@ -712,8 +752,8 @@ class CreateAccountController extends State<CreateAccount> {
     return false;
   }
 
-  Future<UserData?> firebaseAuthentication(
-      UserData userData, VerificationCode code, String? mnemonicForRegistration) async {
+  Future<UserData?> firebaseAuthentication(UserData userData,
+      VerificationCode code, String? mnemonicForRegistration) async {
     print("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");
     LoggerService logger = Get.find();
     logger.i("🟡 FIREBASE_AUTH IN CREATEACCOUNT CALLED - FOURTH ENTRY POINT");

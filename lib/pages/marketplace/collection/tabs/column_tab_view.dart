@@ -79,50 +79,53 @@ class ColumnTabView extends StatelessWidget {
         height: AppTheme.cardPadding.h,
       )),
       SliverPadding(
-        padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
+        padding:
+            EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
         sliver: SliverGrid.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, // 2 items per row
             mainAxisSpacing: AppTheme.elementSpacing.h,
             crossAxisSpacing: AppTheme.elementSpacing.w / 6,
-            childAspectRatio: (size.width / 2) / (260.h * 0.75), // Correct ratio for AssetCard height
+            childAspectRatio: (size.width / 2) /
+                (260.h * 0.75), // Correct ratio for AssetCard height
           ),
           itemCount: sortedGridList.length,
           itemBuilder: (BuildContext context, int index) {
-          final item = sortedGridList[index];
-          final media = Media(
-            data: item.nftImage,
-            type: "asset_image",
-          );
+            final item = sortedGridList[index];
+            final media = Media(
+              data: item.nftImage,
+              type: "asset_image",
+            );
 
-          return GestureDetector(
-            onTap: () {
-              if (selectedProducts.isNotEmpty) {
+            return GestureDetector(
+              onTap: () {
+                if (selectedProducts.isNotEmpty) {
+                  handleProductClick(item.id, context);
+                } else {
+                  context.push('/asset_screen',
+                      extra: {'nft_id': item.id.toString()});
+                }
+              },
+              onLongPress: () {
                 handleProductClick(item.id, context);
-              } else {
-                context.push('/asset_screen',
-                    extra: {'nft_id': item.id.toString()});
-              }
-            },
-            onLongPress: () {
-              handleProductClick(item.id, context);
-            },
-            child: Stack(
-              children: [
-                AssetCard(
-                  medias: [media],
-                  scale: 0.75,
-                  nftName: item.nftName,
-                  nftMainName: item.nftMainName,
-                  assetId: item.id.toString(),
-                  hasListForSale: index < 2, // First 2 items are listed for sale
-                  isOwner: index < 2, // First 2 items are owned by user
-                  cryptoText: item.cryptoText,
-                ),
-              ],
-            ),
-          );
-        },
+              },
+              child: Stack(
+                children: [
+                  AssetCard(
+                    medias: [media],
+                    scale: 0.75,
+                    nftName: item.nftName,
+                    nftMainName: item.nftMainName,
+                    assetId: item.id.toString(),
+                    hasListForSale:
+                        index < 2, // First 2 items are listed for sale
+                    isOwner: index < 2, // First 2 items are owned by user
+                    cryptoText: item.cryptoText,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       )
     ]);

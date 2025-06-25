@@ -14,44 +14,42 @@ class SettingsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(SettingsController());
 
-    return Builder(
-      builder: (context) {
-        return RoundedButtonWidget(
-          size: AppTheme.cardPadding * 1.75,
-          buttonType: ButtonType.transparent,
-          iconData: Icons.brightness_low_rounded,
-          iconColor: Theme.of(context).brightness == Brightness.light
-              ? AppTheme.black70
-              : AppTheme.white90,
-          onTap: () {
-            BitNetBottomSheet(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.75,
-              context: context,
-              borderRadius: AppTheme.borderRadiusBig,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .canvasColor, // Add a background color here
-                  borderRadius: new BorderRadius.only(
-                    topLeft: AppTheme.cornerRadiusBig,
-                    topRight: AppTheme.cornerRadiusBig,
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: new BorderRadius.only(
-                    topLeft: AppTheme.cornerRadiusBig,
-                    topRight: AppTheme.cornerRadiusBig,
-                  ),
-                  child: Settings(),
+    return Builder(builder: (context) {
+      return RoundedButtonWidget(
+        size: AppTheme.cardPadding * 1.75,
+        buttonType: ButtonType.transparent,
+        iconData: Icons.brightness_low_rounded,
+        iconColor: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.black70
+            : AppTheme.white90,
+        onTap: () {
+          BitNetBottomSheet(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.75,
+            context: context,
+            borderRadius: AppTheme.borderRadiusBig,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .canvasColor, // Add a background color here
+                borderRadius: new BorderRadius.only(
+                  topLeft: AppTheme.cornerRadiusBig,
+                  topRight: AppTheme.cornerRadiusBig,
                 ),
               ),
-            );
+              child: ClipRRect(
+                borderRadius: new BorderRadius.only(
+                  topLeft: AppTheme.cornerRadiusBig,
+                  topRight: AppTheme.cornerRadiusBig,
+                ),
+                child: Settings(),
+              ),
+            ),
+          );
 
-            //showSettingsBottomSheet(context: context);
-          },
-        );
-      }
-    );
+          //showSettingsBottomSheet(context: context);
+        },
+      );
+    });
   }
 }

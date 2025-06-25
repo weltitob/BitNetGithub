@@ -32,10 +32,7 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
               ),
               Text(
                 L10n.of(context)!.saveCard,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleSmall,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(width: 48)
             ],

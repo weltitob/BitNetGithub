@@ -20,7 +20,7 @@ class Store {
   }
 
   Future<void> setItem(String key, String? value) async {
-    await _setupLocalStorage(); 
+    await _setupLocalStorage();
     if (value == null) {
       await _prefs!.remove(key);
       return;

@@ -25,7 +25,7 @@ class BackgroundWithContent extends StatefulWidget {
   final bool withGradientRightSmall;
   final String assetPath;
   final String lottieassetPath;
-  
+
   const BackgroundWithContent({
     Key? key,
     required this.child,
@@ -45,7 +45,6 @@ class BackgroundWithContent extends StatefulWidget {
     this.withGradientRightSmall = false,
     this.assetPath = 'assets/images/metaverse_fb.png',
     this.lottieassetPath = 'assets/lottiefiles/background.json',
-
   }) : super(key: key);
 
   @override
@@ -72,8 +71,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
           });
         }
       });
-    }
-    else {
+    } else {
       composition = loadComposition(widget.lottieassetPath);
     }
   }
@@ -100,8 +98,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                   height: screenHeight,
                   width: double.infinity,
                   child: Image(
-                      fit: BoxFit.cover,
-                      image: AssetImage(widget.assetPath)))
+                      fit: BoxFit.cover, image: AssetImage(widget.assetPath)))
               : widget.backgroundType == BackgroundType.image
                   ? FutureBuilder<dynamic>(
                       future: _networkImage,
@@ -125,7 +122,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                         }
                       },
                     )
-                  : widget.backgroundType == BackgroundType.lottie ? buildFutureLottie(composition, true) : Container(),
+                  : widget.backgroundType == BackgroundType.lottie
+                      ? buildFutureLottie(composition, true)
+                      : Container(),
           Container(
             height: double.infinity,
             width: double.infinity,

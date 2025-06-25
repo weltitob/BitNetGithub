@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 
 /// Unit tests for Bitcoin validation functions
-/// 
+///
 /// These tests verify the validation logic for various Bitcoin-related
-/// formats including addresses, transaction IDs, public keys, and 
+/// formats including addresses, transaction IDs, public keys, and
 /// Lightning Network invoices.
-/// 
+///
 /// Test categories:
 /// 1. Compressed public key validation
 /// 2. Transaction ID validation
@@ -20,14 +20,16 @@ void main() {
       // Valid compressed public keys are 66 characters (33 bytes in hex)
       // and start with either 02 or 03
       expect(
-        isCompressedPublicKey('02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
+        isCompressedPublicKey(
+            '02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
         isTrue,
       );
     });
 
     test('should validate correct compressed public keys starting with 03', () {
       expect(
-        isCompressedPublicKey('03b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
+        isCompressedPublicKey(
+            '03b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
         isTrue,
       );
     });
@@ -35,13 +37,15 @@ void main() {
     test('should reject public keys with incorrect length', () {
       // Too short (65 chars)
       expect(
-        isCompressedPublicKey('02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a873'),
+        isCompressedPublicKey(
+            '02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a873'),
         isFalse,
       );
-      
+
       // Too long (67 chars)
       expect(
-        isCompressedPublicKey('02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a87377'),
+        isCompressedPublicKey(
+            '02b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a87377'),
         isFalse,
       );
     });
@@ -49,24 +53,28 @@ void main() {
     test('should reject public keys with invalid prefix', () {
       // Invalid prefixes (not 02 or 03)
       expect(
-        isCompressedPublicKey('01b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
+        isCompressedPublicKey(
+            '01b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
         isFalse,
       );
-      
+
       expect(
-        isCompressedPublicKey('04b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
+        isCompressedPublicKey(
+            '04b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
         isFalse,
       );
     });
 
     test('should reject non-hexadecimal characters', () {
       expect(
-        isCompressedPublicKey('02g4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
+        isCompressedPublicKey(
+            '02g4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549a8737'),
         isFalse,
       );
-      
+
       expect(
-        isCompressedPublicKey('03b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549z8737'),
+        isCompressedPublicKey(
+            '03b4632d08485ff1df2db55b9dafd23347d1c47a457072a1e87be26896549z8737'),
         isFalse,
       );
     });
@@ -82,17 +90,20 @@ void main() {
     test('should validate correct transaction IDs', () {
       // Valid transaction IDs are 64 character hexadecimal strings
       expect(
-        isValidBitcoinTransactionID('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
+        isValidBitcoinTransactionID(
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
         isTrue,
       );
-      
+
       expect(
-        isValidBitcoinTransactionID('0000000000000000000000000000000000000000000000000000000000000000'),
+        isValidBitcoinTransactionID(
+            '0000000000000000000000000000000000000000000000000000000000000000'),
         isTrue,
       );
-      
+
       expect(
-        isValidBitcoinTransactionID('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+        isValidBitcoinTransactionID(
+            'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
         isTrue,
       );
     });
@@ -100,25 +111,29 @@ void main() {
     test('should reject transaction IDs with incorrect length', () {
       // Too short (63 chars)
       expect(
-        isValidBitcoinTransactionID('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85'),
+        isValidBitcoinTransactionID(
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85'),
         isFalse,
       );
-      
+
       // Too long (65 chars)
       expect(
-        isValidBitcoinTransactionID('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8555'),
+        isValidBitcoinTransactionID(
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8555'),
         isFalse,
       );
     });
 
     test('should reject non-hexadecimal characters', () {
       expect(
-        isValidBitcoinTransactionID('g3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
+        isValidBitcoinTransactionID(
+            'g3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
         isFalse,
       );
-      
+
       expect(
-        isValidBitcoinTransactionID('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85z'),
+        isValidBitcoinTransactionID(
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85z'),
         isFalse,
       );
     });
@@ -132,12 +147,14 @@ void main() {
     test('should handle uppercase and lowercase', () {
       // Most implementations accept both cases
       expect(
-        isValidBitcoinTransactionID('E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855'),
+        isValidBitcoinTransactionID(
+            'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855'),
         isTrue,
       );
-      
+
       expect(
-        isValidBitcoinTransactionID('E3b0c44298FC1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
+        isValidBitcoinTransactionID(
+            'E3b0c44298FC1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
         isTrue,
       );
     });
@@ -147,21 +164,24 @@ void main() {
     test('should validate correct Lightning invoices', () {
       // Valid Lightning invoices start with 'lnbc' (mainnet) or 'lntb' (testnet)
       expect(
-        isStringALNInvoice('lnbc10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w'),
+        isStringALNInvoice(
+            'lnbc10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w'),
         isTrue,
       );
     });
 
     test('should validate testnet Lightning invoices', () {
       expect(
-        isStringALNInvoice('lntb10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmw'),
+        isStringALNInvoice(
+            'lntb10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmw'),
         isTrue,
       );
     });
 
     test('should validate regtest Lightning invoices', () {
       expect(
-        isStringALNInvoice('lnbcrt10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2'),
+        isStringALNInvoice(
+            'lnbcrt10u1p3pj257pp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2'),
         isTrue,
       );
     });
@@ -175,7 +195,8 @@ void main() {
     test('should handle edge cases', () {
       expect(isStringALNInvoice(''), isFalse);
       expect(isStringALNInvoice('lnbc'), isFalse); // Too short
-      expect(isStringALNInvoice('LNBC10u1p3pj257pp5'), isTrue); // Uppercase should work
+      expect(isStringALNInvoice('LNBC10u1p3pj257pp5'),
+          isTrue); // Uppercase should work
     });
   });
 
@@ -219,19 +240,22 @@ void main() {
   group('Bitcoin Validation - BIP21 URIs', () {
     test('should validate BIP21 URIs with BOLT11 invoice', () {
       expect(
-        isBip21WithBolt11('bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
+        isBip21WithBolt11(
+            'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
         isTrue,
       );
-      
+
       expect(
-        isBip21WithBolt11('bitcoin:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa?amount=0.001&lightning=lnbc1000n1p3pj257pp5'),
+        isBip21WithBolt11(
+            'bitcoin:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa?amount=0.001&lightning=lnbc1000n1p3pj257pp5'),
         isTrue,
       );
     });
 
     test('should validate BIP21 URIs with BOLT12 offer', () {
       expect(
-        isBip21WithBolt12('bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lno1pg257pp5'),
+        isBip21WithBolt12(
+            'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lno1pg257pp5'),
         isTrue,
       );
     });
@@ -241,9 +265,10 @@ void main() {
         isBip21WithBolt11('bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'),
         isFalse,
       );
-      
+
       expect(
-        isBip21WithBolt11('bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?amount=0.001'),
+        isBip21WithBolt11(
+            'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?amount=0.001'),
         isFalse,
       );
     });
@@ -257,19 +282,22 @@ void main() {
 
     test('should handle complex URIs with multiple parameters', () {
       expect(
-        isBip21WithBolt11('bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?amount=0.001&label=Coffee&message=Thanks&lightning=lnbc1000n1p3pj257pp5'),
+        isBip21WithBolt11(
+            'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?amount=0.001&label=Coffee&message=Thanks&lightning=lnbc1000n1p3pj257pp5'),
         isTrue,
       );
     });
 
     test('should be case insensitive for scheme', () {
       expect(
-        isBip21WithBolt11('BITCOIN:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
+        isBip21WithBolt11(
+            'BITCOIN:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
         isTrue,
       );
-      
+
       expect(
-        isBip21WithBolt11('Bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
+        isBip21WithBolt11(
+            'Bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?lightning=lnbc10u1p3pj257pp5'),
         isTrue,
       );
     });
@@ -292,23 +320,26 @@ void main() {
         isValidBitcoinAddressHash('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'),
         isTrue,
       );
-      
+
       // Test P2SH addresses (start with 3)
       expect(
         isValidBitcoinAddressHash('3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy'),
         isTrue,
       );
-      
+
       // Test Bech32 addresses (start with bc1)
       expect(
         isValidBitcoinAddressHash('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'),
         isTrue,
       );
-      
+
       // Test invalid addresses
       expect(isValidBitcoinAddressHash(''), isFalse);
       expect(isValidBitcoinAddressHash('invalid-address'), isFalse);
-      expect(isValidBitcoinAddressHash('0x742d35Cc6634C0532925a3b844Bc9e7595F715a3'), isFalse); // Ethereum address
+      expect(
+          isValidBitcoinAddressHash(
+              '0x742d35Cc6634C0532925a3b844Bc9e7595F715a3'),
+          isFalse); // Ethereum address
     });
   });
 }

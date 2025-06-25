@@ -19,7 +19,7 @@ class HashrateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MempoolController());
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
@@ -59,9 +59,10 @@ class HashrateCard extends StatelessWidget {
                     children: [
                       Text(
                         hashrateInfo['currentHashrate'],
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       if (controller.hashrateChartData.isNotEmpty &&
                           hashrateInfo['changePercentage'].isNotEmpty)
@@ -104,19 +105,19 @@ class HashrateCard extends StatelessWidget {
 
               // Time period selection
               Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildTimeButton(context, '1D', controller),
-                  SizedBox(width: 4),
-                  _buildTimeButton(context, '1W', controller),
-                  SizedBox(width: 4),
-                  _buildTimeButton(context, '1M', controller),
-                  SizedBox(width: 4),
-                  _buildTimeButton(context, '1Y', controller),
-                  SizedBox(width: 4),
-                  _buildTimeButton(context, 'MAX', controller),
-                ],
-              )),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTimeButton(context, '1D', controller),
+                      SizedBox(width: 4),
+                      _buildTimeButton(context, '1W', controller),
+                      SizedBox(width: 4),
+                      _buildTimeButton(context, '1M', controller),
+                      SizedBox(width: 4),
+                      _buildTimeButton(context, '1Y', controller),
+                      SizedBox(width: 4),
+                      _buildTimeButton(context, 'MAX', controller),
+                    ],
+                  )),
 
               SizedBox(height: 16),
 
@@ -163,8 +164,8 @@ class HashrateCard extends StatelessWidget {
                 child: Text(
                   "Higher hashrate = stronger network security",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: AppTheme.colorBitcoin,
-                  ),
+                        color: AppTheme.colorBitcoin,
+                      ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -174,23 +175,24 @@ class HashrateCard extends StatelessWidget {
       ),
     );
   }
-  
+
   // Helper method to build time period buttons
   Widget _buildTimeButton(
-    BuildContext context, 
-    String period, 
-    MempoolController controller
-  ) {
+      BuildContext context, String period, MempoolController controller) {
     // Use the tracked time period
     final isActive = period == controller.selectedTimePeriod.value;
     return InkWell(
-      onTap: controller.hashrateLoading.value ? null : () {
-        controller.updateHashrateTimePeriod(period);
-      },
+      onTap: controller.hashrateLoading.value
+          ? null
+          : () {
+              controller.updateHashrateTimePeriod(period);
+            },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isActive ? AppTheme.colorBitcoin.withOpacity(0.2) : Colors.transparent,
+          color: isActive
+              ? AppTheme.colorBitcoin.withOpacity(0.2)
+              : Colors.transparent,
           border: Border.all(
             color: isActive ? AppTheme.colorBitcoin : AppTheme.white60,
             width: 1,
@@ -207,9 +209,10 @@ class HashrateCard extends StatelessWidget {
       ),
     );
   }
-  
+
   // Helper method to build the hashrate chart
-  Widget _buildHashrateChart(BuildContext context, MempoolController controller) {
+  Widget _buildHashrateChart(
+      BuildContext context, MempoolController controller) {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       margin: EdgeInsets.only(left: 8, bottom: 8),
@@ -222,10 +225,9 @@ class HashrateCard extends StatelessWidget {
         lineType: TrackballLineType.horizontal,
         tooltipSettings: const InteractiveTooltip(enable: false),
         markerSettings: const TrackballMarkerSettings(
-          color: Colors.white,
-          borderColor: Colors.white,
-          markerVisibility: TrackballVisibilityMode.visible
-        ),
+            color: Colors.white,
+            borderColor: Colors.white,
+            markerVisibility: TrackballVisibilityMode.visible),
       ),
       primaryXAxis: DateTimeAxis(
         intervalType: DateTimeIntervalType.days,
@@ -263,16 +265,15 @@ class HashrateCard extends StatelessWidget {
           width: 2,
           color: AppTheme.colorBitcoin,
           xValueMapper: (ChartLine sales, _) =>
-            DateTime.fromMillisecondsSinceEpoch(sales.time.toInt() * 1000, isUtc: true),
+              DateTime.fromMillisecondsSinceEpoch(sales.time.toInt() * 1000,
+                  isUtc: true),
           yValueMapper: (ChartLine sales, _) => double.parse(sales.price
-            .toString()
-            .substring(
-              0,
-              sales.price.toString().length > 3
-                ? 3
-                : sales.price.toString().length
-            )
-          ),
+              .toString()
+              .substring(
+                  0,
+                  sales.price.toString().length > 3
+                      ? 3
+                      : sales.price.toString().length)),
         ),
         // Add difficulty markers as scatter series
         if (controller.hashrateChartDifficulty.isNotEmpty)
@@ -289,9 +290,10 @@ class HashrateCard extends StatelessWidget {
               borderWidth: 1,
             ),
             xValueMapper: (Difficulty diff, _) =>
-              DateTime.fromMillisecondsSinceEpoch(diff.time!.toInt() * 1000, isUtc: true),
-            yValueMapper: (Difficulty diff, _) => 
-              double.parse((diff.difficulty! / 100000000000).toStringAsFixed(2)),
+                DateTime.fromMillisecondsSinceEpoch(diff.time!.toInt() * 1000,
+                    isUtc: true),
+            yValueMapper: (Difficulty diff, _) => double.parse(
+                (diff.difficulty! / 100000000000).toStringAsFixed(2)),
           ),
       ],
     );

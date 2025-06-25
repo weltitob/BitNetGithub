@@ -81,7 +81,8 @@ class _UsersListState extends State<UsersListWidget> {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: UserResult(
                     onTap: () async {
-                      await controller.loginButtonPressed(userData.did, context);
+                      await controller.loginButtonPressed(
+                          userData.did, context);
                     },
                     userData: userData,
                     onDelete: () async {
@@ -148,10 +149,10 @@ class _UsersListState extends State<UsersListWidget> {
   }
 
   Widget searchForFilesAnimation(
-      Future<LottieComposition> compositionFuture,
-      bool isVisible,
-      BuildContext context,
-      ) {
+    Future<LottieComposition> compositionFuture,
+    bool isVisible,
+    BuildContext context,
+  ) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

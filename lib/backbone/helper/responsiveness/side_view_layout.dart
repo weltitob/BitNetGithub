@@ -2,8 +2,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 class SideViewLayout extends StatelessWidget {
   final Widget mainView;
   final Widget? sideView;
@@ -12,7 +10,8 @@ class SideViewLayout extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var currentUrl = Uri.decodeFull(GoRouter.of(context).routeInformationProvider.value.uri.toString());
+    var currentUrl = Uri.decodeFull(
+        GoRouter.of(context).routeInformationProvider.value.uri.toString());
     if (!currentUrl.endsWith('/')) currentUrl += '/';
     final hideSideView = currentUrl.split('/').length == 4;
     final sideView = this.sideView;

@@ -16,7 +16,7 @@ class FearAndGreedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MempoolController());
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
@@ -58,42 +58,50 @@ class FearAndGreedCard extends StatelessWidget {
                     ),
                   );
                 }
-                
+
                 // Get current value
                 final currentValue = controller.getCurrentFearGreedValue();
-                
+
                 return Center(
                   child: Column(
                     children: [
                       _buildRadialGauge(context, currentValue, controller),
                       // Value and sentiment text
                       Text(
-                        controller.fearGreedData.value.fgi?.now?.valueText ?? "Neutral",
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: controller.getFearGreedColor(currentValue),
-                        ),
+                        controller.fearGreedData.value.fgi?.now?.valueText ??
+                            "Neutral",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: controller.getFearGreedColor(currentValue),
+                            ),
                       ),
-                      
+
                       // Date of reading
                       if (controller.formattedFearGreedDate.value.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             'Updated on ${controller.formattedFearGreedDate.value}',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? AppTheme.white60
-                                  : AppTheme.black60,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? AppTheme.white60
+                                          : AppTheme.black60,
+                                    ),
                           ),
                         ),
-                      
+
                       // Add historical comparison
-                      if (controller.fearGreedData.value.fgi?.previousClose != null)
+                      if (controller.fearGreedData.value.fgi?.previousClose !=
+                          null)
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
-                          child: _buildHistoricalComparison(context, controller),
+                          child:
+                              _buildHistoricalComparison(context, controller),
                         ),
                     ],
                   ),
@@ -105,13 +113,10 @@ class FearAndGreedCard extends StatelessWidget {
       ),
     );
   }
-  
+
   // Build a custom radial gauge for fear & greed
   Widget _buildRadialGauge(
-    BuildContext context, 
-    int value, 
-    MempoolController controller
-  ) {
+      BuildContext context, int value, MempoolController controller) {
     return SizedBox(
       height: 160,
       width: 160,
@@ -165,26 +170,24 @@ class FearAndGreedCard extends StatelessWidget {
         builder: (context, child, value) => RadialGaugeLabel(
           value: value,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ),
     );
   }
-  
+
   // Build a widget showing historical comparison
   Widget _buildHistoricalComparison(
-    BuildContext context,
-    MempoolController controller
-  ) {
+      BuildContext context, MempoolController controller) {
     final data = controller.fearGreedData.value;
-    
+
     // Get current value and historical values
     final currentValue = data.fgi?.now?.value ?? 50;
     final yesterday = data.fgi?.previousClose?.value;
     final lastWeek = data.fgi?.oneWeekAgo?.value;
     final lastMonth = data.fgi?.oneMonthAgo?.value;
-    
+
     return Table(
       columnWidths: const {
         0: FlexColumnWidth(2),
@@ -198,52 +201,50 @@ class FearAndGreedCard extends StatelessWidget {
             Text(
               'Period',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             Text(
               'Value',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
               textAlign: TextAlign.center,
             ),
             Text(
               'Change',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
         ),
-        
+
         // Yesterday row
         if (yesterday != null)
-          _buildComparisonRow(context, 'Yesterday', yesterday, currentValue, controller),
-        
+          _buildComparisonRow(
+              context, 'Yesterday', yesterday, currentValue, controller),
+
         // Last week row
         if (lastWeek != null)
-          _buildComparisonRow(context, 'Last Week', lastWeek, currentValue, controller),
-        
+          _buildComparisonRow(
+              context, 'Last Week', lastWeek, currentValue, controller),
+
         // Last month row
         if (lastMonth != null)
-          _buildComparisonRow(context, 'Last Month', lastMonth, currentValue, controller),
+          _buildComparisonRow(
+              context, 'Last Month', lastMonth, currentValue, controller),
       ],
     );
   }
-  
+
   // Build a row for the comparison table
-  TableRow _buildComparisonRow(
-    BuildContext context,
-    String label,
-    int value,
-    int currentValue,
-    MempoolController controller
-  ) {
+  TableRow _buildComparisonRow(BuildContext context, String label, int value,
+      int currentValue, MempoolController controller) {
     final change = currentValue - value;
     final isPositive = change > 0;
-    
+
     return TableRow(
       children: [
         Padding(
@@ -258,9 +259,9 @@ class FearAndGreedCard extends StatelessWidget {
           child: Text(
             value.toString(),
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: controller.getFearGreedColor(value),
-              fontWeight: FontWeight.bold,
-            ),
+                  color: controller.getFearGreedColor(value),
+                  fontWeight: FontWeight.bold,
+                ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -279,9 +280,11 @@ class FearAndGreedCard extends StatelessWidget {
               Text(
                 '${change.abs()}',
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: isPositive
+                          ? AppTheme.successColor
+                          : AppTheme.errorColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ],

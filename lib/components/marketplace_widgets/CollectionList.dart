@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,9 +6,7 @@ class CollectionList extends StatefulWidget {
   final collectionImg;
 
   const CollectionList(
-      {Key? key,
-      required this.collectionName,
-      required this.collectionImg})
+      {Key? key, required this.collectionName, required this.collectionImg})
       : super(key: key);
 
   @override

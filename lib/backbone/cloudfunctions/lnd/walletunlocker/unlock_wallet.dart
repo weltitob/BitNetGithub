@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:get/get.dart';
 
 Future<dynamic> unlockWallet({String? nodeId}) async {
-
   // Original litd controller approach (commented out for Caddy MVP)
   // final litdController = Get.find<LitdController>();
   // final String restHost = litdController.litd_baseurl.value;
@@ -33,7 +32,8 @@ Future<dynamic> unlockWallet({String? nodeId}) async {
   try {
     // Initialize HttpClient for HTTP requests
     HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    httpClient.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
 
     // Prepare the request
     HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));

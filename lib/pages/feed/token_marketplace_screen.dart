@@ -26,7 +26,7 @@ import 'package:go_router/go_router.dart';
 class TokenMarketplaceScreen extends StatefulWidget {
   final String tokenSymbol;
   final String tokenName;
-  
+
   const TokenMarketplaceScreen({
     Key? key,
     required this.tokenSymbol,
@@ -58,10 +58,12 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
   }
 
   // Generate realistic price history for tokens (to be deleted later only to mock user workflow)
-  List<Map<String, dynamic>> _generatePriceHistory(double currentPrice,
-      int dataPoints,
-      Duration totalDuration,
-      double volatility,) {
+  List<Map<String, dynamic>> _generatePriceHistory(
+    double currentPrice,
+    int dataPoints,
+    Duration totalDuration,
+    double volatility,
+  ) {
     final List<Map<String, dynamic>> priceHistory = [];
     final now = DateTime.now();
     final intervalMs = totalDuration.inMilliseconds ~/ dataPoints;
@@ -73,8 +75,9 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     int seed = currentPrice.toInt() + dataPoints;
 
     for (int i = 0; i < dataPoints; i++) {
-      final timestamp = now.subtract(totalDuration).add(
-          Duration(milliseconds: intervalMs * i));
+      final timestamp = now
+          .subtract(totalDuration)
+          .add(Duration(milliseconds: intervalMs * i));
 
       // Generate pseudo-random number using seed
       seed = (seed * 1103515245 + 12345) % (1 << 31);
@@ -2075,9 +2078,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     // Get token image based on symbol
     String tokenImage = 'assets/images/bitcoin.png';
@@ -2109,20 +2110,17 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                       Container(
                         height: 60.h,
                         width: 60.w,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: 2,
-                              )
-                            ]
-                        ),
+                        decoration:
+                            BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.3),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          )
+                        ]),
                         child: ClipOval(
                           child: Image.asset(
                             tokenImage,
@@ -2138,21 +2136,18 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                           children: [
                             Text(
                               widget.tokenName,
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .headlineMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             Text(
                               widget.tokenSymbol,
-                              style: Theme
-                                  .of(context)
+                              style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                color: isDarkMode ? AppTheme.white60 : AppTheme
-                                    .black60,
-                              ),
+                                    color: isDarkMode
+                                        ? AppTheme.white60
+                                        : AppTheme.black60,
+                                  ),
                             ),
                             SizedBox(height: AppTheme.elementSpacing.h * 0.5),
                             Row(
@@ -2212,16 +2207,12 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                 child: Container(
                   padding: EdgeInsets.all(AppTheme.cardPadding.w * 0.75),
                   decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface
-                        .withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadiusMid),
+                    color:
+                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusMid),
                     border: Border.all(
-                      color: Theme
-                          .of(context)
+                      color: Theme.of(context)
                           .colorScheme
                           .outline
                           .withOpacity(0.2),
@@ -2231,10 +2222,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                     children: [
                       Icon(
                         Icons.show_chart,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .primary,
+                        color: Theme.of(context).colorScheme.primary,
                         size: 24,
                       ),
                       SizedBox(width: AppTheme.elementSpacing.w),
@@ -2244,33 +2232,27 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                           children: [
                             Text(
                               'View Price Chart',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .titleMedium,
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
                             Text(
                               'Track ${widget.tokenSymbol} price movements',
-                              style: Theme
-                                  .of(context)
+                              style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                color: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.color
-                                    ?.withOpacity(0.7),
-                              ),
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                  ),
                             ),
                           ],
                         ),
                       ),
                       Icon(
                         Icons.arrow_forward_ios,
-                        color: Theme
-                            .of(context)
+                        color: Theme.of(context)
                             .colorScheme
                             .onSurface
                             .withOpacity(0.5),
@@ -2310,8 +2292,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                   child: Column(
                     children: _getCurrentTokenData()['sellOffers']
                         .take(5)
-                        .map<
-                        Widget>((offer) => _buildOfferTile(offer, true))
+                        .map<Widget>((offer) => _buildOfferTile(offer, true))
                         .toList(),
                   ),
                 ),
@@ -2336,8 +2317,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                   child: Column(
                     children: _getCurrentTokenData()['buyOffers']
                         .take(5)
-                        .map<
-                        Widget>((offer) => _buildOfferTile(offer, false))
+                        .map<Widget>((offer) => _buildOfferTile(offer, false))
                         .toList(),
                   ),
                 ),
@@ -2357,9 +2337,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
   }
 
   Widget _buildOfferTile(Map<String, dynamic> offer, bool isSellOffer) {
-    final bool isDarkMode = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(
@@ -2367,18 +2345,11 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
         vertical: AppTheme.elementSpacing.h * 0.5,
       ),
       leading: CircleAvatar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .primary
-            .withOpacity(0.1),
+        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
         child: Text(
           offer[isSellOffer ? 'seller' : 'buyer'][0],
           style: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .primary,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -2391,10 +2362,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             children: [
               Text(
                 offer[isSellOffer ? 'seller' : 'buyer'],
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleMedium,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               Row(
                 children: [
@@ -2406,13 +2374,10 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                   SizedBox(width: 4.w),
                   Text(
                     '${offer['rating']} (${offer['trades']} trades)',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(
-                      color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color:
+                              isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                        ),
                   ),
                 ],
               ),
@@ -2423,20 +2388,13 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             children: [
               Text(
                 '${offer['amount']} ${widget.tokenSymbol}',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleSmall,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
               Text(
                 '\$${offer['price']} each',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(
-                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                ),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                    ),
               ),
             ],
           ),
@@ -2449,13 +2407,9 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
           children: [
             Text(
               'Total: \$${offer['total']}',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             LongButtonWidget(
               buttonType: ButtonType.solid,
@@ -2476,53 +2430,44 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
   void _showTradeDialog(Map<String, dynamic> offer, bool isBuyingFromSeller) {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(isBuyingFromSeller
-                ? 'Buy ${widget.tokenSymbol}'
-                : 'Sell ${widget.tokenSymbol}'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${isBuyingFromSeller
-                    ? 'Seller'
-                    : 'Buyer'}: ${offer[isBuyingFromSeller
-                    ? 'seller'
-                    : 'buyer']}'),
-                Text('Amount: ${offer['amount']} ${widget.tokenSymbol}'),
-                Text('Price per token: \$${offer['price']}'),
-                Text('Total: \$${offer['total']}'),
-                SizedBox(height: AppTheme.elementSpacing.h),
-                Text(
-                  'Are you sure you want to ${isBuyingFromSeller
-                      ? 'buy'
-                      : 'sell'} this amount?',
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodyMedium,
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: Text(isBuyingFromSeller
+            ? 'Buy ${widget.tokenSymbol}'
+            : 'Sell ${widget.tokenSymbol}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                '${isBuyingFromSeller ? 'Seller' : 'Buyer'}: ${offer[isBuyingFromSeller ? 'seller' : 'buyer']}'),
+            Text('Amount: ${offer['amount']} ${widget.tokenSymbol}'),
+            Text('Price per token: \$${offer['price']}'),
+            Text('Total: \$${offer['total']}'),
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Text(
+              'Are you sure you want to ${isBuyingFromSeller ? 'buy' : 'sell'} this amount?',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // Handle trade execution
-                  Get.find<OverlayController>().showOverlay(
-                    'Trade initiated with ${offer[isBuyingFromSeller ? 'seller' : 'buyer']}',
-                    color: AppTheme.successColor,
-                  );
-                },
-                child: Text(isBuyingFromSeller ? 'Buy' : 'Sell'),
-              ),
-            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Handle trade execution
+              Get.find<OverlayController>().showOverlay(
+                'Trade initiated with ${offer[isBuyingFromSeller ? 'seller' : 'buyer']}',
+                color: AppTheme.successColor,
+              );
+            },
+            child: Text(isBuyingFromSeller ? 'Buy' : 'Sell'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -2539,5 +2484,4 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
       tokenSymbol: widget.tokenSymbol,
     );
   }
-
 }

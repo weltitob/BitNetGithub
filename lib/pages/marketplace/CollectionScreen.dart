@@ -126,7 +126,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               // Info Tab
               SliverOffstage(
                   offstage: currentTabIndex != 3, sliver: InfoTabView()),
-              
+
               // Bottom padding for better scrolling
               SliverToBoxAdapter(
                 child: SizedBox(height: 100.h),

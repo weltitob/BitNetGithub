@@ -13,15 +13,17 @@ getUniverseRoot(String assetIdStr) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
-  String url = 
-  //  kDebugMode
-  //     ? ''
-  //     :
-       'https://$restHost/v1/taproot-assets/universe/roots/asset-id/$assetIdStr';
+  String url =
+      //  kDebugMode
+      //     ? ''
+      //     :
+      'https://$restHost/v1/taproot-assets/universe/roots/asset-id/$assetIdStr';
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -42,4 +44,3 @@ getUniverseRoot(String assetIdStr) async {
   Map<String, dynamic> responseBody = jsonDecode(response.body);
   logger.i("QUERY ASSET ROOTS: ${responseBody}");
 }
-

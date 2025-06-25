@@ -14,18 +14,18 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> getLoopOutQuote(String userId, String price) async {
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
   final logger = Get.find<LoggerService>();
-  
+
   // Get user's node mapping
   final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -36,18 +36,18 @@ Future<RestResponse> getLoopOutQuote(String userId, String price) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
-  String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/out/quote/$price';
+  String url =
+      '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/out/quote/$price';
   logger.i("Loop Out Quote URL: $url");
 
   Map<String, String> headers = {
@@ -57,7 +57,7 @@ Future<RestResponse> getLoopOutQuote(String userId, String price) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(url: url, headers: headers);
     print('Raw Response: ${response.data}');
@@ -83,8 +83,6 @@ Future<RestResponse> getLoopOutQuote(String userId, String price) async {
   }
 }
 
-
-
 //  {
 //     "swap_fee_sat": <int64>,
 //     "prepay_amt_sat": <int64>,
@@ -93,4 +91,3 @@ Future<RestResponse> getLoopOutQuote(String userId, String price) async {
 //     "cltv_delta": <int32>,
 //     "conf_target": <int32>,
 // }
-

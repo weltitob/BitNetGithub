@@ -25,7 +25,7 @@ class ScrollableBottomSheet extends StatelessWidget {
   final Color backgroundColor;
   final double borderRadius;
   final Widget? appBar;
-  
+
   const ScrollableBottomSheet({
     Key? key,
     required this.child,
@@ -41,11 +41,11 @@ class ScrollableBottomSheet extends StatelessWidget {
     // Calculate available height accounting for keyboard and safe areas
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     // Use maximum of 80% of screen height by default, adjustable with maxHeight parameter
     final defaultMaxHeight = screenHeight * 0.8;
     final actualMaxHeight = maxHeight ?? defaultMaxHeight;
-    
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: actualMaxHeight,
@@ -61,16 +61,20 @@ class ScrollableBottomSheet extends StatelessWidget {
             height: AppTheme.elementSpacing / 1.375,
             width: AppTheme.cardPadding * 2.25,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
-                ? Colors.grey 
-                : Theme.of(context).brightness == Brightness.light 
-                  ? lighten(Theme.of(context).colorScheme.primaryContainer, 40) 
-                  : darken(Theme.of(context).colorScheme.primaryContainer, 70),
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+              color: Theme.of(context).colorScheme.primary ==
+                      AppTheme.colorBitcoin
+                  ? Colors.grey
+                  : Theme.of(context).brightness == Brightness.light
+                      ? lighten(
+                          Theme.of(context).colorScheme.primaryContainer, 40)
+                      : darken(
+                          Theme.of(context).colorScheme.primaryContainer, 70),
+              borderRadius:
+                  BorderRadius.circular(AppTheme.borderRadiusCircular),
             ),
           ),
           const SizedBox(height: AppTheme.elementSpacing * 0.75),
-          
+
           // The main container with the content
           Flexible(
             child: Container(
@@ -79,24 +83,78 @@ class ScrollableBottomSheet extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
-                  colors:
-                  Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin 
-                  ? [Colors.grey, Colors.grey, Colors.grey, Colors.grey, Colors.grey] 
-                  : Theme.of(context).brightness == Brightness.light
+                  colors: Theme.of(context).colorScheme.primary ==
+                          AppTheme.colorBitcoin
                       ? [
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.9),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.7),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.4),
-                          lighten(Theme.of(context).colorScheme.primaryContainer, 40).withOpacity(0.0001),
+                          Colors.grey,
+                          Colors.grey,
+                          Colors.grey,
+                          Colors.grey,
+                          Colors.grey
                         ]
-                      : [
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.9),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.7),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.4),
-                          darken(Theme.of(context).colorScheme.primaryContainer, 70).withOpacity(0.0001),
-                        ],
+                      : Theme.of(context).brightness == Brightness.light
+                          ? [
+                              lighten(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  40),
+                              lighten(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      40)
+                                  .withOpacity(0.9),
+                              lighten(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      40)
+                                  .withOpacity(0.7),
+                              lighten(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      40)
+                                  .withOpacity(0.4),
+                              lighten(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      40)
+                                  .withOpacity(0.0001),
+                            ]
+                          : [
+                              darken(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  70),
+                              darken(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      70)
+                                  .withOpacity(0.9),
+                              darken(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      70)
+                                  .withOpacity(0.7),
+                              darken(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      70)
+                                  .withOpacity(0.4),
+                              darken(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      70)
+                                  .withOpacity(0.0001),
+                            ],
                 ),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(borderRadius),
@@ -113,7 +171,7 @@ class ScrollableBottomSheet extends StatelessWidget {
                   children: [
                     // Custom app bar if provided
                     if (appBar != null) appBar!,
-                    
+
                     // Title if no appBar but title is provided
                     if (appBar == null && title != null)
                       Padding(
@@ -123,7 +181,7 @@ class ScrollableBottomSheet extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
-                    
+
                     // Main content in a scrollable area
                     Flexible(
                       child: SingleChildScrollView(

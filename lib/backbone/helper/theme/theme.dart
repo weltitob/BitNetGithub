@@ -308,43 +308,50 @@ abstract class AppTheme {
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.poppins(
       fontSize: 52,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
     displayMedium: GoogleFonts.poppins(
       fontSize: 40,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
       color: AppTheme.black90,
     ),
     displaySmall: GoogleFonts.poppins(
       fontSize: 28,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
       color: AppTheme.black90,
     ),
     headlineLarge: GoogleFonts.poppins(
       fontSize: 24,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
     headlineMedium: GoogleFonts.poppins(
       fontSize: 22,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
       color: AppTheme.black80,
     ),
     headlineSmall: GoogleFonts.poppins(
       fontSize: 20,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black80,
     ),
     titleLarge: GoogleFonts.poppins(
       fontSize: 17,
-      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight:
+          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
       color: AppTheme.black70,
     ),
@@ -397,7 +404,6 @@ abstract class AppTheme {
       color: AppTheme.black60,
     ),
   );
-
 
   static final textThemeDarkMode = textTheme.copyWith(
     displayLarge: textTheme.displayLarge!.copyWith(

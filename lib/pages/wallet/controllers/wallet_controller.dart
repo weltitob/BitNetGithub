@@ -40,7 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/services/moonpay.dart'
-  if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
+    if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
 
 import '../../../backbone/auth/auth.dart';
 
@@ -51,7 +51,7 @@ class WalletsController extends BaseController {
   RxBool transactionsLoaded = false.obs;
   RxBool additionalTransactionsLoaded = false.obs;
   ScrollController scrollController = ScrollController();
-  
+
   // Counter to force UI updates when timeframe changes
   RxInt timeframeChangeCounter = 0.obs;
 
@@ -142,7 +142,7 @@ class WalletsController extends BaseController {
   List<TransactionItem> __allTransactionItems = [];
   List<TransactionItem> get _allTransactionItems => __allTransactionItems;
   List<TransactionItem> get allTransactionItems => _allTransactionItems;
-  
+
   RxList<TransactionItemData> allTransactions =
       RxList<TransactionItemData>.empty(growable: true);
   RxList<TransactionItemData> filteredTransactions =
@@ -155,7 +155,8 @@ class WalletsController extends BaseController {
   Rx<ReceivedInvoice?> latestInvoice = Rx<ReceivedInvoice?>(null);
   Rx<LightningPayment?> latestPayment = Rx<LightningPayment?>(null);
   Rx<InternalRebalance?> latestinternalRebalance = Rx<InternalRebalance?>(null);
-  Rx<Map<String, dynamic>?> latestChannelOperation = Rx<Map<String, dynamic>?>(null);
+  Rx<Map<String, dynamic>?> latestChannelOperation =
+      Rx<Map<String, dynamic>?>(null);
 
   // A reactive variable to hold the fetched sub-server status
   Rxn<SubServersStatus> subServersStatus = Rxn<SubServersStatus>();
@@ -170,7 +171,7 @@ class WalletsController extends BaseController {
     super.onInit();
     final logger = Get.find<LoggerService>();
     logger.i("Calling onInit in wallet_controller");
-    
+
     // Reset the subscription list to ensure clean state
     _allSubscriptions.clear();
 
@@ -195,7 +196,7 @@ class WalletsController extends BaseController {
 
     //----------------------BALANCES----------------------
     logger.i("NEW: Fetching balances from user's individual node...");
-    
+
     // Fetch balances directly - no need to wait for remote config anymore
     // The balance functions now get node info from NodeMappingService
     fetchOnchainWalletBalance().then((value) {
@@ -633,26 +634,29 @@ class WalletsController extends BaseController {
         .listen((query) {
       Map<String, dynamic>? channelOp;
       additionalTransactionsLoaded.value = false;
-      
+
       try {
         logger.i("Received channel operation from stream");
         if (query.docs.isEmpty) return;
-        
+
         channelOp = query.docs.first.data();
         logger.i("Channel operation data: $channelOp");
-        
+
         // Convert to ChannelOperation model
         final operation = ChannelOperation.fromFirestore(channelOp);
-        
+
         // Create TransactionItemData for the channel operation
         TransactionItemData transactionItem = TransactionItemData(
           timestamp: operation.timestamp,
-          type: operation.type == ChannelOperationType.existing 
-              ? TransactionType.channelDetected // New type for existing channels
+          type: operation.type == ChannelOperationType.existing
+              ? TransactionType
+                  .channelDetected // New type for existing channels
               : TransactionType.channelOpen,
           direction: operation.type == ChannelOperationType.existing
-              ? TransactionDirection.received // Existing channels are like receiving capacity
-              : TransactionDirection.sent, // Channel opens are like sending funds
+              ? TransactionDirection
+                  .received // Existing channels are like receiving capacity
+              : TransactionDirection
+                  .sent, // Channel opens are like sending funds
           receiver: operation.displaySubtitle,
           txHash: operation.channelId,
           amount: operation.capacity.toString(),
@@ -663,20 +667,18 @@ class WalletsController extends BaseController {
                   ? TransactionStatus.failed
                   : TransactionStatus.pending,
         );
-        
+
         // Add to allTransactions list
         addOrUpdateTransaction(transactionItem);
-        
+
         // Completely disable automatic channel operation overlays to prevent spam
         // User will see channel status in the wallet transaction list instead
         // Remove all overlay notifications for channel operations
-        
       } catch (e, stacktrace) {
         channelOp = null;
-        logger.e(
-            'Failed to process channel operation: $e\n$stacktrace');
+        logger.e('Failed to process channel operation: $e\n$stacktrace');
       }
-      
+
       // Update the latest channel operation
       latestChannelOperation.value = channelOp;
       additionalTransactionsLoaded.value = true;
@@ -689,7 +691,7 @@ class WalletsController extends BaseController {
     _allSubscriptions.add(paymentsSubscription);
     _allSubscriptions.add(transactionsSubscription);
     _allSubscriptions.add(channelOperationsSubscription);
-    
+
     // Subscribe to balance and transaction updates
     subscribeToOnchainBalance();
     subscribeToInvoices();
@@ -705,33 +707,36 @@ class WalletsController extends BaseController {
   Future<void> _loadChannelOperations() async {
     try {
       logger.i("Fetching channel operations in wallet_controller");
-      
+
       final userId = Auth().currentUser?.uid;
       if (userId == null) {
         logger.e("No authenticated user for loading channel operations");
         return;
       }
-      
+
       final QuerySnapshot snapshot = await backendRef
           .doc(userId)
           .collection('channel_operations')
           .orderBy('timestamp', descending: true)
           .get();
-      
+
       for (var doc in snapshot.docs) {
         try {
           final data = doc.data() as Map<String, dynamic>;
           final operation = ChannelOperation.fromFirestore(data);
-          
+
           // Create TransactionItemData for the channel operation
           TransactionItemData transactionItem = TransactionItemData(
             timestamp: operation.timestamp,
-            type: operation.type == ChannelOperationType.existing 
-                ? TransactionType.channelDetected // New type for existing channels
+            type: operation.type == ChannelOperationType.existing
+                ? TransactionType
+                    .channelDetected // New type for existing channels
                 : TransactionType.channelOpen,
             direction: operation.type == ChannelOperationType.existing
-                ? TransactionDirection.received // Existing channels are like receiving capacity
-                : TransactionDirection.sent, // Channel opens are like sending funds
+                ? TransactionDirection
+                    .received // Existing channels are like receiving capacity
+                : TransactionDirection
+                    .sent, // Channel opens are like sending funds
             receiver: operation.displaySubtitle,
             txHash: operation.channelId,
             amount: operation.capacity.toString(),
@@ -742,17 +747,15 @@ class WalletsController extends BaseController {
                     ? TransactionStatus.failed
                     : TransactionStatus.pending,
           );
-          
+
           // Add to allTransactions list
           allTransactions.add(transactionItem);
-          
         } catch (e) {
           logger.e("Error processing channel operation: $e");
         }
       }
-      
+
       logger.i("Loaded ${snapshot.docs.length} channel operations");
-      
     } catch (e) {
       logger.e("Failed to load channel operations: $e");
     }
@@ -1064,14 +1067,15 @@ class WalletsController extends BaseController {
         getLightningInvoicesList(),
         getInternalRebalancesList(),
       ];
-      
+
       // Add channel operations loading (convert void to bool)
-      final channelOpsFuture = _loadChannelOperations().then((_) => true).catchError((e) {
+      final channelOpsFuture =
+          _loadChannelOperations().then((_) => true).catchError((e) {
         logger.e("Failed to load channel operations: $e");
         return false;
       });
       futures.add(channelOpsFuture);
-      
+
       final List<bool> results = await Future.wait(futures);
 
       // Extract results
@@ -1255,15 +1259,18 @@ class WalletsController extends BaseController {
           (operation) => TransactionItem(
             data: TransactionItemData(
               timestamp: operation.timestamp,
-              type: operation.type == ChannelOperationType.existing 
+              type: operation.type == ChannelOperationType.existing
                   ? TransactionType.channelDetected
                   : TransactionType.channelOpen,
               direction: operation.type == ChannelOperationType.existing
-                  ? TransactionDirection.received // Detected channels show as received
-                  : TransactionDirection.sent, // New channels show as sent (we initiated)
+                  ? TransactionDirection
+                      .received // Detected channels show as received
+                  : TransactionDirection
+                      .sent, // New channels show as sent (we initiated)
               receiver: operation.remoteNodeAlias,
               txHash: operation.channelId,
-              amount: operation.capacity > 0 ? operation.capacity.toString() : "0",
+              amount:
+                  operation.capacity > 0 ? operation.capacity.toString() : "0",
               fee: 0,
               status: operation.status == ChannelOperationStatus.active
                   ? TransactionStatus.confirmed
@@ -1293,20 +1300,27 @@ class WalletsController extends BaseController {
     try {
       // FIXED: Remove the acc parameter - LND API doesn't use account filtering this way
       RestResponse onchainBalanceRest = await walletBalance();
-      
-      logger.i("🔍 [DEBUG] WalletController - Onchain balance response: ${onchainBalanceRest.statusCode}");
-      logger.i("🔍 [DEBUG] WalletController - Onchain balance data: ${onchainBalanceRest.data}");
 
-      if (onchainBalanceRest.statusCode != "error" && !onchainBalanceRest.data.isEmpty) {
+      logger.i(
+          "🔍 [DEBUG] WalletController - Onchain balance response: ${onchainBalanceRest.statusCode}");
+      logger.i(
+          "🔍 [DEBUG] WalletController - Onchain balance data: ${onchainBalanceRest.data}");
+
+      if (onchainBalanceRest.statusCode != "error" &&
+          !onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
             OnchainBalance.fromJson(onchainBalanceRest.data);
 
         this.onchainBalance.value = onchainBalance;
-        logger.i("🔍 [DEBUG] WalletController - Onchain balance updated: confirmed=${onchainBalance.confirmedBalance}, unconfirmed=${onchainBalance.unconfirmedBalance}");
-        logger.i("Confirmed Balance onchain: ${onchainBalance.confirmedBalance}");
-        logger.i("Unconfirmed Balance onchain: ${onchainBalance.unconfirmedBalance}");
+        logger.i(
+            "🔍 [DEBUG] WalletController - Onchain balance updated: confirmed=${onchainBalance.confirmedBalance}, unconfirmed=${onchainBalance.unconfirmedBalance}");
+        logger
+            .i("Confirmed Balance onchain: ${onchainBalance.confirmedBalance}");
+        logger.i(
+            "Unconfirmed Balance onchain: ${onchainBalance.unconfirmedBalance}");
       } else {
-        logger.e("🔍 [DEBUG] WalletController - Failed to get onchain balance: ${onchainBalanceRest.message}");
+        logger.e(
+            "🔍 [DEBUG] WalletController - Failed to get onchain balance: ${onchainBalanceRest.message}");
       }
       changeTotalBalanceStr();
     } catch (e) {
@@ -1514,14 +1528,14 @@ class WalletsController extends BaseController {
       // Parse with error handling
       double confirmedBalanceSAT = 0;
       double balanceSAT = 0;
-      
+
       try {
         confirmedBalanceSAT = double.parse(confirmedBalanceStr);
       } catch (e) {
         logger.w("Failed to parse onchain balance: $confirmedBalanceStr");
         confirmedBalanceSAT = 0;
       }
-      
+
       try {
         balanceSAT = double.parse(balanceStr);
       } catch (e) {
@@ -1538,30 +1552,31 @@ class WalletsController extends BaseController {
 
       totalBalanceStr.value = balance.toString() + " " + unit;
       totalBalance.value = bitcoinUnit;
-      
+
       logger.d("Total balance updated: ${totalBalanceSAT.value} SAT");
     } catch (e) {
       logger.e("Error in changeTotalBalanceStr: $e");
     }
   }
-  
+
   // Calculate what the balance would be if converted at a specific historical price point
   // This allows showing the user what their balance "would have been worth" at different timeframes
-  BitcoinUnitModel getTimeAdjustedBalance(double currentPrice, double historicalPrice, BitcoinUnits unit) {
+  BitcoinUnitModel getTimeAdjustedBalance(
+      double currentPrice, double historicalPrice, BitcoinUnits unit) {
     // Get current balance in SAT
     double currentBalanceSAT = totalBalanceSAT.value;
-    
+
     // If prices are the same or historical price is 0, just return regular balance
     if (historicalPrice <= 0 || currentPrice == historicalPrice) {
       return CurrencyConverter.convertToBitcoinUnit(currentBalanceSAT, unit);
     }
-    
+
     // Calculate adjustment factor (how much the price has changed since historical point)
     double priceRatio = historicalPrice / currentPrice;
-    
+
     // Calculate what the value would have been at that historical price point
     double adjustedBalanceSAT = currentBalanceSAT * priceRatio;
-    
+
     // Convert to requested unit
     return CurrencyConverter.convertToBitcoinUnit(adjustedBalanceSAT, unit);
   }
@@ -1625,7 +1640,7 @@ class WalletsController extends BaseController {
 
   // List to track all active subscriptions
   final List<StreamSubscription> _allSubscriptions = [];
-  
+
   @override
   void dispose() {
     // Cancel all tracked subscriptions to prevent memory leaks
@@ -1633,7 +1648,7 @@ class WalletsController extends BaseController {
       subscription.cancel();
     }
     _allSubscriptions.clear();
-    
+
     scrollController.dispose();
     pageController.dispose();
     super.dispose();

@@ -12,17 +12,18 @@ import 'package:get/get.dart';
 import 'dart:convert';
 
 dynamic callInternalRebalance(
-    String lightningAddress,
-    String fallbackAddress,
-    String amountSatoshi,
-    String senderUserId,
-    String restHost,
-    ) async {
+  String lightningAddress,
+  String fallbackAddress,
+  String amountSatoshi,
+  String senderUserId,
+  String restHost,
+) async {
   final logger = Get.put(LoggerService());
   try {
     // Attempt to retrieve App Check tokens for additional security.
     try {
-      final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
+      final appCheckToken =
+          await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       logger.i("App Check Token: $appCheckToken");
       logger.i("New App Check Token: $newAppCheckToken");
@@ -31,15 +32,16 @@ dynamic callInternalRebalance(
     }
 
     logger.i("Generating challenge...");
-    UserChallengeResponse? userChallengeResponse =
-    await create_challenge(senderUserId, ChallengeType.send_btc_or_internal_account_rebalance);
+    UserChallengeResponse? userChallengeResponse = await create_challenge(
+        senderUserId, ChallengeType.send_btc_or_internal_account_rebalance);
 
     if (userChallengeResponse == null) {
       logger.e("Challenge konnte nicht erstellt werden.");
       return null;
     }
 
-    logger.d('Created challenge for user ${senderUserId}: $userChallengeResponse');
+    logger.d(
+        'Created challenge for user ${senderUserId}: $userChallengeResponse');
 
     String challengeId = userChallengeResponse.challenge.challengeId;
     logger.d('Challenge ID: $challengeId');
@@ -50,7 +52,7 @@ dynamic callInternalRebalance(
     // Retrieve private data (DID, mnemonic)
     PrivateData privateData = await getPrivateData(senderUserId);
     logger.d('Retrieved private data for user ${senderUserId}');
-    
+
     // NEW: Lightning-native signing
     // Sign the challenge data using Lightning node
     logger.i("Signing challenge with Lightning node...");
@@ -58,13 +60,14 @@ dynamic callInternalRebalance(
       challengeData,
       userDid: senderUserId,
     );
-    
+
     if (lightningSignature == null) {
       logger.e("Failed to sign message with Lightning node");
       throw Exception("Lightning signing failed");
     }
-    
-    logger.d('Generated Lightning signature: ${lightningSignature.substring(0, 20)}...');
+
+    logger.d(
+        'Generated Lightning signature: ${lightningSignature.substring(0, 20)}...');
 
     // Initialize FirebaseFunctions and call the Cloud Function
     final functions = FirebaseFunctions.instance;

@@ -26,10 +26,8 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-
 int _selectedIndex = 1;
 final GlobalKey<_BottomNavState> bottomNavKey = GlobalKey();
-
 
 class BottomNav extends StatefulWidget {
   final GoRouterState routerState;
@@ -255,11 +253,13 @@ class _BottomNavState extends State<BottomNav>
                           switch (i) {
                             case 0:
                               // Safely get the controller, check if it exists first
-                              final feedController = Get.isRegistered<FeedController>() 
-                                  ? Get.find<FeedController>() 
-                                  : null;
+                              final feedController =
+                                  Get.isRegistered<FeedController>()
+                                      ? Get.find<FeedController>()
+                                      : null;
                               if (feedController != null) {
-                                onItemTapped(i, feedController.scrollControllerColumn);
+                                onItemTapped(
+                                    i, feedController.scrollControllerColumn);
                               } else {
                                 // Fallback if controller not found
                                 if (_selectedIndex != i) {
@@ -268,21 +268,25 @@ class _BottomNavState extends State<BottomNav>
                               }
                             case 1:
                               // Safely get the controller with null check
-                              final walletController = Get.isRegistered<WalletsController>() 
-                                  ? Get.find<WalletsController>() 
-                                  : null;
+                              final walletController =
+                                  Get.isRegistered<WalletsController>()
+                                      ? Get.find<WalletsController>()
+                                      : null;
                               if (walletController != null) {
-                                onItemTapped(i, walletController.scrollController);
+                                onItemTapped(
+                                    i, walletController.scrollController);
                               } else {
                                 setState(() => _selectedIndex = i);
                               }
                             case 2:
                               // Safely get the controller with null check
-                              final profileController = Get.isRegistered<ProfileController>() 
-                                  ? Get.find<ProfileController>() 
-                                  : null;
+                              final profileController =
+                                  Get.isRegistered<ProfileController>()
+                                      ? Get.find<ProfileController>()
+                                      : null;
                               if (profileController != null) {
-                                onItemTapped(i, profileController.scrollController);
+                                onItemTapped(
+                                    i, profileController.scrollController);
                               } else {
                                 setState(() => _selectedIndex = i);
                               }

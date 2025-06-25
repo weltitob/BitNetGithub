@@ -14,8 +14,8 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
-
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
   final logger = Get.find<LoggerService>();
 
   // Get user's node mapping
@@ -23,10 +23,9 @@ Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -37,16 +36,15 @@ Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
   String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/in';
   logger.i("Loop In URL: $url");
@@ -67,9 +65,8 @@ Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
     'max_miner_fee': data['minerFee'],
   };
 
-
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.post(url: url, headers: headers, data: data);
     print('Raw Response: ${response.data}');
@@ -95,8 +92,6 @@ Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
   }
 }
 
-
-
 //  {
 //     "swap_fee_sat": <int64>,
 //     "prepay_amt_sat": <int64>,
@@ -105,4 +100,3 @@ Future<RestResponse> loopin(String userId, Map<String, dynamic> data) async {
 //     "cltv_delta": <int32>,
 //     "conf_target": <int32>,
 // }
-

@@ -18,7 +18,8 @@ Future<RestResponse> checkAddressesOwnership(List<String> addresses) async {
   // String baseUrl = AppTheme.baseUrlLightningTerminal;
 
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
-  String url = 'https://us-central1-bitnet-cb34f.cloudfunctions.net/check_addresses_ownership';
+  String url =
+      'https://us-central1-bitnet-cb34f.cloudfunctions.net/check_addresses_ownership';
 
   // ByteData byteData = await loadAdminMacaroonAsset();
   // List<int> bytes = byteData.buffer.asUint8List();
@@ -27,7 +28,10 @@ Future<RestResponse> checkAddressesOwnership(List<String> addresses) async {
   Map<String, String> headers = {
     'Authorization': 'Bearer $id_token',
   };
-  final Map<String, dynamic> data = {'addresses': addresses, 'user_document_id': Auth().currentUser!.uid};
+  final Map<String, dynamic> data = {
+    'addresses': addresses,
+    'user_document_id': Auth().currentUser!.uid
+  };
 
   HttpOverrides.global = MyHttpOverrides();
 
@@ -39,13 +43,21 @@ Future<RestResponse> checkAddressesOwnership(List<String> addresses) async {
 
     if (response.statusCode == 200) {
       print(response.data);
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully loaded Adresses", data: jsonDecode(response.data));
+      return RestResponse(
+          statusCode: "${response.statusCode}",
+          message: "Successfully loaded Adresses",
+          data: jsonDecode(response.data));
     } else {
       logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
+      return RestResponse(
+          statusCode: "error",
+          message:
+              "Failed to load data: ${response.statusCode}, ${response.data}",
+          data: {});
     }
   } catch (e) {
     logger.e('Error trying to list addresses: $e');
-    return RestResponse(statusCode: "error", message: "Failed to load data", data: {});
+    return RestResponse(
+        statusCode: "error", message: "Failed to load data", data: {});
   }
 }

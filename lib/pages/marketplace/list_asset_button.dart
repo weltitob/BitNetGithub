@@ -49,11 +49,11 @@ class ListAssetButton extends StatelessWidget {
               "List",
               style: isSmall
                   ? Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: textColor ?? Colors.white,
-                    )
+                        color: textColor ?? Colors.white,
+                      )
                   : Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: textColor ?? Colors.white,
-                    ),
+                        color: textColor ?? Colors.white,
+                      ),
             ),
           ],
         ),
@@ -65,7 +65,7 @@ class ListAssetButton extends StatelessWidget {
 /// A secondary version with different styling for profile pages
 class ProfileListButton extends StatelessWidget {
   final NFTAsset asset;
-  
+
   const ProfileListButton({
     Key? key,
     required this.asset,
@@ -105,9 +105,9 @@ class ProfileListButton extends StatelessWidget {
               Text(
                 "List for Sale",
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ],
           ),

@@ -7,11 +7,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
-
-
 class AnalysisScreen extends StatefulWidget {
-
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
 }
@@ -51,8 +47,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                 ),
                 const Padding(
                     padding: EdgeInsets.only(
-                      top: 10,
-                    )),
+                  top: 10,
+                )),
                 Row(
                   children: [
                     Column(
@@ -72,9 +68,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     ),
                     const Padding(
                         padding: EdgeInsets.only(
-                          left: 5,
-                        )),
-
+                      left: 5,
+                    )),
                     FutureBuilder<List<Analysts>>(
                         future: iexcloudanalysts.getData(),
                         builder: (context, snapshot) {
@@ -88,7 +83,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                               ),
                             );
                           }
-                          if(snapshot.hasError){
+                          if (snapshot.hasError) {
                             return const Text(
                               'N/A',
                               style: TextStyle(
@@ -97,8 +92,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             );
-                          }
-                          else {
+                          } else {
                             return const Text(
                               "---",
                               style: TextStyle(
@@ -108,16 +102,17 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                               ),
                             );
                           }
-                        }
-                    ),
+                        }),
                   ],
                 ),
                 const Padding(
                     padding: EdgeInsets.only(
-                      top: 5,
-                    )),
-                ChildbuildAnalysis2("${L10n.of(context)!.highestAssesment}", 1200.28),
-                ChildbuildAnalysis2("${L10n.of(context)!.lowestAssesment}", 321.1),
+                  top: 5,
+                )),
+                ChildbuildAnalysis2(
+                    "${L10n.of(context)!.highestAssesment}", 1200.28),
+                ChildbuildAnalysis2(
+                    "${L10n.of(context)!.lowestAssesment}", 321.1),
                 const Padding(
                   padding: EdgeInsets.only(
                     top: 5,
@@ -131,29 +126,29 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             padding: const EdgeInsets.only(left: 25, right: 25),
             child: MyDivider(),
           ),
-          ChildbuildSentimentAnalysis(context, "News sentiment", "negative", "positive", 16),
-          ChildbuildSentimentAnalysis(context, "Fear-Greed", "Extreme fear", "Extreme greed", 50),
-          ChildbuildSentimentAnalysis(context, "Whale-Behaviour", "Bearish", "Bullish", 20),
+          ChildbuildSentimentAnalysis(
+              context, "News sentiment", "negative", "positive", 16),
+          ChildbuildSentimentAnalysis(
+              context, "Fear-Greed", "Extreme fear", "Extreme greed", 50),
+          ChildbuildSentimentAnalysis(
+              context, "Whale-Behaviour", "Bearish", "Bullish", 20),
         ],
       ),
     );
   }
 
-  Widget ChildbuildSentimentAnalysis(BuildContext context,String text, String textred, String textgreen,
-      double sentimentvalue) {
+  Widget ChildbuildSentimentAnalysis(BuildContext context, String text,
+      String textred, String textgreen, double sentimentvalue) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 25),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium
-          ),
+          Text(text, style: Theme.of(context).textTheme.bodyMedium),
           const Padding(
               padding: EdgeInsets.only(
-                right: 5,
-              )),
+            right: 5,
+          )),
           Container(
             width: 220,
             child: Column(
@@ -184,7 +179,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                            BorderRadius.all(Radius.circular(4.0)),
+                                BorderRadius.all(Radius.circular(4.0)),
                           ),
                         ))
                   ],
@@ -231,14 +226,15 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             height: 110,
             width: 110,
             child: Container(
-                child: SfCircularChart(margin: const EdgeInsets.all(0), 
+                child: SfCircularChart(
+                    margin: const EdgeInsets.all(0),
                     series: <CircularSeries>[
-                      DoughnutSeries<PieChartData, String>(
-                          dataSource: getPieData(),
-                          pointColorMapper: (PieChartData data, _) => data.color,
-                          xValueMapper: (PieChartData data, _) => data.x,
-                          yValueMapper: (PieChartData data, _) => data.y)
-                    ])),
+                  DoughnutSeries<PieChartData, String>(
+                      dataSource: getPieData(),
+                      pointColorMapper: (PieChartData data, _) => data.color,
+                      xValueMapper: (PieChartData data, _) => data.x,
+                      yValueMapper: (PieChartData data, _) => data.y)
+                ])),
           ),
           const Padding(
             padding: EdgeInsets.only(
@@ -316,8 +312,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         ),
         const Padding(
             padding: EdgeInsets.only(
-              left: 5,
-            )),
+          left: 5,
+        )),
         Column(
           children: [
             const Text(
@@ -335,8 +331,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         ),
         const Padding(
             padding: EdgeInsets.only(
-              left: 2.5,
-            )),
+          left: 2.5,
+        )),
         Text(
           assesment.toString(),
           style: const TextStyle(
@@ -377,10 +373,10 @@ dynamic getColumnData() {
 
 dynamic getPieData() {
   List<PieChartData> piechartData = [
-    PieChartData('positive mentions', 50, const Color.fromRGBO(65, 157, 120, 1)),
+    PieChartData(
+        'positive mentions', 50, const Color.fromRGBO(65, 157, 120, 1)),
     PieChartData('negative mentions', 20, const Color.fromRGBO(219, 80, 74, 1)),
     PieChartData('neutral', 30, const Color.fromRGBO(221, 209, 199, 1)),
   ];
   return piechartData;
 }
-

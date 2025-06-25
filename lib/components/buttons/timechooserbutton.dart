@@ -26,7 +26,8 @@ class TimeChooserButton extends StatelessWidget {
               : AppTheme.elementSpacing / 2),
       child: isSelected
           ? GlassContainer(
-              border: Border.all(width: 1.5, color: Theme.of(context).dividerColor),
+              border:
+                  Border.all(width: 1.5, color: Theme.of(context).dividerColor),
               opacity: 0.1,
               borderRadius: const BorderRadius.all(
                   Radius.circular(AppTheme.cardPadding / 1.5)),

@@ -5,19 +5,18 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
 
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-
-
 
 burnAsset(String assetIdString) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -38,18 +37,20 @@ burnAsset(String assetIdString) async {
   final assetIdBytes = utf8.encode(assetIdString);
 
   // Convert bytes to hex
-  final assetIdHex = assetIdBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+  final assetIdHex =
+      assetIdBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
 
   // Create data
   final data = {
-  'asset_id': assetIdHex,
-  //'asset_id_str': assetIdString,
-  'amount_to_burn': 1,
-  'confirmation_text': "assets will be destroyed",
+    'asset_id': assetIdHex,
+    //'asset_id_str': assetIdString,
+    'amount_to_burn': 1,
+    'confirmation_text': "assets will be destroyed",
   };
 
   // Send POST request
-  final response = await http.post(url, headers: headers, body: jsonEncode(data));
+  final response =
+      await http.post(url, headers: headers, body: jsonEncode(data));
 
   // Print the response
   print(jsonDecode(response.body));

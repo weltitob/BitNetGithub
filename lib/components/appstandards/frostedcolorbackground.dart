@@ -7,9 +7,9 @@ class FrostedColorBackground extends StatelessWidget {
   final Widget child;
   final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? padding;
-  
+
   const FrostedColorBackground({
-    super.key, 
+    super.key,
     required this.child,
     this.borderRadius,
     this.padding,
@@ -20,7 +20,8 @@ class FrostedColorBackground extends StatelessWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
+        color:
+            Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
         borderRadius: borderRadius ?? AppTheme.cardRadiusSmall,
         border: Border.all(
           color: Colors.white.withOpacity(0.1),

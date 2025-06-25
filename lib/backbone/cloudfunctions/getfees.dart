@@ -12,7 +12,7 @@ dynamic getFees({
   try {
     // Call the Firebase Cloud Function 'sendBitcoin'
     HttpsCallable callable =
-    FirebaseFunctions.instance.httpsCallable('sendBitcoin');
+        FirebaseFunctions.instance.httpsCallable('sendBitcoin');
     final resp = await callable.call(<String, dynamic>{
       'sender_private_key': "",
       'sender_address': sender_address,

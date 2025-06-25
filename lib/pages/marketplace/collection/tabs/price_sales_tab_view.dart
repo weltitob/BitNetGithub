@@ -32,26 +32,30 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
   List<ChartLine> generateMockChartData() {
     final List<ChartLine> data = [];
     final now = DateTime.now();
-    
+
     // Define floor price trends for different timeframes (straight lines with slight variations)
     switch (selectedTimespan) {
       case "1D":
         // 24 hours - very stable floor price
         const floorPrice = 0.0325;
         for (int i = 24; i >= 0; i--) {
-          final time = now.subtract(Duration(hours: i)).millisecondsSinceEpoch.toDouble();
+          final time = now
+              .subtract(Duration(hours: i))
+              .millisecondsSinceEpoch
+              .toDouble();
           // Very minimal variation (±0.5%)
           final variation = (i % 3 - 1) * 0.005 * floorPrice;
           data.add(ChartLine(time: time, price: floorPrice + variation));
         }
         break;
-        
+
       case "1W":
         // 7 days - steady upward trend
         const startPrice = 0.031;
         const endPrice = 0.0335;
         for (int i = 7; i >= 0; i--) {
-          final time = now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
+          final time =
+              now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
           final progress = (7 - i) / 7;
           final price = startPrice + (endPrice - startPrice) * progress;
           // Small random variation (±1%)
@@ -59,13 +63,14 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
           data.add(ChartLine(time: time, price: price + variation));
         }
         break;
-        
+
       case "1M":
         // 30 days - gradual increase with plateaus
         const startPrice = 0.0280;
         const endPrice = 0.0335;
         for (int i = 30; i >= 0; i--) {
-          final time = now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
+          final time =
+              now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
           final progress = (30 - i) / 30;
           // Create stepped increases (plateaus)
           final stepped = (progress * 4).floor() / 4;
@@ -75,45 +80,53 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
           data.add(ChartLine(time: time, price: price + variation));
         }
         break;
-        
+
       case "1Y":
         // 365 days - significant upward trend with some dips
         const startPrice = 0.0180;
         const endPrice = 0.0335;
-        for (int i = 365; i >= 0; i -= 7) { // Weekly data points for performance
-          final time = now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
+        for (int i = 365; i >= 0; i -= 7) {
+          // Weekly data points for performance
+          final time =
+              now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
           final progress = (365 - i) / 365;
           // Add some realistic market movements
           double multiplier = 1.0;
-          if (progress > 0.3 && progress < 0.5) multiplier = 0.85; // Mid-year dip
+          if (progress > 0.3 && progress < 0.5)
+            multiplier = 0.85; // Mid-year dip
           if (progress > 0.7) multiplier = 1.1; // Late year pump
-          
-          final price = (startPrice + (endPrice - startPrice) * progress) * multiplier;
+
+          final price =
+              (startPrice + (endPrice - startPrice) * progress) * multiplier;
           final variation = ((i % 7) - 3) * 0.01 * price / 6;
           data.add(ChartLine(time: time, price: price + variation));
         }
         break;
-        
+
       case "Max":
         // 2 years - long-term growth story
         const startPrice = 0.0120;
         const endPrice = 0.0335;
-        for (int i = 730; i >= 0; i -= 14) { // Bi-weekly data points
-          final time = now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
+        for (int i = 730; i >= 0; i -= 14) {
+          // Bi-weekly data points
+          final time =
+              now.subtract(Duration(days: i)).millisecondsSinceEpoch.toDouble();
           final progress = (730 - i) / 730;
           // Exponential-like growth curve
-          final exponentialProgress = progress * progress * 0.7 + progress * 0.3;
-          final price = startPrice + (endPrice - startPrice) * exponentialProgress;
+          final exponentialProgress =
+              progress * progress * 0.7 + progress * 0.3;
+          final price =
+              startPrice + (endPrice - startPrice) * exponentialProgress;
           final variation = ((i % 14) - 7) * 0.015 * price / 10;
           data.add(ChartLine(time: time, price: price + variation));
         }
         break;
-        
+
       default:
         // Fallback to 1W
         return generateMockChartData();
     }
-    
+
     return data;
   }
 
@@ -149,7 +162,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  _buildStatRow(context, "Floor Price", "0.0335 BTC", isFloorPrice: true),
+                  _buildStatRow(context, "Floor Price", "0.0335 BTC",
+                      isFloorPrice: true),
                   SizedBox(height: 18.h),
                   _buildStatRow(context, "24h Volume", "2.47 BTC"),
                   SizedBox(height: 18.h),
@@ -246,14 +260,22 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                       children: [
                         Text(
                           "Floor Price",
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.7),
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .color!
+                                        .withOpacity(0.7),
+                                  ),
                         ),
                         SizedBox(height: 4.h),
                         Text(
                           "${lastPrice.toStringAsFixed(4)} BTC",
-                          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -267,7 +289,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   ],
                 ),
                 SizedBox(height: 24.h),
-                
+
                 // Chart
                 Container(
                   height: 240.h,
@@ -294,11 +316,16 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                       ),
                       lineType: TrackballLineType.vertical,
                       lineWidth: 2,
-                      lineColor: Theme.of(context).dividerColor.withOpacity(0.3),
+                      lineColor:
+                          Theme.of(context).dividerColor.withOpacity(0.3),
                       markerSettings: TrackballMarkerSettings(
                         markerVisibility: TrackballVisibilityMode.visible,
-                        color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-                        borderColor: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                        color: isPositive
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
+                        borderColor: isPositive
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
                         borderWidth: 2,
                         width: 8,
                         height: 8,
@@ -309,9 +336,12 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                       LineSeries<ChartLine, DateTime>(
                         dataSource: chartData,
                         xValueMapper: (ChartLine data, _) =>
-                            DateTime.fromMillisecondsSinceEpoch(data.time.toInt()),
+                            DateTime.fromMillisecondsSinceEpoch(
+                                data.time.toInt()),
                         yValueMapper: (ChartLine data, _) => data.price,
-                        color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                        color: isPositive
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
                         width: 3,
                         animationDuration: 1000,
                       ),
@@ -319,17 +349,26 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                       AreaSeries<ChartLine, DateTime>(
                         dataSource: chartData,
                         xValueMapper: (ChartLine data, _) =>
-                            DateTime.fromMillisecondsSinceEpoch(data.time.toInt()),
+                            DateTime.fromMillisecondsSinceEpoch(
+                                data.time.toInt()),
                         yValueMapper: (ChartLine data, _) => data.price,
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.3),
-                            (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.05),
+                            (isPositive
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor)
+                                .withOpacity(0.3),
+                            (isPositive
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor)
+                                .withOpacity(0.05),
                           ],
                         ),
-                        borderColor: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                        borderColor: isPositive
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
                         borderWidth: 0,
                         animationDuration: 1000,
                       ),
@@ -340,9 +379,9 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             ),
           ),
         ),
-        
+
         SizedBox(height: 16.h),
-        
+
         // Separate Timeframe Selector
         _buildTimeFrameSelector(),
       ],
@@ -364,7 +403,11 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             Text(
               "Timeframe",
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.7),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .color!
+                        .withOpacity(0.7),
                     fontWeight: FontWeight.w500,
                   ),
             ),
@@ -389,12 +432,18 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         duration: Duration(milliseconds: 200),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.15)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           border: isSelected
                               ? Border.all(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.3),
                                   width: 1,
                                 )
                               : null,
@@ -407,11 +456,20 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                           child: Text(
                             timeframe,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
                                   color: isSelected
                                       ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.8),
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .color!
+                                          .withOpacity(0.8),
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w500,
                                 ),
                           ),
                         ),
@@ -432,32 +490,44 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
     return _buildTimeFrameSelector();
   }
 
-  Widget _buildStatRow(BuildContext context, String label, String value, {bool isFloorPrice = false}) {
+  Widget _buildStatRow(BuildContext context, String label, String value,
+      {bool isFloorPrice = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.8),
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .color!
+                    .withOpacity(0.8),
                 fontWeight: FontWeight.w500,
               ),
         ),
         Container(
-          padding: isFloorPrice ? EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h) : null,
-          decoration: isFloorPrice ? BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-              width: 1,
-            ),
-          ) : null,
+          padding: isFloorPrice
+              ? EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h)
+              : null,
+          decoration: isFloorPrice
+              ? BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    width: 1,
+                  ),
+                )
+              : null,
           child: Text(
             value,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isFloorPrice ? Theme.of(context).colorScheme.primary : null,
+                  color: isFloorPrice
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
                 ),
           ),
         ),
@@ -537,54 +607,54 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
             borderRadius: AppTheme.borderRadiusSmall,
             child: Padding(
               padding: EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Asset image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    nftImage1,
-                    width: 50.w,
-                    height: 50.w,
-                    fit: BoxFit.cover,
+              child: Row(
+                children: [
+                  // Asset image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      nftImage1,
+                      width: 50.w,
+                      height: 50.w,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                // Sale details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(width: 12.w),
+                  // Sale details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Inscription ${sale["id"]}",
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          "${sale["from"]} → ${sale["to"]}",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Price and time
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        "Inscription ${sale["id"]}",
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
+                      Text(sale["price"].toString(),
+                          style: Theme.of(context).textTheme.titleMedium),
                       SizedBox(height: 4.h),
                       Text(
-                        "${sale["from"]} → ${sale["to"]}",
+                        sale["date"].toString(),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
-                ),
-                // Price and time
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(sale["price"].toString(),
-                        style: Theme.of(context).textTheme.titleMedium),
-                    SizedBox(height: 4.h),
-                    Text(
-                      sale["date"].toString(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
           ),
         );

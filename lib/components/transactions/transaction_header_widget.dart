@@ -10,7 +10,7 @@ class TransactionHeaderWidget extends StatelessWidget {
   final VoidCallback? onReceiverTap;
   final String? senderLabel;
   final String? receiverLabel;
-  
+
   const TransactionHeaderWidget({
     required this.data,
     this.onSenderTap,
@@ -19,7 +19,7 @@ class TransactionHeaderWidget extends StatelessWidget {
     this.receiverLabel,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -34,13 +34,15 @@ class TransactionHeaderWidget extends StatelessWidget {
               onTap: onSenderTap,
             ),
             const SizedBox(height: AppTheme.elementSpacing * 0.5),
-            Text(senderLabel ?? (data.type == TransactionType.lightning ? "You" : "Sender")),
+            Text(senderLabel ??
+                (data.type == TransactionType.lightning ? "You" : "Sender")),
           ],
         ),
-        
+
         // Arrow
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 0.75),
+          margin: const EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding * 0.75),
           child: Icon(
             Icons.double_arrow_rounded,
             size: AppTheme.cardPadding * 2.5,
@@ -49,7 +51,7 @@ class TransactionHeaderWidget extends StatelessWidget {
                 : AppTheme.black60,
           ),
         ),
-        
+
         // Receiver avatar and label
         Column(
           children: [
@@ -59,7 +61,10 @@ class TransactionHeaderWidget extends StatelessWidget {
               onTap: onReceiverTap,
             ),
             const SizedBox(height: AppTheme.elementSpacing * 0.5),
-            Text(receiverLabel ?? (data.type == TransactionType.lightning ? "Receiver" : "Receiver")),
+            Text(receiverLabel ??
+                (data.type == TransactionType.lightning
+                    ? "Receiver"
+                    : "Receiver")),
           ],
         ),
       ],

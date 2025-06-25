@@ -71,18 +71,18 @@ class _FeedScreenState extends State<FeedScreen>
   late FocusNode searchNode;
   late ScrollController homeScrollController;
   late Function() scrollListener;
-  
+
   // Track which tabs have been initialized for lazy loading
   final List<bool> _tabsInitialized = List.filled(6, false);
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Log performance improvement
     final startTime = DateTime.now();
     print('[PERFORMANCE] FeedScreen initState started at: $startTime');
-    
+
     Get.put(FeedController()).initNFC(context);
     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
     scrollListener = () {
@@ -90,10 +90,10 @@ class _FeedScreenState extends State<FeedScreen>
     };
     homeScrollController.addListener(scrollListener);
     searchNode = FocusNode();
-    
+
     // Initialize the first tab immediately
     _tabsInitialized[0] = true;
-    
+
     final endTime = DateTime.now();
     final loadTime = endTime.difference(startTime).inMilliseconds;
     print('[PERFORMANCE] FeedScreen initState completed in: ${loadTime}ms');
@@ -168,12 +168,13 @@ class _FeedScreenState extends State<FeedScreen>
             SliverFillRemaining(
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
-                
+
                 // Mark current tab as initialized when it's selected - SAFE VERSION
                 _initializeTabSafely(currentIndex);
-                
-                print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
-                
+
+                print(
+                    "Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
+
                 return IndexedStack(
                   index: currentIndex,
                   sizing: StackFit.expand,
@@ -216,7 +217,7 @@ class _FeedScreenState extends State<FeedScreen>
       );
     });
   }
-  
+
   // Safe tab initialization that defers state updates outside build cycle
   void _initializeTabSafely(int currentIndex) {
     if (!_tabsInitialized[currentIndex] && mounted) {
@@ -235,12 +236,12 @@ class _FeedScreenState extends State<FeedScreen>
   Widget _buildLazyTab(int index, Widget tabContent) {
     final controller = Get.find<FeedController>();
     final isCurrentTab = controller.currentTabIndex.value == index;
-    
+
     // If tab is not initialized and not current, return minimal placeholder
     if (!_tabsInitialized[index] && !isCurrentTab) {
       return const SizedBox.shrink();
     }
-    
+
     // If tab is current but not yet initialized, show loading indicator
     if (!_tabsInitialized[index] && isCurrentTab) {
       return Center(
@@ -261,11 +262,12 @@ class _FeedScreenState extends State<FeedScreen>
         ),
       );
     }
-    
+
     // For initialized tabs, wrap with KeepAliveWrapper to maintain state
     // Only keep alive tabs that benefit from it (tabs with expensive data)
-    final bool shouldKeepAlive = index == 1 || index == 2; // TokensTab and AssetsTab
-    
+    final bool shouldKeepAlive =
+        index == 1 || index == 2; // TokensTab and AssetsTab
+
     return KeepAliveWrapper(
       keepAlive: shouldKeepAlive,
       child: tabContent,

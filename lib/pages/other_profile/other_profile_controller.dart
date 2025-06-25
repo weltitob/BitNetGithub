@@ -65,7 +65,10 @@ class OtherProfileController extends BaseController {
   Map<String, AssetMetaResponse> assetMetaMap = {};
   DateTime originalBlockDate = DateTime.now();
   bool get profileReady =>
-      gotIsFollowing.value == true && gotFollowerCount.value == true && gotFollowingCount.value == true && isUserLoading.value == false;
+      gotIsFollowing.value == true &&
+      gotFollowerCount.value == true &&
+      gotFollowingCount.value == true &&
+      isUserLoading.value == false;
 
   @override
   void onInit() {
@@ -117,8 +120,10 @@ class OtherProfileController extends BaseController {
     if (assetsLazyLoading.length < assets.length) {
       int nextIndex = assetsLazyLoading.length;
       int endIndex = nextIndex + 10;
-      List<dynamic> nextAssets = assets.sublist(nextIndex, endIndex > assets.length ? assets.length : endIndex);
-      await fetchNext20Metas(nextIndex, 10); // Load metadata for the next 20 assets
+      List<dynamic> nextAssets = assets.sublist(
+          nextIndex, endIndex > assets.length ? assets.length : endIndex);
+      await fetchNext20Metas(
+          nextIndex, 10); // Load metadata for the next 20 assets
       assetsLazyLoading.addAll(nextAssets);
       isLoading.value = false;
     }
@@ -191,17 +196,32 @@ class OtherProfileController extends BaseController {
   void handleUnfollowUser() {
     final myuser = Auth().currentUser!.uid;
     isFollowing!.value = false;
-    followersRef.doc(profileId).collection('userFollowers').doc(myuser).get().then((doc) {
+    followersRef
+        .doc(profileId)
+        .collection('userFollowers')
+        .doc(myuser)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    followingRef.doc(myuser).collection('userFollowing').doc(profileId).get().then((doc) {
+    followingRef
+        .doc(myuser)
+        .collection('userFollowing')
+        .doc(profileId)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    activityFeedRef.doc(profileId).collection('feedItems').doc(myuser).get().then((doc) {
+    activityFeedRef
+        .doc(profileId)
+        .collection('feedItems')
+        .doc(myuser)
+        .get()
+        .then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
@@ -210,7 +230,8 @@ class OtherProfileController extends BaseController {
 
   void getFollowers() async {
     try {
-      QuerySnapshot snapshot = await followersRef.doc(profileId).collection('userFollowers').get();
+      QuerySnapshot snapshot =
+          await followersRef.doc(profileId).collection('userFollowers').get();
       followerCount?.value = snapshot.docs.length;
       gotFollowerCount.value = true;
     } catch (e, tr) {
@@ -221,7 +242,8 @@ class OtherProfileController extends BaseController {
 
   void getFollowing() async {
     try {
-      QuerySnapshot snapshot = await followingRef.doc(profileId).collection('userFollowing').get();
+      QuerySnapshot snapshot =
+          await followingRef.doc(profileId).collection('userFollowing').get();
       followingCount?.value = snapshot.docs.length;
       gotFollowingCount.value = true;
     } catch (e, tr) {
@@ -233,7 +255,11 @@ class OtherProfileController extends BaseController {
   void checkIfFollowing() async {
     try {
       final myuser = Auth().currentUser!.uid;
-      DocumentSnapshot doc = await followersRef.doc(profileId).collection('userFollowers').doc(myuser).get();
+      DocumentSnapshot doc = await followersRef
+          .doc(profileId)
+          .collection('userFollowers')
+          .doc(myuser)
+          .get();
       isFollowing?.value = doc.exists;
       gotIsFollowing.value = true;
     } catch (e, tr) {
@@ -259,7 +285,9 @@ class OtherProfileController extends BaseController {
   Future<void> loadMoreMetaAssets(int amt) async {
     try {
       Map<String, AssetMetaResponse> metas = {};
-      for (int i = assetMetaMap.length, a = 0; i < assets.value.length && a < amt; i++) {
+      for (int i = assetMetaMap.length, a = 0;
+          i < assets.value.length && a < amt;
+          i++) {
         String assetId = assets.value[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {
@@ -291,9 +319,14 @@ class OtherProfileController extends BaseController {
   Future<void> handleProfileImageSelected(AssetEntity image) async {
     File? file = await image.file;
     if (file == null) return;
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putFile(file);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: '');
-    await usersCollection.doc(profileId).update({'profileImageUrl': userData.value.profileImageUrl, 'nft_profile_id': ''});
+    TaskSnapshot task =
+        await storageRef.child('users/${profileId}/profile.jpg').putFile(file);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: '');
+    await usersCollection.doc(profileId).update({
+      'profileImageUrl': userData.value.profileImageUrl,
+      'nft_profile_id': ''
+    });
   }
 
   Future<void> handleProfileNftSelected(MediaDatePair pair) async {
@@ -301,17 +334,31 @@ class OtherProfileController extends BaseController {
     final base64String = pair.media!.data.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: pair.assetId);
-    await usersCollection.doc(profileId).update({'profileImageUrl': userData.value.profileImageUrl, 'nft_profile_id': '${pair.assetId}'});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/profile.jpg')
+        .putData(imageBytes);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(),
+        nft_profile_id: pair.assetId);
+    await usersCollection.doc(profileId).update({
+      'profileImageUrl': userData.value.profileImageUrl,
+      'nft_profile_id': '${pair.assetId}'
+    });
   }
 
   Future<void> handleBackgroundImageSelected(AssetEntity image) async {
     File? file = await image.file;
     if (file == null) return;
-    TaskSnapshot task = await storageRef.child('users/${profileId}/background.jpg').putFile(file);
-    userData.value = userData.value.copyWith(backgroundImageUrl: await task.ref.getDownloadURL(), nft_background_id: '');
-    await usersCollection.doc(profileId).update({'backgroundImageUrl': userData.value.backgroundImageUrl, 'nft_background_id': ''});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/background.jpg')
+        .putFile(file);
+    userData.value = userData.value.copyWith(
+        backgroundImageUrl: await task.ref.getDownloadURL(),
+        nft_background_id: '');
+    await usersCollection.doc(profileId).update({
+      'backgroundImageUrl': userData.value.backgroundImageUrl,
+      'nft_background_id': ''
+    });
   }
 
   Future<void> handleBackgroundNftSelected(MediaDatePair pair) async {
@@ -319,10 +366,15 @@ class OtherProfileController extends BaseController {
     final base64String = pair.media!.data.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 
-    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
-    userData.value = userData.value.copyWith(profileImageUrl: await task.ref.getDownloadURL(), nft_profile_id: pair.assetId);
-    await usersCollection
-        .doc(profileId)
-        .update({'backgroundImageUrl': userData.value.backgroundImageUrl, 'nft_profile_id': '${pair.assetId}'});
+    TaskSnapshot task = await storageRef
+        .child('users/${profileId}/profile.jpg')
+        .putData(imageBytes);
+    userData.value = userData.value.copyWith(
+        profileImageUrl: await task.ref.getDownloadURL(),
+        nft_profile_id: pair.assetId);
+    await usersCollection.doc(profileId).update({
+      'backgroundImageUrl': userData.value.backgroundImageUrl,
+      'nft_profile_id': '${pair.assetId}'
+    });
   }
 }

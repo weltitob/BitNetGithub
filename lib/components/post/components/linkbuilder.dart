@@ -61,7 +61,7 @@ class _YouTubeShortState extends State<YouTubeShort> {
   late YoutubePlayerController controller;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     const url = 'https://www.youtube.com/shorts/Zb27E2MJ7QQ?&ab_channel=Keanu';
 
@@ -74,13 +74,12 @@ class _YouTubeShortState extends State<YouTubeShort> {
           loop: true,
           autoPlay: true,
           hideControls: false,
-        )
-    )..addListener(() {
-      if (mounted) {
-        setState(() {
-        });
-      }
-    });
+        ))
+      ..addListener(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
   }
 
   @override
@@ -89,7 +88,8 @@ class _YouTubeShortState extends State<YouTubeShort> {
       borderRadius: BorderRadius.circular(16.0),
       child: ShortsPlayerBuilder(
         player: ShortsPlayer(
-          actionsPadding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+          actionsPadding:
+              const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
           topActions: [
             Expanded(
               child: Text(
@@ -102,15 +102,18 @@ class _YouTubeShortState extends State<YouTubeShort> {
           ],
           bottomActions: [
             const PlaybackSpeedButtonCustom(fontSize: 16),
-            const SizedBox(width: 20,),
+            const SizedBox(
+              width: 20,
+            ),
             CurrentPosition(),
-            ProgressBar(isExpanded: true,
+            ProgressBar(
+              isExpanded: true,
               colors: const ProgressBarColors(
                   playedColor: Colors.orange,
                   handleColor: Colors.orange,
                   bufferedColor: Colors.grey,
-                  backgroundColor: Colors.grey
-              ),),
+                  backgroundColor: Colors.grey),
+            ),
             RemainingDuration(),
           ],
           controller: controller,
@@ -121,8 +124,8 @@ class _YouTubeShortState extends State<YouTubeShort> {
               playedColor: Colors.orange,
               handleColor: Colors.orange,
               bufferedColor: Colors.grey,
-              backgroundColor: Colors.grey
-          ),),
+              backgroundColor: Colors.grey),
+        ),
         builder: (context, player) => player,
       ),
     );
@@ -140,7 +143,7 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
   late YoutubePlayerController controller;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     const url = 'https://www.youtube.com/watch?v=5-sfG8BV8wU&ab_channel=Envane';
 
@@ -151,13 +154,12 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
           loop: true,
           autoPlay: true,
           hideControls: false,
-        )
-    )..addListener(() {
-      if (mounted) {
-        setState(() {
-        });
-      }
-    });
+        ))
+      ..addListener(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
   }
 
   @override
@@ -165,41 +167,44 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
       child: YoutubePlayerBuilder(
-          player: YoutubePlayer(
-            topActions: [
-              Expanded(
-                child: Text(
-                  controller.metadata.title,
-                  style: Theme.of(context).textTheme.titleSmall,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
+        player: YoutubePlayer(
+          topActions: [
+            Expanded(
+              child: Text(
+                controller.metadata.title,
+                style: Theme.of(context).textTheme.titleSmall,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-            ],
-            bottomActions: [
+            ),
+          ],
+          bottomActions: [
             const PlaybackSpeedButtonCustom(),
-            const SizedBox(width: 10,),
+            const SizedBox(
+              width: 10,
+            ),
             CurrentPosition(),
-            ProgressBar(isExpanded: true,
+            ProgressBar(
+              isExpanded: true,
               colors: const ProgressBarColors(
                   playedColor: Colors.orange,
                   handleColor: Colors.orange,
                   bufferedColor: Colors.grey,
-                  backgroundColor: Colors.grey
-              ),),
+                  backgroundColor: Colors.grey),
+            ),
             RemainingDuration(),
-            ],
-            controller: controller,
-            liveUIColor: Colors.orange,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: Colors.orange,
-            progressColors: const ProgressBarColors(
+          ],
+          controller: controller,
+          liveUIColor: Colors.orange,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: Colors.orange,
+          progressColors: const ProgressBarColors(
               playedColor: Colors.orange,
               handleColor: Colors.orange,
               bufferedColor: Colors.grey,
-              backgroundColor: Colors.grey
-          ),),
-          builder: (context, player) => player,
+              backgroundColor: Colors.grey),
+        ),
+        builder: (context, player) => player,
       ),
     );
   }

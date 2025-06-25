@@ -20,13 +20,13 @@ class PaymentMethodsScreen extends StatefulWidget {
 
 class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   late BuyController buyController;
-  
+
   @override
   void initState() {
     super.initState();
     buyController = Get.find<BuyController>();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -51,15 +51,15 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            
+
             // Credit/Debit Card
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlassContainer(
                 opacity: 0.05,
                 child: BitNetListTile(
-                  contentPadding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                   text: "Credit or Debit Card",
                   onTap: () {
                     buyController.setPaymentMethod(
@@ -73,22 +73,23 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     child: Icon(Icons.wallet_rounded),
                   ),
                   trailing: GetBuilder<BuyController>(
-                    builder: (_) => buyController.paymentMethodId.value == "credit_debit_card"
-                      ? Icon(Icons.check_circle, color: AppTheme.successColor)
-                      : SizedBox.shrink(),
+                    builder: (_) => buyController.paymentMethodId.value ==
+                            "credit_debit_card"
+                        ? Icon(Icons.check_circle, color: AppTheme.successColor)
+                        : SizedBox.shrink(),
                   ),
                 ),
               ),
             ),
-            
+
             // Google Pay
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlassContainer(
                 opacity: 0.05,
                 child: BitNetListTile(
-                  contentPadding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                   text: "Google Pay",
                   onTap: () {
                     buyController.setPaymentMethod(
@@ -102,14 +103,15 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     child: Icon(FontAwesomeIcons.google),
                   ),
                   trailing: GetBuilder<BuyController>(
-                    builder: (_) => buyController.paymentMethodId.value == "google_play"
-                      ? Icon(Icons.check_circle, color: AppTheme.successColor)
-                      : SizedBox.shrink(),
+                    builder: (_) => buyController.paymentMethodId.value ==
+                            "google_play"
+                        ? Icon(Icons.check_circle, color: AppTheme.successColor)
+                        : SizedBox.shrink(),
                   ),
                 ),
               ),
             ),
-            
+
             // Apple Pay (iOS only)
             if (Platform.isIOS)
               Padding(
@@ -117,8 +119,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 child: GlassContainer(
                   opacity: 0.05,
                   child: BitNetListTile(
-                    contentPadding: EdgeInsets.only(
-                      left: 16.0, right: 16.0, bottom: 16.0),
+                    contentPadding:
+                        EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                     text: "Apple Pay",
                     onTap: () {
                       buyController.setPaymentMethod(
@@ -132,22 +134,24 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       size: 32,
                     ),
                     trailing: GetBuilder<BuyController>(
-                      builder: (_) => buyController.paymentMethodId.value == "apple_play"
-                        ? Icon(Icons.check_circle, color: AppTheme.successColor)
-                        : SizedBox.shrink(),
+                      builder: (_) =>
+                          buyController.paymentMethodId.value == "apple_play"
+                              ? Icon(Icons.check_circle,
+                                  color: AppTheme.successColor)
+                              : SizedBox.shrink(),
                     ),
                   ),
                 ),
               ),
-            
+
             // PayPal
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlassContainer(
                 opacity: 0.05,
                 child: BitNetListTile(
-                  contentPadding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                   text: "PayPal",
                   onTap: () {
                     buyController.setPaymentMethod(
@@ -161,9 +165,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     size: 32,
                   ),
                   trailing: GetBuilder<BuyController>(
-                    builder: (_) => buyController.paymentMethodId.value == "paypal"
-                      ? Icon(Icons.check_circle, color: AppTheme.successColor)
-                      : SizedBox.shrink(),
+                    builder: (_) => buyController.paymentMethodId.value ==
+                            "paypal"
+                        ? Icon(Icons.check_circle, color: AppTheme.successColor)
+                        : SizedBox.shrink(),
                   ),
                 ),
               ),

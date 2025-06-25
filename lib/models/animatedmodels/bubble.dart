@@ -1,4 +1,3 @@
-
 import 'package:flutter/animation.dart';
 
 class Bubble {
@@ -7,7 +6,10 @@ class Bubble {
   late Animation<double> radius;
   late AnimationController controller;
 
-  Bubble({required this.position, required this.color, required TickerProvider vsync}) {
+  Bubble(
+      {required this.position,
+      required this.color,
+      required TickerProvider vsync}) {
     controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: vsync,
@@ -16,4 +18,3 @@ class Bubble {
     radius = Tween<double>(begin: 0, end: 20.0).animate(controller);
   }
 }
-

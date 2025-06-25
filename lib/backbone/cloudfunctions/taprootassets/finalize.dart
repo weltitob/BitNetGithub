@@ -13,10 +13,12 @@ Future<dynamic> finalizeMint() async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   // Use the same host configuration as mint and other working endpoints
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   print("🔥🔥🔥 HOST VALUE: $restHost 🔥🔥🔥");
   logger.i("Using baseUrlLightningTerminalWithPort: $restHost");
@@ -30,9 +32,10 @@ Future<dynamic> finalizeMint() async {
 
   // Try cancel endpoint pattern first since we know it works
   String url = 'https://$restHost/v1/taproot-assets/assets/mint/cancel';
-  
+
   print("🔥🔥🔥 TRYING URL PATTERN: $url 🔥🔥🔥");
-  logger.i("Attempting to finalize mint with URL pattern from cancel endpoint: $url");
+  logger.i(
+      "Attempting to finalize mint with URL pattern from cancel endpoint: $url");
 
   // Prepare the headers
   Map<String, String> headers = {
@@ -54,7 +57,7 @@ Future<dynamic> finalizeMint() async {
     // First let's try the cancel URL pattern but with "finalize" instead of "cancel"
     String mainUrl = 'https://$restHost/v1/taproot-assets/assets/mint/finalize';
     print("🔥🔥🔥 SENDING MAIN REQUEST TO: $mainUrl 🔥🔥🔥");
-    
+
     try {
       var response = await http.post(
         Uri.parse(mainUrl),
@@ -69,13 +72,14 @@ Future<dynamic> finalizeMint() async {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         print("🔥🔥🔥 MAIN REQUEST SUCCEEDED! 🔥🔥🔥");
-        logger.i("Finalized minting batch response: ${json.encode(responseData)}");
+        logger.i(
+            "Finalized minting batch response: ${json.encode(responseData)}");
         return responseData;
       }
     } catch (e) {
       print("🔥🔥🔥 MAIN REQUEST FAILED: $e 🔥🔥🔥");
     }
-    
+
     // Try alternative endpoints if first one fails
     List<String> fallbackUrls = [
       // Try patterns with variations
@@ -84,38 +88,45 @@ Future<dynamic> finalizeMint() async {
       'https://$restHost/v1/taproot-assets/assets',
       'https://$restHost/v1/taproot-assets/mint/finalize',
     ];
-    
+
     for (int i = 0; i < fallbackUrls.length; i++) {
       String fallbackUrl = fallbackUrls[i];
-      print("🔥🔥🔥 ATTEMPTING FALLBACK URL #${i+1}: $fallbackUrl 🔥🔥🔥");
-      logger.i("Attempting fallback URL #${i+1}: $fallbackUrl");
-      
+      print("🔥🔥🔥 ATTEMPTING FALLBACK URL #${i + 1}: $fallbackUrl 🔥🔥🔥");
+      logger.i("Attempting fallback URL #${i + 1}: $fallbackUrl");
+
       try {
         var fallbackResponse = await http.post(
           Uri.parse(fallbackUrl),
           headers: headers,
           body: json.encode(data),
         );
-        
-        print("🔥🔥🔥 FALLBACK #${i+1} RESPONSE CODE: ${fallbackResponse.statusCode} 🔥🔥🔥");
-        logger.i("Fallback response status code: ${fallbackResponse.statusCode}");
+
+        print(
+            "🔥🔥🔥 FALLBACK #${i + 1} RESPONSE CODE: ${fallbackResponse.statusCode} 🔥🔥🔥");
+        logger
+            .i("Fallback response status code: ${fallbackResponse.statusCode}");
         logger.i("Fallback raw response: ${fallbackResponse.body}");
-        
+
         if (fallbackResponse.statusCode == 200) {
-          Map<String, dynamic> responseData = json.decode(fallbackResponse.body);
-          print("🔥🔥🔥 SUCCESS! FALLBACK #${i+1} SUCCEEDED WITH URL: $fallbackUrl 🔥🔥🔥");
-          logger.i("SUCCESS! Fallback request succeeded with URL: $fallbackUrl");
+          Map<String, dynamic> responseData =
+              json.decode(fallbackResponse.body);
+          print(
+              "🔥🔥🔥 SUCCESS! FALLBACK #${i + 1} SUCCEEDED WITH URL: $fallbackUrl 🔥🔥🔥");
+          logger
+              .i("SUCCESS! Fallback request succeeded with URL: $fallbackUrl");
           return responseData;
         } else {
-          print("🔥🔥🔥 FALLBACK #${i+1} FAILED WITH STATUS: ${fallbackResponse.statusCode} 🔥🔥🔥");
-          logger.e("Fallback request to $fallbackUrl failed. Status code: ${fallbackResponse.statusCode}");
+          print(
+              "🔥🔥🔥 FALLBACK #${i + 1} FAILED WITH STATUS: ${fallbackResponse.statusCode} 🔥🔥🔥");
+          logger.e(
+              "Fallback request to $fallbackUrl failed. Status code: ${fallbackResponse.statusCode}");
         }
       } catch (e) {
-        print("🔥🔥🔥 ERROR TRYING FALLBACK #${i+1}: $e 🔥🔥🔥");
+        print("🔥🔥🔥 ERROR TRYING FALLBACK #${i + 1}: $e 🔥🔥🔥");
         logger.e("Error trying fallback URL $fallbackUrl: $e");
       }
     }
-    
+
     print("🔥🔥🔥 ALL URL ATTEMPTS FAILED 🔥🔥🔥");
     logger.e("All URL attempts failed");
     return null;

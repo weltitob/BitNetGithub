@@ -4,7 +4,7 @@
 
 class MoonpayFlutter {
   static final MoonpayFlutter _instance = MoonpayFlutter._internal();
-  
+
   // Add onUrlGenerated property that will always be null in stub
   Function(String)? onUrlGenerated;
 
@@ -14,7 +14,8 @@ class MoonpayFlutter {
 
   MoonpayFlutter._internal();
 
-  void showMoonPay(String address, double btcAmount, String lang, String currency, double fiatAmount, String paymentMethodId) {
+  void showMoonPay(String address, double btcAmount, String lang,
+      String currency, double fiatAmount, String paymentMethodId) {
     // Empty implementation for web
     print('MoonPay not available on web');
   }

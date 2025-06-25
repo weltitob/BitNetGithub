@@ -13,7 +13,9 @@ class CollectionBuilder extends StatelessWidget {
       child: GlassContainer(
         borderRadius: AppTheme.elementSpacing * 1.5,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing,
+              vertical: AppTheme.elementSpacing),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

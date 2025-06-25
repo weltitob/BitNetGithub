@@ -139,7 +139,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
 
                         // Modern asset display section
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding.w),
                           child: Column(
                             children: [
                               SizedBox(height: AppTheme.cardPadding.h),
@@ -165,15 +166,20 @@ class _NftProductScreenState extends State<NftProductScreen> {
 
                         // Modern asset info header
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding.w),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                assetStats?.assetGenesis?.name ?? "Unknown Asset",
-                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                assetStats?.assetGenesis?.name ??
+                                    "Unknown Asset",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               SizedBox(height: AppTheme.elementSpacing.h / 2),
                               Row(
@@ -185,31 +191,54 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                     type: profilePictureType.onchain,
                                     onTap: () {},
                                   ),
-                                  SizedBox(width: AppTheme.elementSpacing.w / 2),
+                                  SizedBox(
+                                      width: AppTheme.elementSpacing.w / 2),
                                   Text(
                                     "Created by @username",
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.7),
+                                        ),
                                   ),
                                   Text(
                                     " • ",
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.5),
+                                        ),
                                   ),
                                   Text(
-                                    displayTimeAgoFromInt(
-                                      (assetStats != null &&
-                                        assetStats!.chainAnchor != null &&
-                                        assetStats!.chainAnchor!.blockHeight != null
-                                          ? _convertBlockHeightToDateTime(
-                                              assetStats!.chainAnchor!.blockHeight!)
-                                          : DateTime.now())
-                                        .millisecondsSinceEpoch ~/ 1000),
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                    ),
+                                    displayTimeAgoFromInt((assetStats != null &&
+                                                    assetStats!.chainAnchor !=
+                                                        null &&
+                                                    assetStats!.chainAnchor!
+                                                            .blockHeight !=
+                                                        null
+                                                ? _convertBlockHeightToDateTime(
+                                                    assetStats!.chainAnchor!
+                                                        .blockHeight!)
+                                                : DateTime.now())
+                                            .millisecondsSinceEpoch ~/
+                                        1000),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.7),
+                                        ),
                                   ),
                                 ],
                               ),
@@ -217,29 +246,42 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             ],
                           ),
                         ),
-                        
+
                         // Modern price display
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding.w),
                           child: GlassContainer(
-                            boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                            boxShadow:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? []
+                                    : null,
                             child: Padding(
                               padding: EdgeInsets.all(AppTheme.cardPadding),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         L10n.of(context)!.currentPrice,
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.7),
+                                            ),
                                       ),
                                       SizedBox(height: 4.h),
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Icon(
@@ -249,28 +291,42 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                           ),
                                           SizedBox(width: 4.w),
                                           Text(
-                                            assetStats?.amount != null ? 
-                                              (int.parse(assetStats!.amount!) / 100000000).toStringAsFixed(8) : 
-                                              '0.00000000',
-                                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            assetStats?.amount != null
+                                                ? (int.parse(assetStats!
+                                                            .amount!) /
+                                                        100000000)
+                                                    .toStringAsFixed(8)
+                                                : '0.00000000',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                           SizedBox(width: 4.w),
                                           Text(
                                             'BTC',
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withOpacity(0.7),
+                                                ),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
                                   Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w, vertical: 6.h),
                                     decoration: BoxDecoration(
-                                      color: AppTheme.successColor.withOpacity(0.1),
+                                      color: AppTheme.successColor
+                                          .withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(20.r),
                                     ),
                                     child: Row(
@@ -283,10 +339,13 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                         SizedBox(width: 4.w),
                                         Text(
                                           '+12.5%',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: AppTheme.successColor,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: AppTheme.successColor,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -297,36 +356,54 @@ class _NftProductScreenState extends State<NftProductScreen> {
                           ),
                         ),
                         SizedBox(height: AppTheme.cardPadding.h),
-                        
+
                         // Modern stats section
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding.w),
                           child: Row(
                             children: [
                               Expanded(
                                 child: GlassContainer(
-                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? []
+                                      : null,
                                   child: Padding(
-                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    padding: EdgeInsets.all(
+                                        AppTheme.cardPaddingSmall),
                                     child: Column(
                                       children: [
                                         Icon(
                                           Icons.people_outline,
-                                          color: Theme.of(context).colorScheme.primary,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           size: 24.w,
                                         ),
-                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        SizedBox(
+                                            height:
+                                                AppTheme.elementSpacing.h / 2),
                                         Text(
                                           '1',
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         Text(
                                           L10n.of(context)!.owners,
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.7),
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -336,28 +413,45 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               SizedBox(width: AppTheme.elementSpacing.w),
                               Expanded(
                                 child: GlassContainer(
-                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? []
+                                      : null,
                                   child: Padding(
-                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    padding: EdgeInsets.all(
+                                        AppTheme.cardPaddingSmall),
                                     child: Column(
                                       children: [
                                         Icon(
                                           Icons.inventory_2_outlined,
-                                          color: Theme.of(context).colorScheme.primary,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           size: 24.w,
                                         ),
-                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        SizedBox(
+                                            height:
+                                                AppTheme.elementSpacing.h / 2),
                                         Text(
                                           assetStats?.amount ?? '1',
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         Text(
                                           L10n.of(context)!.itemsTotal,
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.7),
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -367,32 +461,45 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               SizedBox(width: AppTheme.elementSpacing.w),
                               Expanded(
                                 child: GlassContainer(
-                                  boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                  boxShadow: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? []
+                                      : null,
                                   child: Padding(
-                                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                    padding: EdgeInsets.all(
+                                        AppTheme.cardPaddingSmall),
                                     child: Column(
                                       children: [
                                         Icon(
                                           Icons.schedule,
-                                          color: Theme.of(context).colorScheme.primary,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           size: 24.w,
                                         ),
-                                        SizedBox(height: AppTheme.elementSpacing.h / 2),
+                                        SizedBox(
+                                            height:
+                                                AppTheme.elementSpacing.h / 2),
                                         Text(
-                                          '${DateTime.now().difference(
-                                            assetStats != null && assetStats!.chainAnchor != null && assetStats!.chainAnchor!.blockHeight != null
-                                              ? _convertBlockHeightToDateTime(assetStats!.chainAnchor!.blockHeight!)
-                                              : DateTime.now()
-                                          ).inDays}',
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          '${DateTime.now().difference(assetStats != null && assetStats!.chainAnchor != null && assetStats!.chainAnchor!.blockHeight != null ? _convertBlockHeightToDateTime(assetStats!.chainAnchor!.blockHeight!) : DateTime.now()).inDays}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         Text(
                                           'Days Old',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.7),
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -410,34 +517,47 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             if (meta != null) {
                               try {
                                 String decodedData = meta!.decodeData();
-                                Map<String, dynamic> jsonMap = jsonDecode(decodedData);
-                                description = jsonMap['description']?.toString();
+                                Map<String, dynamic> jsonMap =
+                                    jsonDecode(decodedData);
+                                description =
+                                    jsonMap['description']?.toString();
                               } catch (e) {
                                 // If not JSON or no description field, use raw decoded data
                                 description = null;
                               }
                             }
-                            
+
                             if (description != null && description.isNotEmpty) {
                               return Container(
-                                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                                margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: AppTheme.cardPadding.w),
+                                margin: EdgeInsets.only(
+                                    top: AppTheme.cardPadding.h),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Description',
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                     SizedBox(height: AppTheme.elementSpacing.h),
                                     Text(
                                       description,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                                        height: 1.5,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.8),
+                                            height: 1.5,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -446,7 +566,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             return SizedBox.shrink();
                           },
                         ),
-                        
+
                         SizedBox(height: AppTheme.cardPadding.h),
                         // Price History section - removed for now as it shows placeholder data
                         // Container(
@@ -482,33 +602,57 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         // ),
                         // Chain information
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                          margin: EdgeInsets.only(top: AppTheme.cardPadding.h, bottom: 100.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding.w),
+                          margin: EdgeInsets.only(
+                              top: AppTheme.cardPadding.h, bottom: 100.h),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Chain Information',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                               SizedBox(height: AppTheme.elementSpacing.h),
                               GlassContainer(
-                                boxShadow: Theme.of(context).brightness == Brightness.dark ? [] : null,
+                                boxShadow: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? []
+                                    : null,
                                 child: Padding(
-                                  padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                                  padding:
+                                      EdgeInsets.all(AppTheme.cardPaddingSmall),
                                   child: Column(
                                     children: [
-                                      _buildInfoRow(context, 'Asset ID', nft_id ?? 'Unknown'),
-                                      if (assetStats?.assetGenesis?.assetType != null)
-                                        _buildInfoRow(context, 'Asset Type', assetStats!.assetGenesis!.assetType!),
-                                      if (assetStats?.chainAnchor?.blockHeight != null)
-                                        _buildInfoRow(context, 'Block Height', assetStats!.chainAnchor!.blockHeight!.toString()),
-                                      if (assetStats?.chainAnchor?.anchorTx != null)
-                                        _buildInfoRow(context, 'Anchor TX', 
-                                          '${assetStats!.chainAnchor!.anchorTx!.substring(0, 8)}...${assetStats!.chainAnchor!.anchorTx!.substring(assetStats!.chainAnchor!.anchorTx!.length - 8)}'),
-                                      _buildInfoRow(context, 'Blockchain', 'Bitcoin (Taproot Assets)'),
+                                      _buildInfoRow(context, 'Asset ID',
+                                          nft_id ?? 'Unknown'),
+                                      if (assetStats?.assetGenesis?.assetType !=
+                                          null)
+                                        _buildInfoRow(
+                                            context,
+                                            'Asset Type',
+                                            assetStats!
+                                                .assetGenesis!.assetType!),
+                                      if (assetStats
+                                              ?.chainAnchor?.blockHeight !=
+                                          null)
+                                        _buildInfoRow(
+                                            context,
+                                            'Block Height',
+                                            assetStats!
+                                                .chainAnchor!.blockHeight!
+                                                .toString()),
+                                      if (assetStats?.chainAnchor?.anchorTx !=
+                                          null)
+                                        _buildInfoRow(context, 'Anchor TX',
+                                            '${assetStats!.chainAnchor!.anchorTx!.substring(0, 8)}...${assetStats!.chainAnchor!.anchorTx!.substring(assetStats!.chainAnchor!.anchorTx!.length - 8)}'),
+                                      _buildInfoRow(context, 'Blockchain',
+                                          'Bitcoin (Taproot Assets)'),
                                     ],
                                   ),
                                 ),
@@ -602,7 +746,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
                     SizedBox(height: AppTheme.cardPadding * 2),
                     // Asset display in a GlassContainer
                     GlassContainer(
-                      border: Border.all(width: 1.5, color: Theme.of(context).dividerColor),
+                      border: Border.all(
+                          width: 1.5, color: Theme.of(context).dividerColor),
                       child: Padding(
                         padding: const EdgeInsets.all(AppTheme.elementSpacing),
                         child: _buildHorizontalProductWithId(),
@@ -739,8 +884,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 0),
-        child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 0), child: mediaWidget);
   }
 
   Widget _buildInfoRow(BuildContext context, String label, String value) {
@@ -752,15 +896,16 @@ class _NftProductScreenState extends State<NftProductScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
           ),
           Flexible(
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+                    fontWeight: FontWeight.w500,
+                  ),
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
             ),

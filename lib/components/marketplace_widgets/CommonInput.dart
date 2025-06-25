@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,7 +6,9 @@ class CommonInput extends StatelessWidget {
   final keyboardType;
   final obscureText;
 
-  const CommonInput({Key? key, this.placeholder, this.keyboardType, this.obscureText = false}) : super(key: key);
+  const CommonInput(
+      {Key? key, this.placeholder, this.keyboardType, this.obscureText = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,8 @@ class CommonInput extends StatelessWidget {
         keyboardType: keyboardType,
         obscureText: obscureText,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
           hintText: placeholder,
           hintStyle: TextStyle(
             fontSize: 12.sp,

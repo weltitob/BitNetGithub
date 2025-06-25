@@ -19,7 +19,9 @@ class PropertieList extends StatelessWidget {
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        color:Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50): const Color.fromRGBO(255, 255, 255, 0.1),
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.grey.withAlpha(50)
+            : const Color.fromRGBO(255, 255, 255, 0.1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,9 +31,9 @@ class PropertieList extends StatelessWidget {
             child: Text(
               heading,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-               ),
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
           ),
           // Container(
@@ -47,9 +49,9 @@ class PropertieList extends StatelessWidget {
           Text(
             subHeading,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-             ),
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
         ],
       ),

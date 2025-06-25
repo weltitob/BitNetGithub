@@ -34,16 +34,21 @@ class BitcoinTransaction {
       numConfirmations: json['num_confirmations'] ?? '',
       blockHash: json['block_hash'] ?? '',
       blockHeight: json['block_height'] ?? '',
-      timeStamp: json['time_stamp'] is int ? json['time_stamp'] : int.parse(json['time_stamp'] ?? '0'),
+      timeStamp: json['time_stamp'] is int
+          ? json['time_stamp']
+          : int.parse(json['time_stamp'] ?? '0'),
       totalFees: json['total_fees'] ?? '',
-      destAddresses: json['dest_addresses'] != null ? List<String>.from(json['dest_addresses'].map((x) => x as String)) : [],
+      destAddresses: json['dest_addresses'] != null
+          ? List<String>.from(json['dest_addresses'].map((x) => x as String))
+          : [],
       outputDetails: json['output_details'] != null
-          ? List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x as Map<String, dynamic>)))
+          ? List<OutputDetail>.from(json['output_details']
+              .map((x) => OutputDetail.fromJson(x as Map<String, dynamic>)))
           : [],
       rawTxHex: json['raw_tx_hex'] as String?,
       label: json['label'] as String?,
-      previousOutpoints:
-          List<PreviousOutpoint>.from(json['previous_outpoints'].map((x) => PreviousOutpoint.fromJson(x as Map<String, dynamic>))),
+      previousOutpoints: List<PreviousOutpoint>.from(json['previous_outpoints']
+          .map((x) => PreviousOutpoint.fromJson(x as Map<String, dynamic>))),
     );
   }
 
@@ -87,7 +92,9 @@ class OutputDetail {
       outputType: json['output_type']!,
       address: json['address']!,
       pkScript: json['pk_script']!,
-      outputIndex: json['output_index'] is int ? json['output_index'] : int.parse(json['output_index']),
+      outputIndex: json['output_index'] is int
+          ? json['output_index']
+          : int.parse(json['output_index']),
       amount: json['amount']!,
       isOurAddress: json['is_our_address'],
     );
@@ -135,12 +142,14 @@ class BitcoinTransactionsList {
 
   factory BitcoinTransactionsList.fromJson(Map<String, dynamic> json) {
     return BitcoinTransactionsList(
-      transactions: List<BitcoinTransaction>.from(json['transactions'].map((x) => BitcoinTransaction.fromJson(x as Map<String, dynamic>))),
+      transactions: List<BitcoinTransaction>.from(json['transactions']
+          .map((x) => BitcoinTransaction.fromJson(x as Map<String, dynamic>))),
     );
   }
   factory BitcoinTransactionsList.fromList(List<Map<String, dynamic>> json) {
     return BitcoinTransactionsList(
-      transactions: List<BitcoinTransaction>.from(json.map((x) => BitcoinTransaction.fromJson(x))),
+      transactions: List<BitcoinTransaction>.from(
+          json.map((x) => BitcoinTransaction.fromJson(x))),
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:punycode/punycode.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-
 import '../platform_infos.dart';
 
 class UrlLauncher {
@@ -90,5 +89,4 @@ class UrlLauncher {
       mode: LaunchMode.externalApplication,
     );
   }
-
 }

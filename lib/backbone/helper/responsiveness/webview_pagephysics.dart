@@ -18,11 +18,11 @@ import 'package:flutter/material.dart';
 //   );
 // }
 
-
 class StrongMouseScrollPhysics extends ScrollPhysics {
   final double scrollSensitivity;
 
-  const StrongMouseScrollPhysics({ScrollPhysics? parent, this.scrollSensitivity = 2.0})
+  const StrongMouseScrollPhysics(
+      {ScrollPhysics? parent, this.scrollSensitivity = 2.0})
       : super(parent: parent);
 
   @override
@@ -36,9 +36,9 @@ class StrongMouseScrollPhysics extends ScrollPhysics {
   }
 
   @override
-  double applyPhysicsToUserOffset(
-      ScrollMetrics position, double offset) {
-    return super.applyPhysicsToUserOffset(position, _appliedScrollSensitivity(offset));
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    return super
+        .applyPhysicsToUserOffset(position, _appliedScrollSensitivity(offset));
   }
 }
 
@@ -51,7 +51,8 @@ class FastScrollPhysics extends ScrollPhysics {
   }
 
   @override
-  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+  Simulation? createBallisticSimulation(
+      ScrollMetrics position, double velocity) {
     final Tolerance tolerance = this.tolerance;
     if ((velocity.abs() < tolerance.velocity) &&
         (position.pixels - position.minScrollExtent).abs() <
@@ -78,7 +79,8 @@ class FastScrollPhysics extends ScrollPhysics {
       spring: SpringDescription.withDampingRatio(
         mass: 0.2, // Decreased mass for faster acceleration
         stiffness: 20, // Stiffness of the spring
-        ratio: 2.0, // Damping ratio, adjusting for how spring-like the simulation is
+        ratio:
+            2.0, // Damping ratio, adjusting for how spring-like the simulation is
       ),
       tolerance: tolerance,
     );

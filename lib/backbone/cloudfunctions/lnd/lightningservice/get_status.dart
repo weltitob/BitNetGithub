@@ -15,17 +15,19 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 /// Check Lightning node status and readiness
-/// 
+///
 /// Uses the /v1/status endpoint to determine if Lightning services are ready
 /// instead of blind retries. This is much more reliable than waiting arbitrary time.
-/// 
+///
 /// NEW: Supports one-user-one-node architecture with user-specific status checks
-Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, String? userDid}) async {
+Future<RestResponse> getNodeStatus(
+    {String? nodeId, String? adminMacaroon, String? userDid}) async {
   LoggerService logger = Get.find();
-  
+
   // Use centralized Lightning configuration
   String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
-  String url = LightningConfig.getLightningUrl('v1/status', nodeId: selectedNode);
+  String url =
+      LightningConfig.getLightningUrl('v1/status', nodeId: selectedNode);
 
   logger.i("=== GET NODE STATUS DEBUG ===");
   logger.i("Target URL: $url");
@@ -38,19 +40,23 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
   if (adminMacaroon != null && adminMacaroon.isNotEmpty) {
     // Use the specific admin macaroon provided (e.g., from initwallet response)
     macaroon = adminMacaroon;
-    logger.i("🔑 Using provided admin macaroon for status check: ${macaroon.substring(0, 20)}... (truncated)");
+    logger.i(
+        "🔑 Using provided admin macaroon for status check: ${macaroon.substring(0, 20)}... (truncated)");
   } else if (userDid != null && userDid.isNotEmpty) {
     // NEW: Load user-specific macaroon from storage
     try {
-      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(userDid);
+      final UserNodeMapping? nodeMapping =
+          await NodeMappingService.getUserNodeMapping(userDid);
       if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
         // Convert base64 macaroon to hex format
         final macaroonBase64 = nodeMapping.adminMacaroon;
         final macaroonBytes = base64Decode(macaroonBase64);
         macaroon = bytesToHex(macaroonBytes);
         selectedNode = nodeMapping.nodeId; // Use user's specific node
-        url = LightningConfig.getLightningUrl('v1/status', nodeId: selectedNode);
-        logger.i("🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
+        url =
+            LightningConfig.getLightningUrl('v1/status', nodeId: selectedNode);
+        logger.i(
+            "🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
       } else {
         throw Exception("No user-specific macaroon found for DID: $userDid");
       }
@@ -60,11 +66,13 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
     }
   } else {
     // Fallback to global admin macaroon (for system-level operations)
-    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    final RemoteConfigController remoteConfigController =
+        Get.find<RemoteConfigController>();
     ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
     List<int> bytes = byteData.buffer.asUint8List();
     macaroon = bytesToHex(bytes);
-    logger.w("⚠️ Using global admin macaroon for status check as fallback: ${macaroon.substring(0, 20)}... (truncated)");
+    logger.w(
+        "⚠️ Using global admin macaroon for status check as fallback: ${macaroon.substring(0, 20)}... (truncated)");
   }
 
   Map<String, String> headers = {
@@ -88,10 +96,12 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
   logger.i("About to make GET request to: $url");
 
   try {
-    var response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    ).timeout(Duration(seconds: LightningConfig.statusCheckTimeoutSeconds));
+    var response = await http
+        .get(
+          Uri.parse(url),
+          headers: headers,
+        )
+        .timeout(Duration(seconds: LightningConfig.statusCheckTimeoutSeconds));
 
     logger.i("=== STATUS HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");
@@ -103,10 +113,13 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
       try {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         logger.i("=== PARSED STATUS RESPONSE ===");
-        
+
         // Log important status fields
         responseData.forEach((key, value) {
-          if (key == 'wallet' || key == 'server_active' || key == 'state' || key == 'subserver_states') {
+          if (key == 'wallet' ||
+              key == 'server_active' ||
+              key == 'state' ||
+              key == 'subserver_states') {
             logger.i("$key: $value ← STATUS INFO");
           } else {
             // Truncate long values for cleaner logs
@@ -118,14 +131,16 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
             }
           }
         });
-        
+
         // Check if Lightning services are ready
         bool isReady = _checkLightningReadiness(responseData, logger);
         logger.i("Lightning services ready: $isReady");
 
         return RestResponse(
           statusCode: "${response.statusCode}",
-          message: isReady ? "Lightning services are ready" : "Lightning services not ready yet",
+          message: isReady
+              ? "Lightning services are ready"
+              : "Lightning services not ready yet",
           data: {
             ...responseData,
             'lightning_ready': isReady,
@@ -145,11 +160,15 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
       logger.e("Status Text: ${response.reasonPhrase}");
       logger.e("Response Body: ${response.body}");
       logger.e("Response Headers: ${response.headers}");
-      
+
       return RestResponse(
         statusCode: "error",
-        message: "Failed to get status: ${response.statusCode}, ${response.body}",
-        data: {"status_code": response.statusCode, "raw_response": response.body},
+        message:
+            "Failed to get status: ${response.statusCode}, ${response.body}",
+        data: {
+          "status_code": response.statusCode,
+          "raw_response": response.body
+        },
       );
     }
   } catch (e, stackTrace) {
@@ -157,69 +176,78 @@ Future<RestResponse> getNodeStatus({String? nodeId, String? adminMacaroon, Strin
     logger.e("Exception Type: ${e.runtimeType}");
     logger.e("Exception Message: $e");
     logger.e("Stack Trace: $stackTrace");
-    
+
     if (e.toString().contains('timeout')) {
       logger.e("STATUS CHECK TIMEOUT - Node might still be starting");
     } else if (e.toString().contains('connection')) {
       logger.e("STATUS CHECK CONNECTION ERROR - Check network connectivity");
     }
-    
+
     return RestResponse(
       statusCode: "error",
       message: "Failed to check status: $e",
-      data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
+      data: {
+        "exception_type": e.runtimeType.toString(),
+        "exception_message": e.toString()
+      },
     );
   }
 }
 
 /// Check if Lightning services are ready based on status response
-bool _checkLightningReadiness(Map<String, dynamic> statusData, LoggerService logger) {
+bool _checkLightningReadiness(
+    Map<String, dynamic> statusData, LoggerService logger) {
   try {
     // Check various indicators of Lightning readiness
-    
+
     // 1. Check overall server state
     bool serverActive = statusData['server_active'] ?? false;
     logger.d("Server active: $serverActive");
-    
+
     // 2. Check wallet state (might not be in status response for some LitD versions)
     var walletState = statusData['wallet'];
     bool walletUnlocked = false;
     if (walletState != null && walletState is Map) {
-      walletUnlocked = walletState['exists'] == true && walletState['unlocked'] == true;
+      walletUnlocked =
+          walletState['exists'] == true && walletState['unlocked'] == true;
       logger.d("Wallet exists and unlocked: $walletUnlocked");
     } else {
       // If wallet state not in status, assume it's ready since we just initialized it
-      logger.d("Wallet state not in status response, assuming ready since we just initialized");
+      logger.d(
+          "Wallet state not in status response, assuming ready since we just initialized");
       walletUnlocked = true;
     }
-    
+
     // 3. Check subserver states (this is the key indicator!)
-    var subServers = statusData['sub_servers']; // Note: different from subserver_states
+    var subServers =
+        statusData['sub_servers']; // Note: different from subserver_states
     bool subserversReady = false;
     int runningCount = 0;
     int totalCount = 0;
-    
+
     if (subServers != null && subServers is Map) {
       subServers.forEach((service, serviceData) {
         totalCount++;
         if (serviceData is Map) {
           bool isRunning = serviceData['running'] == true;
-          bool hasError = serviceData['error'] != null && serviceData['error'].toString().isNotEmpty;
+          bool hasError = serviceData['error'] != null &&
+              serviceData['error'].toString().isNotEmpty;
           bool serviceReady = isRunning && !hasError;
-          
-          logger.d("Subserver $service: running=$isRunning, error=${serviceData['error']}, ready=$serviceReady");
-          
+
+          logger.d(
+              "Subserver $service: running=$isRunning, error=${serviceData['error']}, ready=$serviceReady");
+
           if (serviceReady) {
             runningCount++;
           }
         }
       });
-      
+
       // Consider ready if most subservers are running (especially lnd)
       subserversReady = runningCount >= totalCount * 0.7; // 70% threshold
       logger.d("Subservers ready: $runningCount/$totalCount (threshold: 70%)");
     }
-    
+
     // 4. Check legacy subserver_states format (if available)
     var subserverStates = statusData['subserver_states'];
     bool legacySubserversReady = true;
@@ -232,34 +260,34 @@ bool _checkLightningReadiness(Map<String, dynamic> statusData, LoggerService log
         }
       });
     }
-    
+
     // 5. Check state field (if available)
     String? overallState = statusData['state']?.toString();
     bool stateReady = overallState == 'RPC_ACTIVE' || overallState == 'READY';
     logger.d("Overall state: $overallState (ready: $stateReady)");
-    
+
     // CONSERVATIVE LOGIC: Lightning is ready ONLY if:
     // - Subservers are running (most important), AND
     // - Server is active, AND
     // - Wallet is unlocked
     // This ensures all critical services are actually running
     bool isReady = subserversReady && serverActive && walletUnlocked;
-    
+
     // Fallback: If subservers info isn't available, use legacy logic
     if (subServers == null || (subServers as Map).isEmpty) {
       isReady = legacySubserversReady && serverActive && walletUnlocked;
     }
-    
+
     logger.i("Lightning readiness check:");
     logger.i("- Wallet unlocked: $walletUnlocked");
     logger.i("- Server active: $serverActive");
     logger.i("- State ready: $stateReady");
-    logger.i("- Subservers ready: $subserversReady ($runningCount/$totalCount running)");
+    logger.i(
+        "- Subservers ready: $subserversReady ($runningCount/$totalCount running)");
     logger.i("- Legacy subservers ready: $legacySubserversReady");
     logger.i("- Overall ready: $isReady");
-    
+
     return isReady;
-    
   } catch (e) {
     logger.w("Error checking Lightning readiness: $e");
     return false;
@@ -267,7 +295,7 @@ bool _checkLightningReadiness(Map<String, dynamic> statusData, LoggerService log
 }
 
 /// Validate Lightning readiness by actually calling getinfo
-/// 
+///
 /// NEW: Supports user-specific validation
 Future<bool> validateLightningWithGetInfo({
   String? nodeId,
@@ -275,7 +303,7 @@ Future<bool> validateLightningWithGetInfo({
   String? userDid,
 }) async {
   LoggerService logger = Get.find();
-  
+
   try {
     // Call getNodeInfo with user-specific parameters
     RestResponse getInfoResponse = await getNodeInfo(
@@ -283,7 +311,7 @@ Future<bool> validateLightningWithGetInfo({
       adminMacaroon: adminMacaroon,
       userDid: userDid,
     );
-    
+
     if (getInfoResponse.statusCode == "200") {
       logger.i("✅ GetInfo validation successful - Lightning is truly ready");
       return true;
@@ -298,7 +326,7 @@ Future<bool> validateLightningWithGetInfo({
 }
 
 /// Wait for Lightning services to be ready with intelligent status checking + getinfo validation
-/// 
+///
 /// Much better than blind retries - actually checks when services are available
 /// NEW: Supports user-specific readiness checks
 Future<bool> waitForLightningReady({
@@ -311,17 +339,19 @@ Future<bool> waitForLightningReady({
   // Use config defaults if not provided
   maxWaitSeconds ??= LightningConfig.lightningReadyMaxWaitSeconds;
   checkIntervalSeconds ??= LightningConfig.lightningReadyCheckIntervalSeconds;
-  
+
   LoggerService logger = Get.find();
-  
+
   logger.i("=== WAITING FOR LIGHTNING SERVICES TO BE READY ===");
-  logger.i("Max wait time: ${maxWaitSeconds}s, check interval: ${checkIntervalSeconds}s");
+  logger.i(
+      "Max wait time: ${maxWaitSeconds}s, check interval: ${checkIntervalSeconds}s");
   logger.i("User DID: $userDid");
-  
+
   int elapsed = 0;
   while (elapsed < maxWaitSeconds) {
-    logger.i("Checking Lightning readiness... (${elapsed}s/${maxWaitSeconds}s elapsed)");
-    
+    logger.i(
+        "Checking Lightning readiness... (${elapsed}s/${maxWaitSeconds}s elapsed)");
+
     try {
       // Step 1: Check status endpoint
       RestResponse statusResponse = await getNodeStatus(
@@ -329,28 +359,31 @@ Future<bool> waitForLightningReady({
         adminMacaroon: adminMacaroon,
         userDid: userDid,
       );
-      
+
       if (statusResponse.statusCode == "200") {
         bool isReady = statusResponse.data['lightning_ready'] ?? false;
-        
+
         if (isReady) {
           logger.i("Status endpoint reports ready, validating with getinfo...");
-          
+
           // Step 2: Validate with actual getinfo call
           bool getInfoWorking = await validateLightningWithGetInfo(
             nodeId: nodeId,
             adminMacaroon: adminMacaroon,
             userDid: userDid,
           );
-          
+
           if (getInfoWorking) {
-            logger.i("✅ Lightning services are truly ready! (took ${elapsed}s)");
+            logger
+                .i("✅ Lightning services are truly ready! (took ${elapsed}s)");
             return true;
           } else {
-            logger.i("⏳ Status ready but getinfo still failing, continuing to wait...");
+            logger.i(
+                "⏳ Status ready but getinfo still failing, continuing to wait...");
           }
         } else {
-          logger.i("⏳ Lightning services not ready yet, waiting ${checkIntervalSeconds}s...");
+          logger.i(
+              "⏳ Lightning services not ready yet, waiting ${checkIntervalSeconds}s...");
         }
       } else {
         logger.w("⚠️ Status check failed: ${statusResponse.message}");
@@ -358,7 +391,7 @@ Future<bool> waitForLightningReady({
     } catch (e) {
       logger.w("⚠️ Status check exception: $e");
     }
-    
+
     if (elapsed + checkIntervalSeconds <= maxWaitSeconds) {
       await Future.delayed(Duration(seconds: checkIntervalSeconds));
       elapsed += checkIntervalSeconds;
@@ -366,7 +399,7 @@ Future<bool> waitForLightningReady({
       break;
     }
   }
-  
+
   logger.e("❌ Lightning services not ready after ${maxWaitSeconds}s");
   return false;
 }
@@ -375,7 +408,7 @@ Future<bool> waitForLightningReady({
 Future<RestResponse> getUserNodeStatus(String userId) async {
   final logger = Get.find<LoggerService>();
   logger.i("Checking status for user's node: $userId");
-  
+
   try {
     return await getNodeStatus(userDid: userId);
   } catch (e) {
@@ -391,7 +424,7 @@ Future<RestResponse> getUserNodeStatus(String userId) async {
 /// NEW: Convenience function to check current user's node status
 Future<RestResponse> getCurrentUserNodeStatus() async {
   final logger = Get.find<LoggerService>();
-  
+
   final userId = Auth().currentUser?.uid;
   if (userId == null) {
     logger.e("No user logged in");
@@ -401,6 +434,6 @@ Future<RestResponse> getCurrentUserNodeStatus() async {
       data: {},
     );
   }
-  
+
   return await getUserNodeStatus(userId);
 }

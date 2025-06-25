@@ -4,17 +4,17 @@ import 'moonpay_flutter_platform_interface.dart';
 
 class MoonpayFlutter {
   static const MethodChannel _channel = MethodChannel('moonpay_flutter');
-  
+
   // Singleton instance
   static final MoonpayFlutter _instance = MoonpayFlutter._internal();
-  
+
   // Factory constructor to return the same instance
   factory MoonpayFlutter() {
     return _instance;
   }
-  
+
   Function(String)? onUrlGenerated;
-  
+
   // Private constructor for singleton
   MoonpayFlutter._internal() {
     _channel.setMethodCallHandler(_handleMethodCall);
@@ -46,7 +46,8 @@ class MoonpayFlutter {
       String baseCurrencyCode,
       double baseCurrencyAmount,
       String paymentMethod) async {
-    print("ShowMoonPay called, onUrlGenerated is ${onUrlGenerated == null ? 'null' : 'set'}");
+    print(
+        "ShowMoonPay called, onUrlGenerated is ${onUrlGenerated == null ? 'null' : 'set'}");
     await MoonpayFlutterPlatform.instance.showMoonPay(walletAddress, btcAmount,
         language, baseCurrencyCode, baseCurrencyAmount, paymentMethod);
   }

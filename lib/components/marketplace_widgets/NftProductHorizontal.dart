@@ -37,95 +37,101 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
+        margin: widget.columnMargin
+            ? EdgeInsets.symmetric(horizontal: 8.w)
+            : EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w / 2),
         child: GlassContainer(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 15.w),
             child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Asset image - fixed square dimensions and centered
-              ClipRRect(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.r),
-                ),
-                child: Container(
-                  height: 60.w,
-                  width: 60.w,
-                  child: Image.asset(
-                    widget.nftImage,
-                    fit: BoxFit.cover,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Asset image - fixed square dimensions and centered
+                ClipRRect(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.r),
+                  ),
+                  child: Container(
+                    height: 60.w,
+                    width: 60.w,
+                    child: Image.asset(
+                      widget.nftImage,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              
-              // Spacing between image and text
-              SizedBox(width: 15.w),
-              
-              // Text content column
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // NFT name
-                    Text(
-                      widget.nftMainName,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).brightness == Brightness.light 
-                          ? Colors.black 
-                          : const Color.fromRGBO(249, 249, 249, 1),
-                      ),
-                    ),
-                    
-                    SizedBox(height: 5.h),
-                    
-                    // Crypto price
-                    GlassContainer(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 5.w, horizontal: 10.w),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              widget.cryptoImage,
-                              height: 12.w,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(width: 6.w),
-                            Text(
-                              widget.cryptoText,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).brightness == Brightness.light 
-                                  ? Colors.black 
-                                  : const Color.fromRGBO(255, 255, 255, 0.7),
-                              ),
-                            )
-                          ],
+
+                // Spacing between image and text
+                SizedBox(width: 15.w),
+
+                // Text content column
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // NFT name
+                      Text(
+                        widget.nftMainName,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : const Color.fromRGBO(249, 249, 249, 1),
                         ),
                       ),
-                    ),
-                  ],
+
+                      SizedBox(height: 5.h),
+
+                      // Crypto price
+                      GlassContainer(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5.w, horizontal: 10.w),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                widget.cryptoImage,
+                                height: 12.w,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 6.w),
+                              Text(
+                                widget.cryptoText,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : const Color.fromRGBO(
+                                          255, 255, 255, 0.7),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              
-              // Delete button if needed
-              if (widget.onDelete != null)
-                IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: widget.onDelete,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  visualDensity: VisualDensity.compact,
-                )
-            ],
-          ),
+
+                // Delete button if needed
+                if (widget.onDelete != null)
+                  IconButton(
+                    icon: const Icon(Icons.delete_forever),
+                    onPressed: widget.onDelete,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    visualDensity: VisualDensity.compact,
+                  )
+              ],
             ),
+          ),
         ),
       ),
     );

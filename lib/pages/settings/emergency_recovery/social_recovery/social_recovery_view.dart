@@ -193,10 +193,11 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                   // OLD: Multiple users one node approach - HDWallet-based key derivation
                   // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
                   // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
-                  
+
                   // TODO: Replace with Lightning-native key derivation
                   // For now, using placeholder - social recovery needs redesign for Lightning
-                  String privateKey = "placeholder_private_key"; // Temporary placeholder
+                  String privateKey =
+                      "placeholder_private_key"; // Temporary placeholder
                   List<UserData> invitedUsers = controller.selectedUsers
                       .map((item) => UserData.fromMap(item))
                       .toList();
@@ -397,7 +398,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
       // OLD: Multiple users one node approach - HDWallet-based key derivation
       // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
       // initiateSocialSecurity(privData.mnemonic, hdWallet.privkey, controller.selectedUsers.length, invitedUsers)
-      
+
       // NEW: One user one node approach - BIP39-based key derivation
       // TODO: Replace with Lightning-native key derivation
       String privateKey = "placeholder_private_key"; // Temporary placeholder

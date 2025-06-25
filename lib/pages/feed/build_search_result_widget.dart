@@ -84,28 +84,29 @@ class SearchResultWidget extends StatelessWidget {
     return shuffled
         .take(3)
         .map((data) => UserData(
-      username: '${data['username']}_$category',
-      did: data['did'] ?? '',
-      profileImageUrl: data['profileImageUrl'] ?? '',
-      backgroundImageUrl: 'https://example.com/background.jpg',
-      isPrivate: false,
-      showFollowers: true,
-      displayName: '${data['username']} Display',
-      bio: 'This is the bio of ${data['username']}',
-      customToken: 'customToken123',
-      setupWordRecovery: true,
-      updatedAt: Timestamp.fromMicrosecondsSinceEpoch(233),
-      createdAt: Timestamp.fromMicrosecondsSinceEpoch(233),
-      setupQrCodeRecovery: true,
-      isActive: true,
-      dob: 2,
-    ))
+              username: '${data['username']}_$category',
+              did: data['did'] ?? '',
+              profileImageUrl: data['profileImageUrl'] ?? '',
+              backgroundImageUrl: 'https://example.com/background.jpg',
+              isPrivate: false,
+              showFollowers: true,
+              displayName: '${data['username']} Display',
+              bio: 'This is the bio of ${data['username']}',
+              customToken: 'customToken123',
+              setupWordRecovery: true,
+              updatedAt: Timestamp.fromMicrosecondsSinceEpoch(233),
+              createdAt: Timestamp.fromMicrosecondsSinceEpoch(233),
+              setupQrCodeRecovery: true,
+              isActive: true,
+              dob: 2,
+            ))
         .toList();
   }
 
-  Widget _buildUserCarouselItem(UserData userData, int? rank, BuildContext context) {
+  Widget _buildUserCarouselItem(
+      UserData userData, int? rank, BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
       child: GlassContainer(
@@ -113,63 +114,66 @@ class SearchResultWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
         opacity: isDarkMode ? 0.15 : 0.05,
         child: Padding(
-        padding: const EdgeInsets.all(AppTheme.cardPadding),
-        child: InkWell(
-          onTap: () async {},
-          borderRadius: BorderRadius.circular(AppTheme.cardPadding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Avatar in the center
-              Center(
-                child: Avatar(
-                  size: AppTheme.cardPadding * 4,
-                  onTap: () async {},
-                  mxContent: userData.profileImageUrl,
-                  name: userData.username,
-                  profileId: userData.did,
-                  isNft: false,
-                  cornerWidget: rank != null ? NumberIndicator(
-                    number: rank,
-                    size: 0.8,
-                  ) : null,
+          padding: const EdgeInsets.all(AppTheme.cardPadding),
+          child: InkWell(
+            onTap: () async {},
+            borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Avatar in the center
+                Center(
+                  child: Avatar(
+                    size: AppTheme.cardPadding * 4,
+                    onTap: () async {},
+                    mxContent: userData.profileImageUrl,
+                    name: userData.username,
+                    profileId: userData.did,
+                    isNft: false,
+                    cornerWidget: rank != null
+                        ? NumberIndicator(
+                            number: rank,
+                            size: 0.8,
+                          )
+                        : null,
+                  ),
                 ),
-              ),
-                  
-                  const SizedBox(height: AppTheme.elementSpacing),
-                  
-                  // Username
-                  Text(
-                    "@${userData.username}",
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+
+                const SizedBox(height: AppTheme.elementSpacing),
+
+                // Username
+                Text(
+                  "@${userData.username}",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                const SizedBox(height: AppTheme.elementSpacing / 2),
+
+                // Display name
+                Text(
+                  userData.displayName,
+                  style: Theme.of(context).textTheme.titleSmall,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                const SizedBox(height: AppTheme.elementSpacing),
+
+                // Bio
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing),
+                  child: Text(
+                    userData.bio,
+                    style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
-                  const SizedBox(height: AppTheme.elementSpacing / 2),
-                  
-                  // Display name
-                  Text(
-                    userData.displayName,
-                    style: Theme.of(context).textTheme.titleSmall,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  
-                  const SizedBox(height: AppTheme.elementSpacing),
-                  
-                  // Bio
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                    child: Text(
-                      userData.bio,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
                 ),
               ],
             ),
@@ -179,13 +183,14 @@ class SearchResultWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedPeopleCarousel(List<UserData> users, BuildContext context) {
+  Widget _buildFeaturedPeopleCarousel(
+      List<UserData> users, BuildContext context) {
     if (users.isEmpty) {
       return SizedBox();
     }
-    
+
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -196,9 +201,7 @@ class SearchResultWidget extends StatelessWidget {
           width: screenWidth,
           height: 300.h, // Use ScreenUtil for consistent sizing
           child: CarouselSlider.builder(
-            options: getStandardizedCarouselOptions(
-              autoPlayIntervalSeconds: 5
-            ),
+            options: getStandardizedCarouselOptions(autoPlayIntervalSeconds: 5),
             itemCount: users.length,
             itemBuilder: (context, index, realIndex) {
               return _buildUserCarouselItem(
@@ -225,16 +228,17 @@ class SearchResultWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+          padding:
+              const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               RoundedButtonWidget(
                 size: AppTheme.cardPadding * 1.25,
@@ -256,8 +260,7 @@ class SearchResultWidget extends StatelessWidget {
             child: Column(
               children: List.generate(users.length, (index) {
                 return _buildUserItem(
-                  users[index], 
-                  showRanking ? index + 1 : null);
+                    users[index], showRanking ? index + 1 : null);
               }),
             ),
           ),
@@ -266,7 +269,7 @@ class SearchResultWidget extends StatelessWidget {
       ],
     );
   }
-  
+
   Widget _buildUserItem(UserData userData, [int? rank]) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -285,10 +288,12 @@ class SearchResultWidget extends StatelessWidget {
               name: userData.username,
               profileId: userData.did,
               isNft: false,
-              cornerWidget: rank != null ? NumberIndicator(
-                number: rank,
-                size: 0.8,
-              ) : null,
+              cornerWidget: rank != null
+                  ? NumberIndicator(
+                      number: rank,
+                      size: 0.8,
+                    )
+                  : null,
             ),
             const SizedBox(width: AppTheme.elementSpacing),
             Container(
@@ -321,10 +326,10 @@ class SearchResultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
-    
+
     // Check if search is active (if controller.searchresults has filtered results)
-    final bool isSearchActive = controller.searchresults.isNotEmpty && 
-                              controller.searchresults.length != controller.searchresultsMain.length;
+    final bool isSearchActive = controller.searchresults.isNotEmpty &&
+        controller.searchresults.length != controller.searchresultsMain.length;
 
     // Create mock data for category display when not searching
     final featuredPeople = getMockUsers('featured');
@@ -337,8 +342,7 @@ class SearchResultWidget extends StatelessWidget {
         ? dotProgress(context)
         : GetBuilder<FeedController>(builder: (controller) {
             return Padding(
-              padding: const EdgeInsets.only(
-                  top: AppTheme.elementSpacing),
+              padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
               child: isSearchActive
                   // Show search results when active
                   ? ListView.builder(
@@ -352,49 +356,51 @@ class SearchResultWidget extends StatelessWidget {
                       child: ListView(
                         // Remove the padding from ListView to allow the carousel to extend full width
                         padding: EdgeInsets.zero,
-                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
                         children: [
                           // Featured people carousel at the top
                           _buildFeaturedPeopleCarousel(featuredPeople, context),
-                        
-                        // Regular sections below
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-                          child: Column(
-                            children: [
-                              _buildContactSection(
-                                title: '🔄 Recent Contacts',
-                                users: recentContacts,
-                                context: context,
-                                showViewAll: true,
-                              ),
-                              _buildContactSection(
-                                title: '🌟 Hyped People',
-                                users: hypedPeople,
-                                context: context,
-                                showViewAll: true,
-                                showRanking: true,
-                              ),
-                              _buildContactSection(
-                                title: '💎 Top Buyers',
-                                users: topBuyers,
-                                context: context,
-                                showViewAll: true,
-                                showRanking: true,
-                              ),
-                              _buildContactSection(
-                                title: '💼 Top Sellers',
-                                users: topSellers,
-                                context: context,
-                                showViewAll: true,
-                                showRanking: true,
-                              ),
-                            ],
+
+                          // Regular sections below
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppTheme.cardPadding.w),
+                            child: Column(
+                              children: [
+                                _buildContactSection(
+                                  title: '🔄 Recent Contacts',
+                                  users: recentContacts,
+                                  context: context,
+                                  showViewAll: true,
+                                ),
+                                _buildContactSection(
+                                  title: '🌟 Hyped People',
+                                  users: hypedPeople,
+                                  context: context,
+                                  showViewAll: true,
+                                  showRanking: true,
+                                ),
+                                _buildContactSection(
+                                  title: '💎 Top Buyers',
+                                  users: topBuyers,
+                                  context: context,
+                                  showViewAll: true,
+                                  showRanking: true,
+                                ),
+                                _buildContactSection(
+                                  title: '💼 Top Sellers',
+                                  users: topSellers,
+                                  context: context,
+                                  showViewAll: true,
+                                  showRanking: true,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
             );
           });
   }

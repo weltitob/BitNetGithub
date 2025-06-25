@@ -42,17 +42,21 @@ class QrButton extends StatelessWidget {
                   ),
                   Container(
                     height: AppTheme.cardPadding * 12,
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: AppTheme.cardRadiusSmall),
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.elementSpacing),
                       child: GestureDetector(
-                        onTap: () => launchUrlString('https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}'),
+                        onTap: () => launchUrlString(
+                            'https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}'),
                         child: PrettyQrView.data(
                           decoration: const PrettyQrDecoration(
                             shape: PrettyQrSmoothSymbol(),
                             image: PrettyQrDecorationImage(
                               image: AssetImage('assets/logo.png'),
-                              position: PrettyQrDecorationImagePosition.embedded,
+                              position:
+                                  PrettyQrDecorationImagePosition.embedded,
                             ),
                           ),
                           // typeNumber: 5,
@@ -72,7 +76,8 @@ class QrButton extends StatelessWidget {
                     title: L10n.of(context)!.share,
                     leadingIcon: const Icon(Icons.share_rounded),
                     onTap: () {
-                      Share.share('https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}');
+                      Share.share(
+                          'https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}');
                     },
                     buttonType: ButtonType.transparent,
                   ),
@@ -97,7 +102,9 @@ class QrButton extends StatelessWidget {
           child: RoundedButtonWidget(
             size: AppTheme.cardPadding * 1.75,
             iconData: Icons.qr_code_rounded,
-            iconColor: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
+            iconColor: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.black70
+                : AppTheme.white90,
             onTap: () {
               onQRButtonPressed(context);
             },

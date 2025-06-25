@@ -14,7 +14,8 @@ class BubbleWidget extends StatefulWidget {
   _BubbleWidgetState createState() => _BubbleWidgetState();
 }
 
-class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMixin {
+class _BubbleWidgetState extends State<BubbleWidget>
+    with TickerProviderStateMixin {
   List<Bubble> bubbles = [];
   Random random = Random();
 
@@ -23,19 +24,22 @@ class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMix
     super.initState();
 
     Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 200)); // Creates a bubble every half-second
-      if(!mounted) {
+      await Future.delayed(const Duration(
+          milliseconds: 200)); // Creates a bubble every half-second
+      if (!mounted) {
         return false;
       }
       final bubble = Bubble(
-        position: Offset(random.nextDouble() * widget.width, random.nextDouble() * widget.height),
+        position: Offset(random.nextDouble() * widget.width,
+            random.nextDouble() * widget.height),
         color: Colors.white.withAlpha(50 + random.nextInt(200)),
         vsync: this,
       );
 
       // Randomize the bubble size with a maximum radius of 20
       double endRadius = 5 + random.nextDouble() * 5;
-      bubble.radius = Tween<double>(begin: 0, end: endRadius).animate(bubble.controller);
+      bubble.radius =
+          Tween<double>(begin: 0, end: endRadius).animate(bubble.controller);
 
       // Speed up the animation
       bubble.controller.duration = const Duration(milliseconds: 750);
@@ -81,7 +85,10 @@ class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMix
 class BubblePainter extends CustomPainter {
   final List<Bubble> bubbles;
 
-  BubblePainter({required this.bubbles}) : super(repaint: Listenable.merge(bubbles.map((e) => e.controller).toList()));
+  BubblePainter({required this.bubbles})
+      : super(
+            repaint:
+                Listenable.merge(bubbles.map((e) => e.controller).toList()));
 
   @override
   void paint(Canvas canvas, Size size) {

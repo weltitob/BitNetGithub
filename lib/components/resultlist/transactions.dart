@@ -60,9 +60,7 @@ class _TransactionsState extends State<Transactions>
   final TextEditingController searchCtrl = TextEditingController();
   Timer? _searchTimer;
 
-
   bool firstInit = false;
-
 
   @override
   void initState() {
@@ -104,11 +102,11 @@ class _TransactionsState extends State<Transactions>
 
     //Onchain checking for transactions
     Get.find<WalletsController>().subscribeToOnchainTransactions().listen(
-            (val) {
-          logger.i("subscribeTransactionsStream got data in transactions.dart: $val");
-          _checkAndDisplayAdditional();
-
-        }, onError: (error) {
+        (val) {
+      logger
+          .i("subscribeTransactionsStream got data in transactions.dart: $val");
+      _checkAndDisplayAdditional();
+    }, onError: (error) {
       logger.e("Received error for Transactions-stream: $error");
     });
 
@@ -116,20 +114,17 @@ class _TransactionsState extends State<Transactions>
     Get.find<WalletsController>().subscribeToInvoices().listen((inv) {
       logger.i("Received data from Invoice-stream in transactions.dart: $inv");
       _checkAndDisplayAdditional();
-
-
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");
     });
 
     Get.find<WalletsController>().subscribeToLightningPayments().listen((inv) {
-      logger.i("Received Payment data from Invoice-stream in transactions.dart: $inv");
+      logger.i(
+          "Received Payment data from Invoice-stream in transactions.dart: $inv");
       _checkAndDisplayAdditional();
-
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");
     });
-
   }
 
   @override
@@ -144,9 +139,12 @@ class _TransactionsState extends State<Transactions>
           widget.customTransactions == null) {
         Future.microtask(() {
           final tmp = walletController.allTransactions
-              .map((item) => TransactionItem(data: item,))
+              .map((item) => TransactionItem(
+                    data: item,
+                  ))
               .toList();
-          transactionsController.orderedTransactions.value = arrangeTransactions(tmp);
+          transactionsController.orderedTransactions.value =
+              arrangeTransactions(tmp);
           transactionsController.transactionsOrdered.value = true;
           // setState(() {});
         });
@@ -162,7 +160,7 @@ class _TransactionsState extends State<Transactions>
 
   void _checkAndDisplayAdditional() {
 // Passe hier an, wenn du mehr oder weniger als 3 Ladefunktionen hast
-    if(walletController.additionalTransactionsLoaded.value) {
+    if (walletController.additionalTransactionsLoaded.value) {
       logger.i("Loading all additional transactions...");
       combineAllTransactionsWithFiltering();
     } else {
@@ -178,17 +176,15 @@ class _TransactionsState extends State<Transactions>
 
   void _checkAndDisplay() {
     // Passe hier an, wenn du mehr oder weniger als 3 Ladefunktionen hast
-    if(walletController.transactionsLoaded.value) {
+    if (walletController.transactionsLoaded.value) {
       logger.i("Loading all transactions...");
       combineAllTransactionsWithFiltering();
-
     } else {
       logger.i("Transactions not loaded yet. Waiting...");
       walletController.transactionsLoaded.listen((loaded) {
         if (loaded) {
           logger.i("Loading all transactions...");
           combineAllTransactionsWithFiltering();
-
         }
       });
     }
@@ -196,7 +192,6 @@ class _TransactionsState extends State<Transactions>
 
   void handlePageLoadErrors(
       int errorCount, String errorMessage, BuildContext context) {
-
     final overlayController = Get.find<OverlayController>();
 
     if (errorCount == 1) {
@@ -209,14 +204,13 @@ class _TransactionsState extends State<Transactions>
     }
   }
 
-
   /// (Neu) Alle Transaktionen sammeln + Filterung + Search anwenden
   void combineAllTransactionsWithFiltering({bool sticky = true}) {
     Future.microtask(() {
-
       logger.i("Combining all transactions with filtering...");
       // 1) Alle Transaktionen (ungefiltert) sammeln
-      final List<TransactionItem> combinedTransactions = walletController.allTransactionItems;
+      final List<TransactionItem> combinedTransactions =
+          walletController.allTransactionItems;
       //We need to check if the list actually got longer
 
       // 2) Duplikate entfernen
@@ -268,26 +262,28 @@ class _TransactionsState extends State<Transactions>
 
     // 3) Filter Onchain/Lightning
     final filterOnchain = filterController.selectedFilters.contains('Onchain');
-    final filterLightning = filterController.selectedFilters.contains('Lightning');
+    final filterLightning =
+        filterController.selectedFilters.contains('Lightning');
 
     List<TransactionItem> typeFiltered = searchFiltered;
     if (filterOnchain && !filterLightning) {
       // Nur Onchain anzeigen
-      typeFiltered = searchFiltered.where(
-              (tx) => tx.data.type == TransactionType.onChain
-      ).toList();
+      typeFiltered = searchFiltered
+          .where((tx) => tx.data.type == TransactionType.onChain)
+          .toList();
     } else if (!filterOnchain && filterLightning) {
       // Nur Lightning anzeigen
-      typeFiltered = searchFiltered.where(
-              (tx) => tx.data.type == TransactionType.lightning
-      ).toList();
+      typeFiltered = searchFiltered
+          .where((tx) => tx.data.type == TransactionType.lightning)
+          .toList();
     }
     // Falls beide oder keine ausgewählt sind, zeigen wir alle an (onChain + lightning).
     // Möchtest du Loop oder andere Typen filtern, erweitere hier entsprechend.
 
     // 4) Filter "Sent/Received"
     final filterSent = filterController.selectedFilters.contains('Sent');
-    final filterReceived = filterController.selectedFilters.contains('Received');
+    final filterReceived =
+        filterController.selectedFilters.contains('Received');
 
     // a) Beide aktiviert oder beide nicht vorhanden => alles anzeigen
     // b) Nur 'Sent' => amount fängt mit '-' an
@@ -308,7 +304,6 @@ class _TransactionsState extends State<Transactions>
     }
   }
 
-
   /// Wie gehabt, gruppiert nach Zeit in "Kategorien"
   List<Widget> arrangeTransactions(List<TransactionItem> combinedTransactions) {
     Map<String, List<TransactionItem>> categorizedTransactions = {};
@@ -324,7 +319,7 @@ class _TransactionsState extends State<Transactions>
 
     for (TransactionItem item in combinedTransactions) {
       DateTime date =
-      DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
+          DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
 
       if (date.isAfter(startOfThisMonth)) {
         String timeTag = displayTimeAgoFromInt(item.data.timestamp);
@@ -367,22 +362,19 @@ class _TransactionsState extends State<Transactions>
   /// Paging/Scroll
   void _onScroll() {
     if (widget.scrollController.position.pixels ==
-        widget.scrollController.position.maxScrollExtent &&
+            widget.scrollController.position.maxScrollExtent &&
         !transactionsController.isLoadingTransactionGroups.value) {
       _loadMoreTransactionGroups();
     }
   }
 
   void _loadMoreTransactionGroups() async {
-
     transactionsController.isLoadingTransactionGroups.value = true;
-
 
     await Future.delayed(const Duration(milliseconds: 500));
 
     transactionsController.loadedActivityItems.value += 4;
     transactionsController.isLoadingTransactionGroups.value = false;
-
   }
 
   @override
@@ -488,7 +480,7 @@ class _TransactionsState extends State<Transactions>
 
         return SliverList(
           delegate: SliverChildBuilderDelegate(
-                (ctx, index) {
+            (ctx, index) {
               if (index == 0) {
                 // First entry: Search-Bar + Filter-Button
                 return Container(
@@ -503,7 +495,8 @@ class _TransactionsState extends State<Transactions>
                     handleSearch: (v) {
                       searchCtrl.text = v;
                       _searchTimer?.cancel();
-                      _searchTimer = Timer(const Duration(milliseconds: 300), () {
+                      _searchTimer =
+                          Timer(const Duration(milliseconds: 300), () {
                         combineAllTransactionsWithFiltering();
                       });
                     },
@@ -536,7 +529,8 @@ class _TransactionsState extends State<Transactions>
               }
 
               final contentIndex = index - 1;
-              if (contentIndex < transactionsController.orderedTransactions.length) {
+              if (contentIndex <
+                  transactionsController.orderedTransactions.length) {
                 return transactionsController.orderedTransactions[contentIndex];
               } else {
                 return const SizedBox.shrink();
@@ -569,16 +563,16 @@ class TransactionContainer extends StatelessWidget {
           GlassContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: transactions.map((tx) => 
-                tx.data.txHash.isNotEmpty 
-                  ? ValueKey(tx.data.txHash)
-                  : ValueKey('${tx.data.timestamp}_${tx.data.amount}')
-              ).map((key) {
-                final index = transactions.indexWhere((tx) => 
-                  tx.data.txHash.isNotEmpty 
-                    ? tx.data.txHash == (key as ValueKey).value
-                    : '${tx.data.timestamp}_${tx.data.amount}' == (key as ValueKey).value
-                );
+              children: transactions
+                  .map((tx) => tx.data.txHash.isNotEmpty
+                      ? ValueKey(tx.data.txHash)
+                      : ValueKey('${tx.data.timestamp}_${tx.data.amount}'))
+                  .map((key) {
+                final index = transactions.indexWhere((tx) =>
+                    tx.data.txHash.isNotEmpty
+                        ? tx.data.txHash == (key as ValueKey).value
+                        : '${tx.data.timestamp}_${tx.data.amount}' ==
+                            (key as ValueKey).value);
                 return KeyedSubtree(
                   key: key,
                   child: transactions[index],

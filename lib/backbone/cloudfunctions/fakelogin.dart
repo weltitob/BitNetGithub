@@ -5,8 +5,9 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 
-
-fakeLoginION(String fakedid, ) async {
+fakeLoginION(
+  String fakedid,
+) async {
   HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('old_fake_login');
 

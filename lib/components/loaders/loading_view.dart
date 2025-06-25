@@ -19,7 +19,7 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
   @override
   void initState() {
     super.initState();
-    
+
     // Special handling for web - redirect immediately to website landing page
     if (kIsWeb) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -30,21 +30,21 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
       });
       return;
     }
-    
+
     // Normal mobile initialization
     try {
       bool deepLink = false;
-      
+
       // Safely get WidgetTreeController
       if (Get.isRegistered<WidgetTreeController>()) {
         deepLink = Get.find<WidgetTreeController>().openedWithDeepLink;
       }
-      
+
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         if (deepLink) {
           return;
         }
-        
+
         try {
           if (Auth().currentUser != null) {
             context.go('/feed');
@@ -52,14 +52,16 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
             context.go('/authhome');
           }
         } catch (e) {
-          print('Error navigating from LoadingViewAppStart (safe to ignore in web preview): $e');
+          print(
+              'Error navigating from LoadingViewAppStart (safe to ignore in web preview): $e');
           // Fallback navigation
           context.go('/authhome');
         }
       });
     } catch (e) {
-      print('Error in LoadingViewAppStart.initState (safe to ignore in web preview): $e');
-      
+      print(
+          'Error in LoadingViewAppStart.initState (safe to ignore in web preview): $e');
+
       // Fallback navigation
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         context.go('/authhome');
@@ -78,13 +80,14 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
             children: [
               dotProgress(context),
               SizedBox(height: 24),
-              Text('Loading BitNet...', style: Theme.of(context).textTheme.headlineSmall),
+              Text('Loading BitNet...',
+                  style: Theme.of(context).textTheme.headlineSmall),
             ],
           ),
         ),
       );
     }
-    
+
     // For mobile, use the safer auth check approach
     try {
       return StreamBuilder(
@@ -93,25 +96,26 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
           // Show loading while waiting
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: dotProgress(context));
-          } 
-          
+          }
+
           // Show error message if there's an error
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          
+
           // Handle authenticated user
           if (snapshot.data != null) {
             // User is authenticated
             WidgetsBinding.instance.addPostFrameCallback((_) {
               try {
                 bool shouldNavigate = true;
-                
+
                 // Check if we're handling a deep link
                 if (Get.isRegistered<WidgetTreeController>()) {
-                  shouldNavigate = !Get.find<WidgetTreeController>().openedWithDeepLink;
+                  shouldNavigate =
+                      !Get.find<WidgetTreeController>().openedWithDeepLink;
                 }
-                
+
                 if (shouldNavigate) {
                   context.go('/feed');
                 }
@@ -120,11 +124,11 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
                 context.go('/feed');
               }
             });
-            
+
             // Return empty container while navigation is in progress
             return Container();
-          } 
-          
+          }
+
           // Handle unauthenticated user
           else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -132,19 +136,20 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
                 // Set device locale
                 Locale deviceLocale = PlatformDispatcher.instance.locale;
                 String langCode = deviceLocale.languageCode;
-                
+
                 // Update locale in database
                 Provider.of<LocalProvider>(context, listen: false)
-                  .setLocaleInDatabase(langCode, deviceLocale, isUser: false);
-                
+                    .setLocaleInDatabase(langCode, deviceLocale, isUser: false);
+
                 // Navigate to auth home
                 context.go('/authhome');
               } catch (e) {
-                print('Locale/navigation error (safe to ignore in web preview): $e');
+                print(
+                    'Locale/navigation error (safe to ignore in web preview): $e');
                 context.go('/authhome');
               }
             });
-            
+
             // Return empty container while navigation is in progress
             return Container();
           }
@@ -152,7 +157,8 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
       );
     } catch (e) {
       // Ultimate fallback UI in case the StreamBuilder throws
-      print('Critical error in LoadingViewAppStart.build (safe to ignore in web preview): $e');
+      print(
+          'Critical error in LoadingViewAppStart.build (safe to ignore in web preview): $e');
       return Scaffold(
         body: Center(
           child: Column(
@@ -160,7 +166,8 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
             children: [
               Icon(Icons.error_outline, size: 48, color: Colors.red),
               SizedBox(height: 16),
-              Text('Loading error', style: Theme.of(context).textTheme.headlineSmall),
+              Text('Loading error',
+                  style: Theme.of(context).textTheme.headlineSmall),
               SizedBox(height: 8),
               TextButton(
                 onPressed: () {

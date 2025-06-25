@@ -12,8 +12,7 @@ class CoinLogoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var coinIconUrl =
-        "https://s2.coinmarketcap.com/static/img/coins/64x64/";
+    var coinIconUrl = "https://s2.coinmarketcap.com/static/img/coins/64x64/";
 
     return Container(
         height: 40.0,
@@ -34,18 +33,20 @@ class CoinLogoWidgetSmall extends StatelessWidget {
 
   const CoinLogoWidgetSmall({
     Key? key,
-    required this.coinid,  this.width = 30.0,  this.height = 30.0,
+    required this.coinid,
+    this.width = 30.0,
+    this.height = 30.0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var coinIconUrl =
-        "https://s2.coinmarketcap.com/static/img/coins/64x64/";
+    var coinIconUrl = "https://s2.coinmarketcap.com/static/img/coins/64x64/";
 
     return Container(
         height: height,
         width: width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(width * 2)),
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(width * 2)),
         child: CachedNetworkImage(
           imageUrl: ((coinIconUrl + coinid.toString() + ".png").toLowerCase()),
           placeholder: (context, url) => SizedBox(

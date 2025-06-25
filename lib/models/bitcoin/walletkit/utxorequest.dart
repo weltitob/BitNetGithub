@@ -1,4 +1,3 @@
-
 import 'package:bitnet/models/bitcoin/walletkit/outpoint.dart';
 
 class Utxo {

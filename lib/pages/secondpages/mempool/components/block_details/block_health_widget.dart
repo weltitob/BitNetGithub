@@ -11,20 +11,19 @@ import 'package:get/get.dart';
 /// Widget displaying block health information
 class BlockHealthWidget extends StatelessWidget {
   final bool isAccepted;
-  
+
   const BlockHealthWidget({
     Key? key,
     this.isAccepted = true,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
-    
+
     // For unaccepted blocks, assume 100% health since they haven't been mined yet
-    double matchRate = isAccepted 
-        ? controller.txDetailsConfirmed!.extras.matchRate 
-        : 100.0;
+    double matchRate =
+        isAccepted ? controller.txDetailsConfirmed!.extras.matchRate : 100.0;
 
     return GlassContainer(
       child: Column(
@@ -39,9 +38,9 @@ class BlockHealthWidget extends StatelessWidget {
               Text(
                 L10n.of(context)!.health,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(
                 width: AppTheme.elementSpacing / 2,
@@ -53,11 +52,11 @@ class BlockHealthWidget extends StatelessWidget {
               )
             ],
           ),
-          
+
           const SizedBox(
             height: AppTheme.cardPadding * 0.75,
           ),
-          
+
           // Health status icon
           Icon(
             FontAwesomeIcons.faceSmile,
@@ -68,11 +67,11 @@ class BlockHealthWidget extends StatelessWidget {
                     : AppTheme.errorColor,
             size: AppTheme.cardPadding * 2.5,
           ),
-          
+
           const SizedBox(
             height: AppTheme.elementSpacing * 1.25,
           ),
-          
+
           // Health percentage text
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,

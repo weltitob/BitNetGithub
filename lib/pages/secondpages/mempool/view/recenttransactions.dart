@@ -73,7 +73,10 @@ class _RecentTransactionsState extends State<RecentTransactions> {
               : controller.mempoolBlocks.isEmpty
                   ? const Text(
                       'Something went wrong!',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 22),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 22),
                     )
                   : ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -82,13 +85,19 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                       reverse: true,
                       itemCount: controller.transaction.length,
                       itemBuilder: (context, index) {
-                        double btcValue = controller.transaction[index].value! / 100000000;
+                        double btcValue =
+                            controller.transaction[index].value! / 100000000;
                         double usdValue = btcValue * usdPrice;
-                        double feeSatVb = controller.transaction[index].fee! / controller.transaction[index].vsize!;
-                        BitcoinTransaction? ownedTransaction = widget.ownedTransactions.firstWhereOrNull((tx) =>
-                            tx.blockHash == controller.transaction[index].txid ||
-                            tx.txHash == controller.transaction[index].txid ||
-                            tx.rawTxHex == controller.transaction[index].txid);
+                        double feeSatVb = controller.transaction[index].fee! /
+                            controller.transaction[index].vsize!;
+                        BitcoinTransaction? ownedTransaction =
+                            widget.ownedTransactions.firstWhereOrNull((tx) =>
+                                tx.blockHash ==
+                                    controller.transaction[index].txid ||
+                                tx.txHash ==
+                                    controller.transaction[index].txid ||
+                                tx.rawTxHex ==
+                                    controller.transaction[index].txid);
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -100,16 +109,21 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                   onTap: () {
                                     final controllerTransaction = Get.put(
                                       TransactionController(
-                                        txID: controller.transaction[index].txid.toString(),
+                                        txID: controller.transaction[index].txid
+                                            .toString(),
                                       ),
                                     );
-                                    controllerTransaction.txID = controller.transaction[index].txid.toString();
-                                    controllerTransaction.getSingleTransaction(controllerTransaction.txID!);
+                                    controllerTransaction.txID = controller
+                                        .transaction[index].txid
+                                        .toString();
+                                    controllerTransaction.getSingleTransaction(
+                                        controllerTransaction.txID!);
                                     controllerTransaction.changeSocket();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => const SingleTransactionScreen(),
+                                        builder: (context) =>
+                                            const SingleTransactionScreen(),
                                       ),
                                     );
                                   },
@@ -126,22 +140,29 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                           Container(
                                             width: 45,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                               color: AppTheme.colorBitcoin,
                                             ),
-                                            padding: const EdgeInsets.symmetric(vertical: 2),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 2),
                                             child: const Center(
                                               child: Text(
                                                 'has Tx',
-                                                style: TextStyle(color: Colors.white, fontSize: 12),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12),
                                               ),
                                             ),
                                           ),
                                           SizedBox(width: 6),
                                         ],
                                         Text(
-                                          '${btcValue.toStringAsFixed(4)} BTC' ?? '',
-                                          style: Theme.of(context).textTheme.labelMedium,
+                                          '${btcValue.toStringAsFixed(4)} BTC' ??
+                                              '',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium,
                                         ),
                                       ],
                                     ),
@@ -156,29 +177,44 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                           border: Border.all(
-                                              color: Theme.of(context).brightness == Brightness.light
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
                                                   ? Colors.black.withAlpha(50)
                                                   : Colors.white.withAlpha(50)),
-                                          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 0.2)),
+                                          borderRadius: BorderRadius.circular(
+                                              AppTheme.cardPadding * 0.2)),
                                       child: TransactionItem(
                                           data: TransactionItemData(
-                                            timestamp: ownedTransaction.timeStamp,
-                                            status: ownedTransaction.numConfirmations > 0
+                                        timestamp: ownedTransaction.timeStamp,
+                                        status:
+                                            ownedTransaction.numConfirmations >
+                                                    0
                                                 ? TransactionStatus.confirmed
                                                 : TransactionStatus.pending,
-                                            type: TransactionType.onChain,
-                                            direction: ownedTransaction.amount!.contains("-")
-                                                ? TransactionDirection.sent
-                                                : TransactionDirection.received,
-                                            receiver: ownedTransaction.amount!.contains("-")
-                                                ? ownedTransaction.destAddresses.last.toString()
-                                                : ownedTransaction.destAddresses.first.toString(),
-                                            txHash: ownedTransaction.txHash.toString(),
-                                            fee: 0,
-                                            amount: ownedTransaction.amount!.contains("-")
-                                                ? ownedTransaction.amount.toString()
-                                                : "+" + ownedTransaction.amount.toString(),
-                                          )),
+                                        type: TransactionType.onChain,
+                                        direction: ownedTransaction.amount!
+                                                .contains("-")
+                                            ? TransactionDirection.sent
+                                            : TransactionDirection.received,
+                                        receiver: ownedTransaction.amount!
+                                                .contains("-")
+                                            ? ownedTransaction
+                                                .destAddresses.last
+                                                .toString()
+                                            : ownedTransaction
+                                                .destAddresses.first
+                                                .toString(),
+                                        txHash:
+                                            ownedTransaction.txHash.toString(),
+                                        fee: 0,
+                                        amount: ownedTransaction.amount!
+                                                .contains("-")
+                                            ? ownedTransaction.amount.toString()
+                                            : "+" +
+                                                ownedTransaction.amount
+                                                    .toString(),
+                                      )),
                                     ),
                                   )
                                 ]

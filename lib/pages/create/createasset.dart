@@ -60,7 +60,7 @@ class _CreateAssetState extends State<CreateAsset> {
   void initState() {
     super.initState();
     initRecorder();
-    
+
     // Set up focus change listeners to auto-add description when title gets focus
     titleFocusNode.addListener(() {
       if (!titleFocusNode.hasFocus && nameController.text.isNotEmpty) {
@@ -70,10 +70,10 @@ class _CreateAssetState extends State<CreateAsset> {
         }
       }
     });
-    
+
     // We don't need to add any special handling for the description focus node
     // since we're now using it correctly for the in-post description field
-    
+
     commentController.addListener(() {
       if (commentController.text.isEmpty || commentController.text.isNotEmpty) {
         setState(() {});
@@ -96,7 +96,7 @@ class _CreateAssetState extends State<CreateAsset> {
     } else if (mediaType == MediaType.description) {
       // Handle description from add content sheet - add and focus on it
       _addDescriptionField();
-      
+
       // Close the bottom sheet first
       Navigator.of(context).pop();
     } else if (mediaType == MediaType.image_data ||
@@ -218,20 +218,19 @@ class _CreateAssetState extends State<CreateAsset> {
     final overlayController = Get.find<OverlayController>();
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (!ps.isAuth && !ps.hasAccess) {
-      overlayController.showOverlay('please give the app photo access to continue.', color: AppTheme.errorColor);
+      overlayController.showOverlay(
+          'please give the app photo access to continue.',
+          color: AppTheme.errorColor);
       return;
     }
-    File? file = await ImagePickerCombinedBottomSheet(context, 
-      includeNFTs: false,
-      onImageTap: (album, image, pair) async {
-        if (image != null) {
-          File? file = await image.file;
-          context.pop(file);
-        }
+    File? file = await ImagePickerCombinedBottomSheet(context,
+        includeNFTs: false, onImageTap: (album, image, pair) async {
+      if (image != null) {
+        File? file = await image.file;
+        context.pop(file);
       }
-    );
-    if(file == null)
-      return;
+    });
+    if (file == null) return;
     postFiles.add(PostFile(mediaType, file: file));
     if (mounted) {
       setState(() {
@@ -261,7 +260,7 @@ class _CreateAssetState extends State<CreateAsset> {
     postFiles.add(PostFile(MediaType.text, text: ""));
     setState(() {});
   }
-  
+
   void _addDescriptionField() {
     // If we already have a description, just focus on it
     if (hasDescription) {
@@ -273,7 +272,7 @@ class _CreateAssetState extends State<CreateAsset> {
           break;
         }
       }
-      
+
       // If found, focus on it
       if (descriptionIndex >= 0) {
         Future.delayed(Duration(milliseconds: 300), () {
@@ -282,10 +281,10 @@ class _CreateAssetState extends State<CreateAsset> {
         return;
       }
     }
-    
+
     // Otherwise, create a new empty description text entry
     PostFile descriptionFile = PostFile(MediaType.text, text: "");
-    
+
     // Add it at the beginning of the list for proper ordering
     if (postFiles.isEmpty) {
       postFiles.add(descriptionFile);
@@ -293,10 +292,10 @@ class _CreateAssetState extends State<CreateAsset> {
       // Insert after the first item (title)
       postFiles.insert(0, descriptionFile);
     }
-    
+
     hasDescription = true;
     setState(() {});
-    
+
     // Focus on the description field within the post after it's added
     // Using a longer delay to ensure the widget is fully built
     Future.delayed(Duration(milliseconds: 300), () {
@@ -362,7 +361,8 @@ class _CreateAssetState extends State<CreateAsset> {
                         postId: postId,
                         ownerId: controller.userData.value.did ?? '',
                         username: controller.userData.value.username ?? '',
-                        displayname: controller.userData.value.displayName ?? '',
+                        displayname:
+                            controller.userData.value.displayName ?? '',
                         postName: nameController.text,
                         titleController: nameController,
                         titleFocusNode: titleFocusNode,
@@ -418,16 +418,16 @@ class _CreateAssetState extends State<CreateAsset> {
           children: [
             // Microphone Button
             buildMicrophoneButton(),
-            
+
             // Spacing
             SizedBox(width: AppTheme.elementSpacing),
-            
+
             // Add Content Button - Expanded to fill space
             Expanded(child: buildAddContentButton()),
-            
+
             // Spacing
             SizedBox(width: AppTheme.elementSpacing),
-            
+
             // Post Button
             buildPostButton(),
           ],
@@ -435,7 +435,7 @@ class _CreateAssetState extends State<CreateAsset> {
       ),
     );
   }
-  
+
   Widget buildAddContentButton() {
     return Container(
       height: AppTheme.cardPadding * 2.h,
@@ -445,8 +445,8 @@ class _CreateAssetState extends State<CreateAsset> {
         title: "Add Content",
         leadingIcon: Icon(
           Icons.add_rounded,
-          color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.black70 
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black70
               : AppTheme.white90,
         ),
         customHeight: AppTheme.cardPadding * 2.2,
@@ -455,7 +455,8 @@ class _CreateAssetState extends State<CreateAsset> {
         onTap: () {
           // Show bottom sheet with content options (matching image picker height)
           BitNetBottomSheet(
-            height: MediaQuery.of(context).size.height * 0.7, // Match image picker height
+            height: MediaQuery.of(context).size.height *
+                0.7, // Match image picker height
             context: context,
             child: bitnetScaffold(
               context: context,
@@ -466,7 +467,8 @@ class _CreateAssetState extends State<CreateAsset> {
                 context: context,
               ),
               body: Padding(
-                padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing * 2),
+                padding:
+                    const EdgeInsets.only(bottom: AppTheme.elementSpacing * 2),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: AddContentWidget(
@@ -480,13 +482,14 @@ class _CreateAssetState extends State<CreateAsset> {
       ),
     );
   }
-  
+
   Widget buildMicrophoneButton() {
     return RoundedButtonWidget(
       size: AppTheme.cardPadding * 2.h,
       iconData: recorder.isRecording ? Icons.stop_rounded : Icons.mic_rounded,
       iconColor: recorder.isRecording ? Colors.white : null,
-      buttonType: recorder.isRecording ? ButtonType.solid : ButtonType.transparent,
+      buttonType:
+          recorder.isRecording ? ButtonType.solid : ButtonType.transparent,
       // Use custom red colors when recording
       customPrimaryColor: recorder.isRecording ? Colors.red : null,
       customSecondaryColor: recorder.isRecording ? Colors.redAccent : null,
@@ -500,20 +503,22 @@ class _CreateAssetState extends State<CreateAsset> {
       },
     );
   }
-  
+
   Widget buildPostButton() {
     final bool isValid = postFiles.isNotEmpty && nameController.text.isNotEmpty;
-    
+
     return RoundedButtonWidget(
       size: AppTheme.cardPadding * 2.h,
       iconData: Icons.send_rounded,
       iconColor: Colors.white,
       buttonType: isValid ? ButtonType.solid : ButtonType.transparent,
       // Use null onTap function when disabled to visually indicate it's not clickable
-      onTap: isValid ? () {
-        convertToBase64AndMakePushReady(
-          context, postFiles, nameController.text);
-      } : null,
+      onTap: isValid
+          ? () {
+              convertToBase64AndMakePushReady(
+                  context, postFiles, nameController.text);
+            }
+          : null,
     );
   }
 
@@ -574,7 +579,7 @@ void convertToBase64AndMakePushReady(
   final overlayController = Get.find<OverlayController>();
   try {
     final mediasFormatted = <Media>[];
-    
+
     // First check if we have a MediaType.text that should be treated as a description
     bool firstTextIsDescription = false;
     // Find the first text item
@@ -585,7 +590,7 @@ void convertToBase64AndMakePushReady(
         break;
       }
     }
-    
+
     await Future.forEach(postFiles, (PostFile file) async {
       if (file.type == MediaType.text) {
         // Skip empty text entries
@@ -593,9 +598,11 @@ void convertToBase64AndMakePushReady(
           // Check if this is the first text entry and should be treated as description
           if (postFiles.indexOf(file) == 0 && firstTextIsDescription) {
             // Save as description type to render properly in view mode
-            mediasFormatted.add(Media(data: file.text ?? '', type: "description"));
+            mediasFormatted
+                .add(Media(data: file.text ?? '', type: "description"));
           } else {
-            mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+            mediasFormatted
+                .add(Media(data: file.text ?? '', type: file.type.name));
           }
         }
       } else if (file.type == MediaType.external_url) {
@@ -648,7 +655,7 @@ void convertToBase64AndMakePushReady(
         // medias.add(Media(data: file.text ?? '', type: file.type.name));
       }
     });
-    
+
     // Now mint the asset after processing all files
     triggerAssetMinting(context, mediasFormatted, assetName);
   } catch (e) {

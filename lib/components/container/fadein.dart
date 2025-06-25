@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
-
 class FadeIn extends StatefulWidget {
   final Widget child;
   final Duration duration;
   final Duration delay;
 
-  const FadeIn({
-    Key? key,
-    required this.child,
-    this.duration = const Duration(seconds: 1),
-    this.delay = Duration.zero
-  }) : super(key: key);
+  const FadeIn(
+      {Key? key,
+      required this.child,
+      this.duration = const Duration(seconds: 1),
+      this.delay = Duration.zero})
+      : super(key: key);
 
   @override
   FadeInState createState() => FadeInState();

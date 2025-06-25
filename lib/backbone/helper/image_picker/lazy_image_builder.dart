@@ -8,10 +8,10 @@ import 'package:get/get.dart';
 class LazyImageBuilder extends StatefulWidget {
   final MediaDatePair asset;
   final ImagePickerController controller;
-  
+
   const LazyImageBuilder({
-    Key? key, 
-    required this.asset, 
+    Key? key,
+    required this.asset,
     required this.controller,
   }) : super(key: key);
 
@@ -43,7 +43,8 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
       logger.i("asset: ${widget.asset.assetId} is loading");
 
       try {
-        await widget.controller.loadMetaLazy(widget.asset.assetId, widget.asset);
+        await widget.controller
+            .loadMetaLazy(widget.asset.assetId, widget.asset);
         widget.asset.isLoading = false;
         widget.asset.loaded = true;
 
@@ -86,14 +87,17 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
               width: 50,
               height: 50,
               decoration: const BoxDecoration(color: Colors.grey),
-              child: widget.asset.isLoading ? Center(child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-              )) : null,
+              child: widget.asset.isLoading
+                  ? Center(
+                      child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )))
+                  : null,
             ),
           )
         : ImageBuilder(

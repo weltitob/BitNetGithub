@@ -57,7 +57,8 @@ Future<RestResponse> listAddressesLnd(String account) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/addresses';
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

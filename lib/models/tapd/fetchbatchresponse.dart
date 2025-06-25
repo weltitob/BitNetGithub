@@ -9,7 +9,8 @@ class FetchBatchResponse {
 
   factory FetchBatchResponse.fromJson(Map<String, dynamic> json) {
     var batchesJson = json['batches'] as List;
-    List<Batch> batchesList = batchesJson.map((i) => Batch.fromJson(i)).toList();
+    List<Batch> batchesList =
+        batchesJson.map((i) => Batch.fromJson(i)).toList();
 
     return FetchBatchResponse(
       batches: batchesList,
@@ -17,6 +18,6 @@ class FetchBatchResponse {
   }
 
   Map<String, dynamic> toJson() => {
-    'batches': batches.map((e) => e.toJson()).toList(),
-  };
+        'batches': batches.map((e) => e.toJson()).toList(),
+      };
 }

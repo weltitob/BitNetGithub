@@ -1,6 +1,5 @@
 import 'package:bitnet/models/tapd/assetmeta.dart';
 
-
 class MintAssetResponse {
   final PendingBatch? pendingBatch;
 
@@ -83,7 +82,9 @@ class Asset {
       assetVersion: json['asset_version'],
       assetType: json['asset_type'],
       name: json['name'],
-      assetMeta: json['asset_meta'] != null ? AssetMetaResponse.fromJson(json['asset_meta']) : null,
+      assetMeta: json['asset_meta'] != null
+          ? AssetMetaResponse.fromJson(json['asset_meta'])
+          : null,
       amount: json['amount'],
       newGroupedAsset: json['new_grouped_asset'],
       groupKey: json['group_key'],

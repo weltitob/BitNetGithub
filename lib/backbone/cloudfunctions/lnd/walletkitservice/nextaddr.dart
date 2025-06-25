@@ -139,78 +139,82 @@ dynamic nextAddr(String account, {bool change = false}) async {
 */
 
 // NEW: One user one node approach - Get next address directly from user's LND node
-Future<String?> nextAddrDirect(String userId, {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) async {
+Future<String?> nextAddrDirect(String userId,
+    {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) async {
   final logger = Get.find<LoggerService>();
   logger.i("nextAddrDirect: Getting next address for user $userId");
-  
+
   try {
     // Get user's node mapping - userId is the recovery DID
     final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
-    
+
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
       return null;
     }
-    
+
     final nodeId = nodeMapping.nodeId;
     logger.i("Using node: $nodeId for address generation");
-    
+
     // Get the admin macaroon from node mapping (stored as base64)
     final macaroonBase64 = nodeMapping.adminMacaroon;
     if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return null;
     }
-    
+
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = hex.encode(macaroonBytes);
-    
+
     // Get Caddy URL for the user's node using LightningConfig
-    final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/address/next';
-    
+    final url =
+        '${LightningConfig.caddyBaseUrl}/$nodeId/v2/wallet/address/next';
+
     logger.i("Getting next address from: $url");
-    
+
     // Prepare request data
     final Map<String, dynamic> data = {
       'account': '', // Empty string uses default wallet account
-      'type': addressType, // WITNESS_PUBKEY_HASH for SegWit, TAPROOT_PUBKEY for Taproot
+      'type':
+          addressType, // WITNESS_PUBKEY_HASH for SegWit, TAPROOT_PUBKEY for Taproot
       'change': change,
     };
-    
+
     // Set up headers
     final headers = {
       'Grpc-Metadata-macaroon': macaroon,
       'Content-Type': 'application/json',
     };
-    
+
     // Set up HTTP override for SSL
     HttpOverrides.global = MyHttpOverrides();
-    
+
     // Make the request
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
       body: jsonEncode(data),
     );
-    
+
     logger.i("Response status: ${response.statusCode}");
-    
+
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       final address = decoded['addr'];
-      
+
       logger.i("Generated new address: $address");
-      
+
       // Store address in Firestore for tracking (optional)
       try {
         final userDoc = btcAddressesRef.doc(userId);
         await userDoc.set({
-          change ? 'change_addresses' : 'non_change_addresses': FieldValue.arrayUnion([address]),
+          change ? 'change_addresses' : 'non_change_addresses':
+              FieldValue.arrayUnion([address]),
           'addresses': FieldValue.arrayUnion([address]),
           'last_updated': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
-        
+
         // Also update local wallet controller
         final walletController = Get.find<WalletsController>();
         walletController.btcAddresses.add(address);
@@ -218,11 +222,12 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
         logger.e("Failed to store address in Firestore: $e");
         // Continue anyway, address generation was successful
       }
-      
+
       return address;
     } else {
       final error = jsonDecode(response.body);
-      logger.e("Failed to generate address: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
+      logger.e(
+          "Failed to generate address: ${error['message'] ?? error['error'] ?? 'Unknown error'}");
       return null;
     }
   } catch (e) {
@@ -232,5 +237,6 @@ Future<String?> nextAddrDirect(String userId, {bool change = false, String addre
 }
 
 // Export as nextAddr for backward compatibility
-Future<String?> nextAddr(String userId, {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) =>
+Future<String?> nextAddr(String userId,
+        {bool change = false, String addressType = 'WITNESS_PUBKEY_HASH'}) =>
     nextAddrDirect(userId, change: change, addressType: addressType);

@@ -22,7 +22,7 @@ class WalletFilterController extends BaseController {
   @override
   void onInit() async {
     super.onInit();
-    
+
     endDate.value = DateTime.now();
     start = startDate.value.millisecondsSinceEpoch ~/ 1000;
     end = endDate.value.millisecondsSinceEpoch ~/ 1000;

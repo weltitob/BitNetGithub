@@ -6,13 +6,11 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 class SortingCategoryPopup extends StatelessWidget {
   final Function(String str) onChanged;
   final String currentSortingCategory;
-  
-  const SortingCategoryPopup({
-    Key? key,
-    required this.onChanged,
-    required this.currentSortingCategory
-  }) : super(key: key);
-  
+
+  const SortingCategoryPopup(
+      {Key? key, required this.onChanged, required this.currentSortingCategory})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,26 +23,20 @@ class SortingCategoryPopup extends StatelessWidget {
         },
       ),
       child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.colorBitcoin,
-          borderRadius: BorderRadius.circular(15)
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: Row(
-            children: [
-              Text(
-                currentSortingCategory,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600, 
-                  color: Colors.white
-                )
-              ),
-              const Icon(Icons.arrow_drop_down_outlined)
-            ],
-          ),
-        )
-      ),
+          decoration: BoxDecoration(
+              color: AppTheme.colorBitcoin,
+              borderRadius: BorderRadius.circular(15)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+            child: Row(
+              children: [
+                Text(currentSortingCategory,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, color: Colors.white)),
+                const Icon(Icons.arrow_drop_down_outlined)
+              ],
+            ),
+          )),
     );
   }
 
@@ -61,32 +53,29 @@ class SortingCategoryPopup extends StatelessWidget {
       ],
     );
   }
-  
-  Widget _buildOptionItem(BuildContext context, String title, bool isFirst, {bool isLast = false}) {
+
+  Widget _buildOptionItem(BuildContext context, String title, bool isFirst,
+      {bool isLast = false}) {
     return GestureDetector(
       onTap: () {
         onChanged(title);
         Navigator.of(context).pop();
       },
       child: Container(
-        width: 160,
-        decoration: BoxDecoration(
-          color: AppTheme.colorGlassContainer,
-          borderRadius: BorderRadius.only(
-            topLeft: isFirst ? Radius.circular(20) : Radius.zero,
-            topRight: isFirst ? Radius.circular(20) : Radius.zero,
-            bottomLeft: isLast ? Radius.circular(20) : Radius.zero,
-            bottomRight: isLast ? Radius.circular(20) : Radius.zero,
+          width: 160,
+          decoration: BoxDecoration(
+            color: AppTheme.colorGlassContainer,
+            borderRadius: BorderRadius.only(
+              topLeft: isFirst ? Radius.circular(20) : Radius.zero,
+              topRight: isFirst ? Radius.circular(20) : Radius.zero,
+              bottomLeft: isLast ? Radius.circular(20) : Radius.zero,
+              bottomRight: isLast ? Radius.circular(20) : Radius.zero,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            title,
-            style: TextStyle(color: Colors.white)
-          ),
-        )
-      ),
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(title, style: TextStyle(color: Colors.white)),
+          )),
     );
   }
 }

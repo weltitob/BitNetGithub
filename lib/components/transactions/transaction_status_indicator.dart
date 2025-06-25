@@ -7,14 +7,14 @@ class TransactionStatusIndicator extends StatelessWidget {
   final TransactionStatus status;
   final int? confirmations;
   final bool isReplaced;
-  
+
   const TransactionStatusIndicator({
     required this.status,
     this.confirmations,
     this.isReplaced = false,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -26,16 +26,16 @@ class TransactionStatusIndicator extends StatelessWidget {
         Text(
           _getStatusText(context, status, confirmations, isReplaced),
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: _getStatusColor(status, isReplaced),
-          ),
+                color: _getStatusColor(status, isReplaced),
+              ),
         ),
       ],
     );
   }
-  
+
   Color _getStatusColor(TransactionStatus status, bool isReplaced) {
     if (isReplaced) return AppTheme.colorBitcoin;
-    
+
     switch (status) {
       case TransactionStatus.confirmed:
         return AppTheme.successColor;
@@ -47,10 +47,11 @@ class TransactionStatusIndicator extends StatelessWidget {
         return AppTheme.errorColor;
     }
   }
-  
-  String _getStatusText(BuildContext context, TransactionStatus status, int? confirmations, bool isReplaced) {
+
+  String _getStatusText(BuildContext context, TransactionStatus status,
+      int? confirmations, bool isReplaced) {
     if (isReplaced) return L10n.of(context)!.replaced;
-    
+
     switch (status) {
       case TransactionStatus.confirmed:
         if (confirmations != null && confirmations > 0) {
@@ -82,7 +83,8 @@ class BlinkingDot extends StatefulWidget {
   _BlinkingDotState createState() => _BlinkingDotState();
 }
 
-class _BlinkingDotState extends State<BlinkingDot> with SingleTickerProviderStateMixin {
+class _BlinkingDotState extends State<BlinkingDot>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
 
@@ -94,7 +96,8 @@ class _BlinkingDotState extends State<BlinkingDot> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 800),
     )..repeat(reverse: true);
 
-    _opacityAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(_animationController);
+    _opacityAnimation =
+        Tween<double>(begin: 0.3, end: 1.0).animate(_animationController);
   }
 
   @override

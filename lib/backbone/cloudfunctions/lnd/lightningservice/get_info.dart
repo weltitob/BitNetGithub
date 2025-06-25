@@ -12,12 +12,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String? userDid}) async {
+Future<RestResponse> getNodeInfo(
+    {String? nodeId, String? adminMacaroon, String? userDid}) async {
   LoggerService logger = Get.find();
-  
+
   // Use centralized Lightning configuration
   String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
-  String url = LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
+  String url =
+      LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
 
   logger.i("=== GET NODE INFO DEBUG ===");
   logger.i("Target URL: $url");
@@ -30,19 +32,23 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
   if (adminMacaroon != null && adminMacaroon.isNotEmpty) {
     // Use the specific admin macaroon provided (e.g., from initwallet response)
     macaroon = adminMacaroon;
-    logger.i("🔑 Using provided admin macaroon: ${macaroon.substring(0, 20)}... (truncated)");
+    logger.i(
+        "🔑 Using provided admin macaroon: ${macaroon.substring(0, 20)}... (truncated)");
   } else if (userDid != null && userDid.isNotEmpty) {
     // Load user-specific macaroon from storage
     try {
-      final UserNodeMapping? nodeMapping = await NodeMappingService.getUserNodeMapping(userDid);
+      final UserNodeMapping? nodeMapping =
+          await NodeMappingService.getUserNodeMapping(userDid);
       if (nodeMapping != null && nodeMapping.adminMacaroon.isNotEmpty) {
         // Convert base64 macaroon to hex format
         final macaroonBase64 = nodeMapping.adminMacaroon;
         final macaroonBytes = base64Decode(macaroonBase64);
         macaroon = bytesToHex(macaroonBytes);
         selectedNode = nodeMapping.nodeId; // Use user's specific node
-        url = LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
-        logger.i("🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
+        url =
+            LightningConfig.getLightningUrl('v1/getinfo', nodeId: selectedNode);
+        logger.i(
+            "🔑 Using user-specific macaroon for ${nodeMapping.nodeId}: ${macaroon.substring(0, 20)}... (truncated)");
       } else {
         throw Exception("No user-specific macaroon found for DID: $userDid");
       }
@@ -52,11 +58,13 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
     }
   } else {
     // Fallback to global admin macaroon (should be avoided in production)
-    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+    final RemoteConfigController remoteConfigController =
+        Get.find<RemoteConfigController>();
     ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
     List<int> bytes = byteData.buffer.asUint8List();
     macaroon = bytesToHex(bytes);
-    logger.w("⚠️ Using global admin macaroon as fallback: ${macaroon.substring(0, 20)}... (truncated)");
+    logger.w(
+        "⚠️ Using global admin macaroon as fallback: ${macaroon.substring(0, 20)}... (truncated)");
   }
 
   Map<String, String> headers = {
@@ -80,10 +88,12 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
   logger.i("About to make GET request to: $url");
 
   try {
-    var response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
+    var response = await http
+        .get(
+          Uri.parse(url),
+          headers: headers,
+        )
+        .timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
     logger.i("=== HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");
@@ -116,10 +126,11 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
             }
           }
         });
-        
+
         String identityPubkey = responseData['identity_pubkey'] ?? '';
         if (identityPubkey.isNotEmpty) {
-          logger.i("✅ Successfully extracted Lightning node identity: $identityPubkey");
+          logger.i(
+              "✅ Successfully extracted Lightning node identity: $identityPubkey");
         } else {
           logger.w("⚠️ No identity_pubkey found in response");
         }
@@ -143,11 +154,15 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
       logger.e("Status Text: ${response.reasonPhrase}");
       logger.e("Response Body: ${response.body}");
       logger.e("Response Headers: ${response.headers}");
-      
+
       return RestResponse(
         statusCode: "error",
-        message: "Failed to get node info: ${response.statusCode}, ${response.body}",
-        data: {"status_code": response.statusCode, "raw_response": response.body},
+        message:
+            "Failed to get node info: ${response.statusCode}, ${response.body}",
+        data: {
+          "status_code": response.statusCode,
+          "raw_response": response.body
+        },
       );
     }
   } catch (e, stackTrace) {
@@ -155,17 +170,21 @@ Future<RestResponse> getNodeInfo({String? nodeId, String? adminMacaroon, String?
     logger.e("Exception Type: ${e.runtimeType}");
     logger.e("Exception Message: $e");
     logger.e("Stack Trace: $stackTrace");
-    
+
     if (e.toString().contains('timeout')) {
       logger.e("CONNECTION TIMEOUT - Check if Caddy server is running on $url");
     } else if (e.toString().contains('connection')) {
-      logger.e("CONNECTION ERROR - Check network connectivity and server availability");
+      logger.e(
+          "CONNECTION ERROR - Check network connectivity and server availability");
     }
-    
+
     return RestResponse(
       statusCode: "error",
       message: "Failed to get node info: $e",
-      data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
+      data: {
+        "exception_type": e.runtimeType.toString(),
+        "exception_message": e.toString()
+      },
     );
   }
 }

@@ -225,7 +225,7 @@ class UsersListController extends GetxController {
       // HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
       // print("Login for user ${hdWallet.pubkey} pressed");
       // print("Private Key: ${hdWallet.privkey}");
-      
+
       // NEW: Lightning-native authentication
       print("Login for user $did pressed");
 
@@ -239,11 +239,11 @@ class UsersListController extends GetxController {
         challengeData,
         userDid: did,
       );
-      
+
       if (lightningSignature == null) {
         throw Exception("Failed to sign with Lightning node");
       }
-      
+
       String signatureHex = lightningSignature;
 
       logger.d('Generated signature hex: $signatureHex');

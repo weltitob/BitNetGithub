@@ -5,20 +5,20 @@ import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:get/get.dart';
 
-
 class ButtonController extends GetxController {
   var isLoading = false.obs; // Observable variable
 
   void toggleButtonState() {
-    isLoading.value = !isLoading.value; // Toggle the state between true and false
+    isLoading.value =
+        !isLoading.value; // Toggle the state between true and false
   }
 }
-
 
 class ComingSoonPage extends StatelessWidget {
   ComingSoonPage({super.key});
 
-  final ButtonController controller = Get.put(ButtonController()); // Initialize the controller
+  final ButtonController controller =
+      Get.put(ButtonController()); // Initialize the controller
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +41,19 @@ class ComingSoonPage extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.cardPadding * 2),
             Obx(() => BottomCenterButton(
-              buttonTitle: "Testbutton",
-              buttonState: controller.isLoading.value ? ButtonState.loading : ButtonState.idle,
-              onButtonTap: () {
-                controller.toggleButtonState();
-                // Simulate a network call or process
-                Future.delayed(Duration(seconds: 2), () {
-                  // Toggle the state back after 2 seconds
-                  controller.toggleButtonState();
-                });
-              },
-            )),
+                  buttonTitle: "Testbutton",
+                  buttonState: controller.isLoading.value
+                      ? ButtonState.loading
+                      : ButtonState.idle,
+                  onButtonTap: () {
+                    controller.toggleButtonState();
+                    // Simulate a network call or process
+                    Future.delayed(Duration(seconds: 2), () {
+                      // Toggle the state back after 2 seconds
+                      controller.toggleButtonState();
+                    });
+                  },
+                )),
           ],
         ),
       ),

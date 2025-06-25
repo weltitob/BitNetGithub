@@ -179,7 +179,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       top: 12.h,
                                       right: 20.w,
                                     ),
-                                    hintText:L10n.of(context)!.min,
+                                    hintText: L10n.of(context)!.min,
                                     hintStyle: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
@@ -388,7 +388,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                   bottom: 12.h,
                                   top: 12.h,
                                   right: 20.w),
-                              hintText: L10n.of(context)! .filter,
+                              hintText: L10n.of(context)!.filter,
                               hintStyle: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,

@@ -10,25 +10,23 @@ class BlockHeader extends StatelessWidget {
   final String blockHeight;
   final String blockId;
   final Function onClose;
-  
+
   const BlockHeader({
     Key? key,
     required this.blockHeight,
     required this.blockId,
     required this.onClose,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
-    
+
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
         padding: const EdgeInsets.only(
-          left: AppTheme.cardPadding,
-          bottom: AppTheme.elementSpacing
-        ),
+            left: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
         child: Row(
           children: [
             // Block title and height
@@ -39,24 +37,23 @@ class BlockHeader extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                Text(
-                  ' $blockHeight',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: AppTheme.colorBitcoin,
-                  )
-                )
+                Text(' $blockHeight',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: AppTheme.colorBitcoin,
+                        ))
               ],
             ),
-            
+
             const Spacer(),
-            
+
             // Block ID and copy action
             Row(
               children: [
                 GestureDetector(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: blockId));
-                    overlayController.showOverlay(L10n.of(context)!.copiedToClipboard);
+                    overlayController
+                        .showOverlay(L10n.of(context)!.copiedToClipboard);
                   },
                   child: Row(
                     children: [
@@ -79,11 +76,11 @@ class BlockHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(
                   width: AppTheme.elementSpacing / 2,
                 ),
-                
+
                 // Close button
                 IconButton(
                   onPressed: () => onClose(),

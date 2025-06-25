@@ -1,5 +1,3 @@
-
-
 // class StatusBarBg extends StatelessWidget {
 //
 //   const StatusBarBg({Key? key}) : super(key: key);

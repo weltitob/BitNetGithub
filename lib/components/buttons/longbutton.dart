@@ -49,7 +49,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
   Widget build(BuildContext context) {
     // Cache Theme to avoid multiple expensive calls
     final theme = Theme.of(context);
-    
+
     // Use a more rounded border radius - half the height for pill-shaped buttons
     final borderRadius = BorderRadius.circular(widget.customHeight / 2);
     final borderRadiusNum = widget.customHeight / 2;
@@ -68,15 +68,10 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                       ? [Colors.grey, Colors.grey]
                       : _isHovered
                           ? [
-                              darken(
-                                  theme.colorScheme.secondaryContainer,
-                                  10),
-                              darken(
-                                  theme.colorScheme.tertiaryContainer,
-                                  10)
+                              darken(theme.colorScheme.secondaryContainer, 10),
+                              darken(theme.colorScheme.tertiaryContainer, 10)
                             ]
-                          : theme.colorScheme.primary ==
-                                  AppTheme.colorBitcoin
+                          : theme.colorScheme.primary == AppTheme.colorBitcoin
                               ? [
                                   AppTheme.colorBitcoin,
                                   AppTheme.colorPrimaryGradient,
@@ -97,11 +92,12 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
               : GlassContainer(
                   height: widget.customHeight,
                   width: widget.customWidth,
-                  border: (widget.state == ButtonState.disabled
-                      ? 0
-                      : 0) == 0 ? null : Border.all(width: widget.state == ButtonState.disabled
-                      ? 0
-                      : 0, color: Theme.of(context).dividerColor), // remove border if not active
+                  border: (widget.state == ButtonState.disabled ? 0 : 0) == 0
+                      ? null
+                      : Border.all(
+                          width: widget.state == ButtonState.disabled ? 0 : 0,
+                          color: Theme.of(context)
+                              .dividerColor), // remove border if not active
                   opacity: 0.1,
                   borderRadius: borderRadius,
                   child: Container(),

@@ -13,7 +13,8 @@ getAssetKeys(String assetIdStr) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   String restHost = remoteConfigController.baseUrlLightningTerminal.value;
 
@@ -22,11 +23,11 @@ getAssetKeys(String assetIdStr) async {
   String macaroon = bytesToHex(bytes);
 
   String url =
-  //  kDebugMode
-  //     ? ''
-  //     :
-      
-       'https://$restHost/v1/taproot-assets/universe/keys/asset-id/$assetIdStr';
+      //  kDebugMode
+      //     ? ''
+      //     :
+
+      'https://$restHost/v1/taproot-assets/universe/keys/asset-id/$assetIdStr';
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,

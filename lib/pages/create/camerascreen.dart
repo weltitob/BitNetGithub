@@ -11,11 +11,11 @@ import 'package:get/get.dart';
 
 class CameraPage extends StatefulWidget {
   final VoidCallback onPostButtonPressed;
-  const CameraPage({Key? key, required this.onPostButtonPressed}) : super(key: key);
+  const CameraPage({Key? key, required this.onPostButtonPressed})
+      : super(key: key);
 
   @override
   _CameraPageState createState() => _CameraPageState();
-
 }
 
 class _CameraPageState extends State<CameraPage> {
@@ -26,13 +26,12 @@ class _CameraPageState extends State<CameraPage> {
 
   Widget getFooter() {
     final currentUser = Auth().currentUser!.uid;
-    bool isNft = Get.find<ProfileController>().userData.value.nft_profile_id.isNotEmpty;
+    bool isNft =
+        Get.find<ProfileController>().userData.value.nft_profile_id.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(
-          left: AppTheme.cardPadding,
-          bottom: 40,
-          right: AppTheme.cardPadding),
+          left: AppTheme.cardPadding, bottom: 40, right: AppTheme.cardPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -52,15 +51,17 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                   title: Text(
                     '@fixauth',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: AppTheme.white90
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: AppTheme.white90),
                   ),
                   subtitle: Text(
                     'fix die scheiss auth',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: AppTheme.white70
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: AppTheme.white70),
                   ),
                 ),
               ),
@@ -70,15 +71,18 @@ class _CameraPageState extends State<CameraPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //can here remix post from other plattform
-                    const RoundedButtonWidget(iconData: Icons.link,
-                        onTap: null,),
+                    const RoundedButtonWidget(
+                      iconData: Icons.link,
+                      onTap: null,
+                    ),
                     const SizedBox(
                       width: AppTheme.elementSpacing,
                     ),
                     ClipRRect(
                       borderRadius: AppTheme.cardRadiusSmall,
                       child: BackdropFilter(
-                        filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        filter:
+                            new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                         child: Container(
                           width: 40,
                           decoration: BoxDecoration(
@@ -136,10 +140,9 @@ class _CameraPageState extends State<CameraPage> {
             children: [
               RoundedButtonWidget(
                 iconData: Icons.post_add,
-                onTap: () =>
-                  setState(() {
-                    widget.onPostButtonPressed();
-                  }),
+                onTap: () => setState(() {
+                  widget.onPostButtonPressed();
+                }),
                 buttonType: ButtonType.transparent,
               ),
               const SizedBox(
@@ -156,12 +159,11 @@ class _CameraPageState extends State<CameraPage> {
                 width: AppTheme.cardPadding,
               ),
               RoundedButtonWidget(
-                  iconData: Icons.qr_code_rounded,
-                onTap: () =>
-                  setState(() {
-                    widget.onPostButtonPressed();
-                  }),
-                  buttonType: ButtonType.transparent,
+                iconData: Icons.qr_code_rounded,
+                onTap: () => setState(() {
+                  widget.onPostButtonPressed();
+                }),
+                buttonType: ButtonType.transparent,
               ),
             ],
           )

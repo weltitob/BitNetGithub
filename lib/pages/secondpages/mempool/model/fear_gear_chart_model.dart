@@ -51,10 +51,10 @@ class Fgi {
 
   Fgi(
       {this.now,
-        this.previousClose,
-        this.oneWeekAgo,
-        this.oneMonthAgo,
-        this.oneYearAgo});
+      this.previousClose,
+      this.oneWeekAgo,
+      this.oneMonthAgo,
+      this.oneYearAgo});
 
   Fgi.fromJson(Map<String, dynamic> json) {
     now = json['now'] != null ? new Now.fromJson(json['now']) : null;

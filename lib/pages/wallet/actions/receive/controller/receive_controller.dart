@@ -209,14 +209,14 @@ class ReceiveController extends BaseController {
 
   void getBtcAddress({String addressType = 'WITNESS_PUBKEY_HASH'}) async {
     logger.i("Getting BTC Address");
-    
+
     // Get address directly from user's LND node
     // Use TAPROOT_PUBKEY for taproot addresses, WITNESS_PUBKEY_HASH for segwit
     String? addr = await nextAddrDirect(
       Auth().currentUser!.uid,
       addressType: addressType,
     );
-    
+
     if (addr != null) {
       BitcoinAddress address = BitcoinAddress.fromJson({'addr': addr});
       Get.find<WalletsController>().btcAddresses.add(address.addr);
@@ -227,7 +227,8 @@ class ReceiveController extends BaseController {
       qrCodeDataStringOnchain.value = address.addr.toString();
     } else {
       logger.e("Failed to generate Bitcoin address");
-      Get.find<OverlayController>().showOverlay("Failed to generate address. Please try again.");
+      Get.find<OverlayController>()
+          .showOverlay("Failed to generate address. Please try again.");
     }
   }
 

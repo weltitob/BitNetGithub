@@ -25,7 +25,7 @@ Color initAnimationColor = Colors.blue;
 
 class ChartWidget extends StatefulWidget {
   final Map<String, dynamic>? tokenData;
-  
+
   const ChartWidget({
     Key? key,
     this.tokenData,
@@ -38,7 +38,8 @@ class ChartWidget extends StatefulWidget {
 class _ChartWidgetState extends State<ChartWidget> {
   late bool _loading;
   Timer? timer;
-  final GlobalKey<_CustomWidgetState> chartInfoKey = GlobalKey<_CustomWidgetState>();
+  final GlobalKey<_CustomWidgetState> chartInfoKey =
+      GlobalKey<_CustomWidgetState>();
   final GlobalKey<_ChartCoreState> chartCoreKey = GlobalKey<_ChartCoreState>();
 
   StreamController<ChartLine> _priceStreamController =
@@ -94,14 +95,14 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   Widget build(BuildContext context) {
     BitcoinController bitcoinController = Get.find<BitcoinController>();
-    
+
     // For tokens, skip the loading check
     if (widget.tokenData != null) {
       return Column(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(
-                horizontal: AppTheme.cardPadding),
+            margin:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: CustomWidget(
               key: chartInfoKey,
               tokenData: widget.tokenData,
@@ -139,7 +140,7 @@ class _ChartWidgetState extends State<ChartWidget> {
         ],
       );
     }
-    
+
     // Bitcoin chart
     return Obx(() {
       return bitcoinController.loading.value
@@ -321,13 +322,13 @@ class _ChartWidgetState extends State<ChartWidget> {
 class ChartCore extends StatefulWidget {
   final GlobalKey<_CustomWidgetState> chartInfoKey;
   final Map<String, dynamic>? tokenData;
-  
+
   const ChartCore({
-    Key? key, 
+    Key? key,
     required this.chartInfoKey,
     this.tokenData,
   }) : super(key: key);
-  
+
   @override
   State<ChartCore> createState() => _ChartCoreState();
 }
@@ -335,13 +336,13 @@ class ChartCore extends StatefulWidget {
 class _ChartCoreState extends State<ChartCore> {
   bool isTrackballActive = false;
   String selectedPeriod = '1D';
-  
+
   void updateSelectedPeriod(String period) {
     setState(() {
       selectedPeriod = period;
     });
   }
-  
+
   Widget _buildTokenChart(BuildContext context) {
     // Safely get token data with null checks
     if (widget.tokenData == null) {
@@ -352,12 +353,13 @@ class _ChartCoreState extends State<ChartCore> {
         ),
       );
     }
-    
+
     // Get token data with safe casting and null checks
-    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
+    final priceHistory =
+        widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
     final currentPrice = widget.tokenData!['currentPrice'];
     final tokenSymbol = widget.tokenData!['tokenSymbol'];
-    
+
     // Add validation for required fields
     if (tokenSymbol == null || currentPrice == null) {
       return Center(
@@ -367,7 +369,7 @@ class _ChartCoreState extends State<ChartCore> {
         ),
       );
     }
-    
+
     if (priceHistory == null || priceHistory.isEmpty) {
       return Center(
         child: Text(
@@ -376,16 +378,16 @@ class _ChartCoreState extends State<ChartCore> {
         ),
       );
     }
-    
+
     // Get data for selected period
     final periodDataRaw = priceHistory[selectedPeriod];
     List<Map<String, dynamic>>? periodData;
-    
+
     // Handle different data types safely
     if (periodDataRaw is List) {
       periodData = periodDataRaw.cast<Map<String, dynamic>>().toList();
     }
-    
+
     if (periodData == null || periodData.isEmpty) {
       return Center(
         child: Text(
@@ -394,31 +396,31 @@ class _ChartCoreState extends State<ChartCore> {
         ),
       );
     }
-    
+
     // Convert to ChartLine format with better error handling
     List<ChartLine> chartData = [];
     try {
       chartData = periodData.map((point) {
         final time = point['time'];
         final price = point['price'];
-        
+
         double timeValue = 0;
         double priceValue = 0;
-        
+
         // Handle time conversion
         if (time is int) {
           timeValue = time.toDouble();
         } else if (time is double) {
           timeValue = time;
         }
-        
+
         // Handle price conversion
         if (price is num) {
           priceValue = price.toDouble();
         } else if (price is String) {
           priceValue = double.tryParse(price) ?? 0;
         }
-        
+
         return ChartLine(
           time: timeValue,
           price: priceValue,
@@ -434,7 +436,7 @@ class _ChartCoreState extends State<ChartCore> {
         ),
       );
     }
-    
+
     // Calculate price changes
     double currentPriceValue = 0;
     if (currentPrice is num) {
@@ -442,11 +444,14 @@ class _ChartCoreState extends State<ChartCore> {
     } else if (currentPrice is String) {
       currentPriceValue = double.tryParse(currentPrice) ?? 0;
     }
-    
-    final firstPrice = chartData.isNotEmpty ? chartData.first.price : currentPriceValue;
-    final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPriceValue;
-    final priceChange = firstPrice == 0 ? 0.0 : (lastPrice - firstPrice) / firstPrice;
-    
+
+    final firstPrice =
+        chartData.isNotEmpty ? chartData.first.price : currentPriceValue;
+    final lastPrice =
+        chartData.isNotEmpty ? chartData.last.price : currentPriceValue;
+    final priceChange =
+        firstPrice == 0 ? 0.0 : (lastPrice - firstPrice) / firstPrice;
+
     // Create trackball behavior with proper callbacks
     final trackballBehavior = TrackballBehavior(
       enable: true,
@@ -466,7 +471,7 @@ class _ChartCoreState extends State<ChartCore> {
         borderColor: Colors.white,
       ),
     );
-    
+
     // Use the SAME chart UI as Bitcoin
     return SizedBox(
       height: AppTheme.cardPadding * 16.h,
@@ -481,14 +486,16 @@ class _ChartCoreState extends State<ChartCore> {
           if (args.chartPointInfo.yPosition != null) {
             final pointInfoPrice = double.parse(args.chartPointInfo.label!);
             final pointInfoTime = double.parse(args.chartPointInfo.header!);
-            
+
             // Update the CustomWidget state with new price
-            final customWidgetState = widget.chartInfoKey.currentState as _CustomWidgetState?;
+            final customWidgetState =
+                widget.chartInfoKey.currentState as _CustomWidgetState?;
             if (customWidgetState != null && mounted) {
               // Store the hover values in the state
               customWidgetState.setState(() {
                 customWidgetState._hoverPrice = pointInfoPrice;
-                customWidgetState._hoverTime = DateTime.fromMillisecondsSinceEpoch(pointInfoTime.round());
+                customWidgetState._hoverTime =
+                    DateTime.fromMillisecondsSinceEpoch(pointInfoTime.round());
                 customWidgetState._isHovering = true;
               });
             }
@@ -497,9 +504,10 @@ class _ChartCoreState extends State<ChartCore> {
         onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
           isTrackballActive = false;
           setState(() {});
-          
+
           // Reset to current price when interaction ends
-          final customWidgetState = widget.chartInfoKey.currentState as _CustomWidgetState?;
+          final customWidgetState =
+              widget.chartInfoKey.currentState as _CustomWidgetState?;
           if (customWidgetState != null && mounted) {
             customWidgetState.setState(() {
               customWidgetState._isHovering = false;
@@ -525,22 +533,30 @@ class _ChartCoreState extends State<ChartCore> {
             dataSource: chartData,
             xValueMapper: (ChartLine line, _) => line.time,
             yValueMapper: (ChartLine line, _) => line.price,
-            color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-            borderColor: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
+            color:
+                priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
+            borderColor:
+                priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
             borderWidth: 2,
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: priceChange >= 0
-                  ? [AppTheme.successColor.withOpacity(0.2), AppTheme.successColor.withOpacity(0.0)]
-                  : [AppTheme.errorColor.withOpacity(0.2), AppTheme.errorColor.withOpacity(0.0)],
+                  ? [
+                      AppTheme.successColor.withOpacity(0.2),
+                      AppTheme.successColor.withOpacity(0.0)
+                    ]
+                  : [
+                      AppTheme.errorColor.withOpacity(0.2),
+                      AppTheme.errorColor.withOpacity(0.0)
+                    ],
             ),
           ),
         ],
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     BitcoinController bitcoinController = Get.find<BitcoinController>();
@@ -603,125 +619,126 @@ class _ChartCoreState extends State<ChartCore> {
         child: RepaintBoundary(
           child: Obx(
             () => SfCartesianChart(
-              trackballBehavior: bitcoinController.trackballBehavior,
-              onChartTouchInteractionDown: (args) {
-                isTrackballActive = true;
-                setState(() {});
-              },
-              onTrackballPositionChanging: (args) {
-                // Print the y-value of the first series in the trackball.
-                if (args.chartPointInfo.yPosition != null) {
-                  final pointInfoPrice =
-                      double.parse(args.chartPointInfo.label!)
-                          .toStringAsFixed(2);
-                  final pointInfoTime =
-                      double.parse(args.chartPointInfo.header!);
+                trackballBehavior: bitcoinController.trackballBehavior,
+                onChartTouchInteractionDown: (args) {
+                  isTrackballActive = true;
+                  setState(() {});
+                },
+                onTrackballPositionChanging: (args) {
+                  // Print the y-value of the first series in the trackball.
+                  if (args.chartPointInfo.yPosition != null) {
+                    final pointInfoPrice =
+                        double.parse(args.chartPointInfo.label!)
+                            .toStringAsFixed(2);
+                    final pointInfoTime =
+                        double.parse(args.chartPointInfo.header!);
+                    var datetime = DateTime.fromMillisecondsSinceEpoch(
+                        pointInfoTime.round(),
+                        isUtc: false);
+                    DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                    DateFormat timeFormat = DateFormat("HH:mm");
+                    String date = dateFormat.format(datetime);
+                    String time = timeFormat.format(datetime);
+                    //update for CustomWidget
+                    bitcoinController.trackBallValueTime = datetime;
+                    // bitcoinController.trackBallValueDate = date.toString();
+                    bitcoinController.trackBallValuePrice = pointInfoPrice;
+                    double priceChange = _firstpriceexact == 0
+                        ? 0
+                        : (double.parse(bitcoinController.trackBallValuePrice) -
+                                _firstpriceexact) /
+                            _firstpriceexact;
+                    bitcoinController.trackBallValuePricechange =
+                        toPercent(priceChange);
+
+                    widget.chartInfoKey.currentState!.refresh();
+                  }
+                },
+                onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
+                  isTrackballActive = false;
+                  setState(() {});
+                  //reset to current latest price when selection ends
+                  bitcoinController.trackBallValuePrice =
+                      _lastpricerounded.toString();
+                  //reset to percent of screen
+                  double priceChange = _firstpriceexact == 0
+                      ? 0
+                      : (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
+                  bitcoinController.trackBallValuePricechange =
+                      toPercent(priceChange);
+                  widget.chartInfoKey.currentState!.refresh();
+                  //reset to date of last value
                   var datetime = DateTime.fromMillisecondsSinceEpoch(
-                      pointInfoTime.round(),
+                      _lastimeeexact.round(),
                       isUtc: false);
                   DateFormat dateFormat = DateFormat("dd.MM.yyyy");
                   DateFormat timeFormat = DateFormat("HH:mm");
                   String date = dateFormat.format(datetime);
                   String time = timeFormat.format(datetime);
-                  //update for CustomWidget
                   bitcoinController.trackBallValueTime = datetime;
-                  // bitcoinController.trackBallValueDate = date.toString();
-                  bitcoinController.trackBallValuePrice = pointInfoPrice;
-                  double priceChange = _firstpriceexact == 0
-                      ? 0
-                      : (double.parse(bitcoinController.trackBallValuePrice) -
-                              _firstpriceexact) /
-                          _firstpriceexact;
-                  bitcoinController.trackBallValuePricechange =
-                      toPercent(priceChange);
-
-                  widget.chartInfoKey.currentState!.refresh();
-                }
-              },
-              onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
-                isTrackballActive = false;
-                setState(() {});
-                //reset to current latest price when selection ends
-                bitcoinController.trackBallValuePrice =
-                    _lastpricerounded.toString();
-                //reset to percent of screen
-                double priceChange = _firstpriceexact == 0
-                    ? 0
-                    : (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-                bitcoinController.trackBallValuePricechange =
-                    toPercent(priceChange);
-                widget.chartInfoKey.currentState!.refresh();
-                //reset to date of last value
-                var datetime = DateTime.fromMillisecondsSinceEpoch(
-                    _lastimeeexact.round(),
-                    isUtc: false);
-                DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-                DateFormat timeFormat = DateFormat("HH:mm");
-                String date = dateFormat.format(datetime);
-                String time = timeFormat.format(datetime);
-                bitcoinController.trackBallValueTime = datetime;
-                //bitcoinController.trackBallValueDate = date.toString();
-              },
-              enableAxisAnimation: true,
-              plotAreaBorderWidth: 0,
-              primaryXAxis: NumericAxis(
-                  //labelPlacement: LabelPlacement.onTicks,
-                  edgeLabelPlacement: EdgeLabelPlacement.none,
-                  isVisible: false,
-                  majorGridLines: const MajorGridLines(width: 0),
-                  majorTickLines: const MajorTickLines(width: 0)),
-              primaryYAxis: NumericAxis(
-                  plotBands: <PlotBand>[
-                    PlotBand(
-                        isVisible: !bitcoinController.currentline.value.isEmpty,
-                        dashArray: const <double>[2, 5],
-                        start: bitcoinController.currentline.value.isEmpty
-                            ? 0
-                            : getaverage(bitcoinController.currentline.value),
-                        end: bitcoinController.currentline.value.isEmpty
-                            ? 1
-                            : getaverage(bitcoinController.currentline.value),
-                        horizontalTextAlignment: TextAnchor.start,
-                        textStyle: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600),
-                        borderColor: Colors.grey,
-                        borderWidth: 1.5)
-                  ],
-                  plotOffset: 0,
-                  edgeLabelPlacement: EdgeLabelPlacement.none,
-                  isVisible: false,
-                  majorGridLines: const MajorGridLines(width: 0),
-                  majorTickLines: const MajorTickLines(width: 0)),
-              series: <ChartSeries>[
-                // Renders line chart
-                SplineSeries<ChartLine, double>(
-                  onRendererCreated: (ChartSeriesController controller) {
-                    bitcoinController.chartSeriesController = controller;
-                  },
-                  dataSource: bitcoinController.currentline.value,
-                  splineType: SplineType.natural,
-                  cardinalSplineTension: 0.6,
-                  animationDuration: 0,
-                  xValueMapper: (ChartLine crypto, _) => crypto.time,
-                  yValueMapper: (ChartLine crypto, _) => crypto.price,
-                  color: bitcoinController.currentline.value.isEmpty
-                      ? AppTheme.black100
-                      : bitcoinController.currentline.value[0].price <
-                              bitcoinController
-                                  .currentline
-                                  .value[bitcoinController
-                                          .currentline.value.length -
-                                      1]
-                                  .price
-                          ? AppTheme.successColor
-                          : AppTheme.errorColor,
-                )
-              ]),
-            ),
+                  //bitcoinController.trackBallValueDate = date.toString();
+                },
+                enableAxisAnimation: true,
+                plotAreaBorderWidth: 0,
+                primaryXAxis: NumericAxis(
+                    //labelPlacement: LabelPlacement.onTicks,
+                    edgeLabelPlacement: EdgeLabelPlacement.none,
+                    isVisible: false,
+                    majorGridLines: const MajorGridLines(width: 0),
+                    majorTickLines: const MajorTickLines(width: 0)),
+                primaryYAxis: NumericAxis(
+                    plotBands: <PlotBand>[
+                      PlotBand(
+                          isVisible:
+                              !bitcoinController.currentline.value.isEmpty,
+                          dashArray: const <double>[2, 5],
+                          start: bitcoinController.currentline.value.isEmpty
+                              ? 0
+                              : getaverage(bitcoinController.currentline.value),
+                          end: bitcoinController.currentline.value.isEmpty
+                              ? 1
+                              : getaverage(bitcoinController.currentline.value),
+                          horizontalTextAlignment: TextAnchor.start,
+                          textStyle: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                          borderColor: Colors.grey,
+                          borderWidth: 1.5)
+                    ],
+                    plotOffset: 0,
+                    edgeLabelPlacement: EdgeLabelPlacement.none,
+                    isVisible: false,
+                    majorGridLines: const MajorGridLines(width: 0),
+                    majorTickLines: const MajorTickLines(width: 0)),
+                series: <ChartSeries>[
+                  // Renders line chart
+                  SplineSeries<ChartLine, double>(
+                    onRendererCreated: (ChartSeriesController controller) {
+                      bitcoinController.chartSeriesController = controller;
+                    },
+                    dataSource: bitcoinController.currentline.value,
+                    splineType: SplineType.natural,
+                    cardinalSplineTension: 0.6,
+                    animationDuration: 0,
+                    xValueMapper: (ChartLine crypto, _) => crypto.time,
+                    yValueMapper: (ChartLine crypto, _) => crypto.price,
+                    color: bitcoinController.currentline.value.isEmpty
+                        ? AppTheme.black100
+                        : bitcoinController.currentline.value[0].price <
+                                bitcoinController
+                                    .currentline
+                                    .value[bitcoinController
+                                            .currentline.value.length -
+                                        1]
+                                    .price
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor,
+                  )
+                ]),
           ),
-        );
+        ),
+      );
     });
   }
 }
@@ -750,7 +767,7 @@ class _CustomWidgetState extends State<CustomWidget>
   late AnimationController _controller;
   late Animation<Color?> _animation;
   bool _isBlinking = false;
-  
+
   // Hover state for token charts
   bool _isHovering = false;
   double? _hoverPrice;
@@ -782,9 +799,9 @@ class _CustomWidgetState extends State<CustomWidget>
     if (price >= 1000) {
       // For prices like 48,350
       return price.toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match m) => '${m[1]},',
-      );
+            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]},',
+          );
     } else if (price >= 1) {
       // For prices like 15.75
       return price.toStringAsFixed(2);
@@ -793,7 +810,7 @@ class _CustomWidgetState extends State<CustomWidget>
       return price.toStringAsFixed(6);
     }
   }
-  
+
   // Helper method to get token image path
   String _getTokenImage(String tokenSymbol) {
     switch (tokenSymbol) {
@@ -820,13 +837,13 @@ class _CustomWidgetState extends State<CustomWidget>
   Widget build(BuildContext context) {
     // Cache Theme to avoid multiple expensive calls
     final theme = Theme.of(context);
-    
+
     // Check if we're displaying token data
     if (widget.tokenData != null) {
       final tokenSymbol = widget.tokenData!['tokenSymbol'] as String?;
       final tokenName = widget.tokenData!['tokenName'] as String?;
       final currentPrice = widget.tokenData!['currentPrice'];
-      
+
       // Validate required fields
       if (tokenSymbol == null || tokenName == null || currentPrice == null) {
         return Center(
@@ -836,7 +853,7 @@ class _CustomWidgetState extends State<CustomWidget>
           ),
         );
       }
-      
+
       // Convert currentPrice to double
       double currentPriceValue = 0;
       if (currentPrice is num) {
@@ -844,16 +861,18 @@ class _CustomWidgetState extends State<CustomWidget>
       } else if (currentPrice is String) {
         currentPriceValue = double.tryParse(currentPrice) ?? 0;
       }
-      
+
       // Use hover values if hovering, otherwise use current values
-      final displayPrice = _isHovering && _hoverPrice != null ? _hoverPrice! : currentPriceValue;
-      final displayTime = _isHovering && _hoverTime != null ? _hoverTime! : DateTime.now();
-      
+      final displayPrice =
+          _isHovering && _hoverPrice != null ? _hoverPrice! : currentPriceValue;
+      final displayTime =
+          _isHovering && _hoverTime != null ? _hoverTime! : DateTime.now();
+
       DateFormat dateFormat = DateFormat("dd.MM.yyyy");
       DateFormat timeFormat = DateFormat("HH:mm");
       String date = dateFormat.format(displayTime);
       String time = timeFormat.format(displayTime);
-      
+
       return Column(
         children: [
           Row(
@@ -876,8 +895,7 @@ class _CustomWidgetState extends State<CustomWidget>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(tokenName,
-                            style: theme.textTheme.headlineMedium),
+                        Text(tokenName, style: theme.textTheme.headlineMedium),
                         Text(
                           date,
                           style: theme.textTheme.titleSmall,
@@ -917,20 +935,23 @@ class _CustomWidgetState extends State<CustomWidget>
               Builder(
                 builder: (context) {
                   // Get the current chart state if available
-                  final chartCoreState = context.findAncestorStateOfType<_ChartCoreState>();
+                  final chartCoreState =
+                      context.findAncestorStateOfType<_ChartCoreState>();
                   String percentage = '+0.00%';
                   bool isPositive = true;
-                  
+
                   if (chartCoreState != null && widget.tokenData != null) {
                     final selectedPeriod = chartCoreState.selectedPeriod;
-                    final priceHistory = widget.tokenData!['priceHistory'] as Map<String, dynamic>?;
-                    
+                    final priceHistory = widget.tokenData!['priceHistory']
+                        as Map<String, dynamic>?;
+
                     if (priceHistory != null) {
                       final periodDataRaw = priceHistory[selectedPeriod];
                       if (periodDataRaw is List && periodDataRaw.isNotEmpty) {
                         try {
-                          final periodData = periodDataRaw.cast<Map<String, dynamic>>();
-                          
+                          final periodData =
+                              periodDataRaw.cast<Map<String, dynamic>>();
+
                           // Safely parse first price
                           double firstPrice = 0;
                           final firstPriceData = periodData.first['price'];
@@ -939,7 +960,7 @@ class _CustomWidgetState extends State<CustomWidget>
                           } else if (firstPriceData is String) {
                             firstPrice = double.tryParse(firstPriceData) ?? 0;
                           }
-                          
+
                           // Safely parse last price or use hover price
                           double comparePrice = 0;
                           if (_isHovering && _hoverPrice != null) {
@@ -949,14 +970,18 @@ class _CustomWidgetState extends State<CustomWidget>
                             if (lastPriceData is num) {
                               comparePrice = lastPriceData.toDouble();
                             } else if (lastPriceData is String) {
-                              comparePrice = double.tryParse(lastPriceData) ?? 0;
+                              comparePrice =
+                                  double.tryParse(lastPriceData) ?? 0;
                             }
                           }
-                          
+
                           if (firstPrice > 0) {
-                            final change = ((comparePrice - firstPrice) / firstPrice) * 100;
+                            final change =
+                                ((comparePrice - firstPrice) / firstPrice) *
+                                    100;
                             isPositive = change >= 0;
-                            percentage = '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
+                            percentage =
+                                '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%';
                           }
                         } catch (e) {
                           // Keep default values if there's an error
@@ -964,7 +989,7 @@ class _CustomWidgetState extends State<CustomWidget>
                       }
                     }
                   }
-                  
+
                   return BitNetPercentWidget(
                     priceChange: percentage,
                   );
@@ -975,7 +1000,7 @@ class _CustomWidgetState extends State<CustomWidget>
         ],
       );
     }
-    
+
     // Bitcoin data display
     final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
@@ -1015,8 +1040,7 @@ class _CustomWidgetState extends State<CustomWidget>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Bitcoin",
-                            style: theme.textTheme.headlineMedium),
+                        Text("Bitcoin", style: theme.textTheme.headlineMedium),
                         Text(
                           trackDate,
                           style: theme.textTheme.titleSmall,

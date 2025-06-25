@@ -64,7 +64,7 @@ class EmailRecoveryPageThree extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding * 2),
-            
+
             // Success icon
             Container(
               width: 120,
@@ -83,33 +83,36 @@ class EmailRecoveryPageThree extends StatelessWidget {
                 color: AppTheme.successColor,
               ),
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding),
-            
+
             // Success message
             Text(
               'Success!',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.successColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.successColor,
+                  ),
               textAlign: TextAlign.center,
             ),
-            
+
             SizedBox(height: AppTheme.elementSpacing),
-            
+
             Text(
               'Your email is now verified.',
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding),
-            
+
             Container(
               padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceVariant
+                    .withOpacity(0.3),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
               ),
               child: Column(
@@ -123,25 +126,28 @@ class EmailRecoveryPageThree extends StatelessWidget {
                   Text(
                     'You can now use email recovery to restore your account if needed.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.8),
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: AppTheme.elementSpacing / 2),
                   Text(
                     'Access: Settings → Recover Account → Email Recovery',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-            
+
             Spacer(),
-            
+
             // Change email button
             TextButton(
               onPressed: () {
@@ -150,12 +156,12 @@ class EmailRecoveryPageThree extends StatelessWidget {
               child: Text(
                 'Change Email',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  decoration: TextDecoration.underline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding),
           ],
         ),
@@ -215,14 +221,17 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding * 2),
-            
+
             // Icon section
             Container(
               width: 120,
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer
+                    .withOpacity(0.2),
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                   width: 2,
@@ -234,33 +243,36 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding),
-            
+
             // Title and description
             Text(
               'Check Your Email',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
               textAlign: TextAlign.center,
             ),
-            
+
             SizedBox(height: AppTheme.elementSpacing),
-            
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
                 'We have sent you a verification email. Please verify your email to continue.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7),
+                    ),
                 textAlign: TextAlign.center,
               ),
             ),
-            
+
             Spacer(),
-            
+
             // Action buttons
             Column(
               children: [
@@ -277,7 +289,7 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
                             setState(() {
                               reloading = true;
                             });
-                            
+
                             await Auth().currentUser!.reload();
 
                             if (Auth().currentUser!.emailVerified) {
@@ -292,29 +304,27 @@ class _EmailRecoveryPageTwoState extends State<EmailRecoveryPageTwo> {
                                         curve: Curves.easeIn);
                               });
                             }
-                            
+
                             setState(() {
                               reloading = false;
                             });
                           },
                         ),
                 ),
-                
                 SizedBox(height: AppTheme.elementSpacing),
-                
                 TextButton(
                   onPressed: () {
-                    settingsController.pageControllerEmailRecovery.jumpToPage(0);
+                    settingsController.pageControllerEmailRecovery
+                        .jumpToPage(0);
                   },
                   child: Text(
                     'Change Email',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      decoration: TextDecoration.underline,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          decoration: TextDecoration.underline,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
-                
                 SizedBox(height: AppTheme.cardPadding),
               ],
             ),
@@ -335,7 +345,7 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
   String emailError = "";
   String passwordError = "";
   bool loadingSetupRecovery = false;
-  
+
   @override
   Widget build(BuildContext context) {
     SettingsController settingsController = Get.find<SettingsController>();
@@ -346,23 +356,27 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: AppTheme.cardPadding),
-            
+
             // Header section
             Column(
               children: [
                 Text(
                   "Setup Email Recovery",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: AppTheme.elementSpacing),
                 Container(
                   padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withOpacity(0.3),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusSmall),
                   ),
                   child: Row(
                     children: [
@@ -375,9 +389,13 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                       Expanded(
                         child: Text(
                           "Use your email and password to encrypt your recovery data securely.",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.8),
+                                  ),
                         ),
                       ),
                     ],
@@ -385,9 +403,9 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                 ),
               ],
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding * 2),
-            
+
             // Form fields
             Column(
               children: [
@@ -411,14 +429,12 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                     child: Text(
                       emailError,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.errorColor,
-                      ),
+                            color: AppTheme.errorColor,
+                          ),
                     ),
                   ),
                 ],
-                
                 SizedBox(height: AppTheme.cardPadding),
-                
                 FormTextField(
                   width: double.infinity,
                   hintText: 'Password',
@@ -439,7 +455,10 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                     },
                     icon: Icon(
                       obscurePass ? Icons.visibility_off : Icons.visibility,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.5),
                     ),
                   ),
                 ),
@@ -450,35 +469,39 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                     child: Text(
                       passwordError,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.errorColor,
-                      ),
+                            color: AppTheme.errorColor,
+                          ),
                     ),
                   ),
                 ],
               ],
             ),
-            
+
             Spacer(),
-            
+
             // Bottom button
             Padding(
               padding: EdgeInsets.only(bottom: AppTheme.cardPadding),
               child: SizedBox(
                 width: double.infinity,
                 child: LongButtonWidget(
-                  state: loadingSetupRecovery ? ButtonState.loading : ButtonState.idle,
+                  state: loadingSetupRecovery
+                      ? ButtonState.loading
+                      : ButtonState.idle,
                   title: "Setup Recovery",
                   onTap: () async {
                     setState(() {
                       loadingSetupRecovery = true;
                     });
-                    
+
                     validateEmail(settingsController.emailFieldController);
-                    validatePassword(settingsController.passwordFieldController);
-                    
+                    validatePassword(
+                        settingsController.passwordFieldController);
+
                     if (emailError.isEmpty && passwordError.isEmpty) {
                       try {
-                        PrivateData privData = await getPrivateData(Auth().currentUser!.uid);
+                        PrivateData privData =
+                            await getPrivateData(Auth().currentUser!.uid);
                         await setupEmailRecovery(
                             settingsController.passwordFieldController.text,
                             privData.mnemonic,
@@ -486,15 +509,20 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                             settingsController.emailFieldController.text);
 
                         String token = generateSecureToken();
-                        emailRecoveryCollection.doc(Auth().currentUser!.uid).update({
+                        emailRecoveryCollection
+                            .doc(Auth().currentUser!.uid)
+                            .update({
                           'token': token,
                           'valid_until': Timestamp.fromDate(
                               DateTime.now().add(Duration(hours: 1))),
                           'verified': false
                         });
-                        
-                        await sendEmail(settingsController.emailFieldController.text, token, 0);
-                        
+
+                        await sendEmail(
+                            settingsController.emailFieldController.text,
+                            token,
+                            0);
+
                         Get.find<SettingsController>()
                             .pageControllerEmailRecovery
                             .nextPage(
@@ -504,7 +532,7 @@ class _EmailRecoveryPageOneState extends State<EmailRecoveryPageOne> {
                         // Handle error
                       }
                     }
-                    
+
                     setState(() {
                       loadingSetupRecovery = false;
                     });

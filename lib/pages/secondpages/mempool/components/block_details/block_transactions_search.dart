@@ -8,7 +8,7 @@ class BlockTransactionsSearch extends StatelessWidget {
   final Function(String) handleSearch;
   final Function onTap;
   final bool isEnabled;
-  
+
   const BlockTransactionsSearch({
     Key? key,
     required this.transactionCount,
@@ -16,7 +16,7 @@ class BlockTransactionsSearch extends StatelessWidget {
     required this.onTap,
     this.isEnabled = false,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

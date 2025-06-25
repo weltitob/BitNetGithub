@@ -1,4 +1,3 @@
-
 class LitdAccountResponse {
   final Account? account;
   final String? macaroon;
@@ -7,7 +6,8 @@ class LitdAccountResponse {
 
   factory LitdAccountResponse.fromJson(Map<String, dynamic> json) {
     return LitdAccountResponse(
-      account: json['account'] != null ? Account.fromJson(json['account']) : null,
+      account:
+          json['account'] != null ? Account.fromJson(json['account']) : null,
       macaroon: json['macaroon'],
     );
   }

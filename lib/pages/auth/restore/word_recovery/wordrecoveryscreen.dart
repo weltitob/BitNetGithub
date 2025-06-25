@@ -44,7 +44,6 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   }
 
   void onSignInPressed(mCtrl, tCtrls) async {
-
     final overlayController = Get.find<OverlayController>();
 
     try {
@@ -62,7 +61,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       // HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
       // String did = hdWallet.pubkey;
       // String privateKeyHex = hdWallet.privkey;
-      
+
       // Generate DID from mnemonic using RecoveryIdentity
       String did = RecoveryIdentity.generateRecoveryDid(mnemonic);
 

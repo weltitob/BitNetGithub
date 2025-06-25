@@ -29,7 +29,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bitnet/services/moonpay.dart'
-  if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
+    if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';
 import 'package:provider/provider.dart';
 
 class BuyScreen extends StatefulWidget {
@@ -41,7 +41,7 @@ class BuyScreen extends StatefulWidget {
 
 class _BuyScreenState extends State<BuyScreen> {
   late BuyController buyController;
-  
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +51,7 @@ class _BuyScreenState extends State<BuyScreen> {
     }
     buyController = Get.find<BuyController>();
   }
-  
+
   @override
   void dispose() {
     // Make sure timer is canceled when screen is disposed
@@ -63,7 +63,8 @@ class _BuyScreenState extends State<BuyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     return bitnetScaffold(
@@ -93,7 +94,8 @@ class _BuyScreenState extends State<BuyScreen> {
               children: [
                 SizedBox(height: AppTheme.cardPadding * 2),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: AmountWidget(
                     enabled: () => true,
                     btcController: buyController.btcController,
@@ -105,7 +107,7 @@ class _BuyScreenState extends State<BuyScreen> {
                   ),
                 ),
                 SizedBox(height: 30),
-                
+
                 // Payment Method Selection
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -122,16 +124,18 @@ class _BuyScreenState extends State<BuyScreen> {
                           opacity: 0.05,
                           child: BitNetListTile(
                             contentPadding: EdgeInsets.only(
-                              left: 16.0, right: 16.0, bottom: 16.0),
+                                left: 16.0, right: 16.0, bottom: 16.0),
                             text: buyController.paymentMethodName.value,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const PaymentMethodsScreen(),
+                                builder: (context) =>
+                                    const PaymentMethodsScreen(),
                               ),
                             ),
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: _getPaymentMethodIcon(buyController.paymentMethodId.value),
+                              child: _getPaymentMethodIcon(
+                                  buyController.paymentMethodId.value),
                             ),
                             trailing: Icon(Icons.arrow_forward_ios, size: 16),
                           ),
@@ -140,7 +144,7 @@ class _BuyScreenState extends State<BuyScreen> {
                     ],
                   ),
                 ),
-                
+
                 // Provider Selection
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -157,7 +161,7 @@ class _BuyScreenState extends State<BuyScreen> {
                           opacity: 0.05,
                           child: BitNetListTile(
                             contentPadding: EdgeInsets.only(
-                              left: 16.0, right: 16.0, bottom: 16.0),
+                                left: 16.0, right: 16.0, bottom: 16.0),
                             text: buyController.providerName.value,
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
@@ -166,33 +170,39 @@ class _BuyScreenState extends State<BuyScreen> {
                             ),
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: _getProviderIcon(buyController.providerId.value),
+                              child: _getProviderIcon(
+                                  buyController.providerId.value),
                             ),
-                            trailing: buyController.providerId.value == "moonpay" &&
-                                    buyController.moonpayQuoteCurrPrice.value > 0
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(buyController.moonpayQuoteCurrPrice.value.toString()),
-                                        Icon(getCurrencyIcon(BitcoinUnits.BTC.name))
-                                      ],
-                                    ),
-                                    Text(
-                                      "= ${buyController.moonpayBaseCurrPrice.value.toStringAsFixed(2)} ${getCurrency(currency ?? 'USD')}")
-                                  ],
-                                )
-                              : Icon(Icons.arrow_forward_ios, size: 16),
+                            trailing: buyController.providerId.value ==
+                                        "moonpay" &&
+                                    buyController.moonpayQuoteCurrPrice.value >
+                                        0
+                                ? Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(buyController
+                                              .moonpayQuoteCurrPrice.value
+                                              .toString()),
+                                          Icon(getCurrencyIcon(
+                                              BitcoinUnits.BTC.name))
+                                        ],
+                                      ),
+                                      Text(
+                                          "= ${buyController.moonpayBaseCurrPrice.value.toStringAsFixed(2)} ${getCurrency(currency ?? 'USD')}")
+                                    ],
+                                  )
+                                : Icon(Icons.arrow_forward_ios, size: 16),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                
+
                 SizedBox(height: 100), // Space for the button at bottom
               ],
             ),
@@ -209,23 +219,25 @@ class _BuyScreenState extends State<BuyScreen> {
                     if (buyController.providerId.value == "stripe") {
                       // Stripe implementation
                     } else {
-                      String lang = Provider.of<LocalProvider>(context, listen: false)
-                          .locale
-                          .languageCode;
-                      double btcAmount = double.tryParse(buyController.btcController.text) ?? 0.0;
+                      String lang =
+                          Provider.of<LocalProvider>(context, listen: false)
+                              .locale
+                              .languageCode;
+                      double btcAmount =
+                          double.tryParse(buyController.btcController.text) ??
+                              0.0;
                       btcAmount = double.tryParse(btcAmount
-                          .toStringAsFixed(5)
-                          .replaceFirst(RegExp(r'\.?0+$'), '')) ??
+                              .toStringAsFixed(5)
+                              .replaceFirst(RegExp(r'\.?0+$'), '')) ??
                           0.0;
 
                       MoonpayFlutter().showMoonPay(
-                        await getBtcAddress(),
-                        btcAmount, 
-                        lang, 
-                        "btc", 
-                        0.0, 
-                        buyController.paymentMethodId.value
-                      );
+                          await getBtcAddress(),
+                          btcAmount,
+                          lang,
+                          "btc",
+                          0.0,
+                          buyController.paymentMethodId.value);
                     }
                   },
                   buttonType: ButtonType.solid,
@@ -252,7 +264,7 @@ class _BuyScreenState extends State<BuyScreen> {
         return Icon(Icons.payment);
     }
   }
-  
+
   Widget _getProviderIcon(String providerId) {
     switch (providerId) {
       case "stripe":

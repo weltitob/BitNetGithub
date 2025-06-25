@@ -21,11 +21,8 @@ class Loop extends StatefulWidget {
 }
 
 class LoopController extends State<Loop> {
-
-
   @override
   Widget build(BuildContext context) {
-    return LoopScreen(
-    );
+    return LoopScreen();
   }
 }

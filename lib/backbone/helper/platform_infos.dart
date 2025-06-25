@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-
 abstract class PlatformInfos {
   static bool get isWeb => kIsWeb;
   static bool get isLinux => !kIsWeb && Platform.isLinux;

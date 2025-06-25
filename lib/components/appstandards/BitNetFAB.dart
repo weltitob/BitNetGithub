@@ -23,12 +23,10 @@ class BitNetFAB extends StatefulWidget {
 }
 
 class _BitNetFABState extends State<BitNetFAB> {
-
   bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-
     final borderRadius = BorderRadius.circular(widget.height / 2.5);
     return InkWell(
       borderRadius: borderRadius,
@@ -51,7 +49,8 @@ class _BitNetFABState extends State<BitNetFAB> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               transform: isHovered
-                  ? Matrix4.translationValues(0, 2, 0) // adjust the value to control the height of the jump
+                  ? Matrix4.translationValues(0, 2,
+                      0) // adjust the value to control the height of the jump
                   : Matrix4.translationValues(0, -2, 0),
               child: Icon(
                 widget.iconData,

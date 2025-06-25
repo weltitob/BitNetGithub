@@ -28,11 +28,11 @@ class WebsitesTab extends StatefulWidget {
   State<WebsitesTab> createState() => _WebsitesTabState();
 }
 
-class _WebsitesTabState extends State<WebsitesTab> 
+class _WebsitesTabState extends State<WebsitesTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  
+
   late final FaviconCacheService _faviconCache;
 
   // Simple, non-animated placeholder for favicon/image loading
@@ -58,7 +58,7 @@ class _WebsitesTabState extends State<WebsitesTab>
       ),
     );
   }
-  
+
   Widget _buildIconContent(WebsiteData website, double size) {
     // First priority: Use local asset if iconPath is provided
     if (website.iconPath != null) {
@@ -132,7 +132,7 @@ class _WebsitesTabState extends State<WebsitesTab>
     // Use a more sophisticated default icon
     return _buildDefaultIcon(website, size);
   }
-  
+
   Widget _buildDefaultIcon(WebsiteData website, double size) {
     // Create a colored container with the first letter of the website
     final Color backgroundColor = _getColorForWebsite(website.name);
@@ -155,7 +155,7 @@ class _WebsitesTabState extends State<WebsitesTab>
       ),
     );
   }
-  
+
   Color _getColorForWebsite(String name) {
     // Generate a consistent color based on the website name
     final int hash = name.hashCode;
@@ -177,7 +177,8 @@ class _WebsitesTabState extends State<WebsitesTab>
         name: "BitreFill",
         url: "https://www.bitrefill.com",
         bannerPath: 'assets/images/bitrefill_banner.png',
-        description: "Buy gift cards and mobile refills with Bitcoin and cryptocurrency"),
+        description:
+            "Buy gift cards and mobile refills with Bitcoin and cryptocurrency"),
     WebsiteData(
         name: "Flipit",
         url: "https://flipittoken.eth.limo/",
@@ -192,58 +193,62 @@ class _WebsitesTabState extends State<WebsitesTab>
     WebsiteData(
         name: "Satoshi's Place",
         url: "https://satoshis.place/",
-        description: "Collaborative pixel art canvas where you paint with satoshis"),
+        description:
+            "Collaborative pixel art canvas where you paint with satoshis"),
     WebsiteData(
-        name: "Lnmarkets", 
+        name: "Lnmarkets",
         url: "https://lnmarkets.com",
         fallbackIconPath: 'assets/images/lightning.png',
-        description: "Bitcoin derivatives trading platform using Lightning Network"),
+        description:
+            "Bitcoin derivatives trading platform using Lightning Network"),
     WebsiteData(
-        name: "Fold", 
+        name: "Fold",
         url: "https://foldapp.com/",
-        description: "Earn Bitcoin rewards when you shop at your favorite places"),
+        description:
+            "Earn Bitcoin rewards when you shop at your favorite places"),
     WebsiteData(
         name: "The Bitcoin Company",
         url: "https://thebitcoincompany.com/",
         iconPath: 'assets/images/thebitcoincompany_logo.jpeg',
         description: "All-in-one Bitcoin app for daily Bitcoin use"),
     WebsiteData(
-        name: "Azteco", 
+        name: "Azteco",
         url: "https://azte.co/",
         fallbackIconPath: 'assets/images/bitcoin.png',
         description: "Buy Bitcoin vouchers to fund your wallet instantly"),
     WebsiteData(
-        name: "Boltz", 
+        name: "Boltz",
         url: "https://boltz.exchange/",
         fallbackIconPath: 'assets/images/lightning.png',
-        description: "Non-custodial cryptocurrency exchange with Lightning support"),
+        description:
+            "Non-custodial cryptocurrency exchange with Lightning support"),
     WebsiteData(
-        name: "Geyser", 
+        name: "Geyser",
         url: "https://geyser.fund/",
         fallbackIconPath: 'assets/images/bitcoin.png',
         description: "Fund open-source Bitcoin projects through crowdfunding"),
     WebsiteData(
-        name: "Lightsats", 
+        name: "Lightsats",
         url: "https://lightsats.com/",
         fallbackIconPath: 'assets/images/lightning.png',
         description: "Send Bitcoin tips and onboard new users easily"),
     WebsiteData(
-        name: "LN.PIZZA", 
+        name: "LN.PIZZA",
         url: "https://ln.pizza/",
         fallbackIconPath: 'assets/images/lightning.png',
         description: "Order pizza with Bitcoin Lightning payments"),
     WebsiteData(
-        name: "Sms4Sats", 
+        name: "Sms4Sats",
         url: "https://sms4sats.com/",
         fallbackIconPath: 'assets/images/lightning.png',
         description: "Get an SMS number with Bitcoin Lightning payments"),
     WebsiteData(
-        name: "Lightning Roulette", 
+        name: "Lightning Roulette",
         url: "https://lightning-roulette.com/",
         fallbackIconPath: 'assets/images/lightning.png',
         description: "Play roulette with Bitcoin Lightning Network"),
     WebsiteData(
-        name: "Clinch", 
+        name: "Clinch",
         url: "https://www.clinch.gg/",
         description: "E-sports platform with Bitcoin Lightning integration"),
   ];
@@ -251,7 +256,7 @@ class _WebsitesTabState extends State<WebsitesTab>
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize favicon cache service with safety check
     try {
       _faviconCache = Get.find<FaviconCacheService>();
@@ -260,36 +265,38 @@ class _WebsitesTabState extends State<WebsitesTab>
       Get.put(FaviconCacheService(), permanent: true);
       _faviconCache = Get.find<FaviconCacheService>();
     }
-    
+
     // Load favicons using the cache service
     _loadFaviconsWithCache();
   }
-  
+
   Future<void> _loadFaviconsWithCache() async {
     // First, load favicons for visible websites (first 4 in carousel)
-    final visibleUrls = websites.take(4)
+    final visibleUrls = websites
+        .take(4)
         .where((w) => w.iconPath == null)
         .map((w) => w.url)
         .toList();
-    
+
     for (int i = 0; i < 4 && i < websites.length; i++) {
       final website = websites[i];
       if (website.iconPath == null) {
         _loadCachedFavicon(website);
       }
     }
-    
+
     // Preload remaining favicons with a delay
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        final remainingUrls = websites.skip(4)
+        final remainingUrls = websites
+            .skip(4)
             .where((w) => w.iconPath == null)
             .map((w) => w.url)
             .toList();
-        
+
         // Preload in background
         _faviconCache.preloadFavicons(remainingUrls);
-        
+
         // Update UI for remaining websites
         for (int i = 4; i < websites.length; i++) {
           final website = websites[i];
@@ -300,7 +307,7 @@ class _WebsitesTabState extends State<WebsitesTab>
       }
     });
   }
-  
+
   Future<void> _loadCachedFavicon(WebsiteData website) async {
     try {
       final bytes = await _faviconCache.getFavicon(website.url);
@@ -338,9 +345,7 @@ class _WebsitesTabState extends State<WebsitesTab>
 
           // Carousel Slider for Trending Websites
           CarouselSlider.builder(
-            options: getStandardizedCarouselOptions(
-              autoPlayIntervalSeconds: 5
-            ),
+            options: getStandardizedCarouselOptions(autoPlayIntervalSeconds: 5),
             itemCount: 4,
             itemBuilder: (context, index, _) {
               final website = websites[index];
@@ -348,7 +353,8 @@ class _WebsitesTabState extends State<WebsitesTab>
               return RepaintBoundary(
                 child: GestureDetector(
                   onTap: () {
-                    context.pushNamed(kWebViewScreenRoute,
+                    context.pushNamed(
+                      kWebViewScreenRoute,
                       pathParameters: {
                         'url': website.url,
                         'name': website.name,
@@ -357,9 +363,11 @@ class _WebsitesTabState extends State<WebsitesTab>
                   },
                   child: GlassContainer(
                     width: getStandardizedCardWidth().w,
-                    margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: getStandardizedCardMargin().w),
                     boxShadow: isDarkMode ? [] : null,
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusMid),
                     child: Stack(
                       children: [
                         // Main content with proper layout
@@ -367,25 +375,35 @@ class _WebsitesTabState extends State<WebsitesTab>
                           children: [
                             // Header section with icon and text
                             Padding(
-                              padding: EdgeInsets.all(AppTheme.cardPadding * 0.8),
+                              padding:
+                                  EdgeInsets.all(AppTheme.cardPadding * 0.8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   // Website name and URL with icon
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // Website icon (same style as in the list below)
                                       Container(
                                         width: 48.w,
                                         height: 48.h,
                                         decoration: BoxDecoration(
-                                          color: Theme.of(context).brightness == Brightness.dark 
-                                              ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .surface
+                                                  .withOpacity(0.8)
                                               : Colors.white,
-                                          borderRadius: BorderRadius.circular(10.r),
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
                                           border: Border.all(
-                                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .outline
+                                                .withOpacity(0.1),
                                             width: 1,
                                           ),
                                         ),
@@ -395,13 +413,17 @@ class _WebsitesTabState extends State<WebsitesTab>
                                       SizedBox(width: 12.w),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               website.name,
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             SizedBox(height: 2.h),
@@ -411,9 +433,16 @@ class _WebsitesTabState extends State<WebsitesTab>
                                                   .replaceAll('http://', '')
                                                   .replaceAll('www.', '')
                                                   .split('/')[0],
-                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.color
+                                                        ?.withOpacity(0.6),
+                                                  ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
@@ -421,16 +450,23 @@ class _WebsitesTabState extends State<WebsitesTab>
                                       ),
                                     ],
                                   ),
-                                  
+
                                   // Description
                                   if (website.description != null) ...[
                                     SizedBox(height: 8.h),
                                     Text(
                                       website.description!,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                                        height: 1.15,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.color
+                                                ?.withOpacity(0.7),
+                                            height: 1.15,
+                                          ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -438,37 +474,44 @@ class _WebsitesTabState extends State<WebsitesTab>
                                 ],
                               ),
                             ),
-                            
+
                             // Banner image takes remaining space
                             if (website.bannerPath != null)
                               Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.all(AppTheme.elementSpacing * 0.75),
+                                  padding: EdgeInsets.all(
+                                      AppTheme.elementSpacing * 0.75),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                                    borderRadius: BorderRadius.circular(
+                                        AppTheme.borderRadiusSmall),
                                     child: Image.asset(
                                       website.bannerPath!,
                                       width: double.infinity,
                                       fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Theme.of(context).colorScheme.surface,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
-                                            size: 40,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.image_not_supported,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.3),
+                                              size: 40,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
                           ],
                         ),
-                        
                       ],
                     ),
                   ),
@@ -491,8 +534,7 @@ class _WebsitesTabState extends State<WebsitesTab>
 
           // List of all websites in a single GlassContainer
           Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
             child: GlassContainer(
               boxShadow: isDarkMode ? [] : null,
               child: Padding(
@@ -502,7 +544,8 @@ class _WebsitesTabState extends State<WebsitesTab>
                   children: websites.map<Widget>((entry) {
                     return BitNetListTile(
                       onTap: () {
-                        context.pushNamed(kWebViewScreenRoute,
+                        context.pushNamed(
+                          kWebViewScreenRoute,
                           pathParameters: {
                             'url': entry.url,
                             'name': entry.name,
@@ -514,9 +557,16 @@ class _WebsitesTabState extends State<WebsitesTab>
                       subtitle: entry.description != null
                           ? Text(
                               entry.description!,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             )
@@ -525,12 +575,18 @@ class _WebsitesTabState extends State<WebsitesTab>
                         width: 52.w,
                         height: 52.h,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).brightness == Brightness.dark 
-                              ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withOpacity(0.8)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withOpacity(0.1),
                             width: 1,
                           ),
                         ),
@@ -540,7 +596,10 @@ class _WebsitesTabState extends State<WebsitesTab>
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.5),
                       ),
                     );
                   }).toList(),
@@ -567,9 +626,10 @@ class WebsiteData {
   final String? description;
   final bool useNetworkImage;
   final bool replaceColor;
-  
+
   Uint8List? faviconBytes;
-  final StreamController<Uint8List?> _faviconBytesController = StreamController<Uint8List?>.broadcast();
+  final StreamController<Uint8List?> _faviconBytesController =
+      StreamController<Uint8List?>.broadcast();
   Stream<Uint8List?> get faviconBytesStream => _faviconBytesController.stream;
 
   WebsiteData({

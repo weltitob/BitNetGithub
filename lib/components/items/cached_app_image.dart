@@ -10,7 +10,7 @@ class CachedAppImage extends StatefulWidget {
   final double width;
   final double height;
   final BoxFit fit;
-  
+
   const CachedAppImage({
     super.key,
     required this.app,
@@ -28,11 +28,11 @@ class _CachedAppImageState extends State<CachedAppImage> {
   Uint8List? _imageBytes;
   bool _isLoading = true;
   bool _isSvg = false;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize cache service with safety check
     try {
       _cacheService = Get.find<AppImageCacheService>();
@@ -41,14 +41,14 @@ class _CachedAppImageState extends State<CachedAppImage> {
       Get.put(AppImageCacheService(), permanent: true);
       _cacheService = Get.find<AppImageCacheService>();
     }
-    
+
     _loadImage();
   }
-  
+
   Future<void> _loadImage() async {
     try {
       Uint8List? bytes;
-      
+
       // First priority: Local asset (no caching needed)
       if (widget.app.iconPath != null) {
         setState(() {
@@ -57,16 +57,17 @@ class _CachedAppImageState extends State<CachedAppImage> {
         });
         return;
       }
-      
+
       // Second priority: Firebase Storage
       if (widget.app.useNetworkAsset && widget.app.storageName != null) {
-        bytes = await _cacheService.getFirebaseStorageImage(widget.app.storageName!);
+        bytes = await _cacheService
+            .getFirebaseStorageImage(widget.app.storageName!);
       }
       // Third priority: Network favicon
       else if (widget.app.useNetworkImage) {
         bytes = await _cacheService.getFaviconFromUrl(widget.app.url);
       }
-      
+
       if (mounted) {
         setState(() {
           _imageBytes = bytes;
@@ -87,7 +88,7 @@ class _CachedAppImageState extends State<CachedAppImage> {
       }
     }
   }
-  
+
   Widget _buildImagePlaceholder() {
     return Container(
       width: widget.width,
@@ -103,7 +104,7 @@ class _CachedAppImageState extends State<CachedAppImage> {
       ),
     );
   }
-  
+
   Widget _buildErrorWidget() {
     return Container(
       width: widget.width,
@@ -119,7 +120,7 @@ class _CachedAppImageState extends State<CachedAppImage> {
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -133,7 +134,7 @@ class _CachedAppImageState extends State<CachedAppImage> {
             if (_isLoading) {
               return _buildImagePlaceholder();
             }
-            
+
             // Local asset
             if (widget.app.iconPath != null) {
               if (_isSvg) {
@@ -149,11 +150,12 @@ class _CachedAppImageState extends State<CachedAppImage> {
                   fit: widget.fit,
                   width: widget.width,
                   height: widget.height,
-                  errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildErrorWidget(),
                 );
               }
             }
-            
+
             // Cached network image
             if (_imageBytes != null) {
               if (_isSvg) {
@@ -169,11 +171,12 @@ class _CachedAppImageState extends State<CachedAppImage> {
                   fit: widget.fit,
                   width: widget.width,
                   height: widget.height,
-                  errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildErrorWidget(),
                 );
               }
             }
-            
+
             // No image available
             return _buildErrorWidget();
           },

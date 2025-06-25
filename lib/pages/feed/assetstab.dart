@@ -428,7 +428,8 @@ class _AssetsTabState extends State<AssetsTab>
                                                       .withOpacity(0.2)
                                                   : AppTheme.errorColor
                                                       .withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(50),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],
@@ -588,7 +589,8 @@ class _AssetsTabState extends State<AssetsTab>
                                             decoration: BoxDecoration(
                                               color: Colors.orange
                                                   .withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(50),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
                                             ),
                                             child: Text(
                                               project['change'],

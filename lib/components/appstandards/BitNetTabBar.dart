@@ -40,7 +40,9 @@ class BitNetTabBar extends StatelessWidget {
     Key? key,
     this.tabController,
     required this.tabs,
-    this.buttonMargin = const EdgeInsets.only(left: AppTheme.elementSpacing), // Default value from AppTheme.elementSpacing
+    this.buttonMargin = const EdgeInsets.only(
+        left: AppTheme
+            .elementSpacing), // Default value from AppTheme.elementSpacing
     this.contentPadding = const EdgeInsets.symmetric(
       vertical: AppTheme.elementSpacing * 0.5,
       horizontal: AppTheme.elementSpacing / 4,
@@ -51,15 +53,17 @@ class BitNetTabBar extends StatelessWidget {
     this.physics = const ClampingScrollPhysics(),
     this.unselectedDecoration = const BoxDecoration(
       color: Colors.transparent,
-      borderRadius: BorderRadius.all(Radius.circular(AppTheme.cardPaddingSmall)),
+      borderRadius:
+          BorderRadius.all(Radius.circular(AppTheme.cardPaddingSmall)),
     ),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Determine if we should use Bitcoin gradient
-    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
-    
+    final bool useBitcoinGradient =
+        Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+
     return HorizontalFadeListView(
       child: ButtonsTabBar(
         controller: tabController,
@@ -71,21 +75,21 @@ class BitNetTabBar extends StatelessWidget {
         radius: radius,
         physics: physics,
         decoration: useBitcoinGradient
-          ? BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppTheme.colorBitcoin,
-                  AppTheme.colorPrimaryGradient,
-                ],
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppTheme.colorBitcoin,
+                    AppTheme.colorPrimaryGradient,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(radius),
+              )
+            : BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(radius),
               ),
-              borderRadius: BorderRadius.circular(radius),
-            )
-          : BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(radius),
-            ),
         unselectedDecoration: unselectedDecoration,
         tabs: tabs,
         labelStyle: TextStyle(

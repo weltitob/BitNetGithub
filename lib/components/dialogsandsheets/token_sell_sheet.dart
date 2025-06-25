@@ -18,79 +18,217 @@ final Map<String, Map<String, dynamic>> tokenMarketData = {
     'floorPrice': 45000.0,
     'currentPrice': 48350.0,
     'sellOffers': [
-      {'seller': 'GenesisKeeper', 'amount': '3', 'price': '46,500', 'rating': 4.9, 'trades': 342},
-      {'seller': 'StoneCollector', 'amount': '5', 'price': '47,200', 'rating': 4.8, 'trades': 267},
-      {'seller': 'CryptoVault', 'amount': '2', 'price': '47,800', 'rating': 5.0, 'trades': 523},
+      {
+        'seller': 'GenesisKeeper',
+        'amount': '3',
+        'price': '46,500',
+        'rating': 4.9,
+        'trades': 342
+      },
+      {
+        'seller': 'StoneCollector',
+        'amount': '5',
+        'price': '47,200',
+        'rating': 4.8,
+        'trades': 267
+      },
+      {
+        'seller': 'CryptoVault',
+        'amount': '2',
+        'price': '47,800',
+        'rating': 5.0,
+        'trades': 523
+      },
     ],
     'buyOffers': [
-      {'buyer': 'TokenWhale', 'amount': '10', 'price': '45,000', 'rating': 4.8, 'trades': 156},
-      {'buyer': 'GenesisHunter', 'amount': '4', 'price': '44,500', 'rating': 4.7, 'trades': 234},
+      {
+        'buyer': 'TokenWhale',
+        'amount': '10',
+        'price': '45,000',
+        'rating': 4.8,
+        'trades': 156
+      },
+      {
+        'buyer': 'GenesisHunter',
+        'amount': '4',
+        'price': '44,500',
+        'rating': 4.7,
+        'trades': 234
+      },
     ]
   },
   'HTDG': {
     'floorPrice': 14.50,
     'currentPrice': 15.75,
     'sellOffers': [
-      {'seller': 'HotdogKing', 'amount': '500', 'price': '15.00', 'rating': 4.9, 'trades': 876},
-      {'seller': 'FoodToken', 'amount': '750', 'price': '15.50', 'rating': 4.7, 'trades': 432},
+      {
+        'seller': 'HotdogKing',
+        'amount': '500',
+        'price': '15.00',
+        'rating': 4.9,
+        'trades': 876
+      },
+      {
+        'seller': 'FoodToken',
+        'amount': '750',
+        'price': '15.50',
+        'rating': 4.7,
+        'trades': 432
+      },
     ],
     'buyOffers': [
-      {'buyer': 'HotdogFan', 'amount': '300', 'price': '14.00', 'rating': 4.8, 'trades': 234},
+      {
+        'buyer': 'HotdogFan',
+        'amount': '300',
+        'price': '14.00',
+        'rating': 4.8,
+        'trades': 234
+      },
     ]
   },
   'CAT': {
     'floorPrice': 825.0,
     'currentPrice': 892.50,
     'sellOffers': [
-      {'seller': 'CatLover', 'amount': '25', 'price': '850', 'rating': 5.0, 'trades': 567},
-      {'seller': 'FelineTrader', 'amount': '40', 'price': '875', 'rating': 4.8, 'trades': 345},
+      {
+        'seller': 'CatLover',
+        'amount': '25',
+        'price': '850',
+        'rating': 5.0,
+        'trades': 567
+      },
+      {
+        'seller': 'FelineTrader',
+        'amount': '40',
+        'price': '875',
+        'rating': 4.8,
+        'trades': 345
+      },
     ],
     'buyOffers': [
-      {'buyer': 'CatCollector', 'amount': '50', 'price': '820', 'rating': 4.9, 'trades': 423},
+      {
+        'buyer': 'CatCollector',
+        'amount': '50',
+        'price': '820',
+        'rating': 4.9,
+        'trades': 423
+      },
     ]
   },
   'EMRLD': {
     'floorPrice': 11500.0,
     'currentPrice': 12450.0,
     'sellOffers': [
-      {'seller': 'EmeraldVault', 'amount': '8', 'price': '12,000', 'rating': 4.9, 'trades': 234},
-      {'seller': 'GemTrader', 'amount': '12', 'price': '12,300', 'rating': 4.8, 'trades': 456},
+      {
+        'seller': 'EmeraldVault',
+        'amount': '8',
+        'price': '12,000',
+        'rating': 4.9,
+        'trades': 234
+      },
+      {
+        'seller': 'GemTrader',
+        'amount': '12',
+        'price': '12,300',
+        'rating': 4.8,
+        'trades': 456
+      },
     ],
     'buyOffers': [
-      {'buyer': 'EmeraldSeeker', 'amount': '15', 'price': '11,500', 'rating': 4.7, 'trades': 189},
+      {
+        'buyer': 'EmeraldSeeker',
+        'amount': '15',
+        'price': '11,500',
+        'rating': 4.7,
+        'trades': 189
+      },
     ]
   },
   'LILA': {
     'floorPrice': 215.0,
     'currentPrice': 234.80,
     'sellOffers': [
-      {'seller': 'LilaHolder', 'amount': '100', 'price': '225', 'rating': 4.8, 'trades': 678},
-      {'seller': 'PurpleToken', 'amount': '150', 'price': '230', 'rating': 4.9, 'trades': 543},
+      {
+        'seller': 'LilaHolder',
+        'amount': '100',
+        'price': '225',
+        'rating': 4.8,
+        'trades': 678
+      },
+      {
+        'seller': 'PurpleToken',
+        'amount': '150',
+        'price': '230',
+        'rating': 4.9,
+        'trades': 543
+      },
     ],
     'buyOffers': [
-      {'buyer': 'LilaInvestor', 'amount': '200', 'price': '215', 'rating': 4.9, 'trades': 345},
+      {
+        'buyer': 'LilaInvestor',
+        'amount': '200',
+        'price': '215',
+        'rating': 4.9,
+        'trades': 345
+      },
     ]
   },
   'MINRL': {
     'floorPrice': 3200.0,
     'currentPrice': 3567.25,
     'sellOffers': [
-      {'seller': 'MineralMaster', 'amount': '20', 'price': '3,400', 'rating': 5.0, 'trades': 892},
-      {'seller': 'RockCollector', 'amount': '35', 'price': '3,500', 'rating': 4.9, 'trades': 654},
+      {
+        'seller': 'MineralMaster',
+        'amount': '20',
+        'price': '3,400',
+        'rating': 5.0,
+        'trades': 892
+      },
+      {
+        'seller': 'RockCollector',
+        'amount': '35',
+        'price': '3,500',
+        'rating': 4.9,
+        'trades': 654
+      },
     ],
     'buyOffers': [
-      {'buyer': 'MineralWhale', 'amount': '50', 'price': '3,200', 'rating': 4.8, 'trades': 432},
+      {
+        'buyer': 'MineralWhale',
+        'amount': '50',
+        'price': '3,200',
+        'rating': 4.8,
+        'trades': 432
+      },
     ]
   },
   'TBLUE': {
     'floorPrice': 62.0,
     'currentPrice': 67.90,
     'sellOffers': [
-      {'seller': 'BlueTrader', 'amount': '400', 'price': '65.00', 'rating': 4.7, 'trades': 321},
-      {'seller': 'TokenBlue', 'amount': '600', 'price': '67.00', 'rating': 4.8, 'trades': 456},
+      {
+        'seller': 'BlueTrader',
+        'amount': '400',
+        'price': '65.00',
+        'rating': 4.7,
+        'trades': 321
+      },
+      {
+        'seller': 'TokenBlue',
+        'amount': '600',
+        'price': '67.00',
+        'rating': 4.8,
+        'trades': 456
+      },
     ],
     'buyOffers': [
-      {'buyer': 'BlueBuyer', 'amount': '800', 'price': '62.00', 'rating': 4.6, 'trades': 234},
+      {
+        'buyer': 'BlueBuyer',
+        'amount': '800',
+        'price': '62.00',
+        'rating': 4.6,
+        'trades': 234
+      },
     ]
   },
 };
@@ -98,14 +236,15 @@ final Map<String, Map<String, dynamic>> tokenMarketData = {
 class TokenSellSheet extends StatefulWidget {
   final String tokenSymbol;
   final Map<String, dynamic>? tokenData;
-  
+
   const TokenSellSheet({
     Key? key,
     required this.tokenSymbol,
     this.tokenData,
   }) : super(key: key);
 
-  static void show(BuildContext context, {
+  static void show(
+    BuildContext context, {
     required String tokenSymbol,
     Map<String, dynamic>? tokenData,
   }) {
@@ -129,18 +268,18 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
   final currController = TextEditingController();
   final satController = TextEditingController();
   final focusNode = FocusNode();
-  
+
   // Sell price controllers
   final sellPriceBtcController = TextEditingController();
   final sellPriceSatController = TextEditingController();
   final sellPriceCurrController = TextEditingController();
   final sellPriceFocusNode = FocusNode();
-  
+
   // State
   int sellStep = 1;
   String selectedPrice = '';
   String selectedAmount = '';
-  
+
   @override
   void dispose() {
     btcController.dispose();
@@ -153,7 +292,7 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
     sellPriceFocusNode.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -161,7 +300,11 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
         // BitNet AppBar
         bitnetAppBar(
           context: context,
-          text: sellStep == 1 ? 'Set Price' : sellStep == 2 ? 'Set Amount' : 'Order Overview',
+          text: sellStep == 1
+              ? 'Set Price'
+              : sellStep == 2
+                  ? 'Set Amount'
+                  : 'Order Overview',
           hasBackButton: sellStep == 1 ? false : true,
           onTap: () {
             if (sellStep == 3) {
@@ -184,17 +327,17 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(AppTheme.cardPadding.w),
-            child: sellStep == 1 
-              ? _buildPriceStep() 
-              : sellStep == 2 
-                ? _buildAmountStep()
-                : _buildOrderOverviewStep(),
+            child: sellStep == 1
+                ? _buildPriceStep()
+                : sellStep == 2
+                    ? _buildAmountStep()
+                    : _buildOrderOverviewStep(),
           ),
         ),
       ],
     );
   }
-  
+
   Widget _buildPriceStep() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,9 +347,9 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
           'Your price per token',
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        
+
         SizedBox(height: AppTheme.elementSpacing.h),
-        
+
         // AmountWidget for price input (USD/currency mode)
         AmountWidget(
           enabled: () => true,
@@ -222,19 +365,21 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
             setState(() {});
           },
         ),
-        
+
         SizedBox(height: AppTheme.cardPadding.h),
-        
+
         // Floor price info
         FloorPriceWidget(
-          price: '\$${tokenMarketData[widget.tokenSymbol]?['floorPrice'] ?? '0'}',
+          price:
+              '\$${tokenMarketData[widget.tokenSymbol]?['floorPrice'] ?? '0'}',
           tokenSymbol: widget.tokenSymbol,
         ),
-        
+
         SizedBox(height: AppTheme.elementSpacing.h),
-        
+
         // Price comparison
-        if (sellPriceCurrController.text.isNotEmpty && sellPriceCurrController.text != '0.00') ...[
+        if (sellPriceCurrController.text.isNotEmpty &&
+            sellPriceCurrController.text != '0.00') ...[
           Container(
             padding: EdgeInsets.all(AppTheme.elementSpacing.w),
             decoration: BoxDecoration(
@@ -254,23 +399,24 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
                 Text(
                   '\$${sellPriceCurrController.text} per token',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
               ],
             ),
           ),
         ],
-        
+
         const Spacer(),
-        
+
         // Bottom button with proper styling
         BottomCenterButton(
           buttonTitle: 'Continue',
-          buttonState: (sellPriceCurrController.text.isEmpty || sellPriceCurrController.text == '0.00') 
-            ? ButtonState.disabled 
-            : ButtonState.idle,
+          buttonState: (sellPriceCurrController.text.isEmpty ||
+                  sellPriceCurrController.text == '0.00')
+              ? ButtonState.disabled
+              : ButtonState.idle,
           onButtonTap: () {
             selectedPrice = sellPriceCurrController.text;
             setState(() {
@@ -281,7 +427,7 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
       ],
     );
   }
-  
+
   Widget _buildAmountStep() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,24 +457,24 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
               Text(
                 '\$$selectedPrice per token',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.successColor,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.successColor,
+                    ),
               ),
             ],
           ),
         ),
-        
+
         SizedBox(height: AppTheme.cardPadding.h),
-        
+
         // Amount input
         Text(
           'How many ${widget.tokenSymbol} to sell?',
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        
+
         SizedBox(height: AppTheme.elementSpacing.h),
-        
+
         // AmountWidget for token amount
         AmountWidget(
           enabled: () => true,
@@ -343,9 +489,9 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
             setState(() {});
           },
         ),
-        
+
         SizedBox(height: AppTheme.cardPadding.h),
-        
+
         // Available tokens info
         Container(
           padding: EdgeInsets.all(AppTheme.elementSpacing.w),
@@ -371,22 +517,22 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
               Text(
                 '2.5 ${widget.tokenSymbol}',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
             ],
           ),
         ),
-        
+
         const Spacer(),
-        
+
         // Bottom button with proper styling
         BottomCenterButton(
           buttonTitle: 'Review Order',
-          buttonState: (btcController.text.isEmpty || btcController.text == '0') 
-            ? ButtonState.disabled 
-            : ButtonState.idle,
+          buttonState: (btcController.text.isEmpty || btcController.text == '0')
+              ? ButtonState.disabled
+              : ButtonState.idle,
           onButtonTap: () {
             selectedAmount = btcController.text;
             setState(() {
@@ -397,10 +543,11 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
       ],
     );
   }
-  
+
   Widget _buildOrderOverviewStep() {
-    final double totalValue = (double.tryParse(selectedAmount) ?? 0) * (double.tryParse(selectedPrice) ?? 0);
-    
+    final double totalValue = (double.tryParse(selectedAmount) ?? 0) *
+        (double.tryParse(selectedPrice) ?? 0);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -423,16 +570,17 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
                   Container(
                     width: 50.w,
                     height: 50.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                          blurRadius: 8,
-                          spreadRadius: 1,
-                        )
-                      ]
-                    ),
+                    decoration:
+                        BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      )
+                    ]),
                     child: ClipOval(
                       child: Image.asset(
                         _getTokenImagePath(widget.tokenSymbol),
@@ -451,36 +599,44 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
                         ),
                         Text(
                           widget.tokenSymbol,
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                  ),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              
+
               SizedBox(height: AppTheme.cardPadding.h),
-              
+
               // Order details
-              _buildOrderDetailRow('Amount', '$selectedAmount ${widget.tokenSymbol}'),
+              _buildOrderDetailRow(
+                  'Amount', '$selectedAmount ${widget.tokenSymbol}'),
               SizedBox(height: AppTheme.elementSpacing.h),
               _buildOrderDetailRow('Price per token', '\$$selectedPrice'),
               SizedBox(height: AppTheme.elementSpacing.h),
-              Divider(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
+              Divider(
+                  color:
+                      Theme.of(context).colorScheme.outline.withOpacity(0.3)),
               SizedBox(height: AppTheme.elementSpacing.h),
               _buildOrderDetailRow(
-                'Total Value', 
+                'Total Value',
                 '\$${totalValue.toStringAsFixed(2)}',
                 isTotal: true,
               ),
             ],
           ),
         ),
-        
+
         const Spacer(),
-        
+
         // Bottom button with proper styling
         BottomCenterButton(
           buttonTitle: 'Put on Market',
@@ -496,32 +652,33 @@ class _TokenSellSheetState extends State<TokenSellSheet> {
       ],
     );
   }
-  
-  Widget _buildOrderDetailRow(String label, String value, {bool isTotal = false}) {
+
+  Widget _buildOrderDetailRow(String label, String value,
+      {bool isTotal = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: isTotal 
-            ? Theme.of(context).textTheme.titleMedium
-            : Theme.of(context).textTheme.bodyMedium,
+          style: isTotal
+              ? Theme.of(context).textTheme.titleMedium
+              : Theme.of(context).textTheme.bodyMedium,
         ),
         Text(
           value,
-          style: isTotal 
-            ? Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              )
-            : Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: isTotal
+              ? Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+              : Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
         ),
       ],
     );
   }
-  
+
   // Helper to get token image path using centralized service
   String _getTokenImagePath(String tokenSymbol) {
     final metadata = TokenDataService.instance.getTokenMetadata(tokenSymbol);

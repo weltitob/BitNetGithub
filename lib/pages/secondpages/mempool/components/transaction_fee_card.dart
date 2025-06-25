@@ -7,13 +7,13 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Card displaying current Bitcoin transaction fees 
+/// Card displaying current Bitcoin transaction fees
 class TransactionFeeCard extends StatelessWidget {
   final dynamic fees;
   final String highPriority;
   final num currentUSD;
   final bool isLoading;
-  
+
   const TransactionFeeCard({
     Key? key,
     required this.fees,
@@ -21,7 +21,7 @@ class TransactionFeeCard extends StatelessWidget {
     required this.currentUSD,
     required this.isLoading,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -31,11 +31,9 @@ class TransactionFeeCard extends StatelessWidget {
         ),
       );
     }
-    
+
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppTheme.cardPadding
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.cardPadding),
@@ -57,7 +55,7 @@ class TransactionFeeCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: AppTheme.cardPadding),
-              
+
               // Fee amounts
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,8 +68,7 @@ class TransactionFeeCard extends StatelessWidget {
                         ? ''
                         : '\$ ${_dollarConversion(fees.hourFee!).toStringAsFixed(2)}',
                     feeColor: lighten(
-                        getGradientColors(
-                            (fees.hourFee!).toDouble(), false)
+                        getGradientColors((fees.hourFee!).toDouble(), false)
                             .first,
                         25),
                     icon: Icons.speed,
@@ -84,8 +81,7 @@ class TransactionFeeCard extends StatelessWidget {
                         ? ''
                         : '\$ ${_dollarConversion(fees.halfHourFee!).toStringAsFixed(2)}',
                     feeColor: lighten(
-                        getGradientColors(
-                            (fees.halfHourFee!).toDouble(), false)
+                        getGradientColors((fees.halfHourFee!).toDouble(), false)
                             .first,
                         25),
                     icon: Icons.speed,
@@ -97,8 +93,7 @@ class TransactionFeeCard extends StatelessWidget {
                     feeAmount:
                         '\$ ${_dollarConversion(num.parse(highPriority)).toStringAsFixed(2)}',
                     feeColor: lighten(
-                        getGradientColors(
-                            double.tryParse(highPriority)!, false)
+                        getGradientColors(double.tryParse(highPriority)!, false)
                             .first,
                         25),
                     icon: Icons.speed,
@@ -106,40 +101,31 @@ class TransactionFeeCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: AppTheme.elementSpacing),
               SizedBox(height: AppTheme.elementSpacing),
-              
+
               // Confirmation time
               Text(
                 "Estimated confirmation time",
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.white60
-                      : AppTheme.black60,
-                ),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.white60
+                          : AppTheme.black60,
+                    ),
               ),
               SizedBox(height: AppTheme.elementSpacing),
-              
+
               // Time estimates
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildTimeEstimate(
-                    context, 
-                    "~60 min",
-                    AppTheme.errorColor.withOpacity(0.7)
-                  ),
+                      context, "~60 min", AppTheme.errorColor.withOpacity(0.7)),
+                  _buildTimeEstimate(context, "~30 min",
+                      AppTheme.colorBitcoin.withOpacity(0.8)),
                   _buildTimeEstimate(
-                    context, 
-                    "~30 min",
-                    AppTheme.colorBitcoin.withOpacity(0.8)
-                  ),
-                  _buildTimeEstimate(
-                    context, 
-                    "Next block",
-                    AppTheme.successColor
-                  ),
+                      context, "Next block", AppTheme.successColor),
                 ],
               ),
             ],
@@ -153,7 +139,7 @@ class TransactionFeeCard extends StatelessWidget {
   double _dollarConversion(num fee) {
     return currentUSD * ((fee * (560 / 4) / 100000000));
   }
-  
+
   // Widget to display fee column with icon, title, and amount
   Widget _buildFeeColumn({
     required BuildContext context,
@@ -190,14 +176,14 @@ class TransactionFeeCard extends StatelessWidget {
           feeAmount,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: feeColor,
-            fontWeight: FontWeight.bold,
-          ),
+                color: feeColor,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
   }
-  
+
   // Widget to display time estimate pill
   Widget _buildTimeEstimate(BuildContext context, String time, Color color) {
     return Container(
@@ -212,9 +198,9 @@ class TransactionFeeCard extends StatelessWidget {
       child: Text(
         time,
         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -224,9 +210,9 @@ class TransactionFeeCard extends StatelessWidget {
 // Originally from colorhelper.dart
 Color lighten(Color color, [int amount = 10]) {
   assert(amount >= 0 && amount <= 100);
-  
+
   final hsl = HSLColor.fromColor(color);
   final lightness = (hsl.lightness + (amount / 100)).clamp(0.0, 1.0);
-  
+
   return hsl.withLightness(lightness).toColor();
 }

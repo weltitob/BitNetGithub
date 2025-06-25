@@ -27,8 +27,11 @@ class ProtocolController extends BaseController {
     } else {
       docId = await getDeviceInfo();
     }
-    QuerySnapshot<Map<String, dynamic>> querySnap =
-        await protocolCollection.doc(docId).collection('protocols').where('satisfied', isEqualTo: false).get();
+    QuerySnapshot<Map<String, dynamic>> querySnap = await protocolCollection
+        .doc(docId)
+        .collection('protocols')
+        .where('satisfied', isEqualTo: false)
+        .get();
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc in querySnap.docs) {
       protocolQueue.add(ProtocolModel.fromFirestore(doc));
     }
@@ -37,19 +40,25 @@ class ProtocolController extends BaseController {
   }
 
   Future<void> updateProtocolStatus(ProtocolModel protocol) async {
-    await protocolCollection.doc(docId).collection('protocols').doc(protocol.protocolId).update({'satisfied': true});
+    await protocolCollection
+        .doc(docId)
+        .collection('protocols')
+        .doc(protocol.protocolId)
+        .update({'satisfied': true});
   }
 
   Future<void> handleProtocols() async {
     if (protocolQueue.isNotEmpty) {
       final protocol = protocolQueue.removeFirst();
       // Show bottom sheet with protocol information
-      if (protocol.activateTime == null || Timestamp.now().toDate().isAfter(protocol.activateTime!.toDate())) {
+      if (protocol.activateTime == null ||
+          Timestamp.now().toDate().isAfter(protocol.activateTime!.toDate())) {
         final bool? satisfied = await findProtocolBottomSheet(protocol);
 
         if (satisfied ?? false) {
           protocol.satisfied = true;
-          await updateProtocolStatus(protocol); // Mark protocol as satisfied in Firestore
+          await updateProtocolStatus(
+              protocol); // Mark protocol as satisfied in Firestore
         }
       }
 
@@ -66,11 +75,16 @@ class ProtocolController extends BaseController {
           model: protocol,
         ));
       case 'social_recovery_set_up':
-        return showProtocolBottomSheet(isDismissible: false, child: SettingUpSocialRecoveryWidget(model: protocol));
+        return showProtocolBottomSheet(
+            isDismissible: false,
+            child: SettingUpSocialRecoveryWidget(model: protocol));
       case 'social_recovery_access_attempt':
-        return showProtocolBottomSheet(isDismissible: false, child: AccountAccessAttemptWidget(model: protocol));
+        return showProtocolBottomSheet(
+            isDismissible: false,
+            child: AccountAccessAttemptWidget(model: protocol));
       case 'social_recovery_recovery_request':
-        return showProtocolBottomSheet(child: RecoveryRequestWidget(model: protocol));
+        return showProtocolBottomSheet(
+            child: RecoveryRequestWidget(model: protocol));
       case 'social_recovery_show_mnemonic':
         return showProtocolBottomSheet(
             isDismissible: false,
@@ -98,10 +112,13 @@ class ProtocolModel {
     this.satisfied = false,
   });
 
-  factory ProtocolModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory ProtocolModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc) {
     return ProtocolModel(
       protocolId: doc.id,
-      activateTime: doc.data()!.containsKey('activate_time') ? doc.data()!['activate_time'] : null,
+      activateTime: doc.data()!.containsKey('activate_time')
+          ? doc.data()!['activate_time']
+          : null,
       protocolType: doc.data()!['protocol_type'],
       protocolData: doc.data()!['protocol_data'],
       satisfied: doc.data()!['satisfied'],
@@ -119,7 +136,10 @@ class ProtocolModel {
 
   Future<void> sendProtocol(String userDocId) async {
     await protocolCollection.doc(userDocId).set({'initialized': true});
-    await protocolCollection.doc(userDocId).collection('protocols').add(this.toFirestore());
+    await protocolCollection
+        .doc(userDocId)
+        .collection('protocols')
+        .add(this.toFirestore());
   }
 }
 

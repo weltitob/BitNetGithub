@@ -18,7 +18,8 @@ Future<RestResponse> estimateFee(String conf_target) async {
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/estimatefee/$conf_target';
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

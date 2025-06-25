@@ -17,12 +17,14 @@ import 'package:photo_manager/photo_manager.dart';
 
 /// Combined bottom sheet which shows photos and (optionally) NFTs in one widget.
 Future<T?> ImagePickerCombinedBottomSheet<T>(
-    BuildContext context, {
-      required bool includeNFTs,
-      // onImageTap receives: album, photo (AssetEntity) and nft (MediaDatePair) (if applicable)
-      required Function(AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)? onImageTap,
-      Function(List<AssetEntity> selectedPhotos)? onPop,
-    }) {
+  BuildContext context, {
+  required bool includeNFTs,
+  // onImageTap receives: album, photo (AssetEntity) and nft (MediaDatePair) (if applicable)
+  required Function(
+          AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)?
+      onImageTap,
+  Function(List<AssetEntity> selectedPhotos)? onPop,
+}) {
   return BitNetBottomSheet<T>(
     context: context,
     width: MediaQuery.sizeOf(context).width,
@@ -38,7 +40,9 @@ Future<T?> ImagePickerCombinedBottomSheet<T>(
 /// The combined widget for picking images (and NFTs).
 class ImagePickerCombined extends StatefulWidget {
   final bool includeNFTs;
-  final Function(AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)? onImageTap;
+  final Function(
+          AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)?
+      onImageTap;
   final Function(List<AssetEntity> selectedPhotos)? onPop;
   const ImagePickerCombined({
     Key? key,
@@ -53,7 +57,7 @@ class ImagePickerCombined extends StatefulWidget {
 
 class _ImagePickerCombinedState extends State<ImagePickerCombined> {
   late ImagePickerController controller;
-  
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +68,7 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
       onPop: widget.onPop,
     );
   }
-  
+
   @override
   void dispose() {
     Get.delete<ImagePickerController>();
@@ -93,15 +97,17 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
           children: [
             Obx(() {
               // Get the album name or default text
-              final String buttonText = widget.includeNFTs && controller.currentView.value < 0
-                  ? "Assets"
-                  : controller.currentAlbum.value?.name ?? "Albums";
-                  
+              final String buttonText =
+                  widget.includeNFTs && controller.currentView.value < 0
+                      ? "Assets"
+                      : controller.currentAlbum.value?.name ?? "Albums";
+
               // Calculate a more appropriate width based on text length
               // Use a minimum width and expand for longer text
               final double minWidth = AppTheme.cardPadding * 5.w;
-              final double calculatedWidth = MediaQuery.of(context).size.width * 0.6; // 60% of screen width
-              
+              final double calculatedWidth = MediaQuery.of(context).size.width *
+                  0.6; // 60% of screen width
+
               return Container(
                 constraints: BoxConstraints(
                   maxWidth: calculatedWidth,
@@ -112,8 +118,8 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
                   customHeight: AppTheme.cardPadding * 1.5,
                   title: buttonText,
                   titleStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   leadingIcon: Icon(
                     controller.selectingPhotos.value
                         ? Icons.arrow_drop_down_rounded
@@ -123,12 +129,14 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
                         : Colors.white,
                   ),
                   onTap: () {
-                    print("Album button tapped, current state: ${controller.selectingPhotos.value ? 'selecting photos' : 'showing albums'}");
+                    print(
+                        "Album button tapped, current state: ${controller.selectingPhotos.value ? 'selecting photos' : 'showing albums'}");
                     if (controller.selectingPhotos.value) {
                       print("Switching to album view");
                       controller.switchToAlbumView();
                       Future.delayed(Duration(milliseconds: 100), () {
-                        print("After delay, selectingPhotos = ${controller.selectingPhotos.value}");
+                        print(
+                            "After delay, selectingPhotos = ${controller.selectingPhotos.value}");
                       });
                     } else {
                       print("Switching to photo view");
@@ -146,7 +154,7 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
                 if (controller.loading.value) {
                   return Center(child: dotProgress(context));
                 }
-                
+
                 // Display the appropriate view based on state
                 // First check if we should show the album selection view
                 if (!controller.selectingPhotos.value) {
@@ -154,7 +162,7 @@ class _ImagePickerCombinedState extends State<ImagePickerCombined> {
                   // The AlbumViewWidget handles empty thumbnail states
                   return AlbumViewWidget(controller: controller);
                 }
-                
+
                 // Photo/asset selection views
                 if (widget.includeNFTs) {
                   // With NFTs enabled, check the current view type

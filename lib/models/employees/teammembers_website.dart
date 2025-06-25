@@ -5,5 +5,10 @@ class TeamMember {
   final String quote;
   final bool isYou;
 
-  TeamMember({this.avatarUrl = "", required this.name, required this.position, required this.quote, this.isYou = false});
+  TeamMember(
+      {this.avatarUrl = "",
+      required this.name,
+      required this.position,
+      required this.quote,
+      this.isYou = false});
 }

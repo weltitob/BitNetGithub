@@ -33,7 +33,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
   @override
   Widget build(BuildContext context) {
     final overlayController = Get.find<OverlayController>();
-    
+
     // Frühe ProfileController-Initialisierung für bessere UX
     ProfileController? profileController;
     try {
@@ -106,11 +106,11 @@ class _CreateAccountViewState extends State<CreateAccountView>
                                 color: AppTheme.errorColor);
                             return;
                           }
-                          ImagePickerCombinedBottomSheet(
-                            context, 
-                            includeNFTs: false, // Disable NFTs during registration
-                            onImageTap:
-                              (AssetPathEntity? album, AssetEntity? image,
+                          ImagePickerCombinedBottomSheet(context,
+                              includeNFTs:
+                                  false, // Disable NFTs during registration
+                              onImageTap: (AssetPathEntity? album,
+                                  AssetEntity? image,
                                   MediaDatePair? pair) async {
                             // During registration, only regular images are supported (no NFTs)
                             if (image != null) {

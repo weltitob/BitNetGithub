@@ -39,7 +39,7 @@ class CollectionTabIcon extends StatelessWidget {
                   ? theme.colorScheme.primary
                   : theme.colorScheme.onSurface.withOpacity(0.5),
             ),
-            
+
             // Animated underline indicator
             AnimatedContainer(
               duration: AppTheme.animationDuration,

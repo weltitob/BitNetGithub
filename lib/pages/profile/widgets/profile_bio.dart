@@ -18,7 +18,7 @@ class ProfileBio extends StatelessWidget {
       child: Obx(() {
         final isEditMode = controller.currentview.value == 4;
         final bioText = controller.bioController.text;
-        
+
         if (bioText.isEmpty) {
           return const SizedBox.shrink();
         }

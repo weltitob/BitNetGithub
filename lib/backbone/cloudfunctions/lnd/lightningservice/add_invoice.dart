@@ -12,20 +12,19 @@ import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 
-
 List<int> generatePreimage() {
   final random = Random.secure();
   return List<int>.generate(32, (_) => random.nextInt(256));
 }
 
-
 List<int> computeHash(List<int> preimage) {
   return sha256.convert(preimage).bytes;
 }
 
-
 // NEW: One user one node approach - Create Lightning invoice on user's node
-Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress, dynamic preimage, {bool isKeysend = false}) async {
+Future<RestResponse> addInvoice(
+    int amount, String? memo, String fallbackAddress, dynamic preimage,
+    {bool isKeysend = false}) async {
   HttpOverrides.global = MyHttpOverrides();
 
   final logger = Get.find<LoggerService>();
@@ -38,10 +37,7 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
     if (userId == null) {
       logger.e("No user logged in");
       return RestResponse(
-          statusCode: "error",
-          message: "No user logged in",
-          data: {}
-      );
+          statusCode: "error", message: "No user logged in", data: {});
     }
 
     // Get user's node mapping
@@ -51,8 +47,7 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
       return RestResponse(
           statusCode: "error",
           message: "No Lightning node assigned to user",
-          data: {}
-      );
+          data: {});
     }
 
     final nodeId = nodeMapping.nodeId;
@@ -65,17 +60,16 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
       return RestResponse(
           statusCode: "error",
           message: "Failed to load node credentials",
-          data: {}
-      );
+          data: {});
     }
-    
+
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = bytesToHex(macaroonBytes);
 
     // Get Caddy URL for the user's node using LightningConfig
     final url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/invoices';
-    
+
     logger.i("Creating invoice at: $url");
 
     // Prepare headers
@@ -84,32 +78,34 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
       'Content-Type': 'application/json',
     };
 
-  final hash = computeHash(preimage);
+    final hash = computeHash(preimage);
 
-  logger.i("Generated preimage: ${base64Encode(preimage)}");
+    logger.i("Generated preimage: ${base64Encode(preimage)}");
 
-  // Create invoice data based on type
-  final Map<String, dynamic> data = {
-    'r_hash': base64Encode(hash),
-    'r_preimage': base64Encode(preimage),
-    'memo': memo ?? "",
-    'value': amount,
-    'expiry': 3600,  // 1 hour expiry for better reliability
-    'fallback_addr': fallbackAddress,
-    'private': true,  // Always true to include route hints for private channels
-    'is_keysend': isKeysend,  // Support both keysend and regular invoices
-  };
-  
-  // Note: When private=true and is_keysend=false, LND automatically adds route_hints
-  // for any private channels, making the node reachable through routing nodes like Blocktank
-  
-  logger.i("Creating ${isKeysend ? 'keysend' : 'private'} invoice with route hints for amount: $amount sats");
+    // Create invoice data based on type
+    final Map<String, dynamic> data = {
+      'r_hash': base64Encode(hash),
+      'r_preimage': base64Encode(preimage),
+      'memo': memo ?? "",
+      'value': amount,
+      'expiry': 3600, // 1 hour expiry for better reliability
+      'fallback_addr': fallbackAddress,
+      'private':
+          true, // Always true to include route hints for private channels
+      'is_keysend': isKeysend, // Support both keysend and regular invoices
+    };
+
+    // Note: When private=true and is_keysend=false, LND automatically adds route_hints
+    // for any private channels, making the node reachable through routing nodes like Blocktank
+
+    logger.i(
+        "Creating ${isKeysend ? 'keysend' : 'private'} invoice with route hints for amount: $amount sats");
 
     // Post invoice request to user's node
     try {
       logger.i("Making POST request to user's node");
       logger.d("Headers: ${headers.keys}, Data: ${data.keys}");
-      
+
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
@@ -120,35 +116,32 @@ Future<RestResponse> addInvoice(int amount, String? memo, String fallbackAddress
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         logger.i("Successfully created invoice on node $nodeId");
-        logger.d("Invoice: ${responseData['payment_request']?.substring(0, 50)}...");
-        
+        logger.d(
+            "Invoice: ${responseData['payment_request']?.substring(0, 50)}...");
+
         return RestResponse(
             statusCode: "${response.statusCode}",
             message: "Successfully added invoice",
-            data: responseData
-        );
+            data: responseData);
       } else {
-        logger.e("Failed to add invoice. Status: ${response.statusCode}, Body: ${response.body}");
+        logger.e(
+            "Failed to add invoice. Status: ${response.statusCode}, Body: ${response.body}");
         return RestResponse(
             statusCode: "error",
             message: "Failed to add invoice: ${response.statusCode}",
-            data: response.body.isNotEmpty ? jsonDecode(response.body) : {}
-        );
+            data: response.body.isNotEmpty ? jsonDecode(response.body) : {});
       }
     } catch (e, stackTrace) {
-      logger.e("Error creating invoice on node $nodeId: $e\nStackTrace: $stackTrace");
+      logger.e(
+          "Error creating invoice on node $nodeId: $e\nStackTrace: $stackTrace");
       return RestResponse(
           statusCode: "error",
           message: "Failed to add invoice due to an error: $e",
-          data: {}
-      );
+          data: {});
     }
   } catch (e) {
     logger.e("Fatal error in addInvoice: $e");
     return RestResponse(
-        statusCode: "error",
-        message: "Fatal error: $e",
-        data: {}
-    );
+        statusCode: "error", message: "Fatal error: $e", data: {});
   }
 }
