@@ -638,8 +638,11 @@ class $AssetsTextfilesGen {
   /// File path: assets/textfiles/bip_words.txt
   String get bipWords => 'assets/textfiles/bip_words.txt';
 
+  /// File path: assets/textfiles/qr_image.txt
+  String get qrImage => 'assets/textfiles/qr_image.txt';
+
   /// List of all assets
-  List<String> get values => [bipWords];
+  List<String> get values => [bipWords, qrImage];
 }
 
 class $AssetsTokensGen {
