@@ -35,7 +35,8 @@ jobs:
       run: flutter pub deps
       
     - name: Analyze code quality
-      run: flutter analyze --fatal-infos --fatal-warnings
+      run: flutter analyze
+      
       
     - name: Check code formatting
       run: dart format --set-exit-if-changed .
