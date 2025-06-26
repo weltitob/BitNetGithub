@@ -669,7 +669,8 @@ class CreateAccountController extends State<CreateAccount> {
           nft_profile_id: '',
           nft_background_id: '',
           setupQrCodeRecovery: false,
-          setupWordRecovery: false);
+          setupWordRecovery: false,
+          fcmToken: '');
 
       // Use the did for the verification codes
       VerificationCode verificationCode = VerificationCode(

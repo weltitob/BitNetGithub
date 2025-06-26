@@ -529,6 +529,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                             isActive: false,
                                             setupQrCodeRecovery: false,
                                             setupWordRecovery: false,
+                                            fcmToken: '',
                                             dob: 0),
                                         onTap: () {},
                                         onDelete: () {},

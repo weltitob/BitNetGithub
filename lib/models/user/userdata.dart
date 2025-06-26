@@ -22,6 +22,7 @@ class UserData extends Equatable {
   final bool showFollowers;
   final bool setupQrCodeRecovery;
   final bool setupWordRecovery;
+  final String? fcmToken;
   // final List<String> codes;
   //maybe ude Timestamp from cloud_firestore instead of Datetime if it causes issues
   final Timestamp createdAt;
@@ -43,6 +44,7 @@ class UserData extends Equatable {
     required this.profileImageUrl,
     required this.setupQrCodeRecovery,
     required this.setupWordRecovery,
+    required this.fcmToken,
     // required this.codes,
     required this.createdAt,
     required this.updatedAt,
@@ -66,6 +68,7 @@ class UserData extends Equatable {
       username,
       profileImageUrl,
       // codes,
+      fcmToken ?? '',
       createdAt,
       updatedAt,
       isActive,
@@ -89,6 +92,7 @@ class UserData extends Equatable {
       List<String>? codes,
       Timestamp? createdAt,
       Timestamp? updatedAt,
+      String? fcmToken,
       bool? isActive,
       bool? isPrivate,
       bool? showFollowers,
@@ -104,6 +108,7 @@ class UserData extends Equatable {
       username: username ?? this.username,
       displayName: displayName ?? this.displayName,
       bio: bio ?? this.bio,
+      fcmToken: fcmToken ?? this.fcmToken,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       backgroundImageUrl: backgroundImageUrl ?? this.backgroundImageUrl,
       isPrivate: isPrivate ?? this.isPrivate,
@@ -137,6 +142,7 @@ class UserData extends Equatable {
       'isActive': isActive,
       'setup_qr_code_recovery': setupQrCodeRecovery,
       'setup_word_recovery': setupWordRecovery,
+      'fcm_token': fcmToken,
       'dob': dob,
       'nft_profile_id': nft_profile_id,
       'nft_background_id': nft_background_id
@@ -145,29 +151,30 @@ class UserData extends Equatable {
 
   factory UserData.fromMap(Map<String, dynamic> map) {
     return UserData(
-      docId: map.containsKey('doc_id') ? map['doc_id'] : null,
-      did: map['did'] ?? '',
-      customToken: map['customToken'] ?? '',
-      username: map['username'] ?? '',
-      displayName: map['displayName'] ?? '',
-      bio: map['bio'] ?? '',
-      profileImageUrl: map['profileImageUrl'] ?? '',
-      backgroundImageUrl: map['backgroundImageUrl'] ?? '',
-      // codes: List<String>.from(map['codes']),
-      createdAt: map['createdAt'] ?? 0,
-      updatedAt: map['updatedAt'] ?? 0,
-      isActive: map['isActive'] ?? false,
-      showFollowers: map['showFollowers'] ?? false,
-      isPrivate: map['isPrivate'] ?? false,
-      dob: map['dob']?.toInt() ?? 0,
-      nft_profile_id: map['nft_profile_id'] ?? '',
-      nft_background_id: map['nft_background_id'] ?? '',
-      setupQrCodeRecovery: map['setup_qr_code_recovery'] ?? false,
-      setupWordRecovery: map['setup_word_recovery'] ?? false,
-      // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
-      // wallets: List<UserWallet>.from(
-      //     map['wallets']?.map((x) => UserWallet.fromMap(x))),
-    );
+        docId: map.containsKey('doc_id') ? map['doc_id'] : null,
+        did: map['did'] ?? '',
+        customToken: map['customToken'] ?? '',
+        username: map['username'] ?? '',
+        displayName: map['displayName'] ?? '',
+        bio: map['bio'] ?? '',
+        profileImageUrl: map['profileImageUrl'] ?? '',
+        backgroundImageUrl: map['backgroundImageUrl'] ?? '',
+        // codes: List<String>.from(map['codes']),
+        createdAt: map['createdAt'] ?? 0,
+        updatedAt: map['updatedAt'] ?? 0,
+        isActive: map['isActive'] ?? false,
+        showFollowers: map['showFollowers'] ?? false,
+        isPrivate: map['isPrivate'] ?? false,
+        dob: map['dob']?.toInt() ?? 0,
+        nft_profile_id: map['nft_profile_id'] ?? '',
+        nft_background_id: map['nft_background_id'] ?? '',
+        setupQrCodeRecovery: map['setup_qr_code_recovery'] ?? false,
+        setupWordRecovery: map['setup_word_recovery'] ?? false,
+        fcmToken: map['fcm_token']
+        // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
+        // wallets: List<UserWallet>.from(
+        //     map['wallets']?.map((x) => UserWallet.fromMap(x))),
+        );
   }
 
   factory UserData.fromDocument(DocumentSnapshot doc) {
@@ -194,6 +201,7 @@ class UserData extends Equatable {
               .containsKey('setup_word_recovery')
           ? doc['setup_word_recovery']
           : false,
+      fcmToken: doc['fcm_token'],
 
       nft_profile_id:
           (doc.data() as Map<String, dynamic>).containsKey('nft_profile_id')
@@ -216,6 +224,6 @@ class UserData extends Equatable {
 
   @override
   String toString() {
-    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob, setupQrCodeRecovery: $setupQrCodeRecovery setupWordRecovery: $setupWordRecovery)';
+    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob, setupQrCodeRecovery: $setupQrCodeRecovery setupWordRecovery: $setupWordRecovery fcmToken: $fcmToken)';
   }
 }

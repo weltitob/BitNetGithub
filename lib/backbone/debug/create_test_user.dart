@@ -258,6 +258,7 @@ class CreateTestUser {
         showFollowers: true,
         setupQrCodeRecovery: false,
         setupWordRecovery: false,
+        fcmToken: '',
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         isActive: true,

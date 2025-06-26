@@ -3,12 +3,15 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/generate_custom_token.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/routetrees/controllers/widget_tree_controller.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
@@ -125,6 +128,20 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
             AppLock.of(widget.context)!.showLockScreen();
           }
         });
+      });
+
+      FirebaseMessaging.instance.getToken().then((token) async {
+        QuerySnapshot<Map<String, dynamic>> doc = await Databaserefs
+            .usersCollection
+            .where("did", isEqualTo: Auth().currentUser!.uid)
+            .get();
+        if (doc.docs.isNotEmpty &&
+            (doc.docs.first.data()['fcm_token'] == null ||
+                doc.docs.first.data()['fcm_token'] == '')) {
+          await Databaserefs.usersCollection
+              .doc(Auth().currentUser!.uid)
+              .update({'fcm_token': token});
+        }
       });
     }
   }

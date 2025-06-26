@@ -31,6 +31,7 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -359,8 +360,7 @@ class Auth {
           adminMacaroon: nodeMapping.adminMacaroon,
         );
 
-        if (nodeInfoResponse.statusCode == "200" &&
-            nodeInfoResponse.data != null) {
+        if (nodeInfoResponse.statusCode == "200") {
           String lightningPubkey =
               nodeInfoResponse.data['identity_pubkey'] ?? '';
 
@@ -440,7 +440,7 @@ class Auth {
 
     try {
       logger.i("🔥 Step 9: Initializing user settings...");
-      await settingsCollection.doc(currentuser?.user!.uid).set({
+      await settingsCollection.doc(currentuser.user!.uid).set({
         "theme_mode": "system",
         "lang": "en",
         "primary_color": Colors.white.value,
@@ -691,6 +691,19 @@ class Auth {
         // final registrationResponse = await registrationController.loginAndStartEcs(shortDid);
         //
         // registrationController.isLoading.value = false;
+        FirebaseMessaging.instance.getToken().then((token) async {
+          QuerySnapshot<Map<String, dynamic>> doc = await Databaserefs
+              .usersCollection
+              .where("did", isEqualTo: Auth().currentUser!.uid)
+              .get();
+          if (doc.docs.isNotEmpty &&
+              (doc.docs.first.data()['fcm_token'] == null ||
+                  doc.docs.first.data()['fcm_token'] == '')) {
+            await Databaserefs.usersCollection
+                .doc(Auth().currentUser!.uid)
+                .update({'fcm_token': token});
+          }
+        });
 
         WidgetsBinding.instance
             .addPostFrameCallback(ThemeController.of(context).loadData);

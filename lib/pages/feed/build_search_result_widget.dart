@@ -94,6 +94,7 @@ class SearchResultWidget extends StatelessWidget {
               bio: 'This is the bio of ${data['username']}',
               customToken: 'customToken123',
               setupWordRecovery: true,
+              fcmToken: '',
               updatedAt: Timestamp.fromMicrosecondsSinceEpoch(233),
               createdAt: Timestamp.fromMicrosecondsSinceEpoch(233),
               setupQrCodeRecovery: true,

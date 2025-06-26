@@ -226,6 +226,7 @@ dependencies:
   linear_progress_bar: ^1.1.3
   webview_flutter: ^4.2.5
   sliver_tools: ^0.2.12
+  firebase_messaging: ^14.6.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

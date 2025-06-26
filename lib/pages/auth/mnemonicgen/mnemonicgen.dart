@@ -298,7 +298,8 @@ class MnemonicController extends State<MnemonicGen> {
           nft_profile_id: '',
           nft_background_id: '',
           setupQrCodeRecovery: false,
-          setupWordRecovery: false);
+          setupWordRecovery: false,
+          fcmToken: '');
 
       logger.i("🔥 UserData created successfully");
       logger.i("🔥 UserData DID: ${userdata.did}");
