@@ -6,7 +6,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ListNFTScreen extends StatefulWidget {

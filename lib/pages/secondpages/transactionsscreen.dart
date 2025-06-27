@@ -4,7 +4,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class LastTransactions extends StatefulWidget {
   const LastTransactions({super.key, required this.ownedTransactions});

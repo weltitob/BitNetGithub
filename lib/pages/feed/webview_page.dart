@@ -25,6 +25,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:bitnet/backbone/services/nostr_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 
 class WebViewPage extends StatefulWidget {
   const WebViewPage({super.key, required this.routerState});
@@ -39,12 +42,15 @@ class WebViewPageState extends State<WebViewPage> {
   late String name;
   late WebViewController controller;
   late bool isApp;
+  late bool isNostrApp;
   Timer? timer;
   bool jsQRLoaded = false;
   bool handlingData = false;
   Set<String> handledQRCodes = {};
   //for testing purposes
   Set<String> foundQRCodes = {};
+  NostrController? nostrController;
+  String? connectionUri;
 
   @override
   void initState() {
@@ -52,8 +58,15 @@ class WebViewPageState extends State<WebViewPage> {
     name = Uri.decodeComponent(widget.routerState.pathParameters['name']!);
     url = Uri.decodeComponent(widget.routerState.pathParameters['url']!);
     isApp = widget.routerState.extra is Map
-        ? (widget.routerState.extra as Map)['is_app']
+        ? (widget.routerState.extra as Map)['is_app'] ?? false
         : false;
+    isNostrApp = widget.routerState.extra is Map
+        ? (widget.routerState.extra as Map)['nostr'] ?? false
+        : false;
+
+    if (isNostrApp) {
+      nostrController = Get.find<NostrController>();
+    }
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -538,8 +551,135 @@ class WebViewPageState extends State<WebViewPage> {
         context: context,
         text: name,
       ),
-      body: WebViewWidget(
-        controller: controller,
+      body: Stack(
+        children: [
+          WebViewWidget(
+            controller: controller,
+          ),
+          if (isNostrApp)
+            Positioned(
+              right: AppTheme.cardPadding.w,
+              bottom: AppTheme.cardPadding.h,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Copy Public Key Button
+                  _buildNostrButton(
+                    icon: Icons.key,
+                    label: 'Public Key',
+                    onTap: () {
+                      if (nostrController != null) {
+                        final publicKey =
+                            nostrController!.userKeyPair.publicKey;
+                        Clipboard.setData(ClipboardData(text: publicKey));
+                        Get.find<OverlayController>().showOverlay(
+                          'Public key copied to clipboard',
+                          color: AppTheme.successColor,
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(height: 8.h),
+                  // Copy Private Key Button
+                  _buildNostrButton(
+                    icon: Icons.vpn_key,
+                    label: 'Private Key',
+                    onTap: () {
+                      if (nostrController != null) {
+                        final privateKey =
+                            nostrController!.userKeyPair.privateKey;
+                        Clipboard.setData(ClipboardData(text: privateKey));
+                        Get.find<OverlayController>().showOverlay(
+                          'Private key copied to clipboard',
+                          color: AppTheme.successColor,
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(height: 8.h),
+                  // Generate NWC Connection URI Button
+                  _buildNostrButton(
+                    icon: Icons.link,
+                    label: 'Connect',
+                    onTap: () async {
+                      if (nostrController != null &&
+                          nostrController!.activeConnections
+                              .where((test) => test.appName == name)
+                              .isEmpty) {
+                        // Create a new NWC connection for this app
+                        final uri = await nostrController!.createNwcConnection(
+                          appName: name,
+                          context: context,
+                        );
+
+                        if (uri != null) {
+                          connectionUri = uri.toString();
+                          Clipboard.setData(
+                              ClipboardData(text: connectionUri!));
+                          Get.find<OverlayController>().showOverlay(
+                            'NWC connection URI copied to clipboard',
+                            color: AppTheme.successColor,
+                          );
+                        }
+                      } else if (nostrController != null) {
+                        final uri = nostrController!.activeConnections
+                            .where((test) => test.appName == name)
+                            .first
+                            .connectionUri
+                            .toString();
+                        Clipboard.setData(ClipboardData(text: uri));
+                        Get.find<OverlayController>().showOverlay(
+                          'NWC connection URI copied to clipboard',
+                          color: AppTheme.successColor,
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNostrButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GlassContainer(
+      opacity: 0.9,
+      borderRadius: AppTheme.borderRadiusMid.r,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 12.h,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 20.sp,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

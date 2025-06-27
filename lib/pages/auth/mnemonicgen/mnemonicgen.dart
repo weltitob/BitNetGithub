@@ -28,7 +28,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';

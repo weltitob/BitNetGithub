@@ -40,7 +40,7 @@ import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dar
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

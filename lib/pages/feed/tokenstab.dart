@@ -208,7 +208,7 @@ class _TokensTabState extends State<TokensTab>
                                     majorTickLines:
                                         const MajorTickLines(width: 0),
                                   ),
-                                  series: <ChartSeries>[
+                                  series: <CartesianSeries>[
                                     // Line series - using correct color based on token performance
                                     AreaSeries<ChartLine, double>(
                                       dataSource: chartData,

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 

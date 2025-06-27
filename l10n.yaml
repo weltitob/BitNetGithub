@@ -1,7 +1,7 @@
-arb-dir: lib\intl  # Directory where ARB files are located
+arb-dir: lib/intl  # Directory where ARB files are located
 template-arb-file: intl_en.arb  # Template ARB file
-output-dir: lib\intl\generated  # Directory for generated Dart localization files
+output-dir: lib/intl/generated  # Directory for generated Dart localization files
 output-localization-file: l10n.dart
 output-class: L10n
-preferred-supported-locales: ["en"]
-untranslated-messages-file: untranslated_messages.json
+synthetic-package: false
+format: true

@@ -8,7 +8,7 @@ import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
 
 class HashrateScreen extends StatefulWidget {

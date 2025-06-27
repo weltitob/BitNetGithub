@@ -123,7 +123,7 @@ class BitcoinController extends GetxController {
       enable: true,
       activationMode: ActivationMode.singleTap,
       lineWidth: 2,
-      lineType: TrackballLineType.horizontal,
+      lineType: TrackballLineType.vertical,
       tooltipSettings: const InteractiveTooltip(enable: false),
       markerSettings: const TrackballMarkerSettings(
           color: Colors.white,

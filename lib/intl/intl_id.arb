@@ -1261,7 +1261,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "unpin": "Lepaskan pin",
@@ -1504,12 +1506,13 @@
       "username2": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Dilihat oleh {username} dan {count} lainnya}}",
+  "seenByUserAndCountOthers": "Dilihat oleh {username} dan {count} lainnya",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUser": "Dilihat oleh {username}",

@@ -13,7 +13,7 @@ import 'package:bitnet/pages/feed/assetstab.dart';
 import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

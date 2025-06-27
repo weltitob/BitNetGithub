@@ -120,8 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "${username} прегледа";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: '${username} прегледа и ${count} осталих')}";
+  static String m55(username, count) => "Видео ${username} и још ${count} људи";
 
   static String m56(username, username2) =>
       "Прегледали ${username} и ${username2}";

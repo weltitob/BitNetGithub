@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class TransactionStatusIndicator extends StatelessWidget {
   final TransactionStatus status;

@@ -8,7 +8,7 @@ import "package:bitnet/components/container/futurelottie.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:lottie/lottie.dart";
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class InfoSocialRecoveryScreen extends StatefulWidget {
   const InfoSocialRecoveryScreen({super.key});

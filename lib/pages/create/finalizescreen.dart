@@ -22,7 +22,7 @@ import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/tapd/batch.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -111,7 +111,7 @@ class _BatchScreenState extends State<BatchScreen> {
       print("⚡⚡⚡ CALL LIST BATCH: Response Batch: $responseBatch ⚡⚡⚡");
 
       // Check if response is not null before accessing properties
-      if (responseBatch != null && responseBatch.assets != null) {
+      if (responseBatch != null) {
         print(
             "⚡⚡⚡ CALL LIST BATCH: Successfully retrieved batch with ${responseBatch.assets.length} assets ⚡⚡⚡");
         setState(() {

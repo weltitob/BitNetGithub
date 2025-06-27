@@ -130,8 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "${username}이 읽음";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: '${username}과 이외 ${count}명이 읽음')}";
+  static String m55(username, count) => "${username}와 ${count}명의 다른 사람들이 봤습니다";
 
   static String m56(username, username2) => "${username}, ${username2}가 읽음";
 

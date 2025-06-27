@@ -13,7 +13,7 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';

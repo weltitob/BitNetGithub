@@ -117,7 +117,6 @@ class _BarChartState extends State<BarChart> {
             margin: EdgeInsets.all(0.w),
             plotAreaBorderWidth: 0,
             primaryXAxis: CategoryAxis(
-              minorTickLines: const MinorTickLines(color: Colors.transparent),
               majorTickLines: const MajorTickLines(color: Colors.transparent),
               maximumLabels: 12,
               labelStyle: TextStyle(
@@ -151,7 +150,7 @@ class _BarChartState extends State<BarChart> {
               ),
             ),
             tooltipBehavior: _tooltip,
-            series: <ChartSeries<_ChartData, String>>[
+            series: <CartesianSeries<_ChartData, String>>[
               ColumnSeries<_ChartData, String>(
                 dataSource: data,
                 xValueMapper: (_ChartData data, _) => data.x,

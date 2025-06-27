@@ -255,7 +255,7 @@ class _CryptoItemState extends State<CryptoItem> {
                                       const MajorGridLines(width: 0),
                                   majorTickLines:
                                       const MajorTickLines(width: 0)),
-                              series: <ChartSeries>[
+                              series: <CartesianSeries>[
                                 LineSeries<ChartLine, double>(
                                   dataSource: widget.tokenChartData ??
                                       controllerCrypto.onedaychart,

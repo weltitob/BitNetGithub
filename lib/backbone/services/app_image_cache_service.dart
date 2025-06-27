@@ -39,7 +39,7 @@ class AppImageCacheService extends GetxService {
     final cacheOptions = CacheOptions(
       store: cacheStore,
       policy: CachePolicy.request,
-      hitCacheOnErrorExcept: [401, 403],
+      hitCacheOnErrorCodes: [401, 403],
       maxStale: cacheExpiration,
       priority: CachePriority.high,
       cipher: null,
@@ -98,7 +98,7 @@ class AppImageCacheService extends GetxService {
             'dio_cache_interceptor_options': CacheOptions(
               store: cacheStore,
               policy: forceRefresh ? CachePolicy.refresh : CachePolicy.request,
-              hitCacheOnErrorExcept: [401, 403],
+              hitCacheOnErrorCodes: [401, 403],
               maxStale: cacheExpiration,
             ).toExtra(),
           },
@@ -163,7 +163,7 @@ class AppImageCacheService extends GetxService {
             'dio_cache_interceptor_options': CacheOptions(
               store: cacheStore,
               policy: forceRefresh ? CachePolicy.refresh : CachePolicy.request,
-              hitCacheOnErrorExcept: [401, 403],
+              hitCacheOnErrorCodes: [401, 403],
               maxStale: cacheExpiration,
             ).toExtra(),
           },
@@ -268,7 +268,7 @@ class AppImageCacheService extends GetxService {
             'dio_cache_interceptor_options': CacheOptions(
               store: cacheStore,
               policy: forceRefresh ? CachePolicy.refresh : CachePolicy.request,
-              hitCacheOnErrorExcept: [401, 403],
+              hitCacheOnErrorCodes: [401, 403],
               maxStale: cacheExpiration,
             ).toExtra(),
           },

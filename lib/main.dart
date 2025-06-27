@@ -166,7 +166,7 @@ Future<void> _initializeAllServices() async {
   await GetStorage.init();
 
   ShakeDetector.autoStart(
-    onPhoneShake: () {
+    onPhoneShake: (ev) {
       if (AppRouter.navigatorKey.currentContext != null) {
         GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/report');
       }

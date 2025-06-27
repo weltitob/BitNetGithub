@@ -19,6 +19,7 @@ import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/backbone/services/nostr_controller.dart';
 
 class AppsTabModern extends StatefulWidget {
   const AppsTabModern({super.key});
@@ -59,6 +60,11 @@ class _AppsTabModernState extends State<AppsTabModern>
       // If service not found, register it
       Get.put(AppImageCacheService(), permanent: true);
       _imageCacheService = Get.find<AppImageCacheService>();
+    }
+
+    // Initialize NostrController if not already registered
+    if (!Get.isRegistered<NostrController>()) {
+      Get.put(NostrController(), permanent: true);
     }
 
     loadAsync();
@@ -296,7 +302,8 @@ class _AppsTabModernState extends State<AppsTabModern>
                                                     'name': app.name,
                                                   },
                                                   extra: {
-                                                    "is_app": true
+                                                    "is_app": true,
+                                                    "nostr": app.nostr
                                                   });
                                             } else {
                                               context.go(
@@ -488,7 +495,8 @@ class _AppsTabModernState extends State<AppsTabModern>
                 'url': encodedUrl,
                 'name': encodedName,
               }, extra: {
-                "is_app": true
+                "is_app": true,
+                "nostr": app.nostr
               });
             } else {
               context.go("/feed/" + kAppPageRoute, extra: app.toJson());
@@ -607,7 +615,8 @@ class _AppsTabModernState extends State<AppsTabModern>
             'url': url,
             'name': app.name,
           }, extra: {
-            "is_app": true
+            "is_app": true,
+            "nostr": app.nostr
           });
         } else {
           context.go("/feed/" + kAppPageRoute, extra: app.toJson());
@@ -823,7 +832,8 @@ class _AppsTabModernState extends State<AppsTabModern>
                       'url': url,
                       'name': app.name,
                     }, extra: {
-                      "is_app": true
+                      "is_app": true,
+                      "nostr": app.nostr
                     });
                   } else {
                     context.go("/feed/" + kAppPageRoute, extra: app.toJson());
@@ -850,7 +860,8 @@ class _AppsTabModernState extends State<AppsTabModern>
             'url': url,
             'name': app.name,
           }, extra: {
-            "is_app": true
+            "is_app": true,
+            "nostr": app.nostr
           });
         } else {
           context.go("/feed/" + kAppPageRoute, extra: app.toJson());

@@ -5,7 +5,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/mempool_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

@@ -8,8 +8,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:get/get.dart';
 
 class MnemonicGenConfirm extends StatefulWidget {

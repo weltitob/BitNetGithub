@@ -232,7 +232,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "verifySuccess": "A reușit verificarea!",
@@ -1111,12 +1113,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Văzut de {username} și {count} alți}}",
+  "seenByUserAndCountOthers": "Văzut de {username} și alți {count}",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "setCustomEmotes": "Stabiliți emoji-uri personalizate",

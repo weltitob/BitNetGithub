@@ -25,7 +25,7 @@ import 'package:bitnet/models/postmodels/post_component.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';

@@ -331,7 +331,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         height: 8,
                       ),
                     ),
-                    series: <ChartSeries>[
+                    series: <CartesianSeries>[
                       // Main price line
                       LineSeries<ChartLine, DateTime>(
                         dataSource: chartData,

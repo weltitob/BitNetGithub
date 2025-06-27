@@ -488,8 +488,7 @@ class _ChartCoreState extends State<ChartCore> {
             final pointInfoTime = double.parse(args.chartPointInfo.header!);
 
             // Update the CustomWidget state with new price
-            final customWidgetState =
-                widget.chartInfoKey.currentState as _CustomWidgetState?;
+            final customWidgetState = widget.chartInfoKey.currentState;
             if (customWidgetState != null && mounted) {
               // Store the hover values in the state
               customWidgetState.setState(() {
@@ -506,8 +505,7 @@ class _ChartCoreState extends State<ChartCore> {
           setState(() {});
 
           // Reset to current price when interaction ends
-          final customWidgetState =
-              widget.chartInfoKey.currentState as _CustomWidgetState?;
+          final customWidgetState = widget.chartInfoKey.currentState;
           if (customWidgetState != null && mounted) {
             customWidgetState.setState(() {
               customWidgetState._isHovering = false;
@@ -711,7 +709,7 @@ class _ChartCoreState extends State<ChartCore> {
                     isVisible: false,
                     majorGridLines: const MajorGridLines(width: 0),
                     majorTickLines: const MajorTickLines(width: 0)),
-                series: <ChartSeries>[
+                series: <CartesianSeries>[
                   // Renders line chart
                   SplineSeries<ChartLine, double>(
                     onRendererCreated: (ChartSeriesController controller) {

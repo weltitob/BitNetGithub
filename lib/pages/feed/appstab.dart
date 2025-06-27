@@ -388,6 +388,7 @@ class AppData {
   final String? storageName;
   final Map<String, dynamic>? parameters;
   final String? ownerId;
+  final bool nostr;
 
   String? faviconUrl;
   Uint8List? _faviconBytes;
@@ -397,18 +398,18 @@ class AppData {
   final int _maxRetries = 5;
   final _completer = Completer<Uint8List?>();
 
-  AppData({
-    required this.docId,
-    required this.url,
-    required this.name,
-    required this.desc,
-    this.parameters,
-    this.iconPath,
-    this.storageName,
-    this.useNetworkImage = true,
-    this.useNetworkAsset = false,
-    this.ownerId,
-  });
+  AppData(
+      {required this.docId,
+      required this.url,
+      required this.name,
+      required this.desc,
+      this.parameters,
+      this.iconPath,
+      this.storageName,
+      this.useNetworkImage = true,
+      this.useNetworkAsset = false,
+      this.ownerId,
+      this.nostr = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -420,6 +421,7 @@ class AppData {
       'useNetworkAsset': useNetworkAsset,
       'storage_name': storageName,
       'parameters': parameters,
+      if (nostr) 'nostr': true,
       if (iconPath != null) 'iconPath': iconPath,
       if (ownerId != null) 'ownerId': ownerId
     };
@@ -435,6 +437,7 @@ class AppData {
         useNetworkAsset: map['useNetworkAsset'] ?? false,
         storageName: map['storage_name'],
         parameters: map['parameters'],
+        nostr: map.containsKey('nostr') ? true : false,
         iconPath: map.containsKey('iconPath') ? map['iconPath'] : null,
         ownerId: map.containsKey('ownerId') ? map['ownerId'] : null);
   }

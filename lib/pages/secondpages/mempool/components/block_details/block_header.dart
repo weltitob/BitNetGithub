@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:get/get.dart';
 
 /// Header for block details, showing block information and actions

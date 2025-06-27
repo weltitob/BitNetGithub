@@ -5480,11 +5480,10 @@ class S {
     );
   }
 
-  /// `{count, plural, other{Seen by {username} and {count} others}}`
-  String seenByUserAndCountOthers(Object username, num count) {
-    return Intl.plural(
-      count,
-      other: 'Seen by $username and $count others',
+  /// `Seen by {username} and {count} others`
+  String seenByUserAndCountOthers(Object username, Object count) {
+    return Intl.message(
+      'Seen by $username and $count others',
       name: 'seenByUserAndCountOthers',
       desc: '',
       args: [username, count],

@@ -125,7 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m54(username) => "Videné užívateľom ${username}";
 
   static String m55(username, count) =>
-      "${Intl.plural(count, other: 'Videné užívateľom ${username} a ${count} dalšími')}";
+      "Zobrazené používateľom ${username} a ďalšími ${count}";
 
   static String m56(username, username2) =>
       "Videné užívateľmi ${username} a ${username2}";

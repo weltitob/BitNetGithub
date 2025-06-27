@@ -1484,12 +1484,13 @@
       "username": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Viđeno od {username} i još {count} korisnika}}",
+  "seenByUserAndCountOthers": "Vidjelo {username} i još {count} osoba",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUserAndUser": "Viđeno od {username} i {username2}",
@@ -1800,7 +1801,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "userAndOthersAreTyping": "{username} i još {count} korisnika pišu …",

@@ -1529,12 +1529,13 @@
       "username": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Sõnumit nägid {username} ja veel {count} kasutajat}}",
+  "seenByUserAndCountOthers": "Vaadatud kasutaja {username} ja veel {count} inimese poolt",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUserAndUser": "Sõnumit nägid {username} ja {username2}",
@@ -1850,7 +1851,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "userAndOthersAreTyping": "{username} ja {count} muud kirjutavad…",

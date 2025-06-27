@@ -3,7 +3,7 @@ import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 

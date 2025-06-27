@@ -133,8 +133,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "Vist per ${username}";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: 'Vist per ${username} i ${count} més')}";
+  static String m55(username, count) => "Vist per ${username} i ${count} més";
 
   static String m56(username, username2) =>
       "Vist per ${username} i ${username2}";

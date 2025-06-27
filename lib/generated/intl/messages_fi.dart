@@ -143,8 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "Nähnyt ${username}";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: 'Nähnyt ${username} ja ${count} muuta')}";
+  static String m55(username, count) => "Nähnyt ${username} ja ${count} muuta";
 
   static String m56(username, username2) =>
       "Nähnyt ${username} ja ${username2}";

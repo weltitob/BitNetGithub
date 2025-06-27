@@ -1529,12 +1529,13 @@
       "username": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Visto por {username} e {count} outras}}",
+  "seenByUserAndCountOthers": "Visto por {username} e {count} máis",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUserAndUser": "Visto por {username} e {username2}",
@@ -1850,7 +1851,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "userAndOthersAreTyping": "{username} e {count} máis están escribindo…",

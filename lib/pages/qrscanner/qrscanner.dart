@@ -18,7 +18,7 @@ import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validato
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 enum QRTyped {
   LightningMail,

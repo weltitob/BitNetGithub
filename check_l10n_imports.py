@@ -12,7 +12,7 @@ def check_file_for_missing_import(file_path):
             return False, "No L10n usage"
         
         # Check if file has the import
-        if "import 'package:flutter_gen/gen_l10n/l10n.dart';" in content:
+        if "import 'package:bitnet/intl/generated/l10n.dart';" in content:
             return False, "Import already exists"
         
         return True, "Missing import"

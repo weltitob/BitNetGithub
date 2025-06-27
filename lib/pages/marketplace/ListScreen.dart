@@ -5,7 +5,7 @@ import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);

@@ -112,8 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "${username}已讀";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: '${username}和其他${count}個人已讀')}";
+  static String m55(username, count) => "${username} 和另外 ${count} 人已查看";
 
   static String m56(username, username2) => "${username}和${username2}已讀";
 

@@ -123,8 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m54(username) => "Sett av ${username}";
 
-  static String m55(username, count) =>
-      "${Intl.plural(count, other: 'Sett av ${username} og ${count} andre')}";
+  static String m55(username, count) => "Sett av ${username} og ${count} andre";
 
   static String m56(username, username2) =>
       "Sett av ${username} og ${username2}";

@@ -7,7 +7,7 @@
 // import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
-// import 'package:flutter_gen/gen_l10n/l10n.dart';
+// import 'package:bitnet/intl/generated/l10n.dart';
 //
 // class PaymentMethods extends StatefulWidget {
 //   const PaymentMethods({super.key});

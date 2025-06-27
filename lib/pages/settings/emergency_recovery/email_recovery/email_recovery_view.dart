@@ -18,7 +18,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 import '../../bottomsheet/settings_controller.dart';
 
@@ -111,7 +111,7 @@ class EmailRecoveryPageThree extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context)
                     .colorScheme
-                    .surfaceVariant
+                    .surfaceContainerHighest
                     .withOpacity(0.3),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
               ),

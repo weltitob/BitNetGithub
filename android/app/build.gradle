@@ -32,7 +32,7 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.bitnet"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -48,7 +48,14 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+ compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -61,7 +68,7 @@ android {
 flutter {
     source '../..'
 }
-
+8.11
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.8.0')
     implementation 'com.google.firebase:firebase-analytics'
@@ -71,4 +78,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
 
