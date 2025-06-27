@@ -22,7 +22,8 @@
     flutter pub get
     flutter doctor
     ```
-6. To run app:
+6. run ```flutter pub run build_runner build --delete-conflicting-outputs``` to generate mock files for unit tests
+7. To run app:
     ```flutter run```
 
 ## 🛠 Additional Setup

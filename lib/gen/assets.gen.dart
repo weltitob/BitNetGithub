@@ -7,11 +7,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart' as _svg;
-import 'package:lottie/lottie.dart' as _lottie;
-import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
@@ -142,7 +138,7 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/stripe.png');
 
   /// File path: assets/images/stripe.svg
-  SvgGenImage get stripeSvg => const SvgGenImage('assets/images/stripe.svg');
+  String get stripeSvg => 'assets/images/stripe.svg';
 
   /// File path: assets/images/sun_theme.png
   AssetGenImage get sunTheme =>
@@ -261,111 +257,86 @@ class $AssetsLottiefilesGen {
   const $AssetsLottiefilesGen();
 
   /// File path: assets/lottiefiles/asset_animation.json
-  LottieGenImage get assetAnimation =>
-      const LottieGenImage('assets/lottiefiles/asset_animation.json');
+  String get assetAnimation => 'assets/lottiefiles/asset_animation.json';
 
   /// File path: assets/lottiefiles/astronaut_bg.json
-  LottieGenImage get astronautBg =>
-      const LottieGenImage('assets/lottiefiles/astronaut_bg.json');
+  String get astronautBg => 'assets/lottiefiles/astronaut_bg.json';
 
   /// File path: assets/lottiefiles/astronaut_lp.json
-  LottieGenImage get astronautLp =>
-      const LottieGenImage('assets/lottiefiles/astronaut_lp.json');
+  String get astronautLp => 'assets/lottiefiles/astronaut_lp.json';
 
   /// File path: assets/lottiefiles/background.json
-  LottieGenImage get background =>
-      const LottieGenImage('assets/lottiefiles/background.json');
+  String get background => 'assets/lottiefiles/background.json';
 
   /// File path: assets/lottiefiles/bitcoinanimation.json
-  LottieGenImage get bitcoinanimation =>
-      const LottieGenImage('assets/lottiefiles/bitcoinanimation.json');
+  String get bitcoinanimation => 'assets/lottiefiles/bitcoinanimation.json';
 
   /// File path: assets/lottiefiles/blob.json
-  LottieGenImage get blob =>
-      const LottieGenImage('assets/lottiefiles/blob.json');
+  String get blob => 'assets/lottiefiles/blob.json';
 
   /// File path: assets/lottiefiles/blockchain_loader.json
-  LottieGenImage get blockchainLoader =>
-      const LottieGenImage('assets/lottiefiles/blockchain_loader.json');
+  String get blockchainLoader => 'assets/lottiefiles/blockchain_loader.json';
 
   /// File path: assets/lottiefiles/btc_key.json
-  LottieGenImage get btcKey =>
-      const LottieGenImage('assets/lottiefiles/btc_key.json');
+  String get btcKey => 'assets/lottiefiles/btc_key.json';
 
   /// File path: assets/lottiefiles/btc_threed.json
-  LottieGenImage get btcThreed =>
-      const LottieGenImage('assets/lottiefiles/btc_threed.json');
+  String get btcThreed => 'assets/lottiefiles/btc_threed.json';
 
   /// File path: assets/lottiefiles/chartgoup.json
-  LottieGenImage get chartgoup =>
-      const LottieGenImage('assets/lottiefiles/chartgoup.json');
+  String get chartgoup => 'assets/lottiefiles/chartgoup.json';
 
   /// File path: assets/lottiefiles/circle_animation.json
-  LottieGenImage get circleAnimation =>
-      const LottieGenImage('assets/lottiefiles/circle_animation.json');
+  String get circleAnimation => 'assets/lottiefiles/circle_animation.json';
 
   /// File path: assets/lottiefiles/device_morph.json
-  LottieGenImage get deviceMorph =>
-      const LottieGenImage('assets/lottiefiles/device_morph.json');
+  String get deviceMorph => 'assets/lottiefiles/device_morph.json';
 
   /// File path: assets/lottiefiles/erhalten.json
-  LottieGenImage get erhalten =>
-      const LottieGenImage('assets/lottiefiles/erhalten.json');
+  String get erhalten => 'assets/lottiefiles/erhalten.json';
 
   /// File path: assets/lottiefiles/lightning_animation.json
-  LottieGenImage get lightningAnimation =>
-      const LottieGenImage('assets/lottiefiles/lightning_animation.json');
+  String get lightningAnimation =>
+      'assets/lottiefiles/lightning_animation.json';
 
   /// File path: assets/lottiefiles/phone_bubbles.json
-  LottieGenImage get phoneBubbles =>
-      const LottieGenImage('assets/lottiefiles/phone_bubbles.json');
+  String get phoneBubbles => 'assets/lottiefiles/phone_bubbles.json';
 
   /// File path: assets/lottiefiles/plant.json
-  LottieGenImage get plant =>
-      const LottieGenImage('assets/lottiefiles/plant.json');
+  String get plant => 'assets/lottiefiles/plant.json';
 
   /// File path: assets/lottiefiles/rocket.json
-  LottieGenImage get rocket =>
-      const LottieGenImage('assets/lottiefiles/rocket.json');
+  String get rocket => 'assets/lottiefiles/rocket.json';
 
   /// File path: assets/lottiefiles/scan_qr.json
-  LottieGenImage get scanQr =>
-      const LottieGenImage('assets/lottiefiles/scan_qr.json');
+  String get scanQr => 'assets/lottiefiles/scan_qr.json';
 
   /// File path: assets/lottiefiles/search_for_files.json
-  LottieGenImage get searchForFiles =>
-      const LottieGenImage('assets/lottiefiles/search_for_files.json');
+  String get searchForFiles => 'assets/lottiefiles/search_for_files.json';
 
   /// File path: assets/lottiefiles/senden.json
-  LottieGenImage get senden =>
-      const LottieGenImage('assets/lottiefiles/senden.json');
+  String get senden => 'assets/lottiefiles/senden.json';
 
   /// File path: assets/lottiefiles/stars.json
-  LottieGenImage get stars =>
-      const LottieGenImage('assets/lottiefiles/stars.json');
+  String get stars => 'assets/lottiefiles/stars.json';
 
   /// File path: assets/lottiefiles/three_friends.json
-  LottieGenImage get threeFriends =>
-      const LottieGenImage('assets/lottiefiles/three_friends.json');
+  String get threeFriends => 'assets/lottiefiles/three_friends.json';
 
   /// File path: assets/lottiefiles/three_layers.json
-  LottieGenImage get threeLayers =>
-      const LottieGenImage('assets/lottiefiles/three_layers.json');
+  String get threeLayers => 'assets/lottiefiles/three_layers.json';
 
   /// File path: assets/lottiefiles/time_animation.json
-  LottieGenImage get timeAnimation =>
-      const LottieGenImage('assets/lottiefiles/time_animation.json');
+  String get timeAnimation => 'assets/lottiefiles/time_animation.json';
 
   /// File path: assets/lottiefiles/verify_user.json
-  LottieGenImage get verifyUser =>
-      const LottieGenImage('assets/lottiefiles/verify_user.json');
+  String get verifyUser => 'assets/lottiefiles/verify_user.json';
 
   /// File path: assets/lottiefiles/wallet_animation.json
-  LottieGenImage get walletAnimation =>
-      const LottieGenImage('assets/lottiefiles/wallet_animation.json');
+  String get walletAnimation => 'assets/lottiefiles/wallet_animation.json';
 
   /// List of all assets
-  List<LottieGenImage> get values => [
+  List<String> get values => [
     assetAnimation,
     astronautBg,
     astronautLp,
@@ -806,145 +777,6 @@ class AssetGenImage {
 
   ImageProvider provider({AssetBundle? bundle, String? package}) {
     return AssetImage(_assetName, bundle: bundle, package: package);
-  }
-
-  String get path => _assetName;
-
-  String get keyName => _assetName;
-}
-
-class SvgGenImage {
-  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = false;
-
-  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = true;
-
-  final String _assetName;
-  final Size? size;
-  final Set<String> flavors;
-  final bool _isVecFormat;
-
-  _svg.SvgPicture svg({
-    Key? key,
-    bool matchTextDirection = false,
-    AssetBundle? bundle,
-    String? package,
-    double? width,
-    double? height,
-    BoxFit fit = BoxFit.contain,
-    AlignmentGeometry alignment = Alignment.center,
-    bool allowDrawingOutsideViewBox = false,
-    WidgetBuilder? placeholderBuilder,
-    String? semanticsLabel,
-    bool excludeFromSemantics = false,
-    _svg.SvgTheme? theme,
-    ColorFilter? colorFilter,
-    Clip clipBehavior = Clip.hardEdge,
-    @deprecated Color? color,
-    @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
-    @deprecated bool cacheColorFilter = false,
-  }) {
-    final _svg.BytesLoader loader;
-    if (_isVecFormat) {
-      loader = _vg.AssetBytesLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-      );
-    } else {
-      loader = _svg.SvgAssetLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-        theme: theme,
-      );
-    }
-    return _svg.SvgPicture(
-      loader,
-      key: key,
-      matchTextDirection: matchTextDirection,
-      width: width,
-      height: height,
-      fit: fit,
-      alignment: alignment,
-      allowDrawingOutsideViewBox: allowDrawingOutsideViewBox,
-      placeholderBuilder: placeholderBuilder,
-      semanticsLabel: semanticsLabel,
-      excludeFromSemantics: excludeFromSemantics,
-      colorFilter:
-          colorFilter ??
-          (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
-      clipBehavior: clipBehavior,
-      cacheColorFilter: cacheColorFilter,
-    );
-  }
-
-  String get path => _assetName;
-
-  String get keyName => _assetName;
-}
-
-class LottieGenImage {
-  const LottieGenImage(this._assetName, {this.flavors = const {}});
-
-  final String _assetName;
-  final Set<String> flavors;
-
-  _lottie.LottieBuilder lottie({
-    Animation<double>? controller,
-    bool? animate,
-    _lottie.FrameRate? frameRate,
-    bool? repeat,
-    bool? reverse,
-    _lottie.LottieDelegates? delegates,
-    _lottie.LottieOptions? options,
-    void Function(_lottie.LottieComposition)? onLoaded,
-    _lottie.LottieImageProviderFactory? imageProviderFactory,
-    Key? key,
-    AssetBundle? bundle,
-    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)?
-    frameBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    double? width,
-    double? height,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    String? package,
-    bool? addRepaintBoundary,
-    FilterQuality? filterQuality,
-    void Function(String)? onWarning,
-    _lottie.LottieDecoder? decoder,
-    _lottie.RenderCache? renderCache,
-    bool? backgroundLoading,
-  }) {
-    return _lottie.Lottie.asset(
-      _assetName,
-      controller: controller,
-      animate: animate,
-      frameRate: frameRate,
-      repeat: repeat,
-      reverse: reverse,
-      delegates: delegates,
-      options: options,
-      onLoaded: onLoaded,
-      imageProviderFactory: imageProviderFactory,
-      key: key,
-      bundle: bundle,
-      frameBuilder: frameBuilder,
-      errorBuilder: errorBuilder,
-      width: width,
-      height: height,
-      fit: fit,
-      alignment: alignment,
-      package: package,
-      addRepaintBoundary: addRepaintBoundary,
-      filterQuality: filterQuality,
-      onWarning: onWarning,
-      decoder: decoder,
-      renderCache: renderCache,
-      backgroundLoading: backgroundLoading,
-    );
   }
 
   String get path => _assetName;
