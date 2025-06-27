@@ -12,7 +12,7 @@ Future<dynamic> unlockWallet({String? nodeId}) async {
 
   // Use Caddy server routing for MVP - hardcoded to node5 for now
   String caddyBaseUrl = 'https://api.bitnet.ai/';
-  String selectedNode = nodeId ?? 'node8'; // Default to node8 for MVP
+  String selectedNode = nodeId ?? 'node12'; // Default to node8 for MVP
 
   // Encode the password to Base64
   String password = "development_password_dj83zb"; //i__hate..passwords!!
