@@ -29,10 +29,10 @@ packages:
     dependency: "direct overridden"
     description:
       name: analyzer
-      sha256: "3394478cd571a8dbbe130a35e10bd365a2a8e7a867308142f7fd20336a08c3be"
+      sha256: f6154230675c44a191f2e20d16eeceb4aa18b30ca732db4efaf94c6a7d43cfa6
       url: "https://pub.dev"
     source: hosted
-    version: "7.5.1"
+    version: "7.5.2"
   animate_do:
     dependency: "direct main"
     description:
@@ -237,10 +237,10 @@ packages:
     dependency: "direct main"
     description:
       name: bitcoin_base
-      sha256: "350190857d5225b38115e5e6aa900ade4c982b207d8ba289389b38e4fd983793"
+      sha256: d12f8c4f25640616332c6bd067d18cd492f0046c10ec3bbfacc8f3113f534268
       url: "https://pub.dev"
     source: hosted
-    version: "6.5.0"
+    version: "6.6.0"
   blockchain_utils:
     dependency: "direct main"
     description:
@@ -1953,10 +1953,10 @@ packages:
     dependency: "direct main"
     description:
       name: nip47
-      sha256: "0de4bb1ba40caf921294397033cc26ee10faf6bd68c79ff1581d71927df9204e"
+      sha256: cdc9d1054efa6546e80c05779ff065814596e3ddad108dbb68a18a28b8ef1279
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0+1"
+    version: "0.5.1"
   nm:
     dependency: transitive
     description:
@@ -2582,10 +2582,10 @@ packages:
     dependency: transitive
     description:
       name: synchronized
-      sha256: "0669c70faae6270521ee4f05bffd2919892d42d1276e6c495be80174b6bc0ef6"
+      sha256: c254ade258ec8282947a0acbbc90b9575b4f19673533ee46f2f6e9b3aeefd7c0
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.0"
   term_glyph:
     dependency: transitive
     description:
