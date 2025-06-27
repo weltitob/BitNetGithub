@@ -11,7 +11,7 @@ class OutspendsModel {
     txid = json['txid'];
     vin = json['vin'];
     status =
-    json['status'] != null ? new Status.fromJson(json['status']) : null;
+        json['status'] != null ? new Status.fromJson(json['status']) : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -14,37 +14,37 @@ import 'package:get/get.dart';
 
 Future<RestResponse> listUnspent(String account) async {
   LoggerService logger = Get.find();
-  
+
   try {
     final litdController = Get.find<LitdController>();
     final remoteConfigController = Get.find<RemoteConfigController>();
-    
+
     // Wait for remote config to be loaded before proceeding
-    if (remoteConfigController.adminMacaroonByteData == null || litdController.litd_baseurl.value.isEmpty) {
+    if (remoteConfigController.adminMacaroonByteData == null ||
+        litdController.litd_baseurl.value.isEmpty) {
       logger.w("Remote config not loaded yet, waiting...");
       await remoteConfigController.fetchRemoteConfigData();
-      
+
       // Check again after fetching
-      if (remoteConfigController.adminMacaroonByteData == null || litdController.litd_baseurl.value.isEmpty) {
+      if (remoteConfigController.adminMacaroonByteData == null ||
+          litdController.litd_baseurl.value.isEmpty) {
         logger.e("Remote config failed to load properly");
         return RestResponse(
-          statusCode: "error",
-          message: "Remote configuration not available",
-          data: {}
-        );
+            statusCode: "error",
+            message: "Remote configuration not available",
+            data: {});
       }
     }
-    
+
     final String restHost = litdController.litd_baseurl.value;
     if (restHost.isEmpty) {
       logger.e("Lightning node URL not configured");
       return RestResponse(
-        statusCode: "error", 
-        message: "Lightning node URL not configured",
-        data: {}
-      );
+          statusCode: "error",
+          message: "Lightning node URL not configured",
+          data: {});
     }
-    
+
     String url = 'https://$restHost/v2/wallet/utxos';
 
     ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();

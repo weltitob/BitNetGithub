@@ -12,10 +12,11 @@ import 'package:http/http.dart' as http;
 
 Future<RestResponse> generateSeed({String? nodeId}) async {
   LoggerService logger = Get.find();
-  
+
   // Use centralized Lightning configuration
   String selectedNode = nodeId ?? LightningConfig.getDefaultNodeId();
-  String url = LightningConfig.getLightningUrl('v1/genseed', nodeId: selectedNode); // No passphrase to match Python approach
+  String url = LightningConfig.getLightningUrl('v1/genseed',
+      nodeId: selectedNode); // No passphrase to match Python approach
 
   logger.i("=== GENERATE SEED DEBUG INFO ===");
   logger.i("Target URL: $url");
@@ -23,12 +24,14 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
   logger.i("Caddy Base URL: ${LightningConfig.caddyBaseUrl}");
 
   // Load and convert the macaroon asset
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
-  logger.i("Admin macaroon loaded for genseed: ${macaroon.substring(0, 20)}... (truncated)");
+  logger.i(
+      "Admin macaroon loaded for genseed: ${macaroon.substring(0, 20)}... (truncated)");
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
@@ -51,10 +54,12 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
   logger.i("About to make GET request to: $url");
 
   try {
-    var response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    ).timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
+    var response = await http
+        .get(
+          Uri.parse(url),
+          headers: headers,
+        )
+        .timeout(Duration(seconds: LightningConfig.defaultTimeoutSeconds));
 
     logger.i("=== GENSEED HTTP RESPONSE RECEIVED ===");
     logger.i("Response Status Code: ${response.statusCode}");
@@ -70,7 +75,8 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
           if (key == 'cipher_seed_mnemonic' && value is List) {
             logger.i("$key: ${value.length} words - ${value.join(' ')}");
           } else if (key == 'enciphered_seed') {
-            logger.i("$key: ${value.toString().substring(0, 20)}... (truncated)");
+            logger
+                .i("$key: ${value.toString().substring(0, 20)}... (truncated)");
           } else {
             logger.i("$key: $value");
           }
@@ -95,11 +101,15 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
       logger.e("Status Text: ${response.reasonPhrase}");
       logger.e("Response Body: ${response.body}");
       logger.e("Response Headers: ${response.headers}");
-      
+
       return RestResponse(
         statusCode: "error",
-        message: "Failed to generate seed: ${response.statusCode}, ${response.body}",
-        data: {"status_code": response.statusCode, "raw_response": response.body},
+        message:
+            "Failed to generate seed: ${response.statusCode}, ${response.body}",
+        data: {
+          "status_code": response.statusCode,
+          "raw_response": response.body
+        },
       );
     }
   } catch (e, stackTrace) {
@@ -107,17 +117,22 @@ Future<RestResponse> generateSeed({String? nodeId}) async {
     logger.e("Exception Type: ${e.runtimeType}");
     logger.e("Exception Message: $e");
     logger.e("Stack Trace: $stackTrace");
-    
+
     if (e.toString().contains('timeout')) {
-      logger.e("GENSEED CONNECTION TIMEOUT - Check if Caddy server is running on $url");
+      logger.e(
+          "GENSEED CONNECTION TIMEOUT - Check if Caddy server is running on $url");
     } else if (e.toString().contains('connection')) {
-      logger.e("GENSEED CONNECTION ERROR - Check network connectivity and server availability");
+      logger.e(
+          "GENSEED CONNECTION ERROR - Check network connectivity and server availability");
     }
-    
+
     return RestResponse(
       statusCode: "error",
       message: "Failed to generate seed: $e",
-      data: {"exception_type": e.runtimeType.toString(), "exception_message": e.toString()},
+      data: {
+        "exception_type": e.runtimeType.toString(),
+        "exception_message": e.toString()
+      },
     );
   }
 }

@@ -322,7 +322,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               );
                             },
                             child: GlassContainer(
-                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusSmall),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
@@ -331,7 +332,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       width: AppTheme.cardPadding * 2.h,
                                       height: AppTheme.cardPadding * 2.h,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                                        borderRadius: BorderRadius.circular(
+                                            AppTheme.borderRadiusSmall),
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primaryContainer,
@@ -452,7 +454,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                     padding: EdgeInsets.symmetric(
                         horizontal: AppTheme.cardPadding, vertical: 8),
                     child: GlassContainer(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.borderRadiusSmall),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(
@@ -461,7 +464,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                               width: 56,
                               height: 56,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                                borderRadius: BorderRadius.circular(
+                                    AppTheme.borderRadiusSmall),
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primaryContainer,

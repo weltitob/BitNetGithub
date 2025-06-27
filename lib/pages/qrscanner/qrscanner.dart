@@ -52,7 +52,7 @@ class QRScannerController extends State<QrScanner> {
     final isStringInvoice = isStringALNInvoice(encodedString);
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     final isStringPrivateData = isStringPrivateDataFunc(encodedString);
-    
+
     // Check for LNURL Channel request
     final isLnurlChannel = _isLnurlChannelRequest(encodedString);
 
@@ -82,7 +82,7 @@ class QRScannerController extends State<QrScanner> {
       if (!encodedString.toLowerCase().startsWith('lnurl')) {
         return false;
       }
-      
+
       // Use the service to check if it's a channel request
       final channelService = LnurlChannelService();
       return channelService.isChannelRequest(encodedString);
@@ -133,11 +133,11 @@ class QRScannerController extends State<QrScanner> {
   void _handleChannelRequest(String lnurlString, BuildContext cxt) async {
     final logger = Get.find<LoggerService>();
     logger.i("Handling LNURL Channel request: $lnurlString");
-    
+
     try {
       // Close the QR scanner
       context.pop();
-      
+
       // Show channel opening bottom sheet
       await _showChannelOpeningSheet(cxt, lnurlString);
     } catch (e) {
@@ -147,7 +147,8 @@ class QRScannerController extends State<QrScanner> {
     }
   }
 
-  Future<void> _showChannelOpeningSheet(BuildContext context, String lnurlString) async {
+  Future<void> _showChannelOpeningSheet(
+      BuildContext context, String lnurlString) async {
     await context.showChannelOpeningSheet(
       lnurlString,
       onChannelOpened: () {
@@ -171,7 +172,7 @@ class QRScannerController extends State<QrScanner> {
       // HDWallet hdWallet = HDWallet.fromMnemonic(privateData.mnemonic);
       // print("onScannedForSignIn: ${hdWallet.pubkey}");
       // print("onScannedForSignIn: ${hdWallet.privkey}");
-      
+
       // NEW: One user one node approach - Lightning aezeed format
       String did = RecoveryIdentity.generateRecoveryDid(privateData.mnemonic);
       print("onScannedForSignIn: $privateData");
@@ -189,7 +190,7 @@ class QRScannerController extends State<QrScanner> {
 
       // OLD: Multiple users one node approach - HDWallet key signing
       // String signatureHex = await signChallengeData(hdWallet.privkey, hdWallet.pubkey, challengeData);
-      
+
       // NEW: Lightning approach - Signing functionality needs reimplementation for Lightning
       // TODO: Implement Lightning-based challenge signing when needed
       String signatureHex = "placeholder_signature"; // Temporary placeholder

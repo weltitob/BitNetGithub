@@ -26,11 +26,14 @@ class ProfileAvatar extends StatelessWidget {
 
     return Obx(() {
       final isEditMode = controller.currentview.value == 4;
-      final isOwnProfile = Auth().currentUser!.uid == controller.userData.value.did;
+      final isOwnProfile =
+          Auth().currentUser!.uid == controller.userData.value.did;
       final canEdit = isEditMode && isOwnProfile;
 
       return GestureDetector(
-        onTap: canEdit ? () => _handleAvatarTap(context, controller, overlayController) : null,
+        onTap: canEdit
+            ? () => _handleAvatarTap(context, controller, overlayController)
+            : null,
         child: Avatar(
           mxContent: Uri.parse(controller.userData.value.profileImageUrl),
           size: AppTheme.cardPadding * 3.h,
@@ -42,7 +45,8 @@ class ProfileAvatar extends StatelessWidget {
     });
   }
 
-  void _handleAvatarTap(BuildContext context, ProfileController controller, OverlayController overlayController) async {
+  void _handleAvatarTap(BuildContext context, ProfileController controller,
+      OverlayController overlayController) async {
     // Directly open profile picture selection without showing the choice dialog
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (!ps.isAuth && !ps.hasAccess) {
@@ -51,17 +55,16 @@ class ProfileAvatar extends StatelessWidget {
           color: AppTheme.errorColor);
       return;
     }
-    
-    ImagePickerCombinedBottomSheet(
-        context, 
-        includeNFTs: true,
-        onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-          if (image != null) {
-            await controller.handleProfileImageSelected(image);
-          } else if (pair != null) {
-            await controller.handleProfileNftSelected(pair);
-          }
-          Navigator.pop(context);
+
+    ImagePickerCombinedBottomSheet(context, includeNFTs: true, onImageTap:
+        (AssetPathEntity? album, AssetEntity? image,
+            MediaDatePair? pair) async {
+      if (image != null) {
+        await controller.handleProfileImageSelected(image);
+      } else if (pair != null) {
+        await controller.handleProfileNftSelected(pair);
+      }
+      Navigator.pop(context);
     });
   }
 }

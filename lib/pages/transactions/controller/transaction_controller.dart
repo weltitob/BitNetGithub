@@ -11,7 +11,8 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/mempool_utils.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
-import 'package:bitnet/models/mempool_models/transactionCacheModel.dart' as cacheTx;
+import 'package:bitnet/models/mempool_models/transactionCacheModel.dart'
+    as cacheTx;
 import 'package:bitnet/models/mempool_models/transactionRbfModel.dart';
 import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
 import 'package:bitnet/models/mempool_models/txModel.dart' as txModel;
@@ -43,7 +44,6 @@ class TransactionController extends BaseController {
   var dataOutSpents;
   var dataOutSpents1;
   String baseUrl = AppTheme.baseUrlMemPoolSpaceApi;
-
 
   String? txID = '';
   String feeUsd = '', feeSat = '';
@@ -127,10 +127,17 @@ class TransactionController extends BaseController {
     if (!status && !hideUnconfirmed && homeController.isRbfTransaction.value) {
       statusTransaction.value = "Replaced";
     }
-    if (!status && !hideUnconfirmed && !homeController.isRbfTransaction.value && removed) {
+    if (!status &&
+        !hideUnconfirmed &&
+        !homeController.isRbfTransaction.value &&
+        removed) {
       statusTransaction.value = "Removed";
     }
-    if (!status && chainTip != null && !hideUnconfirmed && !homeController.isRbfTransaction.value && !removed) {
+    if (!status &&
+        chainTip != null &&
+        !hideUnconfirmed &&
+        !homeController.isRbfTransaction.value &&
+        !removed) {
       statusTransaction.value = "Unconfirmed";
     }
   }
@@ -176,7 +183,11 @@ class TransactionController extends BaseController {
   // }
 
   String inPutDollar(int index) {
-    double value = (((transactionModel!.vin![index].prevout!.value!) / 100000000 * 100000000) * currentUSD.value) / 100000000;
+    double value = (((transactionModel!.vin![index].prevout!.value!) /
+                100000000 *
+                100000000) *
+            currentUSD.value) /
+        100000000;
     inputDollar.value = double.parse(value.toStringAsFixed(2));
     return formatPrice(inputDollar.value.toStringAsFixed(0));
   }
@@ -224,7 +235,8 @@ class TransactionController extends BaseController {
     //     transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     final firstseen = await getTimeStamp(txID!);
     txTime = firstseen!;
-    localTime.value = formatLocalTime(transactionModel!.status!.blockTime?.toInt() ?? currentTime);
+    localTime.value = formatLocalTime(
+        transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     // timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
     // print(txTime);
     confirmationStatus.value = transactionModel!.status!.confirmed!;
@@ -236,7 +248,8 @@ class TransactionController extends BaseController {
   Future<int?> getTimeStamp(String txID) async {
     try {
       var local;
-      String url = 'https://mempool.space/api/v1/transaction-times?txId[]=$txID';
+      String url =
+          'https://mempool.space/api/v1/transaction-times?txId[]=$txID';
       // print(url);
       await dioClient.get(url: url).then((value) {
         local = value;
@@ -284,7 +297,8 @@ class TransactionController extends BaseController {
       print(url);
       await dioClient.get(url: url).then((value) async {
         print(value.data);
-        transactionCacheModel = cacheTx.TransactionCacheModel.fromJson(value.data);
+        transactionCacheModel =
+            cacheTx.TransactionCacheModel.fromJson(value.data);
         final homeController = Get.find<HomeController>();
         chainTip = homeController.bitcoinData.first.height;
         // print(height);
@@ -310,7 +324,8 @@ class TransactionController extends BaseController {
   changeSocket() {
     final homeController = Get.find<HomeController>();
     homeController.sendWebSocketMessage('{"track-rbf-summary":false}');
-    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage(
+        '{"action":"want","data":["blocks","mempool-blocks"]}');
     homeController.sendWebSocketMessage('{"track-tx":"${txID!}"}');
   }
 
@@ -345,12 +360,16 @@ class TransactionController extends BaseController {
       print(url);
       await dioClient.get(url: url).then((value) async {
         print(value.data);
-        validateAddressComponentModel = ValidateAddressComponentModel.fromJson(value.data);
+        validateAddressComponentModel =
+            ValidateAddressComponentModel.fromJson(value.data);
         print(validateAddressComponentModel?.isvalid);
         validateAddressComponentModel!.isvalid
-            ? await dioClient.get(url: '${baseUrl}/address/$addressId').then((value) async {
+            ? await dioClient
+                .get(url: '${baseUrl}/address/$addressId')
+                .then((value) async {
                 print(value.data);
-                addressComponentModel = AddressComponentModel.fromJson(value.data);
+                addressComponentModel =
+                    AddressComponentModel.fromJson(value.data);
 
                 await getSubTransaction();
               })
@@ -394,8 +413,10 @@ class TransactionController extends BaseController {
     }
   }
 
-  var P2SH_P2WPKH_COST = 21 * 4; // the WU cost for the non-witness part of P2SH-P2WPKH
-  var P2SH_P2WSH_COST = 35 * 4; // the WU cost for the non-witness part of P2SH-P2WSH
+  var P2SH_P2WPKH_COST =
+      21 * 4; // the WU cost for the non-witness part of P2SH-P2WPKH
+  var P2SH_P2WSH_COST =
+      35 * 4; // the WU cost for the non-witness part of P2SH-P2WSH
 
   Map<String, int>? parseMultisigScript(String script) {
     if (script.isEmpty) {
@@ -459,7 +480,9 @@ class TransactionController extends BaseController {
   };
 
   double witnessSize(Vin vin) {
-    return vin.witness != null ? vin.witness!.fold<double>(0, (S, w) => S + (w.length / 2)) : 0;
+    return vin.witness != null
+        ? vin.witness!.fold<double>(0, (S, w) => S + (w.length / 2))
+        : 0;
   }
 
   double scriptSigSize(Vin vin) {
@@ -486,7 +509,8 @@ class TransactionController extends BaseController {
       }
 
       bool isP2pk = vin.prevout!.scriptpubkeyType == 'p2pk';
-      final isBareMultisig = parseMultisigScript(vin.prevout!.scriptpubkeyAsm!) != null;
+      final isBareMultisig =
+          parseMultisigScript(vin.prevout!.scriptpubkeyAsm!) != null;
       final isP2pkh = vin.prevout!.scriptpubkeyType == 'p2pkh';
       final isP2sh = vin.prevout!.scriptpubkeyType == 'p2sh';
       final isP2wsh = vin.prevout!.scriptpubkeyType == 'v0_p2wsh';
@@ -494,8 +518,10 @@ class TransactionController extends BaseController {
       final isP2tr = vin.prevout!.scriptpubkeyType == 'v1_p2tr';
 
       final op = vin.scriptsig != null ? vin.scriptsigAsm!.split(' ')[0] : null;
-      final isP2shP2Wpkh = isP2sh && vin.witness != null && op == 'OP_PUSHBYTES_22';
-      final isP2shP2Wsh = isP2sh && vin.witness != null && op == 'OP_PUSHBYTES_34';
+      final isP2shP2Wpkh =
+          isP2sh && vin.witness != null && op == 'OP_PUSHBYTES_22';
+      final isP2shP2Wsh =
+          isP2sh && vin.witness != null && op == 'OP_PUSHBYTES_34';
 
       if (isP2tr) {
         realizedSegwitGains += (witnessSize(vin) + (isP2tr ? 42 : 0)) * 3;
@@ -512,7 +538,8 @@ class TransactionController extends BaseController {
           fullGains -= vin.prevout!.scriptpubkey!.length / 2;
         }
         potentialSegwitGains += fullGains;
-        potentialP2shSegwitGains += fullGains - (isP2pkh ? P2SH_P2WPKH_COST : P2SH_P2WSH_COST);
+        potentialP2shSegwitGains +=
+            fullGains - (isP2pkh ? P2SH_P2WPKH_COST : P2SH_P2WSH_COST);
       }
       // switch (true) {
       //   // Native Segwit - P2WPKH/P2WSH/P2TR
@@ -560,7 +587,9 @@ class TransactionController extends BaseController {
           realizedTaprootGains += 42;
         } else {}
       } else {
-        final script = isP2shP2Wsh || isP2wsh ? vin.inner_witnessscript_asm : vin.inner_redeemscript_asm;
+        final script = isP2shP2Wsh || isP2wsh
+            ? vin.inner_witnessscript_asm
+            : vin.inner_redeemscript_asm;
         var replacementSize = 0;
         if (
             // single sig
@@ -574,25 +603,38 @@ class TransactionController extends BaseController {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
         } else {
-          final spendingPaths = script.split(' ').where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op)).length + 1;
+          final spendingPaths = script
+                  .split(' ')
+                  .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
+                  .length +
+              1;
           // now assume the script could have been split into ${spendingPaths} equal tapleaves
-          replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths + 32 * math.log((spendingPaths - 1) + 1) + 33).toString());
+          replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
+                  32 * math.log((spendingPaths - 1) + 1) +
+                  33)
+              .toString());
 
-          potentialTaprootGains += witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
+          potentialTaprootGains +=
+              witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
         }
       }
     }
     return {
-      'realizedSegwitGains': realizedSegwitGains / (tx.weight! + realizedSegwitGains), // percent of the pre-segwit tx size
+      'realizedSegwitGains': realizedSegwitGains /
+          (tx.weight! +
+              realizedSegwitGains), // percent of the pre-segwit tx size
       'potentialSegwitGains': potentialSegwitGains / tx.weight!,
       'potentialP2shSegwitGains': potentialP2shSegwitGains / tx.weight!,
       'potentialTaprootGains': potentialTaprootGains / tx.weight!,
-      'realizedTaprootGains': realizedTaprootGains / (tx.weight! + realizedTaprootGains),
+      'realizedTaprootGains':
+          realizedTaprootGains / (tx.weight! + realizedTaprootGains),
     };
   }
 
   void calculateRatings(TransactionConfirmedDetail block) {
-    num feePerByte = effectiveFeeRate.value == 0.0 ? (transactionModel!.fee! / (transactionModel!.weight! / 4)) : effectiveFeeRate.value;
+    num feePerByte = effectiveFeeRate.value == 0.0
+        ? (transactionModel!.fee! / (transactionModel!.weight! / 4))
+        : effectiveFeeRate.value;
     medianFeeNeeded = int.parse(
       block.extras.medianFee.toString(),
     );
@@ -661,7 +703,8 @@ class TransactionController extends BaseController {
             print('before calculating confirmations');
             List<String> addresses = List.empty(growable: true);
             for (Vin vin in (transactionModel!.vin ?? [])) {
-              if (vin.prevout != null && vin.prevout!.scriptpubkeyAddress != null) {
+              if (vin.prevout != null &&
+                  vin.prevout!.scriptpubkeyAddress != null) {
                 addresses.add(vin.prevout!.scriptpubkeyAddress!);
               }
             }
@@ -690,16 +733,22 @@ class TransactionController extends BaseController {
           .then(
             (value) {
               segwitEnabled.value = !transactionModel!.status!.confirmed! ||
-                  AppUtils.isFeatureActive('mainnet', transactionModel!.status!.blockHeight!, 'segwit');
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'segwit');
               rbfEnabled.value = !transactionModel!.status!.confirmed! ||
-                  AppUtils.isFeatureActive('mainnet', transactionModel!.status!.blockHeight!, 'rbf');
+                  AppUtils.isFeatureActive(
+                      'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
               taprootEnabled.value = !transactionModel!.status!.confirmed! ||
-                  AppUtils.isFeatureActive('mainnet', transactionModel!.status!.blockHeight!, 'taproot');
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'taproot');
               calcSegwitFeeGains(transactionModel!);
               // ids.first = transactionModel!.txid!;
               getOutSpends1();
-              isRbfTransaction.value = transactionModel!.vin!.any((element) => element.sequence! < 0xfffffffe);
-              isTaproot.value = transactionModel!.vin!.any((v) => v.prevout != null && v.prevout!.scriptpubkeyType == 'v1_p2tr');
+              isRbfTransaction.value = transactionModel!.vin!
+                  .any((element) => element.sequence! < 0xfffffffe);
+              isTaproot.value = transactionModel!.vin!.any((v) =>
+                  v.prevout != null &&
+                  v.prevout!.scriptpubkeyType == 'v1_p2tr');
             },
           )
           .then((value) => startUpdatingTimestamp())
@@ -709,10 +758,12 @@ class TransactionController extends BaseController {
 
       num bitCoin = transactionModel!.fee! / 100000000;
 
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(transactionModel!.status!.blockTime!.toInt() * 1000);
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(
+          transactionModel!.status!.blockTime!.toInt() * 1000);
       requestTime.value = DateFormat('yyyy-MM-dd HH:mm').format(date);
       feeUsd = (bitCoin * currentUSD.value).toStringAsFixed(2);
-      feeSat = (double.parse(feeUsd) / transactionModel!.size!).toStringAsFixed(2);
+      feeSat =
+          (double.parse(feeUsd) / transactionModel!.size!).toStringAsFixed(2);
       isLoading.value = false;
     } catch (e, tr) {
       isLoading.value = false;
@@ -744,7 +795,8 @@ class TransactionController extends BaseController {
       if (prices.isNotEmpty) {
         final latestPrice = prices.last;
         // currentUSD.value = latestPrice['USD'];
-        usdValue.value = (transactionModel!.fee! / 100000000) * latestPrice['USD'];
+        usdValue.value =
+            (transactionModel!.fee! / 100000000) * latestPrice['USD'];
         feeRate.value = transactionModel!.fee! / transactionModel!.weight!;
       }
     } else {
@@ -770,7 +822,8 @@ class TransactionController extends BaseController {
   }
 
   String formatLocalTime(int timestamp) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
 
     // Format DateTime to the desired format
     RxString formattedDateTime = "${dateTime.toLocal()}".split('.')[0].obs;
@@ -847,7 +900,8 @@ class TransactionController extends BaseController {
     print('turns $turns');
     try {
       isLoadingOutSpends.value = true;
-      String url = 'https://mempool.space/api/txs/outspends?txids=${ids.length > 10 ? ids.sublist(0, 10).join(",") : ids.join(",")}';
+      String url =
+          'https://mempool.space/api/txs/outspends?txids=${ids.length > 10 ? ids.sublist(0, 10).join(",") : ids.join(",")}';
       log(url);
       dataOutSpents = await dioClient.get(url: url);
       isLoadingOutSpends.value = false;
@@ -860,7 +914,8 @@ class TransactionController extends BaseController {
     print('call api');
     try {
       isLoading.value = true;
-      String url = '${baseUrl}address/$addressId/txs?after_txid=${subTransactionModel[10].txid}';
+      String url =
+          '${baseUrl}address/$addressId/txs?after_txid=${subTransactionModel[10].txid}';
       // Timer.periodic(Duration(seconds: 5), (timer) async {
       await dioClient
           .get(url: url)
@@ -890,8 +945,10 @@ class TransactionController extends BaseController {
   transactionTrack() {
     final homeController = Get.find<HomeController>();
     homeController.sendWebSocketMessage('{"track-rbf-summary":false}');
-    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
-    homeController.sendWebSocketMessage('{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage(
+        '{"action":"want","data":["blocks","mempool-blocks"]}');
+    homeController.sendWebSocketMessage(
+        '{"action":"want","data":["blocks","mempool-blocks"]}');
     homeController.sendWebSocketMessage('{"track-tx":"${txID}"}');
     Future.delayed(
       const Duration(minutes: 3),
@@ -921,7 +978,10 @@ class TransactionController extends BaseController {
     bool isP2PKCompressed = addressId.length == 66;
     if (isP2PKCompressed) {
       print('1');
-      int addressIn = tx.vout!.where((v) => v.scriptpubkeyAddress == '21${addressId}ac').map((v) => v.value ?? 0).fold(0, (a, b) => a + b);
+      int addressIn = tx.vout!
+          .where((v) => v.scriptpubkeyAddress == '21${addressId}ac')
+          .map((v) => v.value ?? 0)
+          .fold(0, (a, b) => a + b);
 
       int addressOut = tx.vin!
           .where((v) => v.prevout!.scriptpubkeyAddress == '21${addressId}ac')
@@ -931,7 +991,10 @@ class TransactionController extends BaseController {
       return addressIn - addressOut;
     } else if (isP2PKUncompressed) {
       print('2');
-      int addressIn = tx.vout!.where((v) => v.scriptpubkeyAddress == '41${addressId}ac').map((v) => v.value ?? 0).fold(0, (a, b) => a + b);
+      int addressIn = tx.vout!
+          .where((v) => v.scriptpubkeyAddress == '41${addressId}ac')
+          .map((v) => v.value ?? 0)
+          .fold(0, (a, b) => a + b);
 
       int addressOut = tx.vin!
           .where((v) => v.prevout!.scriptpubkeyAddress == '41${addressId}ac')
@@ -942,10 +1005,15 @@ class TransactionController extends BaseController {
     } else {
       print('3');
       print(tx.vin![0].prevout!.scriptpubkey);
-      int addressIn = tx.vout!.where((v) => v.scriptpubkeyAddress == addressId).map((v) => v.value ?? 0).fold(0, (a, b) => a + b);
+      int addressIn = tx.vout!
+          .where((v) => v.scriptpubkeyAddress == addressId)
+          .map((v) => v.value ?? 0)
+          .fold(0, (a, b) => a + b);
 
-      int addressOut =
-          tx.vin!.where((v) => v.prevout!.scriptpubkeyAddress == addressId).map((v) => v.prevout!.value ?? 0).fold(0, (a, b) => a + b);
+      int addressOut = tx.vin!
+          .where((v) => v.prevout!.scriptpubkeyAddress == addressId)
+          .map((v) => v.prevout!.value ?? 0)
+          .fold(0, (a, b) => a + b);
 
       print(addressIn);
       print(addressOut);

@@ -10,14 +10,12 @@ class CurrencyChangeProvider extends ChangeNotifier {
 
   // Method to update the first currency and its corresponding Firestore document
   void setFirstCurrencyInDatabase(String selectedCurrency) {
-    settingsCollection
-        .doc(FirebaseAuth.instance.currentUser!.uid).update({
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       "selected_currency": selectedCurrency,
     });
     _selectedCurrency = selectedCurrency;
     notifyListeners();
   }
-
 
   // Clear method adjusted to reset currency values
   void clearCurrencies() {

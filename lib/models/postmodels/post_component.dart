@@ -309,28 +309,29 @@ class _PostComponentState extends State<PostComponent>
                                       final homeController =
                                           Get.find<HomeController>();
                                       homeController.createClicks(postId);
-                                      
+
                                       // Create an NFTAsset from the post data
                                       String imageUrl = '';
                                       // Try to find an image in the medias
                                       for (var media in medias) {
-                                        if (media is Media && 
-                                            (media.type == 'image' || media.type == 'image_data' || media.type == 'camera')) {
+                                        if (media is Media &&
+                                            (media.type == 'image' ||
+                                                media.type == 'image_data' ||
+                                                media.type == 'camera')) {
                                           imageUrl = media.data;
                                           break;
                                         }
                                       }
-                                      
+
                                       // Use the factory method for consistent asset creation
                                       final asset = NFTAsset.fromPost(
-                                        postId: postId,
-                                        postName: postName,
-                                        collection: displayname,
-                                        imageUrl: imageUrl,
-                                        owner: Auth().currentUser?.uid ?? '',
-                                        isListed: false
-                                      );
-                                      
+                                          postId: postId,
+                                          postName: postName,
+                                          collection: displayname,
+                                          imageUrl: imageUrl,
+                                          owner: Auth().currentUser?.uid ?? '',
+                                          isListed: false);
+
                                       // Show the listing bottom sheet
                                       showListingBottomSheet(context, asset);
                                     },
@@ -426,8 +427,7 @@ class _PostComponentState extends State<PostComponent>
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 10.0),
-        child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
   }
 
   // Builds non-editable media widgets for viewing posts
@@ -466,8 +466,7 @@ class _PostComponentState extends State<PostComponent>
     }
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 10.0),
-        child: mediaWidget);
+        margin: const EdgeInsets.only(bottom: 10.0), child: mediaWidget);
   }
 
   @override

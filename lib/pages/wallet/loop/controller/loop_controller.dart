@@ -82,7 +82,7 @@ class LoopGetxController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     // Initialize Text Controllers and Focus Nodes
     satController = TextEditingController();
     btcController = TextEditingController();
@@ -145,7 +145,7 @@ class LoopGetxController extends GetxController {
       RestResponse onchainBalanceRest = await walletBalance();
       if (onchainBalanceRest.data.isNotEmpty) {
         OnchainBalance fetchedOnchainBalance =
-        OnchainBalance.fromJson(onchainBalanceRest.data);
+            OnchainBalance.fromJson(onchainBalanceRest.data);
 
         onchainBalance.value = fetchedOnchainBalance;
       }
@@ -163,7 +163,7 @@ class LoopGetxController extends GetxController {
 
       if (lightningBalanceRest.data.isNotEmpty) {
         LightningBalance fetchedLightningBalance =
-        LightningBalance.fromJson(lightningBalanceRest.data);
+            LightningBalance.fromJson(lightningBalanceRest.data);
         lightningBalance.value = fetchedLightningBalance;
       }
 
@@ -200,7 +200,7 @@ class LoopGetxController extends GetxController {
   Future<void> fetchLoopTerms() async {
     final logger = Get.find<LoggerService>();
     termsLoading.value = true;
-    
+
     try {
       final userId = Auth().currentUser?.uid;
       if (userId == null) {
@@ -219,14 +219,16 @@ class LoopGetxController extends GetxController {
 
       if (loopInResult.statusCode == "200") {
         loopInTerms.value = LoopTerms.fromJson(loopInResult.data);
-        logger.i("Loop In terms loaded: min=${loopInTerms.value?.minSwapAmount}, max=${loopInTerms.value?.maxSwapAmount}");
+        logger.i(
+            "Loop In terms loaded: min=${loopInTerms.value?.minSwapAmount}, max=${loopInTerms.value?.maxSwapAmount}");
       } else {
         logger.e("Failed to load Loop In terms: ${loopInResult.message}");
       }
 
       if (loopOutResult.statusCode == "200") {
         loopOutTerms.value = LoopTerms.fromJson(loopOutResult.data);
-        logger.i("Loop Out terms loaded: min=${loopOutTerms.value?.minSwapAmount}, max=${loopOutTerms.value?.maxSwapAmount}");
+        logger.i(
+            "Loop Out terms loaded: min=${loopOutTerms.value?.minSwapAmount}, max=${loopOutTerms.value?.maxSwapAmount}");
       } else {
         logger.e("Failed to load Loop Out terms: ${loopOutResult.message}");
       }
@@ -248,7 +250,7 @@ class LoopGetxController extends GetxController {
   String getAmountErrorMessage(int amount, bool isLoopIn) {
     final terms = isLoopIn ? loopInTerms.value : loopOutTerms.value;
     final operation = isLoopIn ? "Loop In" : "Loop Out";
-    
+
     if (terms == null) {
       return "Unable to load $operation limits. Please try again.";
     }
@@ -258,7 +260,7 @@ class LoopGetxController extends GetxController {
     } else if (amount > terms.maxSwapAmountInt) {
       return "$operation maximum is ${terms.getFormattedMaxAmount()}. You entered ${_formatAmount(amount)}.";
     }
-    
+
     return "Invalid amount for $operation.";
   }
 
@@ -279,9 +281,10 @@ class LoopGetxController extends GetxController {
   Future<void> loopInQuote(BuildContext context) async {
     final overlayController = Get.find<OverlayController>();
     log('This is the loop-in amount: ${satController.text}');
-    
+
     if (btcController.text == '0' || satController.text.isEmpty) {
-      overlayController.showOverlay('Please enter an amount', color: AppTheme.errorColor);
+      overlayController.showOverlay('Please enter an amount',
+          color: AppTheme.errorColor);
       return;
     }
 
@@ -297,18 +300,20 @@ class LoopGetxController extends GetxController {
 
     updateLoadingState(true);
     log('Loop-in amount: $roundedAmount');
-    
+
     final userId = Auth().currentUser?.uid;
     if (userId == null) {
-      overlayController.showOverlay('User not authenticated', color: AppTheme.errorColor);
+      overlayController.showOverlay('User not authenticated',
+          color: AppTheme.errorColor);
       updateLoadingState(false);
       return;
     }
-    
+
     final response = await getLoopinQuote(userId, roundedAmount.toString());
 
     if (response.statusCode == 'error') {
-      overlayController.showOverlay(response.message, color: AppTheme.errorColor);
+      overlayController.showOverlay(response.message,
+          color: AppTheme.errorColor);
     } else {
       final loop = LoopQuoteModel.fromJson(response.data);
       log('Loop-in swap fee in SAT: ${loop.swapFeeSat}');
@@ -320,9 +325,10 @@ class LoopGetxController extends GetxController {
   // Handle Loop-Out Quote
   Future<void> loopOutQuote(BuildContext context) async {
     final overlayController = Get.find<OverlayController>();
-    
+
     if (btcController.text == '0' || satController.text.isEmpty) {
-      overlayController.showOverlay('Please enter an amount', color: AppTheme.errorColor);
+      overlayController.showOverlay('Please enter an amount',
+          color: AppTheme.errorColor);
       return;
     }
 
@@ -341,14 +347,16 @@ class LoopGetxController extends GetxController {
 
     final userId = Auth().currentUser?.uid;
     if (userId == null) {
-      overlayController.showOverlay('User not authenticated', color: AppTheme.errorColor);
+      overlayController.showOverlay('User not authenticated',
+          color: AppTheme.errorColor);
       updateLoadingState(false);
       return;
     }
-    
+
     final response = await getLoopOutQuote(userId, roundedAmount.toString());
     if (response.statusCode == 'error') {
-      overlayController.showOverlay(response.message, color: AppTheme.errorColor);
+      overlayController.showOverlay(response.message,
+          color: AppTheme.errorColor);
     } else {
       final loop = LoopQuoteModel.fromJson(response.data);
       log('Loop-out swap fee in SAT: ${loop.swapFeeSat}');
@@ -389,9 +397,9 @@ class LoopGetxController extends GetxController {
                           text: 'Swap Fee (SAT)',
                           trailing: AmountPreviewer(
                             unitModel: CurrencyConverter.convertToBitcoinUnit(
-                                double.parse(data.swapFeeSat), BitcoinUnits.SAT),
-                            textStyle:
-                            Theme.of(context).textTheme.bodyMedium!,
+                                double.parse(data.swapFeeSat),
+                                BitcoinUnits.SAT),
+                            textStyle: Theme.of(context).textTheme.bodyMedium!,
                             textColor: null,
                             shouldHideBalance: false,
                           ),
@@ -402,8 +410,7 @@ class LoopGetxController extends GetxController {
                             unitModel: CurrencyConverter.convertToBitcoinUnit(
                                 double.parse(data.htlcSweepFeeSat!),
                                 BitcoinUnits.SAT),
-                            textStyle:
-                            Theme.of(context).textTheme.bodyMedium!,
+                            textStyle: Theme.of(context).textTheme.bodyMedium!,
                             textColor: null,
                             shouldHideBalance: false,
                           ),
@@ -414,8 +421,7 @@ class LoopGetxController extends GetxController {
                             unitModel: CurrencyConverter.convertToBitcoinUnit(
                                 double.parse(data.prepayAmtSat!),
                                 BitcoinUnits.SAT),
-                            textStyle:
-                            Theme.of(context).textTheme.bodyMedium!,
+                            textStyle: Theme.of(context).textTheme.bodyMedium!,
                             textColor: null,
                             shouldHideBalance: false,
                           ),
@@ -482,8 +488,7 @@ class LoopGetxController extends GetxController {
                       trailing: AmountPreviewer(
                         unitModel: CurrencyConverter.convertToBitcoinUnit(
                             double.parse(data.swapFeeSat), BitcoinUnits.SAT),
-                        textStyle:
-                        Theme.of(context).textTheme.bodyMedium!,
+                        textStyle: Theme.of(context).textTheme.bodyMedium!,
                         textColor: null,
                         shouldHideBalance: false,
                       ),
@@ -494,8 +499,7 @@ class LoopGetxController extends GetxController {
                         unitModel: CurrencyConverter.convertToBitcoinUnit(
                             double.parse(data.htlcPublishFeeSat!),
                             BitcoinUnits.SAT),
-                        textStyle:
-                        Theme.of(context).textTheme.bodyMedium!,
+                        textStyle: Theme.of(context).textTheme.bodyMedium!,
                         textColor: null,
                         shouldHideBalance: false,
                       ),
@@ -505,7 +509,7 @@ class LoopGetxController extends GetxController {
               ),
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                    const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -603,16 +607,17 @@ class LoopGetxController extends GetxController {
   String getLoopLimitsText(bool isLoopIn) {
     final terms = isLoopIn ? loopInTerms.value : loopOutTerms.value;
     final operation = isLoopIn ? "Loop In" : "Loop Out";
-    
+
     if (terms == null) {
       return "$operation limits: Loading...";
     }
-    
+
     return "$operation limits: ${terms.getFormattedMinAmount()} - ${terms.getFormattedMaxAmount()}";
   }
 
   // Check if terms are loaded
-  bool get areTermsLoaded => loopInTerms.value != null && loopOutTerms.value != null;
+  bool get areTermsLoaded =>
+      loopInTerms.value != null && loopOutTerms.value != null;
 
   // Refresh terms manually
   Future<void> refreshTerms() async {

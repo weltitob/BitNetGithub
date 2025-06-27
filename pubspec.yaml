@@ -235,6 +235,8 @@ dev_dependencies:
   translations_cleaner: ^0.0.5
   flutter_gen_runner: ^5.4.0
   dependency_validator: ^4.1.3
+  integration_test:
+    sdk: flutter
 
 flutter_launcher_icons:
   android: true

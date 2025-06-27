@@ -5,13 +5,12 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 
-
 requestHelloWorld(String amount, String currency) async {
   final functions = FirebaseFunctions.instance;
   final callable = functions.httpsCallable(
     'hello_world',
     options: HttpsCallableOptions(
-      timeout: const Duration(minutes: 10),  // Increase the timeout duration
+      timeout: const Duration(minutes: 10), // Increase the timeout duration
       limitedUseAppCheckToken: true,
     ),
   );
@@ -20,7 +19,7 @@ requestHelloWorld(String amount, String currency) async {
 
   try {
     final HttpsCallableResult<dynamic> response =
-    await callable.call(<String, dynamic>{
+        await callable.call(<String, dynamic>{
       'amount': amount,
       'currency': currency,
     });
@@ -29,7 +28,7 @@ requestHelloWorld(String amount, String currency) async {
 
     // Assuming response.data is a Map, cast it appropriately
     final Map<String, dynamic> responseData =
-    deepMapCast(response.data as Map<Object?, Object?>);
+        deepMapCast(response.data as Map<Object?, Object?>);
     final RestResponse callback = RestResponse.fromJson(responseData);
 
     logger.i("CloudfunctionCallback: ${callback.toString()}");
@@ -37,12 +36,12 @@ requestHelloWorld(String amount, String currency) async {
 
     // Parse the message string to a Map
     final Map<String, dynamic> messageData =
-    jsonDecode(callback.message) as Map<String, dynamic>;
+        jsonDecode(callback.message) as Map<String, dynamic>;
 
     // Extract the 'data' field
     if (messageData.containsKey('data')) {
       final Map<String, dynamic> data =
-      messageData['data'] as Map<String, dynamic>;
+          messageData['data'] as Map<String, dynamic>;
 
       // Safely extract the customToken from the data
       if (data.containsKey('amount') && data.containsKey('currency')) {

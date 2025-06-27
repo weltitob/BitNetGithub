@@ -299,7 +299,7 @@ class _LoopScreenState extends State<LoopScreen> {
 
       // Format the predicted balance to 8 decimal places
       final formattedBalance = predictedBalance.toStringAsFixed(8);
-      
+
       return {
         'satController': lightningSatController,
         'btcController': lightningBtcController,
@@ -475,7 +475,6 @@ class _LoopScreenState extends State<LoopScreen> {
                                 horizontal: AppTheme.cardPadding,
                               ),
                               child: Obx(() {
-
                                 // Get lightning card variables
                                 final cardVars =
                                     getCardVariables(bottomCardType);
@@ -530,7 +529,8 @@ class _LoopScreenState extends State<LoopScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: GlassContainer(
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                            borderRadius: BorderRadius.circular(
+                                AppTheme.borderRadiusSmall),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppTheme.elementSpacing * 0.5,
@@ -848,7 +848,7 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
     // Use the confirmedBalance that was passed to this widget
     // This balance should already be the correct one for the card type
     final balance = double.tryParse(widget.confirmedBalance) ?? 0.0;
-    
+
     // Show the actual raw values in sats - no fancy formatting
     return '${balance.toStringAsFixed(0)} sats';
   }
@@ -878,13 +878,15 @@ class _EditableBalanceCardState extends State<EditableBalanceCard> {
 
       return GlassContainer(
         borderRadius: BorderRadius.circular(24),
-        boxShadow: isDarkMode ? [] : [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          )
-        ],
+        boxShadow: isDarkMode
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                )
+              ],
         child: Stack(
           children: [
             // Main Card Content

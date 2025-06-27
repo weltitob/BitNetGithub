@@ -126,12 +126,14 @@ class BitnetBottomSheetWidget extends StatelessWidget {
         const SizedBox(height: AppTheme.elementSpacing * 0.75),
         Expanded(
           child: Container(
-            height: height != null ? (height! - AppTheme.cardPadding * 3) : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
+            height: height != null
+                ? (height! - AppTheme.cardPadding * 3)
+                : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
             decoration: BoxDecoration(
               // Use the provided backgroundColor or fall back to theme colors
-              color: backgroundColor != Colors.transparent 
-                ? backgroundColor 
-                : Theme.of(context).colorScheme.surface,
+              color: backgroundColor != Colors.transparent
+                  ? backgroundColor
+                  : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(borderRadius),
                 topRight: Radius.circular(borderRadius),
@@ -146,7 +148,9 @@ class BitnetBottomSheetWidget extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(borderRadius), topRight: Radius.circular(borderRadius)),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(borderRadius),
+                  topRight: Radius.circular(borderRadius)),
               child: Column(
                 children: [
                   Expanded(child: child),

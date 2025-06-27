@@ -6,7 +6,8 @@ class Outputs {
   // Methode zur Erzeugung einer Outputs-Instanz aus einem JSON-Objekt
   factory Outputs.fromJson(Map<String, dynamic> json) {
     // Konvertiert jeden Wert im Map zu int, da JSON-Map-Werte dynamic sind
-    var outputs = json.map((key, value) => MapEntry(key, value is int ? value : int.parse(value.toString())));
+    var outputs = json.map((key, value) =>
+        MapEntry(key, value is int ? value : int.parse(value.toString())));
     return Outputs(outputs: outputs);
   }
 

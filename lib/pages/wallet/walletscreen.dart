@@ -71,7 +71,6 @@ class WalletScreen extends GetWidget<WalletsController> {
 
     return isZeroOrPositive;
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +86,6 @@ class WalletScreen extends GetWidget<WalletsController> {
       return dotProgress(context);
     }
     BitcoinController bitcoinController = Get.find<BitcoinController>();
-
 
     return bitnetScaffold(
       context: context,
@@ -140,7 +138,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                         )),
                     Opacity(
                       opacity: 0.1,
-                      child: WalletChartWidget(bitcoinController: bitcoinController),
+                      child: WalletChartWidget(
+                          bitcoinController: bitcoinController),
                     ),
                     Column(
                       children: [
@@ -161,7 +160,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       profileController.isUserLoading.value ||
-                                              profileController.userData.value.profileImageUrl.isEmpty
+                                              profileController.userData.value
+                                                  .profileImageUrl.isEmpty
                                           ? Avatar(
                                               onTap: () async {
                                                 // context.go(
@@ -1269,27 +1269,36 @@ void _showTimeframeBottomSheet(BuildContext context,
                     return BitNetListTile(
                       text: timespan,
                       selected: isSelected,
-                      titleStyle: isSelected 
+                      titleStyle: isSelected
                           ? Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
                           : Theme.of(context).textTheme.titleMedium,
                       leading: Container(
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: isSelected 
-                              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                              : Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          color: isSelected
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.1)
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .surfaceVariant
+                                  .withOpacity(0.5),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(
                           _getTimeframeIcon(timespan),
                           size: 20,
-                          color: isSelected 
+                          color: isSelected
                               ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6),
                         ),
                       ),
                       onTap: () {

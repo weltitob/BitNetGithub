@@ -47,12 +47,14 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
 
     // Define breakpoint values for responsive layout.
     bool isSuperSmallScreen = width < AppTheme.isSuperSmallScreen;
-    bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
+    bool isSmallScreen =
+        width < AppTheme.isSmallScreen; // Example breakpoint for small screens
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
-    
+
     // Check if we should use Bitcoin gradient
-    final bool useBitcoinGradient = Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
+    final bool useBitcoinGradient =
+        Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin;
 
     double centerSpacing = kIsWeb
         ? AppTheme.columnWidth * 0.075
@@ -77,7 +79,10 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
       title: widget.customTitle ??
           (widget.text != null
               ? animateText
-                  ? Container(width: AppTheme.cardPadding * 10, height: AppTheme.cardPadding, child: AnimatedText(text: widget.text!))
+                  ? Container(
+                      width: AppTheme.cardPadding * 10,
+                      height: AppTheme.cardPadding,
+                      child: AnimatedText(text: widget.text!))
                   : Container(
                       key: _textKey,
                       padding: EdgeInsets.symmetric(horizontal: centerSpacing),
@@ -113,13 +118,13 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                         }
                       },
                       child: RoundedButtonWidget(
-                        buttonType: widget.buttonType ?? ButtonType.solid,
-                        iconData: widget.customIcon ?? Icons.arrow_back,
-                        iconColor: useBitcoinGradient
-                            ? Colors.white
-                            : Theme.of(context).colorScheme.onPrimary,
-                        // Pass null to prevent double-handling
-                        onTap: null),
+                          buttonType: widget.buttonType ?? ButtonType.solid,
+                          iconData: widget.customIcon ?? Icons.arrow_back,
+                          iconColor: useBitcoinGradient
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.onPrimary,
+                          // Pass null to prevent double-handling
+                          onTap: null),
                     ),
                   ),
                 ),
@@ -130,7 +135,8 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
   }
 
   void _checkOverflow() {
-    final RenderBox? renderBox = _textKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _textKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox != null && renderBox.hasSize) {
       final double textWidth = renderBox.size.width;
 

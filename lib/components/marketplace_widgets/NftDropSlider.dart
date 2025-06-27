@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,7 +5,8 @@ class NftDropSlider extends StatelessWidget {
   final nftImage;
   final nftName;
 
-  const NftDropSlider({Key? key, required this.nftImage, required this.nftName}) : super(key: key);
+  const NftDropSlider({Key? key, required this.nftImage, required this.nftName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,8 @@ class NftDropSlider extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8.w),
         padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(255, 255, 255, 0.1),
-          borderRadius: BorderRadius.circular(14.r)
-        ),
+            color: const Color.fromRGBO(255, 255, 255, 0.1),
+            borderRadius: BorderRadius.circular(14.r)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6.r),
           child: Stack(

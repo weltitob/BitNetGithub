@@ -53,7 +53,6 @@ class _CryptoInfoItemState extends State<CryptoInfoItem> {
         : "0.00";
 
     return GlassContainer(
-
       height: AppTheme.cardPadding * 2.75,
       borderRadius: AppTheme.cardPadding * 2.75 / 3,
       child: Stack(

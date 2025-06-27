@@ -2,7 +2,6 @@ import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class UsdModel {
   final num price;
   final num volume24h;
@@ -17,32 +16,32 @@ class UsdModel {
 
   UsdModel(
       {required this.price,
-        required this.volume24h,
-        required this.percentChange_1h,
-        required this.percentChange_24h,
-        required this.percentChange_7d,
-        required this.percentChange_30d,
-        required this.percentChange_60d,
-        required this.percentChange_90d,
-        required this.marketCap,
-        required this.lastUpdated});
+      required this.volume24h,
+      required this.percentChange_1h,
+      required this.percentChange_24h,
+      required this.percentChange_7d,
+      required this.percentChange_30d,
+      required this.percentChange_60d,
+      required this.percentChange_90d,
+      required this.marketCap,
+      required this.lastUpdated});
 
   factory UsdModel.fromJson(Map<String, dynamic> json) {
     return UsdModel(
       price: json["price"] == null ? 0.0 : json["price"],
       volume24h: json["volume_24"] == null ? 0.0 : json["volume_24"],
       percentChange_1h:
-      json["percent_change_1h"] == null ? 0.0 : json["percent_change_1h"],
+          json["percent_change_1h"] == null ? 0.0 : json["percent_change_1h"],
       percentChange_24h:
-      json["percent_change_24h"] == null ? 0.0 : json["percent_change_24h"],
+          json["percent_change_24h"] == null ? 0.0 : json["percent_change_24h"],
       percentChange_7d:
-      json["percent_change_7d"] == null ? 0.0 : json["percent_change_7d"],
+          json["percent_change_7d"] == null ? 0.0 : json["percent_change_7d"],
       percentChange_30d:
-      json["percent_change_30d"] == null ? 0.0 : json["percent_change_7d"],
+          json["percent_change_30d"] == null ? 0.0 : json["percent_change_7d"],
       percentChange_60d:
-      json["percent_change60d"] == null ? 0.0 : json["percent_change60d"],
+          json["percent_change60d"] == null ? 0.0 : json["percent_change60d"],
       percentChange_90d:
-      json["percent_change90d"] == null ? 0.0 : json["percent_change90d"],
+          json["percent_change90d"] == null ? 0.0 : json["percent_change90d"],
       marketCap: json["market_cap"] == null ? 0.0 : json["market_cap"],
       lastUpdated: json["last_updated"],
     );
@@ -77,7 +76,8 @@ class DataModel {
   final String lastUpdated;
   final QuoteModel quoteModel;
 
-  DataModel(this.id,
+  DataModel(
+      this.id,
       this.name,
       this.symbol,
       this.slug,
@@ -125,7 +125,6 @@ class DataModel {
       'last_updated': lastUpdated,
       'quote': quoteModel,
     };
-
   }
 }
 
@@ -146,40 +145,53 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
   late dynamic currentprice;
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     //Formatteddata
-    var formattedMarketCap = ""; //NumberFormat.compactLong().format(widget.coin.quoteModel.usdModel.marketCap);
-    var formattedCircSupply = ""; //NumberFormat.compactLong().format(widget.coin.circulatingSupply);
-    var formattedMinPrice = ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
-    var formattedMaxPrice = ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
+    var formattedMarketCap =
+        ""; //NumberFormat.compactLong().format(widget.coin.quoteModel.usdModel.marketCap);
+    var formattedCircSupply =
+        ""; //NumberFormat.compactLong().format(widget.coin.circulatingSupply);
+    var formattedMinPrice =
+        ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
+    var formattedMaxPrice =
+        ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [ 
+        children: [
           ChildbuildInformation("Market cap:", "${formattedMarketCap}"),
-          ChildbuildInformation("Circulating supply:", "${formattedCircSupply}"),
+          ChildbuildInformation(
+              "Circulating supply:", "${formattedCircSupply}"),
           //widget.coin.maxSupply == 0 ?
           ChildbuildInformation("Max supply:", "unlimited"),
           MyDivider(),
-          ChildbuildKeyMetrics2("1-day:", formattedMinPrice.toString(),
-            formattedMaxPrice.toString(), 0.0, 100000.0,),
-          ChildbuildKeyMetrics2("52-week:", formattedMinPrice.toString(),
-            formattedMaxPrice.toString(), 0.0, 100000.0,),
+          ChildbuildKeyMetrics2(
+            "1-day:",
+            formattedMinPrice.toString(),
+            formattedMaxPrice.toString(),
+            0.0,
+            100000.0,
+          ),
+          ChildbuildKeyMetrics2(
+            "52-week:",
+            formattedMinPrice.toString(),
+            formattedMaxPrice.toString(),
+            0.0,
+            100000.0,
+          ),
           MyDivider(),
           ChildbuildKeyMetrics("Mining:", "713,27", "Mining:", "703,90"),
-          ChildbuildKeyMetrics(
-              "Volume:", "${""}", "Aver. Vol.:", "22.970.134"),
+          ChildbuildKeyMetrics("Volume:", "${""}", "Aver. Vol.:", "22.970.134"),
           MyDivider(),
           ChildbuildKeyMetrics("Long:", "801,74M", "Supply:", "990,01M"),
-          ChildbuildKeyMetrics("Short:", "29,91M", "Locked:", "1,41"), 
+          ChildbuildKeyMetrics("Short:", "29,91M", "Locked:", "1,41"),
           MyDivider(),
           buildInformation(),
         ],
       ),
     );
   }
-
 
   Widget ChildbuildInformation(String text1, String text2) {
     return Padding(
@@ -227,8 +239,8 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
               ),
               const Padding(
                   padding: EdgeInsets.only(
-                    left: 5,
-                  )),
+                left: 5,
+              )),
               const Text(
                 "\$20.11",
                 style: TextStyle(
@@ -241,36 +253,42 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
           ),
           InkWell(
               child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.redAccent),
-                child: Padding(
-                  padding:
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.redAccent),
+            child: Padding(
+              padding:
                   const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.trending_down,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      const Padding(padding: EdgeInsets.only(left: 5)),
-                      Text(L10n.of(context)!.bear,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold)),
-                    ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.trending_down,
+                    color: Colors.white,
+                    size: 14,
                   ),
-                ),
-              )),
+                  const Padding(padding: EdgeInsets.only(left: 5)),
+                  Text(L10n.of(context)!.bear,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          )),
         ],
       ),
     );
   }
 
-  Widget ChildbuildKeyMetrics2(String toptext, String minstring, String maxstring, min, max,) {
+  Widget ChildbuildKeyMetrics2(
+    String toptext,
+    String minstring,
+    String maxstring,
+    min,
+    max,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -305,20 +323,24 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                       inactiveTrackColor: Colors.grey,
                       trackShape: const RectangularSliderTrackShape(),
                       trackHeight: 3.0,
-                      thumbColor: max / 2 > 2//widget.coin.quoteModel.usdModel.price.toDouble()
+                      thumbColor: max / 2 >
+                              2 //widget.coin.quoteModel.usdModel.price.toDouble()
                           ? Colors.redAccent
                           : Colors.greenAccent,
                       thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 5.0),
-                      overlayColor: max / 2 > 2// widget.coin.quoteModel.usdModel.price.toDouble()
+                          const RoundSliderThumbShape(enabledThumbRadius: 5.0),
+                      overlayColor: max / 2 >
+                              2 // widget.coin.quoteModel.usdModel.price.toDouble()
                           ? Colors.red.withAlpha(32)
                           : Colors.green.withAlpha(32),
                     ),
                     child: Slider(
-                      value: 20,// widget.coin.quoteModel.usdModel.price.toDouble(),
+                      value:
+                          20, // widget.coin.quoteModel.usdModel.price.toDouble(),
                       min: min,
                       max: max,
-                      label: "", //widget.coin.quoteModel.usdModel.price.round().toString(),
+                      label:
+                          "", //widget.coin.quoteModel.usdModel.price.round().toString(),
                       onChanged: (double value) {},
                     )),
               ),
@@ -338,11 +360,11 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
   }
 
   Widget ChildbuildKeyMetrics(
-      String text1,
-      String text2,
-      String text3,
-      String text4,
-      ) {
+    String text1,
+    String text2,
+    String text3,
+    String text4,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(top: 3.0),
       child: Row(

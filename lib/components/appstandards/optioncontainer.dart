@@ -50,8 +50,11 @@ class BitNetImageWithTextContainer extends StatelessWidget {
         child: GlassContainer(
           width: width,
           height: height,
-          
-          border: (isActive ? 1 : 0) == 0 ? null : Border.all(width: isActive ? 1 : 0, color: Theme.of(context).dividerColor),
+          border: (isActive ? 1 : 0) == 0
+              ? null
+              : Border.all(
+                  width: isActive ? 1 : 0,
+                  color: Theme.of(context).dividerColor),
           borderRadius: borderRadius,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -145,7 +148,11 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
         child: GlassContainer(
           width: width,
           height: height,
-          border: (isActive ? 1 : 0) == 0 ? null : Border.all(width: isActive ? 1 : 0, color: Theme.of(context).dividerColor),
+          border: (isActive ? 1 : 0) == 0
+              ? null
+              : Border.all(
+                  width: isActive ? 1 : 0,
+                  color: Theme.of(context).dividerColor),
           borderRadius: borderRadius,
           boxShadow: [AppTheme.boxShadowSmall],
           child: Column(

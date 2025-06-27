@@ -6,11 +6,7 @@ import 'package:get/get.dart';
 class CountColumn extends StatelessWidget {
   final int count;
   final String label;
-  const CountColumn(
-      {
-      required this.count,
-      required this.label,
-      super.key});
+  const CountColumn({required this.count, required this.label, super.key});
 
   @override
   Widget build(BuildContext context) {

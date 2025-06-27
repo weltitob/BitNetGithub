@@ -26,7 +26,9 @@ class AssetInBatchList {
       version: json['asset_version'] as String?,
       type: json['asset_type'] as String?,
       name: json['name'] as String?,
-      assetMeta: json['asset_meta'] != null ? AssetMetaResponse.fromJson(json['asset_meta']) : null,
+      assetMeta: json['asset_meta'] != null
+          ? AssetMetaResponse.fromJson(json['asset_meta'])
+          : null,
       amount: json['amount'] as String?,
       newGroupedAsset: json['new_grouped_asset'] as bool?,
       groupKey: json['group_key'] as String?,
@@ -47,7 +49,6 @@ class AssetInBatchList {
     };
   }
 }
-
 
 class Asset {
   String? version;
@@ -87,7 +88,9 @@ class Asset {
   factory Asset.fromJson(Map<String, dynamic> json) {
     return Asset(
       version: json['asset_version'] as String?,
-      assetGenesis: json['asset_genesis'] != null ? AssetGenesis.fromJson(json['asset_genesis']) : null,
+      assetGenesis: json['asset_genesis'] != null
+          ? AssetGenesis.fromJson(json['asset_genesis'])
+          : null,
       amount: json['amount'] as String?,
       lockTime: json['lock_time'] as int?,
       relativeLockTime: json['relative_lock_time'] as int?,
@@ -95,8 +98,12 @@ class Asset {
       scriptKey: json['script_key'] as String?,
       scriptKeyIsLocal: json['script_key_is_local'] as bool?,
       assetGroup: json['asset_group'],
-      chainAnchor: json['chain_anchor'] != null ? ChainAnchor.fromJson(json['chain_anchor']) : null,
-      prevWitnesses: json['prev_witnesses'] != null ? List<dynamic>.from(json['prev_witnesses']) : null,
+      chainAnchor: json['chain_anchor'] != null
+          ? ChainAnchor.fromJson(json['chain_anchor'])
+          : null,
+      prevWitnesses: json['prev_witnesses'] != null
+          ? List<dynamic>.from(json['prev_witnesses'])
+          : null,
       isSpent: json['is_spent'] as bool?,
       leaseOwner: json['lease_owner'] as String?,
       leaseExpiry: json['lease_expiry'] as String?,
@@ -168,6 +175,7 @@ class AssetGenesis {
     };
   }
 }
+
 class ChainAnchor {
   String? anchorTx;
   String? anchorBlockHash;
@@ -211,4 +219,3 @@ class ChainAnchor {
     };
   }
 }
-

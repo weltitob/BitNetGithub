@@ -12,21 +12,18 @@ import 'package:get/get.dart';
 // NEW: One user one node approach - Get wallet balance from user's node
 Future<RestResponse> walletBalance({String acc = ''}) async {
   HttpOverrides.global = MyHttpOverrides();
-  
+
   final logger = Get.find<LoggerService>();
   logger.i("NEW walletBalance: Getting balance from user's individual node");
   logger.i("Account filter: ${acc.isNotEmpty ? acc : 'default'}");
-  
+
   try {
     // Get current user's ID
     final userId = Auth().currentUser?.uid;
     if (userId == null) {
       logger.e("No user logged in");
       return RestResponse(
-        statusCode: "error",
-        message: "No user logged in",
-        data: {}
-      );
+          statusCode: "error", message: "No user logged in", data: {});
     }
 
     // Get user's node mapping
@@ -34,10 +31,9 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
     if (nodeMapping == null) {
       logger.e("No node mapping found for user: $userId");
       return RestResponse(
-        statusCode: "error",
-        message: "No Lightning node assigned to user",
-        data: {}
-      );
+          statusCode: "error",
+          message: "No Lightning node assigned to user",
+          data: {});
     }
 
     final nodeId = nodeMapping.nodeId;
@@ -48,22 +44,23 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
     if (macaroonBase64.isEmpty) {
       logger.e("No macaroon found in node mapping for node: $nodeId");
       return RestResponse(
-        statusCode: "error",
-        message: "Failed to load node credentials",
-        data: {}
-      );
+          statusCode: "error",
+          message: "Failed to load node credentials",
+          data: {});
     }
-    
+
     // Convert base64 macaroon to hex format
     final macaroonBytes = base64Decode(macaroonBase64);
     final macaroon = bytesToHex(macaroonBytes);
 
     // Build URL using Caddy endpoint
-    String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain';
+    String url =
+        '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain';
     if (acc.isNotEmpty) {
-      url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain?account=${acc}';
+      url =
+          '${LightningConfig.caddyBaseUrl}/$nodeId/v1/balance/blockchain?account=${acc}';
     }
-    
+
     logger.i("Getting wallet balance from: $url");
 
     // Prepare headers
@@ -74,7 +71,7 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
     // Make request to user's node
     try {
       logger.i("Making GET request to user's node");
-      
+
       final response = await http.get(
         Uri.parse(url),
         headers: headers,
@@ -85,34 +82,28 @@ Future<RestResponse> walletBalance({String acc = ''}) async {
         final responseData = jsonDecode(response.body);
         logger.i("Successfully retrieved wallet balance from node $nodeId");
         logger.d("Balance data: ${responseData}");
-        
+
         return RestResponse(
-          statusCode: "${response.statusCode}",
-          message: "Successfully retrieved OnChain Balance",
-          data: responseData
-        );
+            statusCode: "${response.statusCode}",
+            message: "Successfully retrieved OnChain Balance",
+            data: responseData);
       } else {
-        logger.e("Failed to get balance. Status: ${response.statusCode}, Body: ${response.body}");
+        logger.e(
+            "Failed to get balance. Status: ${response.statusCode}, Body: ${response.body}");
         return RestResponse(
-          statusCode: "error",
-          message: "Failed to load data: ${response.statusCode}",
-          data: response.body.isNotEmpty ? jsonDecode(response.body) : {}
-        );
+            statusCode: "error",
+            message: "Failed to load data: ${response.statusCode}",
+            data: response.body.isNotEmpty ? jsonDecode(response.body) : {});
       }
     } catch (e, stackTrace) {
-      logger.e("Error getting balance from node $nodeId: $e\nStackTrace: $stackTrace");
+      logger.e(
+          "Error getting balance from node $nodeId: $e\nStackTrace: $stackTrace");
       return RestResponse(
-        statusCode: "error",
-        message: "Failed to get balance: $e",
-        data: {}
-      );
+          statusCode: "error", message: "Failed to get balance: $e", data: {});
     }
   } catch (e) {
     logger.e("Fatal error in walletBalance: $e");
     return RestResponse(
-      statusCode: "error",
-      message: "Fatal error: $e",
-      data: {}
-    );
+        statusCode: "error", message: "Fatal error: $e", data: {});
   }
 }

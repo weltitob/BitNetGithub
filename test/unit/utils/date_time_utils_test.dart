@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 
 /// Unit tests for date and time utility functions
-/// 
+///
 /// These tests verify the basic timestamp functionality
 /// used throughout the BitNET app.
 void main() {
@@ -12,7 +12,7 @@ void main() {
       final before = DateTime.now().millisecondsSinceEpoch;
       final result = timeNow();
       final after = DateTime.now().millisecondsSinceEpoch;
-      
+
       // The result should be between before and after
       expect(result, greaterThanOrEqualTo(before));
       expect(result, lessThanOrEqualTo(after));
@@ -28,7 +28,7 @@ void main() {
       // Small delay to ensure different timestamps
       Future.delayed(Duration(milliseconds: 1));
       final second = timeNow();
-      
+
       expect(second, greaterThanOrEqualTo(first));
     });
   });

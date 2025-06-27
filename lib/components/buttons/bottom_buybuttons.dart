@@ -4,8 +4,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-
 class BottomCenterButton extends StatelessWidget {
   final String buttonTitle;
   final VoidCallback onButtonTap;
@@ -66,7 +64,6 @@ class BottomCenterButton extends StatelessWidget {
   }
 }
 
-
 class BottomButtons extends StatefulWidget {
   final String leftButtonTitle;
   final String rightButtonTitle;
@@ -120,7 +117,6 @@ class _BottomButtonsState extends State<BottomButtons> {
                     buttonType: ButtonType.solid,
                     customWidth: AppTheme.cardPadding * 6.75.w,
                     customHeight: AppTheme.cardPadding * 2.5,
-
                     title: widget.rightButtonTitle,
                     onTap: widget.onRightButtonTap,
                   ),

@@ -9,7 +9,7 @@ import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 /// Grid view displaying mixed content (both photos and NFTs)
 class MixedGridView extends StatefulWidget {
   final ImagePickerController controller;
-  
+
   const MixedGridView({
     Key? key,
     required this.controller,
@@ -23,42 +23,56 @@ class _MixedGridViewState extends State<MixedGridView> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => GridView.builder(
-      controller: widget.controller.imgScrollController,
-      itemCount: widget.controller.loadingMoreImages.value
-          ? ((widget.controller.mixedList.length % 3) == 0
-              ? widget.controller.mixedList.length + 3
-              : widget.controller.mixedList.length + 3 + (widget.controller.mixedList.length % 3))
-          : widget.controller.mixedList.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemBuilder: (ctx, i) {
-        return (i < widget.controller.mixedList.length)
-            ? Padding(
-                padding: const EdgeInsets.all(0),
-                child: InkWell(
-                  onTap: () {
-                    if (widget.controller.onImageTap != null) {
-                      widget.controller.onImageTap!(
-                          widget.controller.currentAlbum.value,
-                          widget.controller.mixedList[i] is AssetEntity ? widget.controller.mixedList[i] : null,
-                          widget.controller.mixedList[i] is MediaDatePair ? widget.controller.mixedList[i] : null);
-                    }
-                  },
-                  child: _buildMixedItemWidget(i),
-                ))
-            : (i ==
-                widget.controller.mixedList.length +
-                (((widget.controller.mixedList.length % 3) == 0 
-                  ? 3 
-                  : 3 + (widget.controller.mixedList.length % 3)) - 2))
-              ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-              : Container(width: 50, height: 50, color: Colors.transparent);
-      },
-    ));
+          controller: widget.controller.imgScrollController,
+          itemCount: widget.controller.loadingMoreImages.value
+              ? ((widget.controller.mixedList.length % 3) == 0
+                  ? widget.controller.mixedList.length + 3
+                  : widget.controller.mixedList.length +
+                      3 +
+                      (widget.controller.mixedList.length % 3))
+              : widget.controller.mixedList.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3),
+          itemBuilder: (ctx, i) {
+            return (i < widget.controller.mixedList.length)
+                ? Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: InkWell(
+                      onTap: () {
+                        if (widget.controller.onImageTap != null) {
+                          widget.controller.onImageTap!(
+                              widget.controller.currentAlbum.value,
+                              widget.controller.mixedList[i] is AssetEntity
+                                  ? widget.controller.mixedList[i]
+                                  : null,
+                              widget.controller.mixedList[i] is MediaDatePair
+                                  ? widget.controller.mixedList[i]
+                                  : null);
+                        }
+                      },
+                      child: _buildMixedItemWidget(i),
+                    ))
+                : (i ==
+                        widget.controller.mixedList.length +
+                            (((widget.controller.mixedList.length % 3) == 0
+                                    ? 3
+                                    : 3 +
+                                        (widget.controller.mixedList.length %
+                                            3)) -
+                                2))
+                    ? Container(
+                        width: 50,
+                        height: 50,
+                        child: Center(child: dotProgress(context)))
+                    : Container(
+                        width: 50, height: 50, color: Colors.transparent);
+          },
+        ));
   }
-  
+
   Widget _buildMixedItemWidget(int index) {
     final item = widget.controller.mixedList[index];
-    
+
     if (item is AssetEntity) {
       return AssetEntityImage(
         item,

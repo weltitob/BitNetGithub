@@ -56,7 +56,7 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
 
   Future<void> _pickImage() async {
     final OverlayController overlayController = Get.find<OverlayController>();
-    
+
     // Request photo permissions
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (!ps.isAuth && !ps.hasAccess) {
@@ -66,7 +66,7 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
       );
       return;
     }
-    
+
     // Show custom image picker bottom sheet
     File? file = await ImagePickerCombinedBottomSheet(
       context,
@@ -78,7 +78,7 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
         }
       },
     );
-    
+
     if (file != null) {
       setState(() {
         _selectedImage = file;
@@ -90,9 +90,10 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
     if (_selectedImage == null) return null;
 
     try {
-      final String fileName = '${DateTime.now().millisecondsSinceEpoch}_${_appNameController.text.replaceAll(' ', '_').toLowerCase()}.png';
+      final String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${_appNameController.text.replaceAll(' ', '_').toLowerCase()}.png';
       _storageFileName = fileName; // Store the filename for later use
-      
+
       final Reference storageRef = FirebaseStorage.instance
           .ref()
           .child('mini_app_icons')
@@ -101,7 +102,7 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
       final UploadTask uploadTask = storageRef.putFile(_selectedImage!);
       final TaskSnapshot snapshot = await uploadTask;
       final String downloadUrl = await snapshot.ref.getDownloadURL();
-      
+
       return downloadUrl;
     } catch (e) {
       LoggerService logger = Get.find<LoggerService>();
@@ -128,7 +129,8 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
       }
 
       // Generate a unique app ID
-      final String appId = 'app_${DateTime.now().millisecondsSinceEpoch}_${Auth().currentUser!.uid.substring(0, 8)}';
+      final String appId =
+          'app_${DateTime.now().millisecondsSinceEpoch}_${Auth().currentUser!.uid.substring(0, 8)}';
 
       // Create app data directly (no pending status, no email required)
       final Map<String, dynamic> appData = {
@@ -140,7 +142,7 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
         'createdAt': FieldValue.serverTimestamp(),
         'parameters': {},
       };
-      
+
       // Handle icon settings based on whether an image was uploaded
       if (_uploadedImageUrl != null && _storageFileName != null) {
         // User uploaded a custom icon - use Firebase Storage
@@ -219,12 +221,14 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             height: height,
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: isMultiline ? 12.h : 0),
+            padding: EdgeInsets.symmetric(
+                horizontal: 20.w, vertical: isMultiline ? 12.h : 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-              color: Theme.of(context).colorScheme.brightness == Brightness.light
-                  ? AppTheme.white60
-                  : AppTheme.colorGlassContainer,
+              color:
+                  Theme.of(context).colorScheme.brightness == Brightness.light
+                      ? AppTheme.white60
+                      : AppTheme.colorGlassContainer,
             ),
             child: TextFormField(
               controller: controller,
@@ -238,14 +242,19 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.4),
+                    ),
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 focusedErrorBorder: InputBorder.none,
-                contentPadding: isMultiline ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 16.h),
+                contentPadding: isMultiline
+                    ? EdgeInsets.zero
+                    : EdgeInsets.symmetric(vertical: 16.h),
               ),
             ),
           ),
@@ -261,7 +270,8 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
         return Container(
           height: constraints.maxHeight,
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight,
@@ -271,133 +281,147 @@ class _MiniAppCreatorState extends State<MiniAppCreator> {
                   horizontal: AppTheme.cardPadding.w,
                   vertical: AppTheme.elementSpacing.h,
                 ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: AppTheme.cardPadding.h * 3),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: AppTheme.cardPadding.h * 3),
 
-              // Title
-              Text(
-                "Create Mini App",
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: AppTheme.elementSpacing),
-              Text(
-                "Your mini app will be created instantly and available in your apps list. No email required, no waiting, instant creation.",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              SizedBox(height: AppTheme.cardPadding.h),
-
-              // App Icon Picker
-              Center(
-                child: GestureDetector(
-                  onTap: _pickImage,
-                  child: Container(
-                    width: 100.w,
-                    height: 100.h,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
-                        width: 2,
+                      // Title
+                      Text(
+                        "Create Mini App",
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                    ),
-                    child: _selectedImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
-                            child: Image.file(
-                              _selectedImage!,
-                              fit: BoxFit.cover,
+                      const SizedBox(height: AppTheme.elementSpacing),
+                      Text(
+                        "Your mini app will be created instantly and available in your apps list. No email required, no waiting, instant creation.",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      SizedBox(height: AppTheme.cardPadding.h),
+
+                      // App Icon Picker
+                      Center(
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            width: 100.w,
+                            height: 100.h,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusMid.r),
+                              border: Border.all(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.2),
+                                width: 2,
+                              ),
                             ),
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_photo_alternate,
-                                size: 40.sp,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                              ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                "Add Icon",
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
+                            child: _selectedImage != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        AppTheme.borderRadiusMid.r),
+                                    child: Image.file(
+                                      _selectedImage!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_photo_alternate,
+                                        size: 40.sp,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.5),
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        "Add Icon",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.5),
+                                            ),
+                                      ),
+                                    ],
+                                  ),
                           ),
+                        ),
+                      ),
+
+                      SizedBox(height: AppTheme.cardPadding.h),
+
+                      // App Name Field
+                      _buildCustomTextField(
+                        hintText: "App Name",
+                        controller: _appNameController,
+                        focusNode: _appNameFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) => _appUrlFocus.requestFocus(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your app name';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      // App URL Field
+                      _buildCustomTextField(
+                        hintText: "App URL",
+                        controller: _appUrlController,
+                        focusNode: _appUrlFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) => _appDescFocus.requestFocus(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your app URL';
+                          }
+                          if (!(Uri.tryParse(value)?.hasScheme ?? false)) {
+                            return 'Please enter a valid URL (include https://)';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      // App Description Field
+                      _buildCustomTextField(
+                        hintText: "App Description",
+                        controller: _appDescController,
+                        focusNode: _appDescFocus,
+                        textInputAction: TextInputAction.done,
+                        isMultiline: true,
+                        height: 100.h,
+                        onFieldSubmitted: (_) => _createMiniApp(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a description';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      SizedBox(height: AppTheme.cardPadding.h),
+
+                      // Create Button
+                      LongButtonWidget(
+                        title: _isCreating ? "Creating..." : "Create App",
+                        onTap: _isCreating ? null : _createMiniApp,
+                        buttonType: ButtonType.solid,
+                        customWidth: double.infinity,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-
-              SizedBox(height: AppTheme.cardPadding.h),
-
-              // App Name Field
-              _buildCustomTextField(
-                hintText: "App Name",
-                controller: _appNameController,
-                focusNode: _appNameFocus,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) => _appUrlFocus.requestFocus(),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your app name';
-                  }
-                  return null;
-                },
-              ),
-
-              // App URL Field
-              _buildCustomTextField(
-                hintText: "App URL",
-                controller: _appUrlController,
-                focusNode: _appUrlFocus,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) => _appDescFocus.requestFocus(),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your app URL';
-                  }
-                  if (!(Uri.tryParse(value)?.hasScheme ?? false)) {
-                    return 'Please enter a valid URL (include https://)';
-                  }
-                  return null;
-                },
-              ),
-
-              // App Description Field
-              _buildCustomTextField(
-                hintText: "App Description",
-                controller: _appDescController,
-                focusNode: _appDescFocus,
-                textInputAction: TextInputAction.done,
-                isMultiline: true,
-                height: 100.h,
-                onFieldSubmitted: (_) => _createMiniApp(),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: AppTheme.cardPadding.h),
-
-              // Create Button
-              LongButtonWidget(
-                title: _isCreating ? "Creating..." : "Create App",
-                onTap: _isCreating ? null : _createMiniApp,
-                buttonType: ButtonType.solid,
-                customWidth: double.infinity,
-              ),
-                ],
-              ),
-            ),
               ),
             ),
           ),

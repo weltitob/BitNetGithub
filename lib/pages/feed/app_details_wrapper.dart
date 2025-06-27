@@ -16,7 +16,7 @@ class ModernAppDetailsPage extends StatelessWidget {
     print('=== APP DETAILS WRAPPER CALLED ===');
     print('routerState.extra type: ${routerState.extra.runtimeType}');
     print('routerState.extra: ${routerState.extra}');
-    
+
     // Always use modern app details screen
     if (routerState.extra is Map<String, dynamic>) {
       print('=== CREATING APP DETAILS MODERN ===');
@@ -24,7 +24,7 @@ class ModernAppDetailsPage extends StatelessWidget {
       final app = AppData.fromJson(data);
       return AppDetailsModern(app: app);
     }
-    
+
     // If no data, show error
     print('=== ERROR: NO APP DATA ===');
     return Scaffold(

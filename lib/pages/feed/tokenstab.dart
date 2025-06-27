@@ -18,7 +18,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
-
 class TokensTab extends StatefulWidget {
   const TokensTab({super.key});
 
@@ -30,16 +29,17 @@ class _TokensTabState extends State<TokensTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  
+
   // Get price history for a token using centralized service
   Map<String, dynamic> _getTokenPriceHistory(String symbol) {
     return TokenDataService.instance.getTokenPriceHistory(symbol);
   }
-  
+
   // Token data using centralized service for consistency across the app
   List<Map<String, dynamic>> get tokenData {
     final tokenService = TokenDataService.instance;
-    return tokenService.getAllTokenSymbols()
+    return tokenService
+        .getAllTokenSymbols()
         .map((symbol) => tokenService.getTokenDisplayData(symbol))
         .toList();
   }
@@ -49,13 +49,14 @@ class _TokensTabState extends State<TokensTab>
     // Sort tokens by percentage change (descending) and take top 3
     final sortedTokens = List<Map<String, dynamic>>.from(tokenData);
     sortedTokens.sort((a, b) {
-      final aChange = double.parse(a['change'].toString().replaceAll('%', '').replaceAll('+', ''));
-      final bChange = double.parse(b['change'].toString().replaceAll('%', '').replaceAll('+', ''));
+      final aChange = double.parse(
+          a['change'].toString().replaceAll('%', '').replaceAll('+', ''));
+      final bChange = double.parse(
+          b['change'].toString().replaceAll('%', '').replaceAll('+', ''));
       return bChange.compareTo(aChange);
     });
     return sortedTokens.take(3).toList();
   }
-  
 
   // Top volume data - references main tokenData for consistency
   List<Map<String, dynamic>> get topVolumeData {
@@ -73,27 +74,25 @@ class _TokensTabState extends State<TokensTab>
     super.build(context);
     final Size size = MediaQuery.of(context).size;
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return bitnetScaffold(
       context: context,
       body: VerticalFadeListView.standardTab(
-        child: ListView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          child: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         children: [
-        
           // Trending section
           SizedBox(height: AppTheme.cardPadding * 1.5.h),
-          
+
           // Carousel Slider for Trending Tokens
           CarouselSlider.builder(
-            options: getStandardizedCarouselOptions(
-              autoPlayIntervalSeconds: 4
-            ),
+            options: getStandardizedCarouselOptions(autoPlayIntervalSeconds: 4),
             itemCount: tokenData.length,
             itemBuilder: (context, index, _) {
               final token = tokenData[index];
               final chartData = token['chartData'] as List<ChartLine>;
-              
+
               // Wrap in RepaintBoundary for better performance
               return GestureDetector(
                 onTap: () {
@@ -103,9 +102,10 @@ class _TokensTabState extends State<TokensTab>
                     'tokenSymbol': token['symbol'],
                     'tokenName': token['name'],
                     'priceHistory': _getTokenPriceHistory(token['symbol']),
-                    'currentPrice': double.parse(token['price'].replaceAll(',', '')),
+                    'currentPrice':
+                        double.parse(token['price'].replaceAll(',', '')),
                   };
-                  
+
                   context.push(
                     '/wallet/bitcoinscreen',
                     extra: navigationData,
@@ -113,178 +113,207 @@ class _TokensTabState extends State<TokensTab>
                 },
                 child: RepaintBoundary(
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: getStandardizedCardMargin().w),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: getStandardizedCardMargin().w),
                     child: GlassContainer(
                       width: getStandardizedCardWidth().w,
                       boxShadow: isDarkMode ? [] : null,
                       child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 18.h, // Increased from 16.h
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Token logo and name
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 38.h,
-                            width: 38.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: token['color'].withOpacity(0.3),
-                                  blurRadius: 12,
-                                  spreadRadius: 2,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 18.h, // Increased from 16.h
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Token logo and name
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 38.h,
+                                  width: 38.w,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              token['color'].withOpacity(0.3),
+                                          blurRadius: 12,
+                                          spreadRadius: 2,
+                                        )
+                                      ]),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      token['image'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: AppTheme.elementSpacing.w *
+                                        0.75), // Increased from 10.w
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      token['symbol'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                18.sp, // Increased font size
+                                          ),
+                                    ),
+                                    Text(
+                                      token['name'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                            color: isDarkMode
+                                                ? AppTheme.white60
+                                                : AppTheme.black60,
+                                            fontSize: 12
+                                                .sp, // Added specific font size
+                                          ),
+                                    ),
+                                  ],
                                 )
-                              ]
+                              ],
                             ),
-                            child: ClipOval(
-                              child: Image.asset(
-                                token['image'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: AppTheme.elementSpacing.w * 0.75), // Increased from 10.w
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                token['symbol'],
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.sp, // Increased font size
+
+                            SizedBox(height: 20.h), // Increased from 16.h
+
+                            // Chart - Wrapped in Expanded to prevent overflow
+                            Expanded(
+                              child: Container(
+                                color: Colors.transparent,
+                                child: SfCartesianChart(
+                                  plotAreaBorderWidth: 0,
+                                  margin: EdgeInsets.zero,
+                                  primaryXAxis: CategoryAxis(
+                                    isVisible: false,
+                                    majorGridLines:
+                                        const MajorGridLines(width: 0),
+                                    majorTickLines:
+                                        const MajorTickLines(width: 0),
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    isVisible: false,
+                                    majorGridLines:
+                                        const MajorGridLines(width: 0),
+                                    majorTickLines:
+                                        const MajorTickLines(width: 0),
+                                  ),
+                                  series: <ChartSeries>[
+                                    // Line series - using correct color based on token performance
+                                    AreaSeries<ChartLine, double>(
+                                      dataSource: chartData,
+                                      animationDuration: 1500,
+                                      xValueMapper: (ChartLine data, _) =>
+                                          data.time,
+                                      yValueMapper: (ChartLine data, _) =>
+                                          data.price,
+                                      color: token['isPositive']
+                                          ? AppTheme.successColor
+                                              .withOpacity(0.3)
+                                          : AppTheme.errorColor
+                                              .withOpacity(0.3),
+                                      borderWidth: 2.5,
+                                      borderColor: token['isPositive']
+                                          ? AppTheme.successColor
+                                          : AppTheme.errorColor,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: token['isPositive']
+                                            ? [
+                                                AppTheme.successColor
+                                                    .withOpacity(0.3),
+                                                AppTheme.successColor
+                                                    .withOpacity(0.05),
+                                                Colors.transparent,
+                                              ]
+                                            : [
+                                                AppTheme.errorColor
+                                                    .withOpacity(0.3),
+                                                AppTheme.errorColor
+                                                    .withOpacity(0.05),
+                                                Colors.transparent,
+                                              ],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Text(
-                                token['name'],
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                                  fontSize: 12.sp, // Added specific font size
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      
-                      SizedBox(height: 20.h), // Increased from 16.h
-                      
-                      // Chart - Wrapped in Expanded to prevent overflow
-                      Expanded(
-                        child: Container(
-                          color: Colors.transparent,
-                          child: SfCartesianChart(
-                            enableAxisAnimation: false, // Disable axis animations
-                            plotAreaBorderWidth: 0,
-                            margin: EdgeInsets.zero,
-                            primaryXAxis: CategoryAxis(
-                              isVisible: false,
-                              majorGridLines: const MajorGridLines(width: 0),
-                              majorTickLines: const MajorTickLines(width: 0),
                             ),
-                            primaryYAxis: NumericAxis(
-                              isVisible: false,
-                              majorGridLines: const MajorGridLines(width: 0),
-                              majorTickLines: const MajorTickLines(width: 0),
-                            ),
-                            series: <ChartSeries>[
-                              // Line series - using correct color based on token performance
-                              AreaSeries<ChartLine, double>(
-                                dataSource: chartData,
-                                animationDuration: 0, // Disable animation for smooth tab switching
-                                xValueMapper: (ChartLine data, _) => data.time,
-                                yValueMapper: (ChartLine data, _) => data.price,
-                                color: token['isPositive'] 
-                                    ? AppTheme.successColor.withOpacity(0.3)
-                                    : AppTheme.errorColor.withOpacity(0.3),
-                                borderWidth: 2.5,
-                                borderColor: token['isPositive'] 
-                                    ? AppTheme.successColor
-                                    : AppTheme.errorColor,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: token['isPositive'] 
-                                      ? [
-                                          AppTheme.successColor.withOpacity(0.3),
-                                          AppTheme.successColor.withOpacity(0.05),
-                                          Colors.transparent,
-                                        ]
-                                      : [
-                                          AppTheme.errorColor.withOpacity(0.3),
-                                          AppTheme.errorColor.withOpacity(0.05),
-                                          Colors.transparent,
-                                        ],
+
+                            SizedBox(
+                                height: AppTheme.elementSpacing.h *
+                                    0.5), // Increased from 8.h
+
+                            // Price - using actual token price
+                            Text("${token['price']}\$",
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge),
+                            SizedBox(
+                                height: AppTheme
+                                    .elementSpacing.h), // Increased from 4.h
+                            Row(
+                              children: [
+                                ColoredPriceWidget(
+                                  price: token['price'],
+                                  isPositive: token['isPositive'],
                                 ),
-                              )
-                            ],
-                          ),
+                                SizedBox(width: AppTheme.elementSpacing.w),
+                                PercentageChangeWidget(
+                                  percentage: token['change'],
+                                  isPositive: token['isPositive'],
+                                  fontSize: 14,
+                                ),
+                              ],
+                            ),
+
+                            // Price change indicator (using reusable component)
+                          ],
                         ),
                       ),
-                      
-                      SizedBox(height: AppTheme.elementSpacing.h * 0.5), // Increased from 8.h
-                      
-                      // Price - using actual token price
-                      Text(
-                        "${token['price']}\$",
-                        style: Theme.of(context).textTheme.headlineLarge
-                      ),
-                      SizedBox(height: AppTheme.elementSpacing.h), // Increased from 4.h
-                      Row(
-                        children: [
-                          ColoredPriceWidget(
-                            price: token['price'],
-                            isPositive: token['isPositive'],
-                          ),
-                          SizedBox(width: AppTheme.elementSpacing.w),
-                          PercentageChangeWidget(
-                            percentage: token['change'],
-                            isPositive: token['isPositive'],
-                            fontSize: 14,
-                          ),
-                        ],
-                      ),
-                      
-                      
-                      // Price change indicator (using reusable component)
-                      ],
                     ),
-                  ),
-                ),
                   ),
                 ),
               );
             },
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h * 1.5),
-          
+
           // Top 3 by Market Cap section with CommonHeading
           CommonHeading(
             headingText: "💰 Top 3 by Market Cap",
             hasButton: true,
             onPress: () => _navigateToTopMarketCapToken(),
           ),
-          
+
           // A single GlassContainer containing all crypto items
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
               boxShadow: isDarkMode ? [] : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: [
                     // First crypto item with NumberIndicator - using tokenData[0] (Genesis Stone)
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/GENST/Genesis Stone'),
+                          onTap: () => context.push(
+                              '/feed/token_marketplace/GENST/Genesis Stone'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -310,7 +339,8 @@ class _TokensTabState extends State<TokensTab>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/CAT/Cat Token'),
+                          onTap: () => context
+                              .push('/feed/token_marketplace/CAT/Cat Token'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -336,7 +366,8 @@ class _TokensTabState extends State<TokensTab>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => context.push('/feed/token_marketplace/HTDG/Hotdog'),
+                          onTap: () => context
+                              .push('/feed/token_marketplace/HTDG/Hotdog'),
                           child: CryptoItem(
                             hasGlassContainer: false,
                             currency: Currency(
@@ -363,23 +394,25 @@ class _TokensTabState extends State<TokensTab>
               ),
             ),
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h),
-          
+
           // Top Movers Today section with CommonHeading
           CommonHeading(
             headingText: "📈 Top Movers Today",
             hasButton: true,
             onPress: () => _navigateToTopMover(),
           ),
-          
+
           // Top Movers list
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
               boxShadow: isDarkMode ? [] : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: topMoversData.asMap().entries.map((entry) {
                     final int idx = entry.key;
@@ -411,23 +444,25 @@ class _TokensTabState extends State<TokensTab>
               ),
             ),
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h),
-          
+
           // Top Volume Today section with CommonHeading (Added section)
           CommonHeading(
             headingText: "📊 Top Volume Today",
             hasButton: true,
             onPress: () => _navigateToTopVolume(),
           ),
-          
+
           // Top Volume list
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: GlassContainer(
               boxShadow: isDarkMode ? [] : null,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
                 child: Column(
                   children: topVolumeData.asMap().entries.map((entry) {
                     final int idx = entry.key;
@@ -459,9 +494,9 @@ class _TokensTabState extends State<TokensTab>
               ),
             ),
           ),
-          
+
           SizedBox(height: AppTheme.cardPadding.h),
-          
+
           SizedBox(height: 100.h), // Added extra space at the bottom
         ],
       )),
@@ -472,18 +507,21 @@ class _TokensTabState extends State<TokensTab>
   void _navigateToTopMarketCapToken() {
     // Navigate to the top market cap token (first in tokenData)
     final topToken = tokenData[0];
-    context.push('/feed/token_marketplace/${topToken['symbol']}/${topToken['name']}');
+    context.push(
+        '/feed/token_marketplace/${topToken['symbol']}/${topToken['name']}');
   }
 
   void _navigateToTopMover() {
     // Navigate to the top mover token (first in topMoversData)
     final topMover = topMoversData[0];
-    context.push('/feed/token_marketplace/${topMover['symbol']}/${topMover['name']}');
+    context.push(
+        '/feed/token_marketplace/${topMover['symbol']}/${topMover['name']}');
   }
 
   void _navigateToTopVolume() {
     // Navigate to the top volume token (first in topVolumeData)
     final topVolume = topVolumeData[0];
-    context.push('/feed/token_marketplace/${topVolume['symbol']}/${topVolume['name']}');
+    context.push(
+        '/feed/token_marketplace/${topVolume['symbol']}/${topVolume['name']}');
   }
 }

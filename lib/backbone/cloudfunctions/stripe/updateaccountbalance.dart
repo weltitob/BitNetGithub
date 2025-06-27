@@ -16,7 +16,7 @@ updateAccountBalance(String accountId, String amount, String currency) async {
 
   try {
     final HttpsCallableResult<dynamic> response =
-    await callable.call(<String, dynamic>{
+        await callable.call(<String, dynamic>{
       'amount': amount,
       'accountId': accountId,
       'currency': currency,
@@ -27,7 +27,8 @@ updateAccountBalance(String accountId, String amount, String currency) async {
     // Assuming response.data is a Map, cast it appropriately
     final Map<String, dynamic> responseData = response.data;
 
-    if (responseData.containsKey('account_id') && responseData.containsKey('account_link')) {
+    if (responseData.containsKey('account_id') &&
+        responseData.containsKey('account_link')) {
       String account_link = responseData['account_link'] as String;
       logger.i("account_link: $account_link");
       String id = responseData['account_id'] as String;

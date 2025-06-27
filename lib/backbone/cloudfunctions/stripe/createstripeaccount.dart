@@ -15,9 +15,8 @@ createStripeAccount(String userid, String country) async {
   logger.i("Requesting to create the account.");
 
   try {
-
     final HttpsCallableResult<dynamic> response =
-    await callable.call(<String, dynamic>{
+        await callable.call(<String, dynamic>{
       'country': country,
       'user_id': userid,
     });
@@ -27,7 +26,8 @@ createStripeAccount(String userid, String country) async {
     // Assuming response.data is a Map, cast it appropriately
     final Map<String, dynamic> responseData = response.data;
 
-    if (responseData.containsKey('account_id') && responseData.containsKey('account_link')) {
+    if (responseData.containsKey('account_id') &&
+        responseData.containsKey('account_link')) {
       String account_link = responseData['account_link'] as String;
       logger.i("account_link: $account_link");
       String id = responseData['account_id'] as String;

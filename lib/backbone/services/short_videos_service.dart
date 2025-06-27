@@ -243,7 +243,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
             errorWidget: Container(
               color: Colors.black87,
               padding:
-              const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -369,7 +369,12 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
               top: 10.0,
               left: 15.0,
               right: 15.0,
-              child: PostHeader(ownerId: 'yourself', postId: 'nopostid', username: '', displayName: '',),
+              child: PostHeader(
+                ownerId: 'yourself',
+                postId: 'nopostid',
+                username: '',
+                displayName: '',
+              ),
             ),
           if (!controller.value.isFullScreen &&
               !controller.flags.hideControls &&
@@ -401,34 +406,35 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
               right: 0,
               child: AnimatedOpacity(
                 opacity: !controller.flags.hideControls &&
-                    controller.value.isControlsVisible
+                        controller.value.isControlsVisible
                     ? 1
                     : 0,
                 duration: const Duration(milliseconds: 300),
                 child: controller.flags.isLive
                     ? LiveBottomBar(
-                  liveUIColor: widget.liveUIColor, showLiveFullscreenButton: false,
-                )
+                        liveUIColor: widget.liveUIColor,
+                        showLiveFullscreenButton: false,
+                      )
                     : Padding(
-                  padding: widget.bottomActions == null
-                      ? const EdgeInsets.all(0.0)
-                      : widget.actionsPadding,
-                  child: Row(
-                    children: widget.bottomActions ??
-                        [
-                          const SizedBox(width: 14.0),
-                          CurrentPosition(),
-                          const SizedBox(width: 8.0),
-                          ProgressBar(
-                            isExpanded: true,
-                            colors: widget.progressColors,
-                          ),
-                          RemainingDuration(),
-                          const PlaybackSpeedButton(),
-                          FullScreenButton(),
-                        ],
-                  ),
-                ),
+                        padding: widget.bottomActions == null
+                            ? const EdgeInsets.all(0.0)
+                            : widget.actionsPadding,
+                        child: Row(
+                          children: widget.bottomActions ??
+                              [
+                                const SizedBox(width: 14.0),
+                                CurrentPosition(),
+                                const SizedBox(width: 8.0),
+                                ProgressBar(
+                                  isExpanded: true,
+                                  colors: widget.progressColors,
+                                ),
+                                RemainingDuration(),
+                                const PlaybackSpeedButton(),
+                                FullScreenButton(),
+                              ],
+                        ),
+                      ),
               ),
             ),
             Positioned(
@@ -437,7 +443,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
               right: 0,
               child: AnimatedOpacity(
                 opacity: !controller.flags.hideControls &&
-                    controller.value.isControlsVisible
+                        controller.value.isControlsVisible
                     ? 1
                     : 0,
                 duration: const Duration(milliseconds: 300),
@@ -461,32 +467,31 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
   }
 
   Widget get _thumbnail => Transform.scale(
-    scale: 16 / 11,
-    child: Image.network(
-      ShortsPlayer.getThumbnail(
-        videoId: controller.metadata.videoId.isEmpty
-            ? controller.initialVideoId
-            : controller.metadata.videoId,
-      ),
-      fit: BoxFit.cover,
-      loadingBuilder: (_, child, progress) =>
-      progress == null ? child : Container(color: Colors.black),
-      errorBuilder: (context, _, __) => Image.network(
-        ShortsPlayer.getThumbnail(
-          videoId: controller.metadata.videoId.isEmpty
-              ? controller.initialVideoId
-              : controller.metadata.videoId,
-          webp: false,
+        scale: 16 / 11,
+        child: Image.network(
+          ShortsPlayer.getThumbnail(
+            videoId: controller.metadata.videoId.isEmpty
+                ? controller.initialVideoId
+                : controller.metadata.videoId,
+          ),
+          fit: BoxFit.cover,
+          loadingBuilder: (_, child, progress) =>
+              progress == null ? child : Container(color: Colors.black),
+          errorBuilder: (context, _, __) => Image.network(
+            ShortsPlayer.getThumbnail(
+              videoId: controller.metadata.videoId.isEmpty
+                  ? controller.initialVideoId
+                  : controller.metadata.videoId,
+              webp: false,
+            ),
+            fit: BoxFit.cover,
+            loadingBuilder: (_, child, progress) =>
+                progress == null ? child : Container(color: Colors.black),
+            errorBuilder: (context, _, __) => Container(),
+          ),
         ),
-        fit: BoxFit.cover,
-        loadingBuilder: (_, child, progress) =>
-        progress == null ? child : Container(color: Colors.black),
-        errorBuilder: (context, _, __) => Container(),
-      ),
-    ),
-  );
+      );
 }
-
 
 class ShortsPlayerBuilder extends StatefulWidget {
   /// The actual [ShortsPlayer].
@@ -540,7 +545,8 @@ class _ShortsPlayerBuilderState extends State<ShortsPlayerBuilder>
       widget.onEnterFullScreen?.call();
     } else {
       controller.updateValue(controller.value.copyWith(isFullScreen: false));
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
       widget.onExitFullScreen?.call();
     }
     super.didChangeMetrics();
@@ -554,7 +560,7 @@ class _ShortsPlayerBuilderState extends State<ShortsPlayerBuilder>
         canPop: false, // We'll handle pop manually
         onPopInvoked: (bool didPop) {
           if (didPop) return; // Already popped, do nothing
-          
+
           final controller = widget.player.controller;
           if (controller.value.isFullScreen) {
             widget.player.controller.toggleFullScreenMode();
@@ -568,7 +574,7 @@ class _ShortsPlayerBuilderState extends State<ShortsPlayerBuilder>
     final child = widget.builder(context, _player);
     return OrientationBuilder(
       builder: (context, orientation) =>
-      orientation == Orientation.portrait ? child : _player,
+          orientation == Orientation.portrait ? child : _player,
     );
   }
 }

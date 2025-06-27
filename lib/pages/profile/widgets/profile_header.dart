@@ -78,9 +78,10 @@ class ProfileHeader extends StatelessWidget {
                               width: MediaQuery.of(context).size.width -
                                   AppTheme.cardPadding.w * 8,
                               child: UserInformation()),
-                          SizedBox(width: AppTheme.cardPadding.w,),
+                          SizedBox(
+                            width: AppTheme.cardPadding.w,
+                          ),
                           SettingsButton(),
-
                         ],
                       ),
                     ),
@@ -98,7 +99,6 @@ class ProfileHeader extends StatelessWidget {
               ),
             ],
           ),
-
 
           // QrButton(),
           const CenterWidget(),
@@ -119,7 +119,7 @@ class UserInformation extends StatelessWidget {
     return Container(
       child: Obx(() {
         final isEditMode = controller.currentview.value == 4;
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -127,100 +127,104 @@ class UserInformation extends StatelessWidget {
             // Display Name
             isEditMode
                 ? GlassContainer(
-              borderRadius: BorderRadius.only(
-                  topRight: AppTheme.cornerRadiusMid / 2,
-                  topLeft: AppTheme.cornerRadiusMid / 2),
-              customColor: theme.brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.5)
-                  : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                child: TextField(
-                  focusNode: controller.focusNodeDisplayName,
-                  readOnly: !isEditMode,
-                  textAlign: TextAlign.left,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    fillColor: Colors.transparent,
-                    isDense: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    errorText: controller.displayNameValid.value
-                        ? null
-                        : L10n.of(context)!.coudntChangeUsername,
-                  ),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.onSurface,
-                    height: 1.2,
-                  ),
-                  controller: controller.displayNameController,
-                ),
-              ),
-            )
+                    borderRadius: BorderRadius.only(
+                        topRight: AppTheme.cornerRadiusMid / 2,
+                        topLeft: AppTheme.cornerRadiusMid / 2),
+                    customColor: theme.brightness == Brightness.light
+                        ? Colors.black.withOpacity(0.5)
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 4.0),
+                      child: TextField(
+                        focusNode: controller.focusNodeDisplayName,
+                        readOnly: !isEditMode,
+                        textAlign: TextAlign.left,
+                        textAlignVertical: TextAlignVertical.top,
+                        decoration: InputDecoration(
+                          fillColor: Colors.transparent,
+                          isDense: true,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          errorText: controller.displayNameValid.value
+                              ? null
+                              : L10n.of(context)!.coudntChangeUsername,
+                        ),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                          height: 1.2,
+                        ),
+                        controller: controller.displayNameController,
+                      ),
+                    ),
+                  )
                 : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-              child: Text(
-                controller.displayNameController.text.isNotEmpty 
-                    ? controller.displayNameController.text 
-                    : 'Display Name',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                  height: 1.2,
-                ),
-              ),
-            ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: Text(
+                      controller.displayNameController.text.isNotEmpty
+                          ? controller.displayNameController.text
+                          : 'Display Name',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
 
             const SizedBox(height: 2),
 
             // Username
             isEditMode
                 ? GlassContainer(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: AppTheme.cornerRadiusMid / 2,
-                  bottomRight: AppTheme.cornerRadiusMid / 2),
-              customColor: theme.brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.5)
-                  : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                child: TextField(
-                  focusNode: controller.focusNodeUsername,
-                  readOnly: !isEditMode,
-                  textAlign: TextAlign.start,
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                    fillColor: Colors.transparent,
-                    isDense: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    errorText: controller.displayNameValid.value
-                        ? null
-                        : L10n.of(context)!.badCharacters,
-                  ),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: theme.colorScheme.onSurface.withOpacity(0.75),
-                    height: 1.1,
-                  ),
-                  controller: controller.userNameController,
-                ),
-              ),
-            )
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: AppTheme.cornerRadiusMid / 2,
+                        bottomRight: AppTheme.cornerRadiusMid / 2),
+                    customColor: theme.brightness == Brightness.light
+                        ? Colors.black.withOpacity(0.5)
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 4.0),
+                      child: TextField(
+                        focusNode: controller.focusNodeUsername,
+                        readOnly: !isEditMode,
+                        textAlign: TextAlign.start,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          fillColor: Colors.transparent,
+                          isDense: true,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          errorText: controller.displayNameValid.value
+                              ? null
+                              : L10n.of(context)!.badCharacters,
+                        ),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.onSurface.withOpacity(0.75),
+                          height: 1.1,
+                        ),
+                        controller: controller.userNameController,
+                      ),
+                    ),
+                  )
                 : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-              child: Text(
-                controller.userNameController.text.isNotEmpty 
-                    ? controller.userNameController.text 
-                    : '@username',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface.withOpacity(0.75),
-                  height: 1.1,
-                ),
-              ),
-            ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: Text(
+                      controller.userNameController.text.isNotEmpty
+                          ? controller.userNameController.text
+                          : '@username',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface.withOpacity(0.75),
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
           ],
         );
       }),

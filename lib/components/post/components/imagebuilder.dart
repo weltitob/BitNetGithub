@@ -98,12 +98,12 @@ class ImageBuilder extends StatelessWidget {
 
   // Checks if the string is likely an asset path or a Base64 image
   bool _isAssetPath(String data) {
-    return data.startsWith('assets/') || 
-           data.endsWith('.png') || 
-           data.endsWith('.jpg') || 
-           data.endsWith('.jpeg') || 
-           data.endsWith('.webp') || 
-           data.endsWith('.gif');
+    return data.startsWith('assets/') ||
+        data.endsWith('.png') ||
+        data.endsWith('.jpg') ||
+        data.endsWith('.jpeg') ||
+        data.endsWith('.webp') ||
+        data.endsWith('.gif');
   }
 
   // Checks if the string is a URL
@@ -116,10 +116,10 @@ class ImageBuilder extends StatelessWidget {
     // Check if it's an asset path or Base64
     final bool isAsset = _isAssetPath(encodedData);
     final bool isUrl = _isUrl(encodedData);
-    
+
     // Widget to display the image
     Widget imageWidget;
-    
+
     if (isAsset) {
       // Handle asset images (local paths)
       imageWidget = Image.asset(
@@ -156,7 +156,7 @@ class ImageBuilder extends StatelessWidget {
         if (encodedData.contains(',')) {
           base64String = encodedData.split(',').last;
         }
-        
+
         Uint8List imageBytes = base64Decode(base64String);
         imageWidget = Image.memory(
           imageBytes,

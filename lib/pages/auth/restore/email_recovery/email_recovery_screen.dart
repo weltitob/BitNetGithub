@@ -93,7 +93,7 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
       // HDWallet hdWallet = HDWallet.fromSeed(seedUnit);
       // String did = hdWallet.pubkey;
       // String privateKeyHex = hdWallet.privkey;
-      
+
       // Generate DID from mnemonic using RecoveryIdentity
       String did = RecoveryIdentity.generateRecoveryDid(mnemonic);
 
@@ -152,224 +152,253 @@ class _EmailRecoveryScreenState extends State<EmailRecoveryScreen> {
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
         return bitnetScaffold(
+          context: context,
+          margin: isSuperSmallScreen
+              ? const EdgeInsets.symmetric(horizontal: 0)
+              : EdgeInsets.symmetric(
+                  horizontal:
+                      (screenWidth / 2 - 250) < 0 ? 0 : screenWidth / 2 - 250,
+                ),
+          extendBodyBehindAppBar: true,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          appBar: bitnetAppBar(
+            text: "Email Recovery",
             context: context,
-            margin: isSuperSmallScreen
-                ? const EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(
-                    horizontal: (screenWidth / 2 - 250) < 0
-                        ? 0
-                        : screenWidth / 2 - 250,
-                  ),
-            extendBodyBehindAppBar: true,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: bitnetAppBar(
-              text: "Email Recovery",
-              context: context,
-              onTap: () {
-                context.go('/authhome/login');
-              },
-              actions: [const PopUpLangPickerWidget()],
-            ),
-            body: mnemonic != null
-                ? VerifyEmailCodeScreen(
-                    textEditingController: textEditingController,
-                    errorController: errorController,
-                    formKey: formKey,
-                    onSignInPressed: () {
-                      onSignInPressed(mnemonic!);
-                    },
-                    email: _emailController.text,
-                  )
-                : SafeArea(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          SizedBox(height: AppTheme.cardPadding * 2),
-                          
-                          // Header section
-                          Column(
-                            children: [
-                              Text(
-                                "Welcome Back!",
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: AppTheme.elementSpacing),
-                              Text(
-                                "Please input your email and password to restore your account.",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          
-                          SizedBox(height: AppTheme.cardPadding * 2),
-                          // Form fields
-                          Column(
-                            children: [
-                              FormTextField(
-                                width: double.infinity,
-                                hintText: 'Email address',
-                                onChanged: (val) {
-                                  if (emailError.isNotEmpty) {
-                                    setState(() {
-                                      emailError = "";
-                                    });
-                                  }
-                                },
-                                controller: _emailController,
-                                isObscure: false,
-                              ),
-                              if (emailError.isNotEmpty) ...[
-                                SizedBox(height: AppTheme.elementSpacing / 2),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    emailError,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppTheme.errorColor,
-                                    ),
+            onTap: () {
+              context.go('/authhome/login');
+            },
+            actions: [const PopUpLangPickerWidget()],
+          ),
+          body: mnemonic != null
+              ? VerifyEmailCodeScreen(
+                  textEditingController: textEditingController,
+                  errorController: errorController,
+                  formKey: formKey,
+                  onSignInPressed: () {
+                    onSignInPressed(mnemonic!);
+                  },
+                  email: _emailController.text,
+                )
+              : SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.all(AppTheme.cardPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: AppTheme.cardPadding * 2),
+
+                        // Header section
+                        Column(
+                          children: [
+                            Text(
+                              "Welcome Back!",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ],
-                              
-                              SizedBox(height: AppTheme.cardPadding),
-                              
-                              FormTextField(
-                                width: double.infinity,
-                                hintText: 'Password',
-                                onChanged: (val) {
-                                  if (passwordError.isNotEmpty) {
-                                    setState(() {
-                                      passwordError = "";
-                                    });
-                                  }
-                                },
-                                controller: _passwordController,
-                                isObscure: obscurePass,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      obscurePass = !obscurePass;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    obscurePass ? Icons.visibility_off : Icons.visibility,
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: AppTheme.elementSpacing),
+                            Text(
+                              "Please input your email and password to restore your account.",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.7),
                                   ),
-                                ),
-                              ),
-                              if (passwordError.isNotEmpty) ...[
-                                SizedBox(height: AppTheme.elementSpacing / 2),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    passwordError,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppTheme.errorColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                          
-                          
-                          Spacer(),
-                          
-                          // Bottom button section
-                          Padding(
-                            padding: EdgeInsets.only(bottom: AppTheme.cardPadding),
-                            child: SizedBox(
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: AppTheme.cardPadding * 2),
+                        // Form fields
+                        Column(
+                          children: [
+                            FormTextField(
                               width: double.infinity,
-                              child: LongButtonWidget(
-                                state: loadingLogIn ? ButtonState.loading : ButtonState.idle,
-                                title: "Restore Account",
-                                onTap: () async {
+                              hintText: 'Email address',
+                              onChanged: (val) {
+                                if (emailError.isNotEmpty) {
                                   setState(() {
-                                    loadingLogIn = true;
+                                    emailError = "";
                                   });
-                                  
-                                  validateEmail(_emailController);
-                                  validatePassword(_passwordController);
-                                  
-                                  if (emailError.isEmpty && passwordError.isEmpty) {
-                                    try {
-                                      QuerySnapshot<Map<String, dynamic>> doc =
-                                          await emailRecoveryCollection
-                                              .where("email", isEqualTo: _emailController.text)
-                                              .get();
-                                      
-                                      QueryDocumentSnapshot<Map<String, dynamic>>?
-                                          firstDoc = doc.docs.firstOrNull;
-                                      
-                                      if (firstDoc == null) {
-                                        final overlayController = Get.find<OverlayController>();
-                                        overlayController.showOverlay(
-                                          "There is no account linked to this email.",
-                                          color: AppTheme.errorColor,
-                                        );
-                                        return;
-                                      }
-                                      
-                                      Map<String, dynamic> data = firstDoc.data();
-                                      if (!data['verified']) {
-                                        final overlayController = Get.find<OverlayController>();
-                                        overlayController.showOverlay(
-                                          "The recovery setup was never completed for this email.",
-                                          color: AppTheme.errorColor,
-                                        );
-                                        return;
-                                      }
+                                }
+                              },
+                              controller: _emailController,
+                              isObscure: false,
+                            ),
+                            if (emailError.isNotEmpty) ...[
+                              SizedBox(height: AppTheme.elementSpacing / 2),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  emailError,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: AppTheme.errorColor,
+                                      ),
+                                ),
+                              ),
+                            ],
+                            SizedBox(height: AppTheme.cardPadding),
+                            FormTextField(
+                              width: double.infinity,
+                              hintText: 'Password',
+                              onChanged: (val) {
+                                if (passwordError.isNotEmpty) {
+                                  setState(() {
+                                    passwordError = "";
+                                  });
+                                }
+                              },
+                              controller: _passwordController,
+                              isObscure: obscurePass,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    obscurePass = !obscurePass;
+                                  });
+                                },
+                                icon: Icon(
+                                  obscurePass
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                            if (passwordError.isNotEmpty) ...[
+                              SizedBox(height: AppTheme.elementSpacing / 2),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  passwordError,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: AppTheme.errorColor,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
 
-                                      String? mnemonicVar = await activateEmailRecovery(
-                                          _passwordController.text,
-                                          _emailController.text);
+                        Spacer(),
 
-                                      if (mnemonicVar != null) {
-                                        String code = generateCode();
-                                        firstDoc.reference.update({
-                                          'code': code,
-                                          'code_valid_until': Timestamp.fromDate(
-                                              DateTime.now().add(Duration(hours: 1)))
-                                        });
-                                        await sendEmail(_emailController.text, code, 1);
-                                        setState(() {
-                                          mnemonic = mnemonicVar;
-                                        });
-                                      } else {
-                                        final overlayController = Get.find<OverlayController>();
-                                        overlayController.showOverlay(
-                                          "Your email or password was incorrect.",
-                                          color: AppTheme.errorColor,
-                                        );
-                                      }
-                                    } catch (e) {
-                                      final overlayController = Get.find<OverlayController>();
+                        // Bottom button section
+                        Padding(
+                          padding:
+                              EdgeInsets.only(bottom: AppTheme.cardPadding),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: LongButtonWidget(
+                              state: loadingLogIn
+                                  ? ButtonState.loading
+                                  : ButtonState.idle,
+                              title: "Restore Account",
+                              onTap: () async {
+                                setState(() {
+                                  loadingLogIn = true;
+                                });
+
+                                validateEmail(_emailController);
+                                validatePassword(_passwordController);
+
+                                if (emailError.isEmpty &&
+                                    passwordError.isEmpty) {
+                                  try {
+                                    QuerySnapshot<Map<String, dynamic>> doc =
+                                        await emailRecoveryCollection
+                                            .where("email",
+                                                isEqualTo:
+                                                    _emailController.text)
+                                            .get();
+
+                                    QueryDocumentSnapshot<Map<String, dynamic>>?
+                                        firstDoc = doc.docs.firstOrNull;
+
+                                    if (firstDoc == null) {
+                                      final overlayController =
+                                          Get.find<OverlayController>();
                                       overlayController.showOverlay(
-                                        "An error occurred. Please try again.",
+                                        "There is no account linked to this email.",
+                                        color: AppTheme.errorColor,
+                                      );
+                                      return;
+                                    }
+
+                                    Map<String, dynamic> data = firstDoc.data();
+                                    if (!data['verified']) {
+                                      final overlayController =
+                                          Get.find<OverlayController>();
+                                      overlayController.showOverlay(
+                                        "The recovery setup was never completed for this email.",
+                                        color: AppTheme.errorColor,
+                                      );
+                                      return;
+                                    }
+
+                                    String? mnemonicVar =
+                                        await activateEmailRecovery(
+                                            _passwordController.text,
+                                            _emailController.text);
+
+                                    if (mnemonicVar != null) {
+                                      String code = generateCode();
+                                      firstDoc.reference.update({
+                                        'code': code,
+                                        'code_valid_until': Timestamp.fromDate(
+                                            DateTime.now()
+                                                .add(Duration(hours: 1)))
+                                      });
+                                      await sendEmail(
+                                          _emailController.text, code, 1);
+                                      setState(() {
+                                        mnemonic = mnemonicVar;
+                                      });
+                                    } else {
+                                      final overlayController =
+                                          Get.find<OverlayController>();
+                                      overlayController.showOverlay(
+                                        "Your email or password was incorrect.",
                                         color: AppTheme.errorColor,
                                       );
                                     }
+                                  } catch (e) {
+                                    final overlayController =
+                                        Get.find<OverlayController>();
+                                    overlayController.showOverlay(
+                                      "An error occurred. Please try again.",
+                                      color: AppTheme.errorColor,
+                                    );
                                   }
-                                  
-                                  setState(() {
-                                    loadingLogIn = false;
-                                  });
-                                },
-                              ),
+                                }
+
+                                setState(() {
+                                  loadingLogIn = false;
+                                });
+                              },
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
+                ),
         );
       },
     );
@@ -452,7 +481,7 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
         child: Column(
           children: [
             SizedBox(height: AppTheme.cardPadding * 3),
-            
+
             // Header section
             Column(
               children: [
@@ -475,24 +504,28 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                 Text(
                   "Verify Your Email",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: AppTheme.elementSpacing),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: Text(
                     "We've sent a 5 letter code to your email, please type it in below.",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ],
             ),
-            
+
             Spacer(),
             // Verification code input
             VerificationSpace(
@@ -506,16 +539,20 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
               hasError: hasError,
               errorText: errorText,
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding),
-            
+
             // Resend code button
             TextButton(
               onPressed: () async {
-                int codeAttempts = LocalStorage.instance.getInt("email_send_code_attempts") ?? 0;
+                int codeAttempts =
+                    LocalStorage.instance.getInt("email_send_code_attempts") ??
+                        0;
                 if (codeAttempts > 0) {
                   LocalStorage.instance.setInt(
-                      DateTime.now().add(Duration(minutes: 5)).millisecondsSinceEpoch,
+                      DateTime.now()
+                          .add(Duration(minutes: 5))
+                          .millisecondsSinceEpoch,
                       "email_send_code_cooldown");
                   final overlayController = Get.find<OverlayController>();
                   overlayController.showOverlay(
@@ -524,8 +561,10 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                   );
                   return;
                 }
-                
-                int cooldown = LocalStorage.instance.getInt("email_send_code_cooldown") ?? 0;
+
+                int cooldown =
+                    LocalStorage.instance.getInt("email_send_code_cooldown") ??
+                        0;
                 if (cooldown != 0) {
                   if (DateTime.now().millisecondsSinceEpoch > cooldown) {
                     LocalStorage.instance.remove("email_send_code_cooldown");
@@ -538,16 +577,18 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                     return;
                   }
                 }
-                
+
                 LocalStorage.instance.remove("email_recovery_attempts");
                 LocalStorage.instance.remove("email_recovery_cooldown");
 
                 try {
-                  QuerySnapshot<Map<String, dynamic>> doc = await emailRecoveryCollection
-                      .where("email", isEqualTo: widget.email)
-                      .get();
-                  
-                  QueryDocumentSnapshot<Map<String, dynamic>>? firstDoc = doc.docs.firstOrNull;
+                  QuerySnapshot<Map<String, dynamic>> doc =
+                      await emailRecoveryCollection
+                          .where("email", isEqualTo: widget.email)
+                          .get();
+
+                  QueryDocumentSnapshot<Map<String, dynamic>>? firstDoc =
+                      doc.docs.firstOrNull;
                   if (firstDoc == null) {
                     final overlayController = Get.find<OverlayController>();
                     overlayController.showOverlay(
@@ -563,17 +604,20 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
                     'code_valid_until': Timestamp.fromDate(
                         DateTime.now().add(Duration(hours: 1)))
                   });
-                  
+
                   await sendEmail(widget.email, code, 1);
-                  
+
                   final overlayController = Get.find<OverlayController>();
                   overlayController.showOverlay(
                     "Email sent.",
                     color: AppTheme.successColor,
                   );
-                  
+
                   LocalStorage.instance.setInt(
-                      (LocalStorage.instance.getInt("email_send_code_attempts") ?? 0) + 1,
+                      (LocalStorage.instance
+                                  .getInt("email_send_code_attempts") ??
+                              0) +
+                          1,
                       "email_send_code_attempts");
                 } catch (e) {
                   final overlayController = Get.find<OverlayController>();
@@ -586,12 +630,12 @@ class _VerifyEmailCodeScreenState extends State<VerifyEmailCodeScreen> {
               child: Text(
                 'Resend Code',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  decoration: TextDecoration.underline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
             ),
-            
+
             SizedBox(height: AppTheme.cardPadding * 2),
           ],
         ),

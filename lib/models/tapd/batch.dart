@@ -15,7 +15,8 @@ class Batch {
 
   factory Batch.fromJson(Map<String, dynamic> json) {
     var assetsJson = json['assets'] as List;
-    List<AssetInBatchList> assetsList = assetsJson.map((i) => AssetInBatchList .fromJson(i)).toList();
+    List<AssetInBatchList> assetsList =
+        assetsJson.map((i) => AssetInBatchList.fromJson(i)).toList();
 
     return Batch(
       batchKey: json['batch_key'] as String?,
@@ -26,9 +27,9 @@ class Batch {
   }
 
   Map<String, dynamic> toJson() => {
-    'batch_key': batchKey,
-    'batch_txid': batchTxid,
-    'state': state,
-    'assets': assets.map((e) => e.toJson()).toList(),
-  };
+        'batch_key': batchKey,
+        'batch_txid': batchTxid,
+        'state': state,
+        'assets': assets.map((e) => e.toJson()).toList(),
+      };
 }

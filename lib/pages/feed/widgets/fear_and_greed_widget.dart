@@ -44,7 +44,7 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                     'd9329ded30msh2e4ed90bed55972p1162f9jsn68d0a91b20ff',
                 'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com'
               }));
-      
+
       if (response.statusCode == 200) {
         fearGearChartModel = FearGearChartModel.fromJson(response.data);
         if (fearGearChartModel.lastUpdated != null) {
@@ -94,9 +94,9 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                 ),
               ],
             ),
-            
+
             SizedBox(height: AppTheme.elementSpacing),
-            
+
             // Content
             _loading
                 ? Center(child: dotProgress(context))
@@ -104,24 +104,32 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                     children: [
                       // Value indicator text
                       Align(
-                        alignment: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
-                            ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
-                                ? Alignment.topRight
-                                : Alignment.topCenter
-                            : Alignment.topLeft,
+                        alignment:
+                            (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
+                                ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
+                                    ? Alignment.topRight
+                                    : Alignment.topCenter
+                                : Alignment.topLeft,
                         child: RichText(
                           text: TextSpan(
                             text: L10n.of(context)!.now,
                             style: Theme.of(context).textTheme.titleMedium,
                             children: <TextSpan>[
                               TextSpan(
-                                text: fearGearChartModel.fgi?.now?.valueText ?? "N/A",
+                                text: fearGearChartModel.fgi?.now?.valueText ??
+                                    "N/A",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
                                     ?.copyWith(
-                                        color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
-                                            ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
+                                        color: (fearGearChartModel
+                                                        .fgi?.now?.value ??
+                                                    0) >=
+                                                25
+                                            ? (fearGearChartModel
+                                                            .fgi?.now?.value ??
+                                                        0) >
+                                                    75
                                                 ? AppTheme.successColor
                                                 : AppTheme.colorBitcoin
                                             : AppTheme.errorColor),
@@ -130,9 +138,9 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                           ),
                         ),
                       ),
-                      
+
                       SizedBox(height: AppTheme.elementSpacing),
-                      
+
                       // Slider with gradient background
                       Container(
                         height: 60,
@@ -159,20 +167,29 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                             ),
                             // Value indicator
                             Positioned(
-                              left: ((fearGearChartModel.fgi?.now?.value ?? 0) / 100) * 
-                                    (MediaQuery.of(context).size.width - AppTheme.cardPadding * 4),
+                              left: ((fearGearChartModel.fgi?.now?.value ?? 0) /
+                                      100) *
+                                  (MediaQuery.of(context).size.width -
+                                      AppTheme.cardPadding * 4),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   // Value bubble
                                   Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
-                                          ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
-                                              ? AppTheme.successColor
-                                              : AppTheme.colorBitcoin
-                                          : AppTheme.errorColor,
+                                      color:
+                                          (fearGearChartModel.fgi?.now?.value ??
+                                                      0) >=
+                                                  25
+                                              ? (fearGearChartModel.fgi?.now
+                                                              ?.value ??
+                                                          0) >
+                                                      75
+                                                  ? AppTheme.successColor
+                                                  : AppTheme.colorBitcoin
+                                              : AppTheme.errorColor,
                                       borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
@@ -195,11 +212,17 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                                   CustomPaint(
                                     size: Size(12, 6),
                                     painter: TrianglePainter(
-                                      color: (fearGearChartModel.fgi?.now?.value ?? 0) >= 25
-                                          ? (fearGearChartModel.fgi?.now?.value ?? 0) > 75
-                                              ? AppTheme.successColor
-                                              : AppTheme.colorBitcoin
-                                          : AppTheme.errorColor,
+                                      color:
+                                          (fearGearChartModel.fgi?.now?.value ??
+                                                      0) >=
+                                                  25
+                                              ? (fearGearChartModel.fgi?.now
+                                                              ?.value ??
+                                                          0) >
+                                                      75
+                                                  ? AppTheme.successColor
+                                                  : AppTheme.colorBitcoin
+                                              : AppTheme.errorColor,
                                     ),
                                   ),
                                 ],
@@ -208,30 +231,32 @@ class _FearAndGreedWidgetState extends State<FearAndGreedWidget> {
                           ],
                         ),
                       ),
-                      
+
                       SizedBox(height: AppTheme.elementSpacing),
-                      
+
                       // Fear/Greed labels
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Extreme Fear',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.errorColor,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: AppTheme.errorColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                           ),
                           Text(
                             'Extreme Greed',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.successColor,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: AppTheme.successColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                           ),
                         ],
                       ),
-                      
+
                       // Last updated date
                       Align(
                         alignment: Alignment.bottomCenter,

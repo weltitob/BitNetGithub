@@ -12,7 +12,8 @@ class OtherUserInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<OtherProfileController>();
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Obx(
           () => Column(
             children: [
@@ -21,7 +22,10 @@ class OtherUserInformation extends StatelessWidget {
               ),
               controller.currentview.value == 2
                   ? GlassContainer(
-                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      customColor:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black.withOpacity(0.5)
+                              : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
@@ -32,11 +36,14 @@ class OtherUserInformation extends StatelessWidget {
                             fillColor: Colors.transparent,
                             isDense: true,
                             border: InputBorder.none,
-                            errorText: controller.displayNameValid.value ? null : L10n.of(context)!.badCharacters,
+                            errorText: controller.displayNameValid.value
+                                ? null
+                                : L10n.of(context)!.badCharacters,
                           ),
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                color: AppTheme.white70,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: AppTheme.white70,
+                                  ),
                           controller: controller.userNameController,
                         ),
                       ),
@@ -49,7 +56,9 @@ class OtherUserInformation extends StatelessWidget {
                         fillColor: Colors.transparent,
                         isDense: true,
                         border: InputBorder.none,
-                        errorText: controller.displayNameValid.value ? null : L10n.of(context)!.badCharacters,
+                        errorText: controller.displayNameValid.value
+                            ? null
+                            : L10n.of(context)!.badCharacters,
                       ),
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: AppTheme.white70,
@@ -59,7 +68,10 @@ class OtherUserInformation extends StatelessWidget {
               const SizedBox(height: AppTheme.cardPadding - 4),
               controller.currentview.value == 2
                   ? GlassContainer(
-                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      customColor:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black.withOpacity(0.5)
+                              : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
@@ -70,8 +82,13 @@ class OtherUserInformation extends StatelessWidget {
                               fillColor: Colors.transparent,
                               isDense: true,
                               border: InputBorder.none,
-                              errorText: controller.displayNameValid.value ? null : L10n.of(context)!.coudntChangeUsername),
-                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: AppTheme.white90),
+                              errorText: controller.displayNameValid.value
+                                  ? null
+                                  : L10n.of(context)!.coudntChangeUsername),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(color: AppTheme.white90),
                           controller: controller.displayNameController,
                         ),
                       ),
@@ -84,14 +101,22 @@ class OtherUserInformation extends StatelessWidget {
                           fillColor: Colors.transparent,
                           isDense: true,
                           border: InputBorder.none,
-                          errorText: controller.displayNameValid.value ? null : L10n.of(context)!.coudntChangeUsername),
-                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: AppTheme.white90),
+                          errorText: controller.displayNameValid.value
+                              ? null
+                              : L10n.of(context)!.coudntChangeUsername),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: AppTheme.white90),
                       controller: controller.displayNameController,
                     ),
               const SizedBox(height: 4),
               controller.currentview.value == 2
                   ? GlassContainer(
-                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      customColor:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black.withOpacity(0.5)
+                              : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
@@ -105,7 +130,10 @@ class OtherUserInformation extends StatelessWidget {
                             border: InputBorder.none,
                             isDense: true,
                           ),
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppTheme.white70),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(color: AppTheme.white70),
                           controller: controller.bioController,
                         ),
                       ),
@@ -121,7 +149,10 @@ class OtherUserInformation extends StatelessWidget {
                         border: InputBorder.none,
                         isDense: true,
                       ),
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppTheme.white70),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: AppTheme.white70),
                       controller: controller.bioController,
                     ),
               const SizedBox(height: AppTheme.elementSpacing / 2),

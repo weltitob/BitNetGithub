@@ -60,8 +60,10 @@ class _CollectionHeaderState extends State<CollectionHeader>
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
-                          bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                          bottomLeft:
+                              Radius.circular(AppTheme.borderRadiusMid.r),
+                          bottomRight:
+                              Radius.circular(AppTheme.borderRadiusMid.r),
                         ),
                         child: Image.asset(
                           nftImage5,
@@ -74,15 +76,19 @@ class _CollectionHeaderState extends State<CollectionHeader>
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
-                            bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                            bottomLeft:
+                                Radius.circular(AppTheme.borderRadiusMid.r),
+                            bottomRight:
+                                Radius.circular(AppTheme.borderRadiusMid.r),
                           ),
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
+                              Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.7),
                             ],
                           ),
                         ),
@@ -103,7 +109,10 @@ class _CollectionHeaderState extends State<CollectionHeader>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .shadow
+                            .withOpacity(0.1),
                         blurRadius: 20,
                         offset: Offset(0, 4),
                       ),
@@ -124,7 +133,7 @@ class _CollectionHeaderState extends State<CollectionHeader>
             ],
           ),
           SizedBox(height: AppTheme.cardPadding * 2),
-          
+
           // Modern title and description layout
           Container(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -132,15 +141,17 @@ class _CollectionHeaderState extends State<CollectionHeader>
               children: [
                 // Collection name with modern styling
                 Text(
-                  widget.name != null ? widget.name! : L10n.of(context)!.unknown,
+                  widget.name != null
+                      ? widget.name!
+                      : L10n.of(context)!.unknown,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                  ),
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.5,
+                      ),
                 ),
                 SizedBox(height: 8.h),
-                
+
                 // Minimal description with better typography
                 Container(
                   constraints: BoxConstraints(maxWidth: 280.w),
@@ -148,10 +159,13 @@ class _CollectionHeaderState extends State<CollectionHeader>
                     _getProjectDescription(widget.name),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                      height: 1.5,
-                      letterSpacing: 0.1,
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                          height: 1.5,
+                          letterSpacing: 0.1,
+                        ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -163,7 +177,7 @@ class _CollectionHeaderState extends State<CollectionHeader>
       ),
     );
   }
-  
+
   Widget _buildStatItem(BuildContext context, String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -172,21 +186,22 @@ class _CollectionHeaderState extends State<CollectionHeader>
           Text(
             value,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: 2.h),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildDivider(BuildContext context) {
     return Container(
       height: 24.h,
@@ -196,8 +211,9 @@ class _CollectionHeaderState extends State<CollectionHeader>
   }
 
   String _getProjectDescription(String? projectName) {
-    if (projectName == null) return 'A unique digital collection on the Bitcoin blockchain.';
-    
+    if (projectName == null)
+      return 'A unique digital collection on the Bitcoin blockchain.';
+
     switch (projectName.toLowerCase()) {
       case 'mutant ape club':
       case 'mutant apes':

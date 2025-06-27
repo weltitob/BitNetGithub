@@ -19,8 +19,8 @@ class TwoColumnLayout extends StatelessWidget {
             Container(
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(),
-              width: 360.0 +
-                  (AppTheme.getDisplayNavigationRail(context) ? 64 : 0),
+              width:
+                  360.0 + (AppTheme.getDisplayNavigationRail(context) ? 64 : 0),
               child: mainView,
             ),
             Container(

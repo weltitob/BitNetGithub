@@ -1,13 +1,11 @@
-
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
 
 bool hasBiometrics =
-true; // a flag indicating whether biometrics is supported on the device
+    true; // a flag indicating whether biometrics is supported on the device
 bool isBioAuthenticated =
-false; // a flag indicating whether the user has successfully authenticated via biometrics
-late bool
-isSecurityChecked;
+    false; // a flag indicating whether the user has successfully authenticated via biometrics
+late bool isSecurityChecked;
 
 // This method is used to get the security check value from the shared preferences.
 awaitSecurityBool() async {

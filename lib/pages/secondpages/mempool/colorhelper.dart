@@ -29,9 +29,9 @@ List<Color> getGradientColors(double medianFee, bool isAccepted) {
   return [firstColor, secondColor];
 }
 
-
 BoxDecoration getDecoration(num medianFee, bool isAccepted) {
-  List<Color> gradientColors = getGradientColors(medianFee.toDouble(), isAccepted);
+  List<Color> gradientColors =
+      getGradientColors(medianFee.toDouble(), isAccepted);
   return BoxDecoration(
     boxShadow: [
       BoxShadow(

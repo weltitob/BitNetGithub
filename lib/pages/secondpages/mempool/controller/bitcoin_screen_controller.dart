@@ -15,7 +15,7 @@ class BitcoinScreenController extends BaseController
 
   @override
   void onInit() {
-    super.onInit(); 
+    super.onInit();
     satCtrlSell = TextEditingController();
     btcCtrlSell = TextEditingController();
     currCtrlSell = TextEditingController();

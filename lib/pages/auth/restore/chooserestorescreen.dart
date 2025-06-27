@@ -23,7 +23,7 @@ OverlayEntry? _globalLoadingOverlay;
 // Helper function to show loading overlay
 void _showLoadingOverlay(BuildContext context, {Color color = Colors.orange}) {
   _hideLoadingOverlay(); // Ensure any existing overlay is removed first
-  
+
   _globalLoadingOverlay = OverlayEntry(
     builder: (context) => Container(
       color: Colors.black.withOpacity(0.5),
@@ -34,7 +34,7 @@ void _showLoadingOverlay(BuildContext context, {Color color = Colors.orange}) {
       ),
     ),
   );
-  
+
   Overlay.of(context).insert(_globalLoadingOverlay!);
 }
 
@@ -191,22 +191,23 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     // Store context references before async gap
                     final messenger = ScaffoldMessenger.of(context);
                     final router = GoRouter.of(context);
-                    
+
                     // Show loading overlay
                     _showLoadingOverlay(context, color: Colors.orange);
 
                     bool success = false;
                     String? errorMessage;
-                    
+
                     try {
                       // Add timeout to prevent hanging
-                      success = await CreateTestUser.createOrLoginTestUser()
-                          .timeout(
-                            const Duration(seconds: 30),
-                            onTimeout: () {
-                              throw TimeoutException('Operation timed out after 30 seconds');
-                            },
-                          );
+                      success =
+                          await CreateTestUser.createOrLoginTestUser().timeout(
+                        const Duration(seconds: 30),
+                        onTimeout: () {
+                          throw TimeoutException(
+                              'Operation timed out after 30 seconds');
+                        },
+                      );
                     } on TimeoutException catch (e) {
                       errorMessage = 'Operation timed out. Please try again.';
                     } catch (e) {
@@ -224,7 +225,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       // Show error
                       messenger.showSnackBar(
                         SnackBar(
-                          content: Text(errorMessage ?? 'Failed to create/login test user'),
+                          content: Text(errorMessage ??
+                              'Failed to create/login test user'),
                           backgroundColor: Colors.red,
                           duration: const Duration(seconds: 5),
                         ),
@@ -237,7 +239,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             const SizedBox(
               height: AppTheme.cardPadding * 0.5,
             ),
-            
+
             // Delete test user button
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -268,7 +270,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       color: Colors.red,
                     ),
                   ),
-                  subtitle: const Text('Remove testuser_2 and all associated data'),
+                  subtitle:
+                      const Text('Remove testuser_2 and all associated data'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Show confirmation dialog
@@ -299,30 +302,31 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                         ],
                       ),
                     );
-                    
+
                     if (shouldDelete != true) return;
-                    
+
                     // Store context references before async gap
                     final messenger = ScaffoldMessenger.of(context);
-                    
+
                     // Show loading overlay
                     _showLoadingOverlay(context, color: Colors.red);
 
                     bool deleteSuccess = false;
                     String? errorMessage;
-                    
+
                     try {
                       // Add timeout to prevent hanging
-                      await CreateTestUser.deleteTestUser()
-                          .timeout(
-                            const Duration(seconds: 30),
-                            onTimeout: () {
-                              throw TimeoutException('Delete operation timed out after 30 seconds');
-                            },
-                          );
+                      await CreateTestUser.deleteTestUser().timeout(
+                        const Duration(seconds: 30),
+                        onTimeout: () {
+                          throw TimeoutException(
+                              'Delete operation timed out after 30 seconds');
+                        },
+                      );
                       deleteSuccess = true;
                     } on TimeoutException catch (e) {
-                      errorMessage = 'Delete operation timed out. Please try again.';
+                      errorMessage =
+                          'Delete operation timed out. Please try again.';
                     } catch (e) {
                       errorMessage = 'Error deleting test user: $e';
                     } finally {
@@ -333,10 +337,11 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     // Show result
                     messenger.showSnackBar(
                       SnackBar(
-                        content: Text(deleteSuccess 
-                            ? 'Test user deleted successfully' 
+                        content: Text(deleteSuccess
+                            ? 'Test user deleted successfully'
                             : errorMessage ?? 'Failed to delete test user'),
-                        backgroundColor: deleteSuccess ? Colors.green : Colors.red,
+                        backgroundColor:
+                            deleteSuccess ? Colors.green : Colors.red,
                         duration: const Duration(seconds: 5),
                       ),
                     );

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-List<BlockData> blockDataFromJson(String str) => List<BlockData>.from(json.decode(str).map((x) => BlockData.fromJson(x)));
-
+List<BlockData> blockDataFromJson(String str) =>
+    List<BlockData>.from(json.decode(str).map((x) => BlockData.fromJson(x)));
 
 class BlockData {
   String? id;

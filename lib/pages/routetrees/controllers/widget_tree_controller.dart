@@ -25,34 +25,38 @@ class WidgetTreeController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    
+
     try {
       // Set defaults for web immediately to ensure UI can render
       if (kIsWeb) {
         hasBiometrics.value = false;
         isSecurityChecked.value = false;
         isBioAuthenticated.value = true; // Skip authentication on web
-        initialUrl!.value = initialUrl!.value.isEmpty ? "/" : initialUrl!.value; // Use root path for web
-        
+        initialUrl!.value = initialUrl!.value.isEmpty
+            ? "/"
+            : initialUrl!.value; // Use root path for web
+
         // Create a dummy subscription for web
         appLinks = StreamController<Uri>().stream.listen((uri) {});
-        
+
         print('WidgetTreeController initialized for web with default values');
         return; // Skip the rest for web
       }
-      
+
       // Only for non-web platforms:
       isBiometricsAvailable();
       appLinks = AppLinks().uriLinkStream.listen(onListenStream);
-      
     } catch (e) {
-      print('Error in WidgetTreeController.onInit() (safe to ignore in web preview): $e');
+      print(
+          'Error in WidgetTreeController.onInit() (safe to ignore in web preview): $e');
       // Set default values for error cases
       hasBiometrics.value = false;
       isSecurityChecked.value = false;
       isBioAuthenticated.value = true;
-      initialUrl!.value = initialUrl!.value.isEmpty ? "/" : initialUrl!.value; // Use root path for web
-      
+      initialUrl!.value = initialUrl!.value.isEmpty
+          ? "/"
+          : initialUrl!.value; // Use root path for web
+
       // Create a dummy subscription for error cases
       appLinks = StreamController<Uri>().stream.listen((uri) {});
     }
@@ -64,32 +68,50 @@ class WidgetTreeController extends BaseController {
     }
     openedWithDeepLink = true;
     String uriString = uri.toString();
-    if (uriString.startsWith('https://${AppTheme.currentWebDomain}/#/showprofile') && !kIsWeb) {
+    if (uriString
+            .startsWith('https://${AppTheme.currentWebDomain}/#/showprofile') &&
+        !kIsWeb) {
       String profileId = uriString.split('showprofile/')[1];
       if (AppRouter.navigatorKey.currentContext != null) {
         try {
-          GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/showprofile/$profileId');
+          GoRouter.of(AppRouter.navigatorKey.currentContext!)
+              .push('/showprofile/$profileId');
         } catch (e) {
           logger.i('failed to push showprofile: $e');
         }
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/showprofile/$profileId');
+          GoRouter.of(AppRouter.navigatorKey.currentContext!)
+              .push('/showprofile/$profileId');
         });
       }
-    } else if (uriString.startsWith('https://${AppTheme.currentWebDomain}/#/wallet/send') && !kIsWeb) {
+    } else if (uriString
+            .startsWith('https://${AppTheme.currentWebDomain}/#/wallet/send') &&
+        !kIsWeb) {
       String parameter = uriString.split('send/')[1];
 
       if (AppRouter.navigatorKey.currentContext != null) {
-        String path = GoRouter.of(AppRouter.navigatorKey.currentContext!).routerDelegate.currentConfiguration.uri.path;
-        if (GoRouter.of(AppRouter.navigatorKey.currentContext!).routerDelegate.currentConfiguration.uri.path.contains('send')) {
-          GoRouter.of(AppRouter.navigatorKey.currentContext!).pushReplacement('/wallet/send/$parameter');
+        String path = GoRouter.of(AppRouter.navigatorKey.currentContext!)
+            .routerDelegate
+            .currentConfiguration
+            .uri
+            .path;
+        if (GoRouter.of(AppRouter.navigatorKey.currentContext!)
+            .routerDelegate
+            .currentConfiguration
+            .uri
+            .path
+            .contains('send')) {
+          GoRouter.of(AppRouter.navigatorKey.currentContext!)
+              .pushReplacement('/wallet/send/$parameter');
         } else {
-          GoRouter.of(AppRouter.navigatorKey.currentContext!).go('/wallet/send/$parameter');
+          GoRouter.of(AppRouter.navigatorKey.currentContext!)
+              .go('/wallet/send/$parameter');
         }
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(AppRouter.navigatorKey.currentContext!).go('/wallet/send/$parameter');
+          GoRouter.of(AppRouter.navigatorKey.currentContext!)
+              .go('/wallet/send/$parameter');
         });
       }
     }
@@ -122,7 +144,7 @@ class WidgetTreeController extends BaseController {
         isBioAuthenticated.value = true; // Auto-authenticate on web
         return;
       }
-      
+
       isSecurityChecked.value = await awaitSecurityBool();
       //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
       if (isSecurityChecked.value == true) {
@@ -130,13 +152,15 @@ class WidgetTreeController extends BaseController {
         if (hasBiometrics == true) {
           isBioAuthenticated.value = await BiometricHelper().authenticate();
         } else {
-          isBioAuthenticated.value = false; // Fixed assignment (was using == instead of =)
+          isBioAuthenticated.value =
+              false; // Fixed assignment (was using == instead of =)
         }
       } else {
         hasBiometrics.value = false;
       }
     } catch (e) {
-      print('Error in isBiometricsAvailable() (safe to ignore in web preview): $e');
+      print(
+          'Error in isBiometricsAvailable() (safe to ignore in web preview): $e');
       // Set defaults for error case
       isSecurityChecked.value = false;
       hasBiometrics.value = false;

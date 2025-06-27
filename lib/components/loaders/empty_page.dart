@@ -10,7 +10,11 @@ class EmptyPage extends StatelessWidget {
   final bool loading;
   final String text;
   static const double _width = 300;
-  const EmptyPage({this.loading = false, this.text = '', Key? key,}) : super(key: key);
+  const EmptyPage({
+    this.loading = false,
+    this.text = '',
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width, EmptyPage._width) / 2;
@@ -36,12 +40,21 @@ class EmptyPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppTheme.cardPadding,),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Text(text, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
+          const SizedBox(
+            height: AppTheme.cardPadding,
           ),
-          const SizedBox(height: AppTheme.cardPadding,),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(
+            height: AppTheme.cardPadding,
+          ),
           if (loading)
             Center(
               child: SizedBox(
@@ -49,11 +62,15 @@ class EmptyPage extends StatelessWidget {
                 child: dotProgress(context),
               ),
             ),
-          const SizedBox(height: AppTheme.cardPadding,),
-          LongButtonWidget(buttonType: ButtonType.transparent, title: "ESCAPE BUTTON", onTap:
-              (){
-            Auth().signOut();}
+          const SizedBox(
+            height: AppTheme.cardPadding,
           ),
+          LongButtonWidget(
+              buttonType: ButtonType.transparent,
+              title: "ESCAPE BUTTON",
+              onTap: () {
+                Auth().signOut();
+              }),
         ],
       ),
     );

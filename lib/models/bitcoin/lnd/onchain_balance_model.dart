@@ -1,11 +1,11 @@
-
 class OnchainBalance {
   String totalBalance;
   String confirmedBalance;
   String unconfirmedBalance;
   String lockedBalance;
   String reservedBalanceAnchorChan;
-  String accountBalance; // Assuming AccountBalanceEntry is represented as a string
+  String
+      accountBalance; // Assuming AccountBalanceEntry is represented as a string
 
   OnchainBalance({
     required this.totalBalance,
@@ -23,8 +23,10 @@ class OnchainBalance {
       confirmedBalance: json['confirmed_balance'].toString(),
       unconfirmedBalance: json['unconfirmed_balance'].toString(),
       lockedBalance: json['locked_balance'].toString(),
-      reservedBalanceAnchorChan: json['reserved_balance_anchor_chan'].toString(),
-      accountBalance: json['account_balance'].toString(), // Adjust if AccountBalanceEntry has a specific structure
+      reservedBalanceAnchorChan:
+          json['reserved_balance_anchor_chan'].toString(),
+      accountBalance: json['account_balance']
+          .toString(), // Adjust if AccountBalanceEntry has a specific structure
     );
   }
 

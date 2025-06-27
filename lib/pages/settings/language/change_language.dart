@@ -37,7 +37,8 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
       body: const LanguagePickerPage(),
     );
   }
-} 
+}
+
 class LanguagePickerPage extends StatefulWidget {
   const LanguagePickerPage({super.key});
 
@@ -56,11 +57,14 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
       context: context,
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: AppTheme.elementSpacing,),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
               SearchFieldWidget(
                   hintText: lang!.searchL,
                   isSearchEnabled: true,
@@ -81,8 +85,8 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
   }
 
   Widget languageData(
-      List<String> languages,
-      ) {
+    List<String> languages,
+  ) {
     final selectedLanguage = Provider.of<LocalProvider>(context).locale;
 
     return SizedBox(
@@ -99,7 +103,8 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
     );
   }
 
-  Widget languageBox(int index, List<String> languages, Locale selectedLanguage) {
+  Widget languageBox(
+      int index, List<String> languages, Locale selectedLanguage) {
     final locale = Locale.fromSubtags(languageCode: codeList[index]);
     if (search.text.isEmpty) {
       return myLanguageTile(languages[index], locale, selectedLanguage);
@@ -110,7 +115,8 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
     return Container();
   }
 
-  Widget myLanguageTile(String language, Locale locale, Locale selectedLanguage) {
+  Widget myLanguageTile(
+      String language, Locale locale, Locale selectedLanguage) {
     return BitNetListTile(
       leading: Text(
         flagList[languageList.indexOf(language)],
@@ -119,8 +125,8 @@ class _LanguagePickerPageState extends State<LanguagePickerPage> {
       text: language,
       selected: locale == selectedLanguage,
       onTap: () {
-        Provider.of<LocalProvider>(context, listen: false)
-            .setLocaleInDatabase(codeList[languageList.indexOf(language)], locale);
+        Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(
+            codeList[languageList.indexOf(language)], locale);
         Navigator.pop(context);
       },
     );

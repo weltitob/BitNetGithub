@@ -53,12 +53,12 @@ class buildLikeSpace extends StatefulWidget {
 
   @override
   _buildLikeSpaceState createState() => _buildLikeSpaceState(
-    type: this.type,
-    targetId: this.targetId,
-    ownerId: this.ownerId,
-    rocketsmap: this.rockets,
-    rocketcount: getLikeCount(),
-  );
+        type: this.type,
+        targetId: this.targetId,
+        ownerId: this.ownerId,
+        rocketsmap: this.rockets,
+        rocketcount: getLikeCount(),
+      );
 }
 
 class _buildLikeSpaceState extends State<buildLikeSpace> {
@@ -185,7 +185,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     // Return new state immediately for animation
     return newState;
   }
-  
+
   @override
   void dispose() {
     _heartTimer?.cancel();
@@ -207,12 +207,12 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
             onTap: onCommentButtonPressed,
             color: iconColor,
           ),
-      
+
           // Like button
           Obx(
-                () => _buildLikeButton(iconColor),
+            () => _buildLikeButton(iconColor),
           ),
-      
+
           // Share button
           _buildIconButton(
             icon: FontAwesomeIcons.arrowUpFromBracket,
@@ -252,12 +252,14 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
       bubblesSize: 40.r,
       animationDuration: const Duration(milliseconds: 400),
       bubblesColor: BubblesColor(
-        dotPrimaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-            ? AppTheme.colorBitcoin
-            : Theme.of(context).colorScheme.primary,
-        dotSecondaryColor: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
-            ? AppTheme.colorPrimaryGradient
-            : Theme.of(context).colorScheme.secondary,
+        dotPrimaryColor:
+            Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                ? AppTheme.colorBitcoin
+                : Theme.of(context).colorScheme.primary,
+        dotSecondaryColor:
+            Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin
+                ? AppTheme.colorPrimaryGradient
+                : Theme.of(context).colorScheme.secondary,
       ),
       circleColor: CircleColor(
         start: Theme.of(context).colorScheme.primary == AppTheme.colorBitcoin

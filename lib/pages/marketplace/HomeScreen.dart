@@ -107,7 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
               ),
               itemCount: 2,
-              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return FutureBuilder<List<PostsDataModel>?>(
                   future: controller.fetchPosts(),
                   builder: (context, snapshot) {
@@ -121,8 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         snapshot.data != null &&
                         snapshot.data!.isNotEmpty) {
                       List<PostsDataModel> postsData = snapshot.data!;
-                      if (postsData.isEmpty ||
-                          postsData.length <= index) {
+                      if (postsData.isEmpty || postsData.length <= index) {
                         return const Center(
                           child: Text('No data'),
                         );
@@ -205,16 +205,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         CircleAvatar(
                           radius: 35,
-                          backgroundImage: AssetImage('assets/marketplace/User${index+1}.png'),
+                          backgroundImage: AssetImage(
+                              'assets/marketplace/User${index + 1}.png'),
                         ),
                         SizedBox(height: 8),
-                        Text('User ${index+1}', style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
-                        Text('0.${index+2} BTC', style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        )),
+                        Text('User ${index + 1}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text('0.${index + 2} BTC',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            )),
                       ],
                     ),
                   );
@@ -237,7 +240,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
                     child: Container(
                       height: 40,
                       margin: EdgeInsets.symmetric(vertical: 12),
@@ -254,9 +258,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? AppTheme.colorBitcoin.withOpacity(0.3)
                               : AppTheme.colorBitcoin.withOpacity(0.2),
                         ),
-                        labelColor: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.colorBitcoin
-                            : AppTheme.colorBitcoin,
+                        labelColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppTheme.colorBitcoin
+                                : AppTheme.colorBitcoin,
                         unselectedLabelColor:
                             Theme.of(context).brightness == Brightness.dark
                                 ? Colors.white
@@ -300,7 +305,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         hasLiked: snapshot.data ?? false,
                                         hasLikeButton: true,
                                         nftName: postsData[index].nftName,
-                                        nftMainName: postsData[index].nftMainName,
+                                        nftMainName:
+                                            postsData[index].nftMainName,
                                         cryptoText: postsData[index].cryptoText,
                                       );
                                     },

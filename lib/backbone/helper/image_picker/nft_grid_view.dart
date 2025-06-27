@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 /// Grid view displaying NFT assets
 class NftGridView extends StatefulWidget {
   final ImagePickerController controller;
-  
+
   const NftGridView({
     Key? key,
     required this.controller,
@@ -21,37 +21,48 @@ class _NftGridViewState extends State<NftGridView> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => GridView.builder(
-      controller: widget.controller.imgScrollController,
-      itemCount: widget.controller.loadingMoreImages.value
-          ? ((widget.controller.currentNFTs.length % 3) == 0
-              ? widget.controller.currentNFTs.length + 3
-              : widget.controller.currentNFTs.length + 3 + (widget.controller.currentNFTs.length % 3))
-          : widget.controller.currentNFTs.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemBuilder: (ctx, i) {
-        return (i < widget.controller.currentNFTs.length)
-            ? Padding(
-                padding: const EdgeInsets.all(0),
-                child: InkWell(
-                  onTap: () {
-                    if (widget.controller.onImageTap != null) {
-                      widget.controller.onImageTap!(null, null, widget.controller.currentNFTs[i]);
-                    }
-                  },
-                  child: LazyImageBuilder(
-                    key: ValueKey(widget.controller.currentNFTs[i].assetId),
-                    asset: widget.controller.currentNFTs[i],
-                    controller: widget.controller,
-                  ),
-                ))
-            : (i ==
-                widget.controller.currentNFTs.length +
-                (((widget.controller.currentNFTs.length % 3) == 0 
-                  ? 3 
-                  : 3 + (widget.controller.currentNFTs.length % 3)) - 2))
-              ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
-              : Container(width: 50, height: 50, color: Colors.transparent);
-      },
-    ));
+          controller: widget.controller.imgScrollController,
+          itemCount: widget.controller.loadingMoreImages.value
+              ? ((widget.controller.currentNFTs.length % 3) == 0
+                  ? widget.controller.currentNFTs.length + 3
+                  : widget.controller.currentNFTs.length +
+                      3 +
+                      (widget.controller.currentNFTs.length % 3))
+              : widget.controller.currentNFTs.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3),
+          itemBuilder: (ctx, i) {
+            return (i < widget.controller.currentNFTs.length)
+                ? Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: InkWell(
+                      onTap: () {
+                        if (widget.controller.onImageTap != null) {
+                          widget.controller.onImageTap!(
+                              null, null, widget.controller.currentNFTs[i]);
+                        }
+                      },
+                      child: LazyImageBuilder(
+                        key: ValueKey(widget.controller.currentNFTs[i].assetId),
+                        asset: widget.controller.currentNFTs[i],
+                        controller: widget.controller,
+                      ),
+                    ))
+                : (i ==
+                        widget.controller.currentNFTs.length +
+                            (((widget.controller.currentNFTs.length % 3) == 0
+                                    ? 3
+                                    : 3 +
+                                        (widget.controller.currentNFTs.length %
+                                            3)) -
+                                2))
+                    ? Container(
+                        width: 50,
+                        height: 50,
+                        child: Center(child: dotProgress(context)))
+                    : Container(
+                        width: 50, height: 50, color: Colors.transparent);
+          },
+        ));
   }
 }

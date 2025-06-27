@@ -1,5 +1,7 @@
-
-enum BitcoinUnits { BTC, SAT, }
+enum BitcoinUnits {
+  BTC,
+  SAT,
+}
 
 class BitcoinUnitModel {
   // The Bitcoin unit using the BitcoinUnits enum

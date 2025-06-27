@@ -98,28 +98,38 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                       Container(
                         padding: const EdgeInsets.all(AppTheme.cardPadding),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.collections_outlined,
                           size: AppTheme.cardPadding * 2,
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.7),
                         ),
                       ),
                       const SizedBox(height: AppTheme.elementSpacing),
                       Text(
                         'No Assets Yet',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       const SizedBox(height: AppTheme.elementSpacing * 0.5),
                       Text(
                         'Your created assets will appear here',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                        ),
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.color
+                                  ?.withOpacity(0.7),
+                            ),
                         textAlign: TextAlign.center,
                       ),
                     ],

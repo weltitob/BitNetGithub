@@ -13,11 +13,9 @@ import 'intl/messages_all.dart';
 // ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class L10n {
-
   L10n();
 
   static L10n? _current;
-
 
   static L10n get current {
     assert(_current != null,

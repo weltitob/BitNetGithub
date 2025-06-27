@@ -70,8 +70,8 @@ class RowTabView extends StatelessWidget {
             timestamp: DateTime.now(), // Use current time as placeholder
             postName: item.nftName,
             onTap: () {
-              context.push('/asset_screen',
-                  extra: {'nft_id': item.id.toString()});
+              context
+                  .push('/asset_screen', extra: {'nft_id': item.id.toString()});
             },
           );
         }).toList(),

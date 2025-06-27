@@ -13,7 +13,8 @@ Future<dynamic> startEcsTask(String userId) async {
   try {
     // Attempt to retrieve App Check tokens
     try {
-      final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
+      final appCheckToken =
+          await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       logger.i("App Check Token: $appCheckToken");
       logger.i("New App Check Token: $newAppCheckToken");
@@ -57,7 +58,8 @@ Future<dynamic> startEcsTask(String userId) async {
     Map<String, dynamic> bodyData = jsonDecode(messageMap['body']);
 
     // Process ECS task response
-    EcsTaskStartResponse ecsResponse = EcsTaskStartResponse.fromJson(messageMap);
+    EcsTaskStartResponse ecsResponse =
+        EcsTaskStartResponse.fromJson(messageMap);
     if (statusCode != 200) {
       logger.e("Error starting ECS task: ${ecsResponse.details?.message}");
       return ecsResponse;
@@ -83,7 +85,9 @@ class EcsTaskStartResponse {
   factory EcsTaskStartResponse.fromJson(Map<String, dynamic> json) {
     return EcsTaskStartResponse(
       statusCode: json['statusCode'],
-      details: json['body'] != null ? EcsTaskDetails.fromJson(jsonDecode(json['body'])) : null,
+      details: json['body'] != null
+          ? EcsTaskDetails.fromJson(jsonDecode(json['body']))
+          : null,
     );
   }
 

@@ -24,10 +24,12 @@ class AttributesBuilder extends StatelessWidget {
       // Ensuring the JSON string is properly formatted
       final List<dynamic> jsonData = json.decode(attributes);
       logger.i("Json Data: $jsonData");
-      propertyList = jsonData.map((item) => {
-        'trait_type': item['trait_type'] as String,
-        'value': item['value'] as String
-      }).toList();
+      propertyList = jsonData
+          .map((item) => {
+                'trait_type': item['trait_type'] as String,
+                'value': item['value'] as String
+              })
+          .toList();
     } catch (e) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w),

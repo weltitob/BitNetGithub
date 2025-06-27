@@ -14,9 +14,11 @@ cancelMintAsset() async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
-  String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+  String restHost =
+      remoteConfigController.baseUrlLightningTerminalWithPort.value;
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -29,10 +31,10 @@ cancelMintAsset() async {
   };
 
   String url =
-  //  kDebugMode
-  //     ? ''
-  //     :
-       'https://$restHost/v1/taproot-assets/assets/mint/cancel';
+      //  kDebugMode
+      //     ? ''
+      //     :
+      'https://$restHost/v1/taproot-assets/assets/mint/cancel';
 
   try {
     var response = await http.post(
@@ -48,7 +50,8 @@ cancelMintAsset() async {
       // Process responseData if needed
       return responseData;
     } else {
-      logger.e('Failed to cancel minting: ${response.statusCode}, ${response.body}');
+      logger.e(
+          'Failed to cancel minting: ${response.statusCode}, ${response.body}');
     }
   } catch (e) {
     logger.e('Error requesting cancel minting: $e');

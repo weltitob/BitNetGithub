@@ -21,7 +21,7 @@ void main() {
       // Setup Get dependencies
       mockLogger = MockLoggerService();
       Get.put<LoggerService>(mockLogger);
-      
+
       service = LnurlChannelService();
       mockClient = MockClient();
     });
@@ -33,25 +33,28 @@ void main() {
     group('decodeLnurl', () {
       test('should decode valid LNURL correctly', () {
         // Test with a sample LNURL (this would be a real bech32 encoded URL)
-        const validLnurl = 'lnurl1dp68gurn8ghj7mn0wd68ytnhd9hx2tmvde6hymrs9ashq6f0wccj7mrww4excup0dajx2mrv92x9xp';
-        
+        const validLnurl =
+            'lnurl1dp68gurn8ghj7mn0wd68ytnhd9hx2tmvde6hymrs9ashq6f0wccj7mrww4excup0dajx2mrv92x9xp';
+
         // This test would need actual bech32 decoding
         // For now, we'll test that the method exists and can be called
-        expect(() => service.decodeLnurl(validLnurl), throwsA(isA<Exception>()));
+        expect(() => service.decodeLnurlToUrl(validLnurl),
+            throwsA(isA<Exception>()));
       });
 
       test('should throw exception for invalid LNURL', () {
         const invalidLnurl = 'not-a-valid-lnurl';
-        
-        expect(() => service.decodeLnurl(invalidLnurl), throwsException);
+
+        expect(() => service.decodeLnurlToUrl(invalidLnurl), throwsException);
       });
     });
 
     group('isChannelRequest', () {
       test('should return true for valid LNURL channel request', () {
         // Mock a valid channel request LNURL
-        const channelLnurl = 'lnurl1dp68gurn8ghj7mn0wd68ytnhd9hx2tmvde6hymrs9ashq6f0wccj7mrww4excup0dajx2mrv92x9xp';
-        
+        const channelLnurl =
+            'lnurl1dp68gurn8ghj7mn0wd68ytnhd9hx2tmvde6hymrs9ashq6f0wccj7mrww4excup0dajx2mrv92x9xp';
+
         // This would need to be mocked properly with actual decoded URL containing 'channel'
         // For now, test the basic structure
         expect(() => service.isChannelRequest(channelLnurl), returnsNormally);
@@ -59,13 +62,13 @@ void main() {
 
       test('should return false for non-LNURL strings', () {
         const nonLnurl = 'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-        
+
         expect(service.isChannelRequest(nonLnurl), false);
       });
 
       test('should return false for invalid LNURL', () {
         const invalidLnurl = 'lnurl-invalid';
-        
+
         expect(service.isChannelRequest(invalidLnurl), false);
       });
     });
@@ -261,22 +264,22 @@ void main() {
 // Mock LoggerService for testing
 class MockLoggerService extends Mock implements LoggerService {
   @override
-  void i(String message) {
+  void i(Object message) {
     // Mock implementation
   }
 
   @override
-  void e(String message) {
+  void e(Object message) {
     // Mock implementation
   }
 
   @override
-  void d(String message) {
+  void d(Object message) {
     // Mock implementation
   }
 
   @override
-  void w(String message) {
+  void w(Object message) {
     // Mock implementation
   }
 }

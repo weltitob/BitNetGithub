@@ -8,7 +8,7 @@ class DescriptionEditorLocal extends StatelessWidget {
   final PostFile postFile;
   final FocusNode? focusNode;
   final TextEditingController? controller;
-  
+
   const DescriptionEditorLocal({
     Key? key,
     required this.postFile,
@@ -23,62 +23,61 @@ class DescriptionEditorLocal extends StatelessWidget {
     if (controller != null) {
       controller!.text = postFile.text ?? '';
     }
-    
+
     return CommonHeading(
       headingText: 'Description',
       hasButton: false,
       collapseBtn: false,
       child: Container(
         padding: const EdgeInsets.only(bottom: 16.0),
-        child: controller != null ? 
-          // Use the provided controller
-          TextField(
-            controller: controller,
-            focusNode: focusNode,
-            minLines: 3,
-            maxLines: 8,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-            style: Theme.of(context).textTheme.bodyMedium,
-            decoration: InputDecoration(
-              hintText: "Enter description here...",
-              border: InputBorder.none,
-              hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).hintColor,
+        child: controller != null
+            ?
+            // Use the provided controller
+            TextField(
+                controller: controller,
+                focusNode: focusNode,
+                minLines: 3,
+                maxLines: 8,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: "Enter description here...",
+                  border: InputBorder.none,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).hintColor,
+                      ),
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing,
+                      vertical: AppTheme.elementSpacing / 2),
+                ),
+                onChanged: (value) {
+                  postFile.text = value;
+                },
+              )
+            // Use local state
+            : TextFormField(
+                initialValue: postFile.text,
+                focusNode: focusNode,
+                minLines: 3,
+                maxLines: 8,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: "Enter description here...",
+                  border: InputBorder.none,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).hintColor,
+                      ),
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing,
+                      vertical: AppTheme.elementSpacing / 2),
+                ),
+                onChanged: (value) {
+                  postFile.text = value;
+                },
               ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: AppTheme.elementSpacing, 
-                vertical: AppTheme.elementSpacing / 2
-              ),
-            ),
-            onChanged: (value) {
-              postFile.text = value;
-            },
-          )
-          // Use local state
-          : TextFormField(
-            initialValue: postFile.text,
-            focusNode: focusNode,
-            minLines: 3,
-            maxLines: 8,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-            style: Theme.of(context).textTheme.bodyMedium,
-            decoration: InputDecoration(
-              hintText: "Enter description here...",
-              border: InputBorder.none,
-              hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).hintColor,
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: AppTheme.elementSpacing, 
-                vertical: AppTheme.elementSpacing / 2
-              ),
-            ),
-            onChanged: (value) {
-              postFile.text = value;
-            },
-          ),
       ),
     );
   }

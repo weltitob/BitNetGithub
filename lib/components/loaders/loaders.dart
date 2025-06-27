@@ -11,28 +11,34 @@ Container dotProgress(BuildContext context, {Color? color, double? size}) {
     constraints: BoxConstraints.tightFor(),
     child: Center(
       child: SpinKitThreeBounce(
-        color: color ?? Theme.of(context).colorScheme.primary, // Set the color of the dots
-        size: size ?? AppTheme.iconSize, // Set the size of the dots, with a fallback to the default
+        color: color ??
+            Theme.of(context).colorScheme.primary, // Set the color of the dots
+        size: size ??
+            AppTheme
+                .iconSize, // Set the size of the dots, with a fallback to the default
       ),
     ),
   );
 }
 
-
 // Widget to display a glowing icon with a specified icon and color
 Widget avatarGlow(BuildContext context, IconData icon) {
   return Center(
     child: AvatarGlow(
-      glowColor: darken(Theme.of(context).colorScheme.primary, 80), // Set the color of the glow with a darken function
+      glowColor: darken(Theme.of(context).colorScheme.primary,
+          80), // Set the color of the glow with a darken function
       endRadius: 160.0, // Set the size of the glow
-      duration: const Duration(milliseconds: 2000), // Set the duration of the animation
-      repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
+      duration: const Duration(
+          milliseconds: 2000), // Set the duration of the animation
+      repeatPauseDuration: const Duration(
+          milliseconds: 0), // Set the duration of the pause between animations
       repeat: true, // Set the animation to repeat
       showTwoGlows: true, // Set the glow to display two glows instead of one
       child: Icon(
         icon,
         size: 100,
-        color: Theme.of(context).colorScheme.primary, // Set the color of the icon
+        color:
+            Theme.of(context).colorScheme.primary, // Set the color of the icon
       ),
     ),
   );
@@ -41,23 +47,33 @@ Widget avatarGlow(BuildContext context, IconData icon) {
 // Widget to display a small glowing circle for audio progress
 Widget avatarGlowProgressAudio(BuildContext context) {
   return Padding(
-    padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 10.0), // Set the padding for the widget
+    padding: const EdgeInsets.only(
+        top: 5.0, bottom: 5.0, right: 10.0), // Set the padding for the widget
     child: Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary, // Set the color of the container
-        borderRadius: BorderRadius.circular(40.0), // Set the border radius of the container
+        color: Theme.of(context)
+            .colorScheme
+            .primary, // Set the color of the container
+        borderRadius: BorderRadius.circular(
+            40.0), // Set the border radius of the container
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4.0), // Set the padding for the container's child
+        padding: const EdgeInsets.all(
+            4.0), // Set the padding for the container's child
         child: AvatarGlow(
             glowColor: Colors.white, // Set the color of the glow
             endRadius: 10.0, // Set the size of the glow
-            duration: const Duration(milliseconds: 1000), // Set the duration of the animation
-            repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
+            duration: const Duration(
+                milliseconds: 1000), // Set the duration of the animation
+            repeatPauseDuration: const Duration(
+                milliseconds:
+                    0), // Set the duration of the pause between animations
             repeat: true, // Set the animation to repeat
-            showTwoGlows: true, // Set the glow to display two glows instead of one
-            child: Container() // Set an empty container as the child of the AvatarGlow widget
-        ),
+            showTwoGlows:
+                true, // Set the glow to display two glows instead of one
+            child:
+                Container() // Set an empty container as the child of the AvatarGlow widget
+            ),
       ),
     ),
   );
@@ -67,13 +83,18 @@ Widget avatarGlowProgressAudio(BuildContext context) {
 Widget avatarGlowProgressSmall(BuildContext context) {
   return Center(
     child: AvatarGlow(
-        glowColor: Theme.of(context).colorScheme.primary, // Set the color of the glow
+        glowColor:
+            Theme.of(context).colorScheme.primary, // Set the color of the glow
         endRadius: 20.0, // Set the size of the glow
-        duration: const Duration(milliseconds: 1000), // Set the duration of the animation
-        repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
+        duration: const Duration(
+            milliseconds: 1000), // Set the duration of the animation
+        repeatPauseDuration: const Duration(
+            milliseconds:
+                0), // Set the duration of the pause between animations
         repeat: true, // Set the animation to repeat
         showTwoGlows: true, // Set the glow to display two glows instead of one
-        child: Container() // Set an empty container as the child of the AvatarGlow widget
-    ),
+        child:
+            Container() // Set an empty container as the child of the AvatarGlow widget
+        ),
   );
 }

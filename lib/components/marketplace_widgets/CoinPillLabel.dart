@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,9 +6,7 @@ class CoinPillLabel extends StatefulWidget {
   final labelText;
 
   const CoinPillLabel(
-      {Key? key,
-      required this.coinImg,
-      required this.labelText})
+      {Key? key, required this.coinImg, required this.labelText})
       : super(key: key);
 
   @override

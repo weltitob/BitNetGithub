@@ -27,19 +27,20 @@ class MarketCapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Default chart data if none provided
-    final List<ChartLine> dataPoints = chartData ?? [
-      ChartLine(time: 0, price: 2200000000000),
-      ChartLine(time: 1, price: 2250000000000),
-      ChartLine(time: 2, price: 2300000000000),
-      ChartLine(time: 3, price: 2280000000000),
-      ChartLine(time: 4, price: 2320000000000),
-      ChartLine(time: 5, price: 2350000000000),
-      ChartLine(time: 6, price: 2400000000000),
-      ChartLine(time: 7, price: 2420000000000),
-    ];
-    
+    final List<ChartLine> dataPoints = chartData ??
+        [
+          ChartLine(time: 0, price: 2200000000000),
+          ChartLine(time: 1, price: 2250000000000),
+          ChartLine(time: 2, price: 2300000000000),
+          ChartLine(time: 3, price: 2280000000000),
+          ChartLine(time: 4, price: 2320000000000),
+          ChartLine(time: 5, price: 2350000000000),
+          ChartLine(time: 6, price: 2400000000000),
+          ChartLine(time: 7, price: 2420000000000),
+        ];
+
     return GlassContainer(
       boxShadow: isDarkMode ? [] : null,
       child: Column(
@@ -48,7 +49,7 @@ class MarketCapWidget extends StatelessWidget {
           // Header with value and percentage
           Padding(
             padding: EdgeInsets.only(
-              left: AppTheme.cardPadding * 0.75, 
+              left: AppTheme.cardPadding * 0.75,
               right: AppTheme.cardPadding * 0.75,
               top: AppTheme.cardPadding * 0.75,
             ),
@@ -62,22 +63,27 @@ class MarketCapWidget extends StatelessWidget {
                     children: [
                       Text(
                         marketCap,
-                        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26.sp,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 26.sp,
+                            ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         'Global crypto market cap',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                        ),
+                              color: isDarkMode
+                                  ? AppTheme.white60
+                                  : AppTheme.black60,
+                            ),
                       ),
                     ],
                   ),
                 ),
-                
+
                 // Percentage change badge using reusable component
                 PercentageChangeWidget(
                   percentage: changePercentage,
@@ -88,7 +94,7 @@ class MarketCapWidget extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Chart area
           SizedBox(
             height: 120.h,
@@ -114,15 +120,26 @@ class MarketCapWidget extends StatelessWidget {
                     animationDuration: 0, // Disable animation for consistent UX
                     xValueMapper: (ChartLine data, _) => data.time,
                     yValueMapper: (ChartLine data, _) => data.price,
-                    color: (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.3),
+                    color: (isPositive
+                            ? AppTheme.successColor
+                            : AppTheme.errorColor)
+                        .withOpacity(0.3),
                     borderWidth: 2.5,
-                    borderColor: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                    borderColor: isPositive
+                        ? AppTheme.successColor
+                        : AppTheme.errorColor,
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.3),
-                        (isPositive ? AppTheme.successColor : AppTheme.errorColor).withOpacity(0.05),
+                        (isPositive
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor)
+                            .withOpacity(0.3),
+                        (isPositive
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor)
+                            .withOpacity(0.05),
                         Colors.transparent,
                       ],
                     ),
@@ -131,7 +148,7 @@ class MarketCapWidget extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Stats row
           Padding(
             padding: EdgeInsets.all(AppTheme.cardPadding * 0.75),
@@ -144,20 +161,21 @@ class MarketCapWidget extends StatelessWidget {
                       Text(
                         '24h Trading Volume',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                        ),
+                              color: isDarkMode
+                                  ? AppTheme.white60
+                                  : AppTheme.black60,
+                            ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         tradingVolume,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ],
                   ),
                 ),
-                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,15 +183,17 @@ class MarketCapWidget extends StatelessWidget {
                       Text(
                         'BTC Dominance',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                        ),
+                              color: isDarkMode
+                                  ? AppTheme.white60
+                                  : AppTheme.black60,
+                            ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         btcDominance,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ],
                   ),

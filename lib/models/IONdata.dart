@@ -6,7 +6,7 @@ class IONData {
   String publicIONKey;
   String privateIONKey;
   String customToken;
-  String mnemonic;  // new field
+  String mnemonic; // new field
 
   IONData({
     required this.did,
@@ -14,7 +14,7 @@ class IONData {
     required this.customToken,
     required this.publicIONKey,
     required this.privateIONKey,
-    required this.mnemonic,  // new field
+    required this.mnemonic, // new field
   });
 
   factory IONData.fromJson(Map<String, dynamic> json) {
@@ -24,7 +24,7 @@ class IONData {
       privateIONKey: json['privateKey'].toString(),
       publicIONKey: json['publicKey'].toString(),
       customToken: json['customToken'].toString(),
-      mnemonic: json['mnemonic'].toString(),  // new field
+      mnemonic: json['mnemonic'].toString(), // new field
     );
   }
 
@@ -35,7 +35,7 @@ class IONData {
       'publicKey': publicIONKey,
       'privateKey': privateIONKey,
       'customToken': customToken,
-      'mnemonic': mnemonic,  // new field
+      'mnemonic': mnemonic, // new field
     };
   }
 
@@ -46,7 +46,7 @@ class IONData {
       publicIONKey: map['publicKey'],
       privateIONKey: map['privateKey'],
       customToken: map['customToken'],
-      mnemonic: map['mnemonic'],  // new field
+      mnemonic: map['mnemonic'], // new field
     );
   }
 

@@ -11,14 +11,12 @@ import 'package:get/get.dart';
 
 Future<RestResponse> getTransaction(String tx_id) async {
   LoggerService logger = Get.find();
-  final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
+  final RemoteConfigController remoteConfigController =
+      Get.find<RemoteConfigController>();
 
   String restHost = remoteConfigController.baseUrlLightningTerminal.value;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/tx?txid=$tx_id';
-
-
-
 
   ByteData byteData = await remoteConfigController.loadAdminMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

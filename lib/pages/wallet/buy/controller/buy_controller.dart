@@ -12,21 +12,21 @@ class BuyController extends GetxController {
   late TextEditingController satController;
   late TextEditingController currController;
   late FocusNode focusNode;
-  
+
   // State variables
   RxString paymentMethodName = "Credit or Debit Card".obs;
   RxString paymentMethodId = "credit_debit_card".obs;
   RxString providerName = "MoonPay".obs;
   RxString providerId = "moonpay".obs;
-  
+
   // MoonPay quote variables
   RxDouble moonpayQuoteCurrPrice = RxDouble(0);
   RxDouble moonpayBaseCurrPrice = RxDouble(0);
-  
+
   // Timer variables
   RxInt quoteTimer = 20.obs;
   late Timer _timer;
-  
+
   @override
   void onInit() {
     super.onInit();
@@ -34,19 +34,20 @@ class BuyController extends GetxController {
     satController = TextEditingController();
     currController = TextEditingController();
     focusNode = FocusNode();
-    
+
     // Start quote timer
     _startQuoteTimer();
   }
-  
+
   void _startQuoteTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (_) async {
       // Get context to access provider
       final context = Get.context;
       if (context == null) return;
-      
-      String? currency = Provider.of<CurrencyChangeProvider>(context, listen: false)
-          .selectedCurrency;
+
+      String? currency =
+          Provider.of<CurrencyChangeProvider>(context, listen: false)
+              .selectedCurrency;
       currency = currency ?? "USD";
       currency = currency.toLowerCase();
 
@@ -57,7 +58,7 @@ class BuyController extends GetxController {
                 .toStringAsFixed(5)
                 .replaceFirst(RegExp(r'\.?0+$'), '')) ??
             0.0;
-        
+
         if (btcAmount > 0) {
           try {
             var quotePrice = await moonpayQuotePrice(btcAmount, currency);
@@ -81,19 +82,19 @@ class BuyController extends GetxController {
       }
     });
   }
-  
+
   void setPaymentMethod({required String name, required String id}) {
     paymentMethodName.value = name;
     paymentMethodId.value = id;
     update(); // Add this to trigger rebuild
   }
-  
+
   void setProvider({required String name, required String id}) {
     providerName.value = name;
     providerId.value = id;
     update(); // Add this to trigger rebuild
   }
-  
+
   @override
   void onClose() {
     btcController.dispose();

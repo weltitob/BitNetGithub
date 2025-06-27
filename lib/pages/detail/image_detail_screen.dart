@@ -12,7 +12,7 @@ class ImageDetailScreen extends StatelessWidget {
   final bool isAsset;
 
   const ImageDetailScreen({
-    Key? key, 
+    Key? key,
     required this.encodedData,
     this.caption,
     this.isAsset = false,
@@ -20,12 +20,12 @@ class ImageDetailScreen extends StatelessWidget {
 
   // Checks if the string is likely an asset path or a Base64 image
   bool _isAssetPath(String data) {
-    return data.startsWith('assets/') || 
-           data.endsWith('.png') || 
-           data.endsWith('.jpg') || 
-           data.endsWith('.jpeg') || 
-           data.endsWith('.webp') || 
-           data.endsWith('.gif');
+    return data.startsWith('assets/') ||
+        data.endsWith('.png') ||
+        data.endsWith('.jpg') ||
+        data.endsWith('.jpeg') ||
+        data.endsWith('.webp') ||
+        data.endsWith('.gif');
   }
 
   // Checks if the string is a URL
@@ -38,10 +38,10 @@ class ImageDetailScreen extends StatelessWidget {
     // Determine image type based on path or data format
     final bool isAssetImage = isAsset || _isAssetPath(encodedData);
     final bool isUrlImage = _isUrl(encodedData);
-    
+
     // Widget to display the image
     Widget imageWidget;
-    
+
     if (isAssetImage) {
       // Handle asset images
       imageWidget = Image.asset(
@@ -78,7 +78,7 @@ class ImageDetailScreen extends StatelessWidget {
         if (encodedData.contains(',')) {
           base64String = encodedData.split(',').last;
         }
-        
+
         Uint8List imageBytes = base64Decode(base64String);
         imageWidget = Image.memory(
           imageBytes,
@@ -147,8 +147,8 @@ class ImageDetailScreen extends StatelessWidget {
                     child: Text(
                       caption!,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ),

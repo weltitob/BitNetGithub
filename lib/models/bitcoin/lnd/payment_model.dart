@@ -43,7 +43,7 @@ class LightningPayment {
       }
       return int.tryParse(value.toString()) ?? defaultValue;
     }
-    
+
     return LightningPayment(
       paymentHash: json['payment_hash'] ?? '',
       value: safeParseInt(json['value']),
@@ -57,7 +57,10 @@ class LightningPayment {
       feeSat: safeParseInt(json['fee_sat']),
       feeMsat: safeParseInt(json['fee_msat']),
       creationTimeNs: safeParseInt(json['creation_time_ns']),
-      htlcs: (json['htlcs'] as List<dynamic>?)?.map((x) => Htlc.fromJson(x as Map<String, dynamic>)).toList() ?? [],
+      htlcs: (json['htlcs'] as List<dynamic>?)
+              ?.map((x) => Htlc.fromJson(x as Map<String, dynamic>))
+              .toList() ??
+          [],
       paymentIndex: json['payment_index'] ?? '',
       failureReason: json['failure_reason'] ?? '',
     );
@@ -113,11 +116,13 @@ class Htlc {
       }
       return int.tryParse(value.toString()) ?? defaultValue;
     }
-    
+
     return Htlc(
       attemptId: safeParseInt(json['attempt_id']),
       status: json['status'] ?? '',
-      route: json['route'] != null ? Route.fromJson(json['route'] as Map<String, dynamic>) : Route.empty(),
+      route: json['route'] != null
+          ? Route.fromJson(json['route'] as Map<String, dynamic>)
+          : Route.empty(),
       attemptTimeNs: safeParseInt(json['attempt_time_ns']),
       resolveTimeNs: safeParseInt(json['resolve_time_ns']),
       failure: json['failure'],
@@ -165,12 +170,15 @@ class Route {
       }
       return int.tryParse(value.toString()) ?? defaultValue;
     }
-    
+
     return Route(
       totalTimeLock: safeParseInt(json['total_time_lock']),
       totalFees: safeParseInt(json['total_fees']),
       totalAmt: safeParseInt(json['total_amt']),
-      hops: (json['hops'] as List<dynamic>?)?.map((x) => Hop.fromJson(x as Map<String, dynamic>)).toList() ?? [],
+      hops: (json['hops'] as List<dynamic>?)
+              ?.map((x) => Hop.fromJson(x as Map<String, dynamic>))
+              .toList() ??
+          [],
       totalFeesMsat: safeParseInt(json['total_fees_msat']),
       totalAmtMsat: safeParseInt(json['total_amt_msat']),
     );
@@ -232,7 +240,7 @@ class Hop {
       }
       return int.tryParse(value.toString()) ?? defaultValue;
     }
-    
+
     return Hop(
       chanId: json['chan_id'] ?? '',
       chanCapacity: json['chan_capacity'] ?? '',

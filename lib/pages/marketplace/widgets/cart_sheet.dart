@@ -10,19 +10,19 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 
 class CartSheet extends StatefulWidget {
-  const CartSheet({
-    Key? key,
-    this.onClear,
-    this.onDeleteItem,
-    required this.selected_products,
-    required this.sortedGridList
-  }) : super(key: key);
-  
+  const CartSheet(
+      {Key? key,
+      this.onClear,
+      this.onDeleteItem,
+      required this.selected_products,
+      required this.sortedGridList})
+      : super(key: key);
+
   final Function()? onClear;
   final Function(int)? onDeleteItem;
   final List<dynamic> selected_products;
   final List<GridListModal> sortedGridList;
-  
+
   @override
   State<CartSheet> createState() => _CartSheetState();
 }

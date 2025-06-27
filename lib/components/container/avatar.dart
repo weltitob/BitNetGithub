@@ -99,7 +99,8 @@ class Avatar extends StatelessWidget {
                 : local
                     ? imageBytes is String
                         ? ClipRRect(
-                            borderRadius: BorderRadius.circular((size - borderPadding * 2) / 3),
+                            borderRadius: BorderRadius.circular(
+                                (size - borderPadding * 2) / 3),
                             child: ImageBuilder(encodedData: imageBytes),
                           )
                         : Image.memory(
@@ -110,7 +111,9 @@ class Avatar extends StatelessWidget {
                           )
                     : MxcImage(
                         key: Key(mxContent.toString()),
-                        uri: mxContent is Uri ? mxContent : Uri.parse(mxContent.toString()),
+                        uri: mxContent is Uri
+                            ? mxContent
+                            : Uri.parse(mxContent.toString()),
                         fit: BoxFit.cover,
                         width: size,
                         height: size,
@@ -127,7 +130,9 @@ class Avatar extends StatelessWidget {
         children: [
           InkWell(
             onTap: onTap ??
-                (profileId != null ? () => context.go("/showprofile/:$profileId") : null),
+                (profileId != null
+                    ? () => context.go("/showprofile/:$profileId")
+                    : null),
             borderRadius: borderRadius,
             child: container,
           ),

@@ -14,7 +14,7 @@ class FearAndGreedCardOptimized extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MempoolController());
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
@@ -52,13 +52,12 @@ class FearAndGreedCardOptimized extends StatelessWidget {
                 if (controller.fearGreedLoading.value) {
                   return _buildLoadingState();
                 }
-                
+
                 final currentValue = controller.getCurrentFearGreedValue();
                 return _buildIndexDisplay(context, currentValue, controller);
               }),
 
               SizedBox(height: 16),
-
             ],
           ),
         ),
@@ -92,7 +91,8 @@ class FearAndGreedCardOptimized extends StatelessWidget {
     );
   }
 
-  Widget _buildIndexDisplay(BuildContext context, int currentValue, MempoolController controller) {
+  Widget _buildIndexDisplay(
+      BuildContext context, int currentValue, MempoolController controller) {
     return Column(
       children: [
         // Horizontal slider/gauge representation
@@ -104,13 +104,13 @@ class FearAndGreedCardOptimized extends StatelessWidget {
               Text(
                 currentValue.toString(),
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: controller.getFearGreedColor(currentValue),
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: controller.getFearGreedColor(currentValue),
+                    ),
               ),
-              
+
               SizedBox(height: 8),
-              
+
               // Horizontal gradient slider
               Container(
                 height: 20,
@@ -119,11 +119,11 @@ class FearAndGreedCardOptimized extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   gradient: LinearGradient(
                     colors: [
-                      AppTheme.errorColor,                    // Red for Extreme Fear
-                      AppTheme.errorColor.withOpacity(0.7),   // Lighter red
-                      Colors.orange,                          // Orange for neutral
+                      AppTheme.errorColor, // Red for Extreme Fear
+                      AppTheme.errorColor.withOpacity(0.7), // Lighter red
+                      Colors.orange, // Orange for neutral
                       AppTheme.successColor.withOpacity(0.7), // Lighter green
-                      AppTheme.successColor,                  // Green for Extreme Greed
+                      AppTheme.successColor, // Green for Extreme Greed
                     ],
                     stops: [0.0, 0.25, 0.5, 0.75, 1.0],
                   ),
@@ -132,7 +132,11 @@ class FearAndGreedCardOptimized extends StatelessWidget {
                   children: [
                     // Position indicator
                     Positioned(
-                      left: (currentValue / 100) * (MediaQuery.of(context).size.width - 2 * AppTheme.cardPadding - 2 * AppTheme.cardPadding) - 6,
+                      left: (currentValue / 100) *
+                              (MediaQuery.of(context).size.width -
+                                  2 * AppTheme.cardPadding -
+                                  2 * AppTheme.cardPadding) -
+                          6,
                       top: -2,
                       child: Container(
                         width: 12,
@@ -141,12 +145,16 @@ class FearAndGreedCardOptimized extends StatelessWidget {
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3), 
-                            width: 1.5
-                          ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outline
+                                  .withOpacity(0.3),
+                              width: 1.5),
                           boxShadow: [
                             BoxShadow(
-                              color: Theme.of(context).shadowColor.withOpacity(0.2),
+                              color: Theme.of(context)
+                                  .shadowColor
+                                  .withOpacity(0.2),
                               blurRadius: 6,
                               offset: Offset(0, 2),
                             ),
@@ -160,9 +168,9 @@ class FearAndGreedCardOptimized extends StatelessWidget {
             ],
           ),
         ),
-        
+
         SizedBox(height: 12),
-        
+
         // Sentiment text and change indicator in one row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,11 +179,11 @@ class FearAndGreedCardOptimized extends StatelessWidget {
             Text(
               controller.fearGreedData.value.fgi?.now?.valueText ?? "Neutral",
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: controller.getFearGreedColor(currentValue),
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: controller.getFearGreedColor(currentValue),
+                  ),
             ),
-            
+
             // Change indicator
             if (controller.fearGreedData.value.fgi?.previousClose != null)
               _buildSimpleComparison(context, controller, currentValue),
@@ -184,14 +192,17 @@ class FearAndGreedCardOptimized extends StatelessWidget {
       ],
     );
   }
-  
-  Widget _buildSimpleComparison(BuildContext context, MempoolController controller, int currentValue) {
-    final previousValue = controller.fearGreedData.value.fgi?.previousClose?.value ?? currentValue;
+
+  Widget _buildSimpleComparison(
+      BuildContext context, MempoolController controller, int currentValue) {
+    final previousValue =
+        controller.fearGreedData.value.fgi?.previousClose?.value ??
+            currentValue;
     final change = currentValue - previousValue;
     final isPositive = change > 0;
-    
+
     if (change == 0) return SizedBox.shrink();
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -204,9 +215,9 @@ class FearAndGreedCardOptimized extends StatelessWidget {
         Text(
           '${isPositive ? '+' : ''}${change}',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
-            fontWeight: FontWeight.w600,
-          ),
+                color: isPositive ? AppTheme.successColor : AppTheme.errorColor,
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );

@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,9 +97,7 @@ class _FavouriteListState extends State<FavouriteList> {
                   width: 24.w,
                   height: 24.w,
                   child: Image.asset(
-                    likeNft
-                      ? activeHeartIcon
-                      : unActiveHeartIcon,
+                    likeNft ? activeHeartIcon : unActiveHeartIcon,
                     width: 12.w,
                     height: 12.h,
                     fit: BoxFit.contain,

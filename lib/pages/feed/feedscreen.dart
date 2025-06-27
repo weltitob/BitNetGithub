@@ -10,6 +10,7 @@ import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
 import 'package:bitnet/pages/feed/tokenstab.dart';
 import 'package:bitnet/pages/feed/assetstab.dart';
+import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -70,18 +71,18 @@ class _FeedScreenState extends State<FeedScreen>
   late FocusNode searchNode;
   late ScrollController homeScrollController;
   late Function() scrollListener;
-  
+
   // Track which tabs have been initialized for lazy loading
-  final List<bool> _tabsInitialized = List.filled(4, false); // Changed from 5 to 4 (removed People tab)
-  
+  final List<bool> _tabsInitialized = List.filled(6, false);
+
   @override
   void initState() {
     super.initState();
-    
+
     // Log performance improvement
     final startTime = DateTime.now();
     print('[PERFORMANCE] FeedScreen initState started at: $startTime');
-    
+
     Get.put(FeedController()).initNFC(context);
     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
     scrollListener = () {
@@ -89,14 +90,14 @@ class _FeedScreenState extends State<FeedScreen>
     };
     homeScrollController.addListener(scrollListener);
     searchNode = FocusNode();
-    
+
     // Initialize the first tab immediately
     _tabsInitialized[0] = true;
-    
+
     final endTime = DateTime.now();
     final loadTime = endTime.difference(startTime).inMilliseconds;
     print('[PERFORMANCE] FeedScreen initState completed in: ${loadTime}ms');
-    print('[PERFORMANCE] Lazy loading enabled - only 1 of 5 tabs initialized');
+    print('[PERFORMANCE] Lazy loading enabled - only 1 of 6 tabs initialized');
   }
 
   @override
@@ -141,8 +142,10 @@ class _FeedScreenState extends State<FeedScreen>
                           hintText:
                               "Paste walletaddress, transactionid or blockid...",
                           onChanged: (v) {
-                            // Search functionality removed with People tab
-                            // Can be re-enabled when People tab is restored
+                            // Only update search for people tab
+                            if (controller.tabController!.index == 3) {
+                              controller.filterSearchResults(v);
+                            }
                           },
                           handleSearch: (text) {},
                         );
@@ -165,30 +168,24 @@ class _FeedScreenState extends State<FeedScreen>
             SliverFillRemaining(
               child: Obx(() {
                 final int currentIndex = controller.currentTabIndex.value;
-                
-                // Ensure currentIndex is within valid range (0-3)
-                if (currentIndex < 0 || currentIndex >= 4) {
-                  // Reset to first tab if out of bounds
-                  controller.currentTabIndex.value = 0;
-                  return const SizedBox.shrink();
-                }
-                
+
                 // Mark current tab as initialized when it's selected - SAFE VERSION
                 _initializeTabSafely(currentIndex);
-                
-                print("Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
-                
+
+                print(
+                    "Rendering tab index: $currentIndex, initialized tabs: $_tabsInitialized");
+
                 return IndexedStack(
-                  index: currentIndex.clamp(0, 3), // Ensure index is always within bounds
+                  index: currentIndex,
                   sizing: StackFit.expand,
                   children: [
                     // Lazy-loading tabs for better performance
-                    _buildLazyTab(0, const AppsTabModern()),
+                    _buildLazyTab(0, const WebsitesTab()),
                     _buildLazyTab(1, const TokensTab()),
                     _buildLazyTab(2, const AssetsTab()),
-                    // Commented out People tab - can be re-enabled later
-                    // _buildLazyTab(3, const SearchResultWidget()),
-                    _buildLazyTab(3, MempoolHome(isFromHome: true)),
+                    _buildLazyTab(3, const SearchResultWidget()),
+                    _buildLazyTab(4, MempoolHome(isFromHome: true)),
+                    _buildLazyTab(5, const AppsTabModern())
                   ],
                 );
               }),
@@ -220,15 +217,13 @@ class _FeedScreenState extends State<FeedScreen>
       );
     });
   }
-  
+
   // Safe tab initialization that defers state updates outside build cycle
   void _initializeTabSafely(int currentIndex) {
-    // Ensure currentIndex is within bounds (0-3 for 4 tabs)
-    if (currentIndex >= 0 && currentIndex < _tabsInitialized.length && 
-        !_tabsInitialized[currentIndex] && mounted) {
+    if (!_tabsInitialized[currentIndex] && mounted) {
       // Use WidgetsBinding to defer state update until after build cycle
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && currentIndex < _tabsInitialized.length && !_tabsInitialized[currentIndex]) {
+        if (mounted && !_tabsInitialized[currentIndex]) {
           setState(() {
             _tabsInitialized[currentIndex] = true;
           });
@@ -241,17 +236,12 @@ class _FeedScreenState extends State<FeedScreen>
   Widget _buildLazyTab(int index, Widget tabContent) {
     final controller = Get.find<FeedController>();
     final isCurrentTab = controller.currentTabIndex.value == index;
-    
-    // Ensure index is within bounds
-    if (index >= _tabsInitialized.length) {
-      return const SizedBox.shrink();
-    }
-    
+
     // If tab is not initialized and not current, return minimal placeholder
     if (!_tabsInitialized[index] && !isCurrentTab) {
       return const SizedBox.shrink();
     }
-    
+
     // If tab is current but not yet initialized, show loading indicator
     if (!_tabsInitialized[index] && isCurrentTab) {
       return Center(
@@ -272,11 +262,12 @@ class _FeedScreenState extends State<FeedScreen>
         ),
       );
     }
-    
+
     // For initialized tabs, wrap with KeepAliveWrapper to maintain state
     // Only keep alive tabs that benefit from it (tabs with expensive data)
-    final bool shouldKeepAlive = index == 1 || index == 2; // TokensTab and AssetsTab
-    
+    final bool shouldKeepAlive =
+        index == 1 || index == 2; // TokensTab and AssetsTab
+
     return KeepAliveWrapper(
       keepAlive: shouldKeepAlive,
       child: tabContent,

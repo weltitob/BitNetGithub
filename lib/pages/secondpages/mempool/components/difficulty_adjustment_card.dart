@@ -15,26 +15,27 @@ class DifficultyAdjustmentCard extends StatelessWidget {
   final Da? da;
   final String? days;
   final bool isLoading;
-  
+
   const DifficultyAdjustmentCard({
     Key? key,
     required this.da,
     required this.days,
     required this.isLoading,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return Center(child: dotProgress(context));
     }
-    
+
     if (da == null) {
       return const SizedBox();
     }
-    
-    Location loc = Provider.of<TimezoneProvider>(context, listen: false).timeZone;
-    
+
+    Location loc =
+        Provider.of<TimezoneProvider>(context, listen: false).timeZone;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: GlassContainer(
@@ -57,7 +58,7 @@ class DifficultyAdjustmentCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: AppTheme.cardPadding),
-              
+
               // Content
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,12 +78,11 @@ class DifficultyAdjustmentCard extends StatelessWidget {
                         context,
                         "Estimated date:",
                         DateFormat.yMMMd().format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                            da!.estimatedRetargetDate!.toInt()
-                          ).toUtc().add(
-                            Duration(milliseconds: loc.currentTimeZone.offset)
-                          )
-                        ),
+                            DateTime.fromMillisecondsSinceEpoch(
+                                    da!.estimatedRetargetDate!.toInt())
+                                .toUtc()
+                                .add(Duration(
+                                    milliseconds: loc.currentTimeZone.offset))),
                         Icons.event,
                       ),
                       SizedBox(height: AppTheme.elementSpacing * 1.5),
@@ -90,12 +90,11 @@ class DifficultyAdjustmentCard extends StatelessWidget {
                         context,
                         "Estimated time:",
                         DateFormat.jm().format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                            da!.estimatedRetargetDate!.toInt()
-                          ).toUtc().add(
-                            Duration(milliseconds: loc.currentTimeZone.offset)
-                          )
-                        ),
+                            DateTime.fromMillisecondsSinceEpoch(
+                                    da!.estimatedRetargetDate!.toInt())
+                                .toUtc()
+                                .add(Duration(
+                                    milliseconds: loc.currentTimeZone.offset))),
                         Icons.access_time,
                       ),
                     ],
@@ -105,18 +104,18 @@ class DifficultyAdjustmentCard extends StatelessWidget {
                   _buildDifficultyChangeIndicator(context),
                 ],
               ),
-              
+
               SizedBox(height: AppTheme.elementSpacing),
               SizedBox(height: AppTheme.elementSpacing),
-              
+
               // Footer
               Text(
                 "Difficulty adjusts every 2016 blocks (~2 weeks)",
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.white60
-                      : AppTheme.black60,
-                ),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.white60
+                          : AppTheme.black60,
+                    ),
               ),
             ],
           ),
@@ -124,7 +123,7 @@ class DifficultyAdjustmentCard extends StatelessWidget {
       ),
     );
   }
-  
+
   // Helper method to build the difficulty change indicator
   Widget _buildDifficultyChangeIndicator(BuildContext context) {
     return Container(
@@ -160,20 +159,20 @@ class DifficultyAdjustmentCard extends StatelessWidget {
                 ? '${da!.difficultyChange!.abs().toStringAsFixed(2)}%'
                 : '${da!.difficultyChange!.toStringAsFixed(2)}%',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              color: da!.difficultyChange!.isNegative
-                  ? AppTheme.errorColor
-                  : AppTheme.successColor,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: da!.difficultyChange!.isNegative
+                      ? AppTheme.errorColor
+                      : AppTheme.successColor,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: 4),
           Text(
             da!.difficultyChange!.isNegative ? "Decrease" : "Increase",
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: da!.difficultyChange!.isNegative
-                  ? AppTheme.errorColor
-                  : AppTheme.successColor,
-            ),
+                  color: da!.difficultyChange!.isNegative
+                      ? AppTheme.errorColor
+                      : AppTheme.successColor,
+                ),
           ),
         ],
       ),
@@ -182,11 +181,7 @@ class DifficultyAdjustmentCard extends StatelessWidget {
 
   // Helper method to build info rows
   Widget _buildInfoRow(
-    BuildContext context, 
-    String label, 
-    String value, 
-    IconData icon
-  ) {
+      BuildContext context, String label, String value, IconData icon) {
     return Row(
       children: [
         Icon(
@@ -201,16 +196,16 @@ class DifficultyAdjustmentCard extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.white60
-                    : AppTheme.black60,
-              ),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.white60
+                        : AppTheme.black60,
+                  ),
             ),
             Text(
               value,
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),

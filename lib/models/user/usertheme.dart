@@ -15,8 +15,7 @@ class UserTheme {
     required this.isDarkmode,
     required this.customHexCode,
     required this.userId,
-  }
-      );
+  });
 
   factory UserTheme.fromJson(Map<String, dynamic> json) {
     return UserTheme(
@@ -35,7 +34,6 @@ class UserTheme {
       userId: map['userId'] ?? '',
     );
   }
-
 
   factory UserTheme.fromDocument(DocumentSnapshot doc) {
     return UserTheme(
@@ -56,17 +54,17 @@ class UserTheme {
   }
 
   static Map<String, dynamic> toMap(UserTheme data) => {
-    'used': data.isCustomMode,
-    'code': data.isDarkmode,
-    'customHexCode': data.customHexCode,
-    'userId': data.userId,
-  };
+        'used': data.isCustomMode,
+        'code': data.isDarkmode,
+        'customHexCode': data.customHexCode,
+        'userId': data.userId,
+      };
 
   static String encode(List<UserTheme> data) => json.encode(
-    data
-        .map<Map<String, dynamic>>((music) => UserTheme.toMap(music))
-        .toList(),
-  );
+        data
+            .map<Map<String, dynamic>>((music) => UserTheme.toMap(music))
+            .toList(),
+      );
 
   static List<UserTheme> decode(String data) =>
       (json.decode(data) as List<dynamic>)

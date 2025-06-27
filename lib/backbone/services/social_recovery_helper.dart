@@ -313,81 +313,83 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                     )
                   ],
                 ),
-             BottomCenterButton(
-                        buttonTitle: 'Join',
-                        buttonState: isLoadingButton ? ButtonState.loading : ButtonState.idle,
-                        onButtonTap: () async {
-                          isLoadingButton = true;
-                          setState(() {});
-                          DocumentSnapshot<Map<String, dynamic>> doc =
-                              await socialRecoveryCollection
-                                  .doc(inviterData!.username)
-                                  .get();
-                          List<dynamic> users = doc.data()!['users'];
-                          for (int i = 0; i < users.length; i++) {
-                            if (users[i]['username'] ==
-                                Get.find<ProfileController>()
-                                    .userData
-                                    .value
-                                    .username) {
-                              String openKey = users[i]['open_key'];
-                              PrivateData data =
-                                  await getPrivateData(Auth().currentUser!.uid);
-                              AESCipher cipher = AESCipher(data.mnemonic);
-                              final logger = Get.find<LoggerService>();
+                BottomCenterButton(
+                  buttonTitle: 'Join',
+                  buttonState:
+                      isLoadingButton ? ButtonState.loading : ButtonState.idle,
+                  onButtonTap: () async {
+                    isLoadingButton = true;
+                    setState(() {});
+                    DocumentSnapshot<Map<String, dynamic>> doc =
+                        await socialRecoveryCollection
+                            .doc(inviterData!.username)
+                            .get();
+                    List<dynamic> users = doc.data()!['users'];
+                    for (int i = 0; i < users.length; i++) {
+                      if (users[i]['username'] ==
+                          Get.find<ProfileController>()
+                              .userData
+                              .value
+                              .username) {
+                        String openKey = users[i]['open_key'];
+                        PrivateData data =
+                            await getPrivateData(Auth().currentUser!.uid);
+                        AESCipher cipher = AESCipher(data.mnemonic);
+                        final logger = Get.find<LoggerService>();
 
-                              logger.i('open key: $openKey');
-                              logger.i('mnemonic: ${data.mnemonic}');
-                              logger.i('decrypted key: ${cipher.decryptText(openKey)}');
-                              logger.i('encrypted key: ${cipher.encryptText(openKey)}');
+                        logger.i('open key: $openKey');
+                        logger.i('mnemonic: ${data.mnemonic}');
+                        logger
+                            .i('decrypted key: ${cipher.decryptText(openKey)}');
+                        logger
+                            .i('encrypted key: ${cipher.encryptText(openKey)}');
 
-                              String encryptedText =
-                                  cipher.encryptText(openKey);
-                              logger.i("encrypted text: $encryptedText");
-                              users[i]['open_key'] = '';
-                              users[i]['encrypted_key'] = encryptedText;
-                              users[i]['accepted_invite'] = true;
-                            }
-                          }
-                          bool initiateFinalStep = true;
-                          int acceptedUsers = 0;
-                          for (int i = 0; i < users.length; i++) {
-                            if (users[i]['accepted_invite'] == false) {
-                              initiateFinalStep = false;
-                            } else {
-                              acceptedUsers++;
-                            }
-                          }
-                          if (initiateFinalStep) {
-                            Map<String, dynamic> protocolData = {};
-                            if (acceptedUsers < 4) {
-                              protocolData = {
-                                'satisfied_requirements': false,
-                              };
-                            } else {
-                              protocolData = {'satisfied_requirements': true};
-                            }
-                            ProtocolModel protocol = ProtocolModel(
-                                protocolId: '',
-                                protocolType: 'social_recovery_set_up',
-                                protocolData: protocolData);
+                        String encryptedText = cipher.encryptText(openKey);
+                        logger.i("encrypted text: $encryptedText");
+                        users[i]['open_key'] = '';
+                        users[i]['encrypted_key'] = encryptedText;
+                        users[i]['accepted_invite'] = true;
+                      }
+                    }
+                    bool initiateFinalStep = true;
+                    int acceptedUsers = 0;
+                    for (int i = 0; i < users.length; i++) {
+                      if (users[i]['accepted_invite'] == false) {
+                        initiateFinalStep = false;
+                      } else {
+                        acceptedUsers++;
+                      }
+                    }
+                    if (initiateFinalStep) {
+                      Map<String, dynamic> protocolData = {};
+                      if (acceptedUsers < 4) {
+                        protocolData = {
+                          'satisfied_requirements': false,
+                        };
+                      } else {
+                        protocolData = {'satisfied_requirements': true};
+                      }
+                      ProtocolModel protocol = ProtocolModel(
+                          protocolId: '',
+                          protocolType: 'social_recovery_set_up',
+                          protocolData: protocolData);
 
-                            await protocolCollection
-                                .doc(inviterData!.docId!)
-                                .set({'initialized': true});
-                            await protocolCollection
-                                .doc(inviterData!.docId!)
-                                .collection('protocols')
-                                .add(protocol.toFirestore());
-                          }
-                          socialRecoveryCollection
-                              .doc(inviterData!.username)
-                              .update({'users': users});
-                          isLoadingButton = false;
-                          setState(() {});
-                          context.pop(true);
-                        },
-                      )
+                      await protocolCollection
+                          .doc(inviterData!.docId!)
+                          .set({'initialized': true});
+                      await protocolCollection
+                          .doc(inviterData!.docId!)
+                          .collection('protocols')
+                          .add(protocol.toFirestore());
+                    }
+                    socialRecoveryCollection
+                        .doc(inviterData!.username)
+                        .update({'users': users});
+                    isLoadingButton = false;
+                    setState(() {});
+                    context.pop(true);
+                  },
+                )
               ],
             ),
     );
@@ -459,7 +461,7 @@ class _SettingUpSocialRecoveryWidgetState
         // OLD: Multiple users one node approach - HDWallet-based key derivation for encryption
         // HDWallet hdWallet = HDWallet.fromMnemonic(privData.mnemonic);
         // AESCipher cipher = AESCipher(hdWallet.privkey);
-        
+
         // NEW: One user one node approach - BIP39-based key derivation for encryption
         // TODO: Replace with Lightning-native key derivation
         String privateKey = "placeholder_private_key"; // Temporary placeholder

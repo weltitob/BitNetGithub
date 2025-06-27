@@ -17,7 +17,10 @@ class AppBarActionButton extends StatelessWidget {
         left: AppTheme.elementSpacing * 0.5,
       ),
       child: GlassContainer(
-          border: Border.all(width: 4, color: Theme.of(context).dividerColor), // remove border if not active
+          border: Border.all(
+              width: 4,
+              color: Theme.of(context)
+                  .dividerColor), // remove border if not active
           opacity: 0.1,
           borderRadius: AppTheme.borderRadiusCircular,
           child: Container(

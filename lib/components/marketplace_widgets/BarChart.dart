@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +31,7 @@ class _BarChartState extends State<BarChart> {
     _tooltip = TooltipBehavior(enable: true);
     super.initState();
   }
+
   String dropdownvalue = 'Last 7 Days';
   var items = [
     'Last 7 Days',

@@ -2,7 +2,6 @@ import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-
 /// A widget to display playback speed changing button.
 /// customized from https://github.com/sarbagyastha/youtube_player_flutter/blob/master/packages/youtube_player_flutter/lib/src/widgets/playback_speed_button.dart
 class PlaybackSpeedButtonCustom extends StatefulWidget {
@@ -13,13 +12,11 @@ class PlaybackSpeedButtonCustom extends StatefulWidget {
   /// Defines icon for the button.
 
   /// Creates [PlaybackSpeedButtonCustom] widget.
-  const PlaybackSpeedButtonCustom({
-    this.controller,
-    this.fontSize
-  });
+  const PlaybackSpeedButtonCustom({this.controller, this.fontSize});
 
   @override
-  _PlaybackSpeedButtonCustomState createState() => _PlaybackSpeedButtonCustomState();
+  _PlaybackSpeedButtonCustomState createState() =>
+      _PlaybackSpeedButtonCustomState();
 }
 
 class _PlaybackSpeedButtonCustomState extends State<PlaybackSpeedButtonCustom> {
@@ -31,9 +28,9 @@ class _PlaybackSpeedButtonCustomState extends State<PlaybackSpeedButtonCustom> {
     final controller = YoutubePlayerController.of(context);
     if (controller == null) {
       assert(
-      widget.controller != null,
-      '\n\nNo controller could be found in the provided context.\n\n'
-          'Try passing the controller explicitly.',
+        widget.controller != null,
+        '\n\nNo controller could be found in the provided context.\n\n'
+        'Try passing the controller explicitly.',
       );
       _controller = widget.controller!;
     } else {
@@ -46,13 +43,15 @@ class _PlaybackSpeedButtonCustomState extends State<PlaybackSpeedButtonCustom> {
     return PopupMenuButton<double>(
       onSelected: _controller.setPlaybackRate,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
-        child: AdjustSpeedContainer(
-          child: Text("${_controller.value.playbackRate}x",
-          style: TextStyle(fontWeight: FontWeight.bold,
-          fontSize: widget.fontSize ?? 14.0),),
-        )
-      ),
+          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
+          child: AdjustSpeedContainer(
+            child: Text(
+              "${_controller.value.playbackRate}x",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: widget.fontSize ?? 14.0),
+            ),
+          )),
       tooltip: 'PlayBack Rate',
       itemBuilder: (context) => [
         _popUpItem('2.0x', PlaybackRate.twice),

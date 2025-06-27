@@ -37,27 +37,26 @@ class ReportMobileController extends State<ReportMobile> {
   }
 
   Future<void> onAddButton(BuildContext context) async {
-    await ImagePickerCombinedBottomSheet(context, 
-      includeNFTs: false,
-      onImageTap: (album, image, pair) async {
-        // This is intentionally empty as we're using the onPop callback
-      },
-      onPop: (photos) async {
-        int length = photos.length;
-        if(photos.length > 3 && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload 3 images at most.'),));
-          length = 3;
-        } 
-        imageList.clear();
-        for(int i = 0; i < length; i++) {
-          Uint8List? data = await (await photos[i].loadFile())?.readAsBytes();
-          if(data != null) {
-            imageList.add(data);
-          }
-        }
-        setState((){});
+    await ImagePickerCombinedBottomSheet(context, includeNFTs: false,
+        onImageTap: (album, image, pair) async {
+      // This is intentionally empty as we're using the onPop callback
+    }, onPop: (photos) async {
+      int length = photos.length;
+      if (photos.length > 3 && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please upload 3 images at most.'),
+        ));
+        length = 3;
       }
-    );
+      imageList.clear();
+      for (int i = 0; i < length; i++) {
+        Uint8List? data = await (await photos[i].loadFile())?.readAsBytes();
+        if (data != null) {
+          imageList.add(data);
+        }
+      }
+      setState(() {});
+    });
   }
 
   void deleteImage(int index) {

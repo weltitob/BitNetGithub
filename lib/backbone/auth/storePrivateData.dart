@@ -25,15 +25,15 @@ String _generateLightningDid(String mnemonic) {
 /// Check if input is a DID (any supported format)
 bool isDID(String input) {
   LoggerService logger = Get.find();
-  
+
   logger.d('🔍 Checking if "$input" is a DID...');
-  
+
   // Check for recovery DID format: did:mnemonic:xxxxx
   if (RecoveryIdentity.isValidRecoveryDid(input)) {
     logger.d('✅ Matched recovery DID format');
     return true;
   }
-  
+
   // Check for Lightning DID format: did:xxxxxxxx (16 hex chars after 'did:')
   if (input.startsWith('did:') && input.length == 20) {
     String hash = input.substring(4);
@@ -43,14 +43,13 @@ bool isDID(String input) {
       return true;
     }
   }
-  
-  
+
   // Check for compressed public key format (legacy DID)
   if (isCompressedPublicKey(input)) {
     logger.d('✅ Matched compressed public key format');
     return true;
   }
-  
+
   logger.d('❌ No DID format matched for "$input"');
   return false;
 }
@@ -120,7 +119,7 @@ Future<Map<String, dynamic>?> getLitdAccountData(String userId) async {
           (json) => json['userId'] == userId,
           orElse: () => <String, dynamic>{},
         );
-    
+
     if (account.isEmpty) {
       print('No LITD account found for userId: $userId');
       return null;
@@ -216,7 +215,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   logger.d('Attempting to read private data from secure storage');
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
-  logger.d('Raw secure storage content: ${privateDataJson?.substring(0, 100) ?? '(NULL)'}...');
+  logger.d(
+      'Raw secure storage content: ${privateDataJson?.substring(0, 100) ?? '(NULL)'}...');
 
   if (privateDataJson == null) {
     logger.e(
@@ -230,17 +230,16 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     logger.d('Attempting to decode JSON...');
     final decoded = jsonDecode(privateDataJson);
     logger.d('JSON decoded successfully, type: ${decoded.runtimeType}');
-    
+
     if (decoded is! List) {
       logger.e('Decoded JSON is not a List, it is: ${decoded.runtimeType}');
       throw Exception('Private data JSON is not a List');
     }
-    
+
     logger.d('JSON is a List with ${decoded.length} items');
-    usersStored = decoded
-        .map((json) => PrivateData.fromMap(json))
-        .toList();
-    logger.d('Decoded private data JSON into ${usersStored.length} PrivateData objects');
+    usersStored = decoded.map((json) => PrivateData.fromMap(json)).toList();
+    logger.d(
+        'Decoded private data JSON into ${usersStored.length} PrivateData objects');
   } catch (e, stackTrace) {
     logger.e('Error decoding private data JSON $e');
     logger.e('Stack trace: $stackTrace');
@@ -254,7 +253,8 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
       String storedDid = usersStored[i].did;
       // Legacy Lightning DID format - kept for backward compatibility checks
       String calculatedDid = _generateLightningDid(usersStored[i].mnemonic);
-      String recoveryDid = RecoveryIdentity.generateRecoveryDid(usersStored[i].mnemonic);
+      String recoveryDid =
+          RecoveryIdentity.generateRecoveryDid(usersStored[i].mnemonic);
       logger.d('User $i:');
       logger.d('  - Stored DID: $storedDid');
       logger.d('  - Calculated DID: $calculatedDid');
@@ -264,21 +264,22 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
       logger.d('  - Calculated match: ${calculatedDid == did}');
       logger.d('  - Recovery match: ${recoveryDid == did}');
     }
-    
+
     final matchingPrivateData = usersStored.firstWhere(
       // Try multiple DID formats for compatibility:
       // 1. Stored DID (original format)
       // 2. Old Lightning-generated DID (legacy format): did:hash
-      // 3. Recovery DID (new format): did:mnemonic:hash  
-      (user) => 
-        user.did == did || 
-        _generateLightningDid(user.mnemonic) == did ||
-        RecoveryIdentity.generateRecoveryDid(user.mnemonic) == did,
+      // 3. Recovery DID (new format): did:mnemonic:hash
+      (user) =>
+          user.did == did ||
+          _generateLightningDid(user.mnemonic) == did ||
+          RecoveryIdentity.generateRecoveryDid(user.mnemonic) == did,
     );
     logger.d('Found matching private data for DID $did');
     return matchingPrivateData;
   } on StateError catch (e) {
-    logger.e('No matching private data found for DID $did (StateError: firstWhere found no elements)');
+    logger.e(
+        'No matching private data found for DID $did (StateError: firstWhere found no elements)');
     logger.e('Available DIDs in storage:');
     for (var user in usersStored) {
       String lightningDid = _generateLightningDid(user.mnemonic);
@@ -332,10 +333,10 @@ Future<void> deleteUserFromStoredIONData(String did) async {
   // Filter out the user with the provided DID
   // Check all DID formats for compatibility (same as getPrivateData function)
   usersStored = usersStored
-      .where((user) => 
-        user.did != did && 
-        _generateLightningDid(user.mnemonic) != did &&
-        RecoveryIdentity.generateRecoveryDid(user.mnemonic) != did)
+      .where((user) =>
+          user.did != did &&
+          _generateLightningDid(user.mnemonic) != did &&
+          RecoveryIdentity.generateRecoveryDid(user.mnemonic) != did)
       .toList();
 
   // Store the updated list back in the storage

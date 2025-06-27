@@ -21,12 +21,13 @@ class _RoundedContainerState extends State<RoundedContainer> {
   Widget build(BuildContext context) {
     return GlassContainer(
       child: Container(
-        padding: widget.contentPadding ?? const EdgeInsets.only(
-          top: AppTheme.cardPadding,
-          bottom: AppTheme.elementSpacing,
-          left: AppTheme.cardPadding,
-          right: AppTheme.cardPadding,
-        ),
+        padding: widget.contentPadding ??
+            const EdgeInsets.only(
+              top: AppTheme.cardPadding,
+              bottom: AppTheme.elementSpacing,
+              left: AppTheme.cardPadding,
+              right: AppTheme.cardPadding,
+            ),
         child: widget.child,
       ),
     );

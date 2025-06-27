@@ -75,7 +75,6 @@ class FiatCard extends StatelessWidget {
     currency = currency ?? "USD";
 
     return Container(
-
       child: Stack(
         children: [
           const CardBackgroundFiat(),
@@ -151,9 +150,9 @@ class FiatCard extends StatelessWidget {
   }
 }
 
-
 class BalanceCardLightning extends StatelessWidget {
-  final String balance; // Expected to be a formatted string (e.g., '1.23456789')
+  final String
+      balance; // Expected to be a formatted string (e.g., '1.23456789')
   final String confirmedBalance;
 
   final BitcoinUnits defaultUnit;
@@ -163,7 +162,6 @@ class BalanceCardLightning extends StatelessWidget {
     Key? key,
     required this.balance,
     required this.confirmedBalance,
-
     this.defaultUnit = BitcoinUnits.SAT,
     this.textColor,
   }) : super(key: key);
@@ -179,8 +177,6 @@ class BalanceCardLightning extends StatelessWidget {
     final String balanceStr = unitModel.amount.toString();
 
     return Container(
-     
-
       child: Stack(
         children: [
           const CardBackgroundLightning(),
@@ -201,7 +197,6 @@ class BalanceCardLightning extends StatelessWidget {
     );
   }
 }
-
 
 class BalanceCardBtc extends StatelessWidget {
   final String balance;
@@ -227,7 +222,8 @@ class BalanceCardBtc extends StatelessWidget {
       defaultUnit,
     );
 
-    final BitcoinUnitModel unconfirmedUnitModel = CurrencyConverter.convertToBitcoinUnit(
+    final BitcoinUnitModel unconfirmedUnitModel =
+        CurrencyConverter.convertToBitcoinUnit(
       double.parse(unconfirmedBalance),
       BitcoinUnits.SAT,
     );
@@ -235,7 +231,6 @@ class BalanceCardBtc extends StatelessWidget {
     final String balanceStr = unitModel.amount.toString();
 
     return Container(
-
       child: Stack(
         children: [
           const CardBackgroundOnchain(),
@@ -251,26 +246,25 @@ class BalanceCardBtc extends StatelessWidget {
           unconfirmedUnitModel.amount == 0
               ? Container()
               : Positioned(
-            bottom: -10,
-            left: 0,
-            child: UnconfirmedTextWidget(
-              balanceStr: unconfirmedUnitModel.amount.toString(),
-              iconDataUnit: getCurrencyIcon(
-                unconfirmedUnitModel.bitcoinUnitAsString,
-              ),
-              iconData: FontAwesomeIcons.piggyBank,
-              balanceSAT: unconfirmedBalance,
-              walletAddress: "safdadasdas",
-              cardname: 'Incoming Balance',
-            ),
-          ),
+                  bottom: -10,
+                  left: 0,
+                  child: UnconfirmedTextWidget(
+                    balanceStr: unconfirmedUnitModel.amount.toString(),
+                    iconDataUnit: getCurrencyIcon(
+                      unconfirmedUnitModel.bitcoinUnitAsString,
+                    ),
+                    iconData: FontAwesomeIcons.piggyBank,
+                    balanceSAT: unconfirmedBalance,
+                    walletAddress: "safdadasdas",
+                    cardname: 'Incoming Balance',
+                  ),
+                ),
           const PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
         ],
       ),
     );
   }
 }
-
 
 class CardBackgroundLightning extends StatelessWidget {
   const CardBackgroundLightning({Key? key}) : super(key: key);

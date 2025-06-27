@@ -25,7 +25,8 @@ class SolidContainer extends StatelessWidget {
     this.normalPainter = true,
     this.borderWidth = 1.5,
     required this.child,
-  })  : this.gradientColors = gradientColors ?? [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+  })  : this.gradientColors = gradientColors ??
+            [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
         this.height = height ?? AppTheme.cardPadding * 1.5,
         this.width = width ?? AppTheme.cardPadding * 2.5,
         this.alignment = alignment ?? Alignment.center,
@@ -36,9 +37,10 @@ class SolidContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool useBitcoinGradient = gradientColors.contains(AppTheme.colorBitcoin) && 
-                                     gradientColors.contains(AppTheme.colorPrimaryGradient);
-    
+    final bool useBitcoinGradient =
+        gradientColors.contains(AppTheme.colorBitcoin) &&
+            gradientColors.contains(AppTheme.colorPrimaryGradient);
+
     return CustomPaint(
       // Custom painter logic is commented out but kept for reference
       // painter: normalPainter ? GradientBorderPainter(...) : null,
@@ -50,8 +52,9 @@ class SolidContainer extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
           // Use gradient if colors include Bitcoin theme colors, otherwise use solid color
-          color: useBitcoinGradient ? null : Theme.of(context).colorScheme.primary,
-          gradient: useBitcoinGradient 
+          color:
+              useBitcoinGradient ? null : Theme.of(context).colorScheme.primary,
+          gradient: useBitcoinGradient
               ? LinearGradient(
                   begin: gradientBegin,
                   end: gradientEnd,

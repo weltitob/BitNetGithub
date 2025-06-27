@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:http/http.dart' as http;
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
@@ -15,16 +15,15 @@ import 'package:get/get.dart';
 /// Fetches Loop In terms including minimum and maximum swap amounts
 Future<RestResponse> getLoopInTerms(String userId) async {
   final logger = Get.find<LoggerService>();
-  
+
   // Get user's node mapping
   final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -35,16 +34,15 @@ Future<RestResponse> getLoopInTerms(String userId) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
   String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/in/terms';
   logger.i("Loop In Terms URL: $url");
@@ -56,26 +54,23 @@ Future<RestResponse> getLoopInTerms(String userId) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
+    final DioClient dioClient = Get.find<DioClient>();
+
     logger.i('GET: $url');
-    final response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    );
-    logger.i('Loop In Terms Response: ${response.body}');
+    var response = await dioClient.get(url: url, headers: headers);
+    logger.i('Loop In Terms Response: ${response.data}');
 
     if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved Loop In Terms",
-          data: responseData);
+          data: response.data);
     } else {
-      logger.e('Failed to get Loop In terms: ${response.statusCode}, ${response.body}');
-      final decodedBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
+      logger.e(
+          'Failed to get Loop In terms: ${response.statusCode}, ${response.data}');
+      Map<String, dynamic> decodedBody = response.data;
       return RestResponse(
-          statusCode: "error", 
-          message: decodedBody['message'] ?? "Failed to get Loop In terms", 
-          data: decodedBody);
+          statusCode: "error", message: decodedBody['message'], data: {});
     }
   } catch (e) {
     logger.e('Error getting Loop In terms: $e');
@@ -89,16 +84,15 @@ Future<RestResponse> getLoopInTerms(String userId) async {
 /// Fetches Loop Out terms including minimum and maximum swap amounts
 Future<RestResponse> getLoopOutTerms(String userId) async {
   final logger = Get.find<LoggerService>();
-  
+
   // Get user's node mapping
   final nodeMapping = await NodeMappingService.getUserNodeMapping(userId);
   if (nodeMapping == null) {
     logger.e("No node mapping found for user: $userId");
     return RestResponse(
-      statusCode: "error",
-      message: "No Lightning node assigned to user",
-      data: {}
-    );
+        statusCode: "error",
+        message: "No Lightning node assigned to user",
+        data: {});
   }
 
   final nodeId = nodeMapping.nodeId;
@@ -109,16 +103,15 @@ Future<RestResponse> getLoopOutTerms(String userId) async {
   if (macaroonBase64.isEmpty) {
     logger.e("No macaroon found in node mapping for node: $nodeId");
     return RestResponse(
-      statusCode: "error",
-      message: "Failed to load node credentials",
-      data: {}
-    );
+        statusCode: "error",
+        message: "Failed to load node credentials",
+        data: {});
   }
-  
+
   // Convert base64 macaroon to hex format
   final macaroonBytes = base64Decode(macaroonBase64);
   final macaroon = bytesToHex(macaroonBytes);
-  
+
   // Build URL using Caddy endpoint
   String url = '${LightningConfig.caddyBaseUrl}/$nodeId/v1/loop/out/terms';
   logger.i("Loop Out Terms URL: $url");
@@ -130,26 +123,23 @@ Future<RestResponse> getLoopOutTerms(String userId) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
+    final DioClient dioClient = Get.find<DioClient>();
+
     logger.i('GET: $url');
-    final response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    );
-    logger.i('Loop Out Terms Response: ${response.body}');
+    var response = await dioClient.get(url: url, headers: headers);
+    logger.i('Loop Out Terms Response: ${response.data}');
 
     if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved Loop Out Terms",
-          data: responseData);
+          data: response.data);
     } else {
-      logger.e('Failed to get Loop Out terms: ${response.statusCode}, ${response.body}');
-      final decodedBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
+      logger.e(
+          'Failed to get Loop Out terms: ${response.statusCode}, ${response.data}');
+      Map<String, dynamic> decodedBody = response.data;
       return RestResponse(
-          statusCode: "error", 
-          message: decodedBody['message'] ?? "Failed to get Loop Out terms", 
-          data: decodedBody);
+          statusCode: "error", message: decodedBody['message'], data: {});
     }
   } catch (e) {
     logger.e('Error getting Loop Out terms: $e');

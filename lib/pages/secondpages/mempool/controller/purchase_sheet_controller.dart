@@ -51,14 +51,14 @@ class SellSheetController extends BaseController
   late TextEditingController currCtrlBuy;
   FocusNode nodeSell = FocusNode();
   Rx<ButtonState> buttonState = ButtonState.idle.obs;
-  
+
   // Debouncing timer for button actions
   Timer? _debounceTimer;
 
   @override
   void onInit() {
     super.onInit();
-    
+
     // Initialize controllers
     controller = TabController(length: 3, vsync: this);
     satCtrlBuy = TextEditingController();
@@ -77,7 +77,7 @@ class SellSheetController extends BaseController
   void setButtonState(ButtonState state) {
     // Cancel any pending state changes
     _debounceTimer?.cancel();
-    
+
     // Debounce rapid state changes
     _debounceTimer = Timer(const Duration(milliseconds: 100), () {
       if (!isClosed) {
@@ -90,23 +90,23 @@ class SellSheetController extends BaseController
   void dispose() {
     // Cancel any pending timers
     _debounceTimer?.cancel();
-    
+
     // Dispose controllers in reverse order of creation
     controller.dispose();
     nodeSell.dispose();
     currCtrlBuy.dispose();
     btcCtrlBuy.dispose();
     satCtrlBuy.dispose();
-    
+
     super.dispose();
   }
-  
+
   @override
   void onReady() {
     super.onReady();
     // Additional setup can be done here if needed
   }
-  
+
   @override
   void onClose() {
     // Additional cleanup

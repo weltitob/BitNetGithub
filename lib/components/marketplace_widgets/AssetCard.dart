@@ -97,7 +97,8 @@ class _AssetCardState extends State<AssetCard> {
             },
             child: GlassContainer(
               width: getStandardizedCardWidth().w * widget.scale,
-              height: 260.h * widget.scale, // Fixed height for consistent card size
+              height:
+                  260.h * widget.scale, // Fixed height for consistent card size
               boxShadow:
                   Theme.of(context).brightness == Brightness.light ? [] : null,
               child: Padding(
@@ -120,7 +121,8 @@ class _AssetCardState extends State<AssetCard> {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                    fontSize: (16.sp * widget.scale).clamp(14.sp, 20.sp),
+                                    fontSize: (16.sp * widget.scale)
+                                        .clamp(14.sp, 20.sp),
                                     fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -145,15 +147,18 @@ class _AssetCardState extends State<AssetCard> {
                     // NFT image/content with RepaintBoundary for better performance
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h / 2),
+                        padding: EdgeInsets.symmetric(
+                            vertical: AppTheme.elementSpacing.h / 2),
                         child: RepaintBoundary(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10.r),
                             child: Container(
                               width: double.infinity,
                               child: firstMediaData != null
-                                  ? topWidget(firstMediaData.type, firstMediaData)
-                                  : Container(color: Colors.grey.withOpacity(0.3)),
+                                  ? topWidget(
+                                      firstMediaData.type, firstMediaData)
+                                  : Container(
+                                      color: Colors.grey.withOpacity(0.3)),
                             ),
                           ),
                         ),
@@ -174,14 +179,13 @@ class _AssetCardState extends State<AssetCard> {
                                       onTap: () {
                                         // Create an NFTAsset from the current asset using the factory method
                                         final asset = NFTAsset.fromAssetCard(
-                                          assetId: widget.assetId,
-                                          nftName: widget.nftName,
-                                          nftMainName: widget.nftMainName,
-                                          imageUrl: firstMediaData?.data,
-                                          owner: 'You',
-                                          isListed: false
-                                        );
-                                        
+                                            assetId: widget.assetId,
+                                            nftName: widget.nftName,
+                                            nftMainName: widget.nftMainName,
+                                            imageUrl: firstMediaData?.data,
+                                            owner: 'You',
+                                            isListed: false);
+
                                         // Show the listing bottom sheet
                                         showListingBottomSheet(context, asset);
                                       })
@@ -223,7 +227,10 @@ class _AssetCardState extends State<AssetCard> {
                                                       .textTheme
                                                       .bodyMedium
                                                       ?.copyWith(
-                                                          fontSize: (12.sp * widget.scale).clamp(10.sp, 16.sp))),
+                                                          fontSize: (12.sp *
+                                                                  widget.scale)
+                                                              .clamp(10.sp,
+                                                                  16.sp))),
                                               Icon(
                                                 Icons.currency_bitcoin,
                                                 size: 16.w,

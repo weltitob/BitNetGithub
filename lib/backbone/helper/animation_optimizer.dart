@@ -30,7 +30,7 @@ class AnimationOptimizer {
       // by monitoring frame timings
       // Use a timer to measure frame duration instead of firstFrameTimeStamp
       Stopwatch frameTimer = Stopwatch()..start();
-      
+
       // Ensure the binding is initialized before adding callback
       WidgetsBinding.instance.addPostFrameCallback((_) {
         try {

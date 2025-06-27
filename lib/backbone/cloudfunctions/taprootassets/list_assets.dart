@@ -14,21 +14,24 @@ Future<List<Asset>> listTaprootAssets() async {
   LoggerService logger = Get.find();
 
   try {
-    final RemoteConfigController remoteConfigController = Get.find<RemoteConfigController>();
-    
+    final RemoteConfigController remoteConfigController =
+        Get.find<RemoteConfigController>();
+
     // Wait for remote config to be loaded before proceeding
     if (remoteConfigController.baseUrlLightningTerminalWithPort.value.isEmpty) {
       logger.w("Lightning terminal URL not loaded yet, waiting...");
       await remoteConfigController.fetchRemoteConfigData();
-      
+
       // Check again after fetching
-      if (remoteConfigController.baseUrlLightningTerminalWithPort.value.isEmpty) {
+      if (remoteConfigController
+          .baseUrlLightningTerminalWithPort.value.isEmpty) {
         logger.e("Lightning terminal URL failed to load");
         return [];
       }
     }
-    
-    String restHost = remoteConfigController.baseUrlLightningTerminalWithPort.value;
+
+    String restHost =
+        remoteConfigController.baseUrlLightningTerminalWithPort.value;
     if (restHost.isEmpty) {
       logger.e("Lightning terminal URL not configured");
       return [];
@@ -44,7 +47,7 @@ Future<List<Asset>> listTaprootAssets() async {
 
     // Make the GET request
     String url = 'https://$restHost/v1/taproot-assets/assets';
-    
+
     final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(url: url, headers: headers);
@@ -54,7 +57,8 @@ Future<List<Asset>> listTaprootAssets() async {
       List<dynamic> data = response.data['assets'];
       return data.map((item) => Asset.fromJson(item)).toList();
     } else {
-      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response}');
+      logger.e(
+          'Failed to load Taproot asset data: ${response.statusCode}, ${response}');
       return [];
     }
   } catch (e) {

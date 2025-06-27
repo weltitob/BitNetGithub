@@ -24,7 +24,6 @@ class QRScannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final overlayController = Get.find<OverlayController>();
 
     return PopScope(
@@ -58,61 +57,83 @@ class QRScannerView extends StatelessWidget {
             ),
             controller.isQRScanner
                 ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
-                : TextScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
+                : TextScannerOverlay(
+                    overlayColour: Colors.black.withOpacity(0.5)),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: AppTheme.cardPadding * 8),
+                padding:
+                    const EdgeInsets.only(bottom: AppTheme.cardPadding * 8),
                 child: GlassContainer(
                   width: AppTheme.cardPadding * 6.5.w,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.5, vertical: AppTheme.elementSpacing / 1.25),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing * 1.5,
+                        vertical: AppTheme.elementSpacing / 1.25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          child: controller.cameraController.facing == CameraFacing.front
+                          child: controller.cameraController.facing ==
+                                  CameraFacing.front
                               ? const Icon(Icons.camera_front)
                               : const Icon(Icons.camera_rear),
-                          onTap: () => controller.cameraController.switchCamera(),
+                          onTap: () =>
+                              controller.cameraController.switchCamera(),
                         ),
                         GestureDetector(
-                          child: !(controller.cameraController.torchEnabled ?? false)
+                          child: !(controller.cameraController.torchEnabled ??
+                                  false)
                               ? Icon(
                                   Icons.flash_off,
-                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black90
+                                      : AppTheme.white90,
                                 )
                               : Icon(
                                   Icons.flash_on,
-                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black90
+                                      : AppTheme.white90,
                                 ),
-                          onTap: () => controller.cameraController.toggleTorch(),
+                          onTap: () =>
+                              controller.cameraController.toggleTorch(),
                         ),
                         GestureDetector(
                             onTap: () async {
-                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                              final PermissionState ps =
+                                  await PhotoManager.requestPermissionExtend();
                               if (ps.isAuth || ps.hasAccess) {
-                                ImagePickerCombinedBottomSheet(
-                                  context, 
-                                  includeNFTs: false,
-                                  onImageTap: (album, img, pair) async {
-                                    if (img != null) {
-                                      String? fileUrl = (await img.loadFile())!.path;
-                                      String? fileDir = (await img.loadFile())!.parent.uri.toFilePath();
-                                      bool scanSuccess = await controller.cameraController.analyzeImage(fileUrl);
-                                      if (scanSuccess) {
-                                        // The barcode will be processed by the controller's onDetect callback
-                                        debugPrint('Image analyzed successfully');
-                                        context.pop();
-                                      } else {
-                                        overlayController.showOverlay(L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
-                                      }
+                                ImagePickerCombinedBottomSheet(context,
+                                    includeNFTs: false,
+                                    onImageTap: (album, img, pair) async {
+                                  if (img != null) {
+                                    String? fileUrl =
+                                        (await img.loadFile())!.path;
+                                    String? fileDir = (await img.loadFile())!
+                                        .parent
+                                        .uri
+                                        .toFilePath();
+                                    bool scanSuccess = await controller
+                                        .cameraController
+                                        .analyzeImage(fileUrl);
+                                    if (scanSuccess) {
+                                      // The barcode will be processed by the controller's onDetect callback
+                                      debugPrint('Image analyzed successfully');
+                                      context.pop();
+                                    } else {
+                                      overlayController.showOverlay(
+                                          L10n.of(context)!
+                                              .noCodeFoundOverlayError,
+                                          color: AppTheme.errorColor);
                                     }
                                   }
-                                );
+                                });
                               } else {
-                                overlayController.showOverlay(L10n.of(context)!.pleaseGiveAccess);
+                                overlayController.showOverlay(
+                                    L10n.of(context)!.pleaseGiveAccess);
                               }
                             },
                             child: const Icon(Icons.image))

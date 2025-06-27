@@ -29,7 +29,8 @@ class bitnetScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.floatingActionButtonLocation =
         FloatingActionButtonLocation.centerDocked,
-    this.resizeToAvoidBottomInset = true, this.bottomSheet, // New parameter with default value
+    this.resizeToAvoidBottomInset = true,
+    this.bottomSheet, // New parameter with default value
   }) : super(key: key);
 
   @override
@@ -63,7 +64,7 @@ class bitnetScaffold extends StatelessWidget {
                             Theme.of(context).colorScheme.tertiaryContainer, 50)
                         : darken(
                             Theme.of(context).colorScheme.tertiaryContainer,
-                        80),
+                            80),
                   ],
                 ),
               ),
@@ -100,25 +101,25 @@ class bitnetScaffold extends StatelessWidget {
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            50)
+                                                50)
                                             .withOpacity(0.9),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            50)
+                                                50)
                                             .withOpacity(0.7),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            50)
+                                                50)
                                             .withOpacity(0.4),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            50)
+                                                50)
                                             .withOpacity(0.0001),
                                       ]
                                     : [
@@ -131,25 +132,25 @@ class bitnetScaffold extends StatelessWidget {
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            80)
+                                                80)
                                             .withOpacity(0.9),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            80)
+                                                80)
                                             .withOpacity(0.7),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            80)
+                                                80)
                                             .withOpacity(0.4),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            80)
+                                                80)
                                             .withOpacity(0.0001),
                                       ],
                           ),
@@ -199,7 +200,9 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
     this.floatingActionButton,
     this.floatingActionButtonLocation =
         FloatingActionButtonLocation.centerDocked,
-    this.resizeToAvoidBottomInset = true, this.bottomSheet, this.height, // New parameter with default value
+    this.resizeToAvoidBottomInset = true,
+    this.bottomSheet,
+    this.height, // New parameter with default value
   }) : super(key: key);
 
   @override
@@ -229,8 +232,7 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
                       ? lighten(
                           Theme.of(context).colorScheme.tertiaryContainer, 50)
                       : darken(
-                          Theme.of(context).colorScheme.tertiaryContainer,
-                      80),
+                          Theme.of(context).colorScheme.tertiaryContainer, 80),
                 ],
               ),
             ),
@@ -267,25 +269,25 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          50)
+                                              50)
                                           .withOpacity(0.9),
                                       lighten(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          50)
+                                              50)
                                           .withOpacity(0.7),
                                       lighten(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          50)
+                                              50)
                                           .withOpacity(0.4),
                                       lighten(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          50)
+                                              50)
                                           .withOpacity(0.0001),
                                     ]
                                   : [
@@ -298,25 +300,25 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          80)
+                                              80)
                                           .withOpacity(0.9),
                                       darken(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          80)
+                                              80)
                                           .withOpacity(0.7),
                                       darken(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          80)
+                                              80)
                                           .withOpacity(0.4),
                                       darken(
                                               Theme.of(context)
                                                   .colorScheme
                                                   .primaryContainer,
-                                          80)
+                                              80)
                                           .withOpacity(0.0001),
                                     ],
                         ),
@@ -335,4 +337,3 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
     );
   }
 }
-

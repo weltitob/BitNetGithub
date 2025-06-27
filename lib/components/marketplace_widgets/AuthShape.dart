@@ -1,19 +1,17 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AuthShape extends StatelessWidget {
-
-final List<Widget> children;
-  const AuthShape({Key? key,
-  required this.children,
+  final List<Widget> children;
+  const AuthShape({
+    Key? key,
+    required this.children,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
-    return 
-    Stack(
+    return Stack(
       children: [
         Positioned(
           top: -statusBarHeight,

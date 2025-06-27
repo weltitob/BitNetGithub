@@ -6,7 +6,8 @@ class TextFieldButton extends StatelessWidget {
   final IconData iconData;
   final Function() onTap;
 
-  const TextFieldButton({Key? key, required this.iconData, required this.onTap}) : super(key: key);
+  const TextFieldButton({Key? key, required this.iconData, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,9 @@ class TextFieldButtonMorph extends StatelessWidget {
   final IconData iconData;
   final Function() onTap;
 
-  const TextFieldButtonMorph({Key? key, required this.iconData, required this.onTap}) : super(key: key);
+  const TextFieldButtonMorph(
+      {Key? key, required this.iconData, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,9 @@ class TextFieldButtonMorph extends StatelessWidget {
           padding: const EdgeInsets.all(4.0),
           child: Icon(
             iconData,
-            color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.black90
+                : AppTheme.white90,
           ),
         ),
       ),

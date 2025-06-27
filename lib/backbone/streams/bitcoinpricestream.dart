@@ -25,7 +25,6 @@ class BitcoinPriceStream {
 
   // Constructor with initial currency
   BitcoinPriceStream.withCurrency(String currency) {
-
     String? currency =
         Provider.of<CurrencyChangeProvider>(Get.context!).selectedCurrency;
     currency = currency ?? "USD";
@@ -64,7 +63,8 @@ class BitcoinPriceStream {
   // Setup Firestore listener
   Future<void> _setupFirestoreListener() async {
     final LoggerService logger = Get.find<LoggerService>();
-    logger.d("Setting up Firestore listener for Bitcoin price in $localCurrency...");
+    logger.d(
+        "Setting up Firestore listener for Bitcoin price in $localCurrency...");
 
     try {
       String? currency =
@@ -85,7 +85,8 @@ class BitcoinPriceStream {
       // Set up the listener
       _subscription = dataRef.snapshots().listen((docSnapshot) {
         if (docSnapshot.exists) {
-          Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              docSnapshot.data() as Map<String, dynamic>;
 
           // Extract the price
           double? price = data['price']?.toDouble();
@@ -97,17 +98,21 @@ class BitcoinPriceStream {
               : DateTime.now().millisecondsSinceEpoch.toDouble();
 
           if (price != null) {
-            logger.d("Received Bitcoin price in $localCurrency: $price at $time");
-            final ChartLine latestChartLine = ChartLine(time: time, price: price);
+            logger
+                .d("Received Bitcoin price in $localCurrency: $price at $time");
+            final ChartLine latestChartLine =
+                ChartLine(time: time, price: price);
 
             // Add to the stream if there are listeners
             if (!_priceController.isClosed && _priceController.hasListener) {
               _priceController.add(latestChartLine);
             } else {
-              logger.i("No listeners available to receive Bitcoin price updates.");
+              logger.i(
+                  "No listeners available to receive Bitcoin price updates.");
             }
           } else {
-            logger.e("Price data is missing in Firestore for $currencyUpper > live.");
+            logger.e(
+                "Price data is missing in Firestore for $currencyUpper > live.");
           }
         } else {
           logger.e("No document found in Firestore for $localCurrency > live.");

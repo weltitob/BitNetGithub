@@ -11,14 +11,12 @@ class VerificationCode {
   final String issuer;
   final String receiver;
 
-  VerificationCode({
-    this.docId,
-    required this.used,
-    required this.code,
-    required this.issuer,
-    required this.receiver
-  }
-      );
+  VerificationCode(
+      {this.docId,
+      required this.used,
+      required this.code,
+      required this.issuer,
+      required this.receiver});
 
   factory VerificationCode.fromJson(Map<String, dynamic> json) {
     return VerificationCode(
@@ -55,7 +53,6 @@ class VerificationCode {
     );
   }
 
-
   factory VerificationCode.fromDocument(DocumentSnapshot doc) {
     return VerificationCode(
       used: doc["used"],
@@ -75,17 +72,17 @@ class VerificationCode {
   }
 
   static Map<String, dynamic> toMap(VerificationCode data) => {
-    'used': data.used,
-    'code': data.code,
-    'issuer': data.issuer,
-    'receiver': data.receiver,
-  };
+        'used': data.used,
+        'code': data.code,
+        'issuer': data.issuer,
+        'receiver': data.receiver,
+      };
 
   static String encode(List<VerificationCode> data) => json.encode(
-    data
-        .map<Map<String, dynamic>>((music) => VerificationCode.toMap(music))
-        .toList(),
-  );
+        data
+            .map<Map<String, dynamic>>((music) => VerificationCode.toMap(music))
+            .toList(),
+      );
 
   static List<VerificationCode> decode(String data) =>
       (json.decode(data) as List<dynamic>)

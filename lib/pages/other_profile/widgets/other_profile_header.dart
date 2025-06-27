@@ -33,7 +33,9 @@ class OtherProfileHeader extends StatelessWidget {
                       ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                        Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.25),
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white.withOpacity(0.5)
+                            : Colors.black.withOpacity(0.25),
                         BlendMode.dstATop,
                       ),
                     ),
@@ -51,11 +53,15 @@ class OtherProfileHeader extends StatelessWidget {
                           Center(
                             child: Obx(
                               () => Avatar(
-                                mxContent: Uri.parse(controller.userData.value.profileImageUrl),
+                                mxContent: Uri.parse(
+                                    controller.userData.value.profileImageUrl),
                                 size: AppTheme.cardPadding * 5.25.h,
                                 type: profilePictureType.lightning,
-                                isNft: controller.userData.value.nft_profile_id.isNotEmpty,
-                                cornerWidget: controller.currentview.value == 2 ? const ProfileButton() : null,
+                                isNft: controller
+                                    .userData.value.nft_profile_id.isNotEmpty,
+                                cornerWidget: controller.currentview.value == 2
+                                    ? const ProfileButton()
+                                    : null,
                               ),
                             ),
                           ),

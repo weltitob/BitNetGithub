@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,80 +52,82 @@ class _ProfileListState extends State<ProfileList> {
             ),
           ),
           widget.hasIcon
-          ? Container(
-              width: 24.w,
-              height: 24.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.r),
-                color: const Color.fromRGBO(255, 255, 255, 0.1),
-              ),
-              padding: EdgeInsets.all(6.w),
-              child: Image.asset(
-                widget.icon,
-                width: 12.w,
-                height: 12.w,
-                fit: BoxFit.contain,
-              ),
-            )
-          : Container(),
-          widget.hasSwitch ? GestureDetector(
-            onTap: () {
-              setState(() {
-                clickSwitch = !clickSwitch;
-              });
-            },
-            child: Container(
-              width: 20.w,
-              height: 20.w,
-              color: const Color.fromRGBO(24, 31, 39, 1),
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 17.w,
-                        height: 7.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.r),
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment(0.0, 1.0),
-                            colors: <Color>[
-                              Color.fromRGBO(184, 184, 184, 1),
-                              Color.fromRGBO(220, 220, 220, 1)
-                            ],
+              ? Container(
+                  width: 24.w,
+                  height: 24.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.r),
+                    color: const Color.fromRGBO(255, 255, 255, 0.1),
+                  ),
+                  padding: EdgeInsets.all(6.w),
+                  child: Image.asset(
+                    widget.icon,
+                    width: 12.w,
+                    height: 12.w,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              : Container(),
+          widget.hasSwitch
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      clickSwitch = !clickSwitch;
+                    });
+                  },
+                  child: Container(
+                    width: 20.w,
+                    height: 20.w,
+                    color: const Color.fromRGBO(24, 31, 39, 1),
+                    child: Stack(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 17.w,
+                              height: 7.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100.r),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment(0.0, 1.0),
+                                  colors: <Color>[
+                                    Color.fromRGBO(184, 184, 184, 1),
+                                    Color.fromRGBO(220, 220, 220, 1)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          left: clickSwitch ? 10.w : 0,
+                          top: 4.5.w,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromRGBO(0, 0, 0, 0.1),
+                                  offset: Offset(2.5, 4.33),
+                                  blurRadius: 2,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              switchIcon,
+                              width: 10.w,
+                              height: 10.w,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    left: clickSwitch ? 10.w : 0,
-                    top: 4.5.w,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.1),
-                            offset: Offset(2.5, 4.33),
-                            blurRadius: 2,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        switchIcon,
-                        width: 10.w,
-                        height: 10.w,
-                        fit: BoxFit.contain,
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ) : Container(),
+                )
+              : Container(),
         ],
       ),
     );

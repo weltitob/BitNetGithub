@@ -21,17 +21,20 @@ Future<DateTime> getBlockTimeStamp(Asset asset) async {
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = response.data;
       int timeStamp = responseData['timestamp'];
-      String timeStampUrl = 'https://mempool.space/api/v1/mining/blocks/timestamp/$timeStamp';
+      String timeStampUrl =
+          'https://mempool.space/api/v1/mining/blocks/timestamp/$timeStamp';
       var timeStampResponse = await dioClient.get(url: timeStampUrl);
-      if(timeStampResponse.statusCode == 200) {
-        DateTime finalDate=  DateTime.tryParse(timeStampResponse.data['timestamp']) ?? DateTime.now(); 
+      if (timeStampResponse.statusCode == 200) {
+        DateTime finalDate =
+            DateTime.tryParse(timeStampResponse.data['timestamp']) ??
+                DateTime.now();
         logger.i(finalDate);
         return finalDate;
       } else {
-      logger.e('Failed to fetch DateTime: ${timeStampResponse.statusCode}, ${timeStampResponse}');
-      return DateTime.now();
+        logger.e(
+            'Failed to fetch DateTime: ${timeStampResponse.statusCode}, ${timeStampResponse}');
+        return DateTime.now();
       }
-     
     } else {
       logger.e('Failed to fetch DateTime: ${response.statusCode}, ${response}');
       return DateTime.now();

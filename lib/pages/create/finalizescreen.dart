@@ -27,7 +27,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-
 class BatchScreen extends StatefulWidget {
   final GoRouterState? routerState;
   const BatchScreen({super.key, this.routerState});
@@ -77,9 +76,10 @@ class _BatchScreenState extends State<BatchScreen> {
   }
 
   fetchFee() async {
-    dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
+    dynamic fundedPsbtResponse =
+        await estimateFee(AppTheme.targetConf.toString());
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
-    if(mounted)
+    if (mounted)
       setState(() {
         sat_per_vbyte = double.parse(sat_per_kw);
       });
@@ -93,7 +93,7 @@ class _BatchScreenState extends State<BatchScreen> {
         print("⚡⚡⚡ CALL LIST BATCH: Assets already loaded, skipping fetch ⚡⚡⚡");
         return;
       }
-      
+
       // Try to proceed with pre-populated mock data if fetching fails
       final mockAssets = await getLastMintedAssets(batchKey);
       if (mockAssets.isNotEmpty) {
@@ -109,10 +109,11 @@ class _BatchScreenState extends State<BatchScreen> {
       print("⚡⚡⚡ CALL LIST BATCH: Calling fetchMintBatch... ⚡⚡⚡");
       Batch? responseBatch = await fetchMintBatch(batchKey);
       print("⚡⚡⚡ CALL LIST BATCH: Response Batch: $responseBatch ⚡⚡⚡");
-      
+
       // Check if response is not null before accessing properties
       if (responseBatch != null && responseBatch.assets != null) {
-        print("⚡⚡⚡ CALL LIST BATCH: Successfully retrieved batch with ${responseBatch.assets.length} assets ⚡⚡⚡");
+        print(
+            "⚡⚡⚡ CALL LIST BATCH: Successfully retrieved batch with ${responseBatch.assets.length} assets ⚡⚡⚡");
         setState(() {
           assets = responseBatch.assets.reversed.toList();
           hasError = false;
@@ -128,21 +129,23 @@ class _BatchScreenState extends State<BatchScreen> {
         setState(() {
           assets = createMockAssets();
           hasError = false;
-          print("⚡⚡⚡ CALL LIST BATCH: Created mock assets: ${assets.length} ⚡⚡⚡");
+          print(
+              "⚡⚡⚡ CALL LIST BATCH: Created mock assets: ${assets.length} ⚡⚡⚡");
         });
       }
     } catch (e) {
       print("⚡⚡⚡ CALL LIST BATCH: Error fetching batch data: $e ⚡⚡⚡");
-      
+
       // Create mock assets even in case of error to allow workflow to continue
       setState(() {
         assets = createMockAssets();
         hasError = false;
-        print("⚡⚡⚡ CALL LIST BATCH: Created mock assets in error handler: ${assets.length} ⚡⚡⚡");
+        print(
+            "⚡⚡⚡ CALL LIST BATCH: Created mock assets in error handler: ${assets.length} ⚡⚡⚡");
       });
     }
   }
-  
+
   // Temporary function to create mock assets for when API fails
   List<AssetInBatchList> createMockAssets() {
     print("⚡⚡⚡ Creating mock assets... ⚡⚡⚡");
@@ -152,24 +155,22 @@ class _BatchScreenState extends State<BatchScreen> {
         type: "COLLECTIBLE",
         amount: "1",
         assetMeta: AssetMetaResponse(
-          data: "eyJkZXNjcmlwdGlvbiI6Ik1vY2sgQXNzZXQgMSJ9",
-          type: 1,
-          metaHash: "mock_hash_1"
-        ),
+            data: "eyJkZXNjcmlwdGlvbiI6Ik1vY2sgQXNzZXQgMSJ9",
+            type: 1,
+            metaHash: "mock_hash_1"),
       ),
       AssetInBatchList(
         name: "mock_asset_2",
         type: "COLLECTIBLE",
         amount: "1",
         assetMeta: AssetMetaResponse(
-          data: "eyJkZXNjcmlwdGlvbiI6Ik1vY2sgQXNzZXQgMiJ9",
-          type: 1,
-          metaHash: "mock_hash_2"
-        ),
+            data: "eyJkZXNjcmlwdGlvbiI6Ik1vY2sgQXNzZXQgMiJ9",
+            type: 1,
+            metaHash: "mock_hash_2"),
       )
     ];
   }
-  
+
   // Try to retrieve last minted assets from the same batch key
   Future<List<AssetInBatchList>> getLastMintedAssets(String batchKey) async {
     print("⚡⚡⚡ Trying to get last minted assets for batch: $batchKey ⚡⚡⚡");
@@ -200,7 +201,7 @@ class _BatchScreenState extends State<BatchScreen> {
         body: Stack(
           children: [
             SingleChildScrollView(
-          child: Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -212,30 +213,32 @@ class _BatchScreenState extends State<BatchScreen> {
                     height: 280.w,
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
                     child: hasError
-                      ? _buildInlineErrorState(context)
-                      : assets.isEmpty
-                        ? _buildLoadingState(context)
-                        : ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.only(
-                                top: 0.0,
-                                bottom: 0.0,
-                                right: AppTheme.elementSpacing.w * 2,
-                                left: AppTheme.elementSpacing.w),
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: assets.length,
-                            itemBuilder: (context, index) {
-                              return AssetCard(
-
-                                  //assets[index].assetMeta!.data ?? 'metahash',
-                                  medias: assets[index].assetMeta?.toMedias(),
-                                  nftName: assets[index].assetMeta?.data ?? 'metahash',
-                                  nftMainName: assets[index].name ?? 'assetID',
-                                  cryptoText: assets[index].groupKey ?? 'price',
-                                 );
-                            },
-                          ),
+                        ? _buildInlineErrorState(context)
+                        : assets.isEmpty
+                            ? _buildLoadingState(context)
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.only(
+                                    top: 0.0,
+                                    bottom: 0.0,
+                                    right: AppTheme.elementSpacing.w * 2,
+                                    left: AppTheme.elementSpacing.w),
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: assets.length,
+                                itemBuilder: (context, index) {
+                                  return AssetCard(
+                                    //assets[index].assetMeta!.data ?? 'metahash',
+                                    medias: assets[index].assetMeta?.toMedias(),
+                                    nftName: assets[index].assetMeta?.data ??
+                                        'metahash',
+                                    nftMainName:
+                                        assets[index].name ?? 'assetID',
+                                    cryptoText:
+                                        assets[index].groupKey ?? 'price',
+                                  );
+                                },
+                              ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -247,15 +250,13 @@ class _BatchScreenState extends State<BatchScreen> {
                           leadingIcon: Icon(
                             hasError ? Icons.arrow_back : Icons.add_rounded,
                           ),
-                          title: hasError 
-                              ? "Go back"
-                              : L10n.of(context)!.addMore,
+                          title:
+                              hasError ? "Go back" : L10n.of(context)!.addMore,
                           onTap: () {
                             if (mounted) {
                               context.pop();
                             }
-                          }
-                      ),
+                          }),
                       SizedBox(width: AppTheme.elementSpacing),
                       RoundedButtonWidget(
                         iconData: Icons.delete_outline,
@@ -286,25 +287,43 @@ class _BatchScreenState extends State<BatchScreen> {
                     child: Column(
                       children: [
                         BitNetListTile(
-                          text: L10n.of(context)!.transactionFees,
-                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
-                        ),
+                            text: L10n.of(context)!.transactionFees,
+                            trailing: AmountPreviewer(
+                              unitModel: CurrencyConverter.convertToBitcoinUnit(
+                                  sat_per_vbyte, BitcoinUnits.SAT),
+                              textStyle:
+                                  Theme.of(context).textTheme.titleMedium!,
+                              textColor: null,
+                              shouldHideBalance: false,
+                            )),
                         BitNetListTile(
-                          text: L10n.of(context)!.bitnetUsageFee,
-                          trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
-                        ),
+                            text: L10n.of(context)!.bitnetUsageFee,
+                            trailing: AmountPreviewer(
+                              unitModel: CurrencyConverter.convertToBitcoinUnit(
+                                  (sat_per_vbyte * 0.5), BitcoinUnits.SAT),
+                              textStyle:
+                                  Theme.of(context).textTheme.titleMedium!,
+                              textColor: null,
+                              shouldHideBalance: false,
+                            )),
                       ],
                     ),
                   ),
                   const SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),
-                  SizedBox(height: AppTheme.cardPadding * 6.h), // Add space for the bottom button
-            ],
-          ),
+                  SizedBox(
+                      height: AppTheme.cardPadding *
+                          6.h), // Add space for the bottom button
+                ],
+              ),
             ),
             BottomCenterButton(
-              buttonState: isLoading ? ButtonState.loading : (hasError || assets.isEmpty ? ButtonState.disabled : ButtonState.idle),
+              buttonState: isLoading
+                  ? ButtonState.loading
+                  : (hasError || assets.isEmpty
+                      ? ButtonState.disabled
+                      : ButtonState.idle),
               buttonTitle: L10n.of(context)!.uploadToBlockchain,
               onButtonTap: () {
                 finalizeBatch();
@@ -315,7 +334,7 @@ class _BatchScreenState extends State<BatchScreen> {
       ),
     );
   }
-  
+
   Widget _buildInlineErrorState(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -348,8 +367,8 @@ class _BatchScreenState extends State<BatchScreen> {
                 ),
                 const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
-                  errorMessage.isNotEmpty 
-                      ? errorMessage 
+                  errorMessage.isNotEmpty
+                      ? errorMessage
                       : "There was an error loading your post.",
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
@@ -365,7 +384,8 @@ class _BatchScreenState extends State<BatchScreen> {
                         }
                       },
                       child: Padding(
-                        padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                        padding:
+                            const EdgeInsets.all(AppTheme.elementSpacing / 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -395,7 +415,7 @@ class _BatchScreenState extends State<BatchScreen> {
       ),
     );
   }
-  
+
   Widget _buildLoadingState(BuildContext context) {
     return Center(
       child: Column(
@@ -446,8 +466,8 @@ class _BatchScreenState extends State<BatchScreen> {
                     Text(
                       "Are you sure?",
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: AppTheme.elementSpacing),
@@ -481,79 +501,78 @@ class _BatchScreenState extends State<BatchScreen> {
 
   void cancelBatch() async {
     print("Calling Cancel batch which will kill all pending batches.");
-    
+
     // Show loading overlay
     final overlayController = Get.find<OverlayController>();
     overlayController.showOverlay("Deleting batch...");
-    
+
     await cancelMintAsset();
-    
+
     // Navigate to profile
     context.go("/profile");
   }
 
   void finalizeBatch() async {
     print("⚡⚡⚡ STARTING FINALIZE BATCH FUNCTION ⚡⚡⚡");
-    
+
     setState(() {
       isLoading = true;
     });
-    
+
     final overlayController = Get.find<OverlayController>();
     final logger = Get.find<LoggerService>();
-    
+
     try {
       // Even if we have mock assets, try to finalize the batch
       print("⚡⚡⚡ ABOUT TO CALL FINALIZE MINT API ⚡⚡⚡");
       logger.i("Starting batch finalization process");
-      
+
       // Attempt the API call
       var result = await finalizeMint();
-      
+
       print("⚡⚡⚡ FINALIZE MINT API CALL COMPLETED ⚡⚡⚡");
       print("⚡⚡⚡ RESULT: $result ⚡⚡⚡");
-      
+
       logger.i("Finalize mint result: $result");
-      
+
       // If API fails, we will still proceed to profile instead of showing error
       // This allows testing the rest of the flow when the API is not available
       if (result == null) {
-        print("⚡⚡⚡ FINALIZE MINT RETURNED NULL - API CALL FAILED, BUT PROCEEDING ⚡⚡⚡");
-        logger.e("Finalize mint returned null - API call failed, proceeding anyway");
-        
+        print(
+            "⚡⚡⚡ FINALIZE MINT RETURNED NULL - API CALL FAILED, BUT PROCEEDING ⚡⚡⚡");
+        logger.e(
+            "Finalize mint returned null - API call failed, proceeding anyway");
+
         // Just show a toast but continue the flow
         overlayController.showOverlay(
-          "Finalization in progress. Proceed to profile.",
-          color: Colors.orange
-        );
+            "Finalization in progress. Proceed to profile.",
+            color: Colors.orange);
       } else {
         print("⚡⚡⚡ FINALIZE API CALL SUCCEEDED ⚡⚡⚡");
       }
-      
+
       setState(() {
         isLoading = false;
       });
-      
+
       print("⚡⚡⚡ NAVIGATING TO PROFILE REGARDLESS OF API STATUS ⚡⚡⚡");
       logger.i("Navigating to profile");
       // Slight delay to allow the overlay to be seen
       await Future.delayed(Duration(milliseconds: 500));
       context.go("/profile");
-      
     } catch (e) {
       print("⚡⚡⚡ EXCEPTION WHILE FINALIZING BATCH: $e ⚡⚡⚡");
       print("⚡⚡⚡ STILL PROCEEDING TO PROFILE ⚡⚡⚡");
       logger.e("Exception while finalizing batch: $e");
-      
+
       setState(() {
         isLoading = false;
       });
-      
+
       overlayController.showOverlay(
-        "Finalization in progress. Proceed to profile.",
-        color: Colors.orange
-      );
-      
+          "Finalization in progress. Proceed to profile.",
+          color: Colors.orange);
+
       // Proceed to profile even in case of error
       await Future.delayed(Duration(milliseconds: 500));
       context.go("/profile");
