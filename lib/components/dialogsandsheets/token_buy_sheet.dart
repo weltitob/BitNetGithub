@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -6,6 +8,7 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 
@@ -233,11 +236,13 @@ final Map<String, Map<String, dynamic>> tokenMarketData = {
 class TokenBuySheet extends StatefulWidget {
   final String tokenSymbol;
   final Map<String, dynamic>? tokenData;
+  final Map<String, dynamic>? selectedOffer;
 
   const TokenBuySheet({
     Key? key,
     required this.tokenSymbol,
     this.tokenData,
+    this.selectedOffer,
   }) : super(key: key);
 
   static void show(
@@ -248,21 +253,13 @@ class TokenBuySheet extends StatefulWidget {
     Map<String, dynamic>? selectedOffer,
     Map<String, dynamic>? tokenData,
   }) {
-    // Clear controllers
-    final btcController = TextEditingController();
-    final currController = TextEditingController();
-    final satController = TextEditingController();
-
-    // State variables
-    int buyStep = 1;
-    String buyAmount = '';
-
     BitNetBottomSheet(
       context: context,
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.75,
       child: TokenBuySheet(
         tokenSymbol: tokenSymbol,
         tokenData: tokenData,
+        selectedOffer: selectedOffer,
       ),
     );
   }
@@ -281,6 +278,13 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
   // State
   int buyStep = 1;
   String buyAmount = '';
+  Map<String, dynamic>? selectedOffer;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedOffer = widget.selectedOffer;
+  }
 
   @override
   void dispose() {
@@ -298,7 +302,11 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
         // BitNet AppBar
         bitnetAppBar(
           context: context,
-          text: buyStep == 1 ? 'Buy ${widget.tokenSymbol}' : 'Best Matches',
+          text: buyStep == 1 
+              ? 'Buy ${widget.tokenSymbol}' 
+              : selectedOffer != null 
+                  ? 'Confirm Purchase' 
+                  : 'Best Matches',
           hasBackButton: buyStep == 1 ? false : true,
           onTap: () {
             if (buyStep == 2) {
@@ -330,6 +338,83 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
       children: [
         SizedBox(height: AppTheme.elementSpacing.h),
 
+        // Show selected offer info if available - matching marketplace style
+        if (selectedOffer != null) ...[
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+              ),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+              onTap: () {}, // Already selected, no action needed
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                child: Row(
+                  children: [
+                    // Seller avatar
+                    Avatar(
+                      size: 44.w,
+                      isNft: false,
+                      name: selectedOffer!['seller'],
+                    ),
+                    SizedBox(width: AppTheme.elementSpacing),
+                    // Title & subtitle
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            selectedOffer!['seller'],
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Offering ${selectedOffer!['amount']} ${widget.tokenSymbol}',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.6),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Price display
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '\$${selectedOffer!['price']}',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        Text(
+                          'per token',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.6),
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: AppTheme.cardPadding.h),
+        ],
+
         // Amount input
         Text(
           'Amount to buy',
@@ -357,7 +442,7 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
 
         // Bottom button with consistent styling
         BottomCenterButton(
-          buttonTitle: 'Find Best Matches',
+          buttonTitle: selectedOffer != null ? 'Continue' : 'Find Best Matches',
           buttonState: (btcController.text.isEmpty || btcController.text == '0')
               ? ButtonState.disabled
               : ButtonState.idle,
@@ -373,6 +458,11 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
   }
 
   Widget _buildBestMatchesStep() {
+    // If there's a selected offer, show only that offer
+    if (selectedOffer != null) {
+      return _buildSelectedOfferView();
+    }
+    
     // Get token-specific data
     final tokenData =
         tokenMarketData[widget.tokenSymbol] ?? tokenMarketData['GENST']!;
@@ -423,132 +513,136 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
       });
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Amount summary
-        Container(
-          padding: EdgeInsets.all(AppTheme.elementSpacing.w),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Amount summary
+          Container(
+            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.shopping_cart,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+                SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                Text(
+                  'Looking to buy: ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  '$buyAmount ${widget.tokenSymbol}',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.shopping_cart,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
+
+          SizedBox(height: AppTheme.cardPadding.h),
+
+          if (availableSellers.isNotEmpty) ...[
+            Text(
+              'Best Matches',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Text(
+              'Sellers with enough tokens to fulfill your order',
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color:
+                        Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  ),
+            ),
+          ] else if (partialSellers.isNotEmpty) ...[
+            Text(
+              'Partial Matches',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Container(
+              padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                border: Border.all(
+                  color: Colors.orange.withOpacity(0.3),
+                ),
               ),
-              SizedBox(width: AppTheme.elementSpacing.w * 0.5),
-              Text(
-                'Looking to buy: ',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                '$buyAmount ${widget.tokenSymbol}',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: Colors.orange,
+                    size: 20,
+                  ),
+                  SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                  Expanded(
+                    child: Text(
+                      'No sellers have enough tokens. Showing partial matches.',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: AppTheme.cardPadding.h),
-
-        if (availableSellers.isNotEmpty) ...[
-          Text(
-            'Best Matches',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: AppTheme.elementSpacing.h),
-          Text(
-            'Sellers with enough tokens to fulfill your order',
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                ),
-          ),
-        ] else if (partialSellers.isNotEmpty) ...[
-          Text(
-            'Partial Matches',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: AppTheme.elementSpacing.h),
-          Container(
-            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
-            decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-              border: Border.all(
-                color: Colors.orange.withOpacity(0.3),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  color: Colors.orange,
-                  size: 20,
-                ),
-                SizedBox(width: AppTheme.elementSpacing.w * 0.5),
-                Expanded(
-                  child: Text(
-                    'No sellers have enough tokens. Showing partial matches.',
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                ),
-              ],
-            ),
-          ),
-        ] else ...[
-          Text(
-            'No Matches Found',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: AppTheme.elementSpacing.h),
-          Container(
-            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.error.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.error.withOpacity(0.3),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Theme.of(context).colorScheme.error,
-                  size: 20,
-                ),
-                SizedBox(width: AppTheme.elementSpacing.w * 0.5),
-                Expanded(
-                  child: Text(
-                    'No sellers available for the requested amount.',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ],
+          ] else ...[
+            Text(
+              'No Matches Found',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-          ),
-        ],
+            SizedBox(height: AppTheme.elementSpacing.h),
+            Container(
+              padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: Theme.of(context).colorScheme.error,
+                    size: 20,
+                  ),
+                  SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                  Expanded(
+                    child: Text(
+                      'No sellers available for the requested amount.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
-        SizedBox(height: AppTheme.elementSpacing.h),
+          SizedBox(height: AppTheme.elementSpacing.h),
 
-        // List of sellers
-        Expanded(
-          child: ListView.builder(
-            itemCount: availableSellers.isNotEmpty
+          // List of sellers - not expanded, part of the scrollable column
+          ...List.generate(
+            availableSellers.isNotEmpty
                 ? availableSellers.length
                 : partialSellers.length,
-            itemBuilder: (context, index) {
+            (index) {
               final sellers = availableSellers.isNotEmpty
                   ? availableSellers
                   : partialSellers;
+              
+              // Only show first 5 offers
+              if (index >= 5) return SizedBox.shrink();
+              
               final seller = sellers[index];
               final isPartial =
                   availableSellers.isEmpty && partialSellers.isNotEmpty;
@@ -563,92 +657,349 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                         Theme.of(context).colorScheme.outline.withOpacity(0.2),
                   ),
                 ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(AppTheme.elementSpacing.w),
-                  leading: CircleAvatar(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    child: Text(
-                      seller['seller'].substring(0, 2).toUpperCase(),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  title: Text(seller['seller']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Icon(Icons.star, size: 16, color: Colors.amber),
-                          SizedBox(width: 4.w),
-                          Text(
-                              '${seller['rating']} • ${seller['trades']} trades'),
-                        ],
-                      ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Text('Available: ${seller['amount']} tokens'),
-                          if (isPartial) ...[
-                            SizedBox(width: 8.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 6.w,
-                                vertical: 2.h,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                  onTap: () {
+                    // Select this offer and proceed to confirmation
+                    setState(() {
+                      selectedOffer = seller;
+                    });
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                    child: Row(
+                      children: [
+                        // Seller avatar
+                        Avatar(
+                          size: 44.w,
+                          isNft: false,
+                          name: seller['seller'],
+                        ),
+                        SizedBox(width: AppTheme.elementSpacing),
+                        // Title & subtitle
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                seller['seller'],
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
                               ),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(4.r),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Offering ${seller['amount']} ${widget.tokenSymbol}',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.6),
+                                        ),
+                                  ),
+                                  if (isPartial) ...[
+                                    SizedBox(width: 8.w),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6.w,
+                                        vertical: 2.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(4.r),
+                                      ),
+                                      child: Text(
+                                        'Partial',
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: Colors.orange,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                              child: Text(
-                                'Partial',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                            ],
+                          ),
+                        ),
+                        // Price display
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\$${seller['price']}',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            Text(
+                              'per token',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6),
+                                  ),
                             ),
                           ],
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '\$${seller['price']}',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      Text(
-                        'per token',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.6),
-                            ),
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    // Handle buy action
-                    Navigator.of(context).pop();
-                    // TODO: Implement actual buy logic
-                  },
                 ),
               );
             },
           ),
+          
+          // Show more button if there are more than 5 offers
+          if ((availableSellers.length > 5) || (availableSellers.isEmpty && partialSellers.length > 5)) ...[
+            Center(
+              child: LongButtonWidget(
+                title: 'Show More',
+                buttonType: ButtonType.transparent,
+                customWidth: 150.w,
+                customHeight: 40.h,
+                onTap: () {
+                  // Close the bottom sheet and navigate to marketplace
+                  Navigator.of(context).pop();
+                  // The user is already on the marketplace screen, so just closing the sheet
+                  // will return them to see all offers
+                },
+              ),
+            ),
+          ],
+          
+          // Add bottom padding to ensure last item is visible
+          SizedBox(height: AppTheme.cardPadding.h * 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSelectedOfferView() {
+    final offer = selectedOffer!;
+    final requestedAmount = double.tryParse(buyAmount) ?? 0;
+    final availableAmount = double.tryParse(offer['amount'].toString()) ?? 0;
+    final price = double.tryParse(offer['price'].toString().replaceAll(',', '')) ?? 0;
+    final subtotal = requestedAmount * price;
+    final marketplaceFee = 1.0;
+    final totalCost = subtotal + marketplaceFee;
+    
+    return Stack(
+      children: [
+        // Main content
+        SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 80.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Seller info card - matching marketplace offer style
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  ),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                  onTap: () {}, // Already selected, no action needed
+                  child: Padding(
+                    padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            // Seller avatar
+                            Avatar(
+                              size: 44.w,
+                              isNft: false,
+                              name: offer['seller'],
+                            ),
+                            SizedBox(width: AppTheme.elementSpacing),
+                            // Title & subtitle
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    offer['seller'],
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Offering ${offer['amount']} ${widget.tokenSymbol}',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.6),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Price display
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '\$${offer['price']}',
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                                Text(
+                                  'per token',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        
+                        SizedBox(height: AppTheme.cardPadding.h * 2),
+                        
+                        // Transaction details - amount with conversion
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Amount to buy:',
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                  ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '$requestedAmount ${widget.tokenSymbol}',
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                                Text(
+                                  '\$${subtotal.toStringAsFixed(2)}',
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        
+                        if (requestedAmount > availableAmount) ...[
+                          SizedBox(height: AppTheme.elementSpacing.h),
+                          Container(
+                            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                              border: Border.all(
+                                color: Colors.orange.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.warning,
+                                  color: Colors.orange,
+                                  size: 20,
+                                ),
+                                SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                                Expanded(
+                                  child: Text(
+                                    'Seller only has ${offer['amount']} tokens available',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        
+                        SizedBox(height: AppTheme.cardPadding.h * 2),
+                        
+                        // Marketplace fee
+                        _buildDetailRow('Marketplace fee:', '\$${marketplaceFee.toStringAsFixed(2)}'),
+                        
+                        SizedBox(height: AppTheme.cardPadding.h),
+                        
+                        // Total cost
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total Cost:',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              '\$${totalCost.toStringAsFixed(2)}',
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        // Buy button positioned at bottom
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: BottomCenterButton(
+            buttonTitle: 'Buy Now',
+            buttonState: requestedAmount > availableAmount
+                ? ButtonState.disabled
+                : ButtonState.idle,
+            onButtonTap: () {
+              // Handle buy action
+              Navigator.of(context).pop();
+              // TODO: Implement actual buy logic
+            },
+          ),
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );
