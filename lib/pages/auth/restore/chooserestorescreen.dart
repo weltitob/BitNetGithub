@@ -182,10 +182,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     ),
                   ),
                   title: const Text(
-                    'Debug Login: testuser_2',
+                    'Debug Login: node12',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: const Text('Node: node2 (Debug Test User)'),
+                  subtitle: const Text('Node: node12 (Mainnet Debug User)'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Store context references before async gap
@@ -271,7 +271,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     ),
                   ),
                   subtitle:
-                      const Text('Remove testuser_2 and all associated data'),
+                      const Text('Remove node12 debug user and all associated data'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Show confirmation dialog
@@ -280,7 +280,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       builder: (context) => AlertDialog(
                         title: const Text('Delete Test User?'),
                         content: const Text(
-                          'This will permanently delete the test user "testuser_2" and all associated data including:\n\n'
+                          'This will permanently delete the node12 debug user and all associated data including:\n\n'
                           '• User profile\n'
                           '• Node mappings\n'
                           '• Recovery data\n'

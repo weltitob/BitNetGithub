@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:bitnet/backbone/helper/wallet_controller_helper.dart';
 
 class BitcoinController extends GetxController {
   LoggerService logger = Get.find();
@@ -234,8 +235,9 @@ class BitcoinController extends GetxController {
       Get.find<CryptoItemController>().firstPrice.value =
           chartClassDay.chartLine.first.price;
 
-      Get.find<WalletsController>().chartLines.value =
-          chartClassDay.chartLine.last;
+      WalletControllerHelper.safeExecute((controller) {
+        controller.chartLines.value = chartClassDay.chartLine.last;
+      });
     }
     final maxchartunfinished = chartClassMax.chartLine.toSet().toList();
     final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
@@ -810,8 +812,9 @@ class BitcoinController extends GetxController {
         Get.find<CryptoItemController>().firstPrice.value =
             chartClasses[0].chartLine.first.price;
 
-        Get.find<WalletsController>().chartLines.value =
-            chartClasses[0].chartLine.last;
+        WalletControllerHelper.safeExecute((controller) {
+          controller.chartLines.value = chartClasses[0].chartLine.last;
+        });
 
         onedaychart = chartClasses[0].chartLine;
         oneweekchart = chartClasses[1].chartLine;

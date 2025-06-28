@@ -21,11 +21,11 @@ import 'dart:convert';
 /// Debug utility for creating test users with predefined data
 /// This is for development/testing only and should NOT be used in production
 class CreateTestUser {
-  // Predefined test data
-  static const String testUsername = 'testuser_2';
-  static const String testEmail = 'testuser2@debug.bitnet';
+  // Predefined test data for node12
+  static const String testUsername = 'node12_debug';
+  static const String testEmail = 'node12debug@debug.bitnet';
   static const String testPassword = 'TestPassword123!';
-  static const String testNodeId = 'node2';
+  static const String testNodeId = 'node12';
 
   // Your provided macaroon (base64)
   static const String testMacaroon =
