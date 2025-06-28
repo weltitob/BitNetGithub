@@ -4,8 +4,7 @@
 /// to avoid hardcoding node IDs throughout the application.
 class LightningConfig {
   // CADDY CONFIGURATION
-  static const String caddyBaseUrl =
-      'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]';
+  static const String caddyBaseUrl = 'https://api.bitnet.ai';
 
   // NODE CONFIGURATION - Change this to switch nodes application-wide
   static const String defaultNodeId = 'node12'; // ← CHANGE THIS TO SWITCH NODES
