@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:pointycastle/ecc/api.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:pointycastle/digests/sha256.dart';
 import 'package:convert/convert.dart';

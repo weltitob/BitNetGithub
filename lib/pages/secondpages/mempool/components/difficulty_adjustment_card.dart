@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';

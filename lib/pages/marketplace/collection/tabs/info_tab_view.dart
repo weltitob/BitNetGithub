@@ -1,14 +1,9 @@
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/pages/marketplace/collection/owners_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
-import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 
 class InfoTabView extends StatelessWidget {
   const InfoTabView({Key? key}) : super(key: key);

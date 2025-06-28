@@ -4,17 +4,13 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/users.dart';
-import 'package:bitnet/pages/auth/restore/userslist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // For kDebugMode
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get/get.dart'; // Import GetX
+// Import GetX
 import 'package:bitnet/backbone/debug/create_test_user.dart'; // Debug test user utility
 
 // Global overlay entry for loading indicator
@@ -208,7 +204,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                               'Operation timed out after 30 seconds');
                         },
                       );
-                    } on TimeoutException catch (e) {
+                    } on TimeoutException {
                       errorMessage = 'Operation timed out. Please try again.';
                     } catch (e) {
                       errorMessage = 'Error: $e';
@@ -324,7 +320,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                         },
                       );
                       deleteSuccess = true;
-                    } on TimeoutException catch (e) {
+                    } on TimeoutException {
                       errorMessage =
                           'Delete operation timed out. Please try again.';
                     } catch (e) {

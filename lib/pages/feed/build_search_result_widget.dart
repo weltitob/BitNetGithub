@@ -6,7 +6,6 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
-import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';

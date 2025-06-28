@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 /// A class to optimize animations and reduce lag in the BitNet app,
 /// especially for web platform.

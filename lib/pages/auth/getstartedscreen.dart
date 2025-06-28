@@ -6,7 +6,6 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/intl/generated/l10n.dart';

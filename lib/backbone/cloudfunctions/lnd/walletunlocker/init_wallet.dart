@@ -2,14 +2,12 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:convert/convert.dart';
 // import 'package:pointycastle/export.dart'; // No longer needed after removing BIP39 derivation
 
 // BIP39-related deriveSeedFromMnemonic function removed - no longer needed for Lightning native aezeed format

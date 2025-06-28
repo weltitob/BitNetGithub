@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:crypto/crypto.dart';
-import 'package:encrypt/encrypt_io.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -93,7 +91,7 @@ Future<bool> sendEmail(String email, String arg, int template) async {
     } else {
       logger.i("Response data is null or not a Map.");
     }
-  } catch (e, stackTrace) {
+  } catch (e) {
     logger.e(
       "Error during email send: $e",
     );

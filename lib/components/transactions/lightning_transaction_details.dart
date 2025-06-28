@@ -15,7 +15,6 @@ import 'package:bitnet/components/transactions/transaction_status_indicator.dart
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';

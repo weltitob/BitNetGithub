@@ -28,7 +28,6 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/loop/loop_quote_model.dart';
 import 'package:bitnet/models/loop/loop_terms_model.dart';
-import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -3,7 +3,6 @@ import "package:bitnet/backbone/helper/size_extension.dart";
 import "package:bitnet/backbone/helper/theme/theme.dart";
 import "package:bitnet/components/appstandards/BitNetAppBar.dart";
 import "package:bitnet/components/appstandards/BitNetScaffold.dart";
-import "package:bitnet/components/buttons/lang_picker_widget.dart";
 import "package:bitnet/components/container/futurelottie.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:bitnet/backbone/auth/auth.dart';
@@ -19,14 +18,12 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlighter/themes/docco.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
-import 'package:share_plus/share_plus.dart';
 
 //VARIABLE PARAMETERS:
 //address

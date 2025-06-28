@@ -1,12 +1,8 @@
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 // Future<ByteData> loadAdminMacaroonAsset() async {

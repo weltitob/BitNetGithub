@@ -12,7 +12,6 @@ import 'package:bitnet/components/resultlist/transactions_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

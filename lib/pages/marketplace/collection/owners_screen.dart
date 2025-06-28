@@ -8,7 +8,6 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class OwnersScreen extends StatefulWidget {
   final String? collectionName;

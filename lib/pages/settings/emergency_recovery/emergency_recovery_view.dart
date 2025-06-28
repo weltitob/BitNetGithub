@@ -5,7 +5,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
@@ -13,12 +12,9 @@ import 'package:bitnet/pages/settings/emergency_recovery/email_recovery/email_re
 import 'package:bitnet/pages/settings/emergency_recovery/social_recovery/social_recovery_view.dart';
 import 'package:bitnet/pages/settings/emergency_recovery/word_recovery/word_recovery_view.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
 
 class EmergencyRecoveryView extends StatefulWidget {

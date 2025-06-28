@@ -9,7 +9,6 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:get/get.dart';
 
 class BitNetBottomSheetReceiveType extends StatefulWidget {

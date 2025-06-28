@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -649,7 +648,7 @@ class _AppsTabModernState extends State<AppsTabModern>
                   width: 65.w,
                   height: 65.h,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius:
                         BorderRadius.circular(AppTheme.borderRadiusSmall.r),
                     border: Border.all(

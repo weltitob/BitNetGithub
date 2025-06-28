@@ -4,7 +4,6 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 

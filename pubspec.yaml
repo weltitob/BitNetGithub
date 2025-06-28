@@ -231,11 +231,13 @@ dependencies:
   nip47: ^0.5.0+1
   nfc_manager_ndef: ^1.0.1
   nip01: ^0.3.0+1
+  convert: any
+  bech32: any
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_launcher_icons: ^0.14.3
   intl_utils: ^2.4.0
+  flutter_test:
+    sdk: flutter
   msix: ^3.6.2
   translations_cleaner: ^0.0.5
   flutter_gen_runner: ^5.4.0

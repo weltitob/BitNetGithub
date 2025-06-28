@@ -206,7 +206,7 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     try {
       did = await Auth().getUserDID(username);
       logger.d('Retrieved DID for username $username: $did');
-    } catch (e, stackTrace) {
+    } catch (e) {
       logger.e('Error retrieving DID for username $username, $e');
       throw Exception('Failed to retrieve DID for username $username');
     }
@@ -277,7 +277,7 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
     );
     logger.d('Found matching private data for DID $did');
     return matchingPrivateData;
-  } on StateError catch (e) {
+  } on StateError {
     logger.e(
         'No matching private data found for DID $did (StateError: firstWhere found no elements)');
     logger.e('Available DIDs in storage:');

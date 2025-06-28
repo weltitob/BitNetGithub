@@ -1,12 +1,9 @@
-import 'dart:async';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/email_recovery/setup_email_recovery.dart';
-import 'package:bitnet/backbone/cloudfunctions/generate_custom_token.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
-import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/email_recovery_helper.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -16,9 +13,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 
 import '../../bottomsheet/settings_controller.dart';
 

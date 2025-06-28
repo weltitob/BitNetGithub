@@ -1,14 +1,11 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/mempool_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 /// Optimized Hashrate Card with better performance

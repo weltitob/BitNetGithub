@@ -1,7 +1,3 @@
-import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 //
 // recoverKeyWithMnemonic(String mnemonic, String did) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('recoverKeyWithMnemonic');

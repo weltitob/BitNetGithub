@@ -6,7 +6,6 @@ import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

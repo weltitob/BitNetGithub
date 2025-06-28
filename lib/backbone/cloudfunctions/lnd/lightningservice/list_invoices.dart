@@ -1,17 +1,7 @@
-import 'dart:io';
 
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 // Future<RestResponse> listInvoices({bool pending_only = false}) async {
 //   LoggerService logger = Get.find();

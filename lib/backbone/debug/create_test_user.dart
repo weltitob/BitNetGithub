@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
@@ -14,9 +13,6 @@ import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
-import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
 
 /// Debug utility for creating test users with predefined data
 /// This is for development/testing only and should NOT be used in production

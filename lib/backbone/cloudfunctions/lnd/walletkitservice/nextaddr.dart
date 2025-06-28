@@ -1,23 +1,14 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 

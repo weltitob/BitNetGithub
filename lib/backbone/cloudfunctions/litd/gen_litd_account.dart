@@ -1,16 +1,3 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
-import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:bitnet/models/litd/accounts.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:get/get.dart';
-import 'dart:convert';
 
 //Was used previously for mutiple users one node approch to generate mutiple accounts on one node
 // dynamic callGenLitdAccount(String userId) async {

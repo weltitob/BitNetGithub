@@ -1,11 +1,8 @@
 import 'package:get/get.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class RemoteConfigController extends GetxController {
   // Instance of Firebase Remote Config

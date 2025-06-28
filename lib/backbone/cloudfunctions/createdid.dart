@@ -1,7 +1,3 @@
-import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/IONdata.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 // createDID(String username, String challenge) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createDID');

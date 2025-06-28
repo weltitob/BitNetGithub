@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/mempool_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/intl/generated/l10n.dart';

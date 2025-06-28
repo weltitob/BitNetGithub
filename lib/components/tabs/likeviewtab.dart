@@ -1,9 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
@@ -11,9 +6,7 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class LikeViewTab extends StatefulWidget {
   const LikeViewTab({Key? key, this.other = false}) : super(key: key);

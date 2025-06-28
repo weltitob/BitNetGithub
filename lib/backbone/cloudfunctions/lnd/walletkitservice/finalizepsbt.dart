@@ -1,25 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/hex/hex.dart';
-import 'package:blockchain_utils/signer/signer.dart';
-import 'package:bs58/bs58.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:pointycastle/export.dart';
 
 Future<RestResponse> finalizePsbt(String funded_psbt, String acc) async {
   LoggerService logger = Get.find();

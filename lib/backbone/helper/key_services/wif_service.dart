@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:blockchain_utils/base58/base58_base.dart';
 import 'package:crypto/crypto.dart';
-import 'package:pointycastle/pointycastle.dart';
 
 // Function to decode WIF to private key bytes
 List<int> decodeWIF(String wifPrivateKey) {

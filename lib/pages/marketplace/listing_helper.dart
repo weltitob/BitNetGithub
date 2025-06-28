@@ -6,11 +6,9 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 
 /// Shows the NFT listing bottom sheet with direct price input when a user clicks on "List" button
 void showListingBottomSheet(BuildContext context, NFTAsset asset) {

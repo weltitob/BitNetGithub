@@ -1,4 +1,3 @@
-import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 

@@ -1,12 +1,10 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/lnurl_channel_service.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnurl/lnurl_channel_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 class ChannelOpeningSheet extends StatefulWidget {
   final String? lnurlString;

@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:get/get.dart';
 
 Future<dynamic> unlockWallet({String? nodeId}) async {
   // Original litd controller approach (commented out for Caddy MVP)

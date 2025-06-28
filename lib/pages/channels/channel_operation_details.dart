@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/channel/channel_operation.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';

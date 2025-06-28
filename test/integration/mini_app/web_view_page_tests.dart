@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
-import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
-import 'package:bitnet/router.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,9 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:get/get.dart';
 
-import 'package:bitnet/main.dart' as app;
 import 'package:bitnet/pages/feed/webview_page.dart';
-import 'package:logger/logger.dart';
 import 'package:mockito/annotations.dart'; // adjust as needed
 import 'package:mockito/mockito.dart';
 import '../../unit/receive/receive_controller_test.dart';

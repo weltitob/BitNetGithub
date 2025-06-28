@@ -77,7 +77,7 @@ class OverlayController extends GetxController
       ),
     );
 
-    Overlay.of(overlayContext)?.insert(overlay);
+    Overlay.of(overlayContext).insert(overlay);
     overlayEntry.value = overlay;
 
     // Remove the overlay after 3 seconds
@@ -144,7 +144,7 @@ class OverlayController extends GetxController
       ),
     );
 
-    Overlay.of(overlayContext)?.insert(overlay);
+    Overlay.of(overlayContext).insert(overlay);
     overlayEntry.value = overlay;
 
     // Check connectivity every 2 seconds and remove overlay once online
@@ -246,7 +246,7 @@ class OverlayController extends GetxController
       ),
     );
 
-    Overlay.of(overlayContext)?.insert(overlay);
+    Overlay.of(overlayContext).insert(overlay);
     overlayEntry.value = overlay;
 
     Future.delayed(const Duration(seconds: 3), () {

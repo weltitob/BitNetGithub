@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
-import 'package:bitnet/pages/feed/appstab.dart';
-import 'package:bitnet/pages/feed/appstab_modern.dart';
 import 'package:bitnet/pages/feed/app_details_wrapper.dart';
 import 'package:bitnet/pages/feed/my_apps_wrapper.dart';
 import 'package:bitnet/pages/feed/token_marketplace_screen.dart';
@@ -110,9 +108,7 @@ import 'package:bitnet/pages/wallet/buy/payment_methods_screen.dart';
 import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 
-import 'package:flutter/foundation.dart';
 
-import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 

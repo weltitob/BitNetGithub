@@ -6,12 +6,10 @@ import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 class AssetsTab extends StatefulWidget {

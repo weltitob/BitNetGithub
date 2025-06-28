@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';

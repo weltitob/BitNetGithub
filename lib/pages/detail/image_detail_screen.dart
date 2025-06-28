@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ImageDetailScreen extends StatelessWidget {
   final String encodedData;

@@ -10,7 +10,6 @@ import 'package:bitnet/pages/transactions/controller/transaction_controller.dart
 import 'package:bitnet/pages/transactions/view/loop_transaction_screen.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

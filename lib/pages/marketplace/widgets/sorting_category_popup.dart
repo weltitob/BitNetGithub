@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 
 class SortingCategoryPopup extends StatelessWidget {
   final Function(String str) onChanged;

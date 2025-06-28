@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
@@ -12,7 +11,6 @@ import 'package:bitnet/backbone/services/node_mapping_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/recovery/user_node_mapping.dart';
 // BIP39 import removed - we use aezeed format from LND instead
-import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -30,8 +28,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

@@ -4,7 +4,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   final Function(String) onSortingChanged;

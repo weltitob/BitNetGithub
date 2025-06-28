@@ -1,6 +1,5 @@
 import 'package:bitnet/pages/marketplace/AboutScreen.dart';
 import 'package:bitnet/pages/marketplace/ActivityScreen.dart';
-import 'package:bitnet/pages/marketplace/CategoriesDetailScreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/FavouriteScreen.dart';
 import 'package:bitnet/pages/marketplace/FilterScreen.dart';

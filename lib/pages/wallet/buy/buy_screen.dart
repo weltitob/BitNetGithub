@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
-import 'package:bitnet/backbone/cloudfunctions/moonpay/moonpay_quote_price.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';

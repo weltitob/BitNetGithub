@@ -9,7 +9,6 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';

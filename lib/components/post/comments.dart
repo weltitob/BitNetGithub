@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:timezone/timezone.dart';
 
 class Comments extends StatefulWidget {
   final String postId;

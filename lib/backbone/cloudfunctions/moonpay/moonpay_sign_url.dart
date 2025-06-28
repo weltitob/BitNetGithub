@@ -1,16 +1,8 @@
-import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 
 Future<String?> moonpaySignUrl(String url) async {
   final logger = Get.put(LoggerService());

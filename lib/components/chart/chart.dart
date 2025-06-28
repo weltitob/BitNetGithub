@@ -8,7 +8,6 @@ import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/buttons/timechooserbutton.dart';
-import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';

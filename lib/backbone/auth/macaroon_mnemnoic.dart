@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
-import 'package:pointycastle/key_derivators/pbkdf2.dart';
-import 'package:pointycastle/macs/hmac.dart';
-import 'package:pointycastle/ecc/api.dart';
-import 'package:pointycastle/pointycastle.dart';
 import 'package:convert/convert.dart'; // For hex encoding/decoding
 
 Uint8List deriveSeedFromMnemonic(String mnemonic) {

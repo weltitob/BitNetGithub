@@ -6,7 +6,6 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/components/items/marketcap_widget.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
@@ -15,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 class TokensTab extends StatefulWidget {

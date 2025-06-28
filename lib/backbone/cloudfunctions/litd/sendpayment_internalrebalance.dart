@@ -1,15 +1,12 @@
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:bitnet/models/litd/accounts.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:get/get.dart';
-import 'dart:convert';
 
 dynamic callInternalRebalance(
   String lightningAddress,

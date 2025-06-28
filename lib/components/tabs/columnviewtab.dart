@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/postmodels/post_component.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
@@ -7,9 +6,6 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:timezone/timezone.dart';
-import 'dart:math';
 
 class ColumnViewTab extends StatefulWidget {
   const ColumnViewTab({Key? key, this.other = false}) : super(key: key);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 
 // Mock Lightning receive screen for testing
 class MockLightningReceiveScreen extends StatefulWidget {

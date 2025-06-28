@@ -1,9 +1,4 @@
-import 'dart:convert';
 
-import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/models/keys/privateionkey.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 //
 // signMessageFunction(String did, String privateIONKey, String message,) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('signMessageFunction');

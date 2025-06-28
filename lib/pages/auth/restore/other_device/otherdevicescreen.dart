@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';

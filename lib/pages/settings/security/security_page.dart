@@ -5,7 +5,6 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
@@ -13,7 +12,6 @@ import 'package:bitnet/pages/settings/emergency_recovery/social_recovery/social_
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:popover/popover.dart';
 
 class SecuritySettingsPage extends StatefulWidget {
   const SecuritySettingsPage({Key? key}) : super(key: key);

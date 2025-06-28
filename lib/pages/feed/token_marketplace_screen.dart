@@ -1,26 +1,20 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/token_buy_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/token_sell_sheet.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
-import 'package:bitnet/components/items/floor_price_widget.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/items/token_action_buttons.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class TokenMarketplaceScreen extends StatefulWidget {

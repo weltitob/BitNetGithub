@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/services/email_recovery_helper.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 
@@ -34,7 +33,7 @@ Future<bool> setupEmailRecovery(
     } else {
       logger.i("Response data is null or not a Map.");
     }
-  } catch (e, stackTrace) {
+  } catch (e) {
     logger.e(
       "Error during email recovery setup: $e",
     );

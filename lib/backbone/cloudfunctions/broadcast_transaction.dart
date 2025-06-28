@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> broadcastTransaction(String rawTxHex) async {

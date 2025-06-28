@@ -98,8 +98,7 @@ class AlbumViewWidget extends StatelessWidget {
                             child: ClipRRect(
                               clipBehavior: Clip.hardEdge,
                               borderRadius: BorderRadius.circular(16),
-                              child: i < controller.albumThumbnails.length &&
-                                      controller.albumThumbnails[i] != null
+                              child: i < controller.albumThumbnails.length
                                   ? Builder(
                                       builder: (context) {
                                         try {

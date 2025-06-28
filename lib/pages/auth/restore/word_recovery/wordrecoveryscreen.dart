@@ -1,8 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -14,11 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'dart:typed_data';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class WordRecoveryScreen extends StatefulWidget {
   @override
