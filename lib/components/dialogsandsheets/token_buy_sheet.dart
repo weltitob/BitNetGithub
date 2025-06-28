@@ -243,6 +243,9 @@ class TokenBuySheet extends StatefulWidget {
   static void show(
     BuildContext context, {
     required String tokenSymbol,
+    String? tokenName,
+    double? currentPrice,
+    Map<String, dynamic>? selectedOffer,
     Map<String, dynamic>? tokenData,
   }) {
     // Clear controllers

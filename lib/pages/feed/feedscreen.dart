@@ -5,7 +5,6 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/feed/appstab_modern.dart';
-import 'package:bitnet/pages/feed/build_search_result_widget.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
 import 'package:bitnet/pages/feed/tokenstab.dart';
@@ -73,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen>
   late Function() scrollListener;
 
   // Track which tabs have been initialized for lazy loading
-  final List<bool> _tabsInitialized = List.filled(6, false);
+  final List<bool> _tabsInitialized = List.filled(5, false);
 
   @override
   void initState() {
@@ -97,7 +96,7 @@ class _FeedScreenState extends State<FeedScreen>
     final endTime = DateTime.now();
     final loadTime = endTime.difference(startTime).inMilliseconds;
     print('[PERFORMANCE] FeedScreen initState completed in: ${loadTime}ms');
-    print('[PERFORMANCE] Lazy loading enabled - only 1 of 6 tabs initialized');
+    print('[PERFORMANCE] Lazy loading enabled - only 1 of 5 tabs initialized');
   }
 
   @override
@@ -142,10 +141,8 @@ class _FeedScreenState extends State<FeedScreen>
                           hintText:
                               "Paste walletaddress, transactionid or blockid...",
                           onChanged: (v) {
-                            // Only update search for people tab
-                            if (controller.tabController!.index == 3) {
-                              controller.filterSearchResults(v);
-                            }
+                            // Search functionality disabled since People tab was removed
+                            // controller.filterSearchResults(v);
                           },
                           handleSearch: (text) {},
                         );
@@ -183,9 +180,8 @@ class _FeedScreenState extends State<FeedScreen>
                     _buildLazyTab(0, const WebsitesTab()),
                     _buildLazyTab(1, const TokensTab()),
                     _buildLazyTab(2, const AssetsTab()),
-                    _buildLazyTab(3, const SearchResultWidget()),
-                    _buildLazyTab(4, MempoolHome(isFromHome: true)),
-                    _buildLazyTab(5, const AppsTabModern())
+                    _buildLazyTab(3, MempoolHome(isFromHome: true)),
+                    _buildLazyTab(4, const AppsTabModern())
                   ],
                 );
               }),

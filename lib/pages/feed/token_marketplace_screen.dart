@@ -3,7 +3,12 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/dialogsandsheets/token_buy_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/pages/feed/components/token_marketplace_header.dart';
 import 'package:bitnet/pages/feed/components/token_marketplace_tab_bar.dart';
 import 'package:bitnet/pages/feed/components/tabs/token_offers_tab_view.dart';
@@ -31,6 +36,13 @@ class TokenMarketplaceScreen extends StatefulWidget {
 
 class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
   final RxInt currentTab = 0.obs;
+  
+  // Filter state variables
+  String sortBy = 'price_low';
+  double? minPrice;
+  double? maxPrice;
+  int? minTrades;
+  double? minAmount;
 
   @override
   void initState() {
@@ -2060,7 +2072,9 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
         onTap: () => context.pop(),
       ),
       context: context,
-      body: CustomScrollView(
+      body: Stack(
+        children: [
+          CustomScrollView(
         slivers: [
           // Header
           SliverToBoxAdapter(
@@ -2125,10 +2139,35 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                 return const SliverToBoxAdapter(child: SizedBox());
             }
           }),
+          // Add padding at the bottom for the buy button
+          SliverToBoxAdapter(
+            child: SizedBox(height: 100.h),
+          ),
         ],
       ),
-    );
-  }
+      // Add the buy button at the bottom
+      Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: BottomCenterButton(
+          buttonTitle: 'Buy ${widget.tokenSymbol}',
+          buttonState: ButtonState.idle,
+          onButtonTap: () {
+            TokenBuySheet.show(
+              context,
+              tokenSymbol: widget.tokenSymbol,
+              tokenName: widget.tokenName,
+              currentPrice: double.tryParse(tokenData['currentPrice'].toString()) ?? 0.0,
+              selectedOffer: null,
+            );
+          },
+        ),
+      ),
+    ],
+  ),
+);
+}
 
   // Extract content from TokenOffersTabView
   Widget _buildOffersContent({
@@ -2159,7 +2198,54 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             }).toList();
           }
           
-          // Apply sorting would be here
+          // Rating filter removed - no longer filtering by seller rating
+          
+          // Apply sorting
+          switch (sortBy) {
+            case 'price_low':
+              filtered.sort((a, b) {
+                final priceA = double.tryParse(a['price'].toString()) ?? 0;
+                final priceB = double.tryParse(b['price'].toString()) ?? 0;
+                return priceA.compareTo(priceB);
+              });
+              break;
+            case 'price_high':
+              filtered.sort((a, b) {
+                final priceA = double.tryParse(a['price'].toString()) ?? 0;
+                final priceB = double.tryParse(b['price'].toString()) ?? 0;
+                return priceB.compareTo(priceA);
+              });
+              break;
+            case 'amount_low':
+              filtered.sort((a, b) {
+                final amountA = double.tryParse(a['amount'].toString()) ?? 0;
+                final amountB = double.tryParse(b['amount'].toString()) ?? 0;
+                return amountA.compareTo(amountB);
+              });
+              break;
+            case 'amount_high':
+              filtered.sort((a, b) {
+                final amountA = double.tryParse(a['amount'].toString()) ?? 0;
+                final amountB = double.tryParse(b['amount'].toString()) ?? 0;
+                return amountB.compareTo(amountA);
+              });
+              break;
+            case 'rating_high':
+              filtered.sort((a, b) {
+                final ratingA = a['rating'] as double? ?? 0;
+                final ratingB = b['rating'] as double? ?? 0;
+                return ratingB.compareTo(ratingA);
+              });
+              break;
+            case 'trades_high':
+              filtered.sort((a, b) {
+                final tradesA = a['trades'] as int? ?? 0;
+                final tradesB = b['trades'] as int? ?? 0;
+                return tradesB.compareTo(tradesA);
+              });
+              break;
+          }
+          
           setState(() {
             filteredOffers = filtered;
           });
@@ -2173,7 +2259,7 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
               child: SearchFieldWidget(
-                hintText: 'Search offers by seller, price, or amount...',
+                hintText: 'Search',
                 isSearchEnabled: true,
                 handleSearch: (value) {
                   filterOffers();
@@ -2189,7 +2275,9 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                     size: AppTheme.cardPadding * 0.75,
                   ),
                   onPressed: () {
-                    // Show filter bottom sheet
+                    _showFilterBottomSheet(context, setState, () {
+                      filterOffers();
+                    });
                   },
                 ),
               ),
@@ -2197,16 +2285,6 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
             
             SizedBox(height: AppTheme.elementSpacing.h),
             
-            // Results count
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              child: Text(
-                '${filteredOffers.length} offers found',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                ),
-              ),
-            ),
             
             SizedBox(height: AppTheme.elementSpacing.h),
             
@@ -2242,10 +2320,13 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
                           ),
                         ),
                       )
-                    : Column(
-                        children: filteredOffers
-                            .map<Widget>((offer) => _buildOfferTile(offer, tokenSymbol))
-                            .toList(),
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid - 1),
+                        child: Column(
+                          children: filteredOffers
+                              .map((offer) => _buildOfferTile(offer, tokenSymbol))
+                              .toList(),
+                        ),
                       ),
               ),
             ),
@@ -2257,98 +2338,79 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     );
   }
 
-  Widget _buildOfferTile(Map<String, dynamic> offer, String tokenSymbol) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  void _showBuySheet(Map<String, dynamic> offer, String tokenSymbol) {
+    TokenBuySheet.show(
+      context,
+      tokenSymbol: tokenSymbol,
+      tokenName: widget.tokenName,
+      currentPrice: double.tryParse(offer['price'].toString()) ?? 0.0,
+      selectedOffer: offer,
+    );
+  }
 
-    return Container(
-      margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding.w,
-          vertical: AppTheme.elementSpacing.h * 0.5,
-        ),
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          child: Text(
-            offer['seller'][0],
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildOfferTile(Map<String, dynamic> offer, String tokenSymbol) {
+    final color = Theme.of(context).colorScheme.primary;
+    
+    return InkWell(
+      onTap: () => _showBuySheet(offer, tokenSymbol),
+      borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+      child: Padding(
+        padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
+        child: Row(
           children: [
+            // Seller avatar
+            Avatar(
+              size: 44.w,
+              isNft: false,
+              name: offer['seller'],
+            ),
+            SizedBox(width: AppTheme.elementSpacing),
+            // Title & subtitle
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     offer['seller'],
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        size: 14,
-                        color: AppTheme.colorBitcoin,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        '${offer['rating']} (${offer['trades']} trades)',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w500,
                         ),
-                      ),
-                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Offering ${offer['amount']} $tokenSymbol',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
                   ),
                 ],
               ),
             ),
+            // Price display
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${offer['amount']} $tokenSymbol',
-                  style: Theme.of(context).textTheme.titleSmall,
+                  '\$${offer['price']}',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 Text(
-                  '\$${offer['price']} each',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                  ),
+                  'per token',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6),
+                      ),
                 ),
               ],
             ),
           ],
-        ),
-        subtitle: Padding(
-          padding: EdgeInsets.only(top: AppTheme.elementSpacing.h * 0.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  'Available: ${offer['amount']} $tokenSymbol',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.successColor,
-                  ),
-                ),
-              ),
-              LongButtonWidget(
-                buttonType: ButtonType.solid,
-                title: 'Buy',
-                customHeight: 32.h,
-                customWidth: 80.w,
-                onTap: () {
-                  // Show buy dialog
-                },
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -2421,13 +2483,13 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
           
           SizedBox(height: AppTheme.elementSpacing.h),
           
-          // Buy Orders
+          // Monthly Volume
           _buildAnalyticsCard(
             context,
-            title: 'Buy Orders',
-            value: '$buyOffersCount',
-            subtitle: 'Active purchase requests',
-            icon: Icons.shopping_cart,
+            title: 'Monthly Volume',
+            value: '${(sellOffersCount * 127).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+            subtitle: 'Tokens traded this month',
+            icon: Icons.show_chart,
             iconColor: AppTheme.colorBitcoin,
           ),
           
@@ -2958,5 +3020,182 @@ class _TokenMarketplaceScreenState extends State<TokenMarketplaceScreen> {
     return tokenMarketData[widget.tokenSymbol] ?? tokenMarketData['GENST']!;
   }
 
+  // Show filter bottom sheet
+  void _showFilterBottomSheet(BuildContext context, StateSetter setState, VoidCallback onApply) {
+    BitNetBottomSheet(
+      context: context,
+      borderRadius: AppTheme.borderRadiusBig,
+      height: MediaQuery.of(context).size.height * 0.85, // Make it taller
+      child: StatefulBuilder(
+        builder: (context, setBottomSheetState) {
+          return bitnetScaffold(
+            context: context,
+            appBar: bitnetAppBar(
+              context: context,
+              text: 'Filter Offers',
+              hasBackButton: false,
+            ),
+            body: SingleChildScrollView(
+              padding: EdgeInsets.all(AppTheme.cardPadding.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                
+                // Sort by section
+                Text(
+                  'Sort by',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(height: AppTheme.elementSpacing.h),
+                
+                // Sort options
+                _buildFilterOption(
+                  context: context,
+                  title: 'Price: Low to High',
+                  value: 'price_low',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                _buildFilterOption(
+                  context: context,
+                  title: 'Price: High to Low',
+                  value: 'price_high',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                _buildFilterOption(
+                  context: context,
+                  title: 'Amount: Low to High',
+                  value: 'amount_low',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                _buildFilterOption(
+                  context: context,
+                  title: 'Amount: High to Low',
+                  value: 'amount_high',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                _buildFilterOption(
+                  context: context,
+                  title: 'Rating: High to Low',
+                  value: 'rating_high',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                _buildFilterOption(
+                  context: context,
+                  title: 'Trades: High to Low',
+                  value: 'trades_high',
+                  groupValue: sortBy,
+                  onChanged: (value) {
+                    setBottomSheetState(() {
+                      sortBy = value!;
+                    });
+                  },
+                ),
+                
+                SizedBox(height: AppTheme.cardPadding.h),
+                
+                SizedBox(height: AppTheme.cardPadding.h),
+                
+                  // Apply button
+                  LongButtonWidget(
+                    title: 'Apply Filters',
+                    onTap: () {
+                      setState(() {
+                        this.sortBy = sortBy;
+                      });
+                      onApply();
+                      Navigator.pop(context);
+                    },
+                    buttonType: ButtonType.solid,
+                  ),
+                  
+                  SizedBox(height: AppTheme.cardPadding.h),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
+  Widget _buildFilterOption({
+    required BuildContext context,
+    required String title,
+    required String value,
+    required String groupValue,
+    required Function(String?) onChanged,
+  }) {
+    final isSelected = value == groupValue;
+    return InkWell(
+      onTap: () => onChanged(value),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h * 0.5),
+        child: Row(
+          children: [
+            Container(
+              width: 20.w,
+              height: 20.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 10.w,
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
+            SizedBox(width: AppTheme.elementSpacing.w),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Rating chip widget removed - no longer needed
 }

@@ -528,7 +528,7 @@ class _ChartCoreState extends State<ChartCore> {
     final lastPrice = chartData.isNotEmpty ? chartData.last.price : currentPriceValue;
     final priceChange = firstPrice == 0 ? 0.0 : (lastPrice - firstPrice) / firstPrice;
     
-    // Create trackball behavior with proper callbacks
+    // Create trackball behavior with proper callbacks - matching Bitcoin chart style
     final trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.singleTap,
@@ -536,14 +536,12 @@ class _ChartCoreState extends State<ChartCore> {
         enable: false, // Disable tooltip since we update the header
       ),
       hideDelay: 1000,
-      lineType: TrackballLineType.vertical,
-      lineColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+      lineType: TrackballLineType.horizontal,
+      lineColor: Colors.grey[400],
+      lineWidth: 2,
       markerSettings: TrackballMarkerSettings(
         markerVisibility: TrackballVisibilityMode.visible,
-        height: 8,
-        width: 8,
-        color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-        borderWidth: 2,
+        color: Colors.white,
         borderColor: Colors.white,
       ),
     );
@@ -603,23 +601,16 @@ class _ChartCoreState extends State<ChartCore> {
           majorGridLines: MajorGridLines(width: 0),
           minorGridLines: MinorGridLines(width: 0),
         ),
-        series: <AreaSeries<ChartLine, double>>[
-          AreaSeries<ChartLine, double>(
+        series: <SplineSeries<ChartLine, double>>[
+          SplineSeries<ChartLine, double>(
             name: 'Price',
             dataSource: chartData,
             animationDuration: 0, // Disable animation for token charts
             xValueMapper: (ChartLine line, _) => line.time,
             yValueMapper: (ChartLine line, _) => line.price,
             color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-            borderColor: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-            borderWidth: 2,
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: priceChange >= 0
-                  ? [AppTheme.successColor.withOpacity(0.2), AppTheme.successColor.withOpacity(0.0)]
-                  : [AppTheme.errorColor.withOpacity(0.2), AppTheme.errorColor.withOpacity(0.0)],
-            ),
+            width: 2,
+            splineType: SplineType.natural,
           ),
         ],
       ),

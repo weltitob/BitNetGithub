@@ -114,10 +114,7 @@ class FeedController extends GetxController
           ),
         );
       }
-      if (tabController!.index == 3) {
-        // People
-        searchresults.value = List.from(searchresultsMain);
-      }
+      // People tab removed - search functionality disabled
     } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
