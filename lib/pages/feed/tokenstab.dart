@@ -6,7 +6,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/components/items/marketcap_widget.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
@@ -17,6 +17,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class TokensTab extends StatefulWidget {
   const TokensTab({super.key});
@@ -27,16 +28,43 @@ class TokensTab extends StatefulWidget {
 
 class _TokensTabState extends State<TokensTab>
     with AutomaticKeepAliveClientMixin {
+  // Cache data to prevent repeated calculations
+  List<Map<String, dynamic>>? _cachedTokenData;
+  List<Map<String, dynamic>>? _cachedTopMovers;
+  List<Map<String, dynamic>>? _cachedTopVolume;
+  
+  // Track which carousel items should render charts
+  final Map<int, bool> _visibleCharts = {};
+  
+  // Current carousel index for optimization
+  int _currentCarouselIndex = 0;
+  
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+  
+  void _initializeData() {
+    // Pre-calculate and cache data
+    _cachedTokenData = _calculateTokenData();
+    _cachedTopMovers = _calculateTopMovers();
+    _cachedTopVolume = _calculateTopVolume();
+    
+    // Only render the first carousel item initially
+    _visibleCharts[0] = true;
+  }
 
   // Get price history for a token using centralized service
   Map<String, dynamic> _getTokenPriceHistory(String symbol) {
     return TokenDataService.instance.getTokenPriceHistory(symbol);
   }
 
-  // Token data using centralized service for consistency across the app
-  List<Map<String, dynamic>> get tokenData {
+  // Calculate token data once and cache it
+  List<Map<String, dynamic>> _calculateTokenData() {
     final tokenService = TokenDataService.instance;
     return tokenService
         .getAllTokenSymbols()
@@ -44,9 +72,13 @@ class _TokensTabState extends State<TokensTab>
         .toList();
   }
 
-  // Top movers data - references tokenData to ensure consistency
-  List<Map<String, dynamic>> get topMoversData {
-    // Sort tokens by percentage change (descending) and take top 3
+  // Use cached token data
+  List<Map<String, dynamic>> get tokenData {
+    return _cachedTokenData ?? _calculateTokenData();
+  }
+
+  // Calculate top movers once and cache
+  List<Map<String, dynamic>> _calculateTopMovers() {
     final sortedTokens = List<Map<String, dynamic>>.from(tokenData);
     sortedTokens.sort((a, b) {
       final aChange = double.parse(
@@ -58,15 +90,24 @@ class _TokensTabState extends State<TokensTab>
     return sortedTokens.take(3).toList();
   }
 
-  // Top volume data - references main tokenData for consistency
-  List<Map<String, dynamic>> get topVolumeData {
-    // Return specific tokens from main tokenData for volume display
+  // Use cached top movers
+  List<Map<String, dynamic>> get topMoversData {
+    return _cachedTopMovers ?? _calculateTopMovers();
+  }
+
+  // Calculate top volume once and cache
+  List<Map<String, dynamic>> _calculateTopVolume() {
     final tokens = tokenData;
     return [
       tokens.firstWhere((token) => token['symbol'] == 'MINRL'),
       tokens.firstWhere((token) => token['symbol'] == 'GENST'),
       tokens.firstWhere((token) => token['symbol'] == 'CAT'),
     ];
+  }
+
+  // Use cached top volume
+  List<Map<String, dynamic>> get topVolumeData {
+    return _cachedTopVolume ?? _calculateTopVolume();
   }
 
   @override
@@ -92,194 +133,42 @@ class _TokensTabState extends State<TokensTab>
             itemBuilder: (context, index, _) {
               final token = tokenData[index];
               final chartData = token['chartData'] as List<ChartLine>;
-
-              // Wrap in RepaintBoundary for better performance
-              return GestureDetector(
-                onTap: () {
-                  // Navigate to Bitcoin screen with token chart data
-                  final navigationData = {
-                    'isToken': true,
-                    'tokenSymbol': token['symbol'],
-                    'tokenName': token['name'],
-                    'priceHistory': _getTokenPriceHistory(token['symbol']),
-                    'currentPrice':
-                        double.parse(token['price'].replaceAll(',', '')),
-                  };
-
-                  context.push(
-                    '/wallet/bitcoinscreen',
-                    extra: navigationData,
-                  );
+              
+              // Use visibility detector for optimal rendering
+              return VisibilityDetector(
+                key: Key('carousel_$index'),
+                onVisibilityChanged: (info) {
+                  if (info.visibleFraction > 0.1 && !_visibleCharts.containsKey(index)) {
+                    setState(() {
+                      _visibleCharts[index] = true;
+                    });
+                  }
                 },
-                child: RepaintBoundary(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: getStandardizedCardMargin().w),
-                    child: GlassContainer(
-                      width: getStandardizedCardWidth().w,
-                      boxShadow: isDarkMode ? [] : null,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 18.h, // Increased from 16.h
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Token logo and name
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 38.h,
-                                  width: 38.w,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              token['color'].withOpacity(0.3),
-                                          blurRadius: 12,
-                                          spreadRadius: 2,
-                                        )
-                                      ]),
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      token['image'],
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                    width: AppTheme.elementSpacing.w *
-                                        0.75), // Increased from 10.w
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      token['symbol'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                18.sp, // Increased font size
-                                          ),
-                                    ),
-                                    Text(
-                                      token['name'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                            color: isDarkMode
-                                                ? AppTheme.white60
-                                                : AppTheme.black60,
-                                            fontSize: 12
-                                                .sp, // Added specific font size
-                                          ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate to Bitcoin screen with token chart data
+                    final navigationData = {
+                      'isToken': true,
+                      'tokenSymbol': token['symbol'],
+                      'tokenName': token['name'],
+                      'priceHistory': _getTokenPriceHistory(token['symbol']),
+                      'currentPrice':
+                          double.parse(token['price'].replaceAll(',', '')),
+                    };
 
-                            SizedBox(height: 20.h), // Increased from 16.h
-
-                            // Chart - Wrapped in Expanded to prevent overflow
-                            Expanded(
-                              child: Container(
-                                color: Colors.transparent,
-                                child: SfCartesianChart(
-                                  plotAreaBorderWidth: 0,
-                                  margin: EdgeInsets.zero,
-                                  primaryXAxis: CategoryAxis(
-                                    isVisible: false,
-                                    majorGridLines:
-                                        const MajorGridLines(width: 0),
-                                    majorTickLines:
-                                        const MajorTickLines(width: 0),
-                                  ),
-                                  primaryYAxis: NumericAxis(
-                                    isVisible: false,
-                                    majorGridLines:
-                                        const MajorGridLines(width: 0),
-                                    majorTickLines:
-                                        const MajorTickLines(width: 0),
-                                  ),
-                                  series: <ChartSeries>[
-                                    // Line series - using correct color based on token performance
-                                    AreaSeries<ChartLine, double>(
-                                      dataSource: chartData,
-                                      animationDuration: 1500,
-                                      xValueMapper: (ChartLine data, _) =>
-                                          data.time,
-                                      yValueMapper: (ChartLine data, _) =>
-                                          data.price,
-                                      color: token['isPositive']
-                                          ? AppTheme.successColor
-                                              .withOpacity(0.3)
-                                          : AppTheme.errorColor
-                                              .withOpacity(0.3),
-                                      borderWidth: 2.5,
-                                      borderColor: token['isPositive']
-                                          ? AppTheme.successColor
-                                          : AppTheme.errorColor,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: token['isPositive']
-                                            ? [
-                                                AppTheme.successColor
-                                                    .withOpacity(0.3),
-                                                AppTheme.successColor
-                                                    .withOpacity(0.05),
-                                                Colors.transparent,
-                                              ]
-                                            : [
-                                                AppTheme.errorColor
-                                                    .withOpacity(0.3),
-                                                AppTheme.errorColor
-                                                    .withOpacity(0.05),
-                                                Colors.transparent,
-                                              ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                                height: AppTheme.elementSpacing.h *
-                                    0.5), // Increased from 8.h
-
-                            // Price - using actual token price
-                            Text("${token['price']}\$",
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge),
-                            SizedBox(
-                                height: AppTheme
-                                    .elementSpacing.h), // Increased from 4.h
-                            Row(
-                              children: [
-                                ColoredPriceWidget(
-                                  price: token['price'],
-                                  isPositive: token['isPositive'],
-                                ),
-                                SizedBox(width: AppTheme.elementSpacing.w),
-                                PercentageChangeWidget(
-                                  percentage: token['change'],
-                                  isPositive: token['isPositive'],
-                                  fontSize: 14,
-                                ),
-                              ],
-                            ),
-
-                            // Price change indicator (using reusable component)
-                          ],
-                        ),
+                    context.push(
+                      '/wallet/bitcoinscreen',
+                      extra: navigationData,
+                    );
+                  },
+                  child: RepaintBoundary(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: getStandardizedCardMargin().w),
+                      child: GlassContainer(
+                        width: getStandardizedCardWidth().w,
+                        boxShadow: isDarkMode ? [] : null,
+                        child: _buildCarouselContent(context, token, chartData, isDarkMode),
                       ),
                     ),
                   ),
@@ -418,6 +307,7 @@ class _TokensTabState extends State<TokensTab>
                     final int idx = entry.key;
                     final mover = entry.value;
                     return Stack(
+                      key: ValueKey('mover_${mover['symbol']}_$idx'), // Add key for performance
                       children: [
                         CryptoItem(
                           hasGlassContainer: false,
@@ -468,6 +358,7 @@ class _TokensTabState extends State<TokensTab>
                     final int idx = entry.key;
                     final volume = entry.value;
                     return Stack(
+                      key: ValueKey('volume_${volume['symbol']}_$idx'), // Add key for performance
                       children: [
                         CryptoItem(
                           hasGlassContainer: false,
@@ -503,6 +394,180 @@ class _TokensTabState extends State<TokensTab>
     );
   }
 
+  // Build carousel content with original UI
+  Widget _buildCarouselContent(BuildContext context, Map<String, dynamic> token, List<ChartLine> chartData, bool isDarkMode) {
+    final shouldRenderChart = _visibleCharts[tokenData.indexOf(token)] ?? false;
+    
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 20.w,
+        vertical: 18.h, // Increased from 16.h
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Token logo and name
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 38.h,
+                width: 38.w,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            token['color'].withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      )
+                    ]),
+                child: ClipOval(
+                  child: Image.asset(
+                    token['image'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(
+                  width: AppTheme.elementSpacing.w *
+                      0.75), // Increased from 10.w
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    token['symbol'],
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              18.sp, // Increased font size
+                        ),
+                  ),
+                  Text(
+                    token['name'],
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(
+                          color: isDarkMode
+                              ? AppTheme.white60
+                              : AppTheme.black60,
+                          fontSize: 12
+                              .sp, // Added specific font size
+                        ),
+                  ),
+                ],
+              )
+            ],
+          ),
+
+          SizedBox(height: 20.h), // Increased from 16.h
+
+          // Chart - Wrapped in Expanded to prevent overflow
+          Expanded(
+            child: Container(
+              color: Colors.transparent,
+              child: shouldRenderChart ? SfCartesianChart(
+                plotAreaBorderWidth: 0,
+                margin: EdgeInsets.zero,
+                primaryXAxis: CategoryAxis(
+                  isVisible: false,
+                  majorGridLines:
+                      const MajorGridLines(width: 0),
+                  majorTickLines:
+                      const MajorTickLines(width: 0),
+                ),
+                primaryYAxis: NumericAxis(
+                  isVisible: false,
+                  majorGridLines:
+                      const MajorGridLines(width: 0),
+                  majorTickLines:
+                      const MajorTickLines(width: 0),
+                ),
+                series: <ChartSeries>[
+                  // Line series - using correct color based on token performance
+                  AreaSeries<ChartLine, double>(
+                    dataSource: chartData,
+                    animationDuration: 500, // Reduced for performance
+                    xValueMapper: (ChartLine data, _) =>
+                        data.time,
+                    yValueMapper: (ChartLine data, _) =>
+                        data.price,
+                    color: token['isPositive']
+                        ? AppTheme.successColor
+                            .withOpacity(0.3)
+                        : AppTheme.errorColor
+                            .withOpacity(0.3),
+                    borderWidth: 2.5,
+                    borderColor: token['isPositive']
+                        ? AppTheme.successColor
+                        : AppTheme.errorColor,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: token['isPositive']
+                          ? [
+                              AppTheme.successColor
+                                  .withOpacity(0.3),
+                              AppTheme.successColor
+                                  .withOpacity(0.05),
+                              Colors.transparent,
+                            ]
+                          : [
+                              AppTheme.errorColor
+                                  .withOpacity(0.3),
+                              AppTheme.errorColor
+                                  .withOpacity(0.05),
+                              Colors.transparent,
+                            ],
+                    ),
+                  )
+                ],
+              ) : Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(
+              height: AppTheme.elementSpacing.h *
+                  0.5), // Increased from 8.h
+
+          // Price - using actual token price
+          Text("${token['price']}\$",
+              style:
+                  Theme.of(context).textTheme.headlineLarge),
+          SizedBox(
+              height: AppTheme
+                  .elementSpacing.h), // Increased from 4.h
+          Row(
+            children: [
+              ColoredPriceWidget(
+                price: token['price'],
+                isPositive: token['isPositive'],
+              ),
+              SizedBox(width: AppTheme.elementSpacing.w),
+              PercentageChangeWidget(
+                percentage: token['change'],
+                isPositive: token['isPositive'],
+                fontSize: 14,
+              ),
+            ],
+          ),
+
+          // Price change indicator (using reusable component)
+        ],
+      ),
+    );
+  }
+
   // Navigation methods for top section buttons
   void _navigateToTopMarketCapToken() {
     // Navigate to the top market cap token (first in tokenData)
@@ -523,5 +588,162 @@ class _TokensTabState extends State<TokensTab>
     final topVolume = topVolumeData[0];
     context.push(
         '/feed/token_marketplace/${topVolume['symbol']}/${topVolume['name']}');
+  }
+
+  // Build mover item with proper key
+  Widget _buildMoverItem(BuildContext context, Map<String, dynamic> mover, int index) {
+    return Stack(
+      key: ValueKey('mover_${mover['symbol']}_$index'), // Unique key
+      children: [
+        RepaintBoundary( // Add RepaintBoundary
+          child: GlassContainer(
+            blur: 10,
+            width: 260.w,
+            customColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white.withOpacity(0.06)
+                : Colors.white.withOpacity(0.8),
+            boxShadow: Theme.of(context).brightness == Brightness.dark
+                ? []
+                : [AppTheme.boxShadowSmall],
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        mover['name'],
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing.h * 0.5),
+                      Text(
+                        mover['symbol'],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      mover['price'],
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    SizedBox(height: AppTheme.elementSpacing.h * 0.5),
+                    PercentageChangeWidget(
+                      percentage: mover['change'],
+                      isPositive: mover['isPositive'],
+                      fontSize: 14,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 8.h,
+          left: 8.w,
+          child: NumberIndicator(number: index + 1),
+        ),
+      ],
+    );
+  }
+
+  // Build volume item with proper key
+  Widget _buildVolumeItem(BuildContext context, Map<String, dynamic> volume, int index) {
+    return Stack(
+      key: ValueKey('volume_${volume['symbol']}_$index'), // Unique key
+      children: [
+        RepaintBoundary( // Add RepaintBoundary
+          child: GlassContainer(
+            blur: 10,
+            width: 260.w,
+            customColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white.withOpacity(0.06)
+                : Colors.white.withOpacity(0.8),
+            boxShadow: Theme.of(context).brightness == Brightness.dark
+                ? []
+                : [AppTheme.boxShadowSmall],
+            padding: EdgeInsets.all(AppTheme.cardPadding.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        volume['name'],
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing.h * 0.5),
+                      Text(
+                        volume['symbol'],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${volume['volume']}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    SizedBox(height: AppTheme.elementSpacing.h * 0.5),
+                    Text(
+                      '24h Volume',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.6),
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 8.h,
+          left: 8.w,
+          child: NumberIndicator(number: index + 1),
+        ),
+      ],
+    );
+  }
+
+  
+  @override
+  void dispose() {
+    // Clear caches
+    _cachedTokenData = null;
+    _cachedTopMovers = null;
+    _cachedTopVolume = null;
+    _visibleCharts.clear();
+    super.dispose();
   }
 }
