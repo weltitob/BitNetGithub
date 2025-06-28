@@ -6,7 +6,7 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/components/items/marketcap_widget.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/components/items/number_indicator.dart';
 import 'package:bitnet/components/items/percentagechange_widget.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
@@ -126,30 +126,13 @@ class _TokensTabOptimizedState extends State<TokensTabOptimized>
           // Trending section
           SizedBox(height: AppTheme.cardPadding * 1.5.h),
 
-          // Optimized Carousel Slider with lazy rendering
+          // Carousel Slider for Trending Tokens
           CarouselSlider.builder(
-            options: CarouselOptions(
-              height: 250.h,
-              viewportFraction: 0.8,
-              enlargeCenterPage: true,
-              enlargeFactor: 0.2,
-              autoPlay: true,
-              autoPlayInterval: const Duration(seconds: 4),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _currentCarouselIndex = index;
-                  // Pre-render next and previous items
-                  _visibleCharts[index] = true;
-                  if (index > 0) _visibleCharts[index - 1] = true;
-                  if (index < tokenData.length - 1) _visibleCharts[index + 1] = true;
-                });
-              },
-            ),
+            options: getStandardizedCarouselOptions(autoPlayIntervalSeconds: 4),
             itemCount: tokenData.length,
             itemBuilder: (context, index, _) {
               final token = tokenData[index];
+              final chartData = token['chartData'] as List<ChartLine>;
               
               // Use visibility detector for optimal rendering
               return VisibilityDetector(
@@ -161,7 +144,35 @@ class _TokensTabOptimizedState extends State<TokensTabOptimized>
                     });
                   }
                 },
-                child: _buildCarouselItem(context, token, index),
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate to Bitcoin screen with token chart data
+                    final navigationData = {
+                      'isToken': true,
+                      'tokenSymbol': token['symbol'],
+                      'tokenName': token['name'],
+                      'priceHistory': _getTokenPriceHistory(token['symbol']),
+                      'currentPrice':
+                          double.parse(token['price'].replaceAll(',', '')),
+                    };
+
+                    context.push(
+                      '/wallet/bitcoinscreen',
+                      extra: navigationData,
+                    );
+                  },
+                  child: RepaintBoundary(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: getStandardizedCardMargin().w),
+                      child: GlassContainer(
+                        width: getStandardizedCardWidth().w,
+                        boxShadow: isDarkMode ? [] : null,
+                        child: _buildCarouselContent(context, token, chartData, isDarkMode),
+                      ),
+                    ),
+                  ),
+                ),
               );
             },
           ),
@@ -175,215 +186,408 @@ class _TokensTabOptimizedState extends State<TokensTabOptimized>
             onPress: () => _navigateToTopMarketCapToken(),
           ),
 
-          // Top 3 by Market Cap tokens
+          // A single GlassContainer containing all crypto items
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-            child: Column(
-              children: tokenData.take(3).map((token) {
-                return Padding(
-                  key: ValueKey('marketcap_${token['symbol']}'), // Add key for better performance
-                  padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
-                  child: GestureDetector(
-                    onTap: () => _navigateToTokenDetails(token),
-                    child: CryptoItemWidget(
-                      name: token['name'],
-                      ticker: token['symbol'],
-                      price: token['price'],
-                      percentageChange: token['change'],
-                      isPositive: token['isPositive'],
-                      isNFT: true,
-                      suffix: MarketCapWidget(marketCap: token['marketCap']),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              boxShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: [
+                    // First crypto item with NumberIndicator - using tokenData[0] (Genesis Stone)
+                    Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () => context.push(
+                              '/feed/token_marketplace/GENST/Genesis Stone'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: tokenData[0]['symbol'],
+                              name: tokenData[0]['name'],
+                              icon: Image.asset(tokenData[0]['image']),
+                            ),
+                            context: context,
+                            tokenChartData: tokenData[0]['chartData'],
+                            tokenPrice: tokenData[0]['price'],
+                            tokenPriceChange: tokenData[0]['change'],
+                            tokenIsPositive: tokenData[0]['isPositive'],
+                          ),
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 1),
+                        ),
+                      ],
                     ),
-                  ),
-                );
-              }).toList(),
+                    // Second crypto item with NumberIndicator - using tokenData[1] (Cat Token)
+                    Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () => context
+                              .push('/feed/token_marketplace/CAT/Cat Token'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: tokenData[1]['symbol'],
+                              name: tokenData[1]['name'],
+                              icon: Image.asset(tokenData[1]['image']),
+                            ),
+                            context: context,
+                            tokenChartData: tokenData[1]['chartData'],
+                            tokenPrice: tokenData[1]['price'],
+                            tokenPriceChange: tokenData[1]['change'],
+                            tokenIsPositive: tokenData[1]['isPositive'],
+                          ),
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 2),
+                        ),
+                      ],
+                    ),
+                    // Third crypto item with NumberIndicator - using tokenData[2] (Hotdog)
+                    Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () => context
+                              .push('/feed/token_marketplace/HTDG/Hotdog'),
+                          child: CryptoItem(
+                            hasGlassContainer: false,
+                            currency: Currency(
+                              code: tokenData[2]['symbol'],
+                              name: tokenData[2]['name'],
+                              icon: Image.asset(tokenData[2]['image']),
+                            ),
+                            context: context,
+                            tokenChartData: tokenData[2]['chartData'],
+                            tokenPrice: tokenData[2]['price'],
+                            tokenPriceChange: tokenData[2]['change'],
+                            tokenIsPositive: tokenData[2]['isPositive'],
+                          ),
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: 3),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
 
-          SizedBox(height: AppTheme.cardPadding.h * 1.5),
+          SizedBox(height: AppTheme.cardPadding.h),
 
-          // Top Movers section
+          // Top Movers Today section with CommonHeading
           CommonHeading(
-            headingText: "🚀 Top Movers",
+            headingText: "📈 Top Movers Today",
             hasButton: true,
-            onPress: () => _navigateToTopMarketCapToken(),
+            onPress: () => _navigateToTopMover(),
           ),
 
-          // Top movers list with proper keys
-          Container(
-            height: 110.h,
-            child: ListView.separated(
-              key: const PageStorageKey('top_movers_list'), // Add page storage key
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              itemCount: topMoversData.length,
-              separatorBuilder: (context, index) =>
-                  SizedBox(width: AppTheme.elementSpacing.w),
-              itemBuilder: (context, index) {
-                final mover = topMoversData[index];
-                return _buildMoverItem(context, mover, index);
-              },
+          // Top Movers list
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              boxShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: topMoversData.asMap().entries.map((entry) {
+                    final int idx = entry.key;
+                    final mover = entry.value;
+                    return Stack(
+                      key: ValueKey('mover_${mover['symbol']}_$idx'), // Add key for performance
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: mover['symbol'],
+                            name: mover['name'],
+                            icon: Image.asset(mover['image']),
+                          ),
+                          context: context,
+                          tokenChartData: mover['chartData'],
+                          tokenPrice: mover['price'],
+                          tokenPriceChange: mover['change'],
+                          tokenIsPositive: mover['isPositive'],
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: idx + 1),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
 
-          SizedBox(height: AppTheme.cardPadding.h * 1.5),
+          SizedBox(height: AppTheme.cardPadding.h),
 
-          // Top Volume section
+          // Top Volume Today section with CommonHeading (Added section)
           CommonHeading(
-            headingText: "📊 Top Volume",
+            headingText: "📊 Top Volume Today",
             hasButton: true,
-            onPress: () => _navigateToTopMarketCapToken(),
+            onPress: () => _navigateToTopVolume(),
           ),
 
-          Container(
-            height: 110.h,
-            child: ListView.separated(
-              key: const PageStorageKey('top_volume_list'), // Add page storage key
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
-              itemCount: topVolumeData.length,
-              separatorBuilder: (context, index) =>
-                  SizedBox(width: AppTheme.elementSpacing.w),
-              itemBuilder: (context, index) {
-                final volume = topVolumeData[index];
-                return _buildVolumeItem(context, volume, index);
-              },
+          // Top Volume list
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: GlassContainer(
+              boxShadow: isDarkMode ? [] : null,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5),
+                child: Column(
+                  children: topVolumeData.asMap().entries.map((entry) {
+                    final int idx = entry.key;
+                    final volume = entry.value;
+                    return Stack(
+                      key: ValueKey('volume_${volume['symbol']}_$idx'), // Add key for performance
+                      children: [
+                        CryptoItem(
+                          hasGlassContainer: false,
+                          currency: Currency(
+                            code: volume['symbol'],
+                            name: volume['name'],
+                            icon: Image.asset(volume['image']),
+                          ),
+                          context: context,
+                          tokenChartData: volume['chartData'],
+                          tokenPrice: volume['price'],
+                          tokenPriceChange: volume['change'],
+                          tokenIsPositive: volume['isPositive'],
+                        ),
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: NumberIndicator(number: idx + 1),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
 
-          SizedBox(height: AppTheme.cardPadding.h * 2),
+          SizedBox(height: AppTheme.cardPadding.h),
+
+          SizedBox(height: 100.h), // Added extra space at the bottom
         ],
       )),
     );
   }
 
-  // Optimized carousel item builder
-  Widget _buildCarouselItem(BuildContext context, Map<String, dynamic> token, int index) {
-    final chartData = token['chartData'] as List<ChartLine>;
-    final shouldRenderChart = _visibleCharts[index] ?? false;
+  // Build carousel content with original UI
+  Widget _buildCarouselContent(BuildContext context, Map<String, dynamic> token, List<ChartLine> chartData, bool isDarkMode) {
+    final shouldRenderChart = _visibleCharts[tokenData.indexOf(token)] ?? false;
     
-    return GestureDetector(
-      onTap: () => _navigateToTokenDetails(token),
-      child: RepaintBoundary( // Add RepaintBoundary for better performance
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(AppTheme.cardPadding.w),
-          margin: EdgeInsets.symmetric(horizontal: 5.w),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: token['isPositive']
-                  ? [Colors.green.shade800, Colors.green.shade600]
-                  : [Colors.red.shade800, Colors.red.shade600],
-            ),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
-            boxShadow: [
-              BoxShadow(
-                color: (token['isPositive'] ? Colors.green : Colors.red)
-                    .withOpacity(0.3),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 20.w,
+        vertical: 18.h, // Increased from 16.h
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Token logo and name
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Container(
+                height: 38.h,
+                width: 38.w,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            token['color'].withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      )
+                    ]),
+                child: ClipOval(
+                  child: Image.asset(
+                    token['image'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(
+                  width: AppTheme.elementSpacing.w *
+                      0.75), // Increased from 10.w
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    token['name'],
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
+                    token['symbol'],
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(
                           fontWeight: FontWeight.bold,
+                          fontSize:
+                              18.sp, // Increased font size
                         ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing.w,
-                        vertical: AppTheme.elementSpacing.h * 0.5),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text(
-                      token['symbol'],
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
+                  Text(
+                    token['name'],
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(
+                          color: isDarkMode
+                              ? AppTheme.white60
+                              : AppTheme.black60,
+                          fontSize: 12
+                              .sp, // Added specific font size
+                        ),
                   ),
                 ],
-              ),
-              
-              // Only render chart if visible
-              if (shouldRenderChart) ...[
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing.h),
-                    child: SfCartesianChart(
-                      margin: EdgeInsets.zero,
-                      plotAreaBorderWidth: 0,
-                      primaryXAxis: NumericAxis(isVisible: false),
-                      primaryYAxis: NumericAxis(isVisible: false),
-                      // Reduce animation duration for better performance
-                      series: <ChartSeries>[
-                        FastLineSeries<ChartLine, double>( // Use FastLineSeries for better performance
-                          dataSource: chartData,
-                          animationDuration: 500, // Reduced from 1500
-                          xValueMapper: (ChartLine data, _) => data.time,
-                          yValueMapper: (ChartLine data, _) => data.price,
-                          color: Colors.white,
-                          width: 2.5,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ] else ...[
-                // Placeholder while chart loads
-                Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white.withOpacity(0.5),
-                      strokeWidth: 2,
-                    ),
-                  ),
-                ),
-              ],
+              )
+            ],
+          ),
 
-              Text(
-                "${token['price']}\$",
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+          SizedBox(height: 20.h), // Increased from 16.h
+
+          // Chart - Wrapped in Expanded to prevent overflow
+          Expanded(
+            child: Container(
+              color: Colors.transparent,
+              child: shouldRenderChart ? SfCartesianChart(
+                plotAreaBorderWidth: 0,
+                margin: EdgeInsets.zero,
+                primaryXAxis: CategoryAxis(
+                  isVisible: false,
+                  majorGridLines:
+                      const MajorGridLines(width: 0),
+                  majorTickLines:
+                      const MajorTickLines(width: 0),
+                ),
+                primaryYAxis: NumericAxis(
+                  isVisible: false,
+                  majorGridLines:
+                      const MajorGridLines(width: 0),
+                  majorTickLines:
+                      const MajorTickLines(width: 0),
+                ),
+                series: <ChartSeries>[
+                  // Line series - using correct color based on token performance
+                  AreaSeries<ChartLine, double>(
+                    dataSource: chartData,
+                    animationDuration: 500, // Reduced for performance
+                    xValueMapper: (ChartLine data, _) =>
+                        data.time,
+                    yValueMapper: (ChartLine data, _) =>
+                        data.price,
+                    color: token['isPositive']
+                        ? AppTheme.successColor
+                            .withOpacity(0.3)
+                        : AppTheme.errorColor
+                            .withOpacity(0.3),
+                    borderWidth: 2.5,
+                    borderColor: token['isPositive']
+                        ? AppTheme.successColor
+                        : AppTheme.errorColor,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: token['isPositive']
+                          ? [
+                              AppTheme.successColor
+                                  .withOpacity(0.3),
+                              AppTheme.successColor
+                                  .withOpacity(0.05),
+                              Colors.transparent,
+                            ]
+                          : [
+                              AppTheme.errorColor
+                                  .withOpacity(0.3),
+                              AppTheme.errorColor
+                                  .withOpacity(0.05),
+                              Colors.transparent,
+                            ],
                     ),
-              ),
-              SizedBox(height: AppTheme.elementSpacing.h),
-              Row(
-                children: [
-                  ColoredPriceWidget(
-                    price: token['price'],
-                    isPositive: token['isPositive'],
-                  ),
-                  SizedBox(width: AppTheme.elementSpacing.w),
-                  PercentageChangeWidget(
-                    percentage: token['change'],
-                    isPositive: token['isPositive'],
-                    fontSize: 14,
-                  ),
+                  )
                 ],
+              ) : Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(
+              height: AppTheme.elementSpacing.h *
+                  0.5), // Increased from 8.h
+
+          // Price - using actual token price
+          Text("${token['price']}\$",
+              style:
+                  Theme.of(context).textTheme.headlineLarge),
+          SizedBox(
+              height: AppTheme
+                  .elementSpacing.h), // Increased from 4.h
+          Row(
+            children: [
+              ColoredPriceWidget(
+                price: token['price'],
+                isPositive: token['isPositive'],
+              ),
+              SizedBox(width: AppTheme.elementSpacing.w),
+              PercentageChangeWidget(
+                percentage: token['change'],
+                isPositive: token['isPositive'],
+                fontSize: 14,
               ),
             ],
           ),
-        ),
+
+          // Price change indicator (using reusable component)
+        ],
       ),
     );
+  }
+
+  // Navigation methods for top section buttons
+  void _navigateToTopMarketCapToken() {
+    // Navigate to the top market cap token (first in tokenData)
+    final topToken = tokenData[0];
+    context.push(
+        '/feed/token_marketplace/${topToken['symbol']}/${topToken['name']}');
+  }
+
+  void _navigateToTopMover() {
+    // Navigate to the top mover token (first in topMoversData)
+    final topMover = topMoversData[0];
+    context.push(
+        '/feed/token_marketplace/${topMover['symbol']}/${topMover['name']}');
+  }
+
+  void _navigateToTopVolume() {
+    // Navigate to the top volume token (first in topVolumeData)
+    final topVolume = topVolumeData[0];
+    context.push(
+        '/feed/token_marketplace/${topVolume['symbol']}/${topVolume['name']}');
   }
 
   // Build mover item with proper key
@@ -532,24 +736,6 @@ class _TokensTabOptimizedState extends State<TokensTabOptimized>
     );
   }
 
-  // Navigation methods
-  void _navigateToTokenDetails(Map<String, dynamic> token) {
-    final navigationData = {
-      'tokenSymbol': token['symbol'],
-      'tokenName': token['name'],
-      'currentPrice': token['price'],
-      'percentageChange': token['change'],
-      'isPositive': token['isPositive'],
-    };
-    
-    context.push('/bitcoin', extra: navigationData);
-  }
-
-  void _navigateToTopMarketCapToken() {
-    // Navigate to token with highest market cap
-    final topToken = tokenData.first;
-    _navigateToTokenDetails(topToken);
-  }
   
   @override
   void dispose() {
