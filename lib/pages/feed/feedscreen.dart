@@ -7,7 +7,7 @@ import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/feed/appstab_modern.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
-import 'package:bitnet/pages/feed/tokenstab.dart';
+import 'package:bitnet/pages/feed/tokenstab_optimized.dart';
 import 'package:bitnet/pages/feed/assetstab.dart';
 import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
@@ -178,7 +178,7 @@ class _FeedScreenState extends State<FeedScreen>
                   children: [
                     // Lazy-loading tabs for better performance
                     _buildLazyTab(0, const WebsitesTab()),
-                    _buildLazyTab(1, const TokensTab()),
+                    _buildLazyTab(1, const TokensTabOptimized()),
                     _buildLazyTab(2, const AssetsTab()),
                     _buildLazyTab(3, MempoolHome(isFromHome: true)),
                     _buildLazyTab(4, const AppsTabModern())
