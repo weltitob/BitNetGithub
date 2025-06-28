@@ -27,7 +27,9 @@ class CreateTestUser {
   static const String testPassword = 'TestPassword123!';
   static const String testNodeId = 'node12';
 
-  // Your provided macaroon (base64)
+  // Placeholder macaroon for node12 (base64)
+  // Note: In production, the actual macaroon should be retrieved from the node mapping service
+  // The real macaroon for node12 is stored in the user_node_mappings collection
   static const String testMacaroon =
       'AgEDbG5kAvgBAwoQ/weJX+5bBfAK0yfk7aSzMRIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpbnZvaWNlcxIEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3cml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCghvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2VuZXJhdGUSBHJlYWQAAAYgYCj995/9RFj9Zfx4adNyKCnAHMfFeEaYxyo5i9bwYuA=';
 
@@ -37,18 +39,19 @@ class CreateTestUser {
   // hvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2V
   // uZXJhdGUSBHJlYWQAAAYgKJMiiClRYWuZxocBWnRme5SXkYiGC/4HCGgEclNdxrE=
 
-  // Test mnemonic (24 words - you can replace with your own)
+  // Test mnemonic that generates did:mnemonic:7060df39a4c333db
+  // Note: This is a placeholder - you should use the actual mnemonic that generates this DID
   static const String testMnemonic =
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
 
-  // Test addresses
+  // Test addresses for node12
   static const String testTaprootAddress =
-      'bc1p_debug_taproot_address_testuser2';
-  static const String testSegwitAddress = 'bc1q_debug_segwit_address_testuser2';
+      'bc1p_debug_taproot_address_node12';
+  static const String testSegwitAddress = 'bc1q_debug_segwit_address_node12';
 
-  // Test Lightning pubkey (this will be fetched from the actual node during registration)
+  // Test Lightning pubkey for node12 (this will be fetched from the actual node during registration)
   static const String testLightningPubkey =
-      '03debug_lightning_pubkey_testuser2_node2';
+      '03debug_lightning_pubkey_node12';
 
   /// Creates or logs in the test user using BitNET's Lightning auth flow
   static Future<bool> createOrLoginTestUser() async {
@@ -119,7 +122,7 @@ class CreateTestUser {
 
       // Wait for Lightning node to be ready
       print('⏳ Waiting for Lightning node to be ready...');
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 2)); // Shorter wait for mainnet node12
 
       // Create challenge for login
       print('🔐 Creating login challenge...');
@@ -187,11 +190,11 @@ class CreateTestUser {
       // Store the macaroon locally for this user
       await storeLitdAccountData(userId, testNodeId, testMacaroon);
 
-      print('✅ Test user login complete!');
+      print('✅ Node12 debug user login complete!');
       print('📋 Logged in as:');
       print('   Username: $testUsername');
       print('   User ID: $userId');
-      print('   Node: $testNodeId');
+      print('   Node: $testNodeId (mainnet)');
 
       return true;
     } catch (e) {
@@ -221,7 +224,7 @@ class CreateTestUser {
           lightningPubkey: testLightningPubkey,
           nodeId: testNodeId,
           caddyEndpoint:
-              'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]/$testNodeId',
+              'https://api.bitnet.ai/$testNodeId',
           adminMacaroon: testMacaroon,
           createdAt: DateTime.now(),
           lastAccessed: DateTime.now(),
@@ -236,9 +239,9 @@ class CreateTestUser {
 
       // Wait for Lightning node to be ready before proceeding
       print('⏳ Waiting for Lightning node to be ready...');
-      print('⏳ Node2 may take up to 40 seconds to fully initialize...');
+      print('⏳ Node12 is a mainnet node, should be ready quickly...');
       await Future.delayed(
-          Duration(seconds: 10)); // Give node more time to start
+          Duration(seconds: 3)); // Shorter wait for mainnet node12
 
       // Generate a temporary DID for initial user creation
       // The actual DID will be assigned by Firebase after auth
@@ -250,7 +253,7 @@ class CreateTestUser {
         did: tempDid,
         displayName: testUsername,
         username: testUsername,
-        bio: 'Debug test user account',
+        bio: 'Debug test user account for node12 mainnet',
         customToken: '',
         profileImageUrl: '',
         backgroundImageUrl: '',
@@ -331,11 +334,11 @@ class CreateTestUser {
       localStorage.setString(testUsername, 'currentUsername');
       localStorage.setString(createdUser.did, 'currentUserDid');
 
-      print('✅ Test user setup complete!');
+      print('✅ Node12 debug user setup complete!');
       print('📋 Summary:');
       print('   Username: $testUsername');
       print('   User ID / DID: ${createdUser.did}');
-      print('   Node: $testNodeId');
+      print('   Node: $testNodeId (mainnet)');
       print('   Recovery DID: $recoveryDid');
 
       return true;
