@@ -52,7 +52,7 @@ class TimeChooserButton extends StatelessWidget {
           horizontal: AppTheme.elementSpacing,
         ),
         child: Text(
-          timeperiod,
+          _getDisplayText(timeperiod),
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 color: isSelected
                     ? Theme.of(context).colorScheme.onPrimaryContainer
@@ -64,6 +64,16 @@ class TimeChooserButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Convert internal timeframe keys to user-friendly display text
+  String _getDisplayText(String timeframe) {
+    switch (timeframe) {
+      case '1J':
+        return '1Y'; // Show "1Y" to user instead of internal "1J"
+      default:
+        return timeframe;
+    }
   }
 }
 
@@ -122,9 +132,11 @@ class _CustomizableTimeChooserState extends State<CustomizableTimeChooser> {
   }
 
   void _handleButtonPress(String period) {
+    print('Debug TimeChooser: Button pressed with period: $period');
     setState(() {
       selectedPeriod = period;
     });
+    print('Debug TimeChooser: Calling onTimePeriodSelected with: $period');
     widget.onTimePeriodSelected(period);
   }
 }

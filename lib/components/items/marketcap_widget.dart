@@ -117,7 +117,7 @@ class MarketCapWidget extends StatelessWidget {
                   // Area series with gradient
                   AreaSeries<ChartLine, double>(
                     dataSource: dataPoints,
-                    animationDuration: 1500,
+                    animationDuration: 0, // Disable animation for consistent UX
                     xValueMapper: (ChartLine data, _) => data.time,
                     yValueMapper: (ChartLine data, _) => data.price,
                     color: (isPositive

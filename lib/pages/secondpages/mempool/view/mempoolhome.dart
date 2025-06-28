@@ -189,13 +189,15 @@ class _MempoolHomeState extends State<MempoolHome> {
       Future.delayed(
         const Duration(seconds: 3),
         () {
-          _controller.animateTo(
-            controller.scrollValue.value.w,
-            duration: const Duration(
-              milliseconds: 500,
-            ),
-            curve: Curves.easeInOut,
-          );
+          if (mounted && _controller.hasClients) {
+            _controller.animateTo(
+              controller.scrollValue.value.w,
+              duration: const Duration(
+                milliseconds: 500,
+              ),
+              curve: Curves.easeInOut,
+            );
+          }
         },
       );
     Map<String, dynamic> data =

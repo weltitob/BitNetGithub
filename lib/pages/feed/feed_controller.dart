@@ -115,10 +115,7 @@ class FeedController extends GetxController
           ),
         );
       }
-      if (tabController!.index == 3) {
-        // People
-        searchresults.value = List.from(searchresultsMain);
-      }
+      // People tab removed - search functionality disabled
     } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
@@ -132,7 +129,7 @@ class FeedController extends GetxController
   ];
 
   final List<WalletCategory> walletcategorys = [
-    WalletCategory('assets/images/bitcoin.png', "Websites", "Websites"),
+    WalletCategory('assets/images/bitcoin.png', "Apps", "Apps"),
     WalletCategory(
       'assets/images/paper_wallet.png',
       'Tokens',
@@ -143,17 +140,17 @@ class FeedController extends GetxController
       'Assets',
       'Assets',
     ),
-    WalletCategory(
-      'assets/images/friends.png',
-      'People',
-      'People',
-    ),
+    // Commented out People tab - can be re-enabled later
+    // WalletCategory(
+    //   'assets/images/friends.png',
+    //   'People',
+    //   'People',
+    // ),
     WalletCategory(
       'assets/images/bitcoin.png',
       'Blockchain',
       'Blockchain',
     ),
-    WalletCategory('assets/images/bitcoin.png', "Apps", "Apps")
   ];
 
   // Properly typed controllers for better performance
@@ -225,7 +222,7 @@ class FeedController extends GetxController
     }
 
     // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 6, vsync: this);
+    tabController = TabController(length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
 
     // Enhanced tab controller listener with better error handling
     tabController!.addListener(() {

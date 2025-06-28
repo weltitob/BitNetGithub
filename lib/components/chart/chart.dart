@@ -337,18 +337,39 @@ class _ChartCoreState extends State<ChartCore> {
   String selectedPeriod = '1D';
 
   void updateSelectedPeriod(String period) {
+    print('Debug ChartCore: updateSelectedPeriod called with: $period');
     setState(() {
       selectedPeriod = period;
     });
+    print('Debug ChartCore: selectedPeriod set to: $selectedPeriod');
   }
 
   Widget _buildTokenChart(BuildContext context) {
     // Safely get token data with null checks
     if (widget.tokenData == null) {
-      return Center(
-        child: Text(
-          'No token data available',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Token data unavailable',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -361,19 +382,57 @@ class _ChartCoreState extends State<ChartCore> {
 
     // Add validation for required fields
     if (tokenSymbol == null || currentPrice == null) {
-      return Center(
-        child: Text(
-          'Invalid token data',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.warning_amber_outlined,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Invalid token data',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+              ),
+            ],
+          ),
         ),
       );
     }
 
     if (priceHistory == null || priceHistory.isEmpty) {
-      return Center(
-        child: Text(
-          'Price history not available',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.timeline,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Price history not available',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -382,16 +441,53 @@ class _ChartCoreState extends State<ChartCore> {
     final periodDataRaw = priceHistory[selectedPeriod];
     List<Map<String, dynamic>>? periodData;
 
+    // Debug: Log what we're trying to access
+    print('Debug Chart: Selected period: $selectedPeriod');
+    print('Debug Chart: Available periods: ${priceHistory.keys}');
+    print('Debug Chart: Period data type: ${periodDataRaw.runtimeType}');
+
     // Handle different data types safely
     if (periodDataRaw is List) {
       periodData = periodDataRaw.cast<Map<String, dynamic>>().toList();
+      print('Debug Chart: Converted to list with ${periodData.length} items');
+    } else {
+      print('Debug Chart: Period data is not a List, it is: $periodDataRaw');
     }
 
     if (periodData == null || periodData.isEmpty) {
-      return Center(
-        child: Text(
-          'No data for selected period',
-          style: Theme.of(context).textTheme.bodyMedium,
+      return SizedBox(
+        height: AppTheme.cardPadding * 16.h, // Same height as normal chart
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.show_chart,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                'Chart data loading...',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+              ),
+              SizedBox(height: AppTheme.elementSpacing / 2),
+              Text(
+                'Please try switching timeframes',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.5),
+                    ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -451,7 +547,7 @@ class _ChartCoreState extends State<ChartCore> {
     final priceChange =
         firstPrice == 0 ? 0.0 : (lastPrice - firstPrice) / firstPrice;
 
-    // Create trackball behavior with proper callbacks
+    // Create trackball behavior with proper callbacks - matching Bitcoin chart style
     final trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.singleTap,
@@ -460,13 +556,11 @@ class _ChartCoreState extends State<ChartCore> {
       ),
       hideDelay: 1000,
       lineType: TrackballLineType.vertical,
-      lineColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+      lineColor: Colors.grey[400],
+      lineWidth: 2,
       markerSettings: TrackballMarkerSettings(
         markerVisibility: TrackballVisibilityMode.visible,
-        height: 8,
-        width: 8,
-        color: priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-        borderWidth: 2,
+        color: Colors.white,
         borderColor: Colors.white,
       ),
     );
@@ -474,82 +568,77 @@ class _ChartCoreState extends State<ChartCore> {
     // Use the SAME chart UI as Bitcoin
     return SizedBox(
       height: AppTheme.cardPadding * 16.h,
-      child: SfCartesianChart(
-        trackballBehavior: trackballBehavior,
-        onChartTouchInteractionDown: (args) {
-          isTrackballActive = true;
-          setState(() {});
-        },
-        onTrackballPositionChanging: (args) {
-          // Update price display when hovering
-          if (args.chartPointInfo.yPosition != null) {
-            final pointInfoPrice = double.parse(args.chartPointInfo.label!);
-            final pointInfoTime = double.parse(args.chartPointInfo.header!);
+      child: RepaintBoundary(
+        child: SfCartesianChart(
+          key: ValueKey(
+              'token-chart-$selectedPeriod'), // Force rebuild on period change
+          trackballBehavior: trackballBehavior,
+          enableAxisAnimation:
+              false, // Disable animation to match Bitcoin chart behavior
+          onChartTouchInteractionDown: (args) {
+            isTrackballActive = true;
+            setState(() {});
+          },
+          onTrackballPositionChanging: (args) {
+            // Update price display when hovering
+            if (args.chartPointInfo.yPosition != null) {
+              final pointInfoPrice = double.parse(args.chartPointInfo.label!);
+              final pointInfoTime = double.parse(args.chartPointInfo.header!);
 
-            // Update the CustomWidget state with new price
+              // Update the CustomWidget state with new price
+              final customWidgetState = widget.chartInfoKey.currentState;
+              if (customWidgetState != null && mounted) {
+                // Store the hover values in the state
+                customWidgetState.setState(() {
+                  customWidgetState._hoverPrice = pointInfoPrice;
+                  customWidgetState._hoverTime =
+                      DateTime.fromMillisecondsSinceEpoch(
+                          pointInfoTime.round());
+                  customWidgetState._isHovering = true;
+                });
+              }
+            }
+          },
+          onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
+            isTrackballActive = false;
+            setState(() {});
+
+            // Reset to current price when interaction ends
             final customWidgetState = widget.chartInfoKey.currentState;
             if (customWidgetState != null && mounted) {
-              // Store the hover values in the state
               customWidgetState.setState(() {
-                customWidgetState._hoverPrice = pointInfoPrice;
-                customWidgetState._hoverTime =
-                    DateTime.fromMillisecondsSinceEpoch(pointInfoTime.round());
-                customWidgetState._isHovering = true;
+                customWidgetState._isHovering = false;
               });
             }
-          }
-        },
-        onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
-          isTrackballActive = false;
-          setState(() {});
-
-          // Reset to current price when interaction ends
-          final customWidgetState = widget.chartInfoKey.currentState;
-          if (customWidgetState != null && mounted) {
-            customWidgetState.setState(() {
-              customWidgetState._isHovering = false;
-            });
-          }
-        },
-        plotAreaBorderWidth: 0,
-        primaryXAxis: NumericAxis(
-          edgeLabelPlacement: EdgeLabelPlacement.none,
-          isVisible: false,
-          majorGridLines: MajorGridLines(width: 0),
-          minorGridLines: MinorGridLines(width: 0),
-        ),
-        primaryYAxis: NumericAxis(
-          opposedPosition: true,
-          isVisible: false,
-          majorGridLines: MajorGridLines(width: 0),
-          minorGridLines: MinorGridLines(width: 0),
-        ),
-        series: <AreaSeries<ChartLine, double>>[
-          AreaSeries<ChartLine, double>(
-            name: 'Price',
-            dataSource: chartData,
-            xValueMapper: (ChartLine line, _) => line.time,
-            yValueMapper: (ChartLine line, _) => line.price,
-            color:
-                priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-            borderColor:
-                priceChange >= 0 ? AppTheme.successColor : AppTheme.errorColor,
-            borderWidth: 2,
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: priceChange >= 0
-                  ? [
-                      AppTheme.successColor.withOpacity(0.2),
-                      AppTheme.successColor.withOpacity(0.0)
-                    ]
-                  : [
-                      AppTheme.errorColor.withOpacity(0.2),
-                      AppTheme.errorColor.withOpacity(0.0)
-                    ],
-            ),
+          },
+          plotAreaBorderWidth: 0,
+          primaryXAxis: NumericAxis(
+            edgeLabelPlacement: EdgeLabelPlacement.none,
+            isVisible: false,
+            majorGridLines: MajorGridLines(width: 0),
+            minorGridLines: MinorGridLines(width: 0),
           ),
-        ],
+          primaryYAxis: NumericAxis(
+            opposedPosition: true,
+            isVisible: false,
+            majorGridLines: MajorGridLines(width: 0),
+            minorGridLines: MinorGridLines(width: 0),
+          ),
+          series: <SplineSeries<ChartLine, double>>[
+            SplineSeries<ChartLine, double>(
+              name: 'Price',
+              dataSource: chartData,
+              animationDuration: 0, // Disable animation for token charts
+              xValueMapper: (ChartLine line, _) => line.time,
+              yValueMapper: (ChartLine line, _) => line.price,
+              color: priceChange >= 0
+                  ? AppTheme.successColor
+                  : AppTheme.errorColor,
+              width: 2,
+              splineType: SplineType.natural,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -675,7 +764,8 @@ class _ChartCoreState extends State<ChartCore> {
                   bitcoinController.trackBallValueTime = datetime;
                   //bitcoinController.trackBallValueDate = date.toString();
                 },
-                enableAxisAnimation: true,
+                enableAxisAnimation:
+                    false, // Disable animation for consistent UX
                 plotAreaBorderWidth: 0,
                 primaryXAxis: NumericAxis(
                     //labelPlacement: LabelPlacement.onTicks,
@@ -761,8 +851,8 @@ class _CustomWidgetState extends State<CustomWidget>
     }
   }
 
-  late AnimationController _controller;
-  late Animation<Color?> _animation;
+  AnimationController? _controller;
+  Animation<Color?>? _animation;
   bool _isBlinking = false;
 
   // Hover state for token charts
@@ -770,19 +860,25 @@ class _CustomWidgetState extends State<CustomWidget>
   double? _hoverPrice;
   DateTime? _hoverTime;
 
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the animation controller on init
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1000));
+  }
+
   void blinkAnimation() {
-    if (mounted) {
-      _controller = AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 1000));
+    if (mounted && _controller != null) {
       _animation =
           ColorTween(begin: initAnimationColor, end: Colors.transparent)
-              .animate(_controller)
+              .animate(_controller!)
             ..addStatusListener((status) {
               if (status == AnimationStatus.completed) {
                 setState(() {
                   _isBlinking = false;
                 });
-                _controller.reverse();
+                _controller!.reverse();
               }
             });
       setState(() {
@@ -828,6 +924,12 @@ class _CustomWidgetState extends State<CustomWidget>
       default:
         return 'assets/images/bitcoin.png';
     }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
