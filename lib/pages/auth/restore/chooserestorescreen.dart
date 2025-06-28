@@ -199,13 +199,13 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     String? errorMessage;
 
                     try {
-                      // Add timeout to prevent hanging
+                      // Add timeout to prevent hanging - increased for Firebase function
                       success =
                           await CreateTestUser.createOrLoginTestUser().timeout(
-                        const Duration(seconds: 30),
+                        const Duration(seconds: 120), // Increased to 2 minutes
                         onTimeout: () {
                           throw TimeoutException(
-                              'Operation timed out after 30 seconds');
+                              'Operation timed out after 2 minutes');
                         },
                       );
                     } on TimeoutException catch (e) {
@@ -219,8 +219,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
                     // Handle result
                     if (success) {
-                      // Navigate to home
-                      router.go('/home');
+                      // Navigate to home using the same pattern as normal login
+                      router.go(
+                        Uri(path: '/').toString(),
+                      );
                     } else {
                       // Show error
                       messenger.showSnackBar(
@@ -317,10 +319,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     try {
                       // Add timeout to prevent hanging
                       await CreateTestUser.deleteTestUser().timeout(
-                        const Duration(seconds: 30),
+                        const Duration(seconds: 60), // Increased to 1 minute for deletion
                         onTimeout: () {
                           throw TimeoutException(
-                              'Delete operation timed out after 30 seconds');
+                              'Delete operation timed out after 1 minute');
                         },
                       );
                       deleteSuccess = true;
