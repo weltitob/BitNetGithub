@@ -647,8 +647,9 @@ class WebViewPageState extends State<WebViewPage>
                                   label: 'Public Key',
                                   onTap: () {
                                     if (nostrController != null) {
-                                      final publicKey = nostrController!
-                                          .userKeyPair.publicKey;
+                                      final publicKey = encodeNpub(
+                                          nostrController!
+                                              .userKeyPair.publicKey);
                                       Clipboard.setData(
                                           ClipboardData(text: publicKey));
                                       Get.find<OverlayController>().showOverlay(
@@ -675,9 +676,8 @@ class WebViewPageState extends State<WebViewPage>
                                   onTap: () {
                                     if (nostrController != null) {
                                       final privateKey = encodeNsec(
-                                              nostrController!
-                                                  .userKeyPair.privateKey)
-                                          .camelCase!;
+                                          nostrController!
+                                              .userKeyPair.privateKey);
                                       Clipboard.setData(
                                           ClipboardData(text: privateKey));
                                       Get.find<OverlayController>().showOverlay(
