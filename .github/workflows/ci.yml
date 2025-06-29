@@ -40,7 +40,7 @@ jobs:
 
       
     - name: Check code formatting
-      run: dart format --set-exit-if-changed .
+      run: dart format --set-exit-if-changed . --exclude=lib/intl/generated/l10n.dart
       
     - name: Run all unit tests
       run: flutter test test/run_all_unit_tests.dart --coverage

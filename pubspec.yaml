@@ -295,11 +295,11 @@ dependency_overrides:
   #    url: https://github.com/izako666/persona_flutter.git
   #    ref: master
 
-flutter_intl:
-  enabled: true
-  arb_dir: lib/intl  # Updated to reflect the renamed directory
-  template_arbs: lib/intl/intl_en.arb  # Ensure this matches the template ARB file
-  output_dir: lib/generated  # Directory for generated Dart localization files
+# flutter_intl:
+#   enabled: true
+#   arb_dir: lib/intl  # Updated to reflect the renamed directory
+#   template_arbs: lib/intl/intl_en.arb  # Ensure this matches the template ARB file
+#   output_dir: lib/generated  # Directory for generated Dart localization files
 
 flutter:
   fonts:
