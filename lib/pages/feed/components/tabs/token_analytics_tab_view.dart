@@ -164,6 +164,21 @@ class TokenAnalyticsTabView extends StatelessWidget {
     );
   }
 
+  String _calculateMonthlyVolume() {
+    // Calculate or fetch monthly volume
+    // This is a placeholder - replace with actual calculation from your data source
+    final volumeData = tokenData['monthlyVolume'] ?? 125000;
+    
+    // Format the volume number
+    if (volumeData >= 1000000) {
+      return '${(volumeData / 1000000).toStringAsFixed(2)}M';
+    } else if (volumeData >= 1000) {
+      return '${(volumeData / 1000).toStringAsFixed(1)}K';
+    } else {
+      return volumeData.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentPrice = tokenData['currentPrice']?.toString() ?? '0';
@@ -229,13 +244,13 @@ class TokenAnalyticsTabView extends StatelessWidget {
                 
                 SizedBox(height: AppTheme.elementSpacing.h),
                 
-                // Buy Orders
+                // Monthly Volume
                 _buildAnalyticsCard(
                   context,
-                  title: 'Buy Orders',
-                  value: '$buyOffersCount',
-                  subtitle: 'Active purchase requests',
-                  icon: Icons.shopping_cart,
+                  title: 'Monthly Volume',
+                  value: '\$${_calculateMonthlyVolume()}',
+                  subtitle: 'Trading volume last 30 days',
+                  icon: Icons.show_chart,
                   iconColor: AppTheme.colorBitcoin,
                 ),
                 

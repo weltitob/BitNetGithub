@@ -17,15 +17,15 @@ import 'package:bitnet/models/firebase/verificationcode.dart';
 /// Debug utility for creating test users with predefined data
 /// This is for development/testing only and should NOT be used in production
 class CreateTestUser {
-  // Predefined test data
-  static const String testUsername = 'testuser_2';
-  static const String testEmail = 'testuser2@debug.bitnet';
+  // Predefined test data for node12
+  static const String testUsername = 'node12_debug';
+  static const String testEmail = 'node12debug@debug.bitnet';
   static const String testPassword = 'TestPassword123!';
-  static const String testNodeId = 'node2';
+  static const String testNodeId = 'node12';
 
-  // Your provided macaroon (base64)
+  // Admin macaroon for node12 (base64) - from actual node12 logs
   static const String testMacaroon =
-      'AgEDbG5kAvgBAwoQ/weJX+5bBfAK0yfk7aSzMRIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpbnZvaWNlcxIEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3cml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCghvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2VuZXJhdGUSBHJlYWQAAAYgYCj995/9RFj9Zfx4adNyKCnAHMfFeEaYxyo5i9bwYuA=';
+      'AgEDbG5kAvgBAwoQTukszzJeveaIZc4ATy8a5BIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpbnZvaWNlcxIEcmVhZBIFd3JpdGUaIQoIbWFjYXJvb24SCGdlbmVyYXRlEgRyZWFkEgV3cml0ZRoWCgdtZXNzYWdlEgRyZWFkEgV3cml0ZRoXCghvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2VuZXJhdGUSBHJlYWQAAAYgKJMiiClRYWuZxocBWnRme5SXkYiGC/4HCGgEclNdxrE=';
 
   // Admin macaroon for testnode1 (provided by user)
   // AgEDbG5kAvgBAwoQTukszzJeveaIZc4ATy8a5BIBMBoWCgdhZGRyZXNzEgRyZWFkEgV3cml0ZRoTCgRpbmZvEgRyZWFkEgV3cml0ZRoXCghpb
@@ -33,18 +33,21 @@ class CreateTestUser {
   // hvZmZjaGFpbhIEcmVhZBIFd3JpdGUaFgoHb25jaGFpbhIEcmVhZBIFd3JpdGUaFAoFcGVlcnMSBHJlYWQSBXdyaXRlGhgKBnNpZ25lchIIZ2V
   // uZXJhdGUSBHJlYWQAAAYgKJMiiClRYWuZxocBWnRme5SXkYiGC/4HCGgEclNdxrE=
 
-  // Test mnemonic (24 words - you can replace with your own)
+  // Hardcoded DID for node12 debug login - no mnemonic needed
+  static const String testRecoveryDid = 'did:mnemonic:7060df39a4c333db';
+  
+  // Dummy mnemonic - not used for actual authentication, just for compatibility
   static const String testMnemonic =
-      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
-  // Test addresses
+  // Test addresses for node12
   static const String testTaprootAddress =
-      'bc1p_debug_taproot_address_testuser2';
-  static const String testSegwitAddress = 'bc1q_debug_segwit_address_testuser2';
+      'bc1p_debug_taproot_address_node12';
+  static const String testSegwitAddress = 'bc1q_debug_segwit_address_node12';
 
-  // Test Lightning pubkey (this will be fetched from the actual node during registration)
+  // Test Lightning pubkey for node12 - from actual node12 logs
   static const String testLightningPubkey =
-      '03debug_lightning_pubkey_testuser2_node2';
+      '02797ad37f4a6fb0d97f0fa48701e1caacbe2bcdaa6cf7b10cc686f973feee1bcc';
 
   /// Creates or logs in the test user using BitNET's Lightning auth flow
   static Future<bool> createOrLoginTestUser() async {
@@ -55,9 +58,9 @@ class CreateTestUser {
       // First, ensure we have the private data stored locally
       print('📝 Storing private data for Lightning auth...');
 
-      // Generate recovery DID from mnemonic
-      final recoveryDid = RecoveryIdentity.generateRecoveryDid(testMnemonic);
-      print('🔑 Recovery DID: $recoveryDid');
+      // Use hardcoded recovery DID for node12 debug
+      final recoveryDid = testRecoveryDid;
+      print('🔑 Using hardcoded Recovery DID: $recoveryDid');
 
       // Check if user already exists
       bool userExists = false;
@@ -69,16 +72,46 @@ class CreateTestUser {
             await NodeMappingService.getUserNodeMapping(recoveryDid);
         if (userNodeMapping != null) {
           print('✅ User already exists with this mnemonic');
-          userExists = true;
-          // Try to get the user ID from existing documents
-          final querySnapshot = await FirebaseFirestore.instance
-              .collection('users')
-              .where('username', isEqualTo: testUsername)
-              .limit(1)
-              .get();
-          if (querySnapshot.docs.isNotEmpty) {
-            existingUserId = querySnapshot.docs.first.id;
-            print('Found existing user ID: $existingUserId');
+          
+          // Check if it's using the wrong node
+          if (userNodeMapping.nodeId != testNodeId) {
+            print('⚠️  WARNING: Existing mapping uses ${userNodeMapping.nodeId}, but we want $testNodeId');
+            print('🗑️  Deleting old node mapping to use new node...');
+            
+            // Delete the old mapping
+            await FirebaseFirestore.instance
+                .collection('user_node_mappings')
+                .doc('${recoveryDid}_${userNodeMapping.nodeId}')
+                .delete();
+            print('✅ Old node mapping deleted');
+            
+            // Force new registration with correct node
+            userExists = false;
+          } else {
+            // For debug user, we need to check if a user exists with our specific DID
+            // Since node12 is mapped to our hardcoded DID, we should use that DID as the user ID
+            print('📝 Node mapping exists for $testNodeId, checking for user with DID...');
+            
+            // Try to find user by DID (document ID)
+            try {
+              final userDoc = await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(recoveryDid)
+                  .get();
+                  
+              if (userDoc.exists) {
+                userExists = true;
+                existingUserId = recoveryDid;
+                print('✅ Found user with correct DID: $existingUserId');
+              } else {
+                print('❌ No user document found for DID: $recoveryDid');
+                print('🆕 Will create new user with this DID');
+                userExists = false;
+              }
+            } catch (e) {
+              print('❌ Error checking user by DID: $e');
+              userExists = false;
+            }
           }
         }
       } catch (e) {
@@ -115,7 +148,7 @@ class CreateTestUser {
 
       // Wait for Lightning node to be ready
       print('⏳ Waiting for Lightning node to be ready...');
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 2)); // Shorter wait for mainnet node12
 
       // Create challenge for login
       print('🔐 Creating login challenge...');
@@ -183,11 +216,11 @@ class CreateTestUser {
       // Store the macaroon locally for this user
       await storeLitdAccountData(userId, testNodeId, testMacaroon);
 
-      print('✅ Test user login complete!');
+      print('✅ Node12 debug user login complete!');
       print('📋 Logged in as:');
       print('   Username: $testUsername');
       print('   User ID: $userId');
-      print('   Node: $testNodeId');
+      print('   Node: $testNodeId (mainnet)');
 
       return true;
     } catch (e) {
@@ -202,8 +235,8 @@ class CreateTestUser {
     try {
       print('🔐 Starting Lightning registration flow...');
 
-      // First, ensure node mapping exists for the test user
-      final recoveryDid = RecoveryIdentity.generateRecoveryDid(testMnemonic);
+      // Use hardcoded recovery DID for node12 debug
+      final recoveryDid = testRecoveryDid;
 
       // Check if node mapping already exists
       final existingMapping =
@@ -217,7 +250,7 @@ class CreateTestUser {
           lightningPubkey: testLightningPubkey,
           nodeId: testNodeId,
           caddyEndpoint:
-              'http://[2a02:8070:880:1e60:da3a:ddff:fee8:5b94]/$testNodeId',
+              'https://api.bitnet.ai/$testNodeId',
           adminMacaroon: testMacaroon,
           createdAt: DateTime.now(),
           lastAccessed: DateTime.now(),
@@ -225,28 +258,26 @@ class CreateTestUser {
         );
 
         await NodeMappingService.storeUserNodeMapping(nodeMapping);
-        await NodeMappingService.storeMnemonicRecoveryIndex(
-            testMnemonic, recoveryDid);
-        print('✅ Node mapping created');
+        // Don't store mnemonic recovery index for debug user - no real mnemonic
+        print('✅ Node mapping created (debug user - no mnemonic index)');
       }
 
       // Wait for Lightning node to be ready before proceeding
       print('⏳ Waiting for Lightning node to be ready...');
-      print('⏳ Node2 may take up to 40 seconds to fully initialize...');
+      print('⏳ Node12 is a mainnet node, should be ready quickly...');
       await Future.delayed(
-          Duration(seconds: 10)); // Give node more time to start
+          Duration(seconds: 3)); // Shorter wait for mainnet node12
 
-      // Generate a temporary DID for initial user creation
-      // The actual DID will be assigned by Firebase after auth
-      final tempDid = recoveryDid; // Use recovery DID as temp DID
+      // For debug user, use the hardcoded recovery DID as the user ID
+      final userId = recoveryDid;
 
       // Create user data
       final userData = UserData(
-        docId: tempDid,
-        did: tempDid,
+        docId: userId,
+        did: userId,
         displayName: testUsername,
         username: testUsername,
-        bio: 'Debug test user account',
+        bio: 'Debug test user account for node12 mainnet',
         customToken: '',
         profileImageUrl: '',
         backgroundImageUrl: '',
@@ -267,7 +298,7 @@ class CreateTestUser {
         used: false,
         code: 'DEBUG_CODE_123',
         issuer: 'debug_system',
-        receiver: tempDid,
+        receiver: userId,
       );
 
       // Store in verification codes collection so Auth can find it
@@ -327,11 +358,11 @@ class CreateTestUser {
       localStorage.setString(testUsername, 'currentUsername');
       localStorage.setString(createdUser.did, 'currentUserDid');
 
-      print('✅ Test user setup complete!');
+      print('✅ Node12 debug user setup complete!');
       print('📋 Summary:');
       print('   Username: $testUsername');
       print('   User ID / DID: ${createdUser.did}');
-      print('   Node: $testNodeId');
+      print('   Node: $testNodeId (mainnet)');
       print('   Recovery DID: $recoveryDid');
 
       return true;
@@ -352,7 +383,7 @@ class CreateTestUser {
       print('⚠️  Use createOrLoginTestUser() for proper auth testing');
 
       // Check if user exists by looking for the recovery DID mapping
-      final recoveryDid = RecoveryIdentity.generateRecoveryDid(testMnemonic);
+      final recoveryDid = testRecoveryDid;
       final nodeMapping =
           await NodeMappingService.getUserNodeMapping(recoveryDid);
 
@@ -417,7 +448,7 @@ class CreateTestUser {
   static Future<bool> testUserExists() async {
     try {
       // Check by recovery DID in node mappings
-      final recoveryDid = RecoveryIdentity.generateRecoveryDid(testMnemonic);
+      final recoveryDid = testRecoveryDid;
       final nodeMapping =
           await NodeMappingService.getUserNodeMapping(recoveryDid);
 
@@ -444,47 +475,67 @@ class CreateTestUser {
     try {
       print('🗑️ Deleting test user data...');
 
-      // Generate recovery DID
-      final recoveryDid = RecoveryIdentity.generateRecoveryDid(testMnemonic);
+      // Use hardcoded recovery DID for node12 debug
+      final recoveryDid = testRecoveryDid;
 
-      // Find user by username
+      // Delete by DID first
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(recoveryDid)
+            .delete();
+        print('✅ Deleted user document by DID: $recoveryDid');
+      } catch (e) {
+        print('⚠️  No user found with DID: $recoveryDid');
+      }
+
+      // Also find and delete any users with the test username (cleanup old data)
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('username', isEqualTo: testUsername)
-          .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        final userId = querySnapshot.docs.first.id;
-        print('Found user to delete: $userId');
+        print('Found ${querySnapshot.docs.length} user(s) with username: $testUsername');
+        
+        // Delete all users with this username
+        for (final doc in querySnapshot.docs) {
+          final userId = doc.id;
+          print('Deleting user: $userId');
+          
+          // Delete user document
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .delete();
+          print('✅ Deleted user document: $userId');
+          
+          // Delete related data
+          try {
+            await FirebaseFirestore.instance
+                .collection('OnchainAddressesV2')
+                .doc(userId)
+                .delete();
+            print('✅ Deleted onchain addresses for: $userId');
+          } catch (e) {
+            print('⚠️  No onchain addresses found for: $userId');
+          }
+        }
+      }
 
-        // Delete Firestore documents
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .delete();
-        print('✅ Deleted user document');
-
+      // Delete node mapping
+      try {
         await FirebaseFirestore.instance
             .collection('user_node_mappings')
             .doc('${recoveryDid}_${testNodeId}')
             .delete();
         print('✅ Deleted node mapping');
+      } catch (e) {
+        print('⚠️  No node mapping found');
+      }
 
-        // Delete mnemonic recovery index
-        await FirebaseFirestore.instance
-            .collection('mnemonic_recovery_index')
-            .doc(recoveryDid)
-            .delete();
-        print('✅ Deleted recovery index');
-
-        await FirebaseFirestore.instance
-            .collection('OnchainAddressesV2')
-            .doc(userId)
-            .delete();
-        print('✅ Deleted onchain addresses');
-
-        // Delete verification code if exists
+      // Delete verification code if exists
+      try {
         await FirebaseFirestore.instance
             .collection('verificationCodes')
             .doc('debug_system')
@@ -492,25 +543,25 @@ class CreateTestUser {
             .doc('DEBUG_CODE_123')
             .delete();
         print('✅ Deleted verification code');
-
-        // Clear local storage
-        if (Get.isRegistered<LocalStorage>()) {
-          final localStorage = Get.find<LocalStorage>();
-          localStorage.remove('userId');
-          localStorage.remove('isLoggedIn');
-          localStorage.remove('currentUsername');
-          localStorage.remove('currentUserDid');
-        }
-
-        // Sign out from Firebase if signed in
-        if (FirebaseAuth.instance.currentUser != null) {
-          await FirebaseAuth.instance.signOut();
-        }
-
-        print('✅ Test user deleted successfully');
-      } else {
-        print('❌ No test user found to delete');
+      } catch (e) {
+        print('⚠️  No verification code found');
       }
+
+      // Clear local storage
+      if (Get.isRegistered<LocalStorage>()) {
+        final localStorage = Get.find<LocalStorage>();
+        localStorage.remove('userId');
+        localStorage.remove('isLoggedIn');
+        localStorage.remove('currentUsername');
+        localStorage.remove('currentUserDid');
+      }
+
+      // Sign out from Firebase if signed in
+      if (FirebaseAuth.instance.currentUser != null) {
+        await FirebaseAuth.instance.signOut();
+      }
+
+      print('✅ Test user deletion process completed');
     } catch (e) {
       print('❌ Error deleting test user: $e');
       print('Stack trace: ${StackTrace.current}');

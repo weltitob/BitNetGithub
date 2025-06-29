@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+
 class ReceivedInvoice {
   final String memo;
   final String rPreimage;
@@ -30,30 +33,32 @@ class ReceivedInvoice {
   });
 
   factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
-    //LoggerService logger = Get.find();
+    final logger = Get.find<LoggerService>();
 
-    String parseString(dynamic value, String fieldName) {
+    String parseString(dynamic value, String fieldName, {String defaultValue = ''}) {
       if (value == null) {
-        //logger.e('$fieldName is missing or null');
-        throw ArgumentError('$fieldName is missing or null');
+        logger.w('$fieldName is missing or null, using default: "$defaultValue"');
+        return defaultValue;
       }
-      return value as String;
+      return value.toString();
     }
 
-    int parseInt(dynamic value, String fieldName) {
+    int parseInt(dynamic value, String fieldName, {int defaultValue = 0}) {
       if (value == null) {
-        //logger.e('$fieldName is missing or null');
-        throw ArgumentError('$fieldName is missing or null');
+        logger.w('$fieldName is missing or null, using default: $defaultValue');
+        return defaultValue;
       }
-      return int.tryParse(value.toString()) ?? 0;
+      return int.tryParse(value.toString()) ?? defaultValue;
     }
 
-    bool parseBool(dynamic value, String fieldName) {
+    bool parseBool(dynamic value, String fieldName, {bool defaultValue = false}) {
       if (value == null) {
-        //logger.e('$fieldName is missing or null');
-        throw ArgumentError('$fieldName is missing or null');
+        logger.w('$fieldName is missing or null, using default: $defaultValue');
+        return defaultValue;
       }
-      return value as bool;
+      if (value is bool) return value;
+      if (value is String) return value.toLowerCase() == 'true';
+      return defaultValue;
     }
 
     return ReceivedInvoice(

@@ -178,10 +178,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     ),
                   ),
                   title: const Text(
-                    'Debug Login: testuser_2',
+                    'Debug Login: node12',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: const Text('Node: node2 (Debug Test User)'),
+                  subtitle: const Text('Node: node12 (Mainnet Debug User)'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Store context references before async gap
@@ -195,13 +195,13 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     String? errorMessage;
 
                     try {
-                      // Add timeout to prevent hanging
+                      // Add timeout to prevent hanging - increased for Firebase function
                       success =
                           await CreateTestUser.createOrLoginTestUser().timeout(
-                        const Duration(seconds: 30),
+                        const Duration(seconds: 120), // Increased to 2 minutes
                         onTimeout: () {
                           throw TimeoutException(
-                              'Operation timed out after 30 seconds');
+                              'Operation timed out after 2 minutes');
                         },
                       );
                     } on TimeoutException {
@@ -215,8 +215,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
                     // Handle result
                     if (success) {
-                      // Navigate to home
-                      router.go('/home');
+                      // Navigate to home using the same pattern as normal login
+                      router.go(
+                        Uri(path: '/').toString(),
+                      );
                     } else {
                       // Show error
                       messenger.showSnackBar(
@@ -267,7 +269,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     ),
                   ),
                   subtitle:
-                      const Text('Remove testuser_2 and all associated data'),
+                      const Text('Remove node12 debug user and all associated data'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Show confirmation dialog
@@ -276,7 +278,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       builder: (context) => AlertDialog(
                         title: const Text('Delete Test User?'),
                         content: const Text(
-                          'This will permanently delete the test user "testuser_2" and all associated data including:\n\n'
+                          'This will permanently delete the node12 debug user and all associated data including:\n\n'
                           '• User profile\n'
                           '• Node mappings\n'
                           '• Recovery data\n'
@@ -313,10 +315,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     try {
                       // Add timeout to prevent hanging
                       await CreateTestUser.deleteTestUser().timeout(
-                        const Duration(seconds: 30),
+                        const Duration(seconds: 60), // Increased to 1 minute for deletion
                         onTimeout: () {
                           throw TimeoutException(
-                              'Delete operation timed out after 30 seconds');
+                              'Delete operation timed out after 1 minute');
                         },
                       );
                       deleteSuccess = true;
