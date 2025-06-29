@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:bitnet/backbone/auth/auth.dart';
@@ -19,14 +18,12 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlighter/themes/docco.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
-import 'package:share_plus/share_plus.dart';
 
 //VARIABLE PARAMETERS:
 //address
@@ -388,6 +385,7 @@ class AppData {
   final String? storageName;
   final Map<String, dynamic>? parameters;
   final String? ownerId;
+  final bool nostr;
 
   String? faviconUrl;
   Uint8List? _faviconBytes;
@@ -397,18 +395,18 @@ class AppData {
   final int _maxRetries = 5;
   final _completer = Completer<Uint8List?>();
 
-  AppData({
-    required this.docId,
-    required this.url,
-    required this.name,
-    required this.desc,
-    this.parameters,
-    this.iconPath,
-    this.storageName,
-    this.useNetworkImage = true,
-    this.useNetworkAsset = false,
-    this.ownerId,
-  });
+  AppData(
+      {required this.docId,
+      required this.url,
+      required this.name,
+      required this.desc,
+      this.parameters,
+      this.iconPath,
+      this.storageName,
+      this.useNetworkImage = true,
+      this.useNetworkAsset = false,
+      this.ownerId,
+      this.nostr = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -420,14 +418,15 @@ class AppData {
       'useNetworkAsset': useNetworkAsset,
       'storage_name': storageName,
       'parameters': parameters,
+      if (nostr) 'nostr': true,
       if (iconPath != null) 'iconPath': iconPath,
       if (ownerId != null) 'ownerId': ownerId
     };
   }
 
-  factory AppData.fromJson(Map<String, dynamic> map) {
+  factory AppData.fromJson(Map<String, dynamic> map, {String? docId}) {
     return AppData(
-        docId: map['docId'],
+        docId: docId ?? map['docId'],
         url: map['url'],
         name: map['name'],
         desc: map['desc'],
@@ -435,6 +434,7 @@ class AppData {
         useNetworkAsset: map['useNetworkAsset'] ?? false,
         storageName: map['storage_name'],
         parameters: map['parameters'],
+        nostr: map.containsKey('nostr') ? true : false,
         iconPath: map.containsKey('iconPath') ? map['iconPath'] : null,
         ownerId: map.containsKey('ownerId') ? map['ownerId'] : null);
   }
@@ -796,20 +796,7 @@ Future<List<AppData>> getAvailableApps() async {
       await Databaserefs.appsRef.doc("total_apps").collection("apps").get();
 
   return q.docs
-      .map((doc) => AppData(
-          docId: doc.id,
-          url: doc.data()['url'],
-          name: doc.data()['name'],
-          desc: doc.data()['desc'],
-          useNetworkAsset: doc.data()['useNetworkAsset'] ?? false,
-          storageName: doc.data()['storage_name'],
-          useNetworkImage: doc.data()['useNetworkImage'],
-          parameters: doc.data().containsKey('parameters')
-              ? doc.data()['parameters']
-              : null,
-          iconPath: doc.data().containsKey('iconPath')
-              ? doc.data()['iconPath']
-              : null))
+      .map((doc) => AppData.fromJson(docId: doc.id, doc.data()))
       .toList();
 }
 

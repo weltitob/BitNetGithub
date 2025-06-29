@@ -5,7 +5,6 @@ import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/marketplace/widgets/filter_bottom_sheet.dart';
-import 'package:bitnet/pages/marketplace/widgets/sorting_category_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';

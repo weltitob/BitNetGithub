@@ -1,16 +1,12 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 

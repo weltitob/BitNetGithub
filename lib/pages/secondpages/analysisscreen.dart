@@ -5,7 +5,7 @@ import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override

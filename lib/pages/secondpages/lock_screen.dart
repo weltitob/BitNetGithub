@@ -60,7 +60,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                   height: AppTheme.cardPadding.h,
                 ),
                 Text(
-                  L10n.of(context).invitationCode,
+                  L10n.of(context)!.invitationCode,
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.left,
                 ),

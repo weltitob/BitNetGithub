@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalFadeListView extends StatelessWidget {

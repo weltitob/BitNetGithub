@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager_ndef/nfc_manager_ndef.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedController extends GetxController
@@ -221,7 +222,8 @@ class FeedController extends GetxController
     }
 
     // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
+    tabController = TabController(
+        length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
 
     // Enhanced tab controller listener with better error handling
     tabController!.addListener(() {
@@ -308,6 +310,11 @@ class FeedController extends GetxController
     if (isAvailable) {
       // Start Session
       NfcManager.instance.startSession(
+        pollingOptions: {
+          NfcPollingOption.iso14443,
+          NfcPollingOption.iso15693,
+          NfcPollingOption.iso18092
+        },
         onDiscovered: (NfcTag tag) async {
           var ndef = Ndef.from(tag);
           if (ndef != null) {

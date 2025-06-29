@@ -112,7 +112,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         } else {
           logger.w('Code found but already used');
           errorController.add(ErrorAnimationType.shake);
-          _error = L10n.of(context).codeAlreadyUsed;
+          _error = L10n.of(context)!.codeAlreadyUsed;
           setState(() {
             _loading = false;
             hasError = true;
@@ -127,7 +127,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       }
     } catch (error) {
       logger.e('Pin verification failed: $error');
-      _error = L10n.of(context).codeNotValid;
+      _error = L10n.of(context)!.codeNotValid;
       errorController.add(ErrorAnimationType.shake);
       setState(() {
         _loading = false;
@@ -145,7 +145,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           onTap: () {
             context.go('/authhome');
           },
-          text: L10n.of(context).pinCodeVerification,
+          text: L10n.of(context)!.pinCodeVerification,
           // text:
           context: context,
           actions: [
@@ -187,7 +187,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                 margin: EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding * 2.w),
                 child: Text(
-                  L10n.of(context).platformDemandText,
+                  L10n.of(context)!.platformDemandText,
                   style: Theme.of(context).textTheme.titleMedium!,
                   textAlign: TextAlign.center,
                 ),

@@ -113,7 +113,7 @@ class MarketCapWidget extends StatelessWidget {
                   majorGridLines: const MajorGridLines(width: 0),
                   majorTickLines: const MajorTickLines(width: 0),
                 ),
-                series: <ChartSeries>[
+                series: <CartesianSeries>[
                   // Area series with gradient
                   AreaSeries<ChartLine, double>(
                     dataSource: dataPoints,

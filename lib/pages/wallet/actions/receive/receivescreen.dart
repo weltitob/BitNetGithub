@@ -14,7 +14,7 @@ import 'package:bitnet/pages/wallet/actions/receive/widgets/amount_listtile.dart
 import 'package:bitnet/pages/wallet/actions/receive/widgets/receive_qr.dart';
 import 'package:bitnet/pages/wallet/actions/receive/widgets/receivetype_bottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

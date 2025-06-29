@@ -1470,12 +1470,13 @@
       "username": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{被 {username} 和 {count} 个其他人看见}}",
+  "seenByUserAndCountOthers": "{username} 和其他 {count} 人已查看",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUserAndUser": "被 {username} 和 {username2} 看见",
@@ -1776,7 +1777,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "userAndOthersAreTyping": "{username} 和其他 {count} 人正在输入…",

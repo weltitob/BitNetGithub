@@ -6,7 +6,7 @@ import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/TradingHistoryList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({Key? key}) : super(key: key);

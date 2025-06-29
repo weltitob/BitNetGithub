@@ -3,14 +3,8 @@ import 'dart:convert';
 
 import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart'
-    as old_fee;
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/send_coins.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -24,14 +18,7 @@ import 'package:bitnet/components/dialogsandsheets/channel_opening_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
-import 'package:bitnet/models/bitcoin/walletkit/input.dart';
-import 'package:bitnet/models/bitcoin/walletkit/output.dart';
-import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
-import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
-import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
@@ -44,7 +31,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -635,8 +621,8 @@ class SendsController extends BaseController {
       }
 
       // Validate and configure payment parameters
-      if (lnResult?.payParams != null) {
-        final payParams = lnResult!.payParams!;
+      if (lnResult.payParams != null) {
+        final payParams = lnResult.payParams!;
 
         // Validate amount bounds
         if (payParams.minSendable <= 0 || payParams.maxSendable <= 0) {
@@ -2140,7 +2126,7 @@ class SendsController extends BaseController {
         rawTxBytes = Uint8List.fromList(hex.decode(rawFinalTx));
         logger.i(
             "Decoded rawFinalTx to bytes successfully. Byte Length: ${rawTxBytes.length}");
-      } catch (e, stacktrace) {
+      } catch (e) {
         logger.e(
           "Error decoding rawFinalTx from hex: $e",
         );
@@ -2153,7 +2139,7 @@ class SendsController extends BaseController {
         hash1 = sha256.convert(rawTxBytes);
         logger.i("First SHA256 hash computed successfully.");
         logger.d("Hash1 Bytes: ${hex.encode(hash1.bytes)}");
-      } catch (e, stacktrace) {
+      } catch (e) {
         logger.e(
           "Error computing first SHA256 hash: $e",
         );
@@ -2166,7 +2152,7 @@ class SendsController extends BaseController {
         hash2 = sha256.convert(hash1.bytes);
         logger.i("Second SHA256 hash computed successfully.");
         logger.d("Hash2 Bytes: ${hex.encode(hash2.bytes)}");
-      } catch (e, stacktrace) {
+      } catch (e) {
         logger.e(
           "Error computing second SHA256 hash: $e",
         );
@@ -2192,7 +2178,7 @@ class SendsController extends BaseController {
         txId = hex.encode(reversedHash);
         logger.i("Encoded reversed hash to hex string (txId) successfully.");
         logger.i("Computed txId: $txId");
-      } catch (e, stacktrace) {
+      } catch (e) {
         logger.e("Error encoding reversed hash to hex string: $e");
         throw Exception("Failed to encode reversed hash to hex string.");
       }

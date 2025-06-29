@@ -2,16 +2,17 @@ group = "com.example.moonpay_flutter"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    ext.kotlin_version = "1.8.22"
+    ext.kotlin_version = "2.0.0"
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("com.android.tools.build:gradle:8.11.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    }
+        classpath("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:2.0.0")
+ }
 }
 
 allprojects {
@@ -24,12 +25,19 @@ allprojects {
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
 
 android {
     if (project.android.hasProperty("namespace")) {
         namespace = "com.example.moonpay_flutter"
     }
+       buildFeatures {
+        compose true
+    }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
     compileSdk = 34
     repositories {
         maven {
@@ -37,22 +45,14 @@ android {
         }
     }
 
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-    // End adding here
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {

@@ -1,26 +1,3 @@
-import 'dart:async';
-import 'dart:math';
-
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
-import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
-import 'package:bitnet/backbone/helper/size_extension.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-
 // izak: TO BE DELETED
 
 // Random random = new Random();

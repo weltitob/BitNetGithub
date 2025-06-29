@@ -22,7 +22,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/colored_price_widget.dart';
 import 'package:bitnet/components/items/cryptoinfoitem.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
@@ -40,7 +39,7 @@ import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -1194,7 +1193,7 @@ class WalletChartWidget extends StatelessWidget {
             majorGridLines: const MajorGridLines(width: 0),
             majorTickLines: const MajorTickLines(width: 0),
           ),
-          series: <ChartSeries>[
+          series: <CartesianSeries>[
             // SplineSeries with a glowing effect
             SplineSeries<ChartLine, double>(
               dataSource: bitcoinController.pbCurrentline.value,
@@ -1286,7 +1285,7 @@ void _showTimeframeBottomSheet(BuildContext context,
                                   .withOpacity(0.1)
                               : Theme.of(context)
                                   .colorScheme
-                                  .surfaceVariant
+                                  .surfaceContainerHighest
                                   .withOpacity(0.5),
                           borderRadius: BorderRadius.circular(10),
                         ),

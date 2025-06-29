@@ -12,7 +12,7 @@ import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';

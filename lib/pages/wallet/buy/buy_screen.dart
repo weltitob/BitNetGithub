@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
-import 'package:bitnet/backbone/cloudfunctions/moonpay/moonpay_quote_price.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -24,7 +21,7 @@ import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

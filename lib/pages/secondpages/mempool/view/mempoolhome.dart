@@ -1,18 +1,15 @@
 import 'dart:async';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/block_details/block_header.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/block_details/block_health_widget.dart';
 import 'package:bitnet/pages/secondpages/mempool/components/block_details/block_size_widget.dart';
@@ -26,13 +23,11 @@ import 'package:bitnet/pages/secondpages/mempool/components/hashrate_card_optimi
 import 'package:bitnet/pages/secondpages/mempool/components/transaction_fee_card.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
-import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

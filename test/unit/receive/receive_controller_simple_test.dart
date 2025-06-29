@@ -2,8 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
 
 /// Simplified unit tests for ReceiveController logic only
 ///

@@ -21,7 +21,7 @@ class TokenMarketplaceTabBar extends StatelessWidget {
     final isLightMode = theme.brightness == Brightness.light;
 
     // Get colors for the indicator based on theme
-    final Color indicatorColor = isLightMode 
+    final Color indicatorColor = isLightMode
         ? Colors.black.withOpacity(0.2)
         : Colors.white.withOpacity(0.2);
 
@@ -40,32 +40,32 @@ class TokenMarketplaceTabBar extends StatelessWidget {
         ],
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
       ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _TabIcon(
-              label: 'Offers',
-              iconData: Icons.grid_view_rounded,
-              index: 0,
-              currentTab: currentTab,
-              onTap: () => onTabChanged(0),
-            ),
-            _TabIcon(
-              label: 'Analytics',
-              iconData: Icons.analytics_outlined,
-              index: 1,
-              currentTab: currentTab,
-              onTap: () => onTabChanged(1),
-            ),
-            _TabIcon(
-              label: 'Info',
-              iconData: Icons.info_outline,
-              index: 2,
-              currentTab: currentTab,
-              onTap: () => onTabChanged(2),
-            ),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _TabIcon(
+            label: 'Offers',
+            iconData: Icons.grid_view_rounded,
+            index: 0,
+            currentTab: currentTab,
+            onTap: () => onTabChanged(0),
+          ),
+          _TabIcon(
+            label: 'Analytics',
+            iconData: Icons.analytics_outlined,
+            index: 1,
+            currentTab: currentTab,
+            onTap: () => onTabChanged(1),
+          ),
+          _TabIcon(
+            label: 'Info',
+            iconData: Icons.info_outline,
+            index: 2,
+            currentTab: currentTab,
+            onTap: () => onTabChanged(2),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -92,7 +92,7 @@ class _TabIcon extends StatelessWidget {
 
     return Obx(() {
       final bool isSelected = (currentTab.value == index);
-      
+
       return GestureDetector(
         onTap: onTap,
         child: Container(
@@ -109,7 +109,7 @@ class _TabIcon extends StatelessWidget {
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurface.withOpacity(0.5),
               ),
-              
+
               // Indicator bar
               AnimatedContainer(
                 duration: AppTheme.animationDuration,

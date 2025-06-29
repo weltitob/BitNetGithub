@@ -1,12 +1,6 @@
-import 'dart:convert';
-
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 //signmessage

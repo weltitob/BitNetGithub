@@ -1,26 +1,18 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
-import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/firebase/postsDataModel.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, this.ctrler}) : super(key: key);

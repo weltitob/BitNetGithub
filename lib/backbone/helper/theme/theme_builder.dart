@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:isolate';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/list_btc_addresses.dart';
@@ -18,7 +17,6 @@ import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 // import 'package:bitnet/pages/wallet/wallet.dart'; // Uncomment if needed, currently unused
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';

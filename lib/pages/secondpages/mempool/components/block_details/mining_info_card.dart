@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

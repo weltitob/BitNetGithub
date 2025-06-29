@@ -6,8 +6,7 @@ import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -44,12 +43,15 @@ class QRScannerView extends StatelessWidget {
             MobileScanner(
               //allowDuplicates: false,
               controller: controller.cameraController,
-              onDetect: (barcode, args) {
-                if (barcode.rawValue != null) {
-                  debugPrint('Barcode found! ${barcode.rawValue}');
+              onDetect: (barcode) {
+                if (barcode.barcodes.isNotEmpty &&
+                    barcode.barcodes.first.rawValue != null) {
+                  debugPrint(
+                      'Barcode found! ${barcode.barcodes.first.rawValue}');
                   //final String code = barcode.rawValue.toString();
                   //var encodedString = jsonDecode(codeinjson);
-                  controller.onQRCodeScanned(barcode.rawValue!, context);
+                  controller.onQRCodeScanned(
+                      barcode.barcodes.first.rawValue!, context);
                   //check what type we scanned somehow and then call the according functions
                   //controller.onScannedForSignIn(encodedString);
                 }
@@ -117,8 +119,9 @@ class QRScannerView extends StatelessWidget {
                                         .uri
                                         .toFilePath();
                                     bool scanSuccess = await controller
-                                        .cameraController
-                                        .analyzeImage(fileUrl);
+                                            .cameraController
+                                            .analyzeImage(fileUrl) !=
+                                        null;
                                     if (scanSuccess) {
                                       // The barcode will be processed by the controller's onDetect callback
                                       debugPrint('Image analyzed successfully');

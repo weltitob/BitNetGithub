@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:get/get.dart';
 
 class OtherUserInformation extends StatelessWidget {

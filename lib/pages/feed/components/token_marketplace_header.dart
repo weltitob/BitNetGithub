@@ -27,7 +27,6 @@ class TokenMarketplaceHeader extends StatefulWidget {
 
 class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
     with AutomaticKeepAliveClientMixin {
-  
   String _getTokenImage() {
     switch (widget.tokenSymbol) {
       case 'GENST':
@@ -104,15 +103,22 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(AppTheme.borderRadiusMid.r),
-                            bottomRight: Radius.circular(AppTheme.borderRadiusMid.r),
+                            bottomLeft:
+                                Radius.circular(AppTheme.borderRadiusMid.r),
+                            bottomRight:
+                                Radius.circular(AppTheme.borderRadiusMid.r),
                           ),
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
+                              Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.1),
+                              Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.7),
                             ],
                           ),
                         ),
@@ -133,7 +139,10 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .shadow
+                            .withOpacity(0.1),
                         blurRadius: 20,
                         offset: Offset(0, 4),
                       ),
@@ -160,7 +169,7 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
             ],
           ),
           SizedBox(height: AppTheme.cardPadding * 2),
-          
+
           // Token info layout similar to collection header
           Container(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
@@ -171,35 +180,39 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                   widget.tokenName,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                  ),
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.5,
+                      ),
                 ),
                 SizedBox(height: 4.h),
-                
+
                 // Token symbol
                 Text(
                   widget.tokenSymbol,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    fontWeight: FontWeight.w500,
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
                 SizedBox(height: 12.h),
-                
+
                 // Price and change information
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       '\$${widget.currentPrice}',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: widget.isPositive 
-                            ? AppTheme.successColor 
-                            : AppTheme.errorColor,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: widget.isPositive
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor,
+                              ),
                     ),
                     SizedBox(width: 12.w),
                     Container(
@@ -208,25 +221,26 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                         vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
-                        color: (widget.isPositive 
-                            ? AppTheme.successColor 
-                            : AppTheme.errorColor).withOpacity(0.1),
+                        color: (widget.isPositive
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor)
+                            .withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
                         widget.priceChange,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: widget.isPositive 
-                              ? AppTheme.successColor 
-                              : AppTheme.errorColor,
-                          fontWeight: FontWeight.w600,
-                        ),
+                              color: widget.isPositive
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 16.h),
-                
+
                 // Token description
                 Container(
                   constraints: BoxConstraints(maxWidth: 300.w),
@@ -234,10 +248,13 @@ class _TokenMarketplaceHeaderState extends State<TokenMarketplaceHeader>
                     _getTokenDescription(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                      height: 1.5,
-                      letterSpacing: 0.1,
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                          height: 1.5,
+                          letterSpacing: 0.1,
+                        ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),

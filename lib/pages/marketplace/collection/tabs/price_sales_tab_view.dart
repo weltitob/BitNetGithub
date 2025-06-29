@@ -296,7 +296,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                   child: SfCartesianChart(
                     margin: EdgeInsets.zero,
                     plotAreaBorderWidth: 0,
-                    enableAxisAnimation: false, // Disable animation for consistent UX
+                    enableAxisAnimation:
+                        false, // Disable animation for consistent UX
                     primaryXAxis: DateTimeAxis(
                       isVisible: false,
                       majorGridLines: const MajorGridLines(width: 0),
@@ -332,7 +333,7 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                         height: 8,
                       ),
                     ),
-                    series: <ChartSeries>[
+                    series: <CartesianSeries>[
                       // Main price line
                       LineSeries<ChartLine, DateTime>(
                         dataSource: chartData,
@@ -344,7 +345,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                             ? AppTheme.successColor
                             : AppTheme.errorColor,
                         width: 3,
-                        animationDuration: 0, // Disable animation for consistent UX
+                        animationDuration:
+                            0, // Disable animation for consistent UX
                       ),
                       // Area fill for better visual appeal
                       AreaSeries<ChartLine, DateTime>(
@@ -371,7 +373,8 @@ class _PriceSalesTabViewState extends State<PriceSalesTabView> {
                             ? AppTheme.successColor
                             : AppTheme.errorColor,
                         borderWidth: 0,
-                        animationDuration: 0, // Disable animation for consistent UX
+                        animationDuration:
+                            0, // Disable animation for consistent UX
                       ),
                     ],
                   ),

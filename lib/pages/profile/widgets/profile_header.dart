@@ -1,30 +1,15 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget.dart';
 import 'package:bitnet/pages/profile/widgets/profile_actions.dart';
 import 'package:bitnet/pages/profile/widgets/profile_avatar.dart';
 import 'package:bitnet/pages/profile/widgets/profile_bio.dart';
-import 'package:bitnet/pages/profile/widgets/profile_button.dart';
-import 'package:bitnet/pages/profile/widgets/qr_button.dart';
 import 'package:bitnet/pages/profile/widgets/setting_button.dart';
-import 'package:bitnet/pages/profile/widgets/user_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});

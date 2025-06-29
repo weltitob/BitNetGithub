@@ -2,8 +2,6 @@ import 'package:animate_do/animate_do.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/timezone_provider.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
-import 'package:bitnet/models/mempool_models/mempool_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
 import 'package:flutter/material.dart';

@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/AssetCard.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
@@ -13,8 +12,6 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import '../../models/tapd/asset.dart';
 
 class RowViewTab extends StatefulWidget {
   final bool other;

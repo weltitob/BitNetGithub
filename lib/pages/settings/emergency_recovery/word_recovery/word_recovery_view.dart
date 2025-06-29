@@ -1,44 +1,23 @@
-import 'dart:typed_data';
-import 'dart:ui';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/location.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/services/local_storage.dart';
-import 'package:bitnet/backbone/services/timezone_provider.dart';
-import 'package:bitnet/backbone/streams/country_provider.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/firebase/verificationcode.dart';
-import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:timezone/timezone.dart' as tz;
 
 // Removed unnecessary empty import
 

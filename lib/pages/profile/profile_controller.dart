@@ -10,7 +10,6 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/likeviewtab.dart';

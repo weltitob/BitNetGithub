@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class UserChallengeResponse {
   final String userId;
   final Challenge challenge;

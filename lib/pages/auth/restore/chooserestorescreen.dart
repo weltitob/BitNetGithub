@@ -4,17 +4,13 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/users.dart';
-import 'package:bitnet/pages/auth/restore/userslist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // For kDebugMode
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get/get.dart'; // Import GetX
+// Import GetX
 import 'package:bitnet/backbone/debug/create_test_user.dart'; // Debug test user utility
 
 // Global overlay entry for loading indicator
@@ -208,7 +204,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                               'Operation timed out after 2 minutes');
                         },
                       );
-                    } on TimeoutException catch (e) {
+                    } on TimeoutException {
                       errorMessage = 'Operation timed out. Please try again.';
                     } catch (e) {
                       errorMessage = 'Error: $e';
@@ -272,8 +268,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       color: Colors.red,
                     ),
                   ),
-                  subtitle:
-                      const Text('Remove node12 debug user and all associated data'),
+                  subtitle: const Text(
+                      'Remove node12 debug user and all associated data'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Show confirmation dialog
@@ -319,14 +315,15 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     try {
                       // Add timeout to prevent hanging
                       await CreateTestUser.deleteTestUser().timeout(
-                        const Duration(seconds: 60), // Increased to 1 minute for deletion
+                        const Duration(
+                            seconds: 60), // Increased to 1 minute for deletion
                         onTimeout: () {
                           throw TimeoutException(
                               'Delete operation timed out after 1 minute');
                         },
                       );
                       deleteSuccess = true;
-                    } on TimeoutException catch (e) {
+                    } on TimeoutException {
                       errorMessage =
                           'Delete operation timed out. Please try again.';
                     } catch (e) {

@@ -27,13 +27,12 @@ Widget avatarGlow(BuildContext context, IconData icon) {
     child: AvatarGlow(
       glowColor: darken(Theme.of(context).colorScheme.primary,
           80), // Set the color of the glow with a darken function
-      endRadius: 160.0, // Set the size of the glow
+      glowBorderRadius: BorderRadius.circular(160),
       duration: const Duration(
           milliseconds: 2000), // Set the duration of the animation
-      repeatPauseDuration: const Duration(
+      startDelay: const Duration(
           milliseconds: 0), // Set the duration of the pause between animations
       repeat: true, // Set the animation to repeat
-      showTwoGlows: true, // Set the glow to display two glows instead of one
       child: Icon(
         icon,
         size: 100,
@@ -62,15 +61,13 @@ Widget avatarGlowProgressAudio(BuildContext context) {
             4.0), // Set the padding for the container's child
         child: AvatarGlow(
             glowColor: Colors.white, // Set the color of the glow
-            endRadius: 10.0, // Set the size of the glow
+            glowBorderRadius: BorderRadius.circular(10),
             duration: const Duration(
                 milliseconds: 1000), // Set the duration of the animation
-            repeatPauseDuration: const Duration(
+            startDelay: const Duration(
                 milliseconds:
                     0), // Set the duration of the pause between animations
             repeat: true, // Set the animation to repeat
-            showTwoGlows:
-                true, // Set the glow to display two glows instead of one
             child:
                 Container() // Set an empty container as the child of the AvatarGlow widget
             ),
@@ -85,14 +82,13 @@ Widget avatarGlowProgressSmall(BuildContext context) {
     child: AvatarGlow(
         glowColor:
             Theme.of(context).colorScheme.primary, // Set the color of the glow
-        endRadius: 20.0, // Set the size of the glow
+        glowBorderRadius: BorderRadius.circular(20),
         duration: const Duration(
             milliseconds: 1000), // Set the duration of the animation
-        repeatPauseDuration: const Duration(
+        startDelay: const Duration(
             milliseconds:
                 0), // Set the duration of the pause between animations
         repeat: true, // Set the animation to repeat
-        showTwoGlows: true, // Set the glow to display two glows instead of one
         child:
             Container() // Set an empty container as the child of the AvatarGlow widget
         ),

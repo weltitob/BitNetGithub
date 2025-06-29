@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
@@ -476,7 +474,7 @@ class HomeController extends BaseController {
       MemPoolModel memPool = MemPoolModel.fromJson(data);
 
       // Safe transaction position update
-      if (memPool.txPosition?.position?.block != null) {
+      if (memPool.txPosition?.position.block != null) {
         txPosition.value = memPool.txPosition!.position.block;
       }
 

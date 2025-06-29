@@ -28,7 +28,7 @@ Future<String?> activateEmailRecovery(String password, String email) async {
     } else {
       logger.i("Response data is null or not a Map.");
     }
-  } catch (e, stackTrace) {
+  } catch (e) {
     logger.e(
       "Error during email recovery setup: $e",
     );

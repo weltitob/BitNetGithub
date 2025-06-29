@@ -38,9 +38,9 @@ class ProfileActions extends StatelessWidget {
       bool isOwnProfile, bool isEditMode) {
     if (!isOwnProfile) {
       return LongButtonWidget(
-        title: controller.isFollowing?.value == true ? "Unfollow" : "Follow",
+        title: controller.isFollowing.value == true ? "Unfollow" : "Follow",
         onTap: () {
-          controller.isFollowing?.value == true
+          controller.isFollowing.value == true
               ? controller.handleUnfollowUser()
               : controller.handleFollowUser();
         },
@@ -50,7 +50,7 @@ class ProfileActions extends StatelessWidget {
             (MediaQuery.of(context).size.width - AppTheme.cardPadding * 2.5.w) /
                 2,
         leadingIcon: Icon(
-          controller.isFollowing?.value == true
+          controller.isFollowing.value == true
               ? Icons.person_remove
               : Icons.person_add,
           size: AppTheme.cardPadding * 0.8,

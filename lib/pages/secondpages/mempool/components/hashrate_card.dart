@@ -1,12 +1,11 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/mempool_controller.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -222,7 +221,7 @@ class HashrateCard extends StatelessWidget {
         enable: true,
         activationMode: ActivationMode.singleTap,
         lineWidth: 2,
-        lineType: TrackballLineType.horizontal,
+        lineType: TrackballLineType.vertical,
         tooltipSettings: const InteractiveTooltip(enable: false),
         markerSettings: const TrackballMarkerSettings(
             color: Colors.white,

@@ -13,7 +13,6 @@ import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/services/bitcoin_controller.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
@@ -37,7 +36,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/services/moonpay.dart'
     if (dart.library.html) 'package:bitnet/services/moonpay_web.dart';

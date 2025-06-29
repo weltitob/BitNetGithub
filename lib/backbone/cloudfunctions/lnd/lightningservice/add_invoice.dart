@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart'; // Includes bytesToHex
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';

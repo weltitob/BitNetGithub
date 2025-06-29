@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/auth/register_individual_node.dart';
-import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/sign_lightning_message.dart';
@@ -14,10 +12,6 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/sign_message.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:convert/convert.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -31,14 +25,10 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -228,7 +218,7 @@ class Auth {
         logger.i('✅ Retrieved private data for user ${user.did}');
         logger.i(
             'Private data mnemonic length: ${privateData.mnemonic.split(' ').length} words');
-      } catch (e, stackTrace) {
+      } catch (e) {
         logger.e("❌ Failed to retrieve private data: $e");
         logger.e(
             "❌ This is likely where the 'Bad state: No element' error occurs!");
@@ -359,8 +349,7 @@ class Auth {
           adminMacaroon: nodeMapping.adminMacaroon,
         );
 
-        if (nodeInfoResponse.statusCode == "200" &&
-            nodeInfoResponse.data != null) {
+        if (nodeInfoResponse.statusCode == "200") {
           String lightningPubkey =
               nodeInfoResponse.data['identity_pubkey'] ?? '';
 
@@ -440,7 +429,7 @@ class Auth {
 
     try {
       logger.i("🔥 Step 9: Initializing user settings...");
-      await settingsCollection.doc(currentuser?.user!.uid).set({
+      await settingsCollection.doc(currentuser.user!.uid).set({
         "theme_mode": "system",
         "lang": "en",
         "primary_color": Colors.white.value,

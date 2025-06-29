@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/lnurl_channel_service.dart';
 import 'package:bitnet/components/dialogsandsheets/channel_opening_sheet.dart';
@@ -18,7 +17,7 @@ import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validato
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 enum QRTyped {
   LightningMail,

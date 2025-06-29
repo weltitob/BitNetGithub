@@ -48,18 +48,22 @@ class AlbumViewWidget extends StatelessWidget {
                                       child: Container(
                                         width: AppTheme.cardPadding * 4,
                                         height: AppTheme.cardPadding * 4,
-                                        color: (controller.currentNFTs[i].media ==
-                                                null)
-                                            ? Colors.grey
-                                            : Colors.transparent,
-                                        child: (controller.currentNFTs[i].media ==
-                                                null)
-                                            ? null
-                                            : ImageBuilder(
-                                                radius: BorderRadius.zero,
-                                                encodedData: controller
-                                                    .currentNFTs[i].media!.data,
-                                              ),
+                                        color:
+                                            (controller.currentNFTs[i].media ==
+                                                    null)
+                                                ? Colors.grey
+                                                : Colors.transparent,
+                                        child:
+                                            (controller.currentNFTs[i].media ==
+                                                    null)
+                                                ? null
+                                                : ImageBuilder(
+                                                    radius: BorderRadius.zero,
+                                                    encodedData: controller
+                                                        .currentNFTs[i]
+                                                        .media!
+                                                        .data,
+                                                  ),
                                       ),
                                     ),
                                 ],
@@ -99,8 +103,7 @@ class AlbumViewWidget extends StatelessWidget {
                             child: ClipRRect(
                               clipBehavior: Clip.hardEdge,
                               borderRadius: BorderRadius.circular(16),
-                              child: i < controller.albumThumbnails.length &&
-                                      controller.albumThumbnails[i] != null
+                              child: i < controller.albumThumbnails.length
                                   ? Builder(
                                       builder: (context) {
                                         try {

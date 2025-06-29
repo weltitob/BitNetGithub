@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -14,7 +12,7 @@ import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

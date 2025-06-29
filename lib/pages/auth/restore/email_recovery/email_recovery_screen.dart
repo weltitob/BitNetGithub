@@ -5,9 +5,6 @@ import 'package:bitnet/backbone/cloudfunctions/email_recovery/activate_email_rec
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/recovery_identity.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
-import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/email_recovery_helper.dart';
 import 'package:bitnet/backbone/services/local_storage.dart';
@@ -19,17 +16,12 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/fields/verification/verificationspace.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'dart:typed_data';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class EmailRecoveryScreen extends StatefulWidget {

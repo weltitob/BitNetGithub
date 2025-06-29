@@ -9,7 +9,6 @@ import 'package:bitnet/models/bitcoin/channel/channel_operation.dart';
 import 'package:bitnet/models/bitcoin/lnurl/lnurl_channel_model.dart';
 import 'package:bitnet/models/recovery/user_node_mapping.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:bech32/bech32.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;

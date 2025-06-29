@@ -1,9 +1,7 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/feed/appstab_modern.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
@@ -12,7 +10,6 @@ import 'package:bitnet/pages/feed/assetstab.dart';
 import 'package:bitnet/pages/feed/websitestab.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

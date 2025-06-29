@@ -1639,12 +1639,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Переглянули {username} і {count} інших}}",
+  "seenByUserAndCountOthers": "Переглянуто {username} та ще {count} людьми",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "errorObtainingLocation": "Помилка під час отримання розташування: {error}",
@@ -1906,7 +1907,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "withTheseAddressesRecoveryDescription": "За допомогою цих адрес ви можете відновити свій пароль.",

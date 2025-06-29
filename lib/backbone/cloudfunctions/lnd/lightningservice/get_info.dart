@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';

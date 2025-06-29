@@ -11,7 +11,7 @@ import 'package:bitnet/models/bitcoin/news.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class NewsScreen extends StatefulWidget {
   @override

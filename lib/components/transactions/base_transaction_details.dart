@@ -1,22 +1,15 @@
-import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
 abstract class BaseTransactionDetails extends StatefulWidget {
   final TransactionItemData data;

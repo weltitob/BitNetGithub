@@ -1,20 +1,5 @@
-import 'dart:async';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/litd_subserverstatus.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/stateservice/stateservice.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/lnd/subserverinfo.dart';
-import 'package:bitnet/models/serverstate.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class LitdController extends GetxController {

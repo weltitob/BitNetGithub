@@ -2,14 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:bitnet/backbone/services/timezone_provider.dart';
 
 /// Enhanced controller for the Mempool page components
 /// Now extends BaseController for consistent API client usage and error handling

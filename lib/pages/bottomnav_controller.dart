@@ -15,7 +15,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/pages/comingsoonpage.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:bitnet/pages/profile/profile.dart';
 
 class BottomNavController extends GetxController {
   // Der aktuelle Index des selektierten Tabs

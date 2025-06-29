@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.dart';
 import 'dart:convert';
-import 'dart:typed_data';
 
 /// Unit tests for Lightning invoice cloud function utilities
 ///

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
@@ -302,10 +301,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
         // BitNet AppBar
         bitnetAppBar(
           context: context,
-          text: buyStep == 1 
-              ? 'Buy ${widget.tokenSymbol}' 
-              : selectedOffer != null 
-                  ? 'Confirm Purchase' 
+          text: buyStep == 1
+              ? 'Buy ${widget.tokenSymbol}'
+              : selectedOffer != null
+                  ? 'Confirm Purchase'
                   : 'Best Matches',
           hasBackButton: buyStep == 1 ? false : true,
           onTap: () {
@@ -369,19 +368,23 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                         children: [
                           Text(
                             selectedOffer!['seller'],
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Offering ${selectedOffer!['amount']} ${widget.tokenSymbol}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.6),
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.6),
+                                    ),
                           ),
                         ],
                       ),
@@ -392,18 +395,20 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                       children: [
                         Text(
                           '\$${selectedOffer!['price']}',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                         Text(
                           'per token',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withOpacity(0.6),
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6),
+                                  ),
                         ),
                       ],
                     ),
@@ -462,7 +467,7 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
     if (selectedOffer != null) {
       return _buildSelectedOfferView();
     }
-    
+
     // Get token-specific data
     final tokenData =
         tokenMarketData[widget.tokenSymbol] ?? tokenMarketData['GENST']!;
@@ -558,8 +563,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
             Text(
               'Sellers with enough tokens to fulfill your order',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
                   ),
             ),
           ] else if (partialSellers.isNotEmpty) ...[
@@ -639,10 +646,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
               final sellers = availableSellers.isNotEmpty
                   ? availableSellers
                   : partialSellers;
-              
+
               // Only show first 5 offers
               if (index >= 5) return SizedBox.shrink();
-              
+
               final seller = sellers[index];
               final isPartial =
                   availableSellers.isEmpty && partialSellers.isNotEmpty;
@@ -658,7 +665,8 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                   ),
                 ),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                  borderRadius:
+                      BorderRadius.circular(AppTheme.borderRadiusSmall),
                   onTap: () {
                     // Select this offer and proceed to confirmation
                     setState(() {
@@ -683,7 +691,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                             children: [
                               Text(
                                 seller['seller'],
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
                               ),
@@ -692,7 +703,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                                 children: [
                                   Text(
                                     'Offering ${seller['amount']} ${widget.tokenSymbol}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
@@ -708,7 +722,8 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: Colors.orange.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(4.r),
+                                        borderRadius:
+                                            BorderRadius.circular(4.r),
                                       ),
                                       child: Text(
                                         'Partial',
@@ -731,13 +746,19 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                           children: [
                             Text(
                               '\$${seller['price']}',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
                             Text(
                               'per token',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSurface
@@ -753,9 +774,10 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
               );
             },
           ),
-          
+
           // Show more button if there are more than 5 offers
-          if ((availableSellers.length > 5) || (availableSellers.isEmpty && partialSellers.length > 5)) ...[
+          if ((availableSellers.length > 5) ||
+              (availableSellers.isEmpty && partialSellers.length > 5)) ...[
             Center(
               child: LongButtonWidget(
                 title: 'Show More',
@@ -771,7 +793,7 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
               ),
             ),
           ],
-          
+
           // Add bottom padding to ensure last item is visible
           SizedBox(height: AppTheme.cardPadding.h * 2),
         ],
@@ -783,11 +805,12 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
     final offer = selectedOffer!;
     final requestedAmount = double.tryParse(buyAmount) ?? 0;
     final availableAmount = double.tryParse(offer['amount'].toString()) ?? 0;
-    final price = double.tryParse(offer['price'].toString().replaceAll(',', '')) ?? 0;
+    final price =
+        double.tryParse(offer['price'].toString().replaceAll(',', '')) ?? 0;
     final subtotal = requestedAmount * price;
     final marketplaceFee = 1.0;
     final totalCost = subtotal + marketplaceFee;
-    
+
     return Stack(
       children: [
         // Main content
@@ -802,11 +825,13 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.2),
                   ),
                 ),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                  borderRadius:
+                      BorderRadius.circular(AppTheme.borderRadiusSmall),
                   onTap: () {}, // Already selected, no action needed
                   child: Padding(
                     padding: EdgeInsets.all(AppTheme.cardPaddingSmall),
@@ -828,14 +853,20 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                                 children: [
                                   Text(
                                     offer['seller'],
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
                                           fontWeight: FontWeight.w500,
                                         ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'Offering ${offer['amount']} ${widget.tokenSymbol}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
@@ -851,13 +882,19 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                               children: [
                                 Text(
                                   '\$${offer['price']}',
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                       ),
                                 ),
                                 Text(
                                   'per token',
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onSurface
@@ -868,17 +905,23 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                             ),
                           ],
                         ),
-                        
+
                         SizedBox(height: AppTheme.cardPadding.h * 2),
-                        
+
                         // Transaction details - amount with conversion
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               'Amount to buy:',
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6),
                                   ),
                             ),
                             Column(
@@ -886,28 +929,38 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                               children: [
                                 Text(
                                   '$requestedAmount ${widget.tokenSymbol}',
-                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
                                         fontWeight: FontWeight.w600,
                                       ),
                                 ),
                                 Text(
                                   '\$${subtotal.toStringAsFixed(2)}',
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
                                       ),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        
+
                         if (requestedAmount > availableAmount) ...[
                           SizedBox(height: AppTheme.elementSpacing.h),
                           Container(
                             padding: EdgeInsets.all(AppTheme.elementSpacing.w),
                             decoration: BoxDecoration(
                               color: Colors.orange.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusSmall),
                               border: Border.all(
                                 color: Colors.orange.withOpacity(0.3),
                               ),
@@ -919,25 +972,28 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                                   color: Colors.orange,
                                   size: 20,
                                 ),
-                                SizedBox(width: AppTheme.elementSpacing.w * 0.5),
+                                SizedBox(
+                                    width: AppTheme.elementSpacing.w * 0.5),
                                 Expanded(
                                   child: Text(
                                     'Seller only has ${offer['amount']} tokens available',
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ],
-                        
+
                         SizedBox(height: AppTheme.cardPadding.h * 2),
-                        
+
                         // Marketplace fee
-                        _buildDetailRow('Marketplace fee:', '\$${marketplaceFee.toStringAsFixed(2)}'),
-                        
+                        _buildDetailRow('Marketplace fee:',
+                            '\$${marketplaceFee.toStringAsFixed(2)}'),
+
                         SizedBox(height: AppTheme.cardPadding.h),
-                        
+
                         // Total cost
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -948,9 +1004,13 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
                             ),
                             Text(
                               '\$${totalCost.toStringAsFixed(2)}',
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                             ),
                           ],
@@ -963,7 +1023,7 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
             ],
           ),
         ),
-        
+
         // Buy button positioned at bottom
         Positioned(
           bottom: 0,
@@ -984,7 +1044,7 @@ class _TokenBuySheetState extends State<TokenBuySheet> {
       ],
     );
   }
-  
+
   Widget _buildDetailRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

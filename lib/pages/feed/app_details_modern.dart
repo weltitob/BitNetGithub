@@ -398,7 +398,8 @@ class _AppDetailsModernState extends State<AppDetailsModern> {
                         'url': url,
                         'name': widget.app.name,
                       }, extra: {
-                        'is_app': true
+                        'is_app': true,
+                        "nostr": widget.app.nostr
                       });
 
                       buttonLoading = false;

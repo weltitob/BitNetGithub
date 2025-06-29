@@ -216,7 +216,7 @@ class $AssetsImagesGen {
         wallet,
         wavlakeBanner,
         whale,
-        x
+        x,
       ];
 }
 
@@ -249,7 +249,7 @@ class $AssetsKeysGen {
         loop,
         privateKeyMnemonicIncoming,
         publicKeyMnemonic,
-        tapdAdmin
+        tapdAdmin,
       ];
 }
 
@@ -362,7 +362,7 @@ class $AssetsLottiefilesGen {
         threeLayers,
         timeAnimation,
         verifyUser,
-        walletAnimation
+        walletAnimation,
       ];
 }
 
@@ -628,7 +628,7 @@ class $AssetsMarketplaceGen {
         unActiveHeart,
         user1,
         user2,
-        user3
+        user3,
       ];
 }
 
@@ -674,8 +674,15 @@ class $AssetsTokensGen {
       const AssetGenImage('assets/tokens/token_blue.webp');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [cat, emerald, genisisstone, hotdog, lila, mineral, tokenBlue];
+  List<AssetGenImage> get values => [
+        cat,
+        emerald,
+        genisisstone,
+        hotdog,
+        lila,
+        mineral,
+        tokenBlue,
+      ];
 }
 
 class Assets {
@@ -687,8 +694,9 @@ class Assets {
   static const String keysZip = 'assets/keys.zip';
   static const AssetGenImage logo = AssetGenImage('assets/logo.png');
   static const AssetGenImage logoBlack = AssetGenImage('assets/logo_black.png');
-  static const AssetGenImage logoForeground =
-      AssetGenImage('assets/logo_foreground.png');
+  static const AssetGenImage logoForeground = AssetGenImage(
+    'assets/logo_foreground.png',
+  );
   static const $AssetsLottiefilesGen lottiefiles = $AssetsLottiefilesGen();
   static const $AssetsMarketplaceGen marketplace = $AssetsMarketplaceGen();
   static const AssetGenImage splash = AssetGenImage('assets/splash.png');
@@ -696,16 +704,18 @@ class Assets {
   static const $AssetsTokensGen tokens = $AssetsTokensGen();
 
   /// List of all assets
-  static List<dynamic> get values =>
-      [colors, keysZip, logo, logoBlack, logoForeground, splash];
+  static List<dynamic> get values => [
+        colors,
+        keysZip,
+        logo,
+        logoBlack,
+        logoForeground,
+        splash,
+      ];
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -765,15 +775,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

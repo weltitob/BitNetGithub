@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
@@ -6,7 +5,6 @@ import 'package:bitnet/models/postmodels/post_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RowTabView extends StatelessWidget {
   final List<GridListModal> sortedGridList;

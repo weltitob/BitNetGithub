@@ -11,7 +11,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/receive/widgets/createinvoicebottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 
 class AmountSpecifierListTile extends StatefulWidget {
   @override

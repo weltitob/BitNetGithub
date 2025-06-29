@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/lightning_node_finder.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/sign_message.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_info.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -38,7 +37,7 @@ Future<String?> signLightningMessage(String message,
         "⚡ 📥 Response received: ${signResponse != null ? 'NOT NULL' : 'NULL'}");
     logger.i("⚡ 📥 Status code: ${signResponse.statusCode}");
     logger.i("⚡ 📥 Message: ${signResponse.message}");
-    logger.i("⚡ 📥 Data type: ${signResponse.data?.runtimeType}");
+    logger.i("⚡ 📥 Data type: ${signResponse.data.runtimeType}");
     logger.i("⚡ 📥 Data: ${signResponse.data}");
 
     if (signResponse.statusCode == "200") {

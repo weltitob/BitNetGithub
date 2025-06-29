@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/lightning_config.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/node_mapping_service.dart';

@@ -1216,12 +1216,13 @@
       "username": {}
     }
   },
-  "seenByUserAndCountOthers": "{count, plural, other{Zobaczone przez {username} oraz {count} innych}}",
+  "seenByUserAndCountOthers": "Zobaczone przez {username} i {count} innych",
   "@seenByUserAndCountOthers": {
-    "type": "text",
     "placeholders": {
       "username": {},
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "seenByUserAndUser": "Zobaczone przez {username} oraz {username2}",
@@ -1409,7 +1410,9 @@
   "@unreadChats": {
     "type": "text",
     "placeholders": {
-      "unreadCount": {}
+      "unreadCount": {
+        "type": "int"
+      }
     }
   },
   "userAndOthersAreTyping": "{username} oraz {count} innych pisze…",

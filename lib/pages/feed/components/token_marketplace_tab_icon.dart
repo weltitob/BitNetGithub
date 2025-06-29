@@ -21,7 +21,7 @@ class TokenMarketplaceTabIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = currentIndex == index;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -41,11 +41,14 @@ class TokenMarketplaceTabIcon extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6),
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  ),
             ),
             SizedBox(height: 2.h),
             Container(

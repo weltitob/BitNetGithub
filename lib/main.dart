@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/remoteconfig_controller.dart';
@@ -29,7 +28,6 @@ import 'package:bitnet/router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -166,7 +164,7 @@ Future<void> _initializeAllServices() async {
   await GetStorage.init();
 
   ShakeDetector.autoStart(
-    onPhoneShake: () {
+    onPhoneShake: (ev) {
       if (AppRouter.navigatorKey.currentContext != null) {
         GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/report');
       }

@@ -643,7 +643,7 @@ class _RawShortsPlayerState extends State<RawShortsPlayer>
         key: widget.key,
         initialData: InAppWebViewInitialData(
           data: player,
-          baseUrl: Uri.parse('https://www.youtube.com'),
+          baseUrl: WebUri.uri(Uri.parse('https://www.youtube.com')),
           encoding: 'utf-8',
           mimeType: 'text/html',
         ),
