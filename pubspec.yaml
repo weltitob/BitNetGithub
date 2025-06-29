@@ -245,6 +245,7 @@ dev_dependencies:
   dependency_validator: ^5.0.2
   integration_test:
     sdk: flutter
+  flutter_lints: ^2.0.0
 
 flutter_launcher_icons:
   android: true
@@ -258,7 +259,6 @@ flutter_native_splash:
   image: assets/splash.png
   color: "#000000"
   web: true
-flutter_lints: ^2.0.0
 
 msix_config:
   display_name: bitnet

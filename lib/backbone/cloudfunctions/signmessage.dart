@@ -1,4 +1,3 @@
-
 //
 // signMessageFunction(String did, String privateIONKey, String message,) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('signMessageFunction');

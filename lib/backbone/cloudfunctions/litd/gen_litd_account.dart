@@ -1,4 +1,3 @@
-
 //Was used previously for mutiple users one node approch to generate mutiple accounts on one node
 // dynamic callGenLitdAccount(String userId) async {
 //   final logger = Get.put(LoggerService());

@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/email_recovery/setup_email_recovery.dart';

@@ -19,8 +19,7 @@ class EditEyeRight extends StatelessWidget {
                 onPressed: () {
                   controller.showFollwers.value =
                       !controller.showFollwers.value;
-                  controller
-                      .updateShowFollowers(controller.showFollwers.value);
+                  controller.updateShowFollowers(controller.showFollwers.value);
                 },
                 icon: controller.showFollwers == null
                     ? Container()

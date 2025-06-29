@@ -47,10 +47,10 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
           final buyer = order['buyer'].toString().toLowerCase();
           final price = order['price'].toString().toLowerCase();
           final amount = order['amount'].toString().toLowerCase();
-          
-          return buyer.contains(query) || 
-                 price.contains(query) || 
-                 amount.contains(query);
+
+          return buyer.contains(query) ||
+              price.contains(query) ||
+              amount.contains(query);
         }).toList();
       }
     });
@@ -72,8 +72,9 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
           decoration: InputDecoration(
             hintText: 'Search orders by buyer, price, or amount...',
             hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
             prefixIcon: Icon(
               Icons.search,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
@@ -82,7 +83,10 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
                 ? IconButton(
                     icon: Icon(
                       Icons.clear,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.5),
                     ),
                     onPressed: () {
                       _searchController.clear();
@@ -112,7 +116,8 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
           vertical: AppTheme.elementSpacing.h * 0.5,
         ),
         leading: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+          backgroundColor:
+              Theme.of(context).colorScheme.secondary.withOpacity(0.1),
           child: Text(
             order['buyer'][0],
             style: TextStyle(
@@ -143,8 +148,10 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
                       Text(
                         '${order['rating']} (${order['trades']} trades)',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                        ),
+                              color: isDarkMode
+                                  ? AppTheme.white60
+                                  : AppTheme.black60,
+                            ),
                       ),
                     ],
                   ),
@@ -161,8 +168,8 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
                 Text(
                   '\$${order['price']} each',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                  ),
+                        color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                      ),
                 ),
               ],
             ),
@@ -177,9 +184,9 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
                 child: Text(
                   'Buying: ${order['amount']} ${widget.tokenSymbol}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                 ),
               ),
               LongButtonWidget(
@@ -248,7 +255,7 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
             child: _buildSearchBar(),
           ),
         ),
-        
+
         // Results count
         SliverToBoxAdapter(
           child: Padding(
@@ -256,16 +263,19 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
             child: Text(
               '${_filteredOrders.length} orders found',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
             ),
           ),
         ),
-        
+
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.elementSpacing.h),
         ),
-        
+
         // Orders list
         SliverToBoxAdapter(
           child: Padding(
@@ -280,20 +290,35 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
                             Icon(
                               Icons.search_off,
                               size: 48.sp,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.3),
                             ),
                             SizedBox(height: AppTheme.elementSpacing.h),
                             Text(
                               'No orders found',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6),
+                                  ),
                             ),
                             Text(
                               'Try adjusting your search terms',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.5),
+                                  ),
                             ),
                           ],
                         ),
@@ -307,7 +332,7 @@ class _TokenOrdersTabViewState extends State<TokenOrdersTabView> {
             ),
           ),
         ),
-        
+
         // Bottom padding
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.cardPadding.h * 2),

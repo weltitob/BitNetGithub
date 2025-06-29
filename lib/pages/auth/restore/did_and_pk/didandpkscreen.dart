@@ -1,5 +1,3 @@
-
-
 // izak: TO BE DELETED
 
 // Random random = new Random();

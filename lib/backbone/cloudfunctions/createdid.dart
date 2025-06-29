@@ -1,4 +1,3 @@
-
 // createDID(String username, String challenge) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createDID');
 //   print("Creating did...");

@@ -108,8 +108,6 @@ import 'package:bitnet/pages/wallet/buy/payment_methods_screen.dart';
 import 'package:bitnet/pages/wallet/buy/providers_screen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 
-
-
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {

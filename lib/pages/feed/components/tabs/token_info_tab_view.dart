@@ -36,51 +36,132 @@ class TokenInfoTabView extends StatelessWidget {
     switch (tokenSymbol) {
       case 'GENST':
         return [
-          {'title': 'Foundational Asset', 'description': 'Core token of the BitNET ecosystem'},
-          {'title': 'Genesis Rights', 'description': 'Early access to new platform features'},
-          {'title': 'Governance Power', 'description': 'Vote on important protocol decisions'},
-          {'title': 'Staking Rewards', 'description': 'Earn rewards by staking GENST tokens'},
+          {
+            'title': 'Foundational Asset',
+            'description': 'Core token of the BitNET ecosystem'
+          },
+          {
+            'title': 'Genesis Rights',
+            'description': 'Early access to new platform features'
+          },
+          {
+            'title': 'Governance Power',
+            'description': 'Vote on important protocol decisions'
+          },
+          {
+            'title': 'Staking Rewards',
+            'description': 'Earn rewards by staking GENST tokens'
+          },
         ];
       case 'HTDG':
         return [
-          {'title': 'Community Driven', 'description': 'Powered by active community participation'},
-          {'title': 'Fun Utility', 'description': 'Used in games and entertainment dApps'},
-          {'title': 'Social Features', 'description': 'Tip and reward community members'},
-          {'title': 'Event Access', 'description': 'Special access to community events'},
+          {
+            'title': 'Community Driven',
+            'description': 'Powered by active community participation'
+          },
+          {
+            'title': 'Fun Utility',
+            'description': 'Used in games and entertainment dApps'
+          },
+          {
+            'title': 'Social Features',
+            'description': 'Tip and reward community members'
+          },
+          {
+            'title': 'Event Access',
+            'description': 'Special access to community events'
+          },
         ];
       case 'LUMN':
         return [
-          {'title': 'High Performance', 'description': 'Fast and efficient transactions'},
-          {'title': 'DeFi Integration', 'description': 'Compatible with major DeFi protocols'},
-          {'title': 'Yield Farming', 'description': 'Participate in liquidity mining programs'},
-          {'title': 'Cross-Chain', 'description': 'Multi-blockchain compatibility'},
+          {
+            'title': 'High Performance',
+            'description': 'Fast and efficient transactions'
+          },
+          {
+            'title': 'DeFi Integration',
+            'description': 'Compatible with major DeFi protocols'
+          },
+          {
+            'title': 'Yield Farming',
+            'description': 'Participate in liquidity mining programs'
+          },
+          {
+            'title': 'Cross-Chain',
+            'description': 'Multi-blockchain compatibility'
+          },
         ];
       case 'NBLA':
         return [
-          {'title': 'Expanding Utility', 'description': 'Growing use cases and applications'},
-          {'title': 'Innovation Hub', 'description': 'Platform for experimental features'},
-          {'title': 'Creator Economy', 'description': 'Support for digital content creators'},
-          {'title': 'NFT Integration', 'description': 'Native support for NFT ecosystems'},
+          {
+            'title': 'Expanding Utility',
+            'description': 'Growing use cases and applications'
+          },
+          {
+            'title': 'Innovation Hub',
+            'description': 'Platform for experimental features'
+          },
+          {
+            'title': 'Creator Economy',
+            'description': 'Support for digital content creators'
+          },
+          {
+            'title': 'NFT Integration',
+            'description': 'Native support for NFT ecosystems'
+          },
         ];
       case 'QUSR':
         return [
-          {'title': 'High Energy', 'description': 'Optimized for high-frequency trading'},
-          {'title': 'Advanced Tech', 'description': 'Cutting-edge blockchain technology'},
-          {'title': 'Enterprise Focus', 'description': 'Designed for institutional use'},
-          {'title': 'Scalability', 'description': 'Built to handle massive transaction volumes'},
+          {
+            'title': 'High Energy',
+            'description': 'Optimized for high-frequency trading'
+          },
+          {
+            'title': 'Advanced Tech',
+            'description': 'Cutting-edge blockchain technology'
+          },
+          {
+            'title': 'Enterprise Focus',
+            'description': 'Designed for institutional use'
+          },
+          {
+            'title': 'Scalability',
+            'description': 'Built to handle massive transaction volumes'
+          },
         ];
       case 'VRTX':
         return [
-          {'title': 'Revolutionary', 'description': 'Paradigm-shifting token mechanics'},
-          {'title': 'Innovation Driver', 'description': 'Catalyst for ecosystem development'},
-          {'title': 'Value Creation', 'description': 'Generates value through unique mechanisms'},
-          {'title': 'Future-Proof', 'description': 'Designed for long-term sustainability'},
+          {
+            'title': 'Revolutionary',
+            'description': 'Paradigm-shifting token mechanics'
+          },
+          {
+            'title': 'Innovation Driver',
+            'description': 'Catalyst for ecosystem development'
+          },
+          {
+            'title': 'Value Creation',
+            'description': 'Generates value through unique mechanisms'
+          },
+          {
+            'title': 'Future-Proof',
+            'description': 'Designed for long-term sustainability'
+          },
         ];
       default:
         return [
-          {'title': 'Utility Token', 'description': 'Multiple use cases within the ecosystem'},
-          {'title': 'Decentralized', 'description': 'Community-owned and operated'},
-          {'title': 'Secure', 'description': 'Built on proven blockchain technology'},
+          {
+            'title': 'Utility Token',
+            'description': 'Multiple use cases within the ecosystem'
+          },
+          {
+            'title': 'Decentralized',
+            'description': 'Community-owned and operated'
+          },
+          {
+            'title': 'Secure',
+            'description': 'Built on proven blockchain technology'
+          },
           {'title': 'Scalable', 'description': 'Designed for mass adoption'},
         ];
     }
@@ -162,124 +243,160 @@ class TokenInfoTabView extends StatelessWidget {
                       children: [
                         Text(
                           'About $tokenName',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         SizedBox(height: AppTheme.elementSpacing.h),
                         Text(
                           _getTokenDescription(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            height: 1.6,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    height: 1.6,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.8),
+                                  ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                
+
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 // Features Section
                 Text(
                   'Key Features',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                
-                SizedBox(height: AppTheme.elementSpacing.h),
-                
-                ...features.map((feature) => Container(
-                  margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
-                  child: GlassContainer(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTheme.cardPadding.w),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(AppTheme.elementSpacing.w),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
-                            ),
-                            child: Icon(
-                              Icons.check_circle_outline,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20.sp,
-                            ),
-                          ),
-                          SizedBox(width: AppTheme.elementSpacing.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  feature['title']!,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  feature['description']!,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        fontWeight: FontWeight.bold,
                       ),
-                    ),
-                  ),
-                )).toList(),
-                
+                ),
+
+                SizedBox(height: AppTheme.elementSpacing.h),
+
+                ...features
+                    .map((feature) => Container(
+                          margin: EdgeInsets.only(
+                              bottom: AppTheme.elementSpacing.h),
+                          child: GlassContainer(
+                            child: Padding(
+                              padding: EdgeInsets.all(AppTheme.cardPadding.w),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(
+                                        AppTheme.elementSpacing.w),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(
+                                          AppTheme.borderRadiusSmall.r),
+                                    ),
+                                    child: Icon(
+                                      Icons.check_circle_outline,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      size: 20.sp,
+                                    ),
+                                  ),
+                                  SizedBox(width: AppTheme.elementSpacing.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          feature['title']!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                        Text(
+                                          feature['description']!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.7),
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 // Stats Section
                 Text(
                   'Token Statistics',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 GlassContainer(
                   child: Padding(
                     padding: EdgeInsets.all(AppTheme.cardPadding.w),
                     child: Column(
-                      children: stats.entries.map((entry) => 
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                entry.key,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                ),
+                      children: stats.entries
+                          .map(
+                            (entry) => Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.h),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    entry.key,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.7),
+                                        ),
+                                  ),
+                                  Text(
+                                    entry.value,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                entry.value,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ).toList(),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                 ),
-                
+
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 // Disclaimer
                 GlassContainer(
                   child: Padding(
@@ -297,20 +414,27 @@ class TokenInfoTabView extends StatelessWidget {
                             SizedBox(width: AppTheme.elementSpacing.w),
                             Text(
                               'Important Notice',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.colorBitcoin,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.colorBitcoin,
+                                  ),
                             ),
                           ],
                         ),
                         SizedBox(height: AppTheme.elementSpacing.h),
                         Text(
                           'Token trading involves risk. Please do your own research and only invest what you can afford to lose. Past performance does not guarantee future results.',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                            height: 1.4,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.7),
+                                    height: 1.4,
+                                  ),
                         ),
                       ],
                     ),
@@ -320,7 +444,7 @@ class TokenInfoTabView extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Bottom padding
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.cardPadding.h * 2),

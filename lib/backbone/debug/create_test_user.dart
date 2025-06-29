@@ -35,14 +35,13 @@ class CreateTestUser {
 
   // Hardcoded DID for node12 debug login - no mnemonic needed
   static const String testRecoveryDid = 'did:mnemonic:7060df39a4c333db';
-  
+
   // Dummy mnemonic - not used for actual authentication, just for compatibility
   static const String testMnemonic =
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
   // Test addresses for node12
-  static const String testTaprootAddress =
-      'bc1p_debug_taproot_address_node12';
+  static const String testTaprootAddress = 'bc1p_debug_taproot_address_node12';
   static const String testSegwitAddress = 'bc1q_debug_segwit_address_node12';
 
   // Test Lightning pubkey for node12 - from actual node12 logs
@@ -72,33 +71,35 @@ class CreateTestUser {
             await NodeMappingService.getUserNodeMapping(recoveryDid);
         if (userNodeMapping != null) {
           print('✅ User already exists with this mnemonic');
-          
+
           // Check if it's using the wrong node
           if (userNodeMapping.nodeId != testNodeId) {
-            print('⚠️  WARNING: Existing mapping uses ${userNodeMapping.nodeId}, but we want $testNodeId');
+            print(
+                '⚠️  WARNING: Existing mapping uses ${userNodeMapping.nodeId}, but we want $testNodeId');
             print('🗑️  Deleting old node mapping to use new node...');
-            
+
             // Delete the old mapping
             await FirebaseFirestore.instance
                 .collection('user_node_mappings')
                 .doc('${recoveryDid}_${userNodeMapping.nodeId}')
                 .delete();
             print('✅ Old node mapping deleted');
-            
+
             // Force new registration with correct node
             userExists = false;
           } else {
             // For debug user, we need to check if a user exists with our specific DID
             // Since node12 is mapped to our hardcoded DID, we should use that DID as the user ID
-            print('📝 Node mapping exists for $testNodeId, checking for user with DID...');
-            
+            print(
+                '📝 Node mapping exists for $testNodeId, checking for user with DID...');
+
             // Try to find user by DID (document ID)
             try {
               final userDoc = await FirebaseFirestore.instance
                   .collection('users')
                   .doc(recoveryDid)
                   .get();
-                  
+
               if (userDoc.exists) {
                 userExists = true;
                 existingUserId = recoveryDid;
@@ -148,7 +149,8 @@ class CreateTestUser {
 
       // Wait for Lightning node to be ready
       print('⏳ Waiting for Lightning node to be ready...');
-      await Future.delayed(Duration(seconds: 2)); // Shorter wait for mainnet node12
+      await Future.delayed(
+          Duration(seconds: 2)); // Shorter wait for mainnet node12
 
       // Create challenge for login
       print('🔐 Creating login challenge...');
@@ -249,8 +251,7 @@ class CreateTestUser {
           recoveryDid: recoveryDid,
           lightningPubkey: testLightningPubkey,
           nodeId: testNodeId,
-          caddyEndpoint:
-              'https://api.bitnet.ai/$testNodeId',
+          caddyEndpoint: 'https://api.bitnet.ai/$testNodeId',
           adminMacaroon: testMacaroon,
           createdAt: DateTime.now(),
           lastAccessed: DateTime.now(),
@@ -496,20 +497,21 @@ class CreateTestUser {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        print('Found ${querySnapshot.docs.length} user(s) with username: $testUsername');
-        
+        print(
+            'Found ${querySnapshot.docs.length} user(s) with username: $testUsername');
+
         // Delete all users with this username
         for (final doc in querySnapshot.docs) {
           final userId = doc.id;
           print('Deleting user: $userId');
-          
+
           // Delete user document
           await FirebaseFirestore.instance
               .collection('users')
               .doc(userId)
               .delete();
           print('✅ Deleted user document: $userId');
-          
+
           // Delete related data
           try {
             await FirebaseFirestore.instance

@@ -268,8 +268,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                       color: Colors.red,
                     ),
                   ),
-                  subtitle:
-                      const Text('Remove node12 debug user and all associated data'),
+                  subtitle: const Text(
+                      'Remove node12 debug user and all associated data'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () async {
                     // Show confirmation dialog
@@ -315,7 +315,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                     try {
                       // Add timeout to prevent hanging
                       await CreateTestUser.deleteTestUser().timeout(
-                        const Duration(seconds: 60), // Increased to 1 minute for deletion
+                        const Duration(
+                            seconds: 60), // Increased to 1 minute for deletion
                         onTimeout: () {
                           throw TimeoutException(
                               'Delete operation timed out after 1 minute');

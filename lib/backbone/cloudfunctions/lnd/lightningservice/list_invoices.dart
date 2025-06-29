@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

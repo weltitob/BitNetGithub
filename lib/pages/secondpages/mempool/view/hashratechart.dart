@@ -161,7 +161,8 @@ class _HashrateChartState extends State<HashrateChart> {
                       hashTrackBallValueTime = time.toString();
                     },
                     plotAreaBorderWidth: 0,
-                    enableAxisAnimation: false, // Disable animation for consistent UX
+                    enableAxisAnimation:
+                        false, // Disable animation for consistent UX
                     primaryXAxis: DateTimeAxis(
                       intervalType: DateTimeIntervalType.days,
                       edgeLabelPlacement: EdgeLabelPlacement.none,

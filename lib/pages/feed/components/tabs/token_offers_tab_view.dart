@@ -44,7 +44,7 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       List<Map<String, dynamic>> filtered;
-      
+
       if (query.isEmpty) {
         filtered = List.from(widget.sellOffers);
       } else {
@@ -52,32 +52,36 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
           final seller = offer['seller'].toString().toLowerCase();
           final price = offer['price'].toString().toLowerCase();
           final amount = offer['amount'].toString().toLowerCase();
-          
-          return seller.contains(query) || 
-                 price.contains(query) || 
-                 amount.contains(query);
+
+          return seller.contains(query) ||
+              price.contains(query) ||
+              amount.contains(query);
         }).toList();
       }
-      
+
       // Apply sorting
       _sortOffers(filtered);
       _filteredOffers = filtered;
     });
   }
-  
+
   void _sortOffers(List<Map<String, dynamic>> offers) {
     switch (_sortBy) {
       case 'price_low':
         offers.sort((a, b) {
-          final priceA = double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
-          final priceB = double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceA =
+              double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceB =
+              double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
           return priceA.compareTo(priceB);
         });
         break;
       case 'price_high':
         offers.sort((a, b) {
-          final priceA = double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
-          final priceB = double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceA =
+              double.tryParse(a['price'].toString().replaceAll(',', '')) ?? 0;
+          final priceB =
+              double.tryParse(b['price'].toString().replaceAll(',', '')) ?? 0;
           return priceB.compareTo(priceA);
         });
         break;
@@ -107,7 +111,7 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
 
   Widget _buildSearchBar() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
       child: SearchFieldWidget(
@@ -145,7 +149,8 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
           vertical: AppTheme.elementSpacing.h * 0.5,
         ),
         leading: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          backgroundColor:
+              Theme.of(context).colorScheme.primary.withOpacity(0.1),
           child: Text(
             offer['seller'][0],
             style: TextStyle(
@@ -176,8 +181,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                       Text(
                         '${offer['rating']} (${offer['trades']} trades)',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                        ),
+                              color: isDarkMode
+                                  ? AppTheme.white60
+                                  : AppTheme.black60,
+                            ),
                       ),
                     ],
                   ),
@@ -194,8 +201,8 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                 Text(
                   '\$${offer['price']} each',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
-                  ),
+                        color: isDarkMode ? AppTheme.white60 : AppTheme.black60,
+                      ),
                 ),
               ],
             ),
@@ -210,9 +217,9 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                 child: Text(
                   'Available: ${offer['amount']} ${widget.tokenSymbol}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.successColor,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.successColor,
+                      ),
                 ),
               ),
               LongButtonWidget(
@@ -281,7 +288,7 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
             child: _buildSearchBar(),
           ),
         ),
-        
+
         // Results count
         SliverToBoxAdapter(
           child: Padding(
@@ -289,16 +296,19 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
             child: Text(
               '${_filteredOffers.length} offers found',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
             ),
           ),
         ),
-        
+
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.elementSpacing.h),
         ),
-        
+
         // Offers list
         SliverToBoxAdapter(
           child: Padding(
@@ -313,20 +323,35 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                             Icon(
                               Icons.search_off,
                               size: 48.sp,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.3),
                             ),
                             SizedBox(height: AppTheme.elementSpacing.h),
                             Text(
                               'No offers found',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6),
+                                  ),
                             ),
                             Text(
                               'Try adjusting your search terms',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.5),
+                                  ),
                             ),
                           ],
                         ),
@@ -340,7 +365,7 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
             ),
           ),
         ),
-        
+
         // Bottom padding
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.cardPadding.h * 2),
@@ -371,7 +396,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                   width: 40.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
@@ -380,22 +408,25 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
               Text(
                 'Filter Offers',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               SizedBox(height: AppTheme.cardPadding.h),
-              
+
               // Filter options
               Text(
                 'Sort by',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBox(height: AppTheme.elementSpacing.h),
-              
+
               ListTile(
                 leading: Icon(Icons.attach_money),
                 title: Text('Price: Low to High'),
-                trailing: _sortBy == 'price_low' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                trailing: _sortBy == 'price_low'
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
                 onTap: () {
                   setState(() {
                     _sortBy = 'price_low';
@@ -407,7 +438,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
               ListTile(
                 leading: Icon(Icons.attach_money),
                 title: Text('Price: High to Low'),
-                trailing: _sortBy == 'price_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                trailing: _sortBy == 'price_high'
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
                 onTap: () {
                   setState(() {
                     _sortBy = 'price_high';
@@ -419,7 +453,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
               ListTile(
                 leading: Icon(Icons.inventory_2),
                 title: Text('Amount: Low to High'),
-                trailing: _sortBy == 'amount_low' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                trailing: _sortBy == 'amount_low'
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
                 onTap: () {
                   setState(() {
                     _sortBy = 'amount_low';
@@ -431,7 +468,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
               ListTile(
                 leading: Icon(Icons.inventory_2),
                 title: Text('Amount: High to Low'),
-                trailing: _sortBy == 'amount_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                trailing: _sortBy == 'amount_high'
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
                 onTap: () {
                   setState(() {
                     _sortBy = 'amount_high';
@@ -443,7 +483,10 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
               ListTile(
                 leading: Icon(Icons.star),
                 title: Text('Rating: High to Low'),
-                trailing: _sortBy == 'rating_high' ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
+                trailing: _sortBy == 'rating_high'
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
                 onTap: () {
                   setState(() {
                     _sortBy = 'rating_high';
@@ -452,7 +495,7 @@ class _TokenOffersTabViewState extends State<TokenOffersTabView> {
                   Navigator.pop(context);
                 },
               ),
-              
+
               SizedBox(height: AppTheme.cardPadding.h),
             ],
           ),

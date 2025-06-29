@@ -1,4 +1,3 @@
-
 class UserChallengeResponse {
   final String userId;
   final Challenge challenge;

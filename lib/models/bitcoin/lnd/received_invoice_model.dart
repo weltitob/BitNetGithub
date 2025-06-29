@@ -35,9 +35,11 @@ class ReceivedInvoice {
   factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
     final logger = Get.find<LoggerService>();
 
-    String parseString(dynamic value, String fieldName, {String defaultValue = ''}) {
+    String parseString(dynamic value, String fieldName,
+        {String defaultValue = ''}) {
       if (value == null) {
-        logger.w('$fieldName is missing or null, using default: "$defaultValue"');
+        logger
+            .w('$fieldName is missing or null, using default: "$defaultValue"');
         return defaultValue;
       }
       return value.toString();
@@ -51,7 +53,8 @@ class ReceivedInvoice {
       return int.tryParse(value.toString()) ?? defaultValue;
     }
 
-    bool parseBool(dynamic value, String fieldName, {bool defaultValue = false}) {
+    bool parseBool(dynamic value, String fieldName,
+        {bool defaultValue = false}) {
       if (value == null) {
         logger.w('$fieldName is missing or null, using default: $defaultValue');
         return defaultValue;

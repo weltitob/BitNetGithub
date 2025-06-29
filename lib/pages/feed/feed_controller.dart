@@ -222,7 +222,8 @@ class FeedController extends GetxController
     }
 
     // Initialize tab controller with listener for reactive updates
-    tabController = TabController(length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
+    tabController = TabController(
+        length: 5, vsync: this); // Changed from 6 to 5 (removed People tab)
 
     // Enhanced tab controller listener with better error handling
     tabController!.addListener(() {

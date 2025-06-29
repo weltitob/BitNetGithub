@@ -36,7 +36,8 @@ class TokenAnalyticsTabView extends StatelessWidget {
               padding: EdgeInsets.all(AppTheme.elementSpacing.w),
               decoration: BoxDecoration(
                 color: iconColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                borderRadius:
+                    BorderRadius.circular(AppTheme.borderRadiusSmall.r),
               ),
               child: Icon(
                 icon,
@@ -52,20 +53,26 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        ),
                   ),
                   Text(
                     value,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
                   ),
                 ],
               ),
@@ -88,8 +95,10 @@ class TokenAnalyticsTabView extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(AppTheme.elementSpacing.w),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall.r),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.borderRadiusSmall.r),
                   ),
                   child: Icon(
                     Icons.show_chart,
@@ -104,15 +113,19 @@ class TokenAnalyticsTabView extends StatelessWidget {
                     children: [
                       Text(
                         'Price Chart Analysis',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       Text(
                         'View detailed price movements and trading data',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                        ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7),
+                            ),
                       ),
                     ],
                   ),
@@ -126,9 +139,12 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   child: Text(
                     'Access comprehensive charts with multiple timeframes, technical indicators, and trading volume analysis.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                      height: 1.4,
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.8),
+                          height: 1.4,
+                        ),
                   ),
                 ),
               ],
@@ -168,7 +184,7 @@ class TokenAnalyticsTabView extends StatelessWidget {
     // Calculate or fetch monthly volume
     // This is a placeholder - replace with actual calculation from your data source
     final volumeData = tokenData['monthlyVolume'] ?? 125000;
-    
+
     // Format the volume number
     if (volumeData >= 1000000) {
       return '${(volumeData / 1000000).toStringAsFixed(2)}M';
@@ -185,7 +201,7 @@ class TokenAnalyticsTabView extends StatelessWidget {
     final floorPrice = tokenData['floorPrice']?.toString() ?? '0';
     final sellOffersCount = tokenData['sellOffers']?.length ?? 0;
     final buyOffersCount = tokenData['buyOffers']?.length ?? 0;
-    
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -196,18 +212,18 @@ class TokenAnalyticsTabView extends StatelessWidget {
               children: [
                 // Chart Navigation Card
                 _buildChartNavigationCard(context),
-                
+
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 Text(
                   'Market Statistics',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 // Current Price
                 _buildAnalyticsCard(
                   context,
@@ -217,9 +233,9 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   icon: Icons.attach_money,
                   iconColor: AppTheme.successColor,
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 // Floor Price
                 _buildAnalyticsCard(
                   context,
@@ -229,9 +245,9 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   icon: Icons.trending_down,
                   iconColor: Theme.of(context).colorScheme.secondary,
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 // Market Activity
                 _buildAnalyticsCard(
                   context,
@@ -241,9 +257,9 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   icon: Icons.sell,
                   iconColor: Theme.of(context).colorScheme.primary,
                 ),
-                
+
                 SizedBox(height: AppTheme.elementSpacing.h),
-                
+
                 // Monthly Volume
                 _buildAnalyticsCard(
                   context,
@@ -253,9 +269,9 @@ class TokenAnalyticsTabView extends StatelessWidget {
                   icon: Icons.show_chart,
                   iconColor: AppTheme.colorBitcoin,
                 ),
-                
+
                 SizedBox(height: AppTheme.cardPadding.h),
-                
+
                 // Market Information
                 GlassContainer(
                   child: Padding(
@@ -265,12 +281,12 @@ class TokenAnalyticsTabView extends StatelessWidget {
                       children: [
                         Text(
                           'Market Information',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         SizedBox(height: AppTheme.elementSpacing.h),
-                        
                         _buildInfoRow(
                           context,
                           'Token Symbol',
@@ -299,7 +315,7 @@ class TokenAnalyticsTabView extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Bottom padding
         SliverToBoxAdapter(
           child: SizedBox(height: AppTheme.cardPadding.h * 2),
@@ -317,14 +333,15 @@ class TokenAnalyticsTabView extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
           ),
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ],
       ),

@@ -1,4 +1,3 @@
-
 // recoverKey(String did, String d) async {
 //   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('recoverKeyFunction');
 //   print("Recovering key...");

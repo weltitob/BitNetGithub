@@ -1,4 +1,3 @@
-
 // Stream<RestResponse> subscribeInvoicesStream() async* {
 //   final logger = Get.find<LoggerService>();
 //   logger.i("Called subscribeInvoices Stream!"); // The combined JSON response
