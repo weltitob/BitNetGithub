@@ -424,9 +424,9 @@ class AppData {
     };
   }
 
-  factory AppData.fromJson(Map<String, dynamic> map) {
+  factory AppData.fromJson(Map<String, dynamic> map, {String? docId}) {
     return AppData(
-        docId: map['docId'],
+        docId: docId ?? map['docId'],
         url: map['url'],
         name: map['name'],
         desc: map['desc'],
@@ -796,20 +796,7 @@ Future<List<AppData>> getAvailableApps() async {
       await Databaserefs.appsRef.doc("total_apps").collection("apps").get();
 
   return q.docs
-      .map((doc) => AppData(
-          docId: doc.id,
-          url: doc.data()['url'],
-          name: doc.data()['name'],
-          desc: doc.data()['desc'],
-          useNetworkAsset: doc.data()['useNetworkAsset'] ?? false,
-          storageName: doc.data()['storage_name'],
-          useNetworkImage: doc.data()['useNetworkImage'],
-          parameters: doc.data().containsKey('parameters')
-              ? doc.data()['parameters']
-              : null,
-          iconPath: doc.data().containsKey('iconPath')
-              ? doc.data()['iconPath']
-              : null))
+      .map((doc) => AppData.fromJson(docId: doc.id, doc.data()))
       .toList();
 }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.dart';
@@ -15,6 +17,10 @@ import 'package:nip47/nip47.dart' as nip47;
 import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 // Model class to represent an NWC connection
 class NwcConnection {
@@ -37,6 +43,33 @@ class NwcConnection {
     required this.walletPubkey,
     this.context,
   });
+
+  // Convert to JSON for storage
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'appName': appName,
+      'connectionUri': connectionUri.toString(),
+      'methods': methods.map((m) => m.name).toList(),
+      'createdAt': createdAt.toIso8601String(),
+      'walletPubkey': walletPubkey,
+    };
+  }
+
+  // Create from JSON
+  factory NwcConnection.fromJson(Map<String, dynamic> json) {
+    return NwcConnection(
+      id: json['id'],
+      appName: json['appName'],
+      connectionUri: Uri.parse(json['connectionUri']),
+      methods: (json['methods'] as List)
+          .map((m) =>
+              nip47.Method.values.firstWhere((method) => method.name == m))
+          .toList(),
+      createdAt: DateTime.parse(json['createdAt']),
+      walletPubkey: json['walletPubkey'],
+    );
+  }
 }
 
 class NostrController extends GetxController {
@@ -57,11 +90,15 @@ class NostrController extends GetxController {
   // List of all active NWC connections
   final RxList<NwcConnection> activeConnections = <NwcConnection>[].obs;
 
+  // SharedPreferences key for storing connections
+  static const String _connectionsStorageKey = 'nwc_connections';
+
   // Default relays for NWC
   final List<Uri> defaultRelays = [
-    Uri.parse('wss://relay.nwc.dev'), // NWC-optimized
+    // Uri.parse('wss://relay.nwc.dev'), // NWC-optimized
     Uri.parse('wss://nos.lol'), // Reliable + fast
     Uri.parse('wss://relay.damus.io'), // Public + widely used
+    Uri.parse("wss://relay.getalby.com/v1")
   ];
 
   // Default methods to support
@@ -109,7 +146,9 @@ class NostrController extends GetxController {
           subscriptionRepository: subscriptionRepository);
 
       // Initialize NIP-47 database
-      final nip47Database = nip47.Nip47Database();
+      Directory dir = await getApplicationDocumentsDirectory();
+      final nip47Database =
+          nip47.Nip47Database(filePath: join(dir.path, "dartstr_nip47.db"));
       // Initialize datasources
       final nostrDataSource = nip47.NostrDataSourceImpl(
         publishEventUseCase: publishEventUseCase,
@@ -123,7 +162,8 @@ class NostrController extends GetxController {
       // Initialize repositories
       final walletConnectionRepository = nip47.WalletConnectionRepositoryImpl(
         localWalletConnectionDataSource:
-            nip47.SqliteLocalWalletConnectionDataSource(database: nip47Database),
+            nip47.SqliteLocalWalletConnectionDataSource(
+                database: nip47Database),
       );
       final infoEventRepository = nip47.InfoEventRepositoryImpl(
         nostrDataSource: nostrDataSource,
@@ -132,13 +172,15 @@ class NostrController extends GetxController {
         nostrDataSource: nostrDataSource,
         localRequestDataSource: localRequestDataSource,
         localWalletConnectionDataSource:
-            nip47.SqliteLocalWalletConnectionDataSource(database: nip47Database),
+            nip47.SqliteLocalWalletConnectionDataSource(
+                database: nip47Database),
       );
       final responseRepository = nip47.ResponseRepositoryImpl(
         nostrDataSource: nostrDataSource,
         localResponseDataSource: localResponseDataSource,
         localWalletConnectionDataSource:
-            nip47.SqliteLocalWalletConnectionDataSource(database: nip47Database),
+            nip47.SqliteLocalWalletConnectionDataSource(
+                database: nip47Database),
       );
       // Initialize use cases as class members
       createWalletConnectionUseCase = nip47.CreateWalletConnectionUseCase(
@@ -152,6 +194,9 @@ class NostrController extends GetxController {
       sendResponseUseCase = nip47.SendResponseUseCase(
         responseRepository: responseRepository,
       );
+
+      // Load any previously saved connections
+      await _loadActiveConnections();
 
       // Example code commented out - will be replaced with actual implementation
       /*
@@ -261,6 +306,9 @@ class NostrController extends GetxController {
       // Add to active connections list
       activeConnections.add(connection);
 
+      // Save connections to storage
+      await _saveActiveConnections();
+
       print('NWC Connection created for $appName: ${connectionUri.uri}');
       return connectionUri.uri;
     } catch (e) {
@@ -288,6 +336,9 @@ class NostrController extends GetxController {
       // Remove from active connections
       activeConnections.removeAt(connectionIndex);
 
+      // Save updated connections to storage
+      await _saveActiveConnections();
+
       print('NWC Connection closed for ${connection.appName}');
       return true;
     } catch (e) {
@@ -302,6 +353,10 @@ class NostrController extends GetxController {
       await connection.requestStream?.cancel();
     }
     activeConnections.clear();
+
+    // Save updated (empty) connections to storage
+    await _saveActiveConnections();
+
     print('All NWC connections closed');
   }
 
@@ -468,7 +523,8 @@ class NostrController extends GetxController {
       // Find the connection that has a context for this request
       NwcConnection? connectionWithContext;
       for (final conn in activeConnections) {
-        if (conn.context != null && conn.methods.contains(nip47.Method.payInvoice)) {
+        if (conn.context != null &&
+            conn.methods.contains(nip47.Method.payInvoice)) {
           connectionWithContext = conn;
           break;
         }
@@ -835,7 +891,7 @@ class NostrController extends GetxController {
       nip47.RequestEvent event, nip47.ListTransactionsRequest request) async {
     try {
       print('Handling list_transactions request from ${request.clientPubkey}');
-      
+
       // Get current user ID
       final userId = Auth().currentUser?.uid;
       if (userId == null) {
@@ -848,7 +904,7 @@ class NostrController extends GetxController {
           errorMessage: 'No user logged in',
           errorCode: nip47.ErrorCode.internal,
         );
-        
+
         await sendResponseUseCase.execute(
           errorResponse,
           walletServicePrivateKey: walletServiceKeyPair.privateKey,
@@ -856,37 +912,43 @@ class NostrController extends GetxController {
         );
         return;
       }
-      
+
       // Extract request parameters
-      final from = request.from != null ? request.from!.millisecondsSinceEpoch ~/ 1000 : null; // Convert DateTime to unix timestamp
-      final until = request.until != null ? request.until!.millisecondsSinceEpoch ~/ 1000 : null; // Convert DateTime to unix timestamp
+      final from = request.from != null
+          ? request.from!.millisecondsSinceEpoch ~/ 1000
+          : null; // Convert DateTime to unix timestamp
+      final until = request.until != null
+          ? request.until!.millisecondsSinceEpoch ~/ 1000
+          : null; // Convert DateTime to unix timestamp
       final limit = request.limit;
       final offset = request.offset;
       final unpaid = request.unpaid ?? false;
       final transactionType = request.type;
-      
-      print('Fetching transactions: from=$from, until=$until, limit=$limit, offset=$offset, unpaid=$unpaid, type=$transactionType');
-      
+
+      print(
+          'Fetching transactions: from=$from, until=$until, limit=$limit, offset=$offset, unpaid=$unpaid, type=$transactionType');
+
       // Import the necessary functions
       final listPaymentsFunction = listPayments;
       final listInvoicesFunction = listInvoices;
-      
+
       // Lists to hold all transactions
       List<Map<String, dynamic>> allTransactions = [];
-      
+
       // Fetch outgoing payments if requested or no specific type
-      if (transactionType == null || transactionType == nip47.TransactionType.outgoing) {
+      if (transactionType == null ||
+          transactionType == nip47.TransactionType.outgoing) {
         try {
           final payments = await listPaymentsFunction(userId);
           print('Found ${payments.length} outgoing payments');
-          
+
           // Convert payments to transaction format
           for (final payment in payments) {
             // Filter by date range if specified
             final creationDate = payment.creationDate;
             if (from != null && creationDate < from) continue;
             if (until != null && creationDate > until) continue;
-            
+
             allTransactions.add({
               'type': 'outgoing',
               'invoice': payment.paymentRequest,
@@ -909,23 +971,25 @@ class NostrController extends GetxController {
           print('Error fetching payments: $e');
         }
       }
-      
+
       // Fetch incoming invoices if requested or no specific type
-      if (transactionType == null || transactionType == nip47.TransactionType.incoming) {
+      if (transactionType == null ||
+          transactionType == nip47.TransactionType.incoming) {
         try {
-          final invoices = await listInvoicesFunction(userId, pending_only: unpaid);
+          final invoices =
+              await listInvoicesFunction(userId, pending_only: unpaid);
           print('Found ${invoices.length} incoming invoices');
-          
+
           // Convert invoices to transaction format
           for (final invoice in invoices) {
             // Filter by date range if specified
             final creationDate = invoice.creationDate;
             if (from != null && creationDate < from) continue;
             if (until != null && creationDate > until) continue;
-            
+
             // Skip unpaid invoices unless specifically requested
             if (!unpaid && invoice.state != 'SETTLED') continue;
-            
+
             allTransactions.add({
               'type': 'incoming',
               'invoice': invoice.paymentRequest,
@@ -937,7 +1001,8 @@ class NostrController extends GetxController {
               'fees_paid': 0, // No fees for receiving
               'created_at': creationDate,
               'expires_at': creationDate + 3600, // Default 1 hour expiry
-              'settled_at': invoice.state == 'SETTLED' ? invoice.settleDate : null,
+              'settled_at':
+                  invoice.state == 'SETTLED' ? invoice.settleDate : null,
               'metadata': {
                 'state': invoice.state,
                 'amt_paid_msat': invoice.amtPaidMsat,
@@ -949,71 +1014,81 @@ class NostrController extends GetxController {
           print('Error fetching invoices: $e');
         }
       }
-      
+
       // Sort transactions by creation date (newest first)
-      allTransactions.sort((a, b) => (b['created_at'] as int).compareTo(a['created_at'] as int));
-      
+      allTransactions.sort(
+          (a, b) => (b['created_at'] as int).compareTo(a['created_at'] as int));
+
       // Apply pagination
       final startIndex = offset ?? 0;
-      final endIndex = limit != null ? startIndex + limit : allTransactions.length;
+      final endIndex =
+          limit != null ? startIndex + limit : allTransactions.length;
       final paginatedTransactions = allTransactions.sublist(
         startIndex.clamp(0, allTransactions.length),
         endIndex.clamp(0, allTransactions.length),
       );
-      
-      print('Returning ${paginatedTransactions.length} transactions after filtering and pagination');
-      
+
+      print(
+          'Returning ${paginatedTransactions.length} transactions after filtering and pagination');
+
       // Convert to Transaction objects
       final transactions = paginatedTransactions.map((txData) {
         return nip47.Transaction(
-          type: txData['type'] == 'incoming' ? nip47.TransactionType.incoming : nip47.TransactionType.outgoing,
+          type: txData['type'] == 'incoming'
+              ? nip47.TransactionType.incoming
+              : nip47.TransactionType.outgoing,
           invoice: txData['invoice'] as String,
           description: txData['description'] as String?,
           descriptionHash: txData['description_hash'] as String?,
           preimage: txData['preimage'] as String?,
           paymentHash: txData['payment_hash'] as String,
-          amountSat: (txData['amount'] as int) ~/ 1000, // Convert millisats to sats
-          feesPaidSat: (txData['fees_paid'] as int) ~/ 1000, // Convert millisats to sats
-          createdAt: DateTime.fromMillisecondsSinceEpoch((txData['created_at'] as int) * 1000),
-          expiresAt: txData['expires_at'] != null 
-              ? DateTime.fromMillisecondsSinceEpoch((txData['expires_at'] as int) * 1000)
+          amountSat:
+              (txData['amount'] as int) ~/ 1000, // Convert millisats to sats
+          feesPaidSat:
+              (txData['fees_paid'] as int) ~/ 1000, // Convert millisats to sats
+          createdAt: DateTime.fromMillisecondsSinceEpoch(
+              (txData['created_at'] as int) * 1000),
+          expiresAt: txData['expires_at'] != null
+              ? DateTime.fromMillisecondsSinceEpoch(
+                  (txData['expires_at'] as int) * 1000)
               : null,
           settledAt: txData['settled_at'] != null
-              ? DateTime.fromMillisecondsSinceEpoch((txData['settled_at'] as int) * 1000)
+              ? DateTime.fromMillisecondsSinceEpoch(
+                  (txData['settled_at'] as int) * 1000)
               : null,
           metadata: txData['metadata'] as Map<String, dynamic>?,
         );
       }).toList();
-      
+
       // Create the list_transactions response
       final response = nip47.Response.listTransactions(
         requestId: event.eventId,
         clientPubkey: request.clientPubkey,
         transactions: transactions,
       );
-      
+
       // Send the response
       await sendResponseUseCase.execute(
         response,
         walletServicePrivateKey: walletServiceKeyPair.privateKey,
         waitForOkMessage: false,
       );
-      
+
       print('Successfully sent list_transactions response');
-      
     } catch (e) {
       print('Error handling ListTransactionsRequest: $e');
-      
+
       // Send error response
       try {
         final errorResponse = nip47.Response.error(
           requestId: event.eventId,
           clientPubkey: request.clientPubkey,
           method: "list_transactions",
-          errorMessage: 'Failed to process list_transactions request: ${e.toString()}',
+          errorMessage:
+              'Failed to process list_transactions request: ${e.toString()}',
           errorCode: nip47.ErrorCode.internal,
         );
-        
+
         await sendResponseUseCase.execute(
           errorResponse,
           walletServicePrivateKey: walletServiceKeyPair.privateKey,
@@ -1029,7 +1104,7 @@ class NostrController extends GetxController {
       nip47.RequestEvent event, nip47.LookupInvoiceRequest request) async {
     try {
       print('Handling lookup_invoice request from ${request.clientPubkey}');
-      
+
       // Get current user ID
       final userId = Auth().currentUser?.uid;
       if (userId == null) {
@@ -1042,7 +1117,7 @@ class NostrController extends GetxController {
           errorMessage: 'No user logged in',
           errorCode: nip47.ErrorCode.internal,
         );
-        
+
         await sendResponseUseCase.execute(
           errorResponse,
           walletServicePrivateKey: walletServiceKeyPair.privateKey,
@@ -1050,21 +1125,21 @@ class NostrController extends GetxController {
         );
         return;
       }
-      
+
       // Extract request parameters
       final invoice = request.invoice; // Bolt11 invoice string
       final paymentHash = request.paymentHash; // Payment hash to look up
-      
+
       print('Looking up invoice: invoice=$invoice, paymentHash=$paymentHash');
-      
+
       Map<String, dynamic>? invoiceData;
       String? foundInvoice;
       String? foundPaymentHash;
-      
+
       // Search in user's invoices (backend/userId/invoices)
       try {
         final invoices = await listInvoices(userId);
-        
+
         for (final inv in invoices) {
           // Check by payment hash
           if (paymentHash != null && inv.rHash == paymentHash) {
@@ -1120,7 +1195,7 @@ class NostrController extends GetxController {
       } catch (e) {
         print('Error searching user invoices: $e');
       }
-      
+
       // Check if invoice was found
       if (invoiceData == null) {
         print('Invoice not found');
@@ -1132,7 +1207,7 @@ class NostrController extends GetxController {
           errorMessage: 'Invoice not found',
           errorCode: nip47.ErrorCode.notFound,
         );
-        
+
         await sendResponseUseCase.execute(
           errorResponse,
           walletServicePrivateKey: walletServiceKeyPair.privateKey,
@@ -1140,7 +1215,7 @@ class NostrController extends GetxController {
         );
         return;
       }
-      
+
       // Create the lookup_invoice response
       // The NIP-47 lookupInvoice response includes the full transaction details
       final response = nip47.Response.lookupInvoice(
@@ -1151,33 +1226,35 @@ class NostrController extends GetxController {
         description: invoiceData['description'] as String?,
         descriptionHash: null,
         paymentHash: foundPaymentHash!,
-        amountSat: (invoiceData['amount'] as int) ~/ 1000, // Convert millisats to sats
-        createdAt: DateTime.fromMillisecondsSinceEpoch((invoiceData['created_at'] as int) * 1000),
+        amountSat:
+            (invoiceData['amount'] as int) ~/ 1000, // Convert millisats to sats
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+            (invoiceData['created_at'] as int) * 1000),
         metadata: invoiceData['metadata'] as Map<String, dynamic>?,
       );
-      
+
       // Send the response
       await sendResponseUseCase.execute(
         response,
         walletServicePrivateKey: walletServiceKeyPair.privateKey,
         waitForOkMessage: false,
       );
-      
+
       print('Successfully sent lookup_invoice response');
-      
     } catch (e) {
       print('Error handling LookupInvoiceRequest: $e');
-      
+
       // Send error response
       try {
         final errorResponse = nip47.Response.error(
           requestId: event.eventId,
           clientPubkey: request.clientPubkey,
           method: "lookup_invoice",
-          errorMessage: 'Failed to process lookup_invoice request: ${e.toString()}',
+          errorMessage:
+              'Failed to process lookup_invoice request: ${e.toString()}',
           errorCode: nip47.ErrorCode.internal,
         );
-        
+
         await sendResponseUseCase.execute(
           errorResponse,
           walletServicePrivateKey: walletServiceKeyPair.privateKey,
@@ -1194,4 +1271,76 @@ class NostrController extends GetxController {
   //   // TODO: Implement pay_keysend handler
   //   print('TODO: Implement pay_keysend handler');
   // }
+
+  // Save active connections to SharedPreferences
+  Future<void> _saveActiveConnections() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final connectionsJson =
+          activeConnections.map((connection) => connection.toJson()).toList();
+      final connectionsString = jsonEncode(connectionsJson);
+      await prefs.setString(_connectionsStorageKey, connectionsString);
+      print('Saved ${activeConnections.length} NWC connections to storage');
+    } catch (e) {
+      print('Error saving NWC connections: $e');
+    }
+  }
+
+  // Load connections from SharedPreferences
+  Future<void> _loadActiveConnections() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final connectionsString = prefs.getString(_connectionsStorageKey);
+      if (connectionsString == null || connectionsString.isEmpty) {
+        print('No saved NWC connections found');
+        return;
+      }
+
+      final connectionsJson = jsonDecode(connectionsString) as List;
+      final loadedConnections = connectionsJson
+          .map((json) => NwcConnection.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      // Don't add to activeConnections yet - we need to reconnect them first
+      print('Loaded ${loadedConnections.length} NWC connections from storage');
+
+      // Reconnect each connection
+      for (final savedConnection in loadedConnections) {
+        await _reconnectConnection(savedConnection);
+      }
+    } catch (e) {
+      print('Error loading NWC connections: $e');
+    }
+  }
+
+  // Reconnect a saved connection
+  Future<void> _reconnectConnection(NwcConnection savedConnection) async {
+    try {
+      print('Reconnecting to ${savedConnection.appName}...');
+
+      // Start listening for requests from this connection
+      final requestStream =
+          getRequestEventStreamUseCase.execute().listen((event) async {
+        await _handleNwcRequest(event);
+      });
+
+      // Create new connection object with the stream
+      final connection = NwcConnection(
+        id: savedConnection.id,
+        appName: savedConnection.appName,
+        connectionUri: savedConnection.connectionUri,
+        methods: savedConnection.methods,
+        createdAt: savedConnection.createdAt,
+        requestStream: requestStream,
+        walletPubkey: savedConnection.walletPubkey,
+      );
+
+      // Add to active connections
+      activeConnections.add(connection);
+
+      print('Successfully reconnected to ${connection.appName}');
+    } catch (e) {
+      print('Error reconnecting to ${savedConnection.appName}: $e');
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/glasscontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/channel/channel_operation.dart';
@@ -26,7 +27,8 @@ class ChannelOperationDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ChannelOperationDetails> createState() => _ChannelOperationDetailsState();
+  State<ChannelOperationDetails> createState() =>
+      _ChannelOperationDetailsState();
 }
 
 class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
@@ -103,9 +105,10 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
       if (existingChannel != null) {
         final isActive = existingChannel['active'] as bool? ?? false;
         final channelPoint = existingChannel['channel_point'] as String?;
-        
+
         // Update status if changed
-        if (isActive && _channelOperation!.status != ChannelOperationStatus.active) {
+        if (isActive &&
+            _channelOperation!.status != ChannelOperationStatus.active) {
           await _updateChannelStatus(
             ChannelOperationStatus.active,
             channelPoint: channelPoint,
@@ -116,7 +119,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
         final pendingChannel = await _channelService.findPendingChannel(
           _channelOperation!.remoteNodeId,
         );
-        
+
         if (pendingChannel != null) {
           await _updateChannelStatus(ChannelOperationStatus.opening);
         }
@@ -333,15 +336,17 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
                   SizedBox(height: AppTheme.elementSpacing.h),
                   _buildInfoRow('Remote Node', op.remoteNodeAlias),
                   _buildInfoRow('Capacity', '${op.capacity.toString()} sats'),
-                  _buildInfoRow('Local Balance', '${op.localBalance.toString()} sats'),
+                  _buildInfoRow(
+                      'Local Balance', '${op.localBalance.toString()} sats'),
                   if (op.pushAmount > 0)
-                    _buildInfoRow('Push Amount', '${op.pushAmount.toString()} sats'),
+                    _buildInfoRow(
+                        'Push Amount', '${op.pushAmount.toString()} sats'),
                   _buildInfoRow('Type', op.isPrivate ? 'Private' : 'Public'),
                   _buildInfoRow(
                     'Created',
                     DateFormat.yMMMd().add_jm().format(
-                      DateTime.fromMillisecondsSinceEpoch(op.timestamp),
-                    ),
+                          DateTime.fromMillisecondsSinceEpoch(op.timestamp),
+                        ),
                   ),
                 ],
               ),
@@ -398,7 +403,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
   Widget _buildInfoRow(String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
       child: Row(
@@ -423,7 +428,7 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
 
   Widget _buildCopyableRow(String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
       child: Column(
@@ -451,22 +456,22 @@ class _ChannelOperationDetailsState extends State<ChannelOperationDetails> {
               child: Padding(
                 padding: EdgeInsets.all(AppTheme.elementSpacing.w),
                 child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      value,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace',
+                  children: [
+                    Expanded(
+                      child: Text(
+                        value,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontFamily: 'monospace',
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Icon(
-                    Icons.copy,
-                    size: 16.r,
-                    color: theme.colorScheme.onSurface.withOpacity(0.5),
-                  ),
-                ],
+                    Icon(
+                      Icons.copy,
+                      size: 16.r,
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                  ],
                 ),
               ),
             ),

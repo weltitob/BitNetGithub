@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bech32/bech32.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -17,6 +18,7 @@ import 'package:bitnet/pages/feed/appstab.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:blockchain_utils/hex/hex.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +37,8 @@ class WebViewPage extends StatefulWidget {
   State<WebViewPage> createState() => WebViewPageState();
 }
 
-class WebViewPageState extends State<WebViewPage> {
+class WebViewPageState extends State<WebViewPage>
+    with TickerProviderStateMixin {
   late String url;
   late String name;
   late WebViewController controller;
@@ -49,6 +52,15 @@ class WebViewPageState extends State<WebViewPage> {
   Set<String> foundQRCodes = {};
   NostrController? nostrController;
   String? connectionUri;
+
+  // Animation controllers for expandable FAB
+  late AnimationController _fabAnimationController;
+  late AnimationController _buttonAnimationController;
+  late Animation<double> _fabAnimation;
+  late Animation<double> _buttonAnimation1;
+  late Animation<double> _buttonAnimation2;
+  late Animation<double> _buttonAnimation3;
+  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -64,6 +76,39 @@ class WebViewPageState extends State<WebViewPage> {
 
     if (isNostrApp) {
       nostrController = Get.find<NostrController>();
+
+      // Initialize animation controllers
+      _fabAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 200),
+        vsync: this,
+      );
+      _buttonAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 400),
+        vsync: this,
+      );
+
+      // FAB rotation animation
+      _fabAnimation = Tween<double>(
+        begin: 0.0,
+        end: 0.75, // 3/4 rotation
+      ).animate(CurvedAnimation(
+        parent: _fabAnimationController,
+        curve: Curves.easeInOut,
+      ));
+
+      // Staggered animations for buttons
+      _buttonAnimation1 = CurvedAnimation(
+        parent: _buttonAnimationController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      );
+      _buttonAnimation2 = CurvedAnimation(
+        parent: _buttonAnimationController,
+        curve: const Interval(0.2, 0.7, curve: Curves.easeOut),
+      );
+      _buttonAnimation3 = CurvedAnimation(
+        parent: _buttonAnimationController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+      );
     }
 
     controller = WebViewController()
@@ -126,6 +171,10 @@ class WebViewPageState extends State<WebViewPage> {
   @override
   void dispose() {
     timer?.cancel();
+    if (isNostrApp) {
+      _fabAnimationController.dispose();
+      _buttonAnimationController.dispose();
+    }
     super.dispose();
   }
 
@@ -541,6 +590,19 @@ class WebViewPageState extends State<WebViewPage> {
     }
   }
 
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _fabAnimationController.forward();
+        _buttonAnimationController.forward();
+      } else {
+        _fabAnimationController.reverse();
+        _buttonAnimationController.reverse();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -560,78 +622,162 @@ class WebViewPageState extends State<WebViewPage> {
               bottom: AppTheme.cardPadding.h,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Copy Public Key Button
-                  _buildNostrButton(
-                    icon: Icons.key,
-                    label: 'Public Key',
-                    onTap: () {
-                      if (nostrController != null) {
-                        final publicKey =
-                            nostrController!.userKeyPair.publicKey;
-                        Clipboard.setData(ClipboardData(text: publicKey));
-                        Get.find<OverlayController>().showOverlay(
-                          'Public key copied to clipboard',
-                          color: AppTheme.successColor,
-                        );
-                      }
-                    },
-                  ),
-                  SizedBox(height: 8.h),
-                  // Copy Private Key Button
-                  _buildNostrButton(
-                    icon: Icons.vpn_key,
-                    label: 'Private Key',
-                    onTap: () {
-                      if (nostrController != null) {
-                        final privateKey =
-                            nostrController!.userKeyPair.privateKey;
-                        Clipboard.setData(ClipboardData(text: privateKey));
-                        Get.find<OverlayController>().showOverlay(
-                          'Private key copied to clipboard',
-                          color: AppTheme.successColor,
-                        );
-                      }
-                    },
-                  ),
-                  SizedBox(height: 8.h),
-                  // Generate NWC Connection URI Button
-                  _buildNostrButton(
-                    icon: Icons.link,
-                    label: 'Connect',
-                    onTap: () async {
-                      if (nostrController != null &&
-                          nostrController!.activeConnections
-                              .where((test) => test.appName == name)
-                              .isEmpty) {
-                        // Create a new NWC connection for this app
-                        final uri = await nostrController!.createNwcConnection(
-                          appName: name,
-                          context: context,
-                        );
+                  // Animated buttons
+                  AnimatedBuilder(
+                    animation: _buttonAnimationController,
+                    builder: (context, child) => IgnorePointer(
+                      ignoring: !_isExpanded,
+                      child: Visibility(
+                        visible: _buttonAnimationController.value > 0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Copy Public Key Button
+                            Transform.translate(
+                              offset: Offset(
+                                0,
+                                50 * (1 - _buttonAnimation3.value),
+                              ),
+                              child: Opacity(
+                                opacity: _buttonAnimation3.value,
+                                child: _buildNostrButton(
+                                  icon: Icons.key,
+                                  label: 'Public Key',
+                                  onTap: () {
+                                    if (nostrController != null) {
+                                      final publicKey = nostrController!
+                                          .userKeyPair.publicKey;
+                                      Clipboard.setData(
+                                          ClipboardData(text: publicKey));
+                                      Get.find<OverlayController>().showOverlay(
+                                        'Public key copied to clipboard',
+                                        color: AppTheme.successColor,
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            // Copy Private Key Button
+                            Transform.translate(
+                              offset: Offset(
+                                0,
+                                50 * (1 - _buttonAnimation2.value),
+                              ),
+                              child: Opacity(
+                                opacity: _buttonAnimation2.value,
+                                child: _buildNostrButton(
+                                  icon: Icons.vpn_key,
+                                  label: 'Private Key',
+                                  onTap: () {
+                                    if (nostrController != null) {
+                                      final privateKey = encodeNsec(
+                                              nostrController!
+                                                  .userKeyPair.privateKey)
+                                          .camelCase!;
+                                      Clipboard.setData(
+                                          ClipboardData(text: privateKey));
+                                      Get.find<OverlayController>().showOverlay(
+                                        'Private key copied to clipboard',
+                                        color: AppTheme.successColor,
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            // Generate NWC Connection URI Button
+                            Transform.translate(
+                              offset: Offset(
+                                0,
+                                50 * (1 - _buttonAnimation1.value),
+                              ),
+                              child: Opacity(
+                                opacity: _buttonAnimation1.value,
+                                child: _buildNostrButton(
+                                  icon: Icons.link,
+                                  label: 'Connect',
+                                  onTap: () async {
+                                    if (nostrController != null &&
+                                        nostrController!.activeConnections
+                                            .where(
+                                                (test) => test.appName == name)
+                                            .isEmpty) {
+                                      // Create a new NWC connection for this app
+                                      final uri = await nostrController!
+                                          .createNwcConnection(
+                                        appName: name,
+                                        context: context,
+                                      );
 
-                        if (uri != null) {
-                          connectionUri = uri.toString();
-                          Clipboard.setData(
-                              ClipboardData(text: connectionUri!));
-                          Get.find<OverlayController>().showOverlay(
-                            'NWC connection URI copied to clipboard',
-                            color: AppTheme.successColor,
-                          );
-                        }
-                      } else if (nostrController != null) {
-                        final uri = nostrController!.activeConnections
-                            .where((test) => test.appName == name)
-                            .first
-                            .connectionUri
-                            .toString();
-                        Clipboard.setData(ClipboardData(text: uri));
-                        Get.find<OverlayController>().showOverlay(
-                          'NWC connection URI copied to clipboard',
-                          color: AppTheme.successColor,
-                        );
-                      }
-                    },
+                                      if (uri != null) {
+                                        connectionUri = uri.toString();
+                                        Clipboard.setData(ClipboardData(
+                                            text: connectionUri!));
+                                        Get.find<OverlayController>()
+                                            .showOverlay(
+                                          'NWC connection URI copied to clipboard',
+                                          color: AppTheme.successColor,
+                                        );
+                                      }
+                                    } else if (nostrController != null) {
+                                      final uri = nostrController!
+                                          .activeConnections
+                                          .where((test) => test.appName == name)
+                                          .first
+                                          .connectionUri
+                                          .toString();
+                                      Clipboard.setData(
+                                          ClipboardData(text: uri));
+                                      Get.find<OverlayController>().showOverlay(
+                                        'NWC connection URI copied to clipboard',
+                                        color: AppTheme.successColor,
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Main FAB button
+                  AnimatedBuilder(
+                    animation: _fabAnimation,
+                    builder: (context, child) => GlassContainer(
+                      opacity: 0.95,
+                      borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadiusCircular.r),
+                      child: Material(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: CircleBorder(),
+                        child: InkWell(
+                          onTap: _toggleExpanded,
+                          customBorder: CircleBorder(),
+                          child: Container(
+                            width: 56.w,
+                            height: 56.h,
+                            child: Center(
+                              child: Transform.rotate(
+                                angle: _fabAnimation.value * 2 * 3.14159,
+                                child: Icon(
+                                  Icons.link,
+                                  color: Colors.white,
+                                  size: 24.sp,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -650,7 +796,7 @@ class WebViewPageState extends State<WebViewPage> {
       opacity: 0.9,
       borderRadius: AppTheme.borderRadiusMid.r,
       child: Material(
-        color: Colors.transparent,
+        color: AppTheme.colorBitcoin.withValues(alpha: 0.4),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.borderRadiusMid.r),
@@ -952,4 +1098,45 @@ class PaymentPayload {
       note: data['data']['note'],
     );
   }
+}
+
+String encodeNsec(String hexPrivateKey) {
+  final data = hex.decode(hexPrivateKey);
+  final words = convertBits(data, 8, 5, true);
+  return Bech32Encoder().convert(Bech32('nsec', words));
+}
+
+String encodeNpub(String hexPublicKey) {
+  final data = hex.decode(hexPublicKey);
+  final words = convertBits(data, 8, 5, true);
+  return Bech32Encoder().convert(Bech32('npub', words));
+}
+
+List<int> convertBits(List<int> data, int fromBits, int toBits, bool pad) {
+  int acc = 0;
+  int bits = 0;
+  final maxv = (1 << toBits) - 1;
+  final result = <int>[];
+
+  for (final value in data) {
+    if (value < 0 || (value >> fromBits) != 0) {
+      throw ArgumentError('Invalid value: $value');
+    }
+    acc = (acc << fromBits) | value;
+    bits += fromBits;
+    while (bits >= toBits) {
+      bits -= toBits;
+      result.add((acc >> bits) & maxv);
+    }
+  }
+
+  if (pad) {
+    if (bits > 0) {
+      result.add((acc << (toBits - bits)) & maxv);
+    }
+  } else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv) != 0) {
+    throw ArgumentError('Invalid padding');
+  }
+
+  return result;
 }

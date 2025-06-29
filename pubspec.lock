@@ -1701,15 +1701,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.16"
-  keyboard_shortcuts:
-    dependency: "direct overridden"
-    description:
-      path: "."
-      ref: null-safety
-      resolved-ref: a3d4020911860ff091d90638ab708604b71d2c5a
-      url: "https://github.com/TheOneWithTheBraid/keyboard_shortcuts.git"
-    source: git
-    version: "0.1.4"
   leak_tracker:
     dependency: transitive
     description:
